@@ -9,6 +9,11 @@ Welcome to the OLCF User Documentation!
 Getting Started
 ----------------
 
+.. toctree::
+   :maxdepth: 2
+
+   getting_started
+   
 Connecting
 -----------
 

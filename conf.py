@@ -56,3 +56,25 @@ html_context = {
       '_static/theme_overrides.css',  # override wide tables in RTD theme
   ],
 }
+
+# see https://sphinx-rtd-theme.readthedocs.io/en/stable/configuring.html
+html_theme_options = {
+  'canonical_url': 'https://docs.olcf.ornl.gov',
+  'collapse_navigation': False,
+  'sticky_navigation': True,
+  'navigation_depth': 4,
+  'style_external_links': True
+}
+
+# for opening external links in new tabs (from
+# http://jack.rosenth.al/hacking-docutils.html#sphinx-hacks
+
+from sphinx.writers.html import HTMLTranslator
+class PatchedHTMLTranslator(HTMLTranslator):
+    def visit_reference(self, node):
+        if node.get('newtab') or not (node.get('target') or node.get('internal') or 'refuri' not in node):
+            node['target'] = '_blank'
+        super().visit_reference(node)
+
+def setup(app):
+    app.set_translator('html', PatchedHTMLTranslator)
