@@ -1,6 +1,6 @@
-#############################
-Getting Started at the OLCF
-#############################
+.. *********************
+.. Getting started
+.. *********************
 
 **New to the Oak Ridge Leadership Computing Facility?**
 
@@ -16,7 +16,7 @@ with each project.
    :align: center
 
 Request a New Allocation
-------------------------
+=============================
 
 Access to OLCF resources is limited to approved projects and their
 users. The type of project (INCITE, ALCC, or Director's Discretion) will
@@ -44,7 +44,7 @@ required from industrial Director's Discretion projects only.
  
 
 What are the differences between project types?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+------------------------------------------------
 
 **INCITE –** The Novel Computational Impact on Theory and Experiment
 (INCITE) program invites proposals for large-scale, computationally
@@ -56,7 +56,9 @@ INCITE proposals and awards are made on an annual basis. Please visit
 the `Department of Energy Leadership Computing
 website <http://www.doeleadershipcomputing.org>`__ for more information
 and to `submit a
-proposal <https://proposals.doeleadershipcomputing.org/>`__. **ALCC –**
+proposal <https://proposals.doeleadershipcomputing.org/>`__. 
+
+**ALCC –**
 The ASCR Leadership Computing Challenge (ALCC) is open to scientists
 from the research community in national laboratories, academia and
 industry. The ALCC program allocates computational resources at the OLCF
@@ -68,6 +70,7 @@ or for broadening the community of researchers capable of using
 leadership computing resources. For more information or to submit a
 proposal, please visit the `ASCR Leadership Computing Challenge
 webpage <http://science.energy.gov/ascr/facilities/accessing-ascr-facilities/alcc/>`__.
+
 **DD –** Director’s Discretion (DD) projects are dedicated to leadership
 computing preparation, INCITE and ALCC scaling, and application
 performance to maximize scientific application efficiency and
@@ -76,27 +79,20 @@ Utilization Council, as well as independent referees, review and approve
 all DD requests. Applications are accepted year round via the `OLCF
 Director's Discretion Project
 Application </for-users/documents-forms/olcf-directors-discretion-project-application/>`__.
+
 **Vendor –** OLCF resources are also available to ORNL vendors.
 Applications may be submitted year round by completing the `Vendor
 Project
 Application </support/getting-started/olcf-vendor-project-application/>`__.
 
-.. raw:: html
-
-   <div class="kb-note">
-
-If you have questions about project types or application procedures,
-feel free to contact the OLCF Accounts Team at accounts@ccs.ornl.gov.
-
-.. raw:: html
-
-   </div>
+    If you have questions about project types or application procedures,
+    feel free to contact the OLCF Accounts Team at accounts@ccs.ornl.gov.
 
 Approved projects will be granted an allocation of core-hours for a
 period of time on one or more of the OLCF systems.
 
 What happens after a project request is approved?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+---------------------------------------------------
 
 Once a project request is approved, an OLCF Accounts Manager will
 communicate the following steps for activation to the project's PI.
@@ -125,7 +121,7 @@ allocation details. At this time, project participants may apply for
 user accounts.
 
 Guidance on Summit Allocation Requests
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-------------------------------------------
 
 Summit delivers 8 times the computational performance of Titan’s 18,688
 nodes, using only 4,608 nodes. Like Titan, Summit has a hybrid
@@ -143,35 +139,20 @@ about Summit, please visit the `Summit User
 Guide </for-users/system-user-guides/summit>`__.
 
 Applying for a user account
----------------------------
+================================
 
-.. raw:: html
-
-   <div class="kb-note">
-
-**Note:** Project PIs do not receive a user account with project
-creation, and must also submit a User Account Application.
-
-.. raw:: html
-
-   </div>
-
-.. raw:: html
-
-   <div class="kb-note">
-
-**Note:** If you will be contributing to multiple projects, your user
-account will need to be associated with each. If you already have a user
-account and need to be added to additional projects, complete the User
-Account Application and indicate you are an existing user.
-
-.. raw:: html
-
-   </div>
 
 Collaborators involved with an approved and activated OLCF project can
 apply for a user account associated with it. There are several steps in
 receiving a user account, and we're here to help you through them.
+
+    **Note:** Project PIs do not receive a user account with project
+    creation, and must also submit a User Account Application.
+
+    **Note:** If you will be contributing to multiple projects, your user
+    account will need to be associated with each. If you already have a user
+    account and need to be added to additional projects, complete the User
+    Account Application and indicate you are an existing user.
 
 #. Apply for an account using the `Account Request
    Form </support/getting-started/olcf-account-application>`__.
@@ -201,7 +182,7 @@ reading the `System User Guides </for-users/system-user-guides/>`__ for
 the machines you will be using often.
 
 Systems Available to All Projects
----------------------------------
+======================================
 
 After a user account has been approved and created, the requesting user
 will be sent an email listing the system(s) to which the user has
@@ -209,7 +190,7 @@ requested and been given access. In addition to the system(s) listed in
 the email, all users also have access to the following systems:
 
 Home
-~~~~
+-----
 
 *Home* is a general purpose system that can be used to log into other
 OLCF systems that are not directly accessible from outside the OLCF
@@ -218,7 +199,7 @@ common use of Home. Compiling, data transfer, or executing long-running
 or memory-intensive tasks should never be performed on Home.
 
 Connecting to the ``home`` Host
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Home can be accessed through ssh utilities:
 
@@ -227,7 +208,7 @@ Home can be accessed through ssh utilities:
       ssh userid@home.ccs.ornl.gov 
 
 Acceptable Tasks
-^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~
 
 The Home system should only be used to access systems within the OLCF
 network. The following are examples of appropriate uses of Home:
@@ -237,7 +218,7 @@ network. The following are examples of appropriate uses of Home:
 -  Screen or other terminal multiplexers
 
 Unacceptable Tasks
-^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~
 
 The following are examples of inappropriate uses of Home:
 
@@ -246,7 +227,7 @@ The following are examples of inappropriate uses of Home:
 -  Long-running or memory-intensive tasks
 
 Data Transfer Nodes
-~~~~~~~~~~~~~~~~~~~
+------------------------
 
 The *Data Transfer Nodes* (DTNs) are hosts specifically designed to
 provide optimized data transfer between OLCF systems and systems outside
@@ -258,7 +239,7 @@ transfer speed and reduce load on computational systems' login and
 service nodes.
 
 High Performance Storage System (HPSS)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------------------------
 
 The *High Performance Storage System (HPSS)* provides tape storage for
 large amounts of data created on OLCF systems. The HPSS can be accessed
@@ -269,7 +250,7 @@ page <../file-systems/#hpss-high-performance-storage-system>`__ in each
 System User Guide.
 
 Connecting for the first time
------------------------------
+================================
 
 With an active user account, you'll be able to log into any of the
 systems allocated to your project(s). Use of the OLCF-provided RSA
@@ -295,27 +276,7 @@ code shown on your SecurID fob and press enter. For example, if your pin
 is ``1234`` and the (6) digits on the fob are ``000987``, you would
 enter ``1234000987`` when prompted for a PASSCODE.
 
-.. raw:: html
-
-   <div class="kb-note">
-
-**Note:** The 6-digit code displayed on the SecurID fob can only be used
-once. If prompted for multiple PASSCODE entries, always allow the code
-to change between attempts. Re-using a code can cause your account to be
-automatically locked.
-
-.. raw:: html
-
-   </div>
-
-Additional Resources
---------------------
-
-We're here to provide support at every step. We also provide a
-collection of `Tutorials </for-users/training/tutorials/>`__ for applied
-technical demonstrations, `System User
-Guides </for-users/system-user-guides/>`__, `Training
-Events </for-users/training/>`__, and the `User Assistance
-Center </for-users/user-assistance/>`__ to answer questions and resolve
-technical issues as they arise.
-
+    **Note:** The 6-digit code displayed on the SecurID fob can only be used
+    once. If prompted for multiple PASSCODE entries, always allow the code
+    to change between attempts. Re-using a code can cause your account to be
+    automatically locked.
