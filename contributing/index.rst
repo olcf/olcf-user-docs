@@ -1,6 +1,6 @@
-###################
-Contributing docs
-###################
+###########################
+Contributing to these docs
+###########################
 
 
 Authoring content

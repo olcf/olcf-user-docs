@@ -2,14 +2,8 @@
 Systems at OLCF
 ################
 
-*******
-Summit
-*******
-
-*******
-Rhea
-*******
-
-***************************
-Data Transfer Nodes (DTNs)
-***************************
+.. toctree::
+   :maxdepth: 2
+    
+   summit_user_guide
+   rhea_user_guide
