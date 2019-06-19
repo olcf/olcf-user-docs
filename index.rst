@@ -3,14 +3,52 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to OLCF User Documentation's documentation!
+Welcome to the OLCF User Documentation!
 ===================================================
+
+Getting Started
+----------------
+
+Connecting
+-----------
+
+Systems
+---------------
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   
+   systems/index.rst
 
+Data
+------
 
+* Policies
+* Transferring
+* Storage/Archiving
+* Filesystems
+
+Accounts
+---------
+
+Software
+---------
+
+Training
+---------
+
+* tutorials
+* archive
+* calendar
+* hackathongs
+
+How to contribute to this documentation
+-----------------------------------------
+
+.. toctree::
+   :maxdepth: 2
+   
+   contributing/index
 
 Indices and tables
 ==================
