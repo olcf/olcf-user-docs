@@ -99,7 +99,7 @@ associated with it, load the new compiler environment and automatically
 load associated system libraries as well.
 
 Changing Versions of the Same Compiler
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 To use a specific compiler *version*, you must first ensure the
 compiler's module is loaded, and *then* swap to the correct compiler
@@ -153,7 +153,7 @@ When building threaded codes, compiler-specific flags must be included
 to ensure a proper build.
 
 OpenMP
-~~~~~~
+^^^^^^
 
 For PGI, add "-mp" to the build line.
 
@@ -243,7 +243,7 @@ porting to Lua.
    </div>
 
 General Usage
-~~~~~~~~~~~~~
+^^^^^^^^^^^^^
 
 Typical use of Lmod is very similar to that of interacting with
 modulefiles on other OLCF systems. The interface to Lmod is provided by
@@ -290,7 +290,7 @@ conflicts.
    </div>
 
 Searching for modules
-~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^
 
 Modules with dependencies are only available when the underlying
 dependencies, such as compiler families, are loaded. Thus,
@@ -314,7 +314,7 @@ summarized in the following table.
  
 
 Defining custom module collections
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Lmod supports caching commonly used collections of environment modules
 on a per-user basis in ``$HOME/.lmod.d``. To create a collection called
@@ -410,7 +410,7 @@ Login vs Compute Nodes on Commodity Clusters
 --------------------------------------------
 
 Login Nodes
-~~~~~~~~~~~
+^^^^^^^^^^^
 
 When you log into an OLCF cluster, you are placed on a *login* node.
 Login node resources are shared by all users of the system. Because of
@@ -435,7 +435,7 @@ warning.
    </div>
 
 Compute Nodes
-~~~~~~~~~~~~~
+^^^^^^^^^^^^^
 
 [ls\_content\_block id="21300" para="full"]
 
@@ -455,12 +455,12 @@ jobs makes its way through the queue, the script will be executed on the
 primary compute node of the allocated resources.
 
 Components of a Batch Script
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Batch scripts are parsed into the following (3) sections:
 
 Interpreter Line
-^^^^^^^^^^^^^^^^
+""""""""""""""""
 
 The first line of a script can be used to specify the script’s
 interpreter; this line is optional. If not used, the submitter’s default
@@ -468,7 +468,7 @@ shell will be used. The line uses the *hash-bang* syntax, i.e.,
 ``#!/path/to/shell``.
 
 PBS Submission Options
-^^^^^^^^^^^^^^^^^^^^^^
+""""""""""""""""""""""
 
 The PBS submission options are preceded by the string ``#PBS``, making
 them appear as comments to a shell. PBS will look for ``#PBS`` options
@@ -477,7 +477,7 @@ non-comment line. A comment line begins with ``#``. ``#PBS`` options
 entered after the first non-comment line will not be read by PBS.
 
 Shell Commands
-^^^^^^^^^^^^^^
+""""""""""""""
 
 The shell commands follow the last ``#PBS`` option and represent the
 executable content of the batch job. If any ``#PBS`` lines follow
@@ -490,7 +490,7 @@ resources. Under normal circumstances, the batch job will exit the queue
 after the last line of the script is executed.
 
 Example Batch Script
-~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^
 
 .. code::
 
@@ -507,20 +507,20 @@ Example Batch Script
 This batch script shows examples of the three sections outlined above:
 
 Interpreter Line
-^^^^^^^^^^^^^^^^
+""""""""""""""""
 
 1: This line is optional and can be used to specify a shell to interpret
 the script. In this example, the bash shell will be used.
 
 PBS Options
-^^^^^^^^^^^
+"""""""""""
 
 2: The job will be charged to the “XXXYYY” project. 3: The job will be
 named ``test``. 4: The job's standard output and error will be combined
 into one file. 5: The job will request (2) nodes for (1) hour.
 
 Shell Commands
-^^^^^^^^^^^^^^
+""""""""""""""
 
 6: This line is left blank, so it will be ignored. 7: This command will
 change the current directory to the directory from where the script was
@@ -581,7 +581,7 @@ compute node within the allocated resource pool. Commands may then be
 executed directly (instead of through a batch script).
 
 Using to Debug
-~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^
 
 A common use of interactive batch is to aid in debugging efforts.
 Interactive access to compute resources allows the ability to run a
@@ -590,7 +590,7 @@ process can be restarted after brief changes are made without losing the
 compute resource pool; thus speeding up the debugging effort.
 
 Choosing a Job Size
-~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^
 
 Because interactive jobs must sit in the queue until enough resources
 become available to allocate, it is useful to choose a job size based on
@@ -699,7 +699,7 @@ The batch scheduler provides a number of utility commands for managing
 submitted jobs. See each utilities' man page for more information.
 
 Removing and Holding Jobs
-~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ``qdel``
 
@@ -734,7 +734,7 @@ job from the held state.
     $ qrls 1234
 
 Modifying Job Attributes
-~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 ``qalter``
 
@@ -779,10 +779,10 @@ PBS and Moab provide multiple tools to view queue, system, and job
 status. Below are the most common and useful of these tools.
 
 Job Monitoring Commands
-~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^
 
 ``showq``
-^^^^^^^^^
+"""""""""
 
 The Moab utility ``showq`` can be used to view a more detailed
 description of the queue. The utility will display the queue in the
@@ -852,7 +852,7 @@ following message:
    </div>
 
 ``checkjob``
-^^^^^^^^^^^^
+""""""""""""
 
 The Moab utility ``checkjob`` can be used to view details of a job in
 the queue. For example, if job 736 is a job currently in the queue in a
@@ -873,7 +873,7 @@ This line indicates the job is in the blocked state because the owning
 user has reached the limit for jobs in the "eligible to run" state.
 
 ``qstat``
-^^^^^^^^^
+"""""""""
 
 The PBS utility ``qstat`` will poll PBS (Torque) for job information.
 However, ``qstat`` does not know of Moab's blocked and eligible states.
@@ -907,7 +907,7 @@ and are available through a single batch queue: ``batch``. The
 scheduling policies for the individual partitions are as follows:
 
 Rhea Partition Policy (default)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Jobs that do not specify a partition will run in the 512 node `rhea
 partition </for-users/system-user-guides/rhea/system-overview/#rhea-partition>`__.
@@ -943,7 +943,7 @@ C
 0 - 3 hr
 
 GPU Partition Policy
-~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^
 
 To access the 9 node `gpu
 partition </for-users/system-user-guides/rhea/system-overview/#gpu-partition>`__,
@@ -982,7 +982,7 @@ encouraged to request a reservation via the `Special Request
 Form </for-users/getting-started/special-request-form/>`__.
 
 Allocation Overuse Policy
-~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Projects that overrun their allocation are still allowed to run on OLCF
 systems, although at a reduced priority. Like the adjustment for the
@@ -1022,7 +1022,7 @@ across all the resources in the allocated resource pool simultaneously
 (a parallel job).
 
 Serial Job Execution on Commodity Clusters
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The executable portion of batch scripts is interpreted by the shell
 specified on the first line of the script. If a shell is not specified,
@@ -1033,10 +1033,10 @@ for example, navigate file systems, set up job execution, run serial
 executables, and even submit other batch jobs.
 
 Parallel Job Execution on Commodity Clusters
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Using ``mpirun``
-^^^^^^^^^^^^^^^^^
+"""""""""""""""""
 
 By default, commands will be executed on the job's primary compute node,
 sometimes referred to as the job's *head node*. The ``mpirun`` command
@@ -1072,7 +1072,7 @@ the job.
    </div>
 
 MPI Task Layout
-^^^^^^^^^^^^^^^^^
+"""""""""""""""""
 
 Each compute node on Rhea contains two sockets each with 8 cores.
 Depending on your job, it may be useful to control task layout within
@@ -1236,7 +1236,7 @@ The ``--report-bindings`` flag can be used to report task layout:
     $
 
 Thread Layout
-^^^^^^^^^^^^^^^^^
+"""""""""""""""""
 
 .. raw:: html
 
@@ -1383,7 +1383,7 @@ Thread 3
    </div>
 
 Resource Sharing on Commodity Clusters
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Jobs on OLCF clusters are scheduled in full node increments; a node's
 cores cannot be allocated to multiple jobs. Because the OLCF charges
@@ -1435,7 +1435,7 @@ entire node even if it uses only one core on a node. To simplify the
 process, users are given a multiples of entire nodes through PBS.
 
 Viewing Allocation Utilization
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Projects are allocated time on Rhea in units of *node-hours*. This is
 separate from a project's Titan or Eos allocation, and usage of Rhea
@@ -1444,7 +1444,7 @@ units are calculated, and how users can access more detailed information
 on their relevant allocations.
 
 Node-Hour Calculation
-~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^
 
 The *node-hour* charge for each batch job will be calculated as follows:
 
@@ -1462,7 +1462,7 @@ script, runs for (1) hour, uses only (2) CPU cores per node, the job
 will still be charged for 6 nodes \* 1 hour = *6 node-hours*.
 
 Viewing Usage
-~~~~~~~~~~~~~
+^^^^^^^^^^^^^
 
 Utilization is calculated daily using batch jobs which complete between
 00:00 and 23:59 of the previous day. For example, if a job moves into a
@@ -1544,7 +1544,7 @@ following hosts:
 +------------------------------+--------------------------------------+
 
 Example Workflow 1: Automatic Post-Processing
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The simplest example of a remote submission workflow would be
 automatically triggering an analysis task on Rhea at the completion of a
@@ -1599,7 +1599,7 @@ We can initialize this workflow in one of two ways:
 -  From Titan or Rhea, run ``qsub -q titan Batch-script-1.pbs``
 
 Example Workflow 2: Data Staging, Compute, and Archival
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Now we give another example of a linear workflow. This example shows how
 to use the Data Transfer Nodes (DTNs) to retrieve data from HPSS and
@@ -1663,7 +1663,7 @@ We can initialize this workflow in one of two ways:
 -  From Titan or Rhea, run ``qsub -q dtn Batch-script-1.pbs``
 
 Example Workflow 3: Data Staging, Compute, Visualization, and Archival
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 This is an example of a "branching" workflow. What we will do is first
 use Rhea to prepare a mesh for our simulation on Titan. We will then
@@ -1765,7 +1765,7 @@ We can initialize this workflow in one of two ways:
 -  From Titan or the DTNs, run ``qsub -q rhea Step-1.prepare-data.pbs``
 
 Checking Job Status
-~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^
 
 +------------------------------+-----------------------------+--------------------------------+
 | Host                         | Remote qstat                | Remote showq                   |
@@ -1780,7 +1780,7 @@ Checking Job Status
 +------------------------------+-----------------------------+--------------------------------+
 
 Deleting Remote Jobs
-~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^
 
 In order to delete a job (say, job number 18688) from a remote queue,
 you can do the following
@@ -1798,7 +1798,7 @@ you can do the following
 +------------------------------+------------------------------+
 
 Potential Pitfalls
-~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^
 
 The OLCF advises users to keep their remote submission workflows simple,
 short, and mostly linear. Workflows that contain many layers of
@@ -1847,7 +1847,7 @@ headless batch processing mode or be used to drive a ParaView GUI client
 running on your local machine.
 
 ParaView client
-~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^
 
 A ParaView client instance is not available on Rhea. Interactive mode
 requires that your local machine have a version matched ParaView client
@@ -1857,7 +1857,7 @@ Windows, Macintosh, and Linux can be downloaded from
 `Kitware <http://paraview.org/paraview/resources/software.php>`__.
 
 Interactive mode
-~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^
 
 Although in a single machine setup both the ParaView client and server
 run on the same host, this need not be the case. It is possible to run a
@@ -1879,7 +1879,7 @@ system </for-users/system-user-guides/rhea/shell-and-programming-environments/#u
    </div>
 
 Interactive Example
-^^^^^^^^^^^^^^^^^^^
+"""""""""""""""""""
 
 The following provides an example of launching the ParaView server on
 Rhea and connecting to it from a locally running ParaView client.
@@ -1936,7 +1936,7 @@ scalar and vector fields defined on two- and three-dimensional (2D and
 3D) structured and unstructured meshes.
 
 Installing and Setting Up Visit
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 VisIt uses a client-server architecture. You will obtain the best
 performance by running the VisIt client on your local computer and
@@ -1957,7 +1957,7 @@ available. In order to finish setting up VisIt on your local machine:
 -  To ensure these settings are saved, go to "Options→Save Settings".
 
 Usage
-~~~~~
+^^^^^
 
 Once you have VisIt installed and set up on your local computer:
 
@@ -1981,10 +1981,10 @@ VisIt and access your data remotely. For additional resources, please
 see the `VisIt Wiki <http://www.visitusers.org>`__.
 
 Troubleshooting
-~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^
 
 VisIt keeps asking for your password.
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+"""""""""""""""""""""""""""""""""""""
 
 If VisIt keeps asking for your "Password" in the dialog box below, and
 you are entering your correct PIN + RSA token code, you might need to
@@ -2003,7 +2003,7 @@ section below for more details.
 |Screen Shot 2016-01-06 at 11.06.25 AM|
 
 VisIt will not connect when you try to draw an image.
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+"""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 If VisIt will not connect to Rhea when you try to draw an image, you
 should login to Rhea and enter "qstat" from the command line. Your VisIt
@@ -2015,7 +2015,7 @@ Profiles </for-users/system-user-guides/rhea/analysis-tools/#modifying-host-prof
 section below for instructions.
 
 Modifying Host Profiles
-~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^
 
 To make changes to an exiting host profile, do the following:
 
@@ -2057,14 +2057,14 @@ Titan </wp-content/uploads/2016/01/GPURenderingRheaTitan-1.pdf>`__,
 during the 2016 OLCF User Meeting.
 
 step 1 (local system)
-~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^
 
 Install a vncviewer (turbovnc, tigervnc, etc.) on your local machine.
 When running vncviewer for the first time, it will ask to set a password
 for this and future vnc sessions.
 
 step 2 (terminal 1)
-~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^
 
 From a Rhea connection launch a batch job and execute the below
 matlab-vnc.sh script to start the vncserver and run matlab within:
@@ -2092,7 +2092,7 @@ matlab-vnc.sh script to start the vncserver and run matlab within:
     MATLAB is selecting SOFTWARE OPENGL rendering.
 
 step 3 (terminal 2)
-~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^
 
 In a second terminal on your local system open a tunneling connection
 following the instructions given by the vnc start-up script:
@@ -2100,7 +2100,7 @@ following the instructions given by the vnc start-up script:
 -  localsystem: ssh @rhea.ccs.ornl.gov -L 5901:rhea99:5901
 
 step 4 (local system)
-~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^
 
 Launch the vncviewer. When you launch the vncviewer that you downloaded
 you will need to specify ‘localhost:5901’. You will also set a passoword
@@ -2108,7 +2108,7 @@ for the initial connection or enter the created password for subsequent
 connections.
 
 matlab-vnc.sh (non-GPU rendering)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code::
 
@@ -2154,14 +2154,14 @@ Available April 29
    </div>
 
 step 1 (local system)
-~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^
 
 Install a vncviewer (turbovnc, tigervnc, etc.) on your local machine.
 When running vncviewer for the first time, it will ask to set a password
 for this and future vnc sessions.
 
 step 2 (terminal 1)
-~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^
 
 From a Rhea connection launch a batch job and execute the below
 matlab-vnc.sh script to start the vncserver and run matlab within:
@@ -2190,7 +2190,7 @@ matlab-vnc.sh script to start the vncserver and run matlab within:
     MATLAB is selecting SOFTWARE OPENGL rendering.
 
 step 3 (terminal 2)
-~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^
 
 In a second terminal on your local system open a tunneling connection
 following the instructions given by the vnc start-up script:
@@ -2198,7 +2198,7 @@ following the instructions given by the vnc start-up script:
 -  localsystem: ssh @rhea.ccs.ornl.gov -L 5901:rhea99:5901
 
 step 4 (local system)
-~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^
 
 Launch the vncviewer. When you launch the vncviewer that you downloaded
 you will need to specify ‘localhost:5901’. You will also set a passoword
@@ -2206,7 +2206,7 @@ for the initial connection or enter the created password for subsequent
 connections.
 
 vmd-vgl.sh (GPU rendering)
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code::
 
@@ -2245,7 +2245,7 @@ Remote Visualization using Nice DCV (GPU nodes only)
 ----------------------------------------------------
 
 step 1 (terminal 1)
-~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^
 
 Launch an interactive job:
 
@@ -2276,7 +2276,7 @@ Run the following commands:
     hostname  // will be used to open a tunneling connection with this node
 
 step 1 (terminal 2)
-~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^
 
 Open a tunneling connection with gpu node ``N``, given by hostname:
 

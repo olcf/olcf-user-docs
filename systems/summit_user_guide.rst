@@ -413,7 +413,7 @@ collaboration. Below we give an overview and explain where each storage
 area is mounted.
 
 Alpine IBM Spectrum Scale Filesystem
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Summit mounts a POSIX-based IBM Spectrum Scale parallel filesystem
 called Alpine. Alpine's maximum capacity is 250 PB. It is consisted of
@@ -437,7 +437,7 @@ its own file. Metada operations are improved with around to minimum
    Figure 1. An example of the NDS servers on Summit
 
 Performance under not ideal workload
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+""""""""""""""""""""""""""""""""""""
 
 The I/O performance can be lower than the optimal one when you save one
 single shared file with non-optimal I/O pattern. Moreover, the previous
@@ -452,7 +452,7 @@ is applied for the metadata operations, they can be lower than the
 expected performance.
 
 Tips
-^^^^
+""""
 
 -  For best performance on the IBM Spectrum Scale filesystem, use large
    page aligned I/O and asynchronous reads and writes. The filesystem
@@ -469,7 +469,7 @@ Tips
 ``#BSUB -alloc_flags maximizegpfs``
 
 Major difference between Titan (Lustre) and Summit (IBM Spectrum Scale)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 The file systems have many technical differences, but we will mention
 only what a user needs to be familiar with:
@@ -551,7 +551,7 @@ directory on a per-user basis:
 These environment variables are not set on the data transfer nodes.
 
 Information
-~~~~~~~~~~~
+^^^^^^^^^^^
 
 -  Although there are no hard quota limits, an upper storage limit
    should be reported in the project request. The available space of a
@@ -560,7 +560,7 @@ Information
    requested storage utilization.
 
 Purge
-~~~~~
+^^^^^
 
 To keep the Lustre and Spectrum Scale file systems exceptionally
 performant, untouched files in the project and user areas are purged at
@@ -570,7 +570,7 @@ Practices <./#hpss-best-practices>`__ for information about using the
 HSI and HTAR utilities to archive data on HPSS.
 
 Retention
-~~~~~~~~~
+^^^^^^^^^
 
 At the completion of a project or at the end of a member's association
 with the project, data will be available for 90 days, except in areas
@@ -640,7 +640,7 @@ provided in the table below:
 
 
 Backups for Files on NFS
-~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 Online backups are performed at regular intervals for your files in
 project home and user home. Hourly backups for the past 24 hours, daily
@@ -660,7 +660,7 @@ subdirectory. To retrieve a backup, simply copy it into your desired
 destination with the ``cp`` command.
 
 Retention
-~~~~~~~~~
+^^^^^^^^^
 
 At the completion of a project or at the end of a member's association
 with the project, data will be retained for 90 days, except in areas
@@ -693,13 +693,13 @@ OLCF resources and lists relevant polices.
 .. [#f1] In addition, there is a quota/limit of 2,000 files on this directory.
 
 User Home Directories (NFS)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Each user is provided a home directory to store frequently used items
 such as source code, binaries, and scripts.
 
 User Home Path
-^^^^^^^^^^^^^^
+""""""""""""""
 
 Home directories are located in a Network File System (NFS) that is
 accessible from all OLCF resources as ``/ccs/home/$USER``.
@@ -714,7 +714,7 @@ Users should note that since this is an NFS-mounted filesystem, its
 performance will not be as high as other filesystems.
 
 User Home Quotas
-^^^^^^^^^^^^^^^^
+""""""""""""""""
 
 Quotas are enforced on user home directories. To request an increased
 quota, contact the OLCF User Assistance Center. To view your current
@@ -729,7 +729,7 @@ quota and usage, use the ``quota`` command:
                       4858M   5000M   5000M           29379   4295m   4295m
 
 User Home Backups
-^^^^^^^^^^^^^^^^^
+"""""""""""""""""
 
 If you accidentally delete files from your home directory, you may be
 able to retrieve them. Online backups are performed at regular
@@ -757,7 +757,7 @@ To retrieve a backup, simply copy it into your desired destination with
 the ``cp`` command.
 
 User Home Permissions
-^^^^^^^^^^^^^^^^^^^^^
+"""""""""""""""""""""
 
 The default permissions for user home directories are ``0750`` (full
 access to the user, read and execute for the group). Users have the
@@ -766,7 +766,7 @@ recommended that permissions be set to as restrictive as possible
 (without interfering with your work).
 
 User Website Directory
-^^^^^^^^^^^^^^^^^^^^^^
+""""""""""""""""""""""
 
 Users interested in sharing files publicly via the World Wide Web can
 request a user website directory be created for their account. User
@@ -777,7 +777,7 @@ created, please contact the User Assistance Center at
 help@olcf.ornl.gov.
 
 User Archive Directories (HPSS)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The High Performance Storage System (HPSS) at the OLCF provides
 longer-term storage for the large amounts of data created on the OLCF
@@ -797,7 +797,7 @@ Archive directories should be used for project data.
 User archive directories are located at ``/home/$USER``.
 
 User Archive Access
-^^^^^^^^^^^^^^^^^^^
+"""""""""""""""""""
 
 Each OLCF user receives an HPSS account automatically. Users can
 transfer data to HPSS from any OLCF system using the HSI or HTAR
@@ -805,7 +805,7 @@ utilities. For more information on using HSI or HTAR, see the `HPSS Best
 Practices <./#hpss-best-practices>`__ section.
 
 User Archive Accounting
-^^^^^^^^^^^^^^^^^^^^^^^
+"""""""""""""""""""""""
 
 Each file and directory on HPSS is associated with an HPSS storage
 allocation. For information on HPSS storage allocations, please visit
@@ -825,7 +825,7 @@ Project directories provide members of a project with a common place to
 store code, data, and other files related to their project.
 
 Project Home Directories (NFS)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 +------------------+--------------------------+--------+---------------+-----------+----------+---------+
 | *Name*           | Path                     | Type   | Permissions   | Backups   | Purged   | Quota   |
@@ -840,20 +840,20 @@ Project Home is an NFS-mounted filesystem, its performance will not be
 as high as other filesystems.
 
 Project Home Path
-^^^^^^^^^^^^^^^^^
+"""""""""""""""""
 
 Project Home area is accessible at ``/ccs/proj/abc123`` (where
 ``abc123`` is your project ID).
 
 Project Home Quotas
-^^^^^^^^^^^^^^^^^^^
+"""""""""""""""""""
 
 To check your project's current usage, run ``df -h /ccs/proj/abc123``
 (where ``abc123`` is your project ID). Quotas are enforced on project
 home directories. The current limit is shown in the table above.
 
 Project Home Permissions
-^^^^^^^^^^^^^^^^^^^^^^^^
+""""""""""""""""""""""""
 
 The default permissions for project home directories are ``0770`` (full
 access to the user and group). The directory is owned by root and the
@@ -863,7 +863,7 @@ members of project "ABC123" should be members of the "abc123" UNIX
 group.
 
 Three Project Work Areas to Facilitate Collaboration
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 To facilitate collaboration among researchers, the OLCF provides (3)
 distinct types of project-centric work storage areas: *Member Work*
@@ -894,7 +894,7 @@ default. Project Work directories are accessible by all project members.
 World Work directories are readable by any user on the system.
 
 Permissions
-'''''''''''
+___________
 
 UNIX Permissions on each project-centric work storage area differ
 according to the area's intended collaborative use. Under this setup,
@@ -914,14 +914,14 @@ researchers outside of a project, keep them in the project's World Work
 directory.
 
 Backups
-^^^^^^^
+"""""""
 
 Member Work, Project Work, and World Work directories **are not backed
 up**. Project members are responsible for backing up these files, either
 to Project Archive areas (HPSS) or to an off-site location.
 
 Project Archive Directories
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 +---------------------+----------------------+--------+---------------+-----------+----------+---------+
 | *Name*              | Path                 | Type   | Permissions   | Backups   | Purged   | Quota   |
@@ -938,13 +938,13 @@ Project Work (Alpine) areas, and to serve as a location to store backup
 copies of project-related files.
 
 Project Archive Path
-^^^^^^^^^^^^^^^^^^^^
+""""""""""""""""""""
 
 The project archive directories are located at ``/proj/pjt000`` (where
 ``pjt000`` is your Project ID).
 
 Project Archive Access
-^^^^^^^^^^^^^^^^^^^^^^
+""""""""""""""""""""""
 
 Project Archive directories may only be accessed via utilities called
 HSI and HTAR. For more information on using HSI or HTAR, see the `HPSS
@@ -1006,7 +1006,7 @@ first present in the environment.
     porting to Lua.
 
 General Usage
-~~~~~~~~~~~~~
+^^^^^^^^^^^^^
 
 Typical use of Lmod is very similar to that of interacting with
 modulefiles on other OLCF systems. The interface to Lmod is provided by
@@ -1045,7 +1045,7 @@ the ``module`` command:
     conflicts.
 
 Searching for modules
-~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^
 
 Modules with dependencies are only available when the underlying
 dependencies, such as compiler families, are loaded. Thus,
@@ -1069,7 +1069,7 @@ summarized in the following table.
  
 
 Defining custom module collections
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Lmod supports caching commonly used collections of environment modules
 on a per-user basis in ``$HOME/.lmod.d``. To create a collection called
@@ -1114,7 +1114,7 @@ Compilers
 ---------
 
 Available Compilers
-~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^
 
 The following compilers are available on Summit: **XL:** IBM XL
 Compilers *(loaded by default)* **LLVM:** LLVM compiler infrastructure
@@ -1137,7 +1137,7 @@ modules system:
     pgi/18.7
 
 C compilation
-~~~~~~~~~~~~~
+^^^^^^^^^^^^^
 
     **Note:** type char is unsigned by default
 
@@ -1156,7 +1156,7 @@ C compilation
 +--------------+------------------+----------------+---------------+------------------+------------------+---------------------------+--------------------+
 
 C++ compilations
-~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^
 
     **Note:** type char is unsigned by default
 
@@ -1175,7 +1175,7 @@ C++ compilations
 +--------------+------------------+-------------------+---------------+--------------------------------+--------------------------------+---------------------------+--------------------+
 
 Fortran compilation
-~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^
 
 +--------------+------------------+-----------------------------------+----------------+-------------------------------+-------------------------------+-------------------------------+--------------------+
 | **Vendor**   | **Module**       | **Compiler**                      | **Version**    | **Enable F90**                | **Enable F2003**              | **Enable F2008**              | **Define macro**   |
@@ -1193,7 +1193,7 @@ Fortran compilation
     module. This restriction is expected to be lifted in future releases.
 
 MPI
-~~~
+^^^
 
 MPI on Summit is provided by IBM Spectrum MPI. Spectrum MPI provides
 compiler wrappers that automatically choose the proper compiler to build
@@ -1210,7 +1210,7 @@ lines, without actually compiling:
     /sw/summit/xl/16.1.1-beta6/xlC/16.1.1/bin/xlc -I/autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20171006/linux-rhel7-ppc64le/xl-16.1.1-beta6/spectrum-mpi-10.2.0.7-20180830-eyo7zxm2piusmyffr3iytmgwdacl67ju/include -pthread -L/autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20171006/linux-rhel7-ppc64le/xl-16.1.1-beta6/spectrum-mpi-10.2.0.7-20180830-eyo7zxm2piusmyffr3iytmgwdacl67ju/lib -lmpiprofilesupport -lmpi_ibm
 
 OpenMP
-~~~~~~
+^^^^^^
 
     **Note:** When using OpenMP with IBM XL compilers, the thread-safe
     compiler variant is required; These variants have the same name as the
@@ -1236,7 +1236,7 @@ OpenMP
 +---------------+-------------------+---------------------+-------------------+---------------------------------------------------------------------------------+
 
 OpenACC
-~~~~~~~
+^^^^^^^
 
 +--------------+--------------------+-----------------------+-------------------------+
 | **Vendor**   | **Module**         | **OpenACC Support**   | **Enable OpenACC**      |
@@ -1253,10 +1253,10 @@ OpenACC
 +--------------+--------------------+-----------------------+-------------------------+
 
 CUDA compilation
-~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^
 
 NVIDIA
-^^^^^^
+""""""
 
 CUDA C/C++ support is provided through the ``cuda`` module. **nvcc** :
 Primary CUDA C/C++ compiler
@@ -1276,10 +1276,10 @@ NVCC currently supports XL, GCC, and PGI C++ backends. **--ccbin** : set
 to host compiler location
 
 CUDA Fortran compilation
-~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 IBM
-^^^
+"""
 
 The IBM compiler suite is made available through the default loaded xl
 module, the cuda module is also required. xlcuf : primary Cuda fortran
@@ -1289,7 +1289,7 @@ provide Fortran90 support -qlanglvl=95std : provide Fortran95 support
 provide Fortran2003 support
 
 PGI
-^^^
+"""
 
 The PGI compiler suite is available through the pgi module. pgfortran :
 Primary fortran compiler with CUDA Fortran support
@@ -1589,7 +1589,7 @@ be delayed. While this does make more effective use of the system, it
 indirectly encourages the submission of smaller jobs.
 
 The DOE Leadership-Class Job Mandate
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 As a DOE Leadership Computing Facility, the OLCF has a mandate that a
 large portion of Summit's usage come from large, *leadership-class* (aka
@@ -1611,7 +1611,7 @@ you have any questions or comments on the queue policies below, please
 direct them to the User Assistance Center.
 
 Job Priority by Processor Count
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Jobs are *aged* according to the job's requested processor count (older
 age equals higher queue priority). Each job's requested processor count
@@ -1633,7 +1633,7 @@ parameter, which all jobs in the bin receive.
 +-------+-------------+-------------+------------------------+----------------------+
 
 ``batch`` Queue Policy
-^^^^^^^^^^^^^^^^^^^^^^^
+"""""""""""""""""""""""
 
 The ``batch`` queue is the default queue for production work on Summit.
 Most work on Summit is handled through this queue. It enforces the
@@ -1651,7 +1651,7 @@ following policies:
     Running jobs are actually executing.
 
 Allocation Overuse Policy
-~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Projects that overrun their allocation are still allowed to run on OLCF
 systems, although at a reduced priority. Like the adjustment for the
@@ -1680,7 +1680,7 @@ over its allocation, as shown in the table below:
 +------------------------+----------------------+
 
 System Reservation Policy
-~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Projects may request to reserve a set of processors for a period of time
 through the reservation request form, which can be found on the `Special
@@ -1819,7 +1819,7 @@ formatting arguments.
     331715   user        project           12    2:00:00    Job dependency condition not satisfied
 
 Inspecting Backfill
-~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^
 
 ``bjobs`` and ``jobstat`` help to identify what’s currently running and
 scheduled to run, but sometimes it’s beneficial to know how much of the
@@ -1873,7 +1873,7 @@ In general, they only operate on the most recently submitted job that
 matches other criteria provided unless “0” is specified as the job id.
 
 Suspending and Resuming Jobs
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 LSF supports user-level suspension and resumption of jobs. Jobs are
 suspended with the ``bstop`` command and resumed with the ``bresume``
@@ -1891,7 +1891,7 @@ job name, a queue name, etc. These are described in the manpages for
 ``bstop`` and ``bresume``.
 
 Signaling Jobs
-~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^
 
 You can send signals to jobs with the ``bkill`` command. While the
 command name suggests its only purpose is to terminate jobs, this is not
@@ -1922,7 +1922,7 @@ These include some/all jobs with a given name, in a particular queue,
 etc. See ``man bkill`` for more information.
 
 Checkpointing Jobs
-~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^
 
 LSF documentation mentions the ``bchkpnt`` and ``brestart`` commands for
 checkpointing and restarting jobs, as well as the ``-k`` option to
@@ -2060,7 +2060,7 @@ The isolated core always operates at SMT4 regardless of the batch job's
 SMT level.
 
 GPFS System Service Isolation
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 By default, GPFS system service tasks are forced onto only the isolated
 cores. This can be overridden at the batch job level using the
@@ -2134,7 +2134,7 @@ a given program on resources allocated through the LSF batch scheduler;
 similar to ``mpirun`` and ``aprun`` functionality.
 
 Compute Node Description
-~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 The following compute node image will be used to discuss jsrun resource
 sets and layout.
@@ -2157,7 +2157,7 @@ overhead and is not available for allocation through jsrun. The core has
 been omitted and is not shown in the above image.
 
 Resource Sets
-~~~~~~~~~~~~~
+^^^^^^^^^^^^^
 
 While jsrun performs similar job launching functions as aprun and
 mpirun, its syntax is very different. A large reason for syntax
@@ -2186,7 +2186,7 @@ should be given to the cost of cross-socket communication. Creating
 resource sets within sockets will prevent cross-socket communication.
 
 Subdividing a Node with Resource Sets
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+"""""""""""""""""""""""""""""""""""""
 
 Resource sets provides the ability to subdivide node’s resources into
 smaller groups. The following examples show how a node can be subdivided
@@ -2199,7 +2199,7 @@ and how many resource set could fit on a node.
    :align: center
 
 Multiple Methods to Creating Resource Sets
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+""""""""""""""""""""""""""""""""""""""""""
 
 Resource sets should be created to fit code requirements. The following
 examples show multiple ways to create resource sets that allow two MPI
@@ -2236,7 +2236,7 @@ tasks access to a single GPU.
    Code must manage cross socket communication.
 
 Designing a Resource Set
-^^^^^^^^^^^^^^^^^^^^^^^^
+""""""""""""""""""""""""
 
 Resource sets allow each jsrun to control how the node appears to a
 code. This method is unique to jsrun, and requires thinking of each job
@@ -2269,17 +2269,17 @@ As on Titan it is useful to keep the general layout of a node in mind
 when laying out resource sets.
 
 Launching a Job with jsrun
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 jsrun Format
-^^^^^^^^^^^^
+""""""""""""
 
 ::
 
       jsrun    [ -n #resource sets ]   [tasks, threads, and GPUs within each resource set]   program [ program args ]
 
 Common jsrun Options
-^^^^^^^^^^^^^^^^^^^^
+""""""""""""""""""""
 
 Below are common jsrun options. More flags and details can be found in
 the jsrun man page.
@@ -2315,7 +2315,7 @@ often includes ``--nrs``,\ ``--cpu_per_rs``, ``--gpu_per_rs``,
 ``--tasks_per_rs``, ``--bind``, and ``--launch_distribution``.
 
 Aprun to jsrun
-^^^^^^^^^^^^^^
+""""""""""""""
 
 Mapping aprun commands used on Titan to Summit's jsrun is only possible
 in simple single GPU cases. The following table shows some basic single
@@ -2392,7 +2392,7 @@ set example. The ``-n`` flag tells jsrun to create six resource sets.
 
 
 jsrun Examples
-~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^
 
 The below examples were launched in the following 2 node interactive
 batch job:
@@ -2402,7 +2402,7 @@ batch job:
     summit> bsub -nnodes 2 -Pprj123 -W02:00 -Is $SHELL
 
 Single MPI Task, single GPU per RS
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+""""""""""""""""""""""""""""""""""
 
 The following example will create 12 resource sets each with 1 MPI task
 and 1 GPU. Each MPI task will have access to a single GPU. Rank 0 will
@@ -2436,7 +2436,7 @@ node (``-r6``). Each resource set will contain 1 MPI task (``-a1``),
     Rank:   11; NumRanks: 12; RankCore:  92; Hostname: h41n03; GPU: 5
 
 Multiple tasks, single GPU per RS
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+"""""""""""""""""""""""""""""""""
 
 The following jsrun command will request 12 resource sets (``-n12``).
 Each resource set will contain 2 MPI tasks (``-a2``), 1 GPU
@@ -2498,7 +2498,7 @@ single core.
     summit>
 
 Multiple Task, Multiple GPU per RS
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+""""""""""""""""""""""""""""""""""
 
 The following example will create 4 resource sets each with 6 tasks and
 3 GPUs. Each set of 6 MPI tasks will have access to 3 GPUs. Ranks 0 - 5
@@ -2548,7 +2548,7 @@ contain 6 MPI tasks (``-a6``), 3 GPUs (``-g3``), and 6 cores
     summit>
 
 Single Task, Multiple GPUs, Multiple Threads per RS
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+"""""""""""""""""""""""""""""""""""""""""""""""""""
 
 The following example will create 12 resource sets each with 1 task, 4
 threads, and 1 GPU. Each MPI task will start 4 threads and have access
@@ -2605,7 +2605,7 @@ bound to the first core.
     summit>
 
 Hardware Threads: Multiple Threads per Core
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+"""""""""""""""""""""""""""""""""""""""""""
 
 Each physical core on Summit contains 4 hardware threads. The SMT level
 can be set using LSF flags:
@@ -2640,7 +2640,7 @@ SMT4
    :height: 300px
 
 Common Use Cases
-^^^^^^^^^^^^^^^^
+""""""""""""""""
 
 The following table provides a quick reference for creating resource
 sets of various common use cases. The ``-n`` flag can be altered to
@@ -2663,13 +2663,13 @@ specify the number of resource sets needed.
  
 
 jsrun Tools
-~~~~~~~~~~~
+^^^^^^^^^^^
 
 This section describes tools that users might find helpful to better
 understand the jsrun job launcher.
 
 Hello\_jsrun
-^^^^^^^^^^^^
+""""""""""""
 
 Hello\_jsrun is a "Hello World"-type program that users can run on
 Summit nodes to better understand how MPI ranks and OpenMP threads are
@@ -2678,7 +2678,7 @@ screencast showing how to use Hello\_jsrun is also available:
 https://vimeo.com/261038849
 
 jsrunVisualizer
-^^^^^^^^^^^^^^^
+"""""""""""""""
 
 jsrunVisualizer is a web-application that mimics basic jsrun behavior
 locally in your browser. It's an easy way to get familiar with jsrun
@@ -2689,7 +2689,7 @@ layout on Summit itself! https://jsrunvisualizer.olcf.ornl.gov/
 https://vimeo.com/299079999
 
 More Information
-~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^
 
 This section provides some of the most commonly used LSF commands as
 well as some of the most useful options to those commands and
@@ -2875,27 +2875,27 @@ Open Issues
 -----------
 
 JSM Fault Tolerance causes jobs to fail to start
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Adding ``FAULT_TOLERANCE=1`` in your individual ``~/.jsm.conf`` file,
 will result in LSF jobs failing to successfully start. A bug has been
 filed with IBM to address this issue.
 
 CSM-based launch is not currently supported
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Users should not use ``JSMD_LAUNCH_MODE=csm`` in their ``~/.jsm.conf``
 file at this time. A bug has been filed with IBM to address this issue.
 
 Spindle is not currently supported
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Users should not use ``USE_SPINDLE=1`` or ``LOAD_SPINDLE=1`` in their
 ``~/.jsm.conf`` file at this time. A bug has been filed with IBM to
 address this issue.
 
 Spectrum MPI tunings needed for maximum bandwidth
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 By default, Spectrum MPI is configured for minimum latency. If your
 application needs maximum bandwidth, the following settings are
@@ -2909,7 +2909,7 @@ recommended:
     $ export PAMI_IBV_DEVICE_NAME_1="mlx5_3:1,mlx5_0:1"
 
 Debugging slow application startup or slow performance
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 In order for debugging and profiling tools to work, you need to unload
 Darshan
@@ -2930,7 +2930,7 @@ hanging or slowing down the job step launch. To enable it, you can use:
 ``jsrun --progress ./my_progress_file_output.txt``.
 
 -a flag ignored when using a jsrun resource set file with -U
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 When using file-based specification of resource sets with ``jsrun -U``,
 the ``-a`` flag (number of tasks per resource set) is ignored. This has
@@ -2939,14 +2939,14 @@ recommended to use jsrun explicit resource files (ERF) with
 ``--erf_input`` and ``--erf_output`` instead of ``-U``.
 
 -g flag causes internal compiler error with XL compiler
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Some users have reported an internal compiler error when compiling their
 code with XL with the \`-g\` flag. This has been reported to IBM and
 they are investigating.
 
 Jobs suspended due to retry limit / Queued job flip-flops between queued/running states
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Some users have reported seeing their jobs transition from the normal
 queued state, into a running state, and then back again to queued.
@@ -2963,7 +2963,7 @@ explanation, then deeper investigation is required and the user should
 write to help@olcf.ornl.gov.
 
 jsrun explicit resource file (ERF) output format error
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 jsrun's option to create an explicit resource file (--erf\_output) will
 incorrectly create a file with one line per rank. When reading the file
@@ -2973,7 +2973,7 @@ update the created erf file to contain a single line per resource set
 with multiple ranks per line.
 
 jsrun explicit resource file (ERF) allocates incorrect resources
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 When using an ERF that requests cores on a compute node’s second socket
 (hardware threads 88-171), the set of cores allocated on the second
@@ -2996,7 +2996,7 @@ physical core, allocating 92-95 instead of the specified 88-91.
     Task 1 ( 1/2, 1/2 ) is bound to cpu[s] 92-95 on host h36n03 with OMP_NUM_THREADS=1 and with OMP_PLACES={92:4}
 
 Job hangs in MPI\_Finalize
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 There is a known issue in Spectrum MPI 10.2.0.10 provided by the
 ``spectrum-mpi/10.2.0.10-20181214`` modulefile that causes a hang in
@@ -3015,7 +3015,7 @@ Spectrum MPI, your options are:
    "Slow performance using parallel HDF5" issue below).
 
 jsrun latency priority capitalization allocates incorrect resources
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 jsrun's latency priority (\`-l\`) flag can be given lowercase values
 (i.e. gpu-cpu) or capitalized values (i.e. GPU-CPU). Expected behavior:
@@ -3042,7 +3042,7 @@ issue only impacts submissions which explicitly include a latency
 priority in the jsrun command.
 
 Error when using complex datatypes with MPI Collectives and GPUDirect
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Users have reported errors when using complex datatypes with MPI
 Collectives and GPUDirect:
@@ -3073,7 +3073,7 @@ Resolved Issues
 ---------------
 
 Parallel I/O crash on GPFS with latest MPI ROMIO
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 In some cases with large number of MPI processes when there is not
 enough memory available on the compute node, the Abstract-Device
@@ -3092,7 +3092,7 @@ significant more amount of memory. The following issues were resolved
 with the May 21, 2019 upgrade:
 
 Issue with CUDA Aware MPI with >1 resource set per node (Resolved: May 21, 2019)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Attempting to run an application with CUDA aware MPI using more than one
 resource set per node with produce the following error on each MPI rank:
@@ -3120,7 +3120,7 @@ the GPU affinity manually. This could be done with an API call in your
 code (e.g. ``cudaSetDevice``), or by using a wrapper script.
 
 Simultaneous backgrounded jsruns (Resolved: May 21, 2019)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 We have seen occasional errors from batch jobs with multiple
 simultaneous backgrounded jsrun commands. Jobs may see pmix errors
@@ -3134,7 +3134,7 @@ March 12, 2019 that set Spectrum MPI 10.2.0.11 (20190201) as default and
 moved ROMIO to version 3.2.1:
 
 Slow performance using parallel HDF5 (Resolved: March 12, 2019)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 A performance issue has been identified using parallel HDF5 with the
 default version of ROMIO provided in
@@ -3159,7 +3159,7 @@ job. Please note that hints must be tuned for a specific job.
 The following issues were resolved with the February 19, 2019 upgrade:
 
 Job step cgroups are not currently supported (Resolved: February 19, 2019)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 A regression was introduced in JSM 10.02.00.10rtm2 that prevents job
 step cgroups from being created as a result, JSM, is defaulting to
@@ -3169,7 +3169,7 @@ or ``-g 0``, every resource set in the step will be able to see all 6
 GPUs in a node.
 
 JSM stdio options do not create files (Resolved: February 19, 2019)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 When using ``--stdio_stdout`` or ``--stdio_stderr`` users must use
 absolute paths. Using relative paths (e.g. ``./my_stdout``) will not
@@ -3177,7 +3177,7 @@ successfully create the file in the user's current working directory. An
 bug has been filed with IBM to fix this issue and allow relative paths.
 
 JSM crash when using different number of resource sets per host (Resolved: February 19, 2019)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 In some cases users will encounter a segmentation fault when running job
 steps that have uneven number of resource sets per node. For example:
@@ -3199,7 +3199,7 @@ CUDA 10.1 Known Issues
 ----------------------
 
 Default nvprof setting clobbers ``LD_PRELOAD``, interfering with SpectrumMPI
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 CUDA 10 adds a new feature to profile CPU side OpenMP constructs (see
 https://docs.nvidia.com/cuda/profiler-users-guide/index.html#openmp).
@@ -3214,7 +3214,7 @@ settings. The workaround is to disable the new OpenMP profiling feature:
     $ jsrun  nvprof --openmp-profiling off
 
 MPI annotation may cause segfaults with applications using MPI\_Init\_thread
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Users on Summit can have MPI calls automatically annotated in ``nvprof``
 timelines using the ``nvprof --annotate-mpi openmpi`` option. If the
@@ -3225,7 +3225,7 @@ instructions from
 https://github.com/NVIDIA/cuda-profiler/tree/mpi_init_thread.
 
 cudaMemAdvise before context creation leads to a kernel panic
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 There is a (very rare) driver bug involving cudaManagedMemory that can
 cause a kernel panic. If you encounter this bug, please contact the
@@ -3235,7 +3235,7 @@ with which it intends to interact (for example by calling
 ``cudaFree(0)`` while each device is active).
 
 Some uses of Thrust complex vectors fail at compile time with warnings of identifiers being ``undefined in device code``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 This issue comes from the fact that ``std::complex`` is not
 ``__host__``/``__device__`` annotated, so all its functions are
@@ -3259,7 +3259,7 @@ A permanent fix of this issue is expected in the version of Thrust
 packed with CUDA 10.1 update 1
 
 Breakpoints in CUDA kernels recommendation
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ``cuda-gdb`` allows for breakpoints to be set inside CUDA kernels to
 inspect the program state on the GPU. This can be a valuable debugging
@@ -3303,7 +3303,7 @@ These file systems provide both user-affiliated and project-affiliated
 storage areas for each user.
 
 NFS Directories
-~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^
 
 Upon logging into Ascent, users will be placed in their own personal
 home (NFS) directory, ``/ccsopen/home/[userid]``, which can only be
@@ -3313,7 +3313,7 @@ of a project. Both of these NFS directories are commonly used to store
 source code and build applications.
 
 GPFS Directories
-~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^
 
 Users also have access to a (GPFS) parallel file system, called wolf,
 which is where data should be written when running on Ascent's compute
@@ -3341,10 +3341,10 @@ This sub-section describes the process of obtaining access to Ascent for
 an OLCF training event. Please follow the steps below to request access.
 
 Step 1: Fill out and submit an `**OLCF Account Application Form** <https://www.olcf.ornl.gov/for-users/documents-forms/olcf-account-application>`__
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Enter the requested information into the form. For "Project
-Information", enter the following: 
+Information", enter the following:
 
 .. image:: /images/Ascent_Account_Application_1.png
 
@@ -3361,7 +3361,7 @@ through the approval process. Depending on when you submit, approval
 might not occur until the next business day.
 
 Step 2: Set Your XCAMS/UCAMS Password
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Once approved, if you are a new user, your account will be created and
 an email will be sent asking you to set up a password. If you already

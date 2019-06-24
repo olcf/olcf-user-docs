@@ -199,7 +199,7 @@ common use of Home. Compiling, data transfer, or executing long-running
 or memory-intensive tasks should never be performed on Home.
 
 Connecting to the ``home`` Host
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Home can be accessed through ssh utilities:
 
@@ -208,7 +208,7 @@ Home can be accessed through ssh utilities:
       ssh userid@home.ccs.ornl.gov 
 
 Acceptable Tasks
-~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^
 
 The Home system should only be used to access systems within the OLCF
 network. The following are examples of appropriate uses of Home:
@@ -218,7 +218,7 @@ network. The following are examples of appropriate uses of Home:
 -  Screen or other terminal multiplexers
 
 Unacceptable Tasks
-~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^
 
 The following are examples of inappropriate uses of Home:
 

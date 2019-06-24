@@ -47,7 +47,7 @@ Data Use
 --------
 
 Prohibited Data
-~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^
 
 The OLCF computer systems are operated as research systems and only
 contain data related to scientific research and do not contain
@@ -69,7 +69,7 @@ generates any of these prohibited data types or information that falls
 under Export Control. For questions, contact help@nccs.gov.
 
 Confidentiality, Integrity, and Availability
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The OLCF systems provide protections to maintain the confidentiality,
 integrity, and availability of user data. Measures include the
@@ -83,13 +83,13 @@ responsibility to insure the appropriate level of backup and integrity
 checks on critical data and programs.
 
 Data Modification/Destruction
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Users are prohibited from taking unauthorized actions to intentionally
 modify or delete information or programs.
 
 Data Retention
-~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^
 
 The OLCF reserves the right to remove any data at any time and/or
 transfer data to other users working on the same or similar project once
@@ -110,13 +110,13 @@ Only export-controlled codes approved by the Export Control Office may
 be run by parties with sensitive data agreements.
 
 Malicious Software
-~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^
 
 Users must not intentionally introduce or use malicious software such as
 computer viruses, Trojan horses, or worms.
 
 Reconstruction of Information or Software
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Users are not allowed to reconstruct information or software for which
 they are not authorized. This includes but is not limited to any reverse
@@ -130,7 +130,7 @@ Users are accountable for their actions and may be held accountable to
 applicable administrative or legal sanctions.
 
 Monitoring and Privacy
-~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^
 
 Users are advised that there is no expectation of privacy of your
 activities on any system that is owned by, leased or operated by
@@ -151,7 +151,7 @@ at least 6 months will be disabled. They will need to reapply to regain
 access to their account. All users must reapply annually.
 
 Authentication and Authorization
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 All users are required to use a one-time password for authentication.
 Tokens will be distributed to OLCF users. Users will be required to
@@ -175,7 +175,7 @@ their contact information (E-mail, phone, affiliation, etc.) Updates
 should be sent to accounts@ccs.ornl.gov.
 
 Foreign National Access
-~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^
 
 Applicants who appear on a restricted foreign country listing in section
 15 CFR 740.7 License Exceptions for Computers are denied access based on
@@ -184,7 +184,7 @@ Sudan, and Syria. Additionally, no work may be performed on OLCF
 computers on behalf of foreign nationals from these countries.
 
 Denial of Service
-~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^
 
 Users may not deliberately interfere with other users accessing system
 resources.  
@@ -213,7 +213,7 @@ agreed to by relevant parties as a condition of access to and use of
 OLCF computational resources.
 
 Data Storage Resources
-~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^
 
 The OLCF provides an array of data storage platforms, each designed with
 a particular purpose in mind. Storage areas are broadly divided into two
@@ -240,7 +240,7 @@ each with an intended purpose:
 +----------------------------------------------------------------------------------------------------+---------------------+----------------------------+
 
 User Home
-~~~~~~~~~
+^^^^^^^^^
 
 Home directories for each user are NFS-mounted on all OLCF systems and
 are intended to store long-term, frequently-accessed user data. User
@@ -251,7 +251,7 @@ the section “Data Retention, Purge, & Quota Summary” for more details on
 applicable quotas, backups, purge, and retention timeframes.
 
 User Archive
-~~~~~~~~~~~~
+^^^^^^^^^^^^
 
 The High Performance Storage System (HPSS) is the tape-archive storage
 system at the OLCF and is the storage technology that supports the User
@@ -261,7 +261,7 @@ more details on applicable quotas, backups, purge, and retention
 timeframes.
 
 Project Home
-~~~~~~~~~~~~
+^^^^^^^^^^^^
 
 Project Home directories are NFS-mounted on selected OLCF systems and
 are intended to store long-term, frequently-accessed data that is needed
@@ -273,7 +273,7 @@ Retention, Purge, & Quota Summary” for more details on applicable
 quotas, backups, purge, and retention timeframes.
 
 Member Work
-~~~~~~~~~~~
+^^^^^^^^^^^
 
 Project members get an individual Member Work directory for each
 associated project; these reside in the center-wide, high-capacity
@@ -291,7 +291,7 @@ Purge, & Quota Summary” for more details on applicable quotas, backups,
 purge, and retention timeframes.
 
 Project Work
-~~~~~~~~~~~~
+^^^^^^^^^^^^
 
 Individual Project Work directories reside in the center-wide,
 high-capacity Lustre file system on large, fast disk areas intended for
@@ -305,7 +305,7 @@ Quota Summary” for more details on applicable quotas, backups, purge,
 and retention timeframes.
 
 World Work
-~~~~~~~~~~
+^^^^^^^^^^
 
 Each project has a World Work directory that resides in the center-wide,
 high-capacity Lustre file system on large, fast disk areas intended for
@@ -319,7 +319,7 @@ Quota Summary” for more details on applicable quotas, backups, purge,
 and retention timeframes.
 
 Project Archive
-~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^
 
 The High Performance Storage System (HPSS) is the tape-archive storage
 system at the OLCF and is the storage technology that supports the User
@@ -332,7 +332,7 @@ for more details on applicable quotas, backups, purge, and retention
 timeframes.
 
 Local Scratch Storage
-~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^
 
 A large, fast disk area intended for parallel access to temporary
 storage in the form of scratch directories may be provided on a limited
@@ -348,7 +348,7 @@ Data Retention, Purge, & Quotas
 -------------------------------
 
 Summary
-~~~~~~~
+^^^^^^^
 
 The following table details quota, backup, purge, and retention
 information for each user-centric and project-centric storage area
@@ -404,7 +404,7 @@ available at the OLCF.
 .. [#f4] Retention is not applicable as files will follow purge cycle.
 
 Data Retention Overview
-~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^
 
 By default, there is no lifetime retention for any data on OLCF
 resources. The OLCF specifies a limited post-deactivation timeframe
@@ -414,7 +414,7 @@ have data retention needs outside of the default policy, please notify
 the OLCF.
 
 User Data Retention
-~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^
 
 The user data retention policy exists to reclaim storage space after a
 user account is deactivated, e.g., after the user’s involvement on all
@@ -426,7 +426,7 @@ a temporary user account extension for data access. See the section
 timeframes for each user-centric storage area.
 
 Project Data Retention
-~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^
 
 The project data retention policy exists to reclaim storage space after
 a project ends. By default, the OLCF will retain data in project-centric
@@ -437,14 +437,14 @@ Purge, & Quota Summary” for details on purge and retention timeframes
 for each project-centric storage area.
 
 Sensitive Project Data Retention
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 For sensitive projects only, all data related to the project must be
 purged from all OLCF computing resources within 30 days of the project’s
 end or termination date.
 
 Data Purges
-~~~~~~~~~~~
+^^^^^^^^^^^
 
 Data purge mechanisms are enabled on some OLCF file system directories
 in order to maintain sufficient disk space availability for job
@@ -457,7 +457,7 @@ timeframe has not been exceeded. See the section “Data Retention, Purge,
 if applicable.
 
 Storage Space Quotas
-~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^
 
 Each user-centric and project-centric storage area has an associated
 quota, which could be a hard (systematically-enforceable) quota or a
@@ -472,7 +472,7 @@ Data Prohibitions & Safeguards
 ------------------------------
 
 Prohibited Data
-~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^
 
 The OLCF computer systems are operated as research systems and only
 contain data related to scientific research and do not contain
@@ -494,13 +494,13 @@ generates any of these prohibited data types or information that falls
 under Export Control. For questions, contact help@olcf.ornl.gov.
 
 Unauthorized Data Modification
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Users are prohibited from taking unauthorized actions to intentionally
 modify or delete information or programs.
 
 Data Confidentiality, Integrity, & Availability
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The OLCF systems provide protections to maintain the confidentiality,
 integrity, and availability of user data. Measures include: the
@@ -514,7 +514,7 @@ individual. It is the user’s responsibility to insure the appropriate
 level of backup and integrity checks on critical data and programs.
 
 Administrator Access to Data
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 OLCF resources are federal computer systems, and as such, users should
 have no explicit or implicit expectation of privacy. OLCF employees and
@@ -542,7 +542,7 @@ Software
 --------
 
 Software Licensing
-~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^
 
 All software used on OLCF computers must be appropriately acquired and
 used according to the appropriate software license agreement.
@@ -553,14 +553,14 @@ Only export-controlled codes approved by the Export Control Office may
 be run by parties with sensitive data agreements.
 
 Malicious Software
-~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^
 
 Users must not intentionally introduce or use malicious software,
 including but not limited to, computer viruses, Trojan horses, or
 computer worms.
 
 Reconstruction of Information or Software
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Users are not permitted to reconstruct information or software for which
 they are not authorized. This includes but is not limited to any reverse
