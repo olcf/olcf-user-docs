@@ -2,6 +2,9 @@
 Rhea User guide
 *********************
 
+Overview
+=========
+
 Rhea is a 521-node commodity-type Linux cluster. The primary purpose of
 Rhea is to provide a conduit for large-scale scientific discovery via
 pre/post processing and analysis of simulation data generated on
@@ -87,7 +90,7 @@ message passing libraries, and other items required to build and run
 code. To change the default loaded Intel environment to the GCC
 environment for example, use:
 
-.. code:: kb-code-block
+.. code::
 
     $ module load gcc
 
@@ -103,7 +106,7 @@ compiler's module is loaded, and *then* swap to the correct compiler
 version. For example, the following will configure the environment to
 use the GCC compilers, then load a non-default GCC compiler version:
 
-.. code:: kb-code-block
+.. code::
 
     $ module load gcc
     $ module swap gcc gcc/4.7.1
@@ -154,21 +157,21 @@ OpenMP
 
 For PGI, add "-mp" to the build line.
 
-.. code:: kb-code-block
+.. code::
 
     $ mpicc -mp test.c -o test.x
     $ export OMP_NUM_THREADS=2
 
 For GNU, add "-fopenmp" to the build line.
 
-.. code:: kb-code-block
+.. code::
 
     $ mpicc -fopenmp test.c -o test.x
     $ export OMP_NUM_THREADS=2
 
 For Intel, add "-qopenmp" to the build line.
 
-.. code:: kb-code-block
+.. code::
 
     $ mpicc -qopenmp test.c -o test.x
     $ export OMP_NUM_THREADS=2
@@ -489,7 +492,7 @@ after the last line of the script is executed.
 Example Batch Script
 ~~~~~~~~~~~~~~~~~~~~
 
-.. code:: kb-code-block
+.. code::
 
       1: #!/bin/bash
       2: #PBS -A XXXYYY
@@ -527,7 +530,7 @@ compute nodes allocated by the batch system. Batch scripts can be
 submitted for execution using the ``qsub`` command. For example, the
 following will submit the batch script named ``test.pbs``:
 
-.. code:: kb-code-block
+.. code::
 
       qsub test.pbs
 
@@ -551,7 +554,7 @@ allocate and gain access to compute resources. This is done by using the
 ``-I`` option to ``qsub``. Other PBS options are passed to ``qsub`` on
 the command line as well:
 
-.. code:: kb-code-block
+.. code::
 
       $ qsub -I -A abc123 -q qname -V -l nodes=4 -l walltime=00:30:00
 
@@ -597,7 +600,7 @@ limits that would allow your job to be immediately backfilled (and thus
 started) by the scheduler. For example, the snapshot below shows that
 (8) nodes are currently free.
 
-.. code:: kb-code-block
+.. code::
 
       $ showbf
 
@@ -699,34 +702,34 @@ Removing and Holding Jobs
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ``qdel``
-        
+
 
 Jobs in the queue in any state can be stopped and removed from the queue
 using the command ``qdel``.
 
-.. code:: kb-code-block
+.. code::
 
     $ qdel 1234
 
 ``qhold``
-         
+
 
 Jobs in the queue in a non-running state may be placed on hold using the
 ``qhold`` command. Jobs placed on hold will not be removed from the
 queue, but they will not be eligible for execution.
 
-.. code:: kb-code-block
+.. code::
 
     $ qhold 1234
 
 ``qrls``
-        
+
 
 Once on hold the job will not be eligible to run until it is released to
 return to a queued state. The ``qrls`` command can be used to remove a
 job from the held state.
 
-.. code:: kb-code-block
+.. code::
 
     $ qrls 1234
 
@@ -734,25 +737,25 @@ Modifying Job Attributes
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 ``qalter``
-          
+
 
 Non-running jobs in the queue can be modified with the PBS ``qalter``
 command. The ``qalter`` utility can be used to do the following (among
 others): Modify the job’s name:
 
-.. code:: kb-code-block
+.. code::
 
     $ qalter -N newname 130494
 
 Modify the number of requested cores:
 
-.. code:: kb-code-block
+.. code::
 
     $ qalter -l nodes=12 130494
 
 Modify the job’s walltime:
 
-.. code:: kb-code-block
+.. code::
 
     $ qalter -l walltime=01:00:00 130494
 
@@ -807,25 +810,25 @@ run" than the system's queue policy allows.
 
 To see all jobs currently in the queue:
 
-.. code:: kb-code-block
+.. code::
 
     $ showq
 
 To see all jobs owned by userA currently in the queue:
 
-.. code:: kb-code-block
+.. code::
 
     $ showq -u userA
 
 To see all jobs submitted to partitionA:
 
-.. code:: kb-code-block
+.. code::
 
     $ showq -p partitionA
 
 To see all completed jobs:
 
-.. code:: kb-code-block
+.. code::
 
     $ showq -c
 
@@ -856,13 +859,13 @@ the queue. For example, if job 736 is a job currently in the queue in a
 blocked state, the following can be used to view why the job is in a
 blocked state:
 
-.. code:: kb-code-block
+.. code::
 
     $ checkjob 736
 
 The return may contain a line similar to the following:
 
-.. code:: kb-code-block
+.. code::
 
     BlockMsg: job 736 violates idle HARD MAXJOB limit of X for user (Req: 1 InUse: X)
 
@@ -877,19 +880,19 @@ However, ``qstat`` does not know of Moab's blocked and eligible states.
 Because of this, the ``showq`` Moab utility (see above) will provide a
 more accurate batch queue state. To show show all queued jobs:
 
-.. code:: kb-code-block
+.. code::
 
     $ qstat -a
 
 To show details about job 1234:
 
-.. code:: kb-code-block
+.. code::
 
     $ qstat -f 1234
 
 To show all currently queued jobs owned by userA:
 
-.. code:: kb-code-block
+.. code::
 
     $ qstat -u userA
 
@@ -1033,7 +1036,7 @@ Parallel Job Execution on Commodity Clusters
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Using ``mpirun``
-''''''''''''''''
+^^^^^^^^^^^^^^^^^
 
 By default, commands will be executed on the job's primary compute node,
 sometimes referred to as the job's *head node*. The ``mpirun`` command
@@ -1069,19 +1072,19 @@ the job.
    </div>
 
 MPI Task Layout
-'''''''''''''''
+^^^^^^^^^^^^^^^^^
 
 Each compute node on Rhea contains two sockets each with 8 cores.
 Depending on your job, it may be useful to control task layout within
 and across nodes.
 
 Default Layout: Sequential
-                          
+
 
 The following will run a copy of a.out on two cores each on the same
 node:
 
-.. code:: kb-code-block
+.. code::
 
     $ mpirun -np 2 ./a.out
 
@@ -1117,11 +1120,11 @@ Core 7
    </div>
 
 4 cores, 2 cores per socket, 1 node
-                                   
+
 
 The following will run a.out on 4 cores, 2 cores per socket, 1 node:
 
-.. code:: kb-code-block
+.. code::
 
     $ mpirun -np 4 --map-by ppr:2:socket ./a.out
 
@@ -1159,13 +1162,13 @@ Core 7
    </div>
 
 4 cores, 1 core per socket, 2 nodes
-                                   
+
 
 The following will run a.out on 4 cores, 1 core per socket, 2 nodes.
 This can be useful if you need to spread your batch job over multiple
 nodes to allow each task access to more memory.
 
-.. code:: kb-code-block
+.. code::
 
     $ mpirun -np 4 --map-by ppr:1:socket ./a.out
 
@@ -1223,7 +1226,7 @@ Core 7
 
 The ``--report-bindings`` flag can be used to report task layout:
 
-.. code:: kb-code-block
+.. code::
 
     $ mpirun -np 4 --map-by ppr:1:socket --report-bindings hostname
     [rhea2:47176] MCW rank 0 bound to socket 0[core 0[hwt 0-1]]: [BB/../../../../../../..][../../../../../../../..]
@@ -1233,7 +1236,7 @@ The ``--report-bindings`` flag can be used to report task layout:
     $
 
 Thread Layout
-'''''''''''''
+^^^^^^^^^^^^^^^^^
 
 .. raw:: html
 
@@ -1247,9 +1250,9 @@ same core.
    </div>
 
 2 MPI tasks, 1 tasks per node, 16 threads per task, 2 nodes
-                                                           
 
-.. code:: kb-code-block
+
+.. code::
 
     $ setenv OMP_NUM_THREADS 16
     $ mpirun -np 2 --map-by ppr:1:node:pe=16 ./a.out
@@ -1335,9 +1338,9 @@ Thread 15
    </div>
 
 2 MPI tasks, 1 tasks per socket, 4 threads per task, 1 node
-                                                           
 
-.. code:: kb-code-block
+
+.. code::
 
     $ setenv OMP_NUM_THREADS 4
     $ mpirun -np 2 --map-by ppr:1:socket:pe=4 ./a.out
@@ -1405,7 +1408,7 @@ To help prevent a job’s tasks from being moved between cores each idle
 cycle the ``mpi_yield_when_idle`` OpenMPI option may be used. For
 example:
 
-.. code:: kb-code-block
+.. code::
 
       $ mpirun -n 8 -mca mpi_yield_when_idle 0 a.out
 
@@ -1445,7 +1448,7 @@ Node-Hour Calculation
 
 The *node-hour* charge for each batch job will be calculated as follows:
 
-.. code:: kb-code-block
+.. code::
 
     node-hours = nodes requested * ( batch job endtime - batch job starttime )
 
@@ -1472,16 +1475,16 @@ members from the command line tool ``showusage`` and the `My OLCF
 site <https://users.nccs.gov>`__.
 
 On the Command Line via ``showusage``
-                                     
+
 
 The ``showusage`` utility can be used to view your usage from January 01
 through midnight of the previous day. For example:
 
-.. code:: kb-code-block
+.. code::
 
       $ showusage
         Usage:
-                                 Project Totals                      
+                                 Project Totals
         Project             Allocation      Usage      Remaining     Usage
         _________________|______________|___________|____________|______________
         abc123           |  20000       |   126.3   |  19873.7   |   1560.80
@@ -1489,7 +1492,7 @@ through midnight of the previous day. For example:
 The ``-h`` option will list more usage details.
 
 On the Web via My OLCF
-                      
+
 
 More detailed metrics may be found on each project's usage section of
 the `My OLCF site <https://users.nccs.gov>`__. The following information
@@ -1549,12 +1552,12 @@ compute job on Titan. This workflow would require two batch scripts, one
 to be submitted on Titan, and a second to be submitted automatically to
 Rhea. Visually, this workflow may look something like the following:
 
-|Post-processing Workflow|
+|Post-processing Workflow-1|
 
 The batch scripts for such a workflow could be implemented as follows:
 **Batch-script-1.pbs**
 
-.. code:: kb-code-block
+.. code::
 
     #PBS -l walltime=0:30:00
     #PBS -l nodes=4096
@@ -1570,7 +1573,7 @@ The batch scripts for such a workflow could be implemented as follows:
 
 **Batch-script-2.pbs**
 
-.. code:: kb-code-block
+.. code::
 
     #PBS -l walltime=2:00:00
     #PBS -l nodes=10
@@ -1587,7 +1590,7 @@ The key to this workflow is the
 Rhea.
 
 Initializing the Workflow
-                         
+
 
 We can initialize this workflow in one of two ways:
 
@@ -1603,11 +1606,11 @@ to use the Data Transfer Nodes (DTNs) to retrieve data from HPSS and
 stage it to your project's scratch area before beginning. Once the
 computation is done, we will automatically archive the output.
 
-|Post-processing Workflow|
+|Post-processing Workflow-2|
 
 **Batch-script-1.pbs**
 
-.. code:: kb-code-block
+.. code::
 
     #PBS -l walltime=0:30:00
     #PBS -l nodes=1
@@ -1623,7 +1626,7 @@ computation is done, we will automatically archive the output.
 
 **Batch-script-2.pbs**
 
-.. code:: kb-code-block
+.. code::
 
     #PBS -l walltime=6:00:00
     #PBS -l nodes=4096
@@ -1639,7 +1642,7 @@ computation is done, we will automatically archive the output.
 
 **Batch-script-3.pbs**
 
-.. code:: kb-code-block
+.. code::
 
     #PBS -l walltime=0:30:00
     #PBS -l nodes=1
@@ -1652,7 +1655,7 @@ computation is done, we will automatically archive the output.
     htar -cf /proj/prj123/compute_data.htar compute_data/
 
 Initializing the Workflow
-                         
+
 
 We can initialize this workflow in one of two ways:
 
@@ -1670,11 +1673,11 @@ simulation output data, and one to visualize it. After the
 visualizations have finished, we will transfer them to a remote
 institution.
 
-|Post-processing Workflow|
+|Post-processing Workflow-3|
 
 **Step-1.prepare-data.pbs**
 
-.. code:: kb-code-block
+.. code::
 
     #PBS -l walltime=0:30:00
     #PBS -l nodes=10
@@ -1689,7 +1692,7 @@ institution.
 
 **Step-2.compute.pbs**
 
-.. code:: kb-code-block
+.. code::
 
     #PBS -l walltime=6:00:00
     #PBS -l nodes=4096
@@ -1710,7 +1713,7 @@ institution.
 
 **Step-3.archive-compute-data.pbs**
 
-.. code:: kb-code-block
+.. code::
 
     #PBS -l walltime=0:30:00
     #PBS -l nodes=1
@@ -1723,7 +1726,7 @@ institution.
 
 **Step-4.visualize-compute-data.pbs**
 
-.. code:: kb-code-block
+.. code::
 
     #PBS -l walltime=2:00:00
     #PBS -l nodes=64
@@ -1739,7 +1742,7 @@ institution.
 
 **Step-5.transfer-visualizations-to-campus.pbs**
 
-.. code:: kb-code-block
+.. code::
 
     #PBS -l walltime=2:00:00
     #PBS -l nodes=1
@@ -1753,7 +1756,7 @@ institution.
     globus-url-copy -tcp-bs 12M -bs 12M -p 4 $SOURCE $DEST
 
 Initializing the Workflow
-                         
+
 
 We can initialize this workflow in one of two ways:
 
@@ -2070,22 +2073,22 @@ matlab-vnc.sh script to start the vncserver and run matlab within:
 #. rhea: qsub -I -A abc123 -X -l nodes=1,walltime=01:00:00
 #. rhea: ./matlab-vnc.sh
 
-.. code:: kb-code-block
+.. code::
 
     ./matlab-vnc.sh
     New 'rhea6:1 (userA)' desktop is rhea6:1
-     
+
     Starting applications specified in /ccs/home/userA/.vnc/xstartup
     Log file is /ccs/home/userA/.vnc/rhea6:1.log
-      
+
     **************************************************************************
     Instructions
-     
+
     In a new terminal, open a tunneling connection with rhea6 and port 5901
     example:
              userid@rhea.ccs.ornl.gov -L 5901:rhea6:5901
      **************************************************************************
-      
+
     MATLAB is selecting SOFTWARE OPENGL rendering.
 
 step 3 (terminal 2)
@@ -2107,7 +2110,7 @@ connections.
 matlab-vnc.sh (non-GPU rendering)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code:: kb-code-block
+.. code::
 
     #!/bin/sh
 
@@ -2123,7 +2126,7 @@ matlab-vnc.sh (non-GPU rendering)
     echo
     echo "**************************************************************************"
     echo "Instructions"
-    echo 
+    echo
     echo "In a new terminal, open a tunneling connection with $(what) and port 5901"
     echo "example:"
     echo  "         userid@rhea.ccs.ornl.gov -L 5901:$(what):5901 "
@@ -2168,22 +2171,22 @@ matlab-vnc.sh script to start the vncserver and run matlab within:
    -lpartition=gpu
 #. rhea: ./matlab-vnc.sh
 
-.. code:: kb-code-block
+.. code::
 
     ./matlab-vnc.sh
     New 'rhea6:1 (userA)' desktop is rhea6:1
-     
+
     Starting applications specified in /ccs/home/userA/.vnc/xstartup
     Log file is /ccs/home/userA/.vnc/rhea6:1.log
-      
+
     **************************************************************************
     Instructions
-     
+
     In a new terminal, open a tunneling connection with rhea6 and port 5901
     example:
              userid@rhea.ccs.ornl.gov -L 5901:rhea6:5901
      **************************************************************************
-      
+
     MATLAB is selecting SOFTWARE OPENGL rendering.
 
 step 3 (terminal 2)
@@ -2205,7 +2208,7 @@ connections.
 vmd-vgl.sh (GPU rendering)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code:: kb-code-block
+.. code::
 
     #!/bin/sh
 
@@ -2225,7 +2228,7 @@ vmd-vgl.sh (GPU rendering)
     echo
     echo "**************************************************************************"
     echo "Instructions"
-    echo 
+    echo
     echo "In a new terminal, open a tunneling connection with $(what) and port 5901"
     echo "example:"
     echo  "         userid@rhea.ccs.ornl.gov -L 5901:$(what):5901 "
@@ -2246,7 +2249,7 @@ step 1 (terminal 1)
 
 Launch an interactive job:
 
-.. code:: kb-code-block
+.. code::
 
      qsub -I -A projectID   -l nodes=1 -l walltime=00:30:00 -l partition=gpu
 
@@ -2255,7 +2258,7 @@ Launch an interactive job:
    <div class="kb-warning">
 
 As of April 29, the dcv feature will be required:
-.. code:: kb-code-block
+.. code::
 
      qsub -I -A projectID   -l nodes=1 -l walltime=00:30:00 -l partition=gpu -l feature=dcv
 
@@ -2265,11 +2268,11 @@ As of April 29, the dcv feature will be required:
 
 Run the following commands:
 
-.. code:: kb-code-block
+.. code::
 
     xinit &
-    export DISPLAY=:0    
-    dcv create-session --gl-display :0 mySessionName 
+    export DISPLAY=:0
+    dcv create-session --gl-display :0 mySessionName
     hostname  // will be used to open a tunneling connection with this node
 
 step 1 (terminal 2)
@@ -2277,7 +2280,7 @@ step 1 (terminal 2)
 
 Open a tunneling connection with gpu node ``N``, given by hostname:
 
-.. code:: kb-code-block
+.. code::
 
     ssh user@rhea.ccs.ornl.gov -L 8443:rhea-gpuN:8443
 
@@ -2285,18 +2288,18 @@ Open your web browser using the following link and use your credentials
 to access OLCF systems: ``https://localhost:8443`` When finished, kill
 the dcv session in first terminal:
 
-.. code:: kb-code-block
+.. code::
 
     dcv close-session mySessionName
-    kill %1 
+    kill %1
 
 .. |Cross-Submission allows jobs on one OLCF resource to submit new jobs to other OLCF resources.| image:: https://www.olcf.ornl.gov/wp-content/uploads/2014/07/Cross-Submission-Workflow-544x300.png
    :class: size-medium wp-image-4468
    :width: 544px
    :height: 300px
-.. |Post-processing Workflow| image:: https://www.olcf.ornl.gov/wp-content/uploads/2014/02/remote_submission.stage-compute-e1392655934134.png
-.. |Post-processing Workflow| image:: https://www.olcf.ornl.gov/wp-content/uploads/2014/02/remote_submission.stage-compute-archive-e1392655850482.png
-.. |Post-processing Workflow| image:: https://www.olcf.ornl.gov/wp-content/uploads/2014/02/remote_submission.stag-compute-archive-vis-transfer-e1392822417662.png
+.. |Post-processing Workflow-1| image:: https://www.olcf.ornl.gov/wp-content/uploads/2014/02/remote_submission.stage-compute-e1392655934134.png
+.. |Post-processing Workflow-2| image:: https://www.olcf.ornl.gov/wp-content/uploads/2014/02/remote_submission.stage-compute-archive-e1392655850482.png
+.. |Post-processing Workflow-3| image:: https://www.olcf.ornl.gov/wp-content/uploads/2014/02/remote_submission.stag-compute-archive-vis-transfer-e1392822417662.png
 .. |Circular Workflow| image:: https://www.olcf.ornl.gov/wp-content/uploads/2014/02/remote_submission.circular-e1392656023400.png
 .. |image5| image:: https://beta.olcf.ornl.gov/wp-content/uploads/2017/11/paraview_step1a.png
    :width: 700px

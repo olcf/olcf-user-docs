@@ -1589,7 +1589,7 @@ be delayed. While this does make more effective use of the system, it
 indirectly encourages the submission of smaller jobs.
 
 The DOE Leadership-Class Job Mandate
-''''''''''''''''''''''''''''''''''''
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 As a DOE Leadership Computing Facility, the OLCF has a mandate that a
 large portion of Summit's usage come from large, *leadership-class* (aka
@@ -1633,7 +1633,7 @@ parameter, which all jobs in the bin receive.
 +-------+-------------+-------------+------------------------+----------------------+
 
 ``batch`` Queue Policy
-''''''''''''''''''''''
+^^^^^^^^^^^^^^^^^^^^^^^
 
 The ``batch`` queue is the default queue for production work on Summit.
 Most work on Summit is handled through this queue. It enforces the
@@ -3073,7 +3073,7 @@ Resolved Issues
 ---------------
 
 Parallel I/O crash on GPFS with latest MPI ROMIO
-------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In some cases with large number of MPI processes when there is not
 enough memory available on the compute node, the Abstract-Device
