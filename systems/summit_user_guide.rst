@@ -59,15 +59,26 @@ Login, Launch, and Compute. While all of these are similar in terms of
 `hardware <#summit-nodes>`__, they differ considerably in their intended
 use.
 
-+-------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Node Type   | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-+=============+==============================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================+
-| Login       | When you connect to Summit, you're placed on a login node. This is the place to write/edit/compile your code, manage data, submit jobs, etc. You should never launch parallel jobs from a login node nor should you run threaded jobs on a login node. Login nodes are shared resources that are in use by many users simultaneously.                                                                                                                                                                        |
-+-------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Launch      | When your batch script (or interactive batch job) starts running, it will execute on a Launch Node. (If you are/were a user of Titan, these are similar in function to service nodes on that system). All commands within your job script (or the commands you run in an interactive job) will run on a launch node. Like login nodes, these are shared resources so you should not run multiprocessor/threaded programs on Launch nodes. It is appropriate to launch the jsrun command from launch nodes.   |
-+-------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Compute     | Most of the nodes on Summit are compute nodes. These are where your parallel job executes. They're accessed via the jsrun command.                                                                                                                                                                                                                                                                                                                                                                           |
-+-------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
++-------------+----------------------------------------------------------------------------------+
+| Node Type   | Description                                                                      |
++=============+==================================================================================+
+| Login       | When you connect to Summit, you're placed on a login node. This                  |
+|             | is the place to write/edit/compile your code, manage data, submit jobs, etc. You |
+|             | should never launch parallel jobs from a login node nor should you run threaded  |
+|             | jobs on a login node. Login nodes are shared resources that are in use by many   |
+|             | users simultaneously.                                                            |
++-------------+----------------------------------------------------------------------------------+
+| Launch      | When your batch script (or interactive batch job) starts                         |
+|             | running, it will execute on a Launch Node. (If you are/were a user of Titan,     |
+|             | these are similar in function to service nodes on that system). All commands     |
+|             | within your job script (or the commands you run in an interactive job) will run  |
+|             | on a launch node. Like login nodes, these are shared resources so you should not |
+|             | run multiprocessor/threaded programs on Launch nodes. It is appropriate to       |
+|             | launch the jsrun command from launch nodes.                                      |
++-------------+----------------------------------------------------------------------------------+
+| Compute     | Most of the nodes on Summit are compute nodes. These are where                   |
+|             | your parallel job executes. They're accessed via the jsrun command.              |
++-------------+----------------------------------------------------------------------------------+
 
 Although the nodes are logically organized into different types, they
 all contain similar hardware. As a result of this homogeneous
@@ -212,7 +223,7 @@ gets exclusive access while the other ranks wait (time-slicing). This
 can cause the GPU to become underutilized if a rank (that has exclusive
 access) does not perform enough work to saturate the resources of the
 GPU. The following figure depicts such time-sliced access to a pre-Volta
-GPU. 
+GPU.
 
 .. image:: /images/nv_mps_1.png
    :align: center
@@ -657,6 +668,156 @@ that are purged, in that case the data will be retained according the
 purge policy. A more detailed description of each storage area is given
 below. [ls\_content\_block id="26702"]
 
+User-Centric Data Storage
+-------------------------
+
+Users are provided with several storage areas, each of which serve
+different purposes. These areas are intended for storage of user data,
+not for storage of project data.
+
+The following table summarizes user-centric storage areas available on
+OLCF resources and lists relevant polices.
+
+**User-Centric Storage Areas**
+
++--------------+-----------------+------+-----------------+-------------+---------+--------+-----------+
+| Area         | Path            | Type | Permissions     | Quota       | Backups | Purged | Retention |
++==============+=================+======+=================+=============+=========+========+===========+
+| User Home    | ``$HOME``       | NFS  | User-controlled | 50 GB       | Yes     | No     | 90 days   |
++--------------+-----------------+------+-----------------+-------------+---------+--------+-----------+
+| User Archive | ``/home/$USER`` | HPSS | User-controlled | 2 TB [#f1]_ | **No**  | No     | 90 days   |
++--------------+-----------------+------+-----------------+-------------+---------+--------+-----------+
+
+.. rubric:: footnotes
+
+.. [#f1] In addition, there is a quota/limit of 2,000 files on this directory.
+
+User Home Directories (NFS)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Each user is provided a home directory to store frequently used items
+such as source code, binaries, and scripts.
+
+User Home Path
+^^^^^^^^^^^^^^
+
+Home directories are located in a Network File System (NFS) that is
+accessible from all OLCF resources as ``/ccs/home/$USER``.
+
+The environment variable ``$HOME`` will always point to your current
+home directory. It is recommended, where possible, that you use this
+variable to reference your home directory. In cases in which using
+``$HOME`` is not feasible, it is recommended that you use
+``/ccs/home/$USER``.
+
+Users should note that since this is an NFS-mounted filesystem, its
+performance will not be as high as other filesystems.
+
+User Home Quotas
+^^^^^^^^^^^^^^^^
+
+Quotas are enforced on user home directories. To request an increased
+quota, contact the OLCF User Assistance Center. To view your current
+quota and usage, use the ``quota`` command:
+
+.. code::
+
+    $ quota -Qs
+    Disk quotas for user usrid (uid 12345):
+         Filesystem  blocks   quota   limit   grace   files   quota   limit   grace
+    nccsfiler1a.ccs.ornl.gov:/vol/home
+                      4858M   5000M   5000M           29379   4295m   4295m
+
+User Home Backups
+^^^^^^^^^^^^^^^^^
+
+If you accidentally delete files from your home directory, you may be
+able to retrieve them. Online backups are performed at regular
+intervals. Hourly backups for the past 24 hours, daily backups for the
+last 7 days, and 1 weekly backup are available. It is possible that the
+deleted files are available in one of those backups. The backup
+directories are named ``hourly.*``, ``daily.* ``, and ``weekly.* ``
+where ``*`` is the date/time stamp of the backup. For example,
+``hourly.2016-12-01-0905`` is an hourly backup made on December 1, 2016
+at 9:05 AM.
+
+The backups are accessed via the ``.snapshot`` subdirectory. Note that
+if you do an ``ls`` (even with the ``-a`` option) of any directory you
+won’t see a ``.snapshot`` subdirectory, but you’ll be able to do
+“\ ``ls .snapshot``\ ” nonetheless. This will show you the
+hourly/daily/weekly backups available. The ``.snapshot`` feature is
+available in any subdirectory of your home directory and will show the
+online backup of that subdirectory. In other words, you don’t have to
+start at ``/ccs/home/$USER`` and navigate the full directory structure;
+if you’re in a /ccs/home subdirectory several “levels” deep, an
+“\ ``ls .snapshot``\ ” will access the available backups of that
+subdirectory.
+
+To retrieve a backup, simply copy it into your desired destination with
+the ``cp`` command.
+
+User Home Permissions
+^^^^^^^^^^^^^^^^^^^^^
+
+The default permissions for user home directories are ``0750`` (full
+access to the user, read and execute for the group). Users have the
+ability to change permissions on their home directories, although it is
+recommended that permissions be set to as restrictive as possible
+(without interfering with your work).
+
+User Website Directory
+^^^^^^^^^^^^^^^^^^^^^^
+
+Users interested in sharing files publicly via the World Wide Web can
+request a user website directory be created for their account. User
+website directories (``~/www``) have a 5GB storage quota and allow
+access to files at ``http://users.nccs.gov/~user`` (where ``user`` is
+your userid). If you are interested in having a user website directory
+created, please contact the User Assistance Center at
+help@olcf.ornl.gov.
+
+User Archive Directories (HPSS)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The High Performance Storage System (HPSS) at the OLCF provides
+longer-term storage for the large amounts of data created on the OLCF
+compute systems. The mass storage facility consists of tape and disk
+storage components, servers, and the HPSS software. After data is
+uploaded, it persists on disk for some period of time. The length of its
+life on disk is determined by how full the disk caches become. When data
+is migrated to tape, it is done so in a first-in, first-out fashion.
+
+User archive areas on HPSS are intended for storage of data not
+immediately needed in either User Home directories (NFS) or User Work
+directories (Lustre®). User Archive areas also serve as a location for
+users to store backup copies of user files. User Archive directories
+should not be used to store project-related data. Rather, Project
+Archive directories should be used for project data.
+
+User archive directories are located at ``/home/$USER``.
+
+User Archive Access
+^^^^^^^^^^^^^^^^^^^
+
+Each OLCF user receives an HPSS account automatically. Users can
+transfer data to HPSS from any OLCF system using the HSI or HTAR
+utilities. For more information on using HSI or HTAR, see the `HPSS Best
+Practices <./#hpss-best-practices>`__ section.
+
+User Archive Accounting
+^^^^^^^^^^^^^^^^^^^^^^^
+
+Each file and directory on HPSS is associated with an HPSS storage
+allocation. For information on HPSS storage allocations, please visit
+the `HPSS Archive Accounting <./#hpss-archive-accounting>`__ section.
+
+For information on usage and best practices for HPSS, please see the
+section `HPSS - High Performance Storage
+System <./#hpss-high-performance-storage-system>`__ below.
+
+--------------
+
+
 Project-Centric Data Storage
 ----------------------------
 
@@ -710,99 +871,23 @@ directories, *Project Work* directories, and *World Work* directories.
 Each directory should be used for storing files generated by
 computationally-intensive HPC jobs related to a project.
 
-*Name*
++----------------+--------------------------------------------+-----------------+-------------+---------+-----------+-------+
+| *Name*         | Path                                       | Type            | Permissions | Backups | Purged    | Quota |
++================+============================================+=================+=============+=========+===========+=======+
+| *Member Work*  | ``/lustre/atlas/scratch/[projid]``         | Lustre          | 700         | no      | 14 days   | 10TB  |
++                +--------------------------------------------+-----------------+-------------+---------+-----------+-------+
+|                | ``/gpfs/alpine/scratch/[userid]/[projid]`` | Spectrum Scale  | 700         | no      | 90 days   | 50TB  |
++----------------+--------------------------------------------+-----------------+-------------+---------+-----------+-------+
+| *Project Work* | ``/lustre/atlas/proj-shared/[projid]``     | Lustre          | 770         | no      | 90 days   | 100TB |
++                +--------------------------------------------+-----------------+-------------+---------+-----------+-------+
+|                | ``/gpfs/alpine/proj-shared/[projid]``      | Spectrum Scale  | 770         | no      | 90 days   | 50TB  |
++----------------+--------------------------------------------+-----------------+-------------+---------+-----------+-------+
+| *World Work*   | ``/lustre/atlas/world-shared/[projid]``    | Lustre          | 775         | no      | 90 days   | 10TB  |
++                +--------------------------------------------+-----------------+-------------+---------+-----------+-------+
+|                | ``/gpfs/alpine/world-shared/[projid]``     | Spectrum Scale  | 775         | no      | 90 days   | 50TB  |
++----------------+--------------------------------------------+-----------------+-------------+---------+-----------+-------+
 
-Path
-
-Type
-
-Permissions
-
-Backups
-
-Purged
-
-Quota
-
-*Member Work*
-
-``/lustre/atlas/scratch/[projid]``
-
-Lustre
-
-700
-
-no
-
-14 days
-
-10 TB
-
-``/gpfs/alpine/scratch/[userid]/[projid]``
-
-Spectrum Scale
-
-700
-
-no
-
-90 days
-
-50 TB
-
-*Project Work*
-
-``/lustre/atlas/proj-shared/[projid]``
-
-Lustre
-
-770
-
-no
-
-90 days
-
-100 TB
-
-``/gpfs/alpine/proj-shared/[projid]``
-
-Spectrum Scale
-
-770
-
-no
-
-90 days
-
-50 TB
-
-*World Work*
-
-``/lustre/atlas/world-shared/[projid]``
-
-Lustre
-
-775
-
-no
-
-90 days
-
-10TB
-
-``/gpfs/alpine/world-shared/[projid]``
-
-Spectrum Scale
-
-775
-
-no
-
-90 days
-
-50 TB
-
-  The difference between the three lies in the accessibility of the data
+The difference between the three lies in the accessibility of the data
 to project members and to researchers outside of the project. Member
 Work directories are accessible only by an individual project member by
 default. Project Work directories are accessible by all project members.
@@ -816,13 +901,9 @@ according to the area's intended collaborative use. Under this setup,
 the process of sharing data with other researchers amounts to simply
 ensuring that the data resides in the proper work directory.
 
--
-
-   -
-
-      -  Member Work Directory: ``700``
-      -  Project Work Directory: ``770``
-      -  World Work Directory: ``775``
+-  Member Work Directory: ``700``
+-  Project Work Directory: ``770``
+-  World Work Directory: ``775``
 
 For example, if you have data that must be restricted only to yourself,
 keep them in your Member Work directory for that project (and leave the
@@ -1401,29 +1482,46 @@ the most common ones are described here. For more in-depth information
 about other LSF options, see the
 `documentation <#for-more-information>`__.
 
-+--------------------+----------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Option             | Example Usage                          | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-+====================+========================================+==========================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================+
-| ``-W``             | ``#BSUB -W 50``                        | Requested maximum walltime. NOTE: The format is [hours:]minutes, not [[hours:]minutes:]seconds like PBS/Torque/Moab                                                                                                                                                                                                                                                                                                                                                                                                                      |
-+--------------------+----------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``-nnodes``        | ``#BSUB -nnodes 1024``                 | Number of nodes NOTE: There is specified with only one hyphen (i.e. -nnodes, not --nnodes)                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-+--------------------+----------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``-P``             | ``#BSUB -P ABC123``                    | Specifies the project to which the job should be charged                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-+--------------------+----------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``-o``             | ``#BSUB -o jobout.%J``                 | File into which job STDOUT should be directed (%J will be replaced with the job ID number) If you do not also specify a STDERR file with ``-e`` or ``-eo``, STDERR will also be written to this file.                                                                                                                                                                                                                                                                                                                                    |
-+--------------------+----------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``-e``             | ``#BSUB -e jobout.%J``                 | File into which job STDERR should be directed (%J will be replaced with the job ID number)                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-+--------------------+----------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``-J``             | ``#BSUB -J MyRun123``                  | Specifies the name of the job (if not present, LSF will use the name of the job script as the job’s name)                                                                                                                                                                                                                                                                                                                                                                                                                                |
-+--------------------+----------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``-w``             | ``#BSUB -w ended()``                   | Place a dependency on the job                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-+--------------------+----------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``-N``             | ``#BSUB -N``                           | Send a job report via email when the job completes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-+--------------------+----------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``-XF``            | ``#BSUB -XF``                          | Use X11 forwarding                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-+--------------------+----------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``-alloc_flags``   | ``#BSUB -alloc_flags "gpumps smt1"``   | Used to request GPU Multi-Process Service (MPS) and to set SMT (Simultaneous Multithreading) levels. Only one "#BSUB alloc\_flags" command is recognized so multiple alloc\_flags options need to be enclosed in quotes and space-separated. Setting gpumps enables NVIDIA’s Multi-Process Service, which allows multiple MPI ranks to simultaneously access a GPU. Setting smt\ *n* (where *n* is 1, 2, or 4) sets different SMT levels. To run with 2 hardware threads per physical core, you’d use smt2. The default level is smt4.   |
-+--------------------+----------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
++--------------------+----------------------------------------+----------------------------------------------------------------------------------+
+| Option             | Example Usage                          | Description                                                                      |
++====================+========================================+==================================================================================+
+| ``-W``             | ``#BSUB -W 50``                        | Requested                                                                        |
+|                    |                                        | maximum walltime. NOTE: The format is [hours:]minutes, not                       |
+|                    |                                        | [[hours:]minutes:]seconds like PBS/Torque/Moab                                   |
++--------------------+----------------------------------------+----------------------------------------------------------------------------------+
+| ``-nnodes``        | ``#BSUB -nnodes 1024``                 | Number of nodes                                                                  |
+|                    |                                        | NOTE: There is specified with only one hyphen (i.e. -nnodes, not --nnodes)       |
++--------------------+----------------------------------------+----------------------------------------------------------------------------------+
+| ``-P``             | ``#BSUB -P ABC123``                    | Specifies the                                                                    |
+|                    |                                        | project to which the job should be charged                                       |
++--------------------+----------------------------------------+----------------------------------------------------------------------------------+
+| ``-o``             | ``#BSUB -o jobout.%J``                 | File into which                                                                  |
+|                    |                                        | job STDOUT should be directed (%J will be replaced with the job ID number) If    |
+|                    |                                        | you do not also specify a STDERR file with ``-e`` or ``-eo``, STDERR will also   |
+|                    |                                        | be written to this file.                                                         |
++--------------------+----------------------------------------+----------------------------------------------------------------------------------+
+| ``-e``             | ``#BSUB -e jobout.%J``                 | File into which                                                                  |
+|                    |                                        | job STDERR should be directed (%J will be replaced with the job ID number)       |
++--------------------+----------------------------------------+----------------------------------------------------------------------------------+
+| ``-J``             | ``#BSUB -J MyRun123``                  | Specifies the                                                                    |
+|                    |                                        | name of the job (if not present, LSF will use the name of the job script as the  |
+|                    |                                        | job’s name)                                                                      |
++--------------------+----------------------------------------+----------------------------------------------------------------------------------+
+| ``-w``             | ``#BSUB -w ended()``                   | Place a dependency on the job                                                    |
++--------------------+----------------------------------------+----------------------------------------------------------------------------------+
+| ``-N``             | ``#BSUB -N``                           | Send a job report via email when the job completes                               |
++--------------------+----------------------------------------+----------------------------------------------------------------------------------+
+| ``-XF``            | ``#BSUB -XF``                          | Use X11 forwarding                                                               |
++--------------------+----------------------------------------+----------------------------------------------------------------------------------+
+| ``-alloc_flags``   | ``#BSUB -alloc_flags "gpumps smt1"``   | Used to request                                                                  |
+|                    |                                        | GPU Multi-Process Service (MPS) and to set SMT (Simultaneous Multithreading)     |
+|                    |                                        | levels. Only one "#BSUB alloc\_flags" command is recognized so multiple          |
+|                    |                                        | alloc\_flags options need to be enclosed in quotes and space-separated. Setting  |
+|                    |                                        | gpumps enables NVIDIA’s Multi-Process Service, which allows multiple MPI ranks   |
+|                    |                                        | to simultaneously access a GPU. Setting smt\ *n* (where *n* is 1, 2, or 4) sets  |
+|                    |                                        | different SMT levels. To run with 2 hardware threads per physical core, you’d    |
+|                    |                                        | use smt2. The default level is smt4.                                             |
++--------------------+----------------------------------------+----------------------------------------------------------------------------------+
 
 Batch Environment Variables
 ---------------------------
@@ -1613,17 +1711,24 @@ dependencies on jobs to prevent them from running until other jobs have
 started/completed/etc. Several possible dependency settings are
 described in the table below:
 
-+-----------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Expression                                    | Meaning                                                                                                                                                                                                                            |
-+===============================================+====================================================================================================================================================================================================================================+
-| ``#BSUB -w started(12345)``                   | The job will not start until job 12345 starts. Job 12345 is considered to have started if is in any of the following states: USUSP, SSUSP, DONE, EXIT or RUN (with any pre-execution command specified by ``bsub -E`` completed)   |
-+-----------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``#BSUB -w done(12345)`` ``#BSUB -w 12345``   | The job will not start until job 12345 has a state of DONE (i.e. completed normally). If a job ID is given with no condition, ``done()`` is assumed.                                                                               |
-+-----------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``#BSUB -w exit(12345)``                      | The job will not start until job 12345 has a state of EXIT (i.e. completed abnormally)                                                                                                                                             |
-+-----------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``#BSUB -w ended(12345)``                     | The job will not start until job 12345 has a state of EXIT or DONE                                                                                                                                                                 |
-+-----------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
++-----------------------------------------------+---------------------------------------------------------------------------------+
+| Expression                                    | Meaning                                                                         |
++===============================================+=================================================================================+
+| ``#BSUB -w started(12345)``                   | The job will not start until                                                    |
+|                                               | job 12345 starts. Job 12345 is considered to have started if is in any of the   |
+|                                               | following states: USUSP, SSUSP, DONE, EXIT or RUN (with any pre-execution       |
+|                                               | command specified by ``bsub -E`` completed)                                     |
++-----------------------------------------------+---------------------------------------------------------------------------------+
+| ``#BSUB -w done(12345)`` ``#BSUB -w 12345``   | The job will not start until                                                    |
+|                                               | job 12345 has a state of DONE (i.e. completed normally). If a job ID is given   |
+|                                               | with no condition, ``done()`` is assumed.                                       |
++-----------------------------------------------+---------------------------------------------------------------------------------+
+| ``#BSUB -w exit(12345)``                      | The job will not start until                                                    |
+|                                               | job 12345 has a state of EXIT (i.e. completed abnormally)                       |
++-----------------------------------------------+---------------------------------------------------------------------------------+
+| ``#BSUB -w ended(12345)``                     | The job will not start until                                                    |
+|                                               | job 12345 has a state of EXIT or DONE                                           |
++-----------------------------------------------+---------------------------------------------------------------------------------+
 
 Dependency expressions can be combined with logical operators. For
 example, if you want a job held until job 12345 is DONE and job 12346
@@ -1796,15 +1901,20 @@ systems, this command can be used to send various signals (not just
 numbers and names for signals. For a list of accepted signal names, run
 ``bkill -l``. Common ways to invoke the command include:
 
-+---------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Command                   | Description                                                                                                                                                                                                                              |
-+===========================+==========================================================================================================================================================================================================================================+
-| ``bkill 12345``           | Force a job to stop by sending ``SIGINT``, ``SIGTERM``, and ``SIGKILL``. These signals are sent in that order, so users can write applications such that they will trap ``SIGINT`` and/or ``SIGTERM`` and exit in a controlled manner.   |
-+---------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``bkill -s USR1 12345``   | Send ``SIGUSR1`` to job 12345 NOTE: When specifying a signal by name, omit SIG from the name. Thus, you specify ``USR1`` and not ``SIGUSR1`` on the ``bkill`` command line.                                                              |
-+---------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``bkill -s 9 12345``      | Send signal 9 to job 12345                                                                                                                                                                                                               |
-+---------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
++---------------------------+----------------------------------------------------------------------------------+
+| Command                   | Description                                                                      |
++===========================+==================================================================================+
+| ``bkill 12345``           | Force a job to stop by sending ``SIGINT``,                                       |
+|                           | ``SIGTERM``, and ``SIGKILL``. These signals are sent in that order, so users     |
+|                           | can write applications such that they will trap ``SIGINT`` and/or ``SIGTERM``    |
+|                           | and exit in a controlled manner.                                                 |
++---------------------------+----------------------------------------------------------------------------------+
+| ``bkill -s USR1 12345``   | Send ``SIGUSR1`` to job 12345 NOTE: When                                         |
+|                           | specifying a signal by name, omit SIG from the name. Thus, you specify ``USR1``  |
+|                           | and not ``SIGUSR1`` on the ``bkill`` command line.                               |
++---------------------------+----------------------------------------------------------------------------------+
+| ``bkill -s 9 12345``      | Send signal 9 to job 12345                                                       |
++---------------------------+----------------------------------------------------------------------------------+
 
 Like ``bstop`` and ``bresume``, ``bkill`` command also supports
 identifying the job(s) to be signaled by criteria other than the job id.
@@ -1831,13 +1941,17 @@ Other LSF Commands
 The table below summarizes some additional LSF commands that might be
 useful.
 
-+------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Command          | Description                                                                                                                                                                                                                |
-+==================+============================================================================================================================================================================================================================+
-| ``bparams -a``   | Show current parameters for LSF The behavior/available options for some LSF commands depend on settings in various configuration files. This command shows those settings without having to search for the actual files.   |
-+------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``bjdepinfo``    | Show job dependency information (could be useful in determining what job is keeping another job in a pending state)                                                                                                        |
-+------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
++------------------+---------------------------------------------------------------------------+
+| Command          | Description                                                               |
++==================+===========================================================================+
+| ``bparams -a``   | Show current parameters for LSF The behavior/available                    |
+|                  | options for some LSF commands depend on settings in various configuration |
+|                  | files. This command shows those settings without having to search for the |
+|                  | actual files.                                                             |
++------------------+---------------------------------------------------------------------------+
+| ``bjdepinfo``    | Show job dependency information (could be useful in                       |
+|                  | determining what job is keeping another job in a pending state)           |
++------------------+---------------------------------------------------------------------------+
 
 PBS/Torque/MOAB-to-LSF Translation
 ----------------------------------
@@ -1849,35 +1963,36 @@ PBS-like commands which are used by the Torque/Moab instances on other
 systems. The table below summarizes the equivalent LSF command for
 various PBS/Torque/Moab commands.
 
-+--------------------------+----------------------------------+------------------------------------------------------------------------------------------------------+
-| LSF Command              | PBS/Torque/Moab Command          | Description                                                                                          |
-+==========================+==================================+======================================================================================================+
-| ``bsub job.sh``          | ``qsub job.sh``                  | Submit the job script job.sh to the batch system                                                     |
-+--------------------------+----------------------------------+------------------------------------------------------------------------------------------------------+
-| ``bsub -Is /bin/bash``   | ``qsub -I``                      | Submit an interactive batch job                                                                      |
-+--------------------------+----------------------------------+------------------------------------------------------------------------------------------------------+
-| ``bjobs -u all``         | ``qstat showq``                  | Show jobs currently in the queue NOTE: without the -u all argument, bjobs will only show your jobs   |
-+--------------------------+----------------------------------+------------------------------------------------------------------------------------------------------+
-| ``bjobs -l``             | ``checkjob``                     | Get information about a specific job                                                                 |
-+--------------------------+----------------------------------+------------------------------------------------------------------------------------------------------+
-| ``bjobs -d``             | ``showq -c``                     | Get information about completed jobs                                                                 |
-+--------------------------+----------------------------------+------------------------------------------------------------------------------------------------------+
-| ``bjobs -p``             | ``showq -i showq -b checkjob``   | Get information about pending jobs                                                                   |
-+--------------------------+----------------------------------+------------------------------------------------------------------------------------------------------+
-| ``bjobs -r``             | ``showq -r``                     | Get information about running jobs                                                                   |
-+--------------------------+----------------------------------+------------------------------------------------------------------------------------------------------+
-| ``bkill``                | ``qsig``                         | Send a signal to a job                                                                               |
-+--------------------------+----------------------------------+------------------------------------------------------------------------------------------------------+
-| ``bkill``                | ``qdel``                         | Terminate/Kill a job                                                                                 |
-+--------------------------+----------------------------------+------------------------------------------------------------------------------------------------------+
-| ``bstop``                | ``qhold``                        | Hold a job/stop a job from running                                                                   |
-+--------------------------+----------------------------------+------------------------------------------------------------------------------------------------------+
-| ``bresume``              | ``qrls``                         | Release a held job                                                                                   |
-+--------------------------+----------------------------------+------------------------------------------------------------------------------------------------------+
-| ``bqueues``              | ``qstat -q``                     | Get information about queues                                                                         |
-+--------------------------+----------------------------------+------------------------------------------------------------------------------------------------------+
-| ``bjdepinfo``            | ``checkjob``                     | Get information about job dependencies                                                               |
-+--------------------------+----------------------------------+------------------------------------------------------------------------------------------------------+
++--------------------------+----------------------------------+----------------------------------------------------+
+| LSF Command              | PBS/Torque/Moab Command          | Description                                        |
++==========================+==================================+====================================================+
+| ``bsub job.sh``          | ``qsub job.sh``                  | Submit the job script job.sh to the batch system   |
++--------------------------+----------------------------------+----------------------------------------------------+
+| ``bsub -Is /bin/bash``   | ``qsub -I``                      | Submit an interactive batch job                    |
++--------------------------+----------------------------------+----------------------------------------------------+
+| ``bjobs -u all``         | ``qstat showq``                  | Show jobs currently in the queue NOTE: without the |
+|                          |                                  | -u all argument, bjobs will only show your jobs    |
++--------------------------+----------------------------------+----------------------------------------------------+
+| ``bjobs -l``             | ``checkjob``                     | Get information about a specific job               |
++--------------------------+----------------------------------+----------------------------------------------------+
+| ``bjobs -d``             | ``showq -c``                     | Get information about completed jobs               |
++--------------------------+----------------------------------+----------------------------------------------------+
+| ``bjobs -p``             | ``showq -i showq -b checkjob``   | Get information about pending jobs                 |
++--------------------------+----------------------------------+----------------------------------------------------+
+| ``bjobs -r``             | ``showq -r``                     | Get information about running jobs                 |
++--------------------------+----------------------------------+----------------------------------------------------+
+| ``bkill``                | ``qsig``                         | Send a signal to a job                             |
++--------------------------+----------------------------------+----------------------------------------------------+
+| ``bkill``                | ``qdel``                         | Terminate/Kill a job                               |
++--------------------------+----------------------------------+----------------------------------------------------+
+| ``bstop``                | ``qhold``                        | Hold a job/stop a job from running                 |
++--------------------------+----------------------------------+----------------------------------------------------+
+| ``bresume``              | ``qrls``                         | Release a held job                                 |
++--------------------------+----------------------------------+----------------------------------------------------+
+| ``bqueues``              | ``qstat -q``                     | Get information about queues                       |
++--------------------------+----------------------------------+----------------------------------------------------+
+| ``bjdepinfo``            | ``checkjob``                     | Get information about job dependencies             |
++--------------------------+----------------------------------+----------------------------------------------------+
 
 The table below shows shows LSF (bsub) command-line/batch script options
 and the PBS/Torque/Moab (qsub) options that provide similar
@@ -1893,8 +2008,6 @@ functionality.
 | ``#BSUB -P ABC123``             | ``#PBS -A ABC123``                             | Charge the job to project ABC123                           |
 +---------------------------------+------------------------------------------------+------------------------------------------------------------+
 | ``#BSUB -alloc_flags gpumps``   | No equivalent (set via environment variable)   | Enable multiple MPI tasks to simultaneously access a GPU   |
-+---------------------------------+------------------------------------------------+------------------------------------------------------------+
-| ````                            | ````                                           |                                                            |
 +---------------------------------+------------------------------------------------+------------------------------------------------------------+
 
 Easy Mode vs. Expert Mode
@@ -2026,14 +2139,18 @@ Compute Node Description
 The following compute node image will be used to discuss jsrun resource
 sets and layout.
 
-+--------------------------------------+--------------------------------------+
-| -  1 node                            | |image13|                            |
-| -  2 sockets (grey)                  |                                      |
-| -  42 physical cores\* (dark blue)   |                                      |
-| -  168 hardware cores (light blue)   |                                      |
-| -  6 GPUs (orange)                   |                                      |
-| -  2 Memory blocks (yellow)          |                                      |
-+--------------------------------------+--------------------------------------+
+
+.. image:: /images/summit-node-description-1.png
+   :class: normal aligncenter wp-image-775250
+   :width: 85%
+   :align: center
+
+-  1 node
+-  2 sockets (grey)
+-  42 physical cores\* (dark blue)
+-  168 hardware cores (light blue)
+-  6 GPUs (orange)
+-  2 Memory blocks (yellow)
 
 **\*Core Isolation:** 1 core on each socket has been set aside for
 overhead and is not available for allocation through jsrun. The core has
@@ -2073,7 +2190,13 @@ Subdividing a Node with Resource Sets
 
 Resource sets provides the ability to subdivide node’s resources into
 smaller groups. The following examples show how a node can be subdivided
-and how many resource set could fit on a node. |image14|
+and how many resource set could fit on a node.
+
+.. image:: /images/summit-resource-set-subdivide.png
+   :class: normal aligncenter size-full wp-image-775849
+   :width: 600px
+   :height: 360px
+   :align: center
 
 Multiple Methods to Creating Resource Sets
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -2082,16 +2205,35 @@ Resource sets should be created to fit code requirements. The following
 examples show multiple ways to create resource sets that allow two MPI
 tasks access to a single GPU.
 
-#. 6 resource sets per node: 1 GPU, 2 cores per (Titan) |image15| In
-   this case, CPUs can only see single assigned GPU.
-#. 2 resource sets per node: 3 GPUs and 6 cores per socket |image16| In
-   this case, all 6 CPUs can see 3 GPUs. Code must manage CPU -> GPU
-   communication. CPUs on socket0 can not access GPUs or Memory on
-   socket1.
-#. Single resource set per node: 6 GPUs, 12 cores |image17| In this
-   case, all 12 CPUs can see all node’s 6 GPUs. Code must manage CPU to
-   GPU communication. CPUs on socket0 can access GPUs and Memory on
-   socket1. Code must manage cross socket communication.
+#. 6 resource sets per node: 1 GPU, 2 cores per (Titan)
+
+   .. image:: https://www.olcf.ornl.gov/wp-content/uploads/2018/03/RS-summit-example-1GPU-2Cores.png
+      :class: normal aligncenter size-full wp-image-775999
+      :width: 500px
+      :height: 300px
+
+   In this case, CPUs can only see single assigned GPU.
+
+#. 2 resource sets per node: 3 GPUs and 6 cores per socket
+
+   .. image:: https://www.olcf.ornl.gov/wp-content/uploads/2018/03/RS-summit-example-3GPU-6Cores.png
+      :class: normal aligncenter size-full wp-image-776000
+      :width: 600px
+      :height: 360px
+
+   In this case, all 6 CPUs can see 3 GPUs. Code must manage CPU -> GPU
+   communication. CPUs on socket0 can not access GPUs or Memory on socket1.
+
+#. Single resource set per node: 6 GPUs, 12 cores
+
+   .. image:: https://www.olcf.ornl.gov/wp-content/uploads/2018/03/RS-summit-example-6GPU-12Core.png
+      :class: normal aligncenter size-full wp-image-776142
+      :width: 600px
+      :height: 360px
+
+   In this case, all 12 CPUs can see all node’s 6 GPUs. Code must manage CPU to
+   GPU communication. CPUs on socket0 can access GPUs and Memory on socket1.
+   Code must manage cross socket communication.
 
 Designing a Resource Set
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -2142,80 +2284,31 @@ Common jsrun Options
 Below are common jsrun options. More flags and details can be found in
 the jsrun man page.
 
-Flags
 
-Description
-
-Default Value
-
-Long
-
-Short
-
-``--nrs``
-
-``-n``
-
-Number of resource sets
-
-All available physical cores
-
-``--tasks_per_rs``
-
-``-a``
-
-Number of MPI tasks (ranks) per resource set
-
-Not set by default, instead total tasks (-p) set
-
-``--cpu_per_rs``
-
-``-c``
-
-Number of CPUs (cores) per resource set.
-
-1
-
-``--gpu_per_rs``
-
-``-g``
-
-Number of GPUs per resource set
-
-0
-
-``--bind``
-
-``-b``
-
-Binding of tasks within a resource set. Can be none, rs, or packed:#
-
-packed:1
-
-``--rs_per_host``
-
-``-r``
-
-Number of resource sets per host
-
-No default
-
-``--latency_priority``
-
-``-l``
-
-Latency Priority. Controls layout priorities. Can currently be cpu-cpu
-or gpu-cpu
-
-gpu-cpu,cpu-mem,cpu-cpu
-
-``--launch_distribution``
-
-``-d``
-
-How tasks are started on resource sets
-
-packed
++---------------------------+--------+------------------------------------------------------+------------------------------+
+| Flags                              |                                                      |                              |
++---------------------------+--------+  Description                                         + Default Value                +
+| Long                      | Short  |                                                      |                              |
++===========================+========+======================================================+==============================+
+| ``--nrs``                 | ``-n`` | Number of resource sets                              | All available physical cores |
++---------------------------+--------+------------------------------------------------------+------------------------------+
+| ``--tasks_per_rs``        | ``-a`` | Number of MPI tasks (ranks) per resource set         | Not set by default, instead  |
+|                           |        |                                                      | total tasks (-p) set         |
++---------------------------+--------+------------------------------------------------------+------------------------------+
+| ``--cpu_per_rs``          | ``-c`` | Number of CPUs (cores) per resource set.             | 1                            |
++---------------------------+--------+------------------------------------------------------+------------------------------+
+| ``--gpu_per_rs``          | ``-g`` | Number of GPUs per resource set                      | 0                            |
++---------------------------+--------+------------------------------------------------------+------------------------------+
+| ``--bind``                | ``-b`` | Binding of tasks within a resource set. Can be none, | packed:1                     |
+|                           |        | rs, or packed:#                                      |                              |
++---------------------------+--------+------------------------------------------------------+------------------------------+
+| ``--rs_per_host``         | ``-r`` | Number of resource sets per host                     | No default                   |
++---------------------------+--------+------------------------------------------------------+------------------------------+
+| ``--latency_priority``    | ``-l`` | Latency Priority. Controls layout                    | gpu-cpu,cpu-mem,cpu-cpu      |
+|                           |        | priorities. Can currently be cpu-cpu or gpu-cpu      |                              |
++---------------------------+--------+------------------------------------------------------+------------------------------+
+| ``--launch_distribution`` | ``-d`` | How tasks are started on resource sets               | packed                       |
++---------------------------+--------+------------------------------------------------------+------------------------------+
 
 It's recommended to explicitly specify ``jsrun`` options. This most
 often includes ``--nrs``,\ ``--cpu_per_rs``, ``--gpu_per_rs``,
@@ -2271,6 +2364,11 @@ memory.
 | |image18|    | |image19|               |
 +--------------+-------------------------+
 
+.. |image18| image:: /images/titan-node-1task-1gpu.png
+   :class: normal aligncenter
+.. |image19| image:: /images/summit-node-1rs-1task-1gpu-example.png
+   :class: normal aligncenter
+
 Because Summit's nodes are much larger than Titan's, 6 single-gpu
 resource sets can be created on a single Summit node. The following
 image shows how six single-gpu, single-task resource sets would be
@@ -2280,24 +2378,18 @@ on the node. Each resource set is indicated by differing colors. Notice,
 the ``-n`` flag is all that changed between the above single resource
 set example. The ``-n`` flag tells jsrun to create six resource sets.
 
-+--------------------------------------+--------------------------------------+
-| -  ``jsrun -n 6 -g 1 -a 1 -c 1 ``    | |image20|                            |
-| -  Starts 6 resource sets, each      |                                      |
-|    indicated by differing colors     |                                      |
-| -  Each resource contains 1 GPU, 1   |                                      |
-|    Core, and memory                  |                                      |
-| -  The red resource set contains GPU |                                      |
-|    0 and Core 0                      |                                      |
-| -  The purple resource set contains  |                                      |
-|    GPU 3 and Core 84                 |                                      |
-| -  ``-n 6 `` tells jsrun how many    |                                      |
-|    resource sets to create           |                                      |
-| -  In this example, each resource    |                                      |
-|    set is similar to a single Titan  |                                      |
-|    node                              |                                      |
-+--------------------------------------+--------------------------------------+
-
+.. figure:: https://www.olcf.ornl.gov/wp-content/uploads/2018/03/summit-2node-1taskpergpu.png
+   :class: normal aligncenter size-full wp-image-776599
+   :width: 1318px
+   :height: 520px
  
+   ``jsrun -n 6 -g 1 -a 1 -c 1`` starts 6 resource sets, each indicated by
+   differing colors.  Each resource contains 1 GPU, 1 Core, and memory.  The
+   red resource set contains GPU 0 and Core 0.  The purple resource set
+   contains GPU 3 and Core 84.  ``-n 6`` tells jsrun how many resource sets to
+   create.  In this example, each resource set is similar to a single Titan
+   node.
+
 
 jsrun Examples
 ~~~~~~~~~~~~~~
@@ -2317,9 +2409,14 @@ and 1 GPU. Each MPI task will have access to a single GPU. Rank 0 will
 have access to GPU 0 on the first node ( red resource set). Rank 1 will
 have access to GPU 1 on the first node ( green resource set). This
 pattern will continue until 12 resources sets have been created. The
-following jsrun command will request 12 resource sets (`` -n12 ``) 6 per
-node (`` -r6 ``). Each resource set will contain 1 MPI task (`` -a1 ``),
-1 GPU (`` -g1 ``), and 1 core (`` -c1 ``). |image21|
+following jsrun command will request 12 resource sets (``-n12``) 6 per
+node (``-r6``). Each resource set will contain 1 MPI task (``-a1``),
+1 GPU (``-g1``), and 1 core (``-c1``).
+
+.. image:: /images/summit-jsrun-example-1Core-1GPU.png
+   :class: normal aligncenter size-full wp-image-776751
+   :width: 600px
+   :height: 300px
 
 ::
 
@@ -2341,13 +2438,18 @@ node (`` -r6 ``). Each resource set will contain 1 MPI task (`` -a1 ``),
 Multiple tasks, single GPU per RS
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The following jsrun command will request 12 resource sets (`` -n12 ``).
-Each resource set will contain 2 MPI tasks (`` -a2 ``), 1 GPU
-(`` -g1 ``), and 2 cores (`` -c2 ``). 2 MPI tasks will have access to a
+The following jsrun command will request 12 resource sets (``-n12``).
+Each resource set will contain 2 MPI tasks (``-a2``), 1 GPU
+(``-g1``), and 2 cores (``-c2``). 2 MPI tasks will have access to a
 single GPU. Ranks 0 - 1 will have access to GPU 0 on the first node (
 red resource set). Ranks 2 - 3 will have access to GPU 1 on the first
 node ( green resource set). This pattern will continue until 12 resource
-sets have been created. |image22|
+sets have been created.
+
+.. image:: /images/summit-jsrun-example-2taskperGPU.png
+   :class: normal aligncenter size-full wp-image-777053
+   :width: 600px
+   :height: 300px
 
 **Adding cores to the RS:** The ``-c`` flag should be used to request
 the needed cores for tasks and treads. The default -c core count is 1.
@@ -2404,9 +2506,14 @@ will have access to GPUs 0 - 2 on the first socket of the first node (
 red resource set). Ranks 6 - 11 will have access to GPUs 3 - 5 on the
 second socket of the first node ( green resource set). This pattern will
 continue until 4 resource sets have been created. The following jsrun
-command will request 4 resource sets (`` -n4 ``). Each resource set will
-contain 6 MPI tasks (`` -a6 ``), 3 GPUs (`` -g3 ``), and 6 cores
-(`` -c6 ``). |image23|
+command will request 4 resource sets (``-n4``). Each resource set will
+contain 6 MPI tasks (``-a6``), 3 GPUs (``-g3``), and 6 cores
+(``-c6``).
+
+.. image:: /images/RS-summit-example-24Tasks-3GPU-6Cores.png
+   :class: normal aligncenter size-full wp-image-792423
+   :width: 600px
+   :height: 300px
 
 ::
 
@@ -2450,11 +2557,16 @@ first socket of the first node ( red resource set). Rank 2 will have
 access to GPU 1 and start 4 threads on the second socket of the first
 node ( green resource set). This pattern will continue until 12 resource
 sets have been created. The following jsrun command will create 12
-resource sets (`` -n12 ``). Each resource set will contain 1 MPI task
-(`` -a1 ``), 1 GPU (`` -g1 ``), and 4 cores (`` -c4 ``). Notice that
+resource sets (``-n12``). Each resource set will contain 1 MPI task
+(``-a1``), 1 GPU (``-g1``), and 4 cores (``-c4``). Notice that
 more cores are requested than MPI tasks; the extra cores will be needed
 to place threads. Without requesting additional cores, threads will be
-placed on a single core. |image24|
+placed on a single core.
+
+.. image:: /images/RS-summit-example-4Threads-4Core-1GPU.png
+   :class: normal aligncenter size-full wp-image-792873
+   :width: 600px
+   :height: 300px
 
 **Requesting Cores for Threads:** The ``-c`` flag should be used to
 request additional cores for thread placement. Without requesting
@@ -2522,7 +2634,10 @@ SMT4
     jsrun -n1 -c1 -a1 -bpacked:4 csh -c 'echo $OMP_PLACES’
     {0:4}
 
-|image25|
+.. image:: /images/FS-summit-example-MultiThreadPerCore.png
+   :class: normal aligncenter size-full wp-image-797960
+   :width: 600px
+   :height: 300px
 
 Common Use Cases
 ^^^^^^^^^^^^^^^^
@@ -2660,11 +2775,11 @@ detector. The Valgrind tool suite provides a number of debugging and
 profiling tools. The most popular is Memcheck, a memory checking tool
 which can detect many common memory errors such as:
 
--  Touching memory you shouldn’t (eg. overrunning heap block boundaries,
-   or reading/writing freed memory).
--  Using values before they have been initialized.
--  Incorrect freeing of memory, such as double-freeing heap blocks.
--  Memory leaks.
+- Touching memory you shouldn’t (eg. overrunning heap block boundaries,
+  or reading/writing freed memory).
+- Using values before they have been initialized.
+- Incorrect freeing of memory, such as double-freeing heap blocks.
+- Memory leaks.
 
 Valgrind is available on Summit under all compiler families:
 
@@ -3229,9 +3344,17 @@ Step 1: Fill out and submit an `**OLCF Account Application Form** <https://www.o
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Enter the requested information into the form. For "Project
-Information", enter the following: |image26| For "Project Information",
-enter the following: |image27| For "Account Information", enter the
-following: |image28|
+Information", enter the following: 
+
+.. image:: /images/Ascent_Account_Application_1.png
+
+For "Project Information", enter the following:
+
+.. image:: /images/Ascent_Account_Application_2.png
+
+For "Account Information", enter the following:
+
+.. image:: /images/Ascent_Account_Application_3.png
 
 **NOTE:** After submitting your application, it will need to pass
 through the approval process. Depending on when you submit, approval
@@ -3251,7 +3374,7 @@ Logging In to Ascent
 --------------------
 
 To log in to Ascent, please use your XCAMS/UCAMS username and password:
-``$ ssh USERNAME@login1.ascent.olcf.ornl.gov ``
+``$ ssh USERNAME@login1.ascent.olcf.ornl.gov``
 
 **NOTE:** You do not need to use an RSA token to log in to Ascent.
 Please use your XCAMS/UCAMS username and password (which is different
@@ -3261,62 +3384,3 @@ systems such as Summit).
 **NOTE:** It will take ~5 minutes for your directories to be created, so
 if your account was just created and you log in and you do not have a
 home directory, this is likely the reason.
-
-.. |image13| image:: https://www.olcf.ornl.gov/wp-content/uploads/2018/03/summit-node-description-1.png
-   :class: normal aligncenter wp-image-775250
-   :width: 500px
-   :height: 280px
-.. |image14| image:: https://www.olcf.ornl.gov/wp-content/uploads/2018/03/summit-resource-set-subdivide.png
-   :class: normal aligncenter size-full wp-image-775849
-   :width: 600px
-   :height: 360px
-.. |image15| image:: https://www.olcf.ornl.gov/wp-content/uploads/2018/03/RS-summit-example-1GPU-2Cores.png
-   :class: normal aligncenter size-full wp-image-775999
-   :width: 500px
-   :height: 300px
-.. |image16| image:: https://www.olcf.ornl.gov/wp-content/uploads/2018/03/RS-summit-example-3GPU-6Cores.png
-   :class: normal aligncenter size-full wp-image-776000
-   :width: 600px
-   :height: 360px
-.. |image17| image:: https://www.olcf.ornl.gov/wp-content/uploads/2018/03/RS-summit-example-6GPU-12Core.png
-   :class: normal aligncenter size-full wp-image-776142
-   :width: 600px
-   :height: 360px
-.. |image18| image:: https://beta.olcf.ornl.gov/wp-content/uploads/2018/01/titan-node-1task-1gpu.png
-   :class: normal aligncenter wp-image-86356
-   :width: 132px
-   :height: 135px
-.. |image19| image:: https://beta.olcf.ornl.gov/wp-content/uploads/2018/01/summit-node-1rs-1task-1gpu-example.png
-   :class: normal aligncenter wp-image-86355
-   :width: 275px
-   :height: 218px
-.. |image20| image:: https://www.olcf.ornl.gov/wp-content/uploads/2018/03/summit-2node-1taskpergpu.png
-   :class: normal aligncenter size-full wp-image-776599
-   :width: 1318px
-   :height: 520px
-.. |image21| image:: https://www.olcf.ornl.gov/wp-content/uploads/2018/03/summit-jsrun-example-1Core-1GPU.png
-   :class: normal aligncenter size-full wp-image-776751
-   :width: 600px
-   :height: 300px
-.. |image22| image:: https://www.olcf.ornl.gov/wp-content/uploads/2018/03/summit-jsrun-example-2taskperGPU.png
-   :class: normal aligncenter size-full wp-image-777053
-   :width: 600px
-   :height: 300px
-.. |image23| image:: https://www.olcf.ornl.gov/wp-content/uploads/2018/03/RS-summit-example-24Tasks-3GPU-6Cores.png
-   :class: normal aligncenter size-full wp-image-792423
-   :width: 600px
-   :height: 300px
-.. |image24| image:: https://www.olcf.ornl.gov/wp-content/uploads/2018/03/RS-summit-example-4Threads-4Core-1GPU.png
-   :class: normal aligncenter size-full wp-image-792873
-   :width: 600px
-   :height: 300px
-.. |image25| image:: https://www.olcf.ornl.gov/wp-content/uploads/2018/03/FS-summit-example-MultiThreadPerCore.png
-   :class: normal aligncenter size-full wp-image-797960
-   :width: 600px
-   :height: 300px
-.. |image26| image:: https://www.olcf.ornl.gov/wp-content/uploads/2019/01/Ascent_Account_Application_1.png
-   :target: https://www.olcf.ornl.gov/wp-content/uploads/2019/01/Ascent_Account_Application_1.png
-.. |image27| image:: https://www.olcf.ornl.gov/wp-content/uploads/2019/01/Ascent_Account_Application_2.png
-   :target: https://www.olcf.ornl.gov/wp-content/uploads/2019/01/Ascent_Account_Application_2.png
-.. |image28| image:: https://www.olcf.ornl.gov/wp-content/uploads/2019/01/Ascent_Account_Application_3.png
-   :target: https://www.olcf.ornl.gov/wp-content/uploads/2019/01/Ascent_Account_Application_3.png
