@@ -894,7 +894,7 @@ default. Project Work directories are accessible by all project members.
 World Work directories are readable by any user on the system.
 
 Permissions
-___________
+''''''''''''
 
 UNIX Permissions on each project-centric work storage area differ
 according to the area's intended collaborative use. Under this setup,
