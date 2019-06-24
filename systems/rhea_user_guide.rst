@@ -1,669 +1,629 @@
 *********************
-Rhea User guide
+rhea user guide
 *********************
 
-Overview
+overview
 =========
 
-Rhea is a 521-node commodity-type Linux cluster. The primary purpose of
-Rhea is to provide a conduit for large-scale scientific discovery via
+rhea is a 521-node commodity-type linux cluster. the primary purpose of
+rhea is to provide a conduit for large-scale scientific discovery via
 pre/post processing and analysis of simulation data generated on
-`Titan <https://beta.olcf.ornl.gov/user-support/resource-user-guides/titan/>`__.
-Users with accounts on
-`Titan <https://beta.olcf.ornl.gov/user-support/resource-user-guides/titan/>`__
-will automatically be given access to Rhea.
+`titan <https://beta.olcf.ornl.gov/user-support/resource-user-guides/titan/>`__.
+users with accounts on
+`titan <https://beta.olcf.ornl.gov/user-support/resource-user-guides/titan/>`__
+will automatically be given access to rhea.
 
 --------------
 
-Compute Nodes
+compute nodes
 -------------
 
-[ls\_content\_block id="21300" para="full"] Please see the `Batch Queues
-on Rhea <../running-jobs/#batch-queues-on-rhea>`__ section to learn
-about the queuing policies for these two partitions. Both compute
-partitions are accessible through the same batch queue from Rhea's
-`login nodes <../system-overview/#login-nodes>`__. Rhea features a 4X
-FDR Infiniband interconnect, with a maximum theoretical transfer rate of
-56 Gb/s.
+[ls\_content\_block id="21300" para="full"] please see the `batch queues
+on rhea <../running-jobs/#batch-queues-on-rhea>`__ section to learn
+about the queuing policies for these two partitions. both compute
+partitions are accessible through the same batch queue from rhea's
+`login nodes <../system-overview/#login-nodes>`__. rhea features a 4x
+fdr infiniband interconnect, with a maximum theoretical transfer rate of
+56 gb/s.
 
 --------------
 
-Login Nodes
+login nodes
 -----------
 
-Rhea features (4) login nodes which are identical to the compute nodes,
-but with 64GB of RAM. The login nodes provide an environment for
-editing, compiling, and launching codes onto the compute nodes. All Rhea
+rhea features (4) login nodes which are identical to the compute nodes,
+but with 64gb of ram. the login nodes provide an environment for
+editing, compiling, and launching codes onto the compute nodes. all rhea
 users will access the system through these same login nodes, and as
-such, any CPU- or memory-intensive tasks on these nodes could interrupt
-service to other users. As a courtesy, we ask that you refrain from
+such, any cpu- or memory-intensive tasks on these nodes could interrupt
+service to other users. as a courtesy, we ask that you refrain from
 doing any analysis or visualization tasks on the login nodes.
 
 --------------
 
-File Systems
+file systems
 ------------
 
-The OLCF's center-wide Lustre\ :sup:`®` file system, named
-`Spider <../file-systems/#spider-the-centerwide-lustre-file-system>`__,
-is available on Rhea for computational work. With over 26,000 clients
-and (32) PB of disk space, it is one of the largest-scale
-Lustre\ :sup:`®` file systems in the world. A NFS-based file system
-provides `User Home storage
-areas <../file-systems/#user-home-directories-nfs>`__ and `Project Home
+the olcf's center-wide lustre\ :sup:`®` file system, named
+`spider <../file-systems/#spider-the-centerwide-lustre-file-system>`__,
+is available on rhea for computational work. with over 26,000 clients
+and (32) pb of disk space, it is one of the largest-scale
+lustre\ :sup:`®` file systems in the world. a nfs-based file system
+provides `user home storage
+areas <../file-systems/#user-home-directories-nfs>`__ and `project home
 storage areas <../file-systems/#project-home-directories-nfs>`__.
-Additionally, the OLCF's\ `High Performance Storage
-System <../file-systems/#hpss-high-performance-storage-system>`__ (HPSS)
+additionally, the olcf's\ `high performance storage
+system <../file-systems/#hpss-high-performance-storage-system>`__ (hpss)
 provides archival spaces.
 
-Compiling
+compiling
 =========
 
-Compiling code on Rhea is typical of commodity or beowulf-style HPC
+compiling code on rhea is typical of commodity or beowulf-style hpc
 linux clusters.
 
-Available Compilers
+available compilers
 -------------------
 
-The following compilers are available on Rhea:
+the following compilers are available on rhea:
 
--  `Intel </software_package/intel/>`__, Intel Composer XE (default)
--  `PGI </software_package/pgi/>`__, the Portland Group Compiler Suite
--  `GCC </software_package/gcc/>`__, the GNU Compiler Collection
+- `intel </software_package/intel/>`__, intel composer xe (default)
+- `pgi </software_package/pgi/>`__, the portland group compiler suite
+- `gcc </software_package/gcc/>`__, the gnu compiler collection
 
-Upon login, default versions of the Intel compiler and OpenMPI (Message
-Passing Interface) libraries are automatically added to each user's
-environment. Users do not need to make any environment changes to use
-the default version of Intel and OpenMPI.
+upon login, default versions of the intel compiler and openmpi (message
+passing interface) libraries are automatically added to each user's
+environment. users do not need to make any environment changes to use
+the default version of intel and openmpi.
 
 --------------
 
-Changing Compilers
+changing compilers
 ------------------
 
-If a different compiler is required, it is important to use the correct
-environment for each compiler. To aid users in pairing the correct
-compiler and environment, the module system on Rhea automatically pulls
-in libraries compiled with a given compiler when changing compilers. The
+if a different compiler is required, it is important to use the correct
+environment for each compiler. to aid users in pairing the correct
+compiler and environment, the module system on rhea automatically pulls
+in libraries compiled with a given compiler when changing compilers. the
 compiler modules will load the correct pairing of compiler version,
 message passing libraries, and other items required to build and run
-code. To change the default loaded Intel environment to the GCC
+code. to change the default loaded intel environment to the gcc
 environment for example, use:
 
 .. code::
 
     $ module load gcc
 
-This will automatically unload the current compiler and system libraries
+this will automatically unload the current compiler and system libraries
 associated with it, load the new compiler environment and automatically
 load associated system libraries as well.
 
-Changing Versions of the Same Compiler
+changing versions of the same compiler
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-To use a specific compiler *version*, you must first ensure the
+to use a specific compiler *version*, you must first ensure the
 compiler's module is loaded, and *then* swap to the correct compiler
-version. For example, the following will configure the environment to
-use the GCC compilers, then load a non-default GCC compiler version:
+version. for example, the following will configure the environment to
+use the gcc compilers, then load a non-default gcc compiler version:
 
 .. code::
 
     $ module load gcc
     $ module swap gcc gcc/4.7.1
 
-.. raw:: html
+..
 
-   <div class="kb-note">
+    **note: we recommend the following general guidelines for using the
+    programming environment modules:**
 
-**Note: we recommend the following general guidelines for using the
-programming environment modules:**
-
--  Do not purge all modules; rather, use the default module environment
-   provided at the time of login, and modify it.
--  Do not swap moab, torque, or MySQL modules after loading a
-   programming environment modulefile.
-
-.. raw:: html
-
-   </div>
+    -  do not purge all modules; rather, use the default module environment
+       provided at the time of login, and modify it.
+    -  do not swap moab, torque, or mysql modules after loading a
+       programming environment modulefile.
 
 --------------
 
-Compiler Wrappers
+compiler wrappers
 -----------------
 
-Commodity Clusters at the OLCF can be accessed via the following wrapper
+commodity clusters at the olcf can be accessed via the following wrapper
 programs:
 
--  ``mpicc`` to invoke the C compiler
--  ``mpiCC``, ``mpicxx``, or ``mpic++`` to invoke the C++ compiler
+-  ``mpicc`` to invoke the c compiler
+-  ``mpicc``, ``mpicxx``, or ``mpic++`` to invoke the c++ compiler
 -  ``mpif77`` or ``mpif90`` to invoke appropriate versions of the
-   Fortran compiler
+   fortran compiler
 
-These wrapper programs are cognizant of your currently loaded modules,
-and will ensure that your code links against our OpenMPI installation.
-More information about using OpenMPI at our center can be found in our
-`Software
-Documentation <https://www.olcf.ornl.gov/kb_articles/software-ompi/>`__.
+these wrapper programs are cognizant of your currently loaded modules,
+and will ensure that your code links against our openmpi installation.
+more information about using openmpi at our center can be found in our
+`software
+documentation <https://www.olcf.ornl.gov/kb_articles/software-ompi/>`__.
 
-Compiling Threaded Codes
+compiling threaded codes
 ------------------------
 
-When building threaded codes, compiler-specific flags must be included
+when building threaded codes, compiler-specific flags must be included
 to ensure a proper build.
 
-OpenMP
+openmp
 ^^^^^^
 
-For PGI, add "-mp" to the build line.
+for pgi, add "-mp" to the build line.
 
 .. code::
 
     $ mpicc -mp test.c -o test.x
-    $ export OMP_NUM_THREADS=2
+    $ export omp_num_threads=2
 
-For GNU, add "-fopenmp" to the build line.
+for gnu, add "-fopenmp" to the build line.
 
 .. code::
 
     $ mpicc -fopenmp test.c -o test.x
-    $ export OMP_NUM_THREADS=2
+    $ export omp_num_threads=2
 
-For Intel, add "-qopenmp" to the build line.
+for intel, add "-qopenmp" to the build line.
 
 .. code::
 
     $ mpicc -qopenmp test.c -o test.x
-    $ export OMP_NUM_THREADS=2
+    $ export omp_num_threads=2
 
-For information on *running threaded codes*, please see the `Thread
-Layout </for-users/system-user-guides/rhea/running-jobs/#-thread-layout->`__
-subsection of the `Running
-Jobs </for-users/system-user-guides/rhea/running-jobs/>`__ section in
+for information on *running threaded codes*, please see the `thread
+layout </for-users/system-user-guides/rhea/running-jobs/#-thread-layout->`__
+subsection of the `running
+jobs </for-users/system-user-guides/rhea/running-jobs/>`__ section in
 this user guide.
 
-Shell and Programming Environments
+shell and programming environments
 ==================================
 
-OLCF systems provide hundreds of software packages and scientific
+olcf systems provide hundreds of software packages and scientific
 libraries pre-installed at the system-level for users to take advantage
-of. To facilitate this, environment management tools are employed to
-handle necessary changes to the shell dynamically. The sections below
-provide information about using the management tools at the OLCF.
+of. to facilitate this, environment management tools are employed to
+handle necessary changes to the shell dynamically. the sections below
+provide information about using the management tools at the olcf.
 
 --------------
 
-Default Shell
+default shell
 -------------
 
-A user's default shell is selected when completing the User Account
-Request form. The chosen shell is set across all OLCF resources.
-Currently, supported shells include:
+a user's default shell is selected when completing the user account
+request form. the chosen shell is set across all olcf resources.
+currently, supported shells include:
 
 -  bash
 -  tsch
 -  csh
 -  ksh
 
-If you would like to have your default shell changed, please contact the
-`OLCF User Assistance Center </for-users/user-assistance/>`__ at
+if you would like to have your default shell changed, please contact the
+`olcf user assistance center </for-users/user-assistance/>`__ at
 help@olcf.ornl.gov.
 
 --------------
 
-Environment Management with Lmod
+environment management with lmod
 --------------------------------
 
-The *modules* software package allows you to dynamically modify your
-user environment by using pre-written *modulefiles*. Environment modules
-are provided through `Lmod <https://lmod.readthedocs.io/en/latest/>`__,
-a Lua-based module system for dynamically altering shell environments.
-By managing changes to the shell’s environment variables (such as
-``PATH``, ``LD_LIBRARY_PATH``, and ``PKG_CONFIG_PATH``), Lmod allows you
+the *modules* software package allows you to dynamically modify your
+user environment by using pre-written *modulefiles*. environment modules
+are provided through `lmod <https://lmod.readthedocs.io/en/latest/>`__,
+a lua-based module system for dynamically altering shell environments.
+by managing changes to the shell’s environment variables (such as
+``path``, ``ld_library_path``, and ``pkg_config_path``), lmod allows you
 to alter the software available in your shell environment without the
 risk of creating package and version combinations that cannot coexist in
-a single environment. Lmod is a recursive environment module system,
+a single environment. lmod is a recursive environment module system,
 meaning it is aware of module compatibility and actively alters the
-environment to protect against conflicts. Messages to stderr are issued
-upon Lmod implicitly altering the environment. Environment modules are
+environment to protect against conflicts. messages to stderr are issued
+upon lmod implicitly altering the environment. environment modules are
 structured hierarchically by compiler family such that packages built
 with a given compiler will only be accessible if the compiler family is
 first present in the environment.
 
-.. raw:: html
+    **note:** lmod can interpret both lua modulefiles and legacy tcl
+    modulefiles. however, long and logic-heavy tcl modulefiles may require
+    porting to lua.
 
-   <div class="kb-note">
-
-**Note:** Lmod can interpret both Lua modulefiles and legacy Tcl
-modulefiles. However, long and logic-heavy Tcl modulefiles may require
-porting to Lua.
-
-.. raw:: html
-
-   </div>
-
-General Usage
+general usage
 ^^^^^^^^^^^^^
 
-Typical use of Lmod is very similar to that of interacting with
-modulefiles on other OLCF systems. The interface to Lmod is provided by
+typical use of lmod is very similar to that of interacting with
+modulefiles on other olcf systems. the interface to lmod is provided by
 the ``module`` command:
 
 +----------------------------------+-----------------------------------------------------------------------+
-| Command                          | Description                                                           |
+| command                          | description                                                           |
 +==================================+=======================================================================+
-| module -t list                   | Shows a terse list of the currently loaded modules.                   |
+| module -t list                   | shows a terse list of the currently loaded modules.                   |
 +----------------------------------+-----------------------------------------------------------------------+
-| module avail                     | Shows a table of the currently available modules                      |
+| module avail                     | shows a table of the currently available modules                      |
 +----------------------------------+-----------------------------------------------------------------------+
-| module help <modulename>         | Shows help information about <modulename>                             |
+| module help <modulename>         | shows help information about <modulename>                             |
 +----------------------------------+-----------------------------------------------------------------------+
-| module show <modulename>         | Shows the environment changes made by the <modulename> modulefile     |
+| module show <modulename>         | shows the environment changes made by the <modulename> modulefile     |
 +----------------------------------+-----------------------------------------------------------------------+
-| module spider <string>           | Searches all possible modules according to <string>                   |
+| module spider <string>           | searches all possible modules according to <string>                   |
 +----------------------------------+-----------------------------------------------------------------------+
-| module load <modulename> [...]   | Loads the given <modulename>(s) into the current environment          |
+| module load <modulename> [...]   | loads the given <modulename>(s) into the current environment          |
 +----------------------------------+-----------------------------------------------------------------------+
-| module use <path>                | Adds <path> to the modulefile search cache and ``MODULESPATH``        |
+| module use <path>                | adds <path> to the modulefile search cache and ``modulespath``        |
 +----------------------------------+-----------------------------------------------------------------------+
-| module unuse <path>              | Removes <path> from the modulefile search cache and ``MODULESPATH``   |
+| module unuse <path>              | removes <path> from the modulefile search cache and ``modulespath``   |
 +----------------------------------+-----------------------------------------------------------------------+
-| module purge                     | Unloads all modules                                                   |
+| module purge                     | unloads all modules                                                   |
 +----------------------------------+-----------------------------------------------------------------------+
-| module reset                     | Resets loaded modules to system defaults                              |
+| module reset                     | resets loaded modules to system defaults                              |
 +----------------------------------+-----------------------------------------------------------------------+
-| module update                    | Reloads all currently loaded modules                                  |
+| module update                    | reloads all currently loaded modules                                  |
 +----------------------------------+-----------------------------------------------------------------------+
 
-.. raw:: html
+    **note:** modules are changed recursively. some commands, such as
+    ``module swap``, are available to maintain compatibility with scripts
+    using tcl environment modules, but are not necessary since lmod
+    recursively processes loaded modules and automatically resolves
+    conflicts.
 
-   <div class="kb-note">
-
-**Note:** Modules are changed recursively. Some commands, such as
-``module swap``, are available to maintain compatibility with scripts
-using Tcl Environment Modules, but are not necessary since Lmod
-recursively processes loaded modules and automatically resolves
-conflicts.
-
-.. raw:: html
-
-   </div>
-
-Searching for modules
+searching for modules
 ^^^^^^^^^^^^^^^^^^^^^
 
-Modules with dependencies are only available when the underlying
-dependencies, such as compiler families, are loaded. Thus,
+modules with dependencies are only available when the underlying
+dependencies, such as compiler families, are loaded. thus,
 ``module avail`` will only display modules that are compatible with the
-current state of the environment. To search the entire hierarchy across
+current state of the environment. to search the entire hierarchy across
 all possible dependencies, the ``spider`` sub-command can be used as
 summarized in the following table.
 
 +----------------------------------------+------------------------------------------------------------------------------------+
-| Command                                | Description                                                                        |
+| command                                | description                                                                        |
 +========================================+====================================================================================+
-| module spider                          | Shows the entire possible graph of modules                                         |
+| module spider                          | shows the entire possible graph of modules                                         |
 +----------------------------------------+------------------------------------------------------------------------------------+
-| module spider <modulename>             | Searches for modules named <modulename> in the graph of possible modules           |
+| module spider <modulename>             | searches for modules named <modulename> in the graph of possible modules           |
 +----------------------------------------+------------------------------------------------------------------------------------+
-| module spider <modulename>/<version>   | Searches for a specific version of <modulename> in the graph of possible modules   |
+| module spider <modulename>/<version>   | searches for a specific version of <modulename> in the graph of possible modules   |
 +----------------------------------------+------------------------------------------------------------------------------------+
-| module spider <string>                 | Searches for modulefiles containing <string>                                       |
+| module spider <string>                 | searches for modulefiles containing <string>                                       |
 +----------------------------------------+------------------------------------------------------------------------------------+
 
  
 
-Defining custom module collections
+defining custom module collections
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Lmod supports caching commonly used collections of environment modules
-on a per-user basis in ``$HOME/.lmod.d``. To create a collection called
-"NAME" from the currently loaded modules, simply call
-``module save NAME``. Omitting "NAME" will set the user’s default
-collection. Saved collections can be recalled and examined with the
+lmod supports caching commonly used collections of environment modules
+on a per-user basis in ``$home/.lmod.d``. to create a collection called
+"name" from the currently loaded modules, simply call
+``module save name``. omitting "name" will set the user’s default
+collection. saved collections can be recalled and examined with the
 commands summarized in the following table.
 
 +-------------------------+----------------------------------------------------------+
-| Command                 | Description                                              |
+| command                 | description                                              |
 +=========================+==========================================================+
-| module restore NAME     | Recalls a specific saved user collection titled "NAME"   |
+| module restore name     | recalls a specific saved user collection titled "name"   |
 +-------------------------+----------------------------------------------------------+
-| module restore          | Recalls the user-defined defaults                        |
+| module restore          | recalls the user-defined defaults                        |
 +-------------------------+----------------------------------------------------------+
-| module reset            | Resets loaded modules to system defaults                 |
+| module reset            | resets loaded modules to system defaults                 |
 +-------------------------+----------------------------------------------------------+
-| module restore system   | Recalls the system defaults                              |
+| module restore system   | recalls the system defaults                              |
 +-------------------------+----------------------------------------------------------+
-| module savelist         | Shows the list user-defined saved collections            |
+| module savelist         | shows the list user-defined saved collections            |
 +-------------------------+----------------------------------------------------------+
 
-.. raw:: html
+    **note:** you should use unique names when creating collections to
+    specify the application (and possibly branch) you are working on. for
+    example, \`app1-development\`, \`app1-production\`, and
+    \`app2-production\`.
 
-   <div class="kb-note">
+    **note:** in order to avoid conflicts between user-defined collections
+    on multiple compute systems that share a home file system (e.g.
+    /ccs/home/[userid]), lmod appends the hostname of each system to the
+    files saved in in your ~/.lmod.d directory (using the environment
+    variable lmod\_system\_name). this ensures that only collections
+    appended with the name of the current system are visible.
 
-**Note:** You should use unique names when creating collections to
-specify the application (and possibly branch) you are working on. For
-example, \`app1-development\`, \`app1-production\`, and
-\`app2-production\`.
-
-.. raw:: html
-
-   </div>
-
-.. raw:: html
-
-   <div class="kb-note">
-
-**Note:** In order to avoid conflicts between user-defined collections
-on multiple compute systems that share a home file system (e.g.
-/ccs/home/[userid]), lmod appends the hostname of each system to the
-files saved in in your ~/.lmod.d directory (using the environment
-variable LMOD\_SYSTEM\_NAME). This ensures that only collections
-appended with the name of the current system are visible.
-
-.. raw:: html
-
-   </div>
-
-The following screencast shows an example of setting up user-defined
-module collections on Summit. https://vimeo.com/293582400
+the following screencast shows an example of setting up user-defined
+module collections on summit. https://vimeo.com/293582400
 
 --------------
 
-Installed Software
+installed software
 ------------------
 
-The OLCF provides hundreds of pre-installed software packages and
+the olcf provides hundreds of pre-installed software packages and
 scientific libraries for your use, in addition to taking `software
-installation requests </support/software/software-request/>`__. See the
-`Software </for-users/software/>`__ page for complete details on
+installation requests </support/software/software-request/>`__. see the
+`software </for-users/software/>`__ page for complete details on
 existing installs.
 
-Running Jobs
+running jobs
 ============
 
-In High Performance Computing (HPC), computational work is performed by
-*jobs*. Individual jobs produce data that lend relevant insight into
-grand challenges in science and engineering. As such, the timely,
+in high performance computing (hpc), computational work is performed by
+*jobs*. individual jobs produce data that lend relevant insight into
+grand challenges in science and engineering. as such, the timely,
 efficient execution of jobs is the primary concern in the operation of
-any HPC system. A job on a commodity cluster typically comprises a few
+any hpc system. a job on a commodity cluster typically comprises a few
 different components:
 
--  A batch submission script.
--  A binary executable.
--  A set of input files for the executable.
--  A set of output files created by the executable.
+-  a batch submission script.
+-  a binary executable.
+-  a set of input files for the executable.
+-  a set of output files created by the executable.
 
-And the process for running a job, in general, is to:
+and the process for running a job, in general, is to:
 
-#. Prepare executables and input files.
-#. Write a batch script.
-#. Submit the batch script to the batch scheduler.
-#. Optionally monitor the job before and during execution.
+#. prepare executables and input files.
+#. write a batch script.
+#. submit the batch script to the batch scheduler.
+#. optionally monitor the job before and during execution.
 
-The following sections describe in detail how to create, submit, and
+the following sections describe in detail how to create, submit, and
 manage jobs for execution on commodity clusters.
 
 --------------
 
-Login vs Compute Nodes on Commodity Clusters
+login vs compute nodes on commodity clusters
 --------------------------------------------
 
-Login Nodes
+login nodes
 ^^^^^^^^^^^
 
-When you log into an OLCF cluster, you are placed on a *login* node.
-Login node resources are shared by all users of the system. Because of
+when you log into an olcf cluster, you are placed on a *login* node.
+login node resources are shared by all users of the system. because of
 this, users should be mindful when performing tasks on a login node.
-Login nodes should be used for basic tasks such as file editing, code
-compilation, data backup, and job submission. Login nodes should *not*
-be used for memory- or compute-intensive tasks. Users should also limit
-the number of simultaneous tasks performed on the login resources. For
+login nodes should be used for basic tasks such as file editing, code
+compilation, data backup, and job submission. login nodes should *not*
+be used for memory- or compute-intensive tasks. users should also limit
+the number of simultaneous tasks performed on the login resources. for
 example, a user should not run (10) simultaneous ``tar`` processes on a
 login node.
 
-.. raw:: html
+    **warning:** compute-intensive, memory-intensive, or otherwise
+    disruptive processes running on login nodes may be killed without
+    warning.
 
-   <div class="kb-warning">
-
-**Warning:** Compute-intensive, memory-intensive, or otherwise
-disruptive processes running on login nodes may be killed without
-warning.
-
-.. raw:: html
-
-   </div>
-
-Compute Nodes
+compute nodes
 ^^^^^^^^^^^^^
 
 [ls\_content\_block id="21300" para="full"]
 
 --------------
 
-Writing Batch Scripts for Commodity Clusters
+writing batch scripts for commodity clusters
 --------------------------------------------
 
-Batch scripts, or job submission scripts, are the mechanism by which a
-user configures and submits a job for execution. A batch script is
+batch scripts, or job submission scripts, are the mechanism by which a
+user configures and submits a job for execution. a batch script is
 simply a shell script that also includes commands to be interpreted by
-the batch scheduling software (e.g. PBS). Batch scripts are submitted to
+the batch scheduling software (e.g. pbs). batch scripts are submitted to
 the batch scheduler, where they are then parsed for the scheduling
-configuration options. The batch scheduler then places the script in the
-appropriate queue, where it is designated as a batch job. Once the batch
+configuration options. the batch scheduler then places the script in the
+appropriate queue, where it is designated as a batch job. once the batch
 jobs makes its way through the queue, the script will be executed on the
 primary compute node of the allocated resources.
 
-Components of a Batch Script
+components of a batch script
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Batch scripts are parsed into the following (3) sections:
+batch scripts are parsed into the following (3) sections:
 
-Interpreter Line
+interpreter line
 """"""""""""""""
 
-The first line of a script can be used to specify the script’s
-interpreter; this line is optional. If not used, the submitter’s default
-shell will be used. The line uses the *hash-bang* syntax, i.e.,
+the first line of a script can be used to specify the script’s
+interpreter; this line is optional. if not used, the submitter’s default
+shell will be used. the line uses the *hash-bang* syntax, i.e.,
 ``#!/path/to/shell``.
 
-PBS Submission Options
+pbs submission options
 """"""""""""""""""""""
 
-The PBS submission options are preceded by the string ``#PBS``, making
-them appear as comments to a shell. PBS will look for ``#PBS`` options
+the pbs submission options are preceded by the string ``#pbs``, making
+them appear as comments to a shell. pbs will look for ``#pbs`` options
 in a batch script from the script’s first line through the first
-non-comment line. A comment line begins with ``#``. ``#PBS`` options
-entered after the first non-comment line will not be read by PBS.
+non-comment line. a comment line begins with ``#``. ``#pbs`` options
+entered after the first non-comment line will not be read by pbs.
 
-Shell Commands
+shell commands
 """"""""""""""
 
-The shell commands follow the last ``#PBS`` option and represent the
-executable content of the batch job. If any ``#PBS`` lines follow
-executable statements, they will be treated as comments only. The
+the shell commands follow the last ``#pbs`` option and represent the
+executable content of the batch job. if any ``#pbs`` lines follow
+executable statements, they will be treated as comments only. the
 execution section of a script will be interpreted by a shell and can
 contain multiple lines of executables, shell commands, and comments.
-When the job's queue wait time is finished, commands within this section
+when the job's queue wait time is finished, commands within this section
 will be executed on the primary compute node of the job's allocated
-resources. Under normal circumstances, the batch job will exit the queue
+resources. under normal circumstances, the batch job will exit the queue
 after the last line of the script is executed.
 
-Example Batch Script
+example batch script
 ^^^^^^^^^^^^^^^^^^^^
 
 .. code::
 
       1: #!/bin/bash
-      2: #PBS -A XXXYYY
-      3: #PBS -N test
-      4: #PBS -j oe
-      5: #PBS -l walltime=1:00:00,nodes=2
+      2: #pbs -a xxxyyy
+      3: #pbs -n test
+      4: #pbs -j oe
+      5: #pbs -l walltime=1:00:00,nodes=2
       6:
-      7: cd $PBS_O_WORKDIR
+      7: cd $pbs_o_workdir
       8: date
       9: mpirun -n 8 ./a.out
 
-This batch script shows examples of the three sections outlined above:
+this batch script shows examples of the three sections outlined above:
 
-Interpreter Line
+interpreter line
 """"""""""""""""
 
-1: This line is optional and can be used to specify a shell to interpret
-the script. In this example, the bash shell will be used.
+1: this line is optional and can be used to specify a shell to interpret
+the script. in this example, the bash shell will be used.
 
-PBS Options
+pbs options
 """""""""""
 
-2: The job will be charged to the “XXXYYY” project. 3: The job will be
-named ``test``. 4: The job's standard output and error will be combined
-into one file. 5: The job will request (2) nodes for (1) hour.
+2: the job will be charged to the “xxxyyy” project. 3: the job will be
+named ``test``. 4: the job's standard output and error will be combined
+into one file. 5: the job will request (2) nodes for (1) hour.
 
-Shell Commands
+shell commands
 """"""""""""""
 
-6: This line is left blank, so it will be ignored. 7: This command will
+6: this line is left blank, so it will be ignored. 7: this command will
 change the current directory to the directory from where the script was
-submitted. 8: This command will run the ``date`` command. 9: This
-command will run (8) MPI instances of the executable ``a.out`` on the
-compute nodes allocated by the batch system. Batch scripts can be
-submitted for execution using the ``qsub`` command. For example, the
+submitted. 8: this command will run the ``date`` command. 9: this
+command will run (8) mpi instances of the executable ``a.out`` on the
+compute nodes allocated by the batch system. batch scripts can be
+submitted for execution using the ``qsub`` command. for example, the
 following will submit the batch script named ``test.pbs``:
 
 .. code::
 
       qsub test.pbs
 
-If successfully submitted, a PBS job ID will be returned. This ID can be
-used to track the job. It is also helpful in troubleshooting a failed
-job; make a note of the job ID for each of your jobs in case you must
-contact the `OLCF User Assistance
-Center </for-users/user-assistance/>`__ for support.
+if successfully submitted, a pbs job id will be returned. this id can be
+used to track the job. it is also helpful in troubleshooting a failed
+job; make a note of the job id for each of your jobs in case you must
+contact the `olcf user assistance
+center </for-users/user-assistance/>`__ for support.
 
 --------------
 
-Interactive Batch Jobs on Commodity Clusters
+interactive batch jobs on commodity clusters
 --------------------------------------------
 
-Batch scripts are useful when one has a pre-determined group of commands
-to execute, the results of which can be viewed at a later time. However,
+batch scripts are useful when one has a pre-determined group of commands
+to execute, the results of which can be viewed at a later time. however,
 it is often necessary to run tasks on compute resources interactively.
-Users are not allowed to access cluster compute nodes directly from a
-login node. Instead, users must use an *interactive batch job* to
-allocate and gain access to compute resources. This is done by using the
-``-I`` option to ``qsub``. Other PBS options are passed to ``qsub`` on
+users are not allowed to access cluster compute nodes directly from a
+login node. instead, users must use an *interactive batch job* to
+allocate and gain access to compute resources. this is done by using the
+``-i`` option to ``qsub``. other pbs options are passed to ``qsub`` on
 the command line as well:
 
 .. code::
 
-      $ qsub -I -A abc123 -q qname -V -l nodes=4 -l walltime=00:30:00
+      $ qsub -i -a abc123 -q qname -v -l nodes=4 -l walltime=00:30:00
 
-This request will:
+this request will:
 
 +----------------------------+----------------------------------------------------------------+
-| ``-I``                     | Start an interactive session                                   |
+| ``-i``                     | start an interactive session                                   |
 +----------------------------+----------------------------------------------------------------+
-| ``-A``                     | Charge to the ``abc123`` project                               |
+| ``-a``                     | charge to the ``abc123`` project                               |
 +----------------------------+----------------------------------------------------------------+
-| ``-q qname``               | Run in the ``qname`` queue                                     |
+| ``-q qname``               | run in the ``qname`` queue                                     |
 +----------------------------+----------------------------------------------------------------+
-| ``-V``                     | Export the user's shell environment to the job's environment   |
+| ``-v``                     | export the user's shell environment to the job's environment   |
 +----------------------------+----------------------------------------------------------------+
-| ``-l nodes=4``             | Request (4) nodes...                                           |
+| ``-l nodes=4``             | request (4) nodes...                                           |
 +----------------------------+----------------------------------------------------------------+
 | ``-l walltime=00:30:00``   | ...for (30) minutes                                            |
 +----------------------------+----------------------------------------------------------------+
 
-After running this command, the job will wait until enough compute nodes
-are available, just as any other batch job must. However, once the job
+after running this command, the job will wait until enough compute nodes
+are available, just as any other batch job must. however, once the job
 starts, the user will be given an interactive prompt on the primary
-compute node within the allocated resource pool. Commands may then be
+compute node within the allocated resource pool. commands may then be
 executed directly (instead of through a batch script).
 
-Using to Debug
+using to debug
 ^^^^^^^^^^^^^^
 
-A common use of interactive batch is to aid in debugging efforts.
-Interactive access to compute resources allows the ability to run a
+a common use of interactive batch is to aid in debugging efforts.
+interactive access to compute resources allows the ability to run a
 process to the point of failure; however, unlike a batch job, the
 process can be restarted after brief changes are made without losing the
 compute resource pool; thus speeding up the debugging effort.
 
-Choosing a Job Size
+choosing a job size
 ^^^^^^^^^^^^^^^^^^^
 
-Because interactive jobs must sit in the queue until enough resources
+because interactive jobs must sit in the queue until enough resources
 become available to allocate, it is useful to choose a job size based on
 the number of currently unallocated nodes (to shorten the queue wait
-time). Use the ``showbf`` command (i.e. "show backfill") to see resource
+time). use the ``showbf`` command (i.e. "show backfill") to see resource
 limits that would allow your job to be immediately backfilled (and thus
-started) by the scheduler. For example, the snapshot below shows that
+started) by the scheduler. for example, the snapshot below shows that
 (8) nodes are currently free.
 
 .. code::
 
       $ showbf
 
-      Partition   Tasks  Nodes  StartOffset   Duration   StartDate
+      partition   tasks  nodes  startoffset   duration   startdate
       ---------   -----  -----  ------------  ---------  --------------
-      rhea        4744   8      INFINITY      00:00:00   HH:MM:SS_MM/DD
+      rhea        4744   8      infinity      00:00:00   hh:mm:ss_mm/dd
 
-See the output of the ``showbf –help`` command for additional options.
+see the output of the ``showbf –help`` command for additional options.
 
 --------------
 
-Common Batch Options to PBS
+common batch options to pbs
 ---------------------------
 
-The following table summarizes frequently-used options to PBS:
+the following table summarizes frequently-used options to pbs:
 
-+----------+------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Option   | Use                                      | Description                                                                                                                                                                                                                                                                                                                         |
-+==========+==========================================+=====================================================================================================================================================================================================================================================================================================================================+
-| ``-A``   | ``#PBS -A <account>``                    | Causes the job time to be charged to ``<account>``. The account string, e.g. ``pjt000``, is typically composed of three letters followed by three digits and optionally followed by a subproject identifier. The utility ``showproj`` can be used to list your valid assigned project ID(s). This option is required by all jobs.   |
-+----------+------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``-l``   | ``#PBS -l nodes=<value>``                | Maximum number of compute nodes. Jobs cannot request partial nodes.                                                                                                                                                                                                                                                                 |
-+----------+------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|          | ``#PBS -l walltime=<time>``              | Maximum wall-clock time. ``<time>`` is in the format HH:MM:SS.                                                                                                                                                                                                                                                                      |
-+----------+------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|          | ``#PBS -l partition=<partition_name>``   | Allocates resources on specified partition.                                                                                                                                                                                                                                                                                         |
-+----------+------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``-o``   | ``#PBS -o <filename>``                   | Writes standard output to ``<name>`` instead of ``<job script>.o$PBS_JOBID``. ``$PBS_JOBID`` is an environment variable created by PBS that contains the PBS job identifier.                                                                                                                                                        |
-+----------+------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``-e``   | ``#PBS -e <filename>``                   | Writes standard error to ``<name>`` instead of ``<job script>.e$PBS_JOBID.``                                                                                                                                                                                                                                                        |
-+----------+------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``-j``   | ``#PBS -j {oe,eo}``                      | Combines standard output and standard error into the standard error file (``eo``) or the standard out file (``oe``).                                                                                                                                                                                                                |
-+----------+------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``-m``   | ``#PBS -m a``                            | Sends email to the submitter when the job aborts.                                                                                                                                                                                                                                                                                   |
-+----------+------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|          | ``#PBS -m b``                            | Sends email to the submitter when the job begins.                                                                                                                                                                                                                                                                                   |
-+----------+------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|          | ``#PBS -m e``                            | Sends email to the submitter when the job ends.                                                                                                                                                                                                                                                                                     |
-+----------+------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``-M``   | ``#PBS -M <address>``                    | Specifies email address to use for ``-m`` options.                                                                                                                                                                                                                                                                                  |
-+----------+------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``-N``   | ``#PBS -N <name>``                       | Sets the job name to ``<name>`` instead of the name of the job script.                                                                                                                                                                                                                                                              |
-+----------+------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``-S``   | ``#PBS -S <shell>``                      | Sets the shell to interpret the job script.                                                                                                                                                                                                                                                                                         |
-+----------+------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``-q``   | ``#PBS -q <queue>``                      | Directs the job to the specified queue.This option is not required to run in the default queue on any given system.                                                                                                                                                                                                                 |
-+----------+------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``-V``   | ``#PBS -V``                              | Exports all environment variables from the submitting shell into the batch job shell. Since the login nodes differ from the service nodes, using the '-V' option is **not recommended**. Users should create the needed environment within the batch job.                                                                           |
-+----------+------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``-X``   | ``#PBS -X``                              | Enables X11 forwarding. The -X PBS option should be used to tunnel a GUI from an interactive batch job.                                                                                                                                                                                                                             |
-+----------+------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
++----------+----------------------------------------+-------------------------------------------------------------------------------------+
+| option   | use                                    | description                                                                         |
++==========+========================================+=====================================================================================+
+| ``-a``   | ``#pbs -a <account>``                  | causes the job time to be                                                           |
+|          |                                        | charged to ``<account>``. the account string, e.g. ``pjt000``, is typically         |
+|          |                                        | composed of three letters followed by three digits and optionally followed by a     |
+|          |                                        | subproject identifier. the utility ``showproj`` can be used to list your valid      |
+|          |                                        | assigned project id(s). this option is required by all jobs.                        |
++----------+----------------------------------------+-------------------------------------------------------------------------------------+
+| ``-l``   | ``#PBS -l nodes=<value>``              | Maximum number of compute nodes. Jobs cannot request partial nodes.                 |
++----------+----------------------------------------+-------------------------------------------------------------------------------------+
+|          | ``#PBS -l walltime=<time>``            | Maximum wall-clock time. ``<time>`` is in the format HH:MM:SS.                      |
++----------+----------------------------------------+-------------------------------------------------------------------------------------+
+|          | ``#PBS -l partition=<partition_name>`` | Allocates resources on specified partition.                                         |
++----------+----------------------------------------+-------------------------------------------------------------------------------------+
+| ``-o``   | ``#PBS -o <filename>``                 | Writes standard output to                                                           |
+|          |                                        | ``<name>`` instead of ``<job script>.o$PBS_JOBID``. ``$PBS_JOBID`` is an            |
+|          |                                        | environment variable created by PBS that contains the PBS job identifier.           |
++----------+----------------------------------------+-------------------------------------------------------------------------------------+
+| ``-e``   | ``#PBS -e <filename>``                 | Writes standard error to ``<name>`` instead of ``<job script>.e$PBS_JOBID.``        |
++----------+----------------------------------------+-------------------------------------------------------------------------------------+
+| ``-j``   | ``#PBS -j {oe,eo}``                    | Combines standard output                                                            |
+|          |                                        | and standard error into the standard error file (``eo``) or the standard out        |
+|          |                                        | file (``oe``).                                                                      |
++----------+----------------------------------------+-------------------------------------------------------------------------------------+
+| ``-m``   | ``#PBS -m a``                          | Sends email to the submitter when the job aborts.                                   |
++----------+----------------------------------------+-------------------------------------------------------------------------------------+
+|          | ``#PBS -m b``                          | Sends email to the submitter when the job begins.                                   |
++----------+----------------------------------------+-------------------------------------------------------------------------------------+
+|          | ``#PBS -m e``                          | Sends email to the submitter when the job ends.                                     |
++----------+----------------------------------------+-------------------------------------------------------------------------------------+
+| ``-M``   | ``#PBS -M <address>``                  | Specifies email address to use for ``-m`` options.                                  |
++----------+----------------------------------------+-------------------------------------------------------------------------------------+
+| ``-N``   | ``#PBS -N <name>``                     | Sets the job name to ``<name>`` instead of the name of the job script.              |
++----------+----------------------------------------+-------------------------------------------------------------------------------------+
+| ``-S``   | ``#PBS -S <shell>``                    | Sets the shell to interpret the job script.                                         |
++----------+----------------------------------------+-------------------------------------------------------------------------------------+
+| ``-q``   | ``#PBS -q <queue>``                    | Directs the job to the                                                              |
+|          |                                        | specified queue.This option is not required to run in the default queue on any      |
+|          |                                        | given system.                                                                       |
++----------+----------------------------------------+-------------------------------------------------------------------------------------+
+| ``-V``   | ``#PBS -V``                            | Exports all environment                                                             |
+|          |                                        | variables from the submitting shell into the batch job shell. Since the login       |
+|          |                                        | nodes differ from the service nodes, using the '-V' option is **not recommended**.  |
+|          |                                        | Users should create the needed environment within the batch job.                    |
++----------+----------------------------------------+-------------------------------------------------------------------------------------+
+| ``-X``   | ``#PBS -X``                            | Enables X11 forwarding.                                                             |
+|          |                                        | The -X PBS option should be used to tunnel a GUI from an interactive batch job.     |
++----------+----------------------------------------+-------------------------------------------------------------------------------------+
 
-.. raw:: html
-
-   <div class="kb-note">
-
-**Note:** Because the login nodes differ from the service nodes, using
-the '-V' option is not recommended. Users should create the needed
-environment within the batch job.
-
-.. raw:: html
-
-   </div>
+    **Note:** Because the login nodes differ from the service nodes, using
+    the '-V' option is not recommended. Users should create the needed
+    environment within the batch job.
 
 Further details and other PBS options may be found through the ``qsub``
 man page.
@@ -676,19 +636,24 @@ Batch Environment Variables
 PBS sets multiple environment variables at submission time. The
 following PBS variables are useful within batch scripts:
 
-+----------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Variable             | Description                                                                                                                                                                                                                                                                            |
-+======================+========================================================================================================================================================================================================================================================================================+
-| ``$PBS_O_WORKDIR``   | The directory from which the batch job was *submitted*. By default, a new job starts in your home directory. You can get back to the directory of job submission with ``cd $PBS_O_WORKDIR``. Note that this is not necessarily the same directory in which the batch script resides.   |
-+----------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``$PBS_JOBID``       | The job’s full identifier. A common use for ``PBS_JOBID`` is to append the job’s ID to the standard output and error files.                                                                                                                                                            |
-+----------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``$PBS_NUM_NODES``   | The number of nodes requested.                                                                                                                                                                                                                                                         |
-+----------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``$PBS_JOBNAME``     | The job name supplied by the user.                                                                                                                                                                                                                                                     |
-+----------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``$PBS_NODEFILE``    | The name of the file containing the list of nodes assigned to the job. Used sometimes on non-Cray clusters.                                                                                                                                                                            |
-+----------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
++----------------------+----------------------------------------------------------------------------------+
+| Variable             | Description                                                                      |
++======================+==================================================================================+
+| ``$PBS_O_WORKDIR``   | The directory from which the batch job was                                       |
+|                      | *submitted*. By default, a new job starts in your home directory. You can get    |
+|                      | back to the directory of job submission with ``cd $PBS_O_WORKDIR``. Note that    |
+|                      | this is not necessarily the same directory in which the batch script resides.    |
++----------------------+----------------------------------------------------------------------------------+
+| ``$PBS_JOBID``       | The job’s full identifier. A common use for                                      |
+|                      | ``PBS_JOBID`` is to append the job’s ID to the standard output and error files.  |
++----------------------+----------------------------------------------------------------------------------+
+| ``$PBS_NUM_NODES``   | The number of nodes requested.                                                   |
++----------------------+----------------------------------------------------------------------------------+
+| ``$PBS_JOBNAME``     | The job name supplied by the user.                                               |
++----------------------+----------------------------------------------------------------------------------+
+| ``$PBS_NODEFILE``    | The name of the file containing the list of nodes                                |
+|                      | assigned to the job. Used sometimes on non-Cray clusters.                        |
++----------------------+----------------------------------------------------------------------------------+
 
 --------------
 
@@ -759,16 +724,10 @@ Modify the job’s walltime:
 
     $ qalter -l walltime=01:00:00 130494
 
-.. raw:: html
+..
 
-   <div class="kb-note">
-
-**Note:** Once a batch job moves into a running state, the job's
-walltime can not be increased.
-
-.. raw:: html
-
-   </div>
+    **Note:** Once a batch job moves into a running state, the job's
+    walltime can not be increased.
 
 --------------
 
@@ -832,14 +791,13 @@ To see all completed jobs:
 
     $ showq -c
 
-.. raw:: html
+..
 
-   <div class="kb-note">
+    **Note:** To increase response time, the MOAB utilities (*showstart*,
+    *checkjob*) will display a cached result. The cache updates every 30
+    seconds. But, because the cached result is displayed, you may see the
+    following message:
 
-**Note:** To increase response time, the MOAB utilities (*showstart*,
-*checkjob*) will display a cached result. The cache updates every 30
-seconds. But, because the cached result is displayed, you may see the
-following message:
 ::
 
     --------------------------------------------------------------------
@@ -847,9 +805,6 @@ following message:
           and may be slightly out of date.
     --------------------------------------------------------------------
 
-.. raw:: html
-
-   </div>
 
 ``checkjob``
 """"""""""""
@@ -962,20 +917,12 @@ Policy
 | max 1 job running
 | **per user**
 
-.. raw:: html
-
-   <div class="kb-note">
-
-The queue structure was designed based on user feedback and analysis of
-batch jobs over the recent years. However, we understand that the
-structure may not meet the needs of all users. **If this structure
-limits your use of the system, please let us know.** We want Rhea to be
-a useful OLCF resource and will work with you providing exceptions or
-even changing the queue structure if necessary.
-
-.. raw:: html
-
-   </div>
+    **Note:** The queue structure was designed based on user feedback and
+    analysis of batch jobs over the recent years. However, we understand that
+    the structure may not meet the needs of all users. **If this structure
+    limits your use of the system, please let us know.** We want Rhea to be a
+    useful OLCF resource and will work with you providing exceptions or even
+    changing the queue structure if necessary.
 
 Users wishing to submit jobs that fall outside the queue structure are
 encouraged to request a reservation via the `Special Request
@@ -1059,17 +1006,9 @@ parallel. ``mpirun`` accepts the following common options:
 | ``--report-bindings``            | Have MPI explain which ranks have been assigned to which nodes / physical cores   |
 +----------------------------------+-----------------------------------------------------------------------------------+
 
-.. raw:: html
-
-   <div class="kb-note">
-
-**Note:** If you do not specify the number of MPI tasks to ``mpirun``
-via ``-n``, the system will default to all available cores allocated to
-the job.
-
-.. raw:: html
-
-   </div>
+    **Note:** If you do not specify the number of MPI tasks to ``mpirun``
+    via ``-n``, the system will default to all available cores allocated to
+    the job.
 
 MPI Task Layout
 """""""""""""""""
@@ -1238,16 +1177,8 @@ The ``--report-bindings`` flag can be used to report task layout:
 Thread Layout
 """""""""""""""""
 
-.. raw:: html
-
-   <div class="kb-warning">
-
-**Warning:** Without controlling affinity, threads may be placed on the
-same core.
-
-.. raw:: html
-
-   </div>
+    **Warning:** Without controlling affinity, threads may be placed on the
+    same core.
 
 2 MPI tasks, 1 tasks per node, 16 threads per task, 2 nodes
 
@@ -1391,17 +1322,9 @@ based on what a job makes *unavailable* to other users, a job is charged
 for an entire node even if it uses only one core on a node. To simplify
 the process, users are given a multiples of entire nodes through PBS.
 
-.. raw:: html
-
-   <div class="kb-note">
-
-**Note:** Users are given a multiples of entire nodes through PBS, and
-associated allocations are reduced by the number of nodes requested,
-regardless of actual CPU utilization.
-
-.. raw:: html
-
-   </div>
+    **Note:** Users are given a multiples of entire nodes through PBS, and
+    associated allocations are reduced by the number of nodes requested,
+    regardless of actual CPU utilization.
 
 In general, the cluster may move MPI tasks between cores within a node.
 To help prevent a job’s tasks from being moved between cores each idle
@@ -1807,17 +1730,10 @@ maintain and debug. Workflows that contain loops or recursion (jobs that
 can submit themselves again) may inadvertently waste allocation hours if
 a suitable exit condition is not reached.
 
-.. raw:: html
+    **Warning:** Recursive workflows which do not exit will drain your
+    project's allocation. Refunds will not be granted. Please be extremely
+    cautious when designing workflows that cause jobs to re-submit themselves.
 
-   <div class="kb-danger">
-
-Recursive workflows which do not exit will drain your project's
-allocation. Refunds will not be granted. Please be extremely cautious
-when designing workflows that cause jobs to re-submit themselves.
-
-.. raw:: html
-
-   </div>
 
 |Circular Workflow|
 
@@ -1865,18 +1781,10 @@ local ParaView client to display and interact with your data while the
 ParaView server runs in a Rhea batch job, allowing interactive analysis
 of very large data sets.
 
-.. raw:: html
-
-   <div class="kb-warning">
-
-In interactive mode your local ParaView version number must match the
-ParaView version number available on Rhea. Please check the available
-ParaView versions using Rhea's `modules
-system </for-users/system-user-guides/rhea/shell-and-programming-environments/#using-modules>`__.
-
-.. raw:: html
-
-   </div>
+    **Warning:** In interactive mode your local ParaView version number must
+    match the ParaView version number available on Rhea. Please check the
+    available ParaView versions using Rhea's `modules system
+    </for-users/system-user-guides/rhea/shell-and-programming-environments/#using-modules>`__.
 
 Interactive Example
 """""""""""""""""""
@@ -1886,28 +1794,12 @@ Rhea and connecting to it from a locally running ParaView client.
 Although several methods may be used the one described should work in
 most cases.
 
-.. raw:: html
+    **Warning:** For Macintosh clients, it is necessary to install `XQuartz
+    (X11) <https://support.apple.com/en-us/HT201341>`__ to get a command prompt
+    in which you will securely enter your OLCF credentials.
 
-   <div class="kb-warning">
-
-For Macintosh clients, it is necessary to install `XQuartz
-(X11) <https://support.apple.com/en-us/HT201341>`__ to get a command
-prompt in which you will securely enter your OLCF credentials.
-
-.. raw:: html
-
-   </div>
-
-.. raw:: html
-
-   <div class="kb-warning">
-
-For Windows clients, it is necessary to install PuTTY to create an ssh
-connection in step 2.
-
-.. raw:: html
-
-   </div>
+    **Warning:** For Windows clients, it is necessary to install PuTTY to
+    create an ssh connection in step 2.
 
 **Step 1: Launch ParaView on your Desktop and fetch a connection script
 for Rhea** Start ParaView and then select ``File/Connect`` to begin.
@@ -2143,16 +2035,6 @@ matlab-vnc.sh (non-GPU rendering)
 Remote Visualization using VNC (GPU nodes)
 ------------------------------------------
 
-.. raw:: html
-
-   <div class="kb-warning">
-
-Available April 29
-
-.. raw:: html
-
-   </div>
-
 step 1 (local system)
 ^^^^^^^^^^^^^^^^^^^^^
 
@@ -2253,18 +2135,10 @@ Launch an interactive job:
 
      qsub -I -A projectID   -l nodes=1 -l walltime=00:30:00 -l partition=gpu
 
-.. raw:: html
-
-   <div class="kb-warning">
-
 As of April 29, the dcv feature will be required:
 .. code::
 
      qsub -I -A projectID   -l nodes=1 -l walltime=00:30:00 -l partition=gpu -l feature=dcv
-
-.. raw:: html
-
-   </div>
 
 Run the following commands:
 

@@ -4,7 +4,7 @@ Getting Started at the OLCF
 
 .. toctree::
    :maxdepth: 2
-    
+
    getting_started
    documents_and_forms
    olcf_policy_guide
