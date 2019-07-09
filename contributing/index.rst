@@ -27,6 +27,11 @@ Setup authoring environment
 
     $ git clone https://github.com/<your-github-id>/olcf-user-documentation.git
 
+#. Point your master branch to track upstream::
+
+    $ git remote add olcf https://github.com/olcf/olcf-user-documentation.git
+    $ git branch --set-upstream-to=olcf/master
+
 #. Build the docs::
 
     $ cd olcf-user-documentation && sphinx-build -E . _build
