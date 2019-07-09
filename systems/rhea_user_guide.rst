@@ -13,20 +13,49 @@ users with accounts on
 `titan <https://beta.olcf.ornl.gov/user-support/resource-user-guides/titan/>`__
 will automatically be given access to rhea.
 
---------------
-
 compute nodes
 -------------
 
-[ls\_content\_block id="21300" para="full"] please see the `batch queues
-on rhea <../running-jobs/#batch-queues-on-rhea>`__ section to learn
-about the queuing policies for these two partitions. both compute
-partitions are accessible through the same batch queue from rhea's
-`login nodes <../system-overview/#login-nodes>`__. rhea features a 4x
-fdr infiniband interconnect, with a maximum theoretical transfer rate of
-56 gb/s.
+Rhea contains 521 compute nodes separated into two partitions:
 
---------------
+
++-------------+-------------+---------+-------------------+---------------------------------------------+
+| Partition   | Node Count  | Memory  | GPU               | CPU                                         |
++=============+=============+=========+===================+=============================================+
+| rhea        | 512         | 128 GB  | -                 | [2x] Intel\ :sup:`®` Xeon\ :sup:`®` E5-2650 |
+| (default)   |             |         |                   | @2.0 GHz - 8 cores, 16 HT                   |
+|             |             |         |                   | (total 16 cores, 32 HT *per node*           |
++-------------+-------------+---------+-------------------+---------------------------------------------+
+| gpu         | 9           | 1 TB    | [2x]              | [2x] Intel\ :sup:`®` Xeon\ :sup:`®` E5-2695 |
+|             |             |         | NVIDIA\ :sup:`®`  | @2.3 GHz - 14 cores, 28 HT                  |
+|             |             |         | K80               | (total 28 cores, 56 HT *per node*           |
++-------------+-------------+---------+-------------------+---------------------------------------------+
+
+Rhea Partition
+
+The first 512 nodes make up the rhea partition, where each node contains two
+8-core 2.0 GHz Intel Xeon processors with Intel’s Hyper-Threading (HT)
+Technology and 128GB of main memory. Each CPU in this partition features 8
+physical cores, for a total of 16 physical cores per node. With Intel®
+Hyper-Threading Technology enabled, each node has 32 logical cores capable of
+executing 32 hardware threads for increased parallelism.  GPU Partition
+
+Rhea also has nine large memory/GPU nodes, which make up the gpu partition.
+These nodes each have 1TB of main memory and two NVIDIA K80 GPUs in addition to
+two 14-core 2.30 GHz Intel Xeon processors with HT Technology. Each CPU in this
+partition features 14 physical cores, for a total of 28 physical cores per node.
+With Hyper-Threading enabled, these nodes have 56 logical cores that can execute
+56 hardware threads for increased parallelism.
+
+    **Note:** To access the gpu partition, batch job submissions should request
+    ``-lpartition=gpu``.
+
+Please see the `Batch Queues on Rhea <>`_ section to learn about the queuing policies
+for these two partitions. Both compute partitions are accessible through the
+same batch queue from Rhea’s `login nodes. <>`_
+
+Rhea features a 4X FDR Infiniband interconnect, with a maximum theoretical
+transfer rate of 56 Gb/s.
 
 login nodes
 -----------
@@ -38,8 +67,6 @@ users will access the system through these same login nodes, and as
 such, any cpu- or memory-intensive tasks on these nodes could interrupt
 service to other users. as a courtesy, we ask that you refrain from
 doing any analysis or visualization tasks on the login nodes.
-
---------------
 
 file systems
 ------------
