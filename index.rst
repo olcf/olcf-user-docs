@@ -22,7 +22,7 @@ Systems
 
 .. toctree::
    :maxdepth: 2
-   
+
    systems/index.rst
 
 Data
@@ -52,7 +52,7 @@ How to contribute to this documentation
 
 .. toctree::
    :maxdepth: 2
-   
+
    contributing/index
 
 Indices and tables

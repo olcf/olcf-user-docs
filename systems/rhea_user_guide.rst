@@ -2,135 +2,95 @@
 rhea user guide
 *********************
 
-overview
+Overview
 =========
 
-rhea is a 521-node commodity-type linux cluster. the primary purpose of
+Rhea is a 521-node commodity-type linux cluster. The primary purpose of
 rhea is to provide a conduit for large-scale scientific discovery via
-pre/post processing and analysis of simulation data generated on
-`titan <https://beta.olcf.ornl.gov/user-support/resource-user-guides/titan/>`__.
-users with accounts on
-`titan <https://beta.olcf.ornl.gov/user-support/resource-user-guides/titan/>`__
-will automatically be given access to rhea.
+pre/post processing and analysis of simulation data generated on Summit.
+Users with accounts on Summit will automatically be given access to rhea.
 
-compute nodes
+Compute nodes
 -------------
 
-Rhea contains 521 compute nodes separated into two partitions:
+.. include:: includes/rhea-compute-nodes.txt
 
-
-+-------------+-------------+---------+-------------------+---------------------------------------------+
-| Partition   | Node Count  | Memory  | GPU               | CPU                                         |
-+=============+=============+=========+===================+=============================================+
-| rhea        | 512         | 128 GB  | -                 | [2x] Intel\ :sup:`®` Xeon\ :sup:`®` E5-2650 |
-| (default)   |             |         |                   | @2.0 GHz - 8 cores, 16 HT                   |
-|             |             |         |                   | (total 16 cores, 32 HT *per node*           |
-+-------------+-------------+---------+-------------------+---------------------------------------------+
-| gpu         | 9           | 1 TB    | [2x]              | [2x] Intel\ :sup:`®` Xeon\ :sup:`®` E5-2695 |
-|             |             |         | NVIDIA\ :sup:`®`  | @2.3 GHz - 14 cores, 28 HT                  |
-|             |             |         | K80               | (total 28 cores, 56 HT *per node*           |
-+-------------+-------------+---------+-------------------+---------------------------------------------+
-
-Rhea Partition
-
-The first 512 nodes make up the rhea partition, where each node contains two
-8-core 2.0 GHz Intel Xeon processors with Intel’s Hyper-Threading (HT)
-Technology and 128GB of main memory. Each CPU in this partition features 8
-physical cores, for a total of 16 physical cores per node. With Intel®
-Hyper-Threading Technology enabled, each node has 32 logical cores capable of
-executing 32 hardware threads for increased parallelism.  GPU Partition
-
-Rhea also has nine large memory/GPU nodes, which make up the gpu partition.
-These nodes each have 1TB of main memory and two NVIDIA K80 GPUs in addition to
-two 14-core 2.30 GHz Intel Xeon processors with HT Technology. Each CPU in this
-partition features 14 physical cores, for a total of 28 physical cores per node.
-With Hyper-Threading enabled, these nodes have 56 logical cores that can execute
-56 hardware threads for increased parallelism.
-
-    **Note:** To access the gpu partition, batch job submissions should request
-    ``-lpartition=gpu``.
-
-Please see the `Batch Queues on Rhea <>`_ section to learn about the queuing policies
-for these two partitions. Both compute partitions are accessible through the
-same batch queue from Rhea’s `login nodes. <>`_
-
-Rhea features a 4X FDR Infiniband interconnect, with a maximum theoretical
-transfer rate of 56 Gb/s.
-
-login nodes
+Login nodes
 -----------
 
-rhea features (4) login nodes which are identical to the compute nodes,
-but with 64gb of ram. the login nodes provide an environment for
-editing, compiling, and launching codes onto the compute nodes. all rhea
+Rhea features (4) login nodes which are identical to the compute nodes,
+but with 64gb of ram. The login nodes provide an environment for
+editing, compiling, and launching codes onto the compute nodes. All rhea
 users will access the system through these same login nodes, and as
 such, any cpu- or memory-intensive tasks on these nodes could interrupt
-service to other users. as a courtesy, we ask that you refrain from
+service to other users. As a courtesy, we ask that you refrain from
 doing any analysis or visualization tasks on the login nodes.
 
-file systems
+--------------
+
+File systems
 ------------
 
-the olcf's center-wide lustre\ :sup:`®` file system, named
-`spider <../file-systems/#spider-the-centerwide-lustre-file-system>`__,
-is available on rhea for computational work. with over 26,000 clients
+The olcf's center-wide lustre\ :sup:`®` file system, named
+`spider <../file-systems/#spider-the-centerwide-lustre-file-system>`_,
+is available on rhea for computational work. With over 26,000 clients
 and (32) pb of disk space, it is one of the largest-scale
-lustre\ :sup:`®` file systems in the world. a nfs-based file system
+lustre\ :sup:`®` file systems in the world. A nfs-based file system
 provides `user home storage
 areas <../file-systems/#user-home-directories-nfs>`__ and `project home
 storage areas <../file-systems/#project-home-directories-nfs>`__.
-additionally, the olcf's\ `high performance storage
+additionally, the olcf's `high performance storage
 system <../file-systems/#hpss-high-performance-storage-system>`__ (hpss)
 provides archival spaces.
 
-compiling
+Compiling
 =========
 
-compiling code on rhea is typical of commodity or beowulf-style hpc
+Compiling code on rhea is typical of commodity or beowulf-style hpc
 linux clusters.
 
-available compilers
+Available compilers
 -------------------
 
-the following compilers are available on rhea:
+The following compilers are available on rhea:
 
 - `intel </software_package/intel/>`__, intel composer xe (default)
 - `pgi </software_package/pgi/>`__, the portland group compiler suite
 - `gcc </software_package/gcc/>`__, the gnu compiler collection
 
-upon login, default versions of the intel compiler and openmpi (message
+Upon login, default versions of the intel compiler and openmpi (message
 passing interface) libraries are automatically added to each user's
-environment. users do not need to make any environment changes to use
+environment. Users do not need to make any environment changes to use
 the default version of intel and openmpi.
 
 --------------
 
-changing compilers
+Changing compilers
 ------------------
 
-if a different compiler is required, it is important to use the correct
-environment for each compiler. to aid users in pairing the correct
+If a different compiler is required, it is important to use the correct
+environment for each compiler. To aid users in pairing the correct
 compiler and environment, the module system on rhea automatically pulls
-in libraries compiled with a given compiler when changing compilers. the
+in libraries compiled with a given compiler when changing compilers. The
 compiler modules will load the correct pairing of compiler version,
 message passing libraries, and other items required to build and run
-code. to change the default loaded intel environment to the gcc
+code. To change the default loaded intel environment to the gcc
 environment for example, use:
 
 .. code::
 
     $ module load gcc
 
-this will automatically unload the current compiler and system libraries
+This will automatically unload the current compiler and system libraries
 associated with it, load the new compiler environment and automatically
 load associated system libraries as well.
 
-changing versions of the same compiler
+Changing versions of the same compiler
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-to use a specific compiler *version*, you must first ensure the
+To use a specific compiler *version*, you must first ensure the
 compiler's module is loaded, and *then* swap to the correct compiler
-version. for example, the following will configure the environment to
+version. For example, the following will configure the environment to
 use the gcc compilers, then load a non-default gcc compiler version:
 
 .. code::
@@ -143,17 +103,17 @@ use the gcc compilers, then load a non-default gcc compiler version:
     **note: we recommend the following general guidelines for using the
     programming environment modules:**
 
-    -  do not purge all modules; rather, use the default module environment
+    -  Do not purge all modules; rather, use the default module environment
        provided at the time of login, and modify it.
-    -  do not swap moab, torque, or mysql modules after loading a
+    -  Do not swap moab, torque, or mysql modules after loading a
        programming environment modulefile.
 
 --------------
 
-compiler wrappers
+Compiler wrappers
 -----------------
 
-commodity clusters at the olcf can be accessed via the following wrapper
+Commodity clusters at the olcf can be accessed via the following wrapper
 programs:
 
 -  ``mpicc`` to invoke the c compiler
@@ -161,64 +121,63 @@ programs:
 -  ``mpif77`` or ``mpif90`` to invoke appropriate versions of the
    fortran compiler
 
-these wrapper programs are cognizant of your currently loaded modules,
+These wrapper programs are cognizant of your currently loaded modules,
 and will ensure that your code links against our openmpi installation.
 more information about using openmpi at our center can be found in our
-`software
-documentation <https://www.olcf.ornl.gov/kb_articles/software-ompi/>`__.
+`software documentation <https://www.olcf.ornl.gov/kb_articles/software-ompi/>`__.
 
-compiling threaded codes
+Compiling threaded codes
 ------------------------
 
-when building threaded codes, compiler-specific flags must be included
+When building threaded codes, compiler-specific flags must be included
 to ensure a proper build.
 
-openmp
+Openmp
 ^^^^^^
 
-for pgi, add "-mp" to the build line.
+For pgi, add "-mp" to the build line.
 
 .. code::
 
     $ mpicc -mp test.c -o test.x
     $ export omp_num_threads=2
 
-for gnu, add "-fopenmp" to the build line.
+For gnu, add "-fopenmp" to the build line.
 
 .. code::
 
     $ mpicc -fopenmp test.c -o test.x
     $ export omp_num_threads=2
 
-for intel, add "-qopenmp" to the build line.
+For intel, add "-qopenmp" to the build line.
 
 .. code::
 
     $ mpicc -qopenmp test.c -o test.x
     $ export omp_num_threads=2
 
-for information on *running threaded codes*, please see the `thread
+For information on *running threaded codes*, please see the `thread
 layout </for-users/system-user-guides/rhea/running-jobs/#-thread-layout->`__
 subsection of the `running
 jobs </for-users/system-user-guides/rhea/running-jobs/>`__ section in
 this user guide.
 
-shell and programming environments
+Shell and programming environments
 ==================================
 
-olcf systems provide hundreds of software packages and scientific
+Olcf systems provide hundreds of software packages and scientific
 libraries pre-installed at the system-level for users to take advantage
-of. to facilitate this, environment management tools are employed to
-handle necessary changes to the shell dynamically. the sections below
+of. To facilitate this, environment management tools are employed to
+handle necessary changes to the shell dynamically. The sections below
 provide information about using the management tools at the olcf.
 
 --------------
 
-default shell
+Default shell
 -------------
 
-a user's default shell is selected when completing the user account
-request form. the chosen shell is set across all olcf resources.
+A user's default shell is selected when completing the user account
+request form. The chosen shell is set across all olcf resources.
 currently, supported shells include:
 
 -  bash
@@ -226,16 +185,16 @@ currently, supported shells include:
 -  csh
 -  ksh
 
-if you would like to have your default shell changed, please contact the
+If you would like to have your default shell changed, please contact the
 `olcf user assistance center </for-users/user-assistance/>`__ at
 help@olcf.ornl.gov.
 
 --------------
 
-environment management with lmod
+Environment management with lmod
 --------------------------------
 
-the *modules* software package allows you to dynamically modify your
+The *modules* software package allows you to dynamically modify your
 user environment by using pre-written *modulefiles*. environment modules
 are provided through `lmod <https://lmod.readthedocs.io/en/latest/>`__,
 a lua-based module system for dynamically altering shell environments.
@@ -243,23 +202,23 @@ by managing changes to the shell’s environment variables (such as
 ``path``, ``ld_library_path``, and ``pkg_config_path``), lmod allows you
 to alter the software available in your shell environment without the
 risk of creating package and version combinations that cannot coexist in
-a single environment. lmod is a recursive environment module system,
+a single environment. Lmod is a recursive environment module system,
 meaning it is aware of module compatibility and actively alters the
-environment to protect against conflicts. messages to stderr are issued
-upon lmod implicitly altering the environment. environment modules are
+environment to protect against conflicts. Messages to stderr are issued
+upon lmod implicitly altering the environment. Environment modules are
 structured hierarchically by compiler family such that packages built
 with a given compiler will only be accessible if the compiler family is
 first present in the environment.
 
     **note:** lmod can interpret both lua modulefiles and legacy tcl
-    modulefiles. however, long and logic-heavy tcl modulefiles may require
+    modulefiles. However, long and logic-heavy tcl modulefiles may require
     porting to lua.
 
-general usage
+General usage
 ^^^^^^^^^^^^^
 
-typical use of lmod is very similar to that of interacting with
-modulefiles on other olcf systems. the interface to lmod is provided by
+Typical use of lmod is very similar to that of interacting with
+modulefiles on other olcf systems. The interface to lmod is provided by
 the ``module`` command:
 
 +----------------------------------+-----------------------------------------------------------------------+
@@ -288,19 +247,19 @@ the ``module`` command:
 | module update                    | reloads all currently loaded modules                                  |
 +----------------------------------+-----------------------------------------------------------------------+
 
-    **note:** modules are changed recursively. some commands, such as
+    **note:** modules are changed recursively. Some commands, such as
     ``module swap``, are available to maintain compatibility with scripts
     using tcl environment modules, but are not necessary since lmod
     recursively processes loaded modules and automatically resolves
     conflicts.
 
-searching for modules
+Searching for modules
 ^^^^^^^^^^^^^^^^^^^^^
 
-modules with dependencies are only available when the underlying
-dependencies, such as compiler families, are loaded. thus,
+Modules with dependencies are only available when the underlying
+dependencies, such as compiler families, are loaded. Thus,
 ``module avail`` will only display modules that are compatible with the
-current state of the environment. to search the entire hierarchy across
+current state of the environment. To search the entire hierarchy across
 all possible dependencies, the ``spider`` sub-command can be used as
 summarized in the following table.
 
@@ -318,14 +277,14 @@ summarized in the following table.
 
  
 
-defining custom module collections
+Defining custom module collections
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-lmod supports caching commonly used collections of environment modules
+Lmod supports caching commonly used collections of environment modules
 on a per-user basis in ``$home/.lmod.d``. to create a collection called
 "name" from the currently loaded modules, simply call
 ``module save name``. omitting "name" will set the user’s default
-collection. saved collections can be recalled and examined with the
+collection. Saved collections can be recalled and examined with the
 commands summarized in the following table.
 
 +-------------------------+----------------------------------------------------------+
@@ -343,7 +302,7 @@ commands summarized in the following table.
 +-------------------------+----------------------------------------------------------+
 
     **note:** you should use unique names when creating collections to
-    specify the application (and possibly branch) you are working on. for
+    specify the application (and possibly branch) you are working on. For
     example, \`app1-development\`, \`app1-production\`, and
     \`app2-production\`.
 
@@ -354,28 +313,30 @@ commands summarized in the following table.
     variable lmod\_system\_name). this ensures that only collections
     appended with the name of the current system are visible.
 
-the following screencast shows an example of setting up user-defined
+The following screencast shows an example of setting up user-defined
 module collections on summit. https://vimeo.com/293582400
 
 --------------
 
-installed software
+Installed software
 ------------------
 
-the olcf provides hundreds of pre-installed software packages and
+The olcf provides hundreds of pre-installed software packages and
 scientific libraries for your use, in addition to taking `software
-installation requests </support/software/software-request/>`__. see the
+installation requests </support/software/software-request/>`__. See the
 `software </for-users/software/>`__ page for complete details on
 existing installs.
 
-running jobs
+.. _rhea-running-jobs:
+
+Running jobs
 ============
 
-in high performance computing (hpc), computational work is performed by
+In high performance computing (hpc), computational work is performed by
 *jobs*. individual jobs produce data that lend relevant insight into
-grand challenges in science and engineering. as such, the timely,
+grand challenges in science and engineering. As such, the timely,
 efficient execution of jobs is the primary concern in the operation of
-any hpc system. a job on a commodity cluster typically comprises a few
+any hpc system. A job on a commodity cluster typically comprises a few
 different components:
 
 -  a batch submission script.
@@ -383,31 +344,31 @@ different components:
 -  a set of input files for the executable.
 -  a set of output files created by the executable.
 
-and the process for running a job, in general, is to:
+And the process for running a job, in general, is to:
 
 #. prepare executables and input files.
 #. write a batch script.
 #. submit the batch script to the batch scheduler.
 #. optionally monitor the job before and during execution.
 
-the following sections describe in detail how to create, submit, and
+The following sections describe in detail how to create, submit, and
 manage jobs for execution on commodity clusters.
 
 --------------
 
-login vs compute nodes on commodity clusters
+Login vs compute nodes on commodity clusters
 --------------------------------------------
 
-login nodes
+Login nodes
 ^^^^^^^^^^^
 
-when you log into an olcf cluster, you are placed on a *login* node.
-login node resources are shared by all users of the system. because of
+When you log into an olcf cluster, you are placed on a *login* node.
+login node resources are shared by all users of the system. Because of
 this, users should be mindful when performing tasks on a login node.
 login nodes should be used for basic tasks such as file editing, code
-compilation, data backup, and job submission. login nodes should *not*
-be used for memory- or compute-intensive tasks. users should also limit
-the number of simultaneous tasks performed on the login resources. for
+compilation, data backup, and job submission. Login nodes should *not*
+be used for memory- or compute-intensive tasks. Users should also limit
+the number of simultaneous tasks performed on the login resources. For
 example, a user should not run (10) simultaneous ``tar`` processes on a
 login node.
 
@@ -415,62 +376,62 @@ login node.
     disruptive processes running on login nodes may be killed without
     warning.
 
-compute nodes
+Compute nodes
 ^^^^^^^^^^^^^
 
-[ls\_content\_block id="21300" para="full"]
+.. include:: includes/rhea-compute-nodes.txt
 
 --------------
 
-writing batch scripts for commodity clusters
+Writing batch scripts for commodity clusters
 --------------------------------------------
 
-batch scripts, or job submission scripts, are the mechanism by which a
-user configures and submits a job for execution. a batch script is
+Batch scripts, or job submission scripts, are the mechanism by which a
+user configures and submits a job for execution. A batch script is
 simply a shell script that also includes commands to be interpreted by
-the batch scheduling software (e.g. pbs). batch scripts are submitted to
+the batch scheduling software (e.g. Pbs). batch scripts are submitted to
 the batch scheduler, where they are then parsed for the scheduling
-configuration options. the batch scheduler then places the script in the
-appropriate queue, where it is designated as a batch job. once the batch
+configuration options. The batch scheduler then places the script in the
+appropriate queue, where it is designated as a batch job. Once the batch
 jobs makes its way through the queue, the script will be executed on the
 primary compute node of the allocated resources.
 
-components of a batch script
+Components of a batch script
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-batch scripts are parsed into the following (3) sections:
+Batch scripts are parsed into the following (3) sections:
 
-interpreter line
+Interpreter line
 """"""""""""""""
 
-the first line of a script can be used to specify the script’s
-interpreter; this line is optional. if not used, the submitter’s default
-shell will be used. the line uses the *hash-bang* syntax, i.e.,
+The first line of a script can be used to specify the script’s
+interpreter; this line is optional. If not used, the submitter’s default
+shell will be used. The line uses the *hash-bang* syntax, i.e.,
 ``#!/path/to/shell``.
 
-pbs submission options
+Pbs submission options
 """"""""""""""""""""""
 
-the pbs submission options are preceded by the string ``#pbs``, making
-them appear as comments to a shell. pbs will look for ``#pbs`` options
+The pbs submission options are preceded by the string ``#pbs``, making
+them appear as comments to a shell. Pbs will look for ``#pbs`` options
 in a batch script from the script’s first line through the first
-non-comment line. a comment line begins with ``#``. ``#pbs`` options
+non-comment line. A comment line begins with ``#``. ``#pbs`` options
 entered after the first non-comment line will not be read by pbs.
 
-shell commands
+Shell commands
 """"""""""""""
 
-the shell commands follow the last ``#pbs`` option and represent the
-executable content of the batch job. if any ``#pbs`` lines follow
-executable statements, they will be treated as comments only. the
+The shell commands follow the last ``#pbs`` option and represent the
+executable content of the batch job. If any ``#pbs`` lines follow
+executable statements, they will be treated as comments only. The
 execution section of a script will be interpreted by a shell and can
 contain multiple lines of executables, shell commands, and comments.
 when the job's queue wait time is finished, commands within this section
 will be executed on the primary compute node of the job's allocated
-resources. under normal circumstances, the batch job will exit the queue
+resources. Under normal circumstances, the batch job will exit the queue
 after the last line of the script is executed.
 
-example batch script
+Example batch script
 ^^^^^^^^^^^^^^^^^^^^
 
 .. code::
@@ -485,53 +446,53 @@ example batch script
       8: date
       9: mpirun -n 8 ./a.out
 
-this batch script shows examples of the three sections outlined above:
+This batch script shows examples of the three sections outlined above:
 
-interpreter line
+Interpreter line
 """"""""""""""""
 
 1: this line is optional and can be used to specify a shell to interpret
-the script. in this example, the bash shell will be used.
+the script. In this example, the bash shell will be used.
 
-pbs options
+Pbs options
 """""""""""
 
 2: the job will be charged to the “xxxyyy” project. 3: the job will be
 named ``test``. 4: the job's standard output and error will be combined
 into one file. 5: the job will request (2) nodes for (1) hour.
 
-shell commands
+Shell commands
 """"""""""""""
 
 6: this line is left blank, so it will be ignored. 7: this command will
 change the current directory to the directory from where the script was
 submitted. 8: this command will run the ``date`` command. 9: this
 command will run (8) mpi instances of the executable ``a.out`` on the
-compute nodes allocated by the batch system. batch scripts can be
-submitted for execution using the ``qsub`` command. for example, the
+compute nodes allocated by the batch system. Batch scripts can be
+submitted for execution using the ``qsub`` command. For example, the
 following will submit the batch script named ``test.pbs``:
 
 .. code::
 
       qsub test.pbs
 
-if successfully submitted, a pbs job id will be returned. this id can be
-used to track the job. it is also helpful in troubleshooting a failed
+If successfully submitted, a pbs job id will be returned. This id can be
+used to track the job. It is also helpful in troubleshooting a failed
 job; make a note of the job id for each of your jobs in case you must
 contact the `olcf user assistance
 center </for-users/user-assistance/>`__ for support.
 
 --------------
 
-interactive batch jobs on commodity clusters
+Interactive batch jobs on commodity clusters
 --------------------------------------------
 
-batch scripts are useful when one has a pre-determined group of commands
-to execute, the results of which can be viewed at a later time. however,
+Batch scripts are useful when one has a pre-determined group of commands
+to execute, the results of which can be viewed at a later time. However,
 it is often necessary to run tasks on compute resources interactively.
 users are not allowed to access cluster compute nodes directly from a
-login node. instead, users must use an *interactive batch job* to
-allocate and gain access to compute resources. this is done by using the
+login node. Instead, users must use an *interactive batch job* to
+allocate and gain access to compute resources. This is done by using the
 ``-i`` option to ``qsub``. other pbs options are passed to ``qsub`` on
 the command line as well:
 
@@ -539,7 +500,7 @@ the command line as well:
 
       $ qsub -i -a abc123 -q qname -v -l nodes=4 -l walltime=00:30:00
 
-this request will:
+This request will:
 
 +----------------------------+----------------------------------------------------------------+
 | ``-i``                     | start an interactive session                                   |
@@ -555,30 +516,30 @@ this request will:
 | ``-l walltime=00:30:00``   | ...for (30) minutes                                            |
 +----------------------------+----------------------------------------------------------------+
 
-after running this command, the job will wait until enough compute nodes
-are available, just as any other batch job must. however, once the job
+After running this command, the job will wait until enough compute nodes
+are available, just as any other batch job must. However, once the job
 starts, the user will be given an interactive prompt on the primary
-compute node within the allocated resource pool. commands may then be
+compute node within the allocated resource pool. Commands may then be
 executed directly (instead of through a batch script).
 
-using to debug
+Using to debug
 ^^^^^^^^^^^^^^
 
-a common use of interactive batch is to aid in debugging efforts.
+A common use of interactive batch is to aid in debugging efforts.
 interactive access to compute resources allows the ability to run a
 process to the point of failure; however, unlike a batch job, the
 process can be restarted after brief changes are made without losing the
 compute resource pool; thus speeding up the debugging effort.
 
-choosing a job size
+Choosing a job size
 ^^^^^^^^^^^^^^^^^^^
 
-because interactive jobs must sit in the queue until enough resources
+Because interactive jobs must sit in the queue until enough resources
 become available to allocate, it is useful to choose a job size based on
 the number of currently unallocated nodes (to shorten the queue wait
 time). use the ``showbf`` command (i.e. "show backfill") to see resource
 limits that would allow your job to be immediately backfilled (and thus
-started) by the scheduler. for example, the snapshot below shows that
+started) by the scheduler. For example, the snapshot below shows that
 (8) nodes are currently free.
 
 .. code::
@@ -589,14 +550,14 @@ started) by the scheduler. for example, the snapshot below shows that
       ---------   -----  -----  ------------  ---------  --------------
       rhea        4744   8      infinity      00:00:00   hh:mm:ss_mm/dd
 
-see the output of the ``showbf –help`` command for additional options.
+See the output of the ``showbf –help`` command for additional options.
 
 --------------
 
-common batch options to pbs
+Common batch options to pbs
 ---------------------------
 
-the following table summarizes frequently-used options to pbs:
+The following table summarizes frequently-used options to pbs:
 
 +----------+----------------------------------------+-------------------------------------------------------------------------------------+
 | option   | use                                    | description                                                                         |
@@ -604,7 +565,7 @@ the following table summarizes frequently-used options to pbs:
 | ``-a``   | ``#pbs -a <account>``                  | causes the job time to be                                                           |
 |          |                                        | charged to ``<account>``. the account string, e.g. ``pjt000``, is typically         |
 |          |                                        | composed of three letters followed by three digits and optionally followed by a     |
-|          |                                        | subproject identifier. the utility ``showproj`` can be used to list your valid      |
+|          |                                        | subproject identifier. The utility ``showproj`` can be used to list your valid      |
 |          |                                        | assigned project id(s). this option is required by all jobs.                        |
 +----------+----------------------------------------+-------------------------------------------------------------------------------------+
 | ``-l``   | ``#PBS -l nodes=<value>``              | Maximum number of compute nodes. Jobs cannot request partial nodes.                 |
@@ -774,25 +735,19 @@ The Moab utility ``showq`` can be used to view a more detailed
 description of the queue. The utility will display the queue in the
 following states:
 
-State
 
-Description
-
-Active
-
-These jobs are currently running.
-
-Eligible
-
-These jobs are currently queued awaiting resources. Eligible jobs are
-shown in the order in which the scheduler will consider them for
-allocation.
-
-Blocked
-
-These jobs are currently queued but are not eligible to run. A job may
-be in this state because the user has more jobs that are "eligible to
-run" than the system's queue policy allows.
++----------+-------------------------------------------------------------------------------+
+| State    | Description                                                                   |
++==========+===============================================================================+
+| Active   | These jobs are currently running.                                             |
++----------+-------------------------------------------------------------------------------+
+| Eligible | These jobs are currently queued awaiting resources. Eligible jobs are         |
+|          | shown in the order in which the scheduler will consider them for allocation.  |
++----------+-------------------------------------------------------------------------------+
+| Blocked  | These jobs are currently queued but are not eligible to run. A job may        |
+|          | be in this state because the user has more jobs that are "eligible to         |
+|          | run" than the system's queue policy allows.                                   |
++----------+-------------------------------------------------------------------------------+
 
 To see all jobs currently in the queue:
 
@@ -878,6 +833,8 @@ To show all currently queued jobs owned by userA:
 
     $ qstat -u userA
 
+.. _batch-queues-on-rhea:
+
 Batch Queues on Rhea
 --------------------
 
@@ -894,35 +851,17 @@ Rhea Partition Policy (default)
 Jobs that do not specify a partition will run in the 512 node `rhea
 partition </for-users/system-user-guides/rhea/system-overview/#rhea-partition>`__.
 
-Bin
 
-Node Count
++-----+----------------+------------+-------------------------------------------+
+| Bin | Node Count     | Duration   | Policy                                    |
++=====+================+============+===========================================+
+| A   | 1 - 16 Nodes   | 0 - 48 hr  |                                           |
++-----+----------------+------------+ | max 4 jobs running and 4 jobs eligible  |
+| B   | 17 - 64 Nodes  | 0 - 36 hr  | | **per user**                            |
++-----+----------------+------------+ | in bins A, B, and C                     |
+| C   | 65 - 384 Nodes | 0 - 3 hr   |                                           |
++-----+----------------+------------+-------------------------------------------+
 
-Duration
-
-Policy
-
-A
-
-1 - 16 Nodes
-
-0 - 48 hr
-
-| max 4 jobs running and 4 jobs eligible
-| **per user**
-| in bins A, B, and C
-
-B
-
-17 - 64 Nodes
-
-0 - 36 hr
-
-C
-
-65 - 384 Nodes
-
-0 - 3 hr
 
 GPU Partition Policy
 ^^^^^^^^^^^^^^^^^^^^
@@ -931,18 +870,12 @@ To access the 9 node `gpu
 partition </for-users/system-user-guides/rhea/system-overview/#gpu-partition>`__,
 batch job submissions should request ``-lpartition=gpu``
 
-Node Count
-
-Duration
-
-Policy
-
-1-2 Nodes
-
-0 - 48 hrs
-
-| max 1 job running
-| **per user**
++------------+-------------+--------------------------+
+| Node Count |  Duration   |  Policy                  |
++============+=============+==========================+
+| 1-2 Nodes  |  0 - 48 hrs |    | max 1 job running   |
+|            |             |    | **per user**        |
++------------+-------------+--------------------------+
 
     **Note:** The queue structure was designed based on user feedback and
     analysis of batch jobs over the recent years. However, we understand that
@@ -974,15 +907,15 @@ to only one running job at a time. The adjustment to the apparent submit
 time depends upon the percentage that the project is over its
 allocation, as shown in the table below:
 
-+------------------------+----------------------+--------------------------+------------------+----+
-| % Of Allocation Used   | Priority Reduction   | number eligible-to-run   | number running   |    |
-+========================+======================+==========================+==================+====+
-| < 100%                 | 0 days               | 4 jobs                   | unlimited jobs   |    |
-+------------------------+----------------------+--------------------------+------------------+----+
-| 100% to 125%           | 30 days              | 4 jobs                   | unlimited jobs   |    |
-+------------------------+----------------------+--------------------------+------------------+----+
-| > 125%                 | 365 days             | 4 jobs                   | 1 job            |    |
-+------------------------+----------------------+--------------------------+------------------+----+
++------------------------+----------------------+--------------------------+------------------+
+| % Of Allocation Used   | Priority Reduction   | number eligible-to-run   | number running   |
++========================+======================+==========================+==================+
+| < 100%                 | 0 days               | 4 jobs                   | unlimited jobs   |
++------------------------+----------------------+--------------------------+------------------+
+| 100% to 125%           | 30 days              | 4 jobs                   | unlimited jobs   |
++------------------------+----------------------+--------------------------+------------------+
+| > 125%                 | 365 days             | 4 jobs                   | 1 job            |
++------------------------+----------------------+--------------------------+------------------+
 
 --------------
 
@@ -1017,21 +950,22 @@ sometimes referred to as the job's *head node*. The ``mpirun`` command
 is used to execute an MPI executable on one or more compute nodes in
 parallel. ``mpirun`` accepts the following common options:
 
-+----------------------------------+-----------------------------------------------------------------------------------+
-| ``--npernode``                   | Number of ranks per node                                                          |
-+----------------------------------+-----------------------------------------------------------------------------------+
-| ``-n``                           | Total number of MPI ranks                                                         |
-+----------------------------------+-----------------------------------------------------------------------------------+
-| ``--bind-to none``               | Allow code to control thread affinity                                             |
-+----------------------------------+-----------------------------------------------------------------------------------+
-| ``--map-by ppr:N:node:pe=T``     | Place N tasks per node leaving space for T threads                                |
-+----------------------------------+-----------------------------------------------------------------------------------+
-| ``--map-by ppr:N:socket:pe=T``   | Place N tasks per socket leaving space for T threads                              |
-+----------------------------------+-----------------------------------------------------------------------------------+
-| ``--map-by ppr:N:socket``        | Assign tasks by socket placing N tasks on each socket                             |
-+----------------------------------+-----------------------------------------------------------------------------------+
-| ``--report-bindings``            | Have MPI explain which ranks have been assigned to which nodes / physical cores   |
-+----------------------------------+-----------------------------------------------------------------------------------+
++----------------------------------+-------------------------------------------------------+
+| ``--npernode``                   | Number of ranks per node                              |
++----------------------------------+-------------------------------------------------------+
+| ``-n``                           | Total number of MPI ranks                             |
++----------------------------------+-------------------------------------------------------+
+| ``--bind-to none``               | Allow code to control thread affinity                 |
++----------------------------------+-------------------------------------------------------+
+| ``--map-by ppr:N:node:pe=T``     | Place N tasks per node leaving space for T threads    |
++----------------------------------+-------------------------------------------------------+
+| ``--map-by ppr:N:socket:pe=T``   | Place N tasks per socket leaving space for T threads  |
++----------------------------------+-------------------------------------------------------+
+| ``--map-by ppr:N:socket``        | Assign tasks by socket placing N tasks on each socket |
++----------------------------------+-------------------------------------------------------+
+| ``--report-bindings``            | Have MPI explain which ranks have been assigned to    |
+|                                  | which nodes / physical cores                          |
++----------------------------------+-------------------------------------------------------+
 
     **Note:** If you do not specify the number of MPI tasks to ``mpirun``
     via ``-n``, the system will default to all available cores allocated to
@@ -1044,8 +978,7 @@ Each compute node on Rhea contains two sockets each with 8 cores.
 Depending on your job, it may be useful to control task layout within
 and across nodes.
 
-Default Layout: Sequential
-
+**Default Layout: Sequential**
 
 The following will run a copy of a.out on two cores each on the same
 node:
@@ -1054,39 +987,17 @@ node:
 
     $ mpirun -np 2 ./a.out
 
-.. raw:: html
++-----------------------------------------------------------------------------------------------------------------------------------------------+
+|                                                                 Compute Node                                                                  |
++-----------------------------------------------------------------------+-----------------------------------------------------------------------+
+|                             Socket 0                                  |                             Socket 1                                  |
++--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
+| Core 0 | Core 1 | Core 2 | Core 3 | Core 4 | Core 5 | Core 6 | Core 7 | Core 0 | Core 1 | Core 2 | Core 3 | Core 4 | Core 5 | Core 6 | Core 7 |
++--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
+| rank 0 | rank 1 |        |        |        |        |        |        |        |        |        |        |        |        |        |        |
++--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
 
-   <div
-   style="border-width: 0px; border-style: solid; border-color: #616d7e; padding: 0px; margin: 5px;">
-
-Compute Node
-Socket 0
-Socket 1
-Core 0
-Core 1
-Core 2
-Core 3
-Core 4
-Core 5
-Core 6
-Core 7
-Core 0
-Core 1
-Core 2
-Core 3
-Core 4
-Core 5
-Core 6
-Core 7
-0
-1
-
-.. raw:: html
-
-   </div>
-
-4 cores, 2 cores per socket, 1 node
-
+**4 cores, 2 cores per socket, 1 node**
 
 The following will run a.out on 4 cores, 2 cores per socket, 1 node:
 
@@ -1094,41 +1005,17 @@ The following will run a.out on 4 cores, 2 cores per socket, 1 node:
 
     $ mpirun -np 4 --map-by ppr:2:socket ./a.out
 
-.. raw:: html
++-----------------------------------------------------------------------------------------------------------------------------------------------+
+|                                                                 Compute Node                                                                  |
++-----------------------------------------------------------------------+-----------------------------------------------------------------------+
+|                             Socket 0                                  |                             Socket 1                                  |
++--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
+| Core 0 | Core 1 | Core 2 | Core 3 | Core 4 | Core 5 | Core 6 | Core 7 | Core 0 | Core 1 | Core 2 | Core 3 | Core 4 | Core 5 | Core 6 | Core 7 |
++--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
+| rank 0 | rank 1 |        |        |        |        |        |        | rank 2 | rank 3 |        |        |        |        |        |        |
++--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
 
-   <div
-   style="border-width: 0px; border-style: solid; border-color: #616d7e; padding: 0px; margin: 5px;">
-
-Compute Node
-Socket 0
-Socket 1
-Core 0
-Core 1
-Core 2
-Core 3
-Core 4
-Core 5
-Core 6
-Core 7
-Core 0
-Core 1
-Core 2
-Core 3
-Core 4
-Core 5
-Core 6
-Core 7
-0
-1
-2
-3
-
-.. raw:: html
-
-   </div>
-
-4 cores, 1 core per socket, 2 nodes
-
+**4 cores, 1 core per socket, 2 nodes**
 
 The following will run a.out on 4 cores, 1 core per socket, 2 nodes.
 This can be useful if you need to spread your batch job over multiple
@@ -1138,57 +1025,23 @@ nodes to allow each task access to more memory.
 
     $ mpirun -np 4 --map-by ppr:1:socket ./a.out
 
-.. raw:: html
-
-   <div
-   style="border-width: 0px; border-style: solid; border-color: #616d7e; padding: 0px; margin: 5px;">
-
-Compute Node 0
-Socket 0
-Socket 1
-Core 0
-Core 1
-Core 2
-Core 3
-Core 4
-Core 5
-Core 6
-Core 7
-Core 0
-Core 1
-Core 2
-Core 3
-Core 4
-Core 5
-Core 6
-Core 7
-0
-1
-Compute Node 1
-Socket 0
-Socket 1
-Core 0
-Core 1
-Core 2
-Core 3
-Core 4
-Core 5
-Core 6
-Core 7
-Core 0
-Core 1
-Core 2
-Core 3
-Core 4
-Core 5
-Core 6
-Core 7
-2
-3
-
-.. raw:: html
-
-   </div>
++-----------------------------------------------------------------------------------------------------------------------------------------------+
+|                                                                 Compute Node 0                                                                |
++-----------------------------------------------------------------------+-----------------------------------------------------------------------+
+|                             Socket 0                                  |                             Socket 1                                  |
++--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
+| Core 0 | Core 1 | Core 2 | Core 3 | Core 4 | Core 5 | Core 6 | Core 7 | Core 0 | Core 1 | Core 2 | Core 3 | Core 4 | Core 5 | Core 6 | Core 7 |
++--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
+| rank 0 |        |        |        |        |        |        |        | rank 1 |        |        |        |        |        |        |        |
++--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
+|                                                                 Compute Node 1                                                                |
++-----------------------------------------------------------------------+-----------------------------------------------------------------------+
+|                             Socket 0                                  |                             Socket 1                                  |
++--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
+| Core 0 | Core 1 | Core 2 | Core 3 | Core 4 | Core 5 | Core 6 | Core 7 | Core 0 | Core 1 | Core 2 | Core 3 | Core 4 | Core 5 | Core 6 | Core 7 |
++--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
+| rank 2 |        |        |        |        |        |        |        | rank 3 |        |        |        |        |        |        |        |
++--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
 
 The ``--report-bindings`` flag can be used to report task layout:
 
@@ -1207,7 +1060,7 @@ Thread Layout
     **Warning:** Without controlling affinity, threads may be placed on the
     same core.
 
-2 MPI tasks, 1 tasks per node, 16 threads per task, 2 nodes
+**2 MPI tasks, 1 tasks per node, 16 threads per task, 2 nodes**
 
 
 .. code::
@@ -1215,130 +1068,44 @@ Thread Layout
     $ setenv OMP_NUM_THREADS 16
     $ mpirun -np 2 --map-by ppr:1:node:pe=16 ./a.out
 
-.. raw:: html
++-----------------------------------------------------------------------------------------------------------------------------------------------+
+|                                                                 Compute Node 0                                                                |
++-----------------------------------------------------------------------+-----------------------------------------------------------------------+
+|                             Socket 0                                  |                             Socket 1                                  |
++--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
+| Core 0 | Core 1 | Core 2 | Core 3 | Core 4 | Core 5 | Core 6 | Core 7 | Core 0 | Core 1 | Core 2 | Core 3 | Core 4 | Core 5 | Core 6 | Core 7 |
++--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
+| rank 0 | thd. 1 | thd. 2 | thd. 3 | thd. 4 | thd. 5 | thd. 6 | thd. 7 | thd. 8 | thd. 9 | thd. 10| thd. 11| thd. 12| thd. 13| thd. 14| thd. 15|
+| thd. 0 |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |
++--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
+|                                                                 Compute Node 1                                                                |
++-----------------------------------------------------------------------+-----------------------------------------------------------------------+
+|                             Socket 0                                  |                             Socket 1                                  |
++--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
+| Core 0 | Core 1 | Core 2 | Core 3 | Core 4 | Core 5 | Core 6 | Core 7 | Core 0 | Core 1 | Core 2 | Core 3 | Core 4 | Core 5 | Core 6 | Core 7 |
++--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
+| rank 1 | thd. 1 | thd. 2 | thd. 3 | thd. 4 | thd. 5 | thd. 6 | thd. 7 | thd. 8 | thd. 9 | thd. 10| thd. 11| thd. 12| thd. 13| thd. 14| thd. 15|
+| thd. 0 |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |
++--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
 
-   <div
-   style="border-width: 0px; border-style: solid; border-color: #616d7e; padding: 0px; margin: 5px;">
+**2 MPI tasks, 1 tasks per socket, 4 threads per task, 1 node**
 
-Compute Node 0
-Socket 0
-Socket 1
-Core 0
-Core 1
-Core 2
-Core 3
-Core 4
-Core 5
-Core 6
-Core 7
-Core 0
-Core 1
-Core 2
-Core 3
-Core 4
-Core 5
-Core 6
-Core 7
-Task 0, Thread 0
-Thread 1
-Thread 2
-Thread 3
-Thread 4
-Thread 5
-Thread 6
-Thread 7
-Thread 8
-Thread 9
-Thread 10
-Thread 11
-Thread 12
-Thread 13
-Thread 14
-Thread 15
-Compute Node 1
-Socket 0
-Socket 1
-Core 0
-Core 1
-Core 2
-Core 3
-Core 4
-Core 5
-Core 6
-Core 7
-Core 0
-Core 1
-Core 2
-Core 3
-Core 4
-Core 5
-Core 6
-Core 7
-Task 1, Thread 0
-Thread 1
-Thread 2
-Thread 3
-Thread 4
-Thread 5
-Thread 6
-Thread 7
-Thread 8
-Thread 9
-Thread 10
-Thread 11
-Thread 12
-Thread 13
-Thread 14
-Thread 15
-
-.. raw:: html
-
-   </div>
-
-2 MPI tasks, 1 tasks per socket, 4 threads per task, 1 node
++-----------------------------------------------------------------------------------------------------------------------------------------------+
+|                                                                 Compute Node                                                                  |
++-----------------------------------------------------------------------+-----------------------------------------------------------------------+
+|                             Socket 0                                  |                             Socket 1                                  |
++--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
+| Core 0 | Core 1 | Core 2 | Core 3 | Core 4 | Core 5 | Core 6 | Core 7 | Core 0 | Core 1 | Core 2 | Core 3 | Core 4 | Core 5 | Core 6 | Core 7 |
++--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
+| rank 0 | thd. 1 | thd. 2 | thd. 3 |        |        |        |        | rank 1 | thd. 1 | thd. 2 | thd. 3 |        |        |        |        |
+| thd. 0 |        |        |        |        |        |        |        | thd. 0 |        |        |        |        |        |        |        |
++--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
 
 
 .. code::
 
     $ setenv OMP_NUM_THREADS 4
     $ mpirun -np 2 --map-by ppr:1:socket:pe=4 ./a.out
-
-.. raw:: html
-
-   <div
-   style="border-width: 0px; border-style: solid; border-color: #616d7e; padding: 0px; margin: 5px;">
-
-Compute Node
-Socket 0
-Socket 1
-Core 0
-Core 1
-Core 2
-Core 3
-Core 4
-Core 5
-Core 6
-Core 7
-Core 0
-Core 1
-Core 2
-Core 3
-Core 4
-Core 5
-Core 6
-Core 7
-Task 0, Thread 0
-Thread 1
-Thread 2
-Thread 3
-Task 1, Thread 0
-Thread 1
-Thread 2
-Thread 3
-
-.. raw:: html
-
-   </div>
 
 Resource Sharing on Commodity Clusters
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1469,17 +1236,19 @@ The OLCF now supports submitting jobs between OLCF systems via batch
 scripts. This can be useful for automatically triggering analysis and
 storage of large data sets after a successful simulation job has ended,
 or for launching a simulation job automatically once the input deck has
-been retrieved from HPSS and pre-processed. [caption
-id="attachment\_4468" align="aligncenter"
-width="544"]\ |Cross-Submission allows jobs on one OLCF resource to
-submit new jobs to other OLCF resources.| Cross-Submission allows jobs
-on one OLCF resource to submit new jobs to other OLCF
-resources.[/caption] The key to remote job submission is the command
-``qsub -q host script.pbs`` which will submit the file ``script.pbs`` to
-the batch queue on the specified host. This command can be inserted at
-the end of an existing batch script in order to automatically trigger
-work on another OLCF resource. This feature is supported on the
-following hosts:
+been retrieved from HPSS and pre-processed.
+
+.. image:: /images/Cross-Submission-Workflow-544x300.png
+   :class: size-medium wp-image-4468
+   :width: 544px
+   :height: 300px
+
+Cross-Submission allows jobs on one OLCF resource to submit new jobs to other
+OLCF resources. The key to remote job submission is the command ``qsub -q host
+script.pbs`` which will submit the file ``script.pbs`` to the batch queue on
+the specified host. This command can be inserted at the end of an existing
+batch script in order to automatically trigger work on another OLCF resource.
+This feature is supported on the following hosts:
 
 +------------------------------+--------------------------------------+
 | Host                         | Remote Submission Command            |
@@ -1502,7 +1271,7 @@ compute job on Titan. This workflow would require two batch scripts, one
 to be submitted on Titan, and a second to be submitted automatically to
 Rhea. Visually, this workflow may look something like the following:
 
-|Post-processing Workflow-1|
+.. image:: /images/remote_submission.stage-compute-e1392655934134.png
 
 The batch scripts for such a workflow could be implemented as follows:
 **Batch-script-1.pbs**
@@ -1556,7 +1325,7 @@ to use the Data Transfer Nodes (DTNs) to retrieve data from HPSS and
 stage it to your project's scratch area before beginning. Once the
 computation is done, we will automatically archive the output.
 
-|Post-processing Workflow-2|
+.. image:: /images/remote_submission.stage-compute-archive-e1392655850482.png
 
 **Batch-script-1.pbs**
 
@@ -1623,7 +1392,7 @@ simulation output data, and one to visualize it. After the
 visualizations have finished, we will transfer them to a remote
 institution.
 
-|Post-processing Workflow-3|
+.. image:: /images/remote_submission.stag-compute-archive-vis-transfer-e1392822417662.png
 
 **Step-1.prepare-data.pbs**
 
@@ -1762,7 +1531,7 @@ a suitable exit condition is not reached.
     cautious when designing workflows that cause jobs to re-submit themselves.
 
 
-|Circular Workflow|
+.. image:: /images/remote_submission.circular-e1392656023400.png
 
 As always, users on multiple projects are strongly advised to double
 check that the ``#PBS -A <PROJECTID>`` field is set to the correct
@@ -1828,22 +1597,47 @@ most cases.
     **Warning:** For Windows clients, it is necessary to install PuTTY to
     create an ssh connection in step 2.
 
-**Step 1: Launch ParaView on your Desktop and fetch a connection script
-for Rhea** Start ParaView and then select ``File/Connect`` to begin.
-|image5| Next Select ``Fetch Servers`` |image6| Next select the
-connection to Rhea for either windows or Mac/Linux and hit the “Import
-Selected” button. |image7| You may now quit and restart ParaView in
-order to save connection setup in your preferences. **Step 2: Establish
-a connection to Rhea** Once restarted, and henceforth, simply select
-Rhea from the File->Connect dialog and click the “Connect” button.
-|image8| A dialog box follows, in which you must enter in your username
-and project allocation, the number of nodes to reserve and a duration to
-reserve them for. |image9| When you click OK, a windows command prompt
-or ``xterm`` pops up. In this window enter your credentials at the OLCF
-login prompt. |image10| When your job reaches the top of the queue, the
-``RenderView1`` view window will return. At this point you are connected
-to Rhea and can open files that reside there and visualize them
-interactively.
+**Step 1: Launch ParaView on your Desktop and fetch a connection script for Rhea**
+
+Start ParaView and then select ``File/Connect`` to begin.
+
+.. image:: /images/paraview_step1a.png
+   :width: 700px
+
+Next Select ``Fetch Servers``
+
+.. image:: /images/paraview1.2.png
+   :width: 600px
+
+Next select the connection to Rhea for either windows or Mac/Linux and hit the
+“Import Selected” button.
+
+.. image:: /images//paraview_step1c.png
+   :width: 600px
+
+You may now quit and restart ParaView in order to save connection setup in your
+preferences. **Step 2: Establish a connection to Rhea** Once restarted, and
+henceforth, simply select Rhea from the File->Connect dialog and click the
+“Connect” button.
+
+.. image:: /images/paraview_step2a.png
+   :width: 600px
+
+A dialog box follows, in which you must enter in your username and project
+allocation, the number of nodes to reserve and a duration to reserve them for.
+
+.. image:: /images/paraview_step2b.png
+   :width: 500px
+
+When you click OK, a windows command prompt or ``xterm`` pops up. In this
+window enter your credentials at the OLCF login prompt.
+
+.. image:: /images/paraview_step2c.png
+   :width: 700px
+
+When your job reaches the top of the queue, the ``RenderView1`` view window
+will return. At this point you are connected to Rhea and can open files that
+reside there and visualize them interactively.
 
 VisIt
 -----
@@ -1910,7 +1704,9 @@ you are entering your correct PIN + RSA token code, you might need to
 select "Change username" and then enter your OLCF username when
 prompted.
 
-|Screen Shot 2016-01-06 at 11.10.19 AM|
+.. image:: /images/Screen-Shot-2016-01-06-at-11.10.19-AM.png
+   :width: 330px
+   :height: 125px
 
 This will give you a new opportunity to enter your PIN + token code and
 your username will appear in login request box as shown below. If you
@@ -1919,7 +1715,9 @@ profiles" and enter it under "Username". See the `Modifying Host
 Profiles </for-users/system-user-guides/rhea/analysis-tools/#modifying-host-profiles>`__
 section below for more details.
 
-|Screen Shot 2016-01-06 at 11.06.25 AM|
+.. image:: /images/Screen-Shot-2016-01-06-at-11.06.25-AM1.png
+   :width: 360px
+   :height: 125px
 
 VisIt will not connect when you try to draw an image.
 """""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -2194,29 +1992,3 @@ the dcv session in first terminal:
     dcv close-session mySessionName
     kill %1
 
-.. |Cross-Submission allows jobs on one OLCF resource to submit new jobs to other OLCF resources.| image:: https://www.olcf.ornl.gov/wp-content/uploads/2014/07/Cross-Submission-Workflow-544x300.png
-   :class: size-medium wp-image-4468
-   :width: 544px
-   :height: 300px
-.. |Post-processing Workflow-1| image:: https://www.olcf.ornl.gov/wp-content/uploads/2014/02/remote_submission.stage-compute-e1392655934134.png
-.. |Post-processing Workflow-2| image:: https://www.olcf.ornl.gov/wp-content/uploads/2014/02/remote_submission.stage-compute-archive-e1392655850482.png
-.. |Post-processing Workflow-3| image:: https://www.olcf.ornl.gov/wp-content/uploads/2014/02/remote_submission.stag-compute-archive-vis-transfer-e1392822417662.png
-.. |Circular Workflow| image:: https://www.olcf.ornl.gov/wp-content/uploads/2014/02/remote_submission.circular-e1392656023400.png
-.. |image5| image:: https://beta.olcf.ornl.gov/wp-content/uploads/2017/11/paraview_step1a.png
-   :width: 700px
-.. |image6| image:: https://www.olcf.ornl.gov/wp-content/uploads/2015/11/paraview1.2.png
-   :width: 600px
-.. |image7| image:: https://beta.olcf.ornl.gov/wp-content/uploads/2017/11/paraview_step1c.png
-   :width: 600px
-.. |image8| image:: https://beta.olcf.ornl.gov/wp-content/uploads/2017/11/paraview_step2a.png
-   :width: 600px
-.. |image9| image:: https://beta.olcf.ornl.gov/wp-content/uploads/2017/11/paraview_step2b.png
-   :width: 500px
-.. |image10| image:: https://beta.olcf.ornl.gov/wp-content/uploads/2017/11/paraview_step2c.png
-   :width: 700px
-.. |Screen Shot 2016-01-06 at 11.10.19 AM| image:: https://www.olcf.ornl.gov/wp-content/uploads/2013/01/Screen-Shot-2016-01-06-at-11.10.19-AM.png
-   :width: 330px
-   :height: 125px
-.. |Screen Shot 2016-01-06 at 11.06.25 AM| image:: https://www.olcf.ornl.gov/wp-content/uploads/2013/01/Screen-Shot-2016-01-06-at-11.06.25-AM1.png
-   :width: 360px
-   :height: 125px
