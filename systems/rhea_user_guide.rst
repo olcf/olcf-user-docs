@@ -1,5 +1,5 @@
 *********************
-rhea user guide
+Rhea User Guide
 *********************
 
 Overview
