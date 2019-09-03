@@ -45,7 +45,7 @@ Training
 * tutorials
 * archive
 * calendar
-* hackathongs
+* hackathons
 
 How to contribute to this documentation
 -----------------------------------------
