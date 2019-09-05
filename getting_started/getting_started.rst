@@ -38,10 +38,11 @@ required from industrial Director's Discretion projects only.
 +--------------------------+----------------------------------------------------+--------------------------------------------------------------------------------+--------------------------------------------------------------------------------+
 | **Quarterly Reports**    | yes                                                | no*                                                                            | yes                                                                            |
 +--------------------------+----------------------------------------------------+--------------------------------------------------------------------------------+--------------------------------------------------------------------------------+
-| **Where to apply**       | `Apply for INCITE                                  | `Apply for DD                                                                  | `Apply for ALCC                                                                |
-|                          | <https://proposals.doeleadershipcomputing.org/>`__ | </for-users/documents-forms/olcf-directors-discretion-project-application/>`__ | <http://science.energy.gov/ascr/facilities/accessing-ascr-facilities/alcc/>`__ |
+| **Where to apply**       | `Apply for INCITE                                  | `Apply for DD`_                                                                | `Apply for ALCC                                                                |
+|                          | <https://proposals.doeleadershipcomputing.org/>`__ |                                                                                | <http://science.energy.gov/ascr/facilities/accessing-ascr-facilities/alcc/>`__ |
 +--------------------------+----------------------------------------------------+--------------------------------------------------------------------------------+--------------------------------------------------------------------------------+
 
+.. _Apply for DD: https://www.olcf.ornl.gov/for-users/documents-forms/olcf-directors-discretion-project-application/
  
 
 What are the differences between project types?
@@ -79,12 +80,12 @@ productivity on leadership computing platforms. The OLCF Resource
 Utilization Council, as well as independent referees, review and approve
 all DD requests. Applications are accepted year round via the `OLCF
 Director's Discretion Project
-Application </for-users/documents-forms/olcf-directors-discretion-project-application/>`__.
+Application <https://www.olcf.ornl.gov/for-users/documents-forms/olcf-directors-discretion-project-application/>`__.
 
 **Vendor –** OLCF resources are also available to ORNL vendors.
 Applications may be submitted year round by completing the `Vendor
 Project
-Application </support/getting-started/olcf-vendor-project-application/>`__.
+Application <https://www.olcf.ornl.gov/support/getting-started/olcf-vendor-project-application/>`__.
 
     If you have questions about project types or application procedures,
     feel free to contact the OLCF Accounts Team at accounts@ccs.ornl.gov.
@@ -136,8 +137,9 @@ InfiniBand interconnect. The OLCF Director's Discretionary (DD) program
 allocates approximately 10% of the available Summit hours in a calendar
 year. **Summit is allocated in *node* hours, and a typical DD project is
 awarded between 15,000 - 20,000 *node* hours.** For more information
-about Summit, please visit the `Summit User
-Guide </for-users/system-user-guides/summit>`__.
+about Summit, please visit the :ref:`summit-user-guide`.
+
+.. _applying-for-a-user-account:
 
 Applying for a user account
 ================================
@@ -156,7 +158,7 @@ receiving a user account, and we're here to help you through them.
     Account Application and indicate you are an existing user.
 
 #. Apply for an account using the `Account Request
-   Form </support/getting-started/olcf-account-application>`__.
+   Form <https://www.olcf.ornl.gov/support/getting-started/olcf-account-application>`__.
 #. The principal investigator (PI) of the project must approve your
    account and system access. The Accounts Team will contact the PI for
    this approval.
@@ -179,8 +181,7 @@ created and you will be notified by email. Now that you have a user
 account and it has been associated with a project, you're ready to get
 to work. This website provides extensive documentation for OLCF systems,
 and can help you efficiently use your project's allocation. We recommend
-reading the `System User Guides </for-users/system-user-guides/>`__ for
-the machines you will be using often.
+reading the :ref:`system-user-guides` for the machines you will be using often.
 
 Systems Available to All Projects
 ======================================

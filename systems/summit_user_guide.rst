@@ -1,3 +1,5 @@
+.. _summit-user-guide:
+
 ******************
 Summit User Guide
 ******************

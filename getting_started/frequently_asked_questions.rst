@@ -6,9 +6,8 @@ How do I apply for an account?
 =================================
 
 Detailed instructions for account application can be found in the
-`'Applying For a User
-Account' </for-users/getting-started/#applying-for-a-user-account>`__
-section of the `Getting Started </for-users/getting-started>`__ page.
+:ref:`applying-for-a-user-account`
+section of the :ref:`getting-started-at-the-olcf` page.
 
 What is the status of my application?
 =======================================
@@ -86,10 +85,9 @@ statement <https://www.emc.com/collateral/legal/token-disposal-statement.pdf>`__
 Additional Resources
 =======================
 
-We're here to provide support at every step. We also provide a
-collection of `Tutorials </for-users/training/tutorials/>`__ for applied
-technical demonstrations, `System User
-Guides </for-users/system-user-guides/>`__, `Training
-Events </for-users/training/>`__, and the `User Assistance
-Center </for-users/user-assistance/>`__ to answer questions and resolve
-technical issues as they arise.
+We're here to provide support at every step. We also provide a collection of
+`Tutorials <https://www.olcf.ornl.gov/for-users/training/tutorials/>`__ for
+applied technical demonstrations, :ref:`system-user-guides`, `Training Events
+<https://www.olcf.ornl.gov/for-users/training/>`__, and the `User Assistance
+Center <https://www.olcf.ornl.gov/for-users/user-assistance/>`__ to answer
+questions and resolve technical issues as they arise.
