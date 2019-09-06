@@ -2740,7 +2740,7 @@ processes and memory debugging. In-depth details of DDT can be found in
 the `Official DDT User
 Guide <https://www.allinea.com/user-guide/forge/userguide.html>`__, and
 instructions for how to use it on OLCF systems can be found on the
-`Forge (DDT/MAP) Software Page </software_package/forge/>`__. DDT is the
+`Forge (DDT/MAP) Software Page <https://www.olcf.ornl.gov/software_package/forge/>`__. DDT is the
 OLCF's recommended debugging software for large parallel applications.
 
 GDB
@@ -2757,7 +2757,7 @@ on Summit under all compiler families:
     module load gdb
 
 Additional information about GDB usage and OLCF-provided builds can be
-found on the `GDB Software Page </software_package/gdb/>`__.
+found on the `GDB Software Page <https://www.olcf.ornl.gov/software_package/gdb/>`__.
 
 Valgrind
 --------
@@ -2766,12 +2766,15 @@ Valgrind
 building dynamic analysis tools. There are Valgrind tools that can
 automatically detect many memory management and threading bugs, and
 profile your programs in detail. You can also use Valgrind to build new
-tools. The Valgrind distribution currently includes five
-production-quality tools: a memory error detector, a thread error
-detector, a cache and branch-prediction profiler, a call-graph
-generating cache profiler, and a heap profiler. It also includes two
-experimental tools: a data race detector, and an instant memory leak
-detector. The Valgrind tool suite provides a number of debugging and
+tools.
+
+The Valgrind distribution currently includes five production-quality
+tools: a memory error detector, a thread error detector, a cache and
+branch-prediction profiler, a call-graph generating cache profiler,
+and a heap profiler. It also includes two experimental tools: a data
+race detector, and an instant memory leak detector.
+
+The Valgrind tool suite provides a number of debugging and
 profiling tools. The most popular is Memcheck, a memory checking tool
 which can detect many common memory errors such as:
 
@@ -2789,7 +2792,7 @@ Valgrind is available on Summit under all compiler families:
 
 Additional information about Valgrind usage and OLCF-provided builds can
 be found on the `Valgrind Software
-Page </software_package/valgrind/>`__.
+Page <https://www.olcf.ornl.gov/software_package/valgrind/>`__.
 
 Optimizing and Profiling
 ========================
@@ -2802,8 +2805,9 @@ codes. No extra compiling steps are required to use ``nvprof``. The
 profiler includes tracing capability as well as the ability to gather
 many performance metrics, including FLOPS. The profiler data output can
 be saved and imported into the NVIDIA Visual Profiler for additional
-graphical analysis. To use ``nvprof``, the ``cuda`` module must be
-loaded.
+graphical analysis.
+
+To use ``nvprof``, the ``cuda`` module must be loaded.
 
 ::
 
@@ -2811,9 +2815,9 @@ loaded.
 
 A simple "Hello, World!" run using ``nvprof`` can be done by adding
 "nvprof" to the
-`jsrun </for-users/system-user-guides/summit/running-jobs/#job-launcher>`__
+`jsrun <#job-launcher-jsrun>`__
 line in your `batch
-script </for-users/system-user-guides/summit/running-jobs/#batch-scripts>`__.
+script <#batch-scripts>`__.
 
 ::
 
@@ -2857,16 +2861,16 @@ Documentation <http://docs.nvidia.com/cuda/profiler-users-guide/#nvprof-overview
 Score-P
 -------
 
-[ls\_content\_block id="24659" para="full"] For detailed information
-about using Score-P on Summit and the builds available, please see the
-`Score-P Software Page </software_package/score-p/>`__.
+For detailed information about using Score-P on Summit and the
+builds available, please see the
+`Score-P Software Page <https://www.olcf.ornl.gov/software_package/score-p/>`__.
 
 Vampir
 ------
 
-[ls\_content\_block id="24496" para="full"] For detailed information
-about using Vampir on Summit and the builds available, please see the
-`Vampir Software Page </software_package/vampir/>`__.
+For detailed information about using Vampir on Summit and the
+builds available, please see the
+`Vampir Software Page <https://www.olcf.ornl.gov/software_package/vampir/>`__.
 
 Known Issues
 ============
