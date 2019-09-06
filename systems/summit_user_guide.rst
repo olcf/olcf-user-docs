@@ -1118,15 +1118,25 @@ Compilers
 Available Compilers
 ^^^^^^^^^^^^^^^^^^^
 
-The following compilers are available on Summit: **XL:** IBM XL
-Compilers *(loaded by default)* **LLVM:** LLVM compiler infrastructure
-**PGI:** Portland Group compiler suite **GNU:** GNU Compiler Collection
-**NVCC**: CUDA C compiler Upon login, the default versions of the XL
+The following compilers are available on Summit:
+
+**XL:** IBM XL Compilers *(loaded by default)*
+
+**LLVM:** LLVM compiler infrastructure
+
+**PGI:** Portland Group compiler suite
+
+**GNU:** GNU Compiler Collection
+
+**NVCC**: CUDA C compiler
+
+Upon login, the default versions of the XL
 compiler suite and Spectrum Message Passing Interface (MPI) are added to
 each user's environment through the modules system. No changes to the
-environment are needed to make use of the defaults. Multiple versions of
-each compiler family are provided, and can be inspected using the
-modules system:
+environment are needed to make use of the defaults.
+
+Multiple versions of each compiler family are provided, and can be inspected
+using the modules system:
 
 ::
 
@@ -1199,12 +1209,19 @@ MPI
 
 MPI on Summit is provided by IBM Spectrum MPI. Spectrum MPI provides
 compiler wrappers that automatically choose the proper compiler to build
-your application. The following compiler wrappers are available: **C**:
-``mpicc`` **C++**: ``mpic++``, ``mpiCC`` **Fortran**: ``mpifort``,
-``mpif77``, ``mpif90`` While these wrappers conveniently abstract away
-linking of Spectrum MPI, it's sometimes helpful to see exactly what's
-happening when invoked. The ``--showme`` flag will display the full link
-lines, without actually compiling:
+your application.
+
+The following compiler wrappers are available: 
+
+**C**: ``mpicc`` 
+
+**C++**: ``mpic++``, ``mpiCC`` 
+
+**Fortran**: ``mpifort``, ``mpif77``, ``mpif90`` 
+
+While these wrappers conveniently abstract away linking of Spectrum MPI, it's 
+sometimes helpful to see exactly what's happening when invoked. The ``--showme`` 
+flag will display the full link lines, without actually compiling:
 
 ::
 
@@ -1260,22 +1277,25 @@ CUDA compilation
 NVIDIA
 """"""
 
-CUDA C/C++ support is provided through the ``cuda`` module. **nvcc** :
-Primary CUDA C/C++ compiler
+CUDA C/C++ support is provided through the ``cuda`` module.
 
-Language support
+**nvcc** : Primary CUDA C/C++ compiler
 
-
-**-std=c++11** : provide C++11 support **--expt-extended-lambda** :
-provide experimental host/device lambda support
-**--expt-relaxed-constexpr** : provide experimental host/device
-constexpr support
-
-Compiler support
+**Language support**
 
 
-NVCC currently supports XL, GCC, and PGI C++ backends. **--ccbin** : set
-to host compiler location
+**-std=c++11** : provide C++11 support
+
+**--expt-extended-lambda** : provide experimental host/device lambda support
+
+**--expt-relaxed-constexpr** : provide experimental host/device constexpr
+support
+
+**Compiler support**
+
+NVCC currently supports XL, GCC, and PGI C++ backends.
+
+**--ccbin** : set to host compiler location
 
 CUDA Fortran compilation
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1284,25 +1304,36 @@ IBM
 """
 
 The IBM compiler suite is made available through the default loaded xl
-module, the cuda module is also required. xlcuf : primary Cuda fortran
-compiler, thread safe **Language support flags** -qlanglvl=90std :
-provide Fortran90 support -qlanglvl=95std : provide Fortran95 support
--qlanglvl=2003std : provide Fortran2003 support -qlanglvl=2008std :
-provide Fortran2003 support
+module, the cuda module is also required.
+
+xlcuf : primary Cuda fortran compiler, thread safe
+
+**Language support flags**
+
+-qlanglvl=90std : provide Fortran90 support
+
+-qlanglvl=95std : provide Fortran95 support
+
+-qlanglvl=2003std : provide Fortran2003 support
+
+-qlanglvl=2008std :provide Fortran2003 support
 
 PGI
 """
 
-The PGI compiler suite is available through the pgi module. pgfortran :
-Primary fortran compiler with CUDA Fortran support
+The PGI compiler suite is available through the pgi module.
 
-Language support:
+pgfortran : Primary fortran compiler with CUDA Fortran support
+
+**Language support:**
 
 
 Files with .cuf suffix automatically compiled with cuda fortran support
+
 Standard fortran suffixed source files determines the standard involved,
-see the man page for full details -Mcuda : Enable CUDA Fortran on
-provided source file
+see the man page for full details
+
+-Mcuda : Enable CUDA Fortran on provided source file
 
 Linking in Libraries
 --------------------
