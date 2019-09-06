@@ -1400,7 +1400,7 @@ Login, Launch, and Compute Nodes
 --------------------------------
 
 Recall from the `System
-Overview </for-users/system-user-guides/summit/system-overview/>`__
+Overview <#system-overview>`__
 section that Summit has three types of nodes: login, launch, and
 compute. When you log into the system, you are placed on a login node.
 When your `batch scripts <#batch-scripts>`__ or `interactive
@@ -1420,7 +1420,9 @@ A batch job is simply a shell script with added directives to request
 various resources from or provide certain information to the batch
 scheduling system. Aside from the lines containing LSF options, the
 batch script is simply the series commands needed to set up and run your
-job. To submit a batch script, use the bsub command: ``bsub myjob.lsf``
+job.
+
+To submit a batch script, use the bsub command: ``bsub myjob.lsf``
 
 If you’ve previously used LSF, you’re probably used to submitting a job
 with input redirection (i.e. ``bsub < myjob.lsf``). This is not needed
@@ -1487,11 +1489,12 @@ Most users will find batch jobs to be the easiest way to interact with
 the system, since they permit you to hand off a job to the scheduler and
 then work on other tasks; however, it is sometimes preferable to run
 interactively on the system. This is especially true when developing,
-modifying, or debugging a code. Since all compute resources are
-managed/scheduled by LSF, it is not possible to simply log into the
-system and begin running a parallel code interactively. You must request
-the appropriate resources from the system and, if necessary, wait until
-they are available. This is done with an “interactive batch” job.
+modifying, or debugging a code.
+
+Since all compute resources are managed/scheduled by LSF, it is not possible
+to simply log into the system and begin running a parallel code interactively.
+You must request the appropriate resources from the system and, if necessary,
+wait until they are available. This is done with an “interactive batch” job.
 Interactive batch jobs are submitted via the command line, which
 supports the same options that are passed via ``#BSUB`` parameters in a
 batch script. The final options on the command line are what makes the
@@ -1636,10 +1639,11 @@ that enable large jobs to run in a timely fashion.
     Summit.
 
 The basic priority-setting mechanism for jobs waiting in the queue is
-the time a job has been waiting relative to other jobs in the queue. If
-your jobs require resources outside these queue policies, please
+the time a job has been waiting relative to other jobs in the queue. 
+
+If your jobs require resources outside these queue policies, please
 complete the relevant request form on the `Special
-Requests </for-users/getting-started/special-request-form/>`__ page. If
+Requests <https://www.olcf.ornl.gov/for-users/documents-forms/special-request-form/>`__ page. If
 you have any questions or comments on the queue policies below, please
 direct them to the User Assistance Center.
 
@@ -1728,11 +1732,12 @@ remaining idle for an extended period of time, reservations are
 monitored for inactivity. If activity falls below 50% of the reserved
 resources for more than (30) minutes, the reservation will be canceled
 and the system will be returned to normal scheduling. A new reservation
-must be requested if this occurs. The requesting project's allocation is
-charged according to the time window granted, regardless of actually
-utilization. For example, an 8-hour, 2,000 node reservation on Summit
-would be equivalent to using 16,000 Summit node-hours of a project's
-allocation.
+must be requested if this occurs.
+
+The requesting project's allocation is charged according to the time window
+granted, regardless of actual utilization. For example, an 8-hour, 2,000
+node reservation on Summit would be equivalent to using 16,000 Summit
+node-hours of a project's allocation.
 
 --------------
 
@@ -1772,13 +1777,14 @@ Monitoring Jobs
 
 LSF provides several utilities with which you can monitor jobs. These
 include monitoring the queue, getting details about a particular job,
-viewing STDOUT/STDERR of running jobs, and more. The most
-straightforward monitoring is with the ``bjobs`` command. This command
-will show the current queue, including both pending and running jobs.
-Running ``bjobs -l`` will provide much more detail about a job (or group
-of jobs). For detailed output of a single job, specify the job id after
-the ``-l``. For example, for detailed output of job 12345, you can run
-``bjobs -l 12345`` . Other options to ``bjobs`` are shown below. In
+viewing STDOUT/STDERR of running jobs, and more.
+
+The most straightforward monitoring is with the ``bjobs`` command. This
+command will show the current queue, including both pending and running
+jobs. Running ``bjobs -l`` will provide much more detail about a job (or
+group of jobs). For detailed output of a single job, specify the job id
+after the ``-l``. For example, for detailed output of job 12345, you can
+run ``bjobs -l 12345`` . Other options to ``bjobs`` are shown below. In
 general, if the command is specified with ``-u all`` it will show
 information for all users/all jobs. Without that option, it only shows
 your jobs. Note that this is not an exhaustive list. See ``man bjobs``
@@ -1831,6 +1837,7 @@ identify jobs as running, eligible, or blocked. Run without arguments,
 ``jobstat`` provides a snapshot of the entire batch queue. Additional
 information, including the number of jobs in each state, total nodes
 available, and relative job priority are also included.
+
 ``jobstat -u <username>`` restricts output to only the jobs of a
 specific user. See the ``jobstat`` man page for a full list of
 formatting arguments.
@@ -1856,22 +1863,25 @@ Inspecting Backfill
 
 ``bjobs`` and ``jobstat`` help to identify what’s currently running and
 scheduled to run, but sometimes it’s beneficial to know how much of the
-system is *not* currently in use or scheduled for use. The ``bslots``
-command can be used to inspect backfill windows and answer the question
-“How many nodes are currently available, and for how long will they
-remain available?” This can be thought of as identifying gaps in the
-system’s current job schedule. By intentionally requesting resources
+system is *not* currently in use or scheduled for use.
+
+The ``bslots`` command can be used to inspect backfill windows and answer
+the question “How many nodes are currently available, and for how long
+will they remain available?” This can be thought of as identifying gaps in
+the system’s current job schedule. By intentionally requesting resources
 within the parameters of a backfill window, one can potentially shorten
-their queued time and improve overall system utilization. LSF uses
-“slots” to describe allocatable resources. Summit compute nodes have 1
+their queued time and improve overall system utilization.
+
+LSF uses “slots” to describe allocatable resources. Summit compute nodes have 1
 slot per CPU core, for a total of 42 per node ([2x] Power9 CPUs, each
 with 21 cores). Since Summit nodes are scheduled in whole-node
 allocations, the output from ``bslots`` can be divided by 42 to see how
-many nodes are currently available. By default, ``bslots`` output
-includes launch node slots, which can cause unwanted and inflated
-fractional node values. The output can be adjusted to reflect only
-available compute node slots with the flag ``-R”select[CN]”``. For
-example,
+many nodes are currently available.
+
+By default, ``bslots`` output includes launch node slots, which can
+cause unwanted and inflated fractional node values. The output can
+be adjusted to reflect only available compute node slots with the
+flag  ``-R”select[CN]”``. For example,
 
 ::
 
@@ -1881,9 +1891,10 @@ example,
     27384          1 hours 11 minutes 50 seconds
 
 27384 compute node slots / 42 slots per node = 652 compute nodes are
-available for 1 hour, 11 minutes, 50 seconds. A more specific ``bslots``
-query could check for a backfill window with space to fit a 1000 node
-job for 10 minutes:
+available for 1 hour, 11 minutes, 50 seconds.
+
+A more specific ``bslots`` query could check for a backfill window with
+space to fit a 1000 node job for 10 minutes:
 
 ::
 
@@ -1963,10 +1974,12 @@ checkpointing and restarting jobs, as well as the ``-k`` option to
 application specific and a wide range of applications run on OLCF
 resources, this type of checkpointing is not configured on Summit. If
 you wish to use checkpointing (which is highly encouraged), you’ll need
-to configure it within your application. If you wish to implement some
-form of on-demand checkpointing, keep in mind the ``bkill`` command is
-really a signaling command and you can have your job script/application
-checkpoint as a response to certain signals (such as ``SIGUSR1``).
+to configure it within your application.
+
+If you wish to implement some form of on-demand checkpointing, keep in mind
+the ``bkill`` command is really a signaling command and you can have your
+job script/application checkpoint as a response to certain signals (such
+as ``SIGUSR1``).
 
 Other LSF Commands
 ------------------
@@ -1977,7 +1990,7 @@ useful.
 +------------------+---------------------------------------------------------------------------+
 | Command          | Description                                                               |
 +==================+===========================================================================+
-| ``bparams -a``   | Show current parameters for LSF The behavior/available                    |
+| ``bparams -a``   | Show current parameters for LSF. The behavior/available                   |
 |                  | options for some LSF commands depend on settings in various configuration |
 |                  | files. This command shows those settings without having to search for the |
 |                  | actual files.                                                             |
@@ -1991,7 +2004,9 @@ PBS/Torque/MOAB-to-LSF Translation
 
 More details about these commands are given elsewhere in this section;
 the table below is simply for your convenience in looking up various LSF
-commands. Users of other OLCF resources are likely familiar with
+commands.
+
+Users of other OLCF resources are likely familiar with
 PBS-like commands which are used by the Torque/Moab instances on other
 systems. The table below summarizes the equivalent LSF command for
 various PBS/Torque/Moab commands.
@@ -2010,7 +2025,9 @@ various PBS/Torque/Moab commands.
 +--------------------------+----------------------------------+----------------------------------------------------+
 | ``bjobs -d``             | ``showq -c``                     | Get information about completed jobs               |
 +--------------------------+----------------------------------+----------------------------------------------------+
-| ``bjobs -p``             | ``showq -i showq -b checkjob``   | Get information about pending jobs                 |
+| ``bjobs -p``             | ``showq -i``                     | Get information about pending jobs                 |
+|                          | ``showq -b``                     |                                                    |
+|                          | ``checkjob``                     |                                                    |
 +--------------------------+----------------------------------+----------------------------------------------------+
 | ``bjobs -r``             | ``showq -r``                     | Get information about running jobs                 |
 +--------------------------+----------------------------------+----------------------------------------------------+
@@ -2049,20 +2066,23 @@ Easy Mode vs. Expert Mode
 The Cluster System Management (CSM) component of the job launch
 environment supports two methods of job submission, termed “easy” mode
 and “expert” mode. The difference in the modes is where the
-responsibility for creating the LSF resource string is placed. In easy
-mode, the system software converts options such as -nnodes in a batch
-script into the resource string needed by the scheduling system. In
-expert mode, the user is responsible for creating this string and
+responsibility for creating the LSF resource string is placed.
+
+In easy mode, the system software converts options such as -nnodes in
+a batch script into the resource string needed by the scheduling system.
+In expert mode, the user is responsible for creating this string and
 options such as -nnodes cannot be used. In easy mode, you will not be
 able to use ``bsub -R`` to create resource strings. The system will
 automatically create the resource string based on your other ``bsub``
 options. In expert mode, you will be able to use ``-R``, but you will
 not be able to use the following options to ``bsub``: ``-ln_slots``,
-``-ln_mem``, ``-cn_cu``, or ``-nnodes``. Most users will want to use
-easy mode. However, if you need precise control over your job’s
-resources, such as placement on (or avoidance of) specific nodes, you
-will need to use expert mode. To use expert mode, add ``#BSUB -csm y``
-to your batch script (or ``-csm y`` to your ``bsub`` command line).
+``-ln_mem``, ``-cn_cu``, or ``-nnodes``.
+
+Most users will want to use easy mode. However, if you need precise
+control over your job’s resources, such as placement on (or avoidance
+of) specific nodes, you will need to use expert mode. To use expert
+mode, add ``#BSUB -csm y`` to your batch script (or ``-csm y`` to
+your ``bsub`` command line).
 
 Hardware Threads
 ----------------
@@ -2089,6 +2109,7 @@ not available to jsrun. When listing available resources through jsrun,
 you will not see cores with hyperthreads 84-87 and 172-175. Isolating a
 socket's system services to a single core helps to reduce jitter and
 improve performance of tasks performed on the socket's remaining cores.
+
 The isolated core always operates at SMT4 regardless of the batch job's
 SMT level.
 
@@ -2117,7 +2138,7 @@ accomplished by starting an MPS server process, which funnels the work
 from multiple CUDA contexts (e.g. from multiple MPI ranks) into a single
 CUDA context. In some cases, this can increase performance due to better
 utilization of the resources. As mentioned in the `COMMON BSUB
-OPTIONS <https://www.olcf.ornl.gov/for-users/system-user-guides/summit/running-jobs/#common-bsub-options>`__
+OPTIONS <#common-bsub-options>`__
 section above, MPS can be enabled with the ``-alloc_flags "gpumps"``
 option to bsub. The screencast below shows an example of how to start an
 MPS server process for a job. https://vimeo.com/292016149
@@ -2227,7 +2248,7 @@ and how many resource set could fit on a node.
 
 .. image:: /images/summit-resource-set-subdivide.png
    :class: normal aligncenter size-full wp-image-775849
-   :width: 600px
+   :width: 780px
    :height: 360px
    :align: center
 
@@ -2274,16 +2295,19 @@ Designing a Resource Set
 Resource sets allow each jsrun to control how the node appears to a
 code. This method is unique to jsrun, and requires thinking of each job
 launch differently than aprun or mpirun. While the method is unique, the
-method is not complicated and can be reasoned in a few basic steps. The
-first step to creating resource sets is understanding how a code would
+method is not complicated and can be reasoned in a few basic steps.
+
+The first step to creating resource sets is understanding how a code would
 like the node to appear. For example, the number of tasks/threads per
 GPU. Once this is understood, the next step is to simply calculate the
 number of resource sets that can fit on a node. From here, the number of
-needed nodes can be calculated and passed to the batch job request. The
-basic steps to creating resource sets:
+needed nodes can be calculated and passed to the batch job request.
+
+The basic steps to creating resource sets:
 
 1) Understand how your code expects to interact with the system.
     How many tasks/threads per GPU?
+
     Does each task expect to see a single GPU? Do multiple tasks expect
     to share a GPU? Is the code written to internally manage task to GPU
     workload based on the number of available cores and GPUs?
@@ -2383,7 +2407,7 @@ For cases when the number of tasks per resource set (i.e. the ``-a``
 flag) is greater than one, the job must use ``-alloc_flags "gpumps"``.
 This allows multiple tasks to share the same GPU.
 
-  The following example images show how a single-gpu/single-task job
+The following example images show how a single-gpu/single-task job
 would be placed on a single Titan and Summit node. On Summit, the red
 box represents a resource set created by jsrun. The resource set looks
 similar to a Titan node, containing a single GPU, a single core, and
@@ -2438,12 +2462,14 @@ Single MPI Task, single GPU per RS
 """"""""""""""""""""""""""""""""""
 
 The following example will create 12 resource sets each with 1 MPI task
-and 1 GPU. Each MPI task will have access to a single GPU. Rank 0 will
-have access to GPU 0 on the first node ( red resource set). Rank 1 will
-have access to GPU 1 on the first node ( green resource set). This
-pattern will continue until 12 resources sets have been created. The
-following jsrun command will request 12 resource sets (``-n12``) 6 per
-node (``-r6``). Each resource set will contain 1 MPI task (``-a1``),
+and 1 GPU. Each MPI task will have access to a single GPU.
+
+Rank 0 will have access to GPU 0 on the first node ( red resource set).
+Rank 1 will have access to GPU 1 on the first node ( green resource set).
+This pattern will continue until 12 resources sets have been created.
+
+The following jsrun command will request 12 resource sets (``-n12``) 6
+per node (``-r6``). Each resource set will contain 1 MPI task (``-a1``),
 1 GPU (``-g1``), and 1 core (``-c1``).
 
 .. image:: /images/summit-jsrun-example-1Core-1GPU.png
@@ -2741,13 +2767,16 @@ CUDA-Aware MPI
 --------------
 
 CUDA-Aware MPI and GPUDirect are often used interchangeably, but they
-are distinct topics. CUDA-Aware MPI allows GPU buffers (e.g., GPU memory
-allocated with ``cudaMalloc``) to be used directly in MPI calls rather
-than requiring data to be manually transferred to/from a CPU buffer
-(e.g., using ``cudaMemcpy``) before/after passing data in MPI calls. By
-itself, CUDA-Aware MPI does not specify whether data is staged through
+are distinct topics.
+
+CUDA-Aware MPI allows GPU buffers (e.g., GPU memory allocated with
+``cudaMalloc``) to be used directly in MPI calls rather than requiring
+data to be manually transferred to/from a CPU buffer (e.g., using
+``cudaMemcpy``) before/after passing data in MPI calls. By itself,
+CUDA-Aware MPI does not specify whether data is staged through
 CPU memory or, for example, transferred directly between GPUs when
 passing GPU buffers to MPI calls. That is where GPUDirect comes in.
+
 GPUDirect is a technology that can be implemented on a system to enhance
 CUDA-Aware MPI by allowing data transfers directly between GPUs on the
 same node (peer-to-peer) and/or directly between GPUs on different nodes
