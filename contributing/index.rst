@@ -30,6 +30,7 @@ Setup authoring environment
 #. Point your master branch to track upstream::
 
     $ git remote add olcf https://github.com/olcf/olcf-user-documentation.git
+    $ git fetch olcf
     $ git branch --set-upstream-to=olcf/master
 
 #. Build the docs::
