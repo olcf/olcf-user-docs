@@ -253,7 +253,7 @@ Pascal).
    :width: 65.0%
    :align: center
 
-  For more information, please see the following document from NVIDIA:
+For more information, please see the following document from NVIDIA:
 https://docs.nvidia.com/deploy/pdf/CUDA_Multi_Process_Service_Overview.pdf
 
 Unified Memory
@@ -271,7 +271,7 @@ eliminates the need for explicit data transfers.
    :width: 60.0%
    :align: center
 
-  On Pascal-generation GPUs and later, this automatic migration is
+On Pascal-generation GPUs and later, this automatic migration is
 enhanced with hardware support. A page migration engine enables GPU page
 faulting, which allows the desired pages to be migrated to the GPU "on
 demand" instead of the entire "managed" allocation. In addition, 49-bit
@@ -280,11 +280,14 @@ full system memory size. The combination of GPU page faulting and larger
 virtual addressing allows programs to oversubscribe the system memory,
 so very large data sets can be processed. In addition, new CUDA API
 functions introduced in CUDA8 allow users to fine tune the use of
-unified memory. Unified memory is further improved on Volta GPUs through
+unified memory. 
+
+Unified memory is further improved on Volta GPUs through
 the use of access counters that can be used to automatically tune
-unified memory by determining where a page is most often accessed. For
-more information, please see the following section of NVIDIA's CUDA
-Programming Guide:
+unified memory by determining where a page is most often accessed. 
+
+For more information, please see the following section of NVIDIA's 
+CUDA Programming Guide:
 http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#um-unified-memory-programming-hd
 
 Independent Thread Scheduling
