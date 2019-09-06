@@ -54,9 +54,9 @@ Available compilers
 
 The following compilers are available on rhea:
 
-- `intel </software_package/intel/>`__, intel composer xe (default)
-- `pgi </software_package/pgi/>`__, the portland group compiler suite
-- `gcc </software_package/gcc/>`__, the gnu compiler collection
+- `intel <https://www.olcf.ornl.gov/software_package/intel/>`__, intel composer xe (default)
+- `pgi <https://www.olcf.ornl.gov/software_package/pgi/>`__, the portland group compiler suite
+- `gcc <https://www.olcf.ornl.gov/software_package/gcc/>`__, the gnu compiler collection
 
 Upon login, default versions of the intel compiler and openmpi (message
 passing interface) libraries are automatically added to each user's
@@ -124,7 +124,7 @@ programs:
 These wrapper programs are cognizant of your currently loaded modules,
 and will ensure that your code links against our openmpi installation.
 more information about using openmpi at our center can be found in our
-`software documentation <https://www.olcf.ornl.gov/kb_articles/software-ompi/>`__.
+`software documentation <https://www.olcf.ornl.gov/software_package/openmpi/>`__.
 
 Compiling threaded codes
 ------------------------
@@ -156,10 +156,8 @@ For intel, add "-qopenmp" to the build line.
     $ mpicc -qopenmp test.c -o test.x
     $ export omp_num_threads=2
 
-For information on *running threaded codes*, please see the `thread
-layout </for-users/system-user-guides/rhea/running-jobs/#-thread-layout->`__
-subsection of the `running
-jobs </for-users/system-user-guides/rhea/running-jobs/>`__ section in
+For information on *running threaded codes*, please see the  :ref:`thread-layout`
+subsection of the :ref:`rhea-running-jobs` section in
 this user guide.
 
 Shell and programming environments
@@ -1053,6 +1051,8 @@ The ``--report-bindings`` flag can be used to report task layout:
     [rhea4:104150] MCW rank 2 bound to socket 0[core 0[hwt 0-1]]: [BB/../../../../../../..][../../../../../../../..]
     [rhea4:104150] MCW rank 3 bound to socket 1[core 8[hwt 0-1]]: [../../../../../../../..][BB/../../../../../../..]
     $
+
+.. _thread-layout:
 
 Thread Layout
 """""""""""""""""
