@@ -54,9 +54,9 @@ Available compilers
 
 The following compilers are available on rhea:
 
-- `intel </software_package/intel/>`__, intel composer xe (default)
-- `pgi </software_package/pgi/>`__, the portland group compiler suite
-- `gcc </software_package/gcc/>`__, the gnu compiler collection
+- `intel <https://www.olcf.ornl.gov/software_package/intel/>`__, intel composer xe (default)
+- `pgi <https://www.olcf.ornl.gov/software_package/pgi/>`__, the portland group compiler suite
+- `gcc <https://www.olcf.ornl.gov/software_package/gcc/>`__, the gnu compiler collection
 
 Upon login, default versions of the intel compiler and openmpi (message
 passing interface) libraries are automatically added to each user's
