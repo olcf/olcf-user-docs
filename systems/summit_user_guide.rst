@@ -38,12 +38,16 @@ bricks, each capable of a 25GB/s transfer rate in each direction. Nodes
 contain 512 GB of DDR4 memory for use by the POWER9 processors and 96 GB
 of High Bandwidth Memory (HBM2) for use by the accelerators.
 Additionally, each node has 1.6TB of non-volatile memory that can be
-used as a burst buffer. The POWER9 processor is built around IBM’s SIMD
+used as a burst buffer.
+
+The POWER9 processor is built around IBM’s SIMD
 Multi-Core (SMC). The processor provides 22 SMCs with separate 32kB L1
 data and instruction caches. Pairs of SMCs share a 512kB L2 cache and a
 10MB L3 cache. SMCs support Simultaneous Multi-Threading (SMT) up to a
 level of 4, meaning each physical core supports up to 4 `hardware
-threads <#hardware-threads>`__. The POWER9 processors and V100
+threads <#hardware-threads>`__.
+
+The POWER9 processors and V100
 accelerators are cooled with cold plate technology. The remaining
 components are cooled through more traditional methods, although exhaust
 is passed through a back-of-cabinet heat exchanger prior to being
