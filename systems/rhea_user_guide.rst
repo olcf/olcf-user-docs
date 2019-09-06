@@ -124,7 +124,7 @@ programs:
 These wrapper programs are cognizant of your currently loaded modules,
 and will ensure that your code links against our openmpi installation.
 more information about using openmpi at our center can be found in our
-`software documentation <https://www.olcf.ornl.gov/kb_articles/software-ompi/>`__.
+`software documentation <https://www.olcf.ornl.gov/software_package/openmpi/>`__.
 
 Compiling threaded codes
 ------------------------
@@ -157,9 +157,9 @@ For intel, add "-qopenmp" to the build line.
     $ export omp_num_threads=2
 
 For information on *running threaded codes*, please see the `thread
-layout </for-users/system-user-guides/rhea/running-jobs/#-thread-layout->`__
+layout <threadlayout_>`__
 subsection of the `running
-jobs </for-users/system-user-guides/rhea/running-jobs/>`__ section in
+jobs <rhea-running-jobs_>`__ section in
 this user guide.
 
 Shell and programming environments
@@ -1053,6 +1053,8 @@ The ``--report-bindings`` flag can be used to report task layout:
     [rhea4:104150] MCW rank 2 bound to socket 0[core 0[hwt 0-1]]: [BB/../../../../../../..][../../../../../../../..]
     [rhea4:104150] MCW rank 3 bound to socket 1[core 8[hwt 0-1]]: [../../../../../../../..][BB/../../../../../../..]
     $
+
+.. _threadlayout:
 
 Thread Layout
 """""""""""""""""
