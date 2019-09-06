@@ -1003,7 +1003,7 @@ system. Currently, supported shells include:
 -  ksh
 
 If you would like to have your default shell changed, please contact the
-`OLCF User Assistance Center </for-users/user-assistance/>`__ at
+`OLCF User Assistance Center <https://www.olcf.ornl.gov/for-users/user-assistance/>`__ at
 help@nccs.gov.
 
 Environment Management with Lmod
@@ -2162,8 +2162,7 @@ ranks) to concurrently share the resources on a single GPU. This is
 accomplished by starting an MPS server process, which funnels the work
 from multiple CUDA contexts (e.g. from multiple MPI ranks) into a single
 CUDA context. In some cases, this can increase performance due to better
-utilization of the resources. As mentioned in the `COMMON BSUB
-OPTIONS <#common-bsub-options>`__
+utilization of the resources. As mentioned in the `Common bsub Options <#common-bsub-options>`__
 section above, MPS can be enabled with the ``-alloc_flags "gpumps"``
 option to bsub. The screencast below shows an example of how to start an
 MPS server process for a job. https://vimeo.com/292016149
@@ -2783,12 +2782,7 @@ information on ``jsrun``, Summit's job launch command. Many commands
 have much more information than can be easily presented here. More
 information about these commands is available via the online manual
 (i.e. ``man jsrun``). Additional LSF information can be found on `IBM’s
-website <https://www.ibm.com/developerworks/community/wikis/home?lang=en#!/wiki/New%20IBM%20Platform%20LSF%20Wiki/page/LSF%20documentation>`__,
-specifically the `Running
-Jobs <https://www.ibm.com/developerworks/community/wikis/form/anonymous/api/wiki/99245193-fced-40e5-90df-a0e9f50a0fb0/page/22e9aefe-a2e8-46e6-ad62-2ff5860f45aa/attachment/d6b2c089-eb88-48a6-80ce-acff94a7f02c/media/lsf_users_guide.pdf>`__
-and `Command
-Reference <https://www.ibm.com/developerworks/community/wikis/form/anonymous/api/wiki/99245193-fced-40e5-90df-a0e9f50a0fb0/page/22e9aefe-a2e8-46e6-ad62-2ff5860f45aa/attachment/f8aad44b-8e1c-4051-95c9-d2c80fe90cf3/media/lsf_command_ref.pdf>`__
-Documents.
+website <https://www.ibm.com/support/knowledgecenter/en/SSWRJV/product_welcome_spectrum_lsf.html>`__.
 
 CUDA-Aware MPI
 --------------
@@ -2829,10 +2823,7 @@ debugging features (setting breakpoints, stepping through code,
 examining variables), DDT also supports attaching to already-running
 processes and memory debugging. In-depth details of DDT can be found in
 the `Official DDT User
-Guide <https://www.allinea.com/user-guide/forge/userguide.html>`__, and
-instructions for how to use it on OLCF systems can be found on the
-`Forge (DDT/MAP) Software Page </software_package/forge/>`__. DDT is the
-OLCF's recommended debugging software for large parallel applications.
+Guide <https://www.allinea.com/user-guide/forge/userguide.html>`__.
 
 GDB
 ---
@@ -2847,8 +2838,6 @@ on Summit under all compiler families:
 
     module load gdb
 
-Additional information about GDB usage and OLCF-provided builds can be
-found on the `GDB Software Page </software_package/gdb/>`__.
 
 Valgrind
 --------
@@ -2877,10 +2866,6 @@ Valgrind is available on Summit under all compiler families:
 .. code::
 
     module load valgrind
-
-Additional information about Valgrind usage and OLCF-provided builds can
-be found on the `Valgrind Software
-Page </software_package/valgrind/>`__.
 
 .. _optimizing-and-profiling:
 
@@ -2945,19 +2930,12 @@ more useful. For information on how to view the output of ``nvprof`` in
 the NVIDIA Visual Profiler, see the `NVIDIA
 Documentation <http://docs.nvidia.com/cuda/profiler-users-guide/#nvprof-overview>`__.
 
-Score-P
--------
-
-[ls\_content\_block id="24659" para="full"] For detailed information
-about using Score-P on Summit and the builds available, please see the
-`Score-P Software Page </software_package/score-p/>`__.
-
 Vampir
 ------
 
 [ls\_content\_block id="24496" para="full"] For detailed information
 about using Vampir on Summit and the builds available, please see the
-`Vampir Software Page </software_package/vampir/>`__.
+`Vampir Software Page <https://www.olcf.ornl.gov/software_package/vampir/>`__.
 
 .. _known-issues:
 
@@ -3376,9 +3354,7 @@ an OLCF user resource. Access to the system is only obtained through
 OLCF training events.
 
 Ascent is an 18-node stand-alone system with the same architecture as
-Summit (see `**Summit
-Nodes** <https://www.olcf.ornl.gov/for-users/system-user-guides/summit/summit-user-guide/#system-overview>`__
-section above), so most of this Summit User Guide can be referenced for
+Summit (see :ref:`summit-nodes` section above), so most of this Summit User Guide can be referenced for
 Ascent as well. However, aside from the number of compute nodes, there
 are other differences between the two systems. Most notably, Ascent sits
 in the NCCS Open Security Enclave, which is subject to fewer
