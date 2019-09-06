@@ -52,8 +52,7 @@ The POWER9 processor is built around IBM’s SIMD
 Multi-Core (SMC). The processor provides 22 SMCs with separate 32kB L1
 data and instruction caches. Pairs of SMCs share a 512kB L2 cache and a
 10MB L3 cache. SMCs support Simultaneous Multi-Threading (SMT) up to a
-level of 4, meaning each physical core supports up to 4 `hardware
-threads :ref:`hardware-threads`.
+level of 4, meaning each physical core supports up to 4 :ref:`hardware-threads`.
 
 The POWER9 processors and V100
 accelerators are cooled with cold plate technology. The remaining
