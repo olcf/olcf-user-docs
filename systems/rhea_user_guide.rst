@@ -156,10 +156,8 @@ For intel, add "-qopenmp" to the build line.
     $ mpicc -qopenmp test.c -o test.x
     $ export omp_num_threads=2
 
-For information on *running threaded codes*, please see the `thread
-layout <threadlayout_>`__
-subsection of the `running
-jobs <rhea-running-jobs_>`__ section in
+For information on *running threaded codes*, please see the  :ref:`thread-layout`
+subsection of the :ref:`rhea-running-jobs` section in
 this user guide.
 
 Shell and programming environments
@@ -1054,7 +1052,7 @@ The ``--report-bindings`` flag can be used to report task layout:
     [rhea4:104150] MCW rank 3 bound to socket 1[core 8[hwt 0-1]]: [../../../../../../../..][BB/../../../../../../..]
     $
 
-.. _threadlayout:
+.. _thread-layout:
 
 Thread Layout
 """""""""""""""""
