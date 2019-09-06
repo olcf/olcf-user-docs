@@ -38,9 +38,8 @@ Summit Nodes
 
 The basic building block of Summit is the IBM Power System AC922 node.
 Each of the approximately 4,600 compute nodes on Summit contains two IBM
-POWER9 processors and six `NVIDIA Volta
-V100 </for-users/system-user-guides/summit/nvidia-v100-gpus/>`__
-accelerators and provides a theoretical double-precision capability of
+POWER9 processors and six `NVIDIA Volta V100`_ accelerators and provides 
+a theoretical double-precision capability of
 approximately 40 TF. Each POWER9 processor is connected via dual NVLINK
 bricks, each capable of a 25GB/s transfer rate in each direction. Nodes
 contain 512 GB of DDR4 memory for use by the POWER9 processors and 96 GB
@@ -145,6 +144,7 @@ slices share the physical core’s L1 instruction & data caches.
 https://vimeo.com/283756938
 
 .. _nvidia-v100-gpus:
+.. _NVIDIA Volta V100:
 
 NVIDIA V100 GPUs
 ================
