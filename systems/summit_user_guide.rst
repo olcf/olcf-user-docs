@@ -980,7 +980,7 @@ system. Currently, supported shells include:
 -  ksh
 
 If you would like to have your default shell changed, please contact the
-`OLCF User Assistance Center </for-users/user-assistance/>`__ at
+`OLCF User Assistance Center <https://www.olcf.ornl.gov/for-users/user-assistance/>`__ at
 help@nccs.gov.
 
 Environment Management with Lmod
@@ -993,13 +993,14 @@ to the shell’s environment variables (such as ``PATH``,
 ``LD_LIBRARY_PATH``, and ``PKG_CONFIG_PATH``), Lmod allows you to alter
 the software available in your shell environment without the risk of
 creating package and version combinations that cannot coexist in a
-single environment. Lmod is a recursive environment module system,
-meaning it is aware of module compatibility and actively alters the
-environment to protect against conflicts. Messages to stderr are issued
-upon Lmod implicitly altering the environment. Environment modules are
-structured hierarchically by compiler family such that packages built
-with a given compiler will only be accessible if the compiler family is
-first present in the environment.
+single environment.
+
+Lmod is a recursive environment module system, meaning it is aware of module
+compatibility and actively alters the environment to protect against conflicts.
+Messages to stderr are issued upon Lmod implicitly altering the environment.
+Environment modules are structured hierarchically by compiler family such
+that packages built with a given compiler will only be accessible if the
+compiler family is first present in the environment.
 
     **Note:** Lmod can interpret both Lua modulefiles and legacy Tcl
     modulefiles. However, long and logic-heavy Tcl modulefiles may require
