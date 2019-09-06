@@ -2,6 +2,8 @@
 Summit User Guide
 ******************
 
+.. _summit-documentation-resources:
+
 Summit Documentation Resources
 ==============================
 
@@ -15,6 +17,8 @@ include using Summit's NVME burst buffers, CUDA-aware MPI, advanced
 networking and MPI, and multiple ways of programming multiple GPUs per
 node.
 
+.. _system-overview:
+
 System Overview
 ===============
 
@@ -24,6 +28,8 @@ approximately 200 PF, it is one of the most capable systems in the world
 for a wide range of traditional computational science applications. It
 is also one of the "smartest" computers in the world for deep learning
 applications with a mixed-precision capability in excess of 3 EF.
+
+.. _summit-nodes:
 
 Summit Nodes
 ------------
@@ -42,21 +48,21 @@ used as a burst buffer. The POWER9 processor is built around IBM’s SIMD
 Multi-Core (SMC). The processor provides 22 SMCs with separate 32kB L1
 data and instruction caches. Pairs of SMCs share a 512kB L2 cache and a
 10MB L3 cache. SMCs support Simultaneous Multi-Threading (SMT) up to a
-level of 4, meaning each physical core supports up to 4 `hardware
-threads <#hardware-threads>`__. The POWER9 processors and V100
-accelerators are cooled with cold plate technology. The remaining
-components are cooled through more traditional methods, although exhaust
-is passed through a back-of-cabinet heat exchanger prior to being
-released back into the room. Both the cold plate and heat exchanger
-operate using medium temperature water which is more cost-effective for
-the center to maintain than chilled water used by older systems.
+level of 4, meaning each physical core supports up to 4
+:ref:`hardware-threads`. The POWER9 processors and V100 accelerators are
+cooled with cold plate technology. The remaining components are cooled
+through more traditional methods, although exhaust is passed through a
+back-of-cabinet heat exchanger prior to being released back into the room.
+Both the cold plate and heat exchanger operate using medium temperature water
+which is more cost-effective for the center to maintain than chilled water
+used by older systems.
 
 Node Types
 ----------
 
 On Summit, there are three major types of nodes you will encounter:
 Login, Launch, and Compute. While all of these are similar in terms of
-`hardware <#summit-nodes>`__, they differ considerably in their intended
+hardware (see: :ref:`summit-nodes`), they differ considerably in their intended
 use.
 
 +-------------+----------------------------------------------------------------------------------+
@@ -116,6 +122,8 @@ Operating System
 
 Summit is running Red Hat Enterprise Linux (RHEL) version 7.5.
 
+.. _hardware-threads:
+
 Hardware Threads
 ----------------
 
@@ -130,6 +138,8 @@ in SMT1 mode the four slices work together to execute the task/thread
 assigned to the physical core. Regardless of the SMT mode used, the four
 slices share the physical core’s L1 instruction & data caches.
 https://vimeo.com/283756938
+
+.. _nvidia-v100-gpus:
 
 NVIDIA V100 GPUs
 ================
@@ -395,10 +405,14 @@ following (outside) links.
 * `NVIDIA Volta Architecture White Paper <http://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf>`_
 * `NVIDIA PARALLEL FORALL blog article <https://devblogs.nvidia.com/parallelforall/inside-volta/>`_
 
+.. _connecting:
+
 Connecting
 ==========
 
 FIXME
+
+.. _data-storage-transfers:
 
 Data Storage & Transfers
 ========================
@@ -951,11 +965,15 @@ HSI and HTAR. For more information on using HSI or HTAR, see the `HPSS
 Best Practices <./#hpss-best-practices>`__ section. [ls\_content\_block
 id="7126959"] [ls\_content\_block id="5798390"]
 
+.. _software:
+
 Software
 ========
 
 For a full list of software available at the OLCF, please see the
 `Software </for-users/software/>`__ section.
+
+.. _shell-programming-environments:
 
 Shell & Programming Environments
 ================================
@@ -1106,6 +1124,8 @@ commands summarized in the following table.
 
 The following screencast shows an example of setting up user-defined
 module collections on Summit. https://vimeo.com/293582400
+
+.. _compiling:
 
 Compiling
 =========
@@ -1341,6 +1361,8 @@ include/ directories:
 The following screencast shows an example of linking two libraries into
 a simple program on Summit. https://vimeo.com/292015868
 
+.. _running-jobs:
+
 Running Jobs
 ============
 
@@ -1366,18 +1388,17 @@ the batch scheduling system.
 Login, Launch, and Compute Nodes
 --------------------------------
 
-Recall from the `System
-Overview </for-users/system-user-guides/summit/system-overview/>`__
-section that Summit has three types of nodes: login, launch, and
-compute. When you log into the system, you are placed on a login node.
-When your `batch scripts <#batch-scripts>`__ or `interactive
-jobs <#interactive-jobs>`__ run, the resulting shell will run on a
-launch node. Compute nodes are accessed via the ``jsrun`` command. The
-``jsrun`` command should only be issued from within an LSF job (either
-batch or interactive) on a launch node. Othewise, you will not have any
-compute nodes allocated and your parallel job will run on the login
-node. If this happens, your job will interfere with (and be interfered
-with by) other users' login node tasks.
+Recall from the :ref:`system-overview` section that Summit has three types
+of nodes: login, launch, and compute. When you log into the system, you are
+placed on a login node. When your :ref:`batch-scripts` or
+:ref:`interactive-jobs` run, the resulting shell will run on a launch node.
+Compute nodes are accessed via the ``jsrun`` command. The ``jsrun`` command
+should only be issued from within an LSF job (either batch or interactive)
+on a launch node. Otherwise, you will not have any compute nodes allocated
+and your parallel job will run on the login node. If this happens, your job
+will interfere with (and be interfered with by) other users' login node tasks.
+
+.. _batch-scripts:
 
 Batch Scripts
 -------------
@@ -1446,6 +1467,8 @@ As an example, consider the following batch script:
 +----------+------------+--------------------------------------------------------------------------------------------+
 | 15       | -          | Copy output files from the scratch area into a more permanent location                     |
 +----------+------------+--------------------------------------------------------------------------------------------+
+
+.. _interactive-jobs:
 
 Interactive Jobs
 ----------------
@@ -2125,6 +2148,8 @@ for which they were allocated. Thus, a job using only 1 core on each of
 its nodes is charged the same as a job using every core and every GPU on
 each of its nodes.
 
+.. _job-launcher-jsrun:
+
 Job Launcher (jsrun)
 --------------------
 
@@ -2726,6 +2751,8 @@ CUDA-Aware MPI in a job, use the following argument to ``jsrun``:
 
     jsrun --smpiargs="-gpu" ...
 
+.. _debugging:
+
 Debugging
 =========
 
@@ -2791,6 +2818,8 @@ Additional information about Valgrind usage and OLCF-provided builds can
 be found on the `Valgrind Software
 Page </software_package/valgrind/>`__.
 
+.. _optimizing-and-profiling:
+
 Optimizing and Profiling
 ========================
 
@@ -2810,10 +2839,8 @@ loaded.
     summit> module load cuda
 
 A simple "Hello, World!" run using ``nvprof`` can be done by adding
-"nvprof" to the
-`jsrun </for-users/system-user-guides/summit/running-jobs/#job-launcher>`__
-line in your `batch
-script </for-users/system-user-guides/summit/running-jobs/#batch-scripts>`__.
+"nvprof" to the jsrun (see: :ref:`job-launcher-jsrun`)
+line in your batch script (see :ref:`batch-scripts`).
 
 ::
 
@@ -2867,6 +2894,8 @@ Vampir
 [ls\_content\_block id="24496" para="full"] For detailed information
 about using Vampir on Summit and the builds available, please see the
 `Vampir Software Page </software_package/vampir/>`__.
+
+.. _known-issues:
 
 Known Issues
 ============
@@ -3272,6 +3301,8 @@ it is recommended to choose breakpoints judiciously, especially when
 running the debugger in "batch" or "offline" mode where this overhead
 may be misperceived as the code hanging. If possible, debugging a
 smaller problem size with fewer active threads can be more pleasant.
+
+.. _training-system-ascent:
 
 Training System (Ascent)
 ========================
