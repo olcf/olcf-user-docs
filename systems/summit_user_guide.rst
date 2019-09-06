@@ -7,7 +7,9 @@ Summit Documentation Resources
 
 In addition to this Summit User Guide, there are other sources of
 documentation, instruction, and tutorials that could be useful for
-Summit users. The `OLCF Training
+Summit users.
+
+The `OLCF Training
 Archive <https://www.olcf.ornl.gov/for-users/training/training-archive/>`__
 provides a list of previous training events, including multi-day Summit
 Workshops. Some examples of topics addressed during these workshops
