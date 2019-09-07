@@ -2,6 +2,8 @@
 Summit User Guide
 ******************
 
+.. _summit-documentation-resources:
+
 Summit Documentation Resources
 ==============================
 
@@ -17,6 +19,8 @@ include using Summit's NVME burst buffers, CUDA-aware MPI, advanced
 networking and MPI, and multiple ways of programming multiple GPUs per
 node.
 
+.. _system-overview:
+
 System Overview
 ===============
 
@@ -27,14 +31,15 @@ for a wide range of traditional computational science applications. It
 is also one of the "smartest" computers in the world for deep learning
 applications with a mixed-precision capability in excess of 3 EF.
 
+.. _summit-nodes:
+
 Summit Nodes
 ------------
 
 The basic building block of Summit is the IBM Power System AC922 node.
 Each of the approximately 4,600 compute nodes on Summit contains two IBM
-POWER9 processors and six `NVIDIA Volta
-V100 </for-users/system-user-guides/summit/nvidia-v100-gpus/>`__
-accelerators and provides a theoretical double-precision capability of
+POWER9 processors and six `NVIDIA Volta V100`_ accelerators and provides 
+a theoretical double-precision capability of
 approximately 40 TF. Each POWER9 processor is connected via dual NVLINK
 bricks, each capable of a 25GB/s transfer rate in each direction. Nodes
 contain 512 GB of DDR4 memory for use by the POWER9 processors and 96 GB
@@ -46,8 +51,7 @@ The POWER9 processor is built around IBM’s SIMD
 Multi-Core (SMC). The processor provides 22 SMCs with separate 32kB L1
 data and instruction caches. Pairs of SMCs share a 512kB L2 cache and a
 10MB L3 cache. SMCs support Simultaneous Multi-Threading (SMT) up to a
-level of 4, meaning each physical core supports up to 4 `hardware
-threads <#hardware-threads>`__.
+level of 4, meaning each physical core supports up to 4 :ref:`hardware-threads`.
 
 The POWER9 processors and V100
 accelerators are cooled with cold plate technology. The remaining
@@ -62,7 +66,7 @@ Node Types
 
 On Summit, there are three major types of nodes you will encounter:
 Login, Launch, and Compute. While all of these are similar in terms of
-`hardware <#summit-nodes>`__, they differ considerably in their intended
+hardware (see: :ref:`summit-nodes`), they differ considerably in their intended
 use.
 
 +-------------+----------------------------------------------------------------------------------+
@@ -122,6 +126,8 @@ Operating System
 
 Summit is running Red Hat Enterprise Linux (RHEL) version 7.5.
 
+.. _hardware-threads:
+
 Hardware Threads
 ----------------
 
@@ -136,6 +142,9 @@ in SMT1 mode the four slices work together to execute the task/thread
 assigned to the physical core. Regardless of the SMT mode used, the four
 slices share the physical core’s L1 instruction & data caches.
 https://vimeo.com/283756938
+
+.. _nvidia-v100-gpus:
+.. _NVIDIA Volta V100:
 
 NVIDIA V100 GPUs
 ================
@@ -401,10 +410,14 @@ following (outside) links.
 * `NVIDIA Volta Architecture White Paper <http://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf>`_
 * `NVIDIA PARALLEL FORALL blog article <https://devblogs.nvidia.com/parallelforall/inside-volta/>`_
 
+.. _connecting:
+
 Connecting
 ==========
 
 FIXME
+
+.. _data-storage-transfers:
 
 Data Storage & Transfers
 ========================
@@ -957,11 +970,15 @@ HSI and HTAR. For more information on using HSI or HTAR, see the `HPSS
 Best Practices <./#hpss-best-practices>`__ section. [ls\_content\_block
 id="7126959"] [ls\_content\_block id="5798390"]
 
+.. _software:
+
 Software
 ========
 
 For a full list of software available at the OLCF, please see the
 `Software </for-users/software/>`__ section.
+
+.. _shell-programming-environments:
 
 Shell & Programming Environments
 ================================
@@ -986,7 +1003,7 @@ system. Currently, supported shells include:
 -  ksh
 
 If you would like to have your default shell changed, please contact the
-`OLCF User Assistance Center </for-users/user-assistance/>`__ at
+`OLCF User Assistance Center <https://www.olcf.ornl.gov/for-users/user-assistance/>`__ at
 help@nccs.gov.
 
 Environment Management with Lmod
@@ -1112,6 +1129,8 @@ commands summarized in the following table.
 
 The following screencast shows an example of setting up user-defined
 module collections on Summit. https://vimeo.com/293582400
+
+.. _compiling:
 
 Compiling
 =========
@@ -1378,6 +1397,8 @@ include/ directories:
 The following screencast shows an example of linking two libraries into
 a simple program on Summit. https://vimeo.com/292015868
 
+.. _running-jobs:
+
 Running Jobs
 ============
 
@@ -1403,18 +1424,16 @@ the batch scheduling system.
 Login, Launch, and Compute Nodes
 --------------------------------
 
-Recall from the `System
-Overview <#system-overview>`__
+Recall from the :ref:`system-overview`
 section that Summit has three types of nodes: login, launch, and
 compute. When you log into the system, you are placed on a login node.
-When your `batch scripts <#batch-scripts>`__ or `interactive
-jobs <#interactive-jobs>`__ run, the resulting shell will run on a
-launch node. Compute nodes are accessed via the ``jsrun`` command. The
-``jsrun`` command should only be issued from within an LSF job (either
-batch or interactive) on a launch node. Othewise, you will not have any
-compute nodes allocated and your parallel job will run on the login
-node. If this happens, your job will interfere with (and be interfered
-with by) other users' login node tasks.
+When your :ref:`batch-scripts` or :ref:`interactive-jobs` run,
+the resulting shell will run on a launch node. Compute nodes are accessed
+via the ``jsrun`` command. The ``jsrun`` command should only be issued
+from within an LSF job (either batch or interactive) on a launch node.
+Othewise, you will not have any compute nodes allocated and your parallel
+job will run on the login node. If this happens, your job will interfere with
+(and be interfered with by) other users' login node tasks.
 
 Batch Scripts
 -------------
@@ -1485,6 +1504,8 @@ As an example, consider the following batch script:
 +----------+------------+--------------------------------------------------------------------------------------------+
 | 15       | -          | Copy output files from the scratch area into a more permanent location                     |
 +----------+------------+--------------------------------------------------------------------------------------------+
+
+.. _interactive-jobs:
 
 Interactive Jobs
 ----------------
@@ -2141,8 +2162,7 @@ ranks) to concurrently share the resources on a single GPU. This is
 accomplished by starting an MPS server process, which funnels the work
 from multiple CUDA contexts (e.g. from multiple MPI ranks) into a single
 CUDA context. In some cases, this can increase performance due to better
-utilization of the resources. As mentioned in the `COMMON BSUB
-OPTIONS <#common-bsub-options>`__
+utilization of the resources. As mentioned in the `Common bsub Options <#common-bsub-options>`__
 section above, MPS can be enabled with the ``-alloc_flags "gpumps"``
 option to bsub. The screencast below shows an example of how to start an
 MPS server process for a job. https://vimeo.com/292016149
@@ -2182,6 +2202,8 @@ based on the number of nodes allocated multiplied by the amount of time
 for which they were allocated. Thus, a job using only 1 core on each of
 its nodes is charged the same as a job using every core and every GPU on
 each of its nodes.
+
+.. _job-launcher-jsrun:
 
 Job Launcher (jsrun)
 --------------------
@@ -2760,12 +2782,7 @@ information on ``jsrun``, Summit's job launch command. Many commands
 have much more information than can be easily presented here. More
 information about these commands is available via the online manual
 (i.e. ``man jsrun``). Additional LSF information can be found on `IBM’s
-website <https://www.ibm.com/developerworks/community/wikis/home?lang=en#!/wiki/New%20IBM%20Platform%20LSF%20Wiki/page/LSF%20documentation>`__,
-specifically the `Running
-Jobs <https://www.ibm.com/developerworks/community/wikis/form/anonymous/api/wiki/99245193-fced-40e5-90df-a0e9f50a0fb0/page/22e9aefe-a2e8-46e6-ad62-2ff5860f45aa/attachment/d6b2c089-eb88-48a6-80ce-acff94a7f02c/media/lsf_users_guide.pdf>`__
-and `Command
-Reference <https://www.ibm.com/developerworks/community/wikis/form/anonymous/api/wiki/99245193-fced-40e5-90df-a0e9f50a0fb0/page/22e9aefe-a2e8-46e6-ad62-2ff5860f45aa/attachment/f8aad44b-8e1c-4051-95c9-d2c80fe90cf3/media/lsf_command_ref.pdf>`__
-Documents.
+website <https://www.ibm.com/support/knowledgecenter/en/SSWRJV/product_welcome_spectrum_lsf.html>`__.
 
 CUDA-Aware MPI
 --------------
@@ -2792,6 +2809,8 @@ CUDA-Aware MPI in a job, use the following argument to ``jsrun``:
 
     jsrun --smpiargs="-gpu" ...
 
+.. _debugging:
+
 Debugging
 =========
 
@@ -2804,10 +2823,7 @@ debugging features (setting breakpoints, stepping through code,
 examining variables), DDT also supports attaching to already-running
 processes and memory debugging. In-depth details of DDT can be found in
 the `Official DDT User
-Guide <https://www.allinea.com/user-guide/forge/userguide.html>`__, and
-instructions for how to use it on OLCF systems can be found on the
-`Forge (DDT/MAP) Software Page </software_package/forge/>`__. DDT is the
-OLCF's recommended debugging software for large parallel applications.
+Guide <https://www.allinea.com/user-guide/forge/userguide.html>`__.
 
 GDB
 ---
@@ -2822,8 +2838,6 @@ on Summit under all compiler families:
 
     module load gdb
 
-Additional information about GDB usage and OLCF-provided builds can be
-found on the `GDB Software Page </software_package/gdb/>`__.
 
 Valgrind
 --------
@@ -2853,9 +2867,7 @@ Valgrind is available on Summit under all compiler families:
 
     module load valgrind
 
-Additional information about Valgrind usage and OLCF-provided builds can
-be found on the `Valgrind Software
-Page </software_package/valgrind/>`__.
+.. _optimizing-and-profiling:
 
 Optimizing and Profiling
 ========================
@@ -2876,10 +2888,8 @@ loaded.
     summit> module load cuda
 
 A simple "Hello, World!" run using ``nvprof`` can be done by adding
-"nvprof" to the
-`jsrun </for-users/system-user-guides/summit/running-jobs/#job-launcher>`__
-line in your `batch
-script </for-users/system-user-guides/summit/running-jobs/#batch-scripts>`__.
+"nvprof" to the jsrun (see: :ref:`job-launcher-jsrun`)
+line in your batch script (see :ref:`batch-scripts`).
 
 ::
 
@@ -2920,19 +2930,14 @@ more useful. For information on how to view the output of ``nvprof`` in
 the NVIDIA Visual Profiler, see the `NVIDIA
 Documentation <http://docs.nvidia.com/cuda/profiler-users-guide/#nvprof-overview>`__.
 
-Score-P
--------
-
-[ls\_content\_block id="24659" para="full"] For detailed information
-about using Score-P on Summit and the builds available, please see the
-`Score-P Software Page </software_package/score-p/>`__.
-
 Vampir
 ------
 
 [ls\_content\_block id="24496" para="full"] For detailed information
 about using Vampir on Summit and the builds available, please see the
-`Vampir Software Page </software_package/vampir/>`__.
+`Vampir Software Page <https://www.olcf.ornl.gov/software_package/vampir/>`__.
+
+.. _known-issues:
 
 Known Issues
 ============
@@ -3339,6 +3344,8 @@ running the debugger in "batch" or "offline" mode where this overhead
 may be misperceived as the code hanging. If possible, debugging a
 smaller problem size with fewer active threads can be more pleasant.
 
+.. _training-system-ascent:
+
 Training System (Ascent)
 ========================
 
@@ -3347,9 +3354,7 @@ an OLCF user resource. Access to the system is only obtained through
 OLCF training events.
 
 Ascent is an 18-node stand-alone system with the same architecture as
-Summit (see `**Summit
-Nodes** <https://www.olcf.ornl.gov/for-users/system-user-guides/summit/summit-user-guide/#system-overview>`__
-section above), so most of this Summit User Guide can be referenced for
+Summit (see :ref:`summit-nodes` section above), so most of this Summit User Guide can be referenced for
 Ascent as well. However, aside from the number of compute nodes, there
 are other differences between the two systems. Most notably, Ascent sits
 in the NCCS Open Security Enclave, which is subject to fewer
