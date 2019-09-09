@@ -3308,7 +3308,7 @@ CUDA 10.1 Known Issues
 ----------------------
 
 Intermittent failures with \`nvprof\` (Identified: July 11, 2019)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 We are seeing an intermittent issue that causes an error when
 profiling a code using `nvprof` from CUDA 10.1.168. We have filed
