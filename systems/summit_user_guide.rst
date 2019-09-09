@@ -3455,3 +3455,79 @@ systems such as Summit).
 **NOTE:** It will take ~5 minutes for your directories to be created, so
 if your account was just created and you log in and you do not have a
 home directory, this is likely the reason.
+
+Preparing For Frontier
+======================
+
+This section of the Summit User Guide is intended to show current OLCF
+users how to start preparing their applications to run on the upcoming
+Frontier system. We will continue to add more topics to this section in
+the coming months. Please see the topics below to get started.
+
+HIP
+---
+
+HIP (Heterogeneous-Compute Interface for Portability) is a C++ runtime
+API that allows developers to write portable code to run on AMD and NVIDIA
+GPUs. It is an interface that uses the underlying Radeon Open Compute (ROCm)
+or CUDA platform that is installed on a system. The API is similar to CUDA
+so porting existing codes from CUDA to HIP should be fairly straightforward
+in most cases. In addition, HIP provides porting tools which can be used to
+help port CUDA codes to the HIP layer, with no overhead compared to the
+original CUDA application. HIP is not intended to be a drop-in replacement
+for CUDA, so some manual coding and performance tuning work should be
+expected to complete the port.
+
+Key features include:
+
+- HIP is a thin layer and has little or no performance impact over
+  coding directly in CUDA.
+
+- HIP allows coding in a single-source C++ programming language including
+  features such as templates, C++11 lambdas, classes, namespaces, and more.
+
+- The “hipify” tools automatically convert source from CUDA to HIP.
+
+- Developers can specialize for the platform (CUDA or HIP) to tune for
+  performance or handle tricky cases.
+
+Using HIP on Summit
+-------------------
+
+As mentioned above, HIP can be used on systems running on either the ROCm
+or CUDA platform, so OLCF users can start preparing their applications for
+Frontier today on Summit. To use HIP on Summit, you must load the HIP module:
+
+::
+
+    $ module load hip
+
+This will automatically load the appropriate CUDA module as well.
+
+Learning to Program with HIP
+----------------------------
+
+The HIP API is very similar to CUDA, so if you are already familiar with
+using CUDA, the transition to using HIP should be fairly straightforward.
+Whether you are already familiar with CUDA or not, the best place to start
+learning about HIP is this Introduction to HIP webinar that was recently
+given by AMD:
+
+- **Introduction to AMD GPU Programming with HIP**:
+  (`slides <https://www.exascaleproject.org/wp-content/uploads/2017/05/ORNL_HIP_webinar_20190606_final.pdf>`__ | `recording <https://youtu.be/3ZXbRJVvgJs>`__)
+
+
+More useful resources, provided by AMD, can be found here:
+
+- `HIP Programming Guide <https://rocm-documentation.readthedocs.io/en/latest/Programming_Guides/HIP-GUIDE.html>`__
+
+- `HIP API Documentation <https://rocm-documentation.readthedocs.io/en/latest/ROCm_API_References/HIP-API.html>`__
+
+- `HIP Porting Guide <https://github.com/ROCm-Developer-Tools/HIP/blob/master/docs/markdown/hip_porting_guide.md>`__
+
+The OLCF is currently adding some simple HIP tutorials here as well:
+
+- OLCF Tutorials – `Simple HIP Examples <https://github.com/olcf-tutorials/simple_HIP_examples>`__
+
+Please check back to this section regularly as we will continue
+to add new content for our users.
