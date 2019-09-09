@@ -1766,11 +1766,11 @@ Remote Visualization using VNC (non-GPU)
 ----------------------------------------
 
 In addition to the instructions below, `Benjamin
-Hernandez </directory/staff-member/benjamin-hernandez/>`__ of the `OLCF
+Hernandez <https://www.olcf.ornl.gov/directory/staff-member/benjamin-hernandez/>`__ of the `OLCF
 Advanced Data and Workflows
-Group </about-olcf/olcf-groups/advanced-data-and-workflows/>`__
+Group <https://www.olcf.ornl.gov/about-olcf/olcf-groups/advanced-data-and-workflows/>`__
 presented a related talk, `GPU Rendering in Rhea and
-Titan </wp-content/uploads/2016/01/GPURenderingRheaTitan-1.pdf>`__,
+Titan <https://www.olcf.ornl.gov/wp-content/uploads/2016/01/GPURenderingRheaTitan-1.pdf>`__,
 during the 2016 OLCF User Meeting.
 
 step 1 (local system)
