@@ -29,6 +29,8 @@ Rhea contains 521 compute nodes separated into two partitions:
 |             |             |         | K80               | (total 28 cores, 56 HT *per node* |
 +-------------+-------------+---------+-------------------+-----------------------------------+
 
+.. _rhea-partition:
+
 **Rhea Partition**
 
 The first 512 nodes make up the *rhea* partition, where each node contains two
@@ -37,6 +39,8 @@ Technology and 128GB of main memory. Each CPU in this partition features 8
 physical cores, for a total of 16 physical cores per node. With Intel®
 Hyper-Threading Technology enabled, each node has 32 logical cores capable of
 executing 32 hardware threads for increased parallelism.
+
+.. _gpu-partition:
 
 **GPU Partition**
 
