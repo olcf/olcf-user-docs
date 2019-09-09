@@ -52,12 +52,14 @@ With Hyper-Threading enabled, these nodes have 56 logical cores that can execute
 
 Please see the :ref:`batch-queues-on-rhea` section to learn about the queuing
 policies for these two partitions. Both compute partitions are accessible
-through the same batch queue from Rhea’s `login nodes <#overview>`__.
+through the same batch queue from Rhea’s :ref:`login-nodes`.
 
 Rhea features a 4X FDR Infiniband interconnect, with a maximum theoretical
 transfer rate of 56 Gb/s.
 
 --------------
+
+.. _login-nodes:
 
 Login nodes
 -----------
