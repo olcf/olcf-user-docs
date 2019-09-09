@@ -1542,8 +1542,7 @@ script. If conflicting options are specified (i.e. different walltime
 specified on the command line versus in the script), the option on the
 command line takes precedence. Note that LSF has numerous options; only
 the most common ones are described here. For more in-depth information
-about other LSF options, see the
-`documentation <#for-more-information>`__.
+about other LSF options, see the ``bsub`` man page.
 
 +--------------------+----------------------------------------+----------------------------------------------------------------------------------+
 | Option             | Example Usage                          | Description                                                                      |
