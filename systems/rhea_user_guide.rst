@@ -163,11 +163,11 @@ this user guide.
 Shell and programming environments
 ==================================
 
-Olcf systems provide hundreds of software packages and scientific
+OLCF systems provide hundreds of software packages and scientific
 libraries pre-installed at the system-level for users to take advantage
 of. To facilitate this, environment management tools are employed to
 handle necessary changes to the shell dynamically. The sections below
-provide information about using the management tools at the olcf.
+provide information about using the management tools at the OLCF.
 
 --------------
 
@@ -175,8 +175,8 @@ Default shell
 -------------
 
 A user's default shell is selected when completing the user account
-request form. The chosen shell is set across all olcf resources.
-currently, supported shells include:
+request form. The chosen shell is set across all OLCF resources.
+Currently, supported shells include:
 
 -  bash
 -  tsch
@@ -184,7 +184,7 @@ currently, supported shells include:
 -  ksh
 
 If you would like to have your default shell changed, please contact the
-`olcf user assistance center </for-users/user-assistance/>`__ at
+`OLCF user assistance center <https://www.olcf.ornl.gov/for-users/user-assistance/>`__ at
 help@olcf.ornl.gov.
 
 --------------
@@ -194,60 +194,62 @@ Environment management with lmod
 
 The *modules* software package allows you to dynamically modify your
 user environment by using pre-written *modulefiles*. environment modules
-are provided through `lmod <https://lmod.readthedocs.io/en/latest/>`__,
-a lua-based module system for dynamically altering shell environments.
+are provided through `Lmod <https://lmod.readthedocs.io/en/latest/>`__,
+a Lua-based module system for dynamically altering shell environments.
 by managing changes to the shell’s environment variables (such as
-``path``, ``ld_library_path``, and ``pkg_config_path``), lmod allows you
+``path``, ``ld_library_path``, and ``pkg_config_path``), Lmod allows you
 to alter the software available in your shell environment without the
 risk of creating package and version combinations that cannot coexist in
-a single environment. Lmod is a recursive environment module system,
-meaning it is aware of module compatibility and actively alters the
-environment to protect against conflicts. Messages to stderr are issued
-upon lmod implicitly altering the environment. Environment modules are
-structured hierarchically by compiler family such that packages built
-with a given compiler will only be accessible if the compiler family is
-first present in the environment.
+a single environment.
 
-    **note:** lmod can interpret both lua modulefiles and legacy tcl
-    modulefiles. However, long and logic-heavy tcl modulefiles may require
-    porting to lua.
+Lmod is a recursive environment module system, meaning it is aware of
+module compatibility and actively alters the environment to protect
+against conflicts. Messages to stderr are issued upon Lmod implicitly
+altering the environment. Environment modules are structured
+hierarchically by compiler family such that packages built with a given
+compiler will only be accessible if the compiler family is first present
+in the environment.
+
+    **note:** Lmod can interpret both Lua modulefiles and legacy Tcl
+    modulefiles. However, long and logic-heavy Tcl modulefiles may require
+    porting to Lua.
 
 General usage
 ^^^^^^^^^^^^^
 
-Typical use of lmod is very similar to that of interacting with
-modulefiles on other olcf systems. The interface to lmod is provided by
+Typical use of Lmod is very similar to that of interacting with
+modulefiles on other OLCF systems. The interface to Lmod is provided by
 the ``module`` command:
 
 +----------------------------------+-----------------------------------------------------------------------+
-| command                          | description                                                           |
+| Command                          | Description                                                           |
 +==================================+=======================================================================+
-| module -t list                   | shows a terse list of the currently loaded modules.                   |
+| module -t list                   | Shows a terse list of the currently loaded modules.                   |
 +----------------------------------+-----------------------------------------------------------------------+
-| module avail                     | shows a table of the currently available modules                      |
+| module avail                     | Shows a table of the currently available modules                      |
 +----------------------------------+-----------------------------------------------------------------------+
-| module help <modulename>         | shows help information about <modulename>                             |
+| module help <modulename>         | Shows help information about <modulename>                             |
 +----------------------------------+-----------------------------------------------------------------------+
-| module show <modulename>         | shows the environment changes made by the <modulename> modulefile     |
+| module show <modulename>         | Shows the environment changes made by the <modulename> modulefile     |
 +----------------------------------+-----------------------------------------------------------------------+
-| module spider <string>           | searches all possible modules according to <string>                   |
+| module spider <string>           | Searches all possible modules according to <string>                   |
 +----------------------------------+-----------------------------------------------------------------------+
-| module load <modulename> [...]   | loads the given <modulename>(s) into the current environment          |
+| module load <modulename> [...]   | Loads the given <modulename>(s) into the current environment          |
 +----------------------------------+-----------------------------------------------------------------------+
-| module use <path>                | adds <path> to the modulefile search cache and ``modulespath``        |
+| module use <path>                | Adds <path> to the modulefile search cache and ``MODULESPATH``        |
 +----------------------------------+-----------------------------------------------------------------------+
-| module unuse <path>              | removes <path> from the modulefile search cache and ``modulespath``   |
+| module unuse <path>              | Removes <path> from the modulefile search cache and ``MODULESPATH``   |
 +----------------------------------+-----------------------------------------------------------------------+
-| module purge                     | unloads all modules                                                   |
+| module purge                     | Unloads all modules                                                   |
 +----------------------------------+-----------------------------------------------------------------------+
-| module reset                     | resets loaded modules to system defaults                              |
+| module reset                     | Resets loaded modules to system defaults                              |
 +----------------------------------+-----------------------------------------------------------------------+
-| module update                    | reloads all currently loaded modules                                  |
+| module update                    | Reloads all currently loaded modules                                  |
 +----------------------------------+-----------------------------------------------------------------------+
 
-    **note:** modules are changed recursively. Some commands, such as
+    **Note:** Modules are changed recursively. Some commands, such as
     ``module swap``, are available to maintain compatibility with scripts
-    using tcl environment modules, but are not necessary since lmod
+    using Tcl Environment Modules, but are not necessary since Lmod
     recursively processes loaded modules and automatically resolves
     conflicts.
 
@@ -262,15 +264,15 @@ all possible dependencies, the ``spider`` sub-command can be used as
 summarized in the following table.
 
 +----------------------------------------+------------------------------------------------------------------------------------+
-| command                                | description                                                                        |
+| Command                                | Description                                                                        |
 +========================================+====================================================================================+
-| module spider                          | shows the entire possible graph of modules                                         |
+| module spider                          | Shows the entire possible graph of modules                                         |
 +----------------------------------------+------------------------------------------------------------------------------------+
-| module spider <modulename>             | searches for modules named <modulename> in the graph of possible modules           |
+| module spider <modulename>             | Searches for modules named <modulename> in the graph of possible modules           |
 +----------------------------------------+------------------------------------------------------------------------------------+
-| module spider <modulename>/<version>   | searches for a specific version of <modulename> in the graph of possible modules   |
+| module spider <modulename>/<version>   | Searches for a specific version of <modulename> in the graph of possible modules   |
 +----------------------------------------+------------------------------------------------------------------------------------+
-| module spider <string>                 | searches for modulefiles containing <string>                                       |
+| module spider <string>                 | Searches for modulefiles containing <string>                                       |
 +----------------------------------------+------------------------------------------------------------------------------------+
 
  
@@ -280,49 +282,49 @@ Defining custom module collections
 
 Lmod supports caching commonly used collections of environment modules
 on a per-user basis in ``$home/.lmod.d``. to create a collection called
-"name" from the currently loaded modules, simply call
-``module save name``. omitting "name" will set the user’s default
+"NAME" from the currently loaded modules, simply call
+``module save NAME``. omitting "NAME" will set the user’s default
 collection. Saved collections can be recalled and examined with the
 commands summarized in the following table.
 
 +-------------------------+----------------------------------------------------------+
-| command                 | description                                              |
+| Command                 | Description                                              |
 +=========================+==========================================================+
-| module restore name     | recalls a specific saved user collection titled "name"   |
+| module restore NAME     | Recalls a specific saved user collection titled "NAME"   |
 +-------------------------+----------------------------------------------------------+
-| module restore          | recalls the user-defined defaults                        |
+| module restore          | Recalls the user-defined defaults                        |
 +-------------------------+----------------------------------------------------------+
-| module reset            | resets loaded modules to system defaults                 |
+| module reset            | Resets loaded modules to system defaults                 |
 +-------------------------+----------------------------------------------------------+
-| module restore system   | recalls the system defaults                              |
+| module restore system   | Recalls the system defaults                              |
 +-------------------------+----------------------------------------------------------+
-| module savelist         | shows the list user-defined saved collections            |
+| module savelist         | Shows the list user-defined saved collections            |
 +-------------------------+----------------------------------------------------------+
 
-    **note:** you should use unique names when creating collections to
+    **Note:** You should use unique names when creating collections to
     specify the application (and possibly branch) you are working on. For
     example, \`app1-development\`, \`app1-production\`, and
     \`app2-production\`.
 
-    **note:** in order to avoid conflicts between user-defined collections
+    **Note:** In order to avoid conflicts between user-defined collections
     on multiple compute systems that share a home file system (e.g.
     /ccs/home/[userid]), lmod appends the hostname of each system to the
     files saved in in your ~/.lmod.d directory (using the environment
-    variable lmod\_system\_name). this ensures that only collections
+    variable lmod\_system\_name). This ensures that only collections
     appended with the name of the current system are visible.
 
 The following screencast shows an example of setting up user-defined
-module collections on summit. https://vimeo.com/293582400
+module collections on Summit. https://vimeo.com/293582400
 
 --------------
 
-Installed software
+Installed Software
 ------------------
 
-The olcf provides hundreds of pre-installed software packages and
+The OLCF provides hundreds of pre-installed software packages and
 scientific libraries for your use, in addition to taking `software
-installation requests </support/software/software-request/>`__. See the
-`software </for-users/software/>`__ page for complete details on
+installation requests <https://www.olcf.ornl.gov/support/software/software-request/>`__. See the
+`software <https://www.olcf.ornl.gov/for-users/software/>`__ page for complete details on
 existing installs.
 
 .. _rhea-running-jobs:
