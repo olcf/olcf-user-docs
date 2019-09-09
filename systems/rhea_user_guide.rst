@@ -10,19 +10,23 @@ rhea is to provide a conduit for large-scale scientific discovery via
 pre/post processing and analysis of simulation data generated on Summit.
 Users with accounts on Summit will automatically be given access to rhea.
 
+--------------
+
 Compute nodes
 -------------
 
 .. include:: includes/rhea-compute-nodes.txt
 
+--------------
+
 Login nodes
 -----------
 
 Rhea features (4) login nodes which are identical to the compute nodes,
-but with 64gb of ram. The login nodes provide an environment for
-editing, compiling, and launching codes onto the compute nodes. All rhea
+but with 64GB of RAM. The login nodes provide an environment for
+editing, compiling, and launching codes onto the compute nodes. All Rhea
 users will access the system through these same login nodes, and as
-such, any cpu- or memory-intensive tasks on these nodes could interrupt
+such, any CPU- or memory-intensive tasks on these nodes could interrupt
 service to other users. As a courtesy, we ask that you refrain from
 doing any analysis or visualization tasks on the login nodes.
 
@@ -31,16 +35,16 @@ doing any analysis or visualization tasks on the login nodes.
 File systems
 ------------
 
-The olcf's center-wide lustre\ :sup:`®` file system, named
-`spider <../file-systems/#spider-the-centerwide-lustre-file-system>`_,
-is available on rhea for computational work. With over 26,000 clients
-and (32) pb of disk space, it is one of the largest-scale
-lustre\ :sup:`®` file systems in the world. A nfs-based file system
-provides `user home storage
-areas <../file-systems/#user-home-directories-nfs>`__ and `project home
+The OLCF's center-wide Lustre\ :sup:`®` file system, named
+`Spider <../file-systems/#spider-the-centerwide-lustre-file-system>`_,
+is available on Rhea for computational work. With over 26,000 clients
+and 32 pb of disk space, it is one of the largest-scale
+Lustre\ :sup:`®` file systems in the world. An NFS-based file system
+provides `User Home storage
+areas <../file-systems/#user-home-directories-nfs>`__ and `Project Home
 storage areas <../file-systems/#project-home-directories-nfs>`__.
-additionally, the olcf's `high performance storage
-system <../file-systems/#hpss-high-performance-storage-system>`__ (hpss)
+Additionally, the OLCF's `High Performance Storage
+System <../file-systems/#hpss-high-performance-storage-system>`__ (HPSS)
 provides archival spaces.
 
 Compiling
