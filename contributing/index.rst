@@ -91,3 +91,5 @@ Here are some guidelines and common practices that we use in this project.
   suggest them as reviewers on the PR.
 - You do not need to assign labels to your PR, but you may do so if you have
   suggestions. However, be aware that the labels might get changed.
+- If an issue or PR requires discussion with the OLCF's User Support Group,
+  use the GitHub Team tag ``@olcf/ua-support``.
