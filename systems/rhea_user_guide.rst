@@ -10,19 +10,69 @@ rhea is to provide a conduit for large-scale scientific discovery via
 pre/post processing and analysis of simulation data generated on Summit.
 Users with accounts on Summit will automatically be given access to rhea.
 
+--------------
+
 Compute nodes
 -------------
 
-.. include:: includes/rhea-compute-nodes.txt
+Rhea contains 521 compute nodes separated into two partitions:
+
++-------------+-------------+---------+-------------------+-----------------------------------+
+| Partition   | Node Count  | Memory  | GPU               | CPU                               |
++=============+=============+=========+===================+===================================+
+| rhea        | 512         | 128 GB  | -                 | [2x] Intel\ |R| Xeon\ |R| E5-2650 |
+| (default)   |             |         |                   | @2.0 GHz - 8 cores, 16 HT         |
+|             |             |         |                   | (total 16 cores, 32 HT *per node* |
++-------------+-------------+---------+-------------------+-----------------------------------+
+| gpu         | 9           | 1 TB    | [2x]              | [2x] Intel\ |R| Xeon\ |R| E5-2695 |
+|             |             |         | NVIDIA\ |R|       | @2.3 GHz - 14 cores, 28 HT        |
+|             |             |         | K80               | (total 28 cores, 56 HT *per node* |
++-------------+-------------+---------+-------------------+-----------------------------------+
+
+.. _rhea-partition:
+
+**Rhea Partition**
+
+The first 512 nodes make up the *rhea* partition, where each node contains two
+8-core 2.0 GHz Intel Xeon processors with Intel’s Hyper-Threading (HT)
+Technology and 128GB of main memory. Each CPU in this partition features 8
+physical cores, for a total of 16 physical cores per node. With Intel®
+Hyper-Threading Technology enabled, each node has 32 logical cores capable of
+executing 32 hardware threads for increased parallelism.
+
+.. _gpu-partition:
+
+**GPU Partition**
+
+Rhea also has nine large memory/GPU nodes, which make up the *gpu* partition.
+These nodes each have 1TB of main memory and two NVIDIA K80 GPUs in addition to
+two 14-core 2.30 GHz Intel Xeon processors with HT Technology. Each CPU in this
+partition features 14 physical cores, for a total of 28 physical cores per node.
+With Hyper-Threading enabled, these nodes have 56 logical cores that can execute
+56 hardware threads for increased parallelism.
+
+    **Note:** To access the gpu partition, batch job submissions should request
+    ``-lpartition=gpu``.
+
+Please see the :ref:`batch-queues-on-rhea` section to learn about the queuing
+policies for these two partitions. Both compute partitions are accessible
+through the same batch queue from Rhea’s :ref:`login-nodes`.
+
+Rhea features a 4X FDR Infiniband interconnect, with a maximum theoretical
+transfer rate of 56 Gb/s.
+
+--------------
+
+.. _login-nodes:
 
 Login nodes
 -----------
 
 Rhea features (4) login nodes which are identical to the compute nodes,
-but with 64gb of ram. The login nodes provide an environment for
-editing, compiling, and launching codes onto the compute nodes. All rhea
+but with 64GB of RAM. The login nodes provide an environment for
+editing, compiling, and launching codes onto the compute nodes. All Rhea
 users will access the system through these same login nodes, and as
-such, any cpu- or memory-intensive tasks on these nodes could interrupt
+such, any CPU- or memory-intensive tasks on these nodes could interrupt
 service to other users. As a courtesy, we ask that you refrain from
 doing any analysis or visualization tasks on the login nodes.
 
@@ -31,16 +81,16 @@ doing any analysis or visualization tasks on the login nodes.
 File systems
 ------------
 
-The olcf's center-wide lustre\ :sup:`®` file system, named
-`spider <../file-systems/#spider-the-centerwide-lustre-file-system>`_,
-is available on rhea for computational work. With over 26,000 clients
-and (32) pb of disk space, it is one of the largest-scale
-lustre\ :sup:`®` file systems in the world. A nfs-based file system
-provides `user home storage
-areas <../file-systems/#user-home-directories-nfs>`__ and `project home
+The OLCF's center-wide Lustre\ :sup:`®` file system, named
+`Spider <../file-systems/#spider-the-centerwide-lustre-file-system>`_,
+is available on Rhea for computational work. With over 26,000 clients
+and 32 pb of disk space, it is one of the largest-scale
+Lustre\ :sup:`®` file systems in the world. An NFS-based file system
+provides `User Home storage
+areas <../file-systems/#user-home-directories-nfs>`__ and `Project Home
 storage areas <../file-systems/#project-home-directories-nfs>`__.
-additionally, the olcf's `high performance storage
-system <../file-systems/#hpss-high-performance-storage-system>`__ (hpss)
+Additionally, the OLCF's `High Performance Storage
+System <../file-systems/#hpss-high-performance-storage-system>`__ (HPSS)
 provides archival spaces.
 
 Compiling
