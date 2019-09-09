@@ -3411,7 +3411,7 @@ OLCF training events.
 This sub-section describes the process of obtaining access to Ascent for
 an OLCF training event. Please follow the steps below to request access.
 
-Step 1: Fill out and submit an `**OLCF Account Application Form** <https://www.olcf.ornl.gov/for-users/documents-forms/olcf-account-application>`__
+Step 1: Fill out and submit an `OLCF Account Application Form <https://www.olcf.ornl.gov/for-users/documents-forms/olcf-account-application>`__
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Enter the requested information into the form. For "Project
@@ -3445,6 +3445,7 @@ Logging In to Ascent
 --------------------
 
 To log in to Ascent, please use your XCAMS/UCAMS username and password:
+
 ``$ ssh USERNAME@login1.ascent.olcf.ornl.gov``
 
 **NOTE:** You do not need to use an RSA token to log in to Ascent.
