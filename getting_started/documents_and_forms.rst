@@ -45,7 +45,7 @@ agency.
 Form <https://www.olcf.ornl.gov/wp-content/accounts/OLCF_NDA.pdf>`_ Required from
 subcontractors only.
 
-`Sensitive DataRules <https://www.olcf.ornl.gov/wp-content/accounts/Sensitive_Data_Rules.pdf>`_
+`Sensitive Data Rules <https://www.olcf.ornl.gov/wp-content/accounts/Sensitive_Data_Rules.pdf>`_
 All users
 must agree to abide by all security measures described in this document
 when performing any work on OLCF resources that is not fundamental
