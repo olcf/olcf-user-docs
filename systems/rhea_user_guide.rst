@@ -327,79 +327,98 @@ existing installs.
 
 .. _rhea-running-jobs:
 
-Running jobs
+Running Jobs
 ============
 
-In high performance computing (hpc), computational work is performed by
-*jobs*. individual jobs produce data that lend relevant insight into
+In High Performance Computing (HPC), computational work is performed by
+*jobs*. Individual jobs produce data that lend relevant insight into
 grand challenges in science and engineering. As such, the timely,
 efficient execution of jobs is the primary concern in the operation of
-any hpc system. A job on a commodity cluster typically comprises a few
+any HPC system.
+
+A job on a commodity cluster typically comprises a few
 different components:
 
--  a batch submission script.
--  a binary executable.
--  a set of input files for the executable.
--  a set of output files created by the executable.
+-  A batch submission script.
+-  A binary executable.
+-  A set of input files for the executable.
+-  A set of output files created by the executable.
 
 And the process for running a job, in general, is to:
 
-#. prepare executables and input files.
-#. write a batch script.
-#. submit the batch script to the batch scheduler.
-#. optionally monitor the job before and during execution.
+#. Prepare executables and input files.
+#. Write a batch script.
+#. Submit the batch script to the batch scheduler.
+#. Optionally monitor the job before and during execution.
 
 The following sections describe in detail how to create, submit, and
 manage jobs for execution on commodity clusters.
 
 --------------
 
-Login vs compute nodes on commodity clusters
+Login vs Compute Nodes on Commodity Clusters
 --------------------------------------------
 
-Login nodes
+Login Nodes
 ^^^^^^^^^^^
 
-When you log into an olcf cluster, you are placed on a *login* node.
-login node resources are shared by all users of the system. Because of
+When you log into an OLCF cluster, you are placed on a *login* node.
+Login node resources are shared by all users of the system. Because of
 this, users should be mindful when performing tasks on a login node.
-login nodes should be used for basic tasks such as file editing, code
+
+Login nodes should be used for basic tasks such as file editing, code
 compilation, data backup, and job submission. Login nodes should *not*
 be used for memory- or compute-intensive tasks. Users should also limit
 the number of simultaneous tasks performed on the login resources. For
 example, a user should not run (10) simultaneous ``tar`` processes on a
 login node.
 
-    **warning:** compute-intensive, memory-intensive, or otherwise
+    **Warning:** Compute-intensive, memory-intensive, or otherwise
     disruptive processes running on login nodes may be killed without
     warning.
 
-Compute nodes
-^^^^^^^^^^^^^
 
-.. include:: includes/rhea-compute-nodes.txt
 
---------------
+Slurm
+-----
 
-Writing batch scripts for commodity clusters
---------------------------------------------
+Rhea and DTN will migrate to the Slurm scheduler in September 2019.
+The following section provides batch scheduler instructions for Slurm.
+Below is a comparison table to the schedulers used on other OLCF resources:
+
++--------------------------------------------+--------------+-----------------------+-------------------+
+| Task                                       | Moab         | LSF                   | Slurm             |
++============================================+==============+=======================+===================+
+| View batch queue                           | ``showq``    | ``jobstat``           | ``squeue``        |
++--------------------------------------------+--------------+-----------------------+-------------------+
+| Submit batch script                        | ``qsub``     | ``bsub``              | ``sbatch``        |
++--------------------------------------------+--------------+-----------------------+-------------------+
+| Submit interactive batch job               | ``qsub -I``  | ``bsub -Is $SHELL``   | ``salloc``        |
++--------------------------------------------+--------------+-----------------------+-------------------+
+| Run parallel code within batch job         | ``mpirun``   | ``jsrun``             | ``srun``          |
++--------------------------------------------+--------------+-----------------------+-------------------+
+
+
+Writing Batch Scripts
+^^^^^^^^^^^^^^^^^^^^^
 
 Batch scripts, or job submission scripts, are the mechanism by which a
 user configures and submits a job for execution. A batch script is
 simply a shell script that also includes commands to be interpreted by
-the batch scheduling software (e.g. Pbs). batch scripts are submitted to
-the batch scheduler, where they are then parsed for the scheduling
-configuration options. The batch scheduler then places the script in the
-appropriate queue, where it is designated as a batch job. Once the batch
-jobs makes its way through the queue, the script will be executed on the
-primary compute node of the allocated resources.
+the batch scheduling software (e.g. Slurm).
 
-Components of a batch script
+Batch scripts are submitted to the batch scheduler, where they are then
+parsed for the scheduling configuration options. The batch scheduler then
+places the script in the appropriate queue, where it is designated as a
+batch job. Once the batch jobs makes its way through the queue, the script
+will be executed on the primary compute node of the allocated resources.
+
+Components of a Batch Script
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Batch scripts are parsed into the following (3) sections:
 
-Interpreter line
+Interpreter Line
 """"""""""""""""
 
 The first line of a script can be used to specify the script’s
@@ -407,111 +426,124 @@ interpreter; this line is optional. If not used, the submitter’s default
 shell will be used. The line uses the *hash-bang* syntax, i.e.,
 ``#!/path/to/shell``.
 
-Pbs submission options
-""""""""""""""""""""""
+Slurm Submission Options
+""""""""""""""""""""""""
 
-The pbs submission options are preceded by the string ``#pbs``, making
-them appear as comments to a shell. Pbs will look for ``#pbs`` options
+The Slurm submission options are preceded by the string ``#SBATCH``, making
+them appear as comments to a shell. Slurm will look for ``#SBATCH`` options
 in a batch script from the script’s first line through the first
-non-comment line. A comment line begins with ``#``. ``#pbs`` options
-entered after the first non-comment line will not be read by pbs.
+non-comment line. A comment line begins with ``#``. ``#SBATCH`` options
+entered after the first non-comment line will not be read by Slurm.
 
-Shell commands
+Shell Commands
 """"""""""""""
 
-The shell commands follow the last ``#pbs`` option and represent the
-executable content of the batch job. If any ``#pbs`` lines follow
-executable statements, they will be treated as comments only. The
-execution section of a script will be interpreted by a shell and can
+The shell commands follow the last ``#SBATCH`` option and represent the
+executable content of the batch job. If any ``#SBATCH`` lines follow
+executable statements, they will be treated as comments only.
+
+The execution section of a script will be interpreted by a shell and can
 contain multiple lines of executables, shell commands, and comments.
 when the job's queue wait time is finished, commands within this section
 will be executed on the primary compute node of the job's allocated
 resources. Under normal circumstances, the batch job will exit the queue
 after the last line of the script is executed.
 
-Example batch script
+Example Batch Script
 ^^^^^^^^^^^^^^^^^^^^
 
 .. code::
 
-      1: #!/bin/bash
-      2: #pbs -a xxxyyy
-      3: #pbs -n test
-      4: #pbs -j oe
-      5: #pbs -l walltime=1:00:00,nodes=2
-      6:
-      7: cd $pbs_o_workdir
-      8: date
-      9: mpirun -n 8 ./a.out
+    1: #!/bin/bash
+    2: #SBATCH -A XXXYYY
+    3: #SBATCH -J test
+    4: #SBATCH -N 2
+    5: #SBATCH -t 1:00:00
+    6:
+    7: cd $SLURM_SUBMIT_DIR
+    8: date
+    9: srun -n 8 ./a.out
 
 This batch script shows examples of the three sections outlined above:
 
-Interpreter line
+Interpreter Line
 """"""""""""""""
 
-1: this line is optional and can be used to specify a shell to interpret
-the script. In this example, the bash shell will be used.
+1: This line is optional and can be used to specify a shell to
+interpret the script. In this example, the bash shell will be used.
 
-Pbs options
-"""""""""""
+Slurm Options
+"""""""""""""
 
-2: the job will be charged to the “xxxyyy” project. 3: the job will be
-named ``test``. 4: the job's standard output and error will be combined
-into one file. 5: the job will request (2) nodes for (1) hour.
+2: The job will be charged to the “XXXYYY” project.
 
-Shell commands
+3: The job will be named test.
+
+4: The job will request (2) nodes.
+
+5: The job will request (1) hour walltime.
+
+Shell Commands
 """"""""""""""
 
-6: this line is left blank, so it will be ignored. 7: this command will
-change the current directory to the directory from where the script was
-submitted. 8: this command will run the ``date`` command. 9: this
-command will run (8) mpi instances of the executable ``a.out`` on the
-compute nodes allocated by the batch system. Batch scripts can be
-submitted for execution using the ``qsub`` command. For example, the
-following will submit the batch script named ``test.pbs``:
+6: This line is left blank, so it will be ignored.
+
+7: This command will change the current directory to the directory
+from where the script was submitted.
+
+8: This command will run the date command.
+
+9: This command will run (8) MPI instances of the executable a.out
+on the compute nodes allocated by the batch system.
+
+
+Batch scripts can be submitted for execution using the ``qsub`` command.
+For example, the following will submit the batch script named ``test.slurm``:
+
 
 .. code::
 
-      qsub test.pbs
+      sbatch test.slurm
 
-If successfully submitted, a pbs job id will be returned. This id can be
-used to track the job. It is also helpful in troubleshooting a failed
-job; make a note of the job id for each of your jobs in case you must
-contact the `olcf user assistance
-center </for-users/user-assistance/>`__ for support.
+If successfully submitted, a Slurm job ID will be returned. This ID can be used
+to track the job. It is also helpful in troubleshooting a failed job; make a
+note of the job ID for each of your jobs in case you must contact the
+`OLCF User Assistance Center for support <https://www.olcf.ornl.gov/for-users/user-assistance/>`__.
+
+
 
 --------------
 
-Interactive batch jobs on commodity clusters
+Interactive Batch Jobs on Commodity Clusters
 --------------------------------------------
 
 Batch scripts are useful when one has a pre-determined group of commands
 to execute, the results of which can be viewed at a later time. However,
 it is often necessary to run tasks on compute resources interactively.
-users are not allowed to access cluster compute nodes directly from a
+
+
+Users are not allowed to access cluster compute nodes directly from a
 login node. Instead, users must use an *interactive batch job* to
 allocate and gain access to compute resources. This is done by using the
-``-i`` option to ``qsub``. other pbs options are passed to ``qsub`` on
+Slurm ``salloc`` command. Other Slurm options are passed to ``salloc`` on
 the command line as well:
 
 .. code::
 
-      $ qsub -i -a abc123 -q qname -v -l nodes=4 -l walltime=00:30:00
+      $ salloc -A abc123 -p gpu -N 4 -t 1:00:00
 
 This request will:
 
 +----------------------------+----------------------------------------------------------------+
-| ``-i``                     | start an interactive session                                   |
+| ``salloc``                 | Start an interactive session                                   |
 +----------------------------+----------------------------------------------------------------+
-| ``-a``                     | charge to the ``abc123`` project                               |
+| ``-A``                     | Charge to the ``abc123`` project                               |
 +----------------------------+----------------------------------------------------------------+
-| ``-q qname``               | run in the ``qname`` queue                                     |
+| ``-p gpu``                 | Run in the ``gpu`` partition                                   |
 +----------------------------+----------------------------------------------------------------+
-| ``-v``                     | export the user's shell environment to the job's environment   |
+| ``-N 4``                   | request (4) nodes...                                           |
 +----------------------------+----------------------------------------------------------------+
-| ``-l nodes=4``             | request (4) nodes...                                           |
-+----------------------------+----------------------------------------------------------------+
-| ``-l walltime=00:30:00``   | ...for (30) minutes                                            |
+| ``-t 1:00:00``             | ...for (1) hour                                                |
 +----------------------------+----------------------------------------------------------------+
 
 After running this command, the job will wait until enough compute nodes
@@ -520,7 +552,7 @@ starts, the user will be given an interactive prompt on the primary
 compute node within the allocated resource pool. Commands may then be
 executed directly (instead of through a batch script).
 
-Using to debug
+Using to Debug
 ^^^^^^^^^^^^^^
 
 A common use of interactive batch is to aid in debugging efforts.
@@ -529,117 +561,116 @@ process to the point of failure; however, unlike a batch job, the
 process can be restarted after brief changes are made without losing the
 compute resource pool; thus speeding up the debugging effort.
 
-Choosing a job size
+Choosing a Job Size
 ^^^^^^^^^^^^^^^^^^^
 
 Because interactive jobs must sit in the queue until enough resources
-become available to allocate, it is useful to choose a job size based on
-the number of currently unallocated nodes (to shorten the queue wait
-time). use the ``showbf`` command (i.e. "show backfill") to see resource
-limits that would allow your job to be immediately backfilled (and thus
-started) by the scheduler. For example, the snapshot below shows that
-(8) nodes are currently free.
+become available to allocate, it is useful to know when a job can start.
+
+Use the ``sbatch --test-only`` command to see when a job of a specific size
+could be scheduled. For example, the snapshot below shows that a (2) node
+job would start at 10:54.
 
 .. code::
 
-      $ showbf
+    $ sbatch --test-only -N2 -t1:00:00 batch-script.slurm
 
-      partition   tasks  nodes  startoffset   duration   startdate
-      ---------   -----  -----  ------------  ---------  --------------
-      rhea        4744   8      infinity      00:00:00   hh:mm:ss_mm/dd
+      sbatch: Job 1375 to start at 2019-08-06T10:54:01 using 64 processors on nodes rhea[499-500] in partition batch
+      See the output of the ``showbf –help`` command for additional options.
 
-See the output of the ``showbf –help`` command for additional options.
+**Note:** The queue is fluid, the given time is an estimate made from
+the current queue state and load. Future job submissions and job
+completions can alter the estimate.
 
 --------------
 
-Common batch options to pbs
----------------------------
+Common Batch Options to Slurm
+-----------------------------
 
-The following table summarizes frequently-used options to pbs:
+The following table summarizes frequently-used options to Slurm:
 
-+----------+----------------------------------------+-------------------------------------------------------------------------------------+
-| option   | use                                    | description                                                                         |
-+==========+========================================+=====================================================================================+
-| ``-a``   | ``#pbs -a <account>``                  | causes the job time to be                                                           |
-|          |                                        | charged to ``<account>``. the account string, e.g. ``pjt000``, is typically         |
-|          |                                        | composed of three letters followed by three digits and optionally followed by a     |
-|          |                                        | subproject identifier. The utility ``showproj`` can be used to list your valid      |
-|          |                                        | assigned project id(s). this option is required by all jobs.                        |
-+----------+----------------------------------------+-------------------------------------------------------------------------------------+
-| ``-l``   | ``#PBS -l nodes=<value>``              | Maximum number of compute nodes. Jobs cannot request partial nodes.                 |
-+----------+----------------------------------------+-------------------------------------------------------------------------------------+
-|          | ``#PBS -l walltime=<time>``            | Maximum wall-clock time. ``<time>`` is in the format HH:MM:SS.                      |
-+----------+----------------------------------------+-------------------------------------------------------------------------------------+
-|          | ``#PBS -l partition=<partition_name>`` | Allocates resources on specified partition.                                         |
-+----------+----------------------------------------+-------------------------------------------------------------------------------------+
-| ``-o``   | ``#PBS -o <filename>``                 | Writes standard output to                                                           |
-|          |                                        | ``<name>`` instead of ``<job script>.o$PBS_JOBID``. ``$PBS_JOBID`` is an            |
-|          |                                        | environment variable created by PBS that contains the PBS job identifier.           |
-+----------+----------------------------------------+-------------------------------------------------------------------------------------+
-| ``-e``   | ``#PBS -e <filename>``                 | Writes standard error to ``<name>`` instead of ``<job script>.e$PBS_JOBID.``        |
-+----------+----------------------------------------+-------------------------------------------------------------------------------------+
-| ``-j``   | ``#PBS -j {oe,eo}``                    | Combines standard output                                                            |
-|          |                                        | and standard error into the standard error file (``eo``) or the standard out        |
-|          |                                        | file (``oe``).                                                                      |
-+----------+----------------------------------------+-------------------------------------------------------------------------------------+
-| ``-m``   | ``#PBS -m a``                          | Sends email to the submitter when the job aborts.                                   |
-+----------+----------------------------------------+-------------------------------------------------------------------------------------+
-|          | ``#PBS -m b``                          | Sends email to the submitter when the job begins.                                   |
-+----------+----------------------------------------+-------------------------------------------------------------------------------------+
-|          | ``#PBS -m e``                          | Sends email to the submitter when the job ends.                                     |
-+----------+----------------------------------------+-------------------------------------------------------------------------------------+
-| ``-M``   | ``#PBS -M <address>``                  | Specifies email address to use for ``-m`` options.                                  |
-+----------+----------------------------------------+-------------------------------------------------------------------------------------+
-| ``-N``   | ``#PBS -N <name>``                     | Sets the job name to ``<name>`` instead of the name of the job script.              |
-+----------+----------------------------------------+-------------------------------------------------------------------------------------+
-| ``-S``   | ``#PBS -S <shell>``                    | Sets the shell to interpret the job script.                                         |
-+----------+----------------------------------------+-------------------------------------------------------------------------------------+
-| ``-q``   | ``#PBS -q <queue>``                    | Directs the job to the                                                              |
-|          |                                        | specified queue.This option is not required to run in the default queue on any      |
-|          |                                        | given system.                                                                       |
-+----------+----------------------------------------+-------------------------------------------------------------------------------------+
-| ``-V``   | ``#PBS -V``                            | Exports all environment                                                             |
-|          |                                        | variables from the submitting shell into the batch job shell. Since the login       |
-|          |                                        | nodes differ from the service nodes, using the '-V' option is **not recommended**.  |
-|          |                                        | Users should create the needed environment within the batch job.                    |
-+----------+----------------------------------------+-------------------------------------------------------------------------------------+
-| ``-X``   | ``#PBS -X``                            | Enables X11 forwarding.                                                             |
-|          |                                        | The -X PBS option should be used to tunnel a GUI from an interactive batch job.     |
-+----------+----------------------------------------+-------------------------------------------------------------------------------------+
++----------------+-------------------------------+-----------------------------------------------------------+
+| Option         | Use                           | Description                                               |
++================+===============================+===========================================================+
+| -A             | #SBATCH -A <account>          | Causes the job time to be charged to ``<account>``.       |
+|                |                               | The account string, e.g. ``pjt000`` is typically composed |
+|                |                               | of three letters followed by three digits and optionally  |
+|                |                               | followed by a subproject identifier. The utility          |
+|                |                               | ``showproj`` can be used to list your valid assigned      |
+|                |                               | project ID(s). This option is required by all jobs.       |
++----------------+-------------------------------+-----------------------------------------------------------+
+| -N             | #SBATCH -N <value>            | Number of compute nodes to allocate.                      |
+|                |                               | Jobs cannot request partial nodes.                        |
++----------------+-------------------------------+-----------------------------------------------------------+
+|                | #SBATCH -t <time>             | Maximum wall-clock time. ``<time>`` is in the             |
+|                |                               | format HH:MM:SS.                                          |
++----------------+-------------------------------+-----------------------------------------------------------+
+|                | #SBATCH -p <partition_name>   | Allocates resources on specified partition.               |
++----------------+-------------------------------+-----------------------------------------------------------+
+| -o             | #SBATCH -o <filename>         | Writes standard output to ``<name>`` instead of           |
+|                |                               | ``<job_script>.o$SLURM_JOB_UID``. ``$SLURM_JOB_UID``      |
+|                |                               | is an environment variable created by Slurm that          |
+|                |                               | contains the batch job identifier.                        |
++----------------+-------------------------------+-----------------------------------------------------------+
+| -e             | #SBATCH -e <filename>         | Writes standard error to ``<name>`` instead               |
+|                |                               | of ``<job_script>.e$SLURM_JOB_UID``.                      |
++----------------+-------------------------------+-----------------------------------------------------------+
+| --mail-type    | #SBATCH --mail-type=FAIL      | Sends email to the submitter when the job fails.          |
++----------------+-------------------------------+-----------------------------------------------------------+
+|                | #SBATCH --mail-type=BEGIN     | Sends email to the submitter when the job begins.         |
++----------------+-------------------------------+-----------------------------------------------------------+
+|                | #SBATCH --mail-type=END       | Sends email to the submitter when the job ends.           |
++----------------+-------------------------------+-----------------------------------------------------------+
+| --mail-user    | #SBATCH --mail-user=<address> | Specifies email address to use for                        |
+|                |                               | ``--mail-type`` options.                                  |
++----------------+-------------------------------+-----------------------------------------------------------+
+| -J             | #SBATCH -J <name>             | Sets the job name to ``<name>`` instead of the            |
+|                |                               | name of the job script.                                   |
++----------------+-------------------------------+-----------------------------------------------------------+
+| --get-user-env | #SBATCH --get-user-env        | Exports all environment variables from the                |
+|                |                               | submitting shell into the batch job shell.                |
+|                |                               | Since the login nodes differ from the service             |
+|                |                               | nodes, using the ``–get-user-env`` option is              |
+|                |                               | **not recommended**. Users should create the              |
+|                |                               | needed environment within the batch job.                  |
++----------------+-------------------------------+-----------------------------------------------------------+
+
 
     **Note:** Because the login nodes differ from the service nodes, using
-    the '-V' option is not recommended. Users should create the needed
-    environment within the batch job.
+    the '–get-user-env' option is not recommended. Users should create the
+    needed environment within the batch job.
 
-Further details and other PBS options may be found through the ``qsub``
-man page.
+Further details and other Slurm options may be
+found through the ``sbatch`` man page.
 
 --------------
 
 Batch Environment Variables
 ---------------------------
 
-PBS sets multiple environment variables at submission time. The
-following PBS variables are useful within batch scripts:
+Slurm sets multiple environment variables at submission time. The
+following Slurm variables are useful within batch scripts:
 
-+----------------------+----------------------------------------------------------------------------------+
-| Variable             | Description                                                                      |
-+======================+==================================================================================+
-| ``$PBS_O_WORKDIR``   | The directory from which the batch job was                                       |
-|                      | *submitted*. By default, a new job starts in your home directory. You can get    |
-|                      | back to the directory of job submission with ``cd $PBS_O_WORKDIR``. Note that    |
-|                      | this is not necessarily the same directory in which the batch script resides.    |
-+----------------------+----------------------------------------------------------------------------------+
-| ``$PBS_JOBID``       | The job’s full identifier. A common use for                                      |
-|                      | ``PBS_JOBID`` is to append the job’s ID to the standard output and error files.  |
-+----------------------+----------------------------------------------------------------------------------+
-| ``$PBS_NUM_NODES``   | The number of nodes requested.                                                   |
-+----------------------+----------------------------------------------------------------------------------+
-| ``$PBS_JOBNAME``     | The job name supplied by the user.                                               |
-+----------------------+----------------------------------------------------------------------------------+
-| ``$PBS_NODEFILE``    | The name of the file containing the list of nodes                                |
-|                      | assigned to the job. Used sometimes on non-Cray clusters.                        |
-+----------------------+----------------------------------------------------------------------------------+
++--------------------------+-------------------------------------------------------+
+| Variable                 | Description                                           |
++==========================+=======================================================+
+|                          | The directory from which the batch job was submitted. |
+|                          | By default, a new job starts in your home directory.  |
+| ``$SLURM_SUBMIT_DIR``    | You can get back to the directory of job submission   |
+|                          | with ``cd $SLURM_SUBMIT_DIR``. Note that this is not  |
+|                          | necessarily the same directory in which the batch     |
+|                          | script resides.                                       |
++--------------------------+-------------------------------------------------------+
+|                          | The job’s full identifier. A common use for           |
+| ``$SLURM_JOBID``         | ``SLURM_JOBID`` is to append the job’s ID to          |
+|                          | the standard output and error files.                  |
++--------------------------+-------------------------------------------------------+
+| ``$SLURM_JOB_NUM_NODES`` | The number of nodes requested.                        |
++--------------------------+-------------------------------------------------------+
+| ``$SLURM_JOB_NAME``      | The job name supplied by the user.                    |
++--------------------------+-------------------------------------------------------+
+| ``$SLURM_NODELIST``      | The list of nodes assigned to the job.                |
++--------------------------+-------------------------------------------------------+
 
 --------------
 
@@ -652,184 +683,267 @@ submitted jobs. See each utilities' man page for more information.
 Removing and Holding Jobs
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-``qdel``
+``scancel``
 
 
 Jobs in the queue in any state can be stopped and removed from the queue
-using the command ``qdel``.
+using the command ``scancel``.
 
 .. code::
 
-    $ qdel 1234
+    $ scancel 1234
 
-``qhold``
+``scontrol hold``
 
 
 Jobs in the queue in a non-running state may be placed on hold using the
-``qhold`` command. Jobs placed on hold will not be removed from the
+``scontrol hold`` command. Jobs placed on hold will not be removed from the
 queue, but they will not be eligible for execution.
 
 .. code::
 
-    $ qhold 1234
+    $ scontrol hold 1234
 
-``qrls``
+``scontrol release``
 
 
 Once on hold the job will not be eligible to run until it is released to
-return to a queued state. The ``qrls`` command can be used to remove a
-job from the held state.
+return to a queued state. The ``scontrol release`` command can be used to
+remove a job from the held state.
 
 .. code::
 
-    $ qrls 1234
+    $ scontrol release 1234
 
-Modifying Job Attributes
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-``qalter``
-
-
-Non-running jobs in the queue can be modified with the PBS ``qalter``
-command. The ``qalter`` utility can be used to do the following (among
-others): Modify the job’s name:
-
-.. code::
-
-    $ qalter -N newname 130494
-
-Modify the number of requested cores:
-
-.. code::
-
-    $ qalter -l nodes=12 130494
-
-Modify the job’s walltime:
-
-.. code::
-
-    $ qalter -l walltime=01:00:00 130494
-
-..
-
-    **Note:** Once a batch job moves into a running state, the job's
-    walltime can not be increased.
 
 --------------
 
 Monitoring Batch Jobs
 ---------------------
 
-PBS and Moab provide multiple tools to view queue, system, and job
+Slurm provides multiple tools to view queue, system, and job
 status. Below are the most common and useful of these tools.
 
 Job Monitoring Commands
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-``showq``
-"""""""""
+``squeue``
+""""""""""
 
-The Moab utility ``showq`` can be used to view a more detailed
-description of the queue. The utility will display the queue in the
-following states:
-
-
-+----------+-------------------------------------------------------------------------------+
-| State    | Description                                                                   |
-+==========+===============================================================================+
-| Active   | These jobs are currently running.                                             |
-+----------+-------------------------------------------------------------------------------+
-| Eligible | These jobs are currently queued awaiting resources. Eligible jobs are         |
-|          | shown in the order in which the scheduler will consider them for allocation.  |
-+----------+-------------------------------------------------------------------------------+
-| Blocked  | These jobs are currently queued but are not eligible to run. A job may        |
-|          | be in this state because the user has more jobs that are "eligible to         |
-|          | run" than the system's queue policy allows.                                   |
-+----------+-------------------------------------------------------------------------------+
+The Slurm utility ``squeue`` can be used to view the batch queue.
 
 To see all jobs currently in the queue:
 
 .. code::
 
-    $ showq
+    $ squeue -l
 
-To see all jobs owned by userA currently in the queue:
-
-.. code::
-
-    $ showq -u userA
-
-To see all jobs submitted to partitionA:
+To see all of your queued jobs:
 
 .. code::
 
-    $ showq -p partitionA
+    $ squeue -l -u $USER
 
-To see all completed jobs:
-
-.. code::
-
-    $ showq -c
-
-..
-
-    **Note:** To increase response time, the MOAB utilities (*showstart*,
-    *checkjob*) will display a cached result. The cache updates every 30
-    seconds. But, because the cached result is displayed, you may see the
-    following message:
-
-::
-
-    --------------------------------------------------------------------
-    NOTE: The following information has been cached by the remote server
-          and may be slightly out of date.
-    --------------------------------------------------------------------
-
-
-``checkjob``
-""""""""""""
-
-The Moab utility ``checkjob`` can be used to view details of a job in
-the queue. For example, if job 736 is a job currently in the queue in a
-blocked state, the following can be used to view why the job is in a
-blocked state:
-
-.. code::
-
-    $ checkjob 736
-
-The return may contain a line similar to the following:
-
-.. code::
-
-    BlockMsg: job 736 violates idle HARD MAXJOB limit of X for user (Req: 1 InUse: X)
-
-This line indicates the job is in the blocked state because the owning
-user has reached the limit for jobs in the "eligible to run" state.
-
-``qstat``
+``sacct``
 """""""""
 
-The PBS utility ``qstat`` will poll PBS (Torque) for job information.
-However, ``qstat`` does not know of Moab's blocked and eligible states.
-Because of this, the ``showq`` Moab utility (see above) will provide a
-more accurate batch queue state. To show show all queued jobs:
+The Moab utility ``sacct`` can be used to view jobs currently
+in the queue and those completed days prior. The utility can
+also be used to see job steps in each batch job.
+
+
+To see all jobs currently in the queue:
 
 .. code::
 
-    $ qstat -a
+    $ sacct -a -X
 
-To show details about job 1234:
 
-.. code::
-
-    $ qstat -f 1234
-
-To show all currently queued jobs owned by userA:
+To see all jobs including steps owned by userA currently in the queue:
 
 .. code::
 
-    $ qstat -u userA
+    $ sacct -u userA
+
+To see all steps submitted to job 123:
+
+.. code::
+
+    $ sacct -j 123
+
+To see all of your jobs that completed on 2019-06-10:
+
+.. code::
+
+    $ sacct -S 2019-06-10T00:00:00 -E 2019-06-10T23:59:59 -o"jobid,user,account%16,cluster,AllocNodes,Submit,Start,End,TimeLimit" -X -P
+
+
+``jobstat``
+"""""""""""
+
+Similar to Summit, the local tool ``jobstat`` can be used to view the queue.
+
+
+
+.. code::
+
+    $ jobstat
+    Running    jobs------------------------
+    ST  JOBID USER  ACCOUNT NODES PARTITION  NAME TIME_LIMIT     START_TIME           TIME_LEFT
+    R   1671  usrB  abc123  10    batch      jobA 10:00:00       2019-08-13T10:22:18  3:7:40
+
+    Pending    jobs------------------------
+    ST  JOBID USER  ACCOUNT  NODES PARTITION  NAME TIME_LIMIT  SUBMIT_TIME       PRIORITY START_TIME        REASON
+    PD  1677  usrA  abc123   10    batch      jobB 10:00       2019-08-13T13:43  10101    2019-08-13T17:45  Resources
+
+
+``scontrol show job jobid``
+"""""""""""""""""""""""""""
+
+Provides additional details of given job.
+
+``sview``
+""""""""""
+
+The ``sview`` tool provide a graphical queue monitoring tool. To use,
+you will need an x-server running on your local system. You will also
+need to tunnel x-traffic through your ssh connection:
+
+.. code::
+
+    local-system> ssh -Y userid@rhea.ccs.ornl.gov
+    rhea-login> sview
+
+--------------
+
+Job Execution
+-------------
+
+Once resources have been allocated through the batch system, users have
+the option of running commands on the allocated resources' primary
+compute node (a serial job) and/or running an MPI/OpenMP executable
+across all the resources in the allocated resource pool simultaneously
+(a parallel job).
+
+Serial Job Execution
+^^^^^^^^^^^^^^^^^^^^
+
+The executable portion of batch scripts is interpreted by the shell
+specified on the first line of the script. If a shell is not specified,
+the submitting user’s default shell will be used.
+
+The serial portion of the batch script may contain comments, shell
+commands, executable scripts, and compiled executables. These can be
+used in combination to, for example, navigate file systems, set up job
+execution, run serial executables, and even submit other batch jobs.
+
+Parallel Job Execution
+^^^^^^^^^^^^^^^^^^^^^^
+
+Rhea Compute Node Description
+"""""""""""""""""""""""""""""
+
+The following image represents a high level compute node that will be
+used below to display layout options.
+
+.. image:: /images/Rhea-Node-Description.png
+   :align: center
+
+**Note:** The Intel cores are numbered in a round robin fashion.
+0 and 16 are on the same physical core.
+
+
+Using ``srun``
+""""""""""""""
+
+By default, commands will be executed on the job’s primary compute node,
+sometimes referred to as the job’s head node. The ``srun`` command is used
+to execute an MPI binary on one or more compute nodes in parallel.
+
+``srun`` accepts the following common options:
+
++----------------------+---------------------------------------+
+| ``-N``               | Minimum number of nodes               |
++----------------------+---------------------------------------+
+| ``-n``               | Total number of MPI tasks             |
++----------------------+---------------------------------------+
+| ``--cpu-bind=no``    | Allow code to control thread affinity |
++----------------------+---------------------------------------+
+| ``-c``               | Cores per MPI task                    |
++----------------------+---------------------------------------+
+| ``--cpu-bind=cores`` | Bind to cores                         |
++----------------------+---------------------------------------+
+
+    **Note:** If you do not specify the number of MPI tasks to ``mpirun``
+    via ``-n``, the system will default to all available cores allocated to
+    the job.
+
+MPI Task Layout
+"""""""""""""""""
+
+Each compute node on Rhea contains two sockets each with 8 cores.
+Depending on your job, it may be useful to control task layout within
+and across nodes.
+
+Physical Core Binding
+"""""""""""""""""""""
+
+The following will run four copies of a.out, one per CPU, two
+per node with physical core binding
+
+.. image:: /images/Rhea-layout-physical-core-1-per-CPU.png
+   :align: center
+
+Hyper Thread Binding
+""""""""""""""""""""
+The following will run four copies of a.out, one per hyper-thread,
+two per node using a round robin task layout between nodes:
+
+.. image:: /images/Rhea-layout-1-per-hyper-thread-cyclic-1500x783.png
+   :align: center
+
+.. _thread-layout:
+
+Thread Layout
+"""""""""""""
+**Thread per Hyper-Thread**
+
+The following will run four copies of a.out. Each task will launch
+two threads. The ``-c`` flag will provide room for the threads.
+
+.. image:: /images/Rhea-layout-thread-per-hyperthread.png
+   :align: center
+
+**Warning:** Not adding enough resources using the ``-c`` flag,
+threads may be placed on the same resource.
+
+Multiple Simultaneous Jobsteps
+""""""""""""""""""""""""""""""
+
+Multiple simultaneous sruns can be executed within a
+batch job by placing sruns in the background.
+
+.. code::
+
+    #!/bin/bash
+    #SBATCH -N 2
+    #SBATCH -t 1:00:00
+    #SBATCH -A prj123
+    #SBATCH -J simultaneous-jobsteps
+
+    srun -n16 -N2 -c1 --cpu-bind=cores --exclusive ./a.out &
+    srun -n8 -N2 -c1 --cpu-bind=cores --exclusive ./b.out &
+    srun -n4 -N1 -c1 --cpu-bind=threads --exclusive ./c.out &
+    srun -n4 -N1 -c1 --cpu-bind=threads --exclusive ./c.out &
+    wait
+
+**Notice:** The ``wait`` command must be used in a batch script
+to prevent the shell from exiting before all backgrounded
+sruns have completed.
+
+**Warning:** The ``--exclusive`` flag must be used to prevent
+resource sharing. Without the flag each backgrounded srun
+will likely be placed on the same resources.
 
 .. _batch-queues-on-rhea:
 
@@ -837,9 +951,9 @@ Batch Queues on Rhea
 --------------------
 
 The compute nodes on Rhea are separated into two partitions
-(`rhea </for-users/system-user-guides/rhea/system-overview/#rhea-partition>`__
+(`rhea TODO CHANGE </for-users/system-user-guides/rhea/system-overview/#rhea-partition>`__
 and
-`gpu </for-users/system-user-guides/rhea/system-overview/#gpu-partition>`__)
+`gpu TODO CHANGE </for-users/system-user-guides/rhea/system-overview/#gpu-partition>`__)
 and are available through a single batch queue: ``batch``. The
 scheduling policies for the individual partitions are as follows:
 
@@ -847,7 +961,8 @@ Rhea Partition Policy (default)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Jobs that do not specify a partition will run in the 512 node `rhea
-partition </for-users/system-user-guides/rhea/system-overview/#rhea-partition>`__.
+partition TODO CHANGE
+</for-users/system-user-guides/rhea/system-overview/#rhea-partition>`__.
 
 
 +-----+----------------+------------+-------------------------------------------+
@@ -884,7 +999,7 @@ batch job submissions should request ``-lpartition=gpu``
 
 Users wishing to submit jobs that fall outside the queue structure are
 encouraged to request a reservation via the `Special Request
-Form </for-users/getting-started/special-request-form/>`__.
+Form <https://www.olcf.ornl.gov/for-users/getting-started/special-request-form/>`__.
 
 Allocation Overuse Policy
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -896,11 +1011,13 @@ apparent submit time of the job. However, this adjustment has the effect
 of making jobs appear much younger than jobs submitted under projects
 that have not exceeded their allocation. In addition to the priority
 change, these jobs are also limited in the amount of wall time that can
-be used. For example, consider that ``job1`` is submitted at the same
-time as ``job2``. The project associated with ``job1`` is over its
-allocation, while the project for ``job2`` is not. The batch system will
-consider ``job2`` to have been waiting for a longer time than ``job1``.
-Also projects that are at 125% of their allocated time will be limited
+be used.
+
+For example, consider that ``job1`` is submitted at the same time as
+``job2``. The project associated with ``job1`` is over its allocation,
+while the project for ``job2`` is not. The batch system will consider
+``job2`` to have been waiting for a longer time than ``job1``. In
+addition, projects that are at 125% of their allocated time will be limited
 to only one running job at a time. The adjustment to the apparent submit
 time depends upon the percentage that the project is over its
 allocation, as shown in the table below:
@@ -917,231 +1034,6 @@ allocation, as shown in the table below:
 
 --------------
 
-Job Execution on Commodity Clusters
------------------------------------
-
-Once resources have been allocated through the batch system, users have
-the option of running commands on the allocated resources' primary
-compute node (a serial job) and/or running an MPI/OpenMP executable
-across all the resources in the allocated resource pool simultaneously
-(a parallel job).
-
-Serial Job Execution on Commodity Clusters
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-The executable portion of batch scripts is interpreted by the shell
-specified on the first line of the script. If a shell is not specified,
-the submitting user’s default shell will be used. The serial portion of
-the batch script may contain comments, shell commands, executable
-scripts, and compiled executables. These can be used in combination to,
-for example, navigate file systems, set up job execution, run serial
-executables, and even submit other batch jobs.
-
-Parallel Job Execution on Commodity Clusters
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Using ``mpirun``
-"""""""""""""""""
-
-By default, commands will be executed on the job's primary compute node,
-sometimes referred to as the job's *head node*. The ``mpirun`` command
-is used to execute an MPI executable on one or more compute nodes in
-parallel. ``mpirun`` accepts the following common options:
-
-+----------------------------------+-------------------------------------------------------+
-| ``--npernode``                   | Number of ranks per node                              |
-+----------------------------------+-------------------------------------------------------+
-| ``-n``                           | Total number of MPI ranks                             |
-+----------------------------------+-------------------------------------------------------+
-| ``--bind-to none``               | Allow code to control thread affinity                 |
-+----------------------------------+-------------------------------------------------------+
-| ``--map-by ppr:N:node:pe=T``     | Place N tasks per node leaving space for T threads    |
-+----------------------------------+-------------------------------------------------------+
-| ``--map-by ppr:N:socket:pe=T``   | Place N tasks per socket leaving space for T threads  |
-+----------------------------------+-------------------------------------------------------+
-| ``--map-by ppr:N:socket``        | Assign tasks by socket placing N tasks on each socket |
-+----------------------------------+-------------------------------------------------------+
-| ``--report-bindings``            | Have MPI explain which ranks have been assigned to    |
-|                                  | which nodes / physical cores                          |
-+----------------------------------+-------------------------------------------------------+
-
-    **Note:** If you do not specify the number of MPI tasks to ``mpirun``
-    via ``-n``, the system will default to all available cores allocated to
-    the job.
-
-MPI Task Layout
-"""""""""""""""""
-
-Each compute node on Rhea contains two sockets each with 8 cores.
-Depending on your job, it may be useful to control task layout within
-and across nodes.
-
-**Default Layout: Sequential**
-
-The following will run a copy of a.out on two cores each on the same
-node:
-
-.. code::
-
-    $ mpirun -np 2 ./a.out
-
-+-----------------------------------------------------------------------------------------------------------------------------------------------+
-|                                                                 Compute Node                                                                  |
-+-----------------------------------------------------------------------+-----------------------------------------------------------------------+
-|                             Socket 0                                  |                             Socket 1                                  |
-+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
-| Core 0 | Core 1 | Core 2 | Core 3 | Core 4 | Core 5 | Core 6 | Core 7 | Core 0 | Core 1 | Core 2 | Core 3 | Core 4 | Core 5 | Core 6 | Core 7 |
-+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
-| rank 0 | rank 1 |        |        |        |        |        |        |        |        |        |        |        |        |        |        |
-+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
-
-**4 cores, 2 cores per socket, 1 node**
-
-The following will run a.out on 4 cores, 2 cores per socket, 1 node:
-
-.. code::
-
-    $ mpirun -np 4 --map-by ppr:2:socket ./a.out
-
-+-----------------------------------------------------------------------------------------------------------------------------------------------+
-|                                                                 Compute Node                                                                  |
-+-----------------------------------------------------------------------+-----------------------------------------------------------------------+
-|                             Socket 0                                  |                             Socket 1                                  |
-+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
-| Core 0 | Core 1 | Core 2 | Core 3 | Core 4 | Core 5 | Core 6 | Core 7 | Core 0 | Core 1 | Core 2 | Core 3 | Core 4 | Core 5 | Core 6 | Core 7 |
-+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
-| rank 0 | rank 1 |        |        |        |        |        |        | rank 2 | rank 3 |        |        |        |        |        |        |
-+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
-
-**4 cores, 1 core per socket, 2 nodes**
-
-The following will run a.out on 4 cores, 1 core per socket, 2 nodes.
-This can be useful if you need to spread your batch job over multiple
-nodes to allow each task access to more memory.
-
-.. code::
-
-    $ mpirun -np 4 --map-by ppr:1:socket ./a.out
-
-+-----------------------------------------------------------------------------------------------------------------------------------------------+
-|                                                                 Compute Node 0                                                                |
-+-----------------------------------------------------------------------+-----------------------------------------------------------------------+
-|                             Socket 0                                  |                             Socket 1                                  |
-+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
-| Core 0 | Core 1 | Core 2 | Core 3 | Core 4 | Core 5 | Core 6 | Core 7 | Core 0 | Core 1 | Core 2 | Core 3 | Core 4 | Core 5 | Core 6 | Core 7 |
-+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
-| rank 0 |        |        |        |        |        |        |        | rank 1 |        |        |        |        |        |        |        |
-+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
-|                                                                 Compute Node 1                                                                |
-+-----------------------------------------------------------------------+-----------------------------------------------------------------------+
-|                             Socket 0                                  |                             Socket 1                                  |
-+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
-| Core 0 | Core 1 | Core 2 | Core 3 | Core 4 | Core 5 | Core 6 | Core 7 | Core 0 | Core 1 | Core 2 | Core 3 | Core 4 | Core 5 | Core 6 | Core 7 |
-+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
-| rank 2 |        |        |        |        |        |        |        | rank 3 |        |        |        |        |        |        |        |
-+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
-
-The ``--report-bindings`` flag can be used to report task layout:
-
-.. code::
-
-    $ mpirun -np 4 --map-by ppr:1:socket --report-bindings hostname
-    [rhea2:47176] MCW rank 0 bound to socket 0[core 0[hwt 0-1]]: [BB/../../../../../../..][../../../../../../../..]
-    [rhea2:47176] MCW rank 1 bound to socket 1[core 8[hwt 0-1]]: [../../../../../../../..][BB/../../../../../../..]
-    [rhea4:104150] MCW rank 2 bound to socket 0[core 0[hwt 0-1]]: [BB/../../../../../../..][../../../../../../../..]
-    [rhea4:104150] MCW rank 3 bound to socket 1[core 8[hwt 0-1]]: [../../../../../../../..][BB/../../../../../../..]
-    $
-
-.. _thread-layout:
-
-Thread Layout
-"""""""""""""""""
-
-    **Warning:** Without controlling affinity, threads may be placed on the
-    same core.
-
-**2 MPI tasks, 1 tasks per node, 16 threads per task, 2 nodes**
-
-
-.. code::
-
-    $ setenv OMP_NUM_THREADS 16
-    $ mpirun -np 2 --map-by ppr:1:node:pe=16 ./a.out
-
-+-----------------------------------------------------------------------------------------------------------------------------------------------+
-|                                                                 Compute Node 0                                                                |
-+-----------------------------------------------------------------------+-----------------------------------------------------------------------+
-|                             Socket 0                                  |                             Socket 1                                  |
-+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
-| Core 0 | Core 1 | Core 2 | Core 3 | Core 4 | Core 5 | Core 6 | Core 7 | Core 0 | Core 1 | Core 2 | Core 3 | Core 4 | Core 5 | Core 6 | Core 7 |
-+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
-| rank 0 | thd. 1 | thd. 2 | thd. 3 | thd. 4 | thd. 5 | thd. 6 | thd. 7 | thd. 8 | thd. 9 | thd. 10| thd. 11| thd. 12| thd. 13| thd. 14| thd. 15|
-| thd. 0 |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |
-+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
-|                                                                 Compute Node 1                                                                |
-+-----------------------------------------------------------------------+-----------------------------------------------------------------------+
-|                             Socket 0                                  |                             Socket 1                                  |
-+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
-| Core 0 | Core 1 | Core 2 | Core 3 | Core 4 | Core 5 | Core 6 | Core 7 | Core 0 | Core 1 | Core 2 | Core 3 | Core 4 | Core 5 | Core 6 | Core 7 |
-+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
-| rank 1 | thd. 1 | thd. 2 | thd. 3 | thd. 4 | thd. 5 | thd. 6 | thd. 7 | thd. 8 | thd. 9 | thd. 10| thd. 11| thd. 12| thd. 13| thd. 14| thd. 15|
-| thd. 0 |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |
-+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
-
-**2 MPI tasks, 1 tasks per socket, 4 threads per task, 1 node**
-
-+-----------------------------------------------------------------------------------------------------------------------------------------------+
-|                                                                 Compute Node                                                                  |
-+-----------------------------------------------------------------------+-----------------------------------------------------------------------+
-|                             Socket 0                                  |                             Socket 1                                  |
-+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
-| Core 0 | Core 1 | Core 2 | Core 3 | Core 4 | Core 5 | Core 6 | Core 7 | Core 0 | Core 1 | Core 2 | Core 3 | Core 4 | Core 5 | Core 6 | Core 7 |
-+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
-| rank 0 | thd. 1 | thd. 2 | thd. 3 |        |        |        |        | rank 1 | thd. 1 | thd. 2 | thd. 3 |        |        |        |        |
-| thd. 0 |        |        |        |        |        |        |        | thd. 0 |        |        |        |        |        |        |        |
-+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
-
-
-.. code::
-
-    $ setenv OMP_NUM_THREADS 4
-    $ mpirun -np 2 --map-by ppr:1:socket:pe=4 ./a.out
-
-Resource Sharing on Commodity Clusters
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Jobs on OLCF clusters are scheduled in full node increments; a node's
-cores cannot be allocated to multiple jobs. Because the OLCF charges
-based on what a job makes *unavailable* to other users, a job is charged
-for an entire node even if it uses only one core on a node. To simplify
-the process, users are given a multiples of entire nodes through PBS.
-
-    **Note:** Users are given a multiples of entire nodes through PBS, and
-    associated allocations are reduced by the number of nodes requested,
-    regardless of actual CPU utilization.
-
-In general, the cluster may move MPI tasks between cores within a node.
-To help prevent a job’s tasks from being moved between cores each idle
-cycle the ``mpi_yield_when_idle`` OpenMPI option may be used. For
-example:
-
-.. code::
-
-      $ mpirun -n 8 -mca mpi_yield_when_idle 0 a.out
-
-This will help prevent the core from being given to other waiting tasks.
-This only affects MPI processes when they are blocking in MPI library
-calls. By default OpenMPI will set this variable based on whether it
-believes the node is over-allocated or under-allocated. If
-over-allocated, ``mpi_yield_when_idle``, will be set to a value other
-than (1), allowing the core to be given to other waiting tasks when
-idle. If under-allocated, ``mpi_yield_when_idle``, will be set to (0).
-If more tasks are running on a node than are cores, the OS will swap all
-tasks between cores on the node. The ``mpi_yield_when_idle`` option only
-helps to slow this down; it will not fully prevent the swaps.
-
---------------
-
 Job Accounting on Rhea
 ----------------------
 
@@ -1149,7 +1041,7 @@ Jobs on Rhea are scheduled in full node increments; a node's cores
 cannot be allocated to multiple jobs. Because the OLCF charges based on
 what a job makes *unavailable* to other users, a job is charged for an
 entire node even if it uses only one core on a node. To simplify the
-process, users are given a multiples of entire nodes through PBS.
+process, users are given a multiples of entire nodes through Slurm.
 
 Viewing Allocation Utilization
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1171,7 +1063,9 @@ The *node-hour* charge for each batch job will be calculated as follows:
 
 Where *batch job starttime* is the time the job moves into a running
 state, and *batch job endtime* is the time the job exits a running
-state. A batch job's usage is calculated solely on requested nodes and
+state.
+
+A batch job's usage is calculated solely on requested nodes and
 the batch job's start and end time. The number of cores actually used
 within any particular node within the batch job is not used in the
 calculation. For example, if a job requests (6) nodes through the batch
@@ -1187,12 +1081,14 @@ run state on Tuesday and completes Wednesday, the job's utilization will
 be recorded Thursday. Only batch jobs which write an end record are used
 to calculate utilization. Batch jobs which do not write end records due
 to system failure or other reasons are not used when calculating
-utilization. Each user may view usage for projects on which they are
+utilization.
+
+Each user may view usage for projects on which they are
 members from the command line tool ``showusage`` and the `My OLCF
 site <https://users.nccs.gov>`__.
 
 On the Command Line via ``showusage``
-
+"""""""""""""""""""""""""""""""""""""
 
 The ``showusage`` utility can be used to view your usage from January 01
 through midnight of the previous day. For example:
@@ -1209,7 +1105,7 @@ through midnight of the previous day. For example:
 The ``-h`` option will list more usage details.
 
 On the Web via My OLCF
-
+""""""""""""""""""""""
 
 More detailed metrics may be found on each project's usage section of
 the `My OLCF site <https://users.nccs.gov>`__. The following information
@@ -1243,12 +1139,13 @@ been retrieved from HPSS and pre-processed.
    :width: 544px
    :height: 300px
 
-Cross-Submission allows jobs on one OLCF resource to submit new jobs to other
-OLCF resources. The key to remote job submission is the command ``qsub -q host
-script.pbs`` which will submit the file ``script.pbs`` to the batch queue on
-the specified host. This command can be inserted at the end of an existing
-batch script in order to automatically trigger work on another OLCF resource.
-This feature is supported on the following hosts:
+The key to remote job submission is the command qsub -q host script.pbs
+which will submit the file script.pbs to the batch queue on the specified
+host. This command can be inserted at the end of an existing batch script
+in order to automatically trigger work on another OLCF resource. This
+feature is supported on the following hosts:
+
+
 
 +------------------------------+--------------------------------------+
 | Host                         | Remote Submission Command            |
@@ -1274,6 +1171,7 @@ Rhea. Visually, this workflow may look something like the following:
 .. image:: /images/remote_submission.stage-compute-e1392655934134.png
 
 The batch scripts for such a workflow could be implemented as follows:
+
 **Batch-script-1.pbs**
 
 .. code::
@@ -1309,12 +1207,14 @@ The key to this workflow is the
 Rhea.
 
 Initializing the Workflow
-
+"""""""""""""""""""""""""
 
 We can initialize this workflow in one of two ways:
 
 -  Log into ``titan.ccs.ornl.gov`` and run ``qsub Batch-script-1.pbs``
+
    OR
+
 -  From Titan or Rhea, run ``qsub -q titan Batch-script-1.pbs``
 
 Example Workflow 2: Data Staging, Compute, and Archival
