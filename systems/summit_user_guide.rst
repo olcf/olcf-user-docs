@@ -1435,6 +1435,9 @@ Othewise, you will not have any compute nodes allocated and your parallel
 job will run on the login node. If this happens, your job will interfere with
 (and be interfered with by) other users' login node tasks.
 
+
+.. _batch-scripts:
+
 Batch Scripts
 -------------
 
@@ -2880,8 +2883,9 @@ codes. No extra compiling steps are required to use ``nvprof``. The
 profiler includes tracing capability as well as the ability to gather
 many performance metrics, including FLOPS. The profiler data output can
 be saved and imported into the NVIDIA Visual Profiler for additional
-graphical analysis. To use ``nvprof``, the ``cuda`` module must be
-loaded.
+graphical analysis.
+
+To use ``nvprof``, the ``cuda`` module must be loaded.
 
 ::
 
@@ -2930,12 +2934,37 @@ more useful. For information on how to view the output of ``nvprof`` in
 the NVIDIA Visual Profiler, see the `NVIDIA
 Documentation <http://docs.nvidia.com/cuda/profiler-users-guide/#nvprof-overview>`__.
 
+Score-P
+-------
+
+The `Score-P <http://score-p.org/>`__ measurement infrastructure is a
+highly scalable and easy-to-use tool suite for profiling, event
+tracing, and online analysis of HPC applications. Score-P supports
+analyzing C, C++ and Fortran applications that make use of
+multi-processing (MPI, SHMEM), thread parallelism (OpenMP, PThreads) and
+accelerators (CUDA, OpenCL, OpenACC) and combinations.
+
+For detailed information about using Score-P on Summit and the
+builds available, please see the
+`Score-P Software Page. <https://www.olcf.ornl.gov/software_package/score-p/>`__
+
 Vampir
 ------
 
-[ls\_content\_block id="24496" para="full"] For detailed information
-about using Vampir on Summit and the builds available, please see the
-`Vampir Software Page <https://www.olcf.ornl.gov/software_package/vampir/>`__.
+`Vampir <http://vampir.eu/>`__ is a software performance visualizer focused on highly
+parallel applications. It presents a unified view on an application
+run including the use of programming paradigms like MPI, OpenMP,
+PThreads, CUDA, OpenCL and OpenACC. It also incorporates file I/O,
+hardware performance counters and other performance data sources.
+Various interactive displays offer detailed insight into the performance
+behavior of the analyzed application. Vampir’s scalable analysis
+server and visualization engine enable interactive navigation of
+large amounts of performance data. `Score-P <https://olcf.ornl.gov/software_package/score-p>`__
+and `TAU <https://www.olcf.ornl.gov/software_package/tau>`__ generate OTF2
+trace files for Vampir to visualize.
+
+For detailed information about using Vampir on Summit and the builds available,
+please see the `Vampir Software Page <https://www.olcf.ornl.gov/software_package/vampir/>`__.
 
 .. _known-issues:
 
