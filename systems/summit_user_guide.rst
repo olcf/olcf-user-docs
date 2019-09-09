@@ -2954,11 +2954,6 @@ Adding ``FAULT_TOLERANCE=1`` in your individual ``~/.jsm.conf`` file,
 will result in LSF jobs failing to successfully start. A bug has been
 filed with IBM to address this issue.
 
-CSM-based launch is not currently supported
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Users should not use ``JSMD_LAUNCH_MODE=csm`` in their ``~/.jsm.conf``
-file at this time. A bug has been filed with IBM to address this issue.
 
 Spindle is not currently supported
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -2996,11 +2991,13 @@ more detail information about the MPI communication of your job. To
 gather MPI tracing data, you can set
 ``export OMPI_LD_PRELOAD_POSTPEND=$OLCF_SPECTRUM_MPI_ROOT/lib/libmpitrace.so``
 in your environment. This will generate profile files with timings for
-the individual processes of your job. In addition, to debug slow startup
-JSM provides the option to create a progress file. The file will show
-information that can be helpful to pinpoint if a specific node is
-hanging or slowing down the job step launch. To enable it, you can use:
-``jsrun --progress ./my_progress_file_output.txt``.
+the individual processes of your job.
+
+In addition, to debug slow startup JSM provides the option to create a
+progress file. The file will show information that can be helpful to
+pinpoint if a specific node is hanging or slowing down the job step
+launch. To enable it, you can use: ``jsrun --progress
+./my_progress_file_output.txt``.
 
 -a flag ignored when using a jsrun resource set file with -U
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -3050,8 +3047,11 @@ jsrun explicit resource file (ERF) allocates incorrect resources
 
 When using an ERF that requests cores on a compute node’s second socket
 (hardware threads 88-171), the set of cores allocated on the second
-socket are shifted upwards by (1) physical core. For example: The
-following ERF requests the first physical core on each socket:
+socket are shifted upwards by (1) physical core.
+
+For example:
+
+The following ERF requests the first physical core on each socket:
 
 ::
 
@@ -3068,51 +3068,35 @@ physical core, allocating 92-95 instead of the specified 88-91.
 
     Task 1 ( 1/2, 1/2 ) is bound to cpu[s] 92-95 on host h36n03 with OMP_NUM_THREADS=1 and with OMP_PLACES={92:4}
 
-Job hangs in MPI\_Finalize
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-There is a known issue in Spectrum MPI 10.2.0.10 provided by the
-``spectrum-mpi/10.2.0.10-20181214`` modulefile that causes a hang in
-``MPI_Finalize`` when ROMIO 3.2.1 is being used and the
-``darshan-runtime`` modulefile is loaded. The recommended and default
-Spectrum MPI version as of March 3, 2019 is Spectrum MPI 10.2.0.11
-provided by the ``spectrum-mpi/10.2.0.11-20190201`` modulefile. If you
-are seeing this issue, please make sure that you are using the latest
-version of Spectrum MPI. If you need to use a previous version of
-Spectrum MPI, your options are:
-
--  Unload the ``darshan-runtime`` modulefile.
--  Alternatively, set ``export OMPI_MCA_io=romio314`` in your
-   environment to use the previous version of ROMIO. Please note that
-   this version has known performance issues with parallel HDF5 (see
-   "Slow performance using parallel HDF5" issue below).
 
 jsrun latency priority capitalization allocates incorrect resources
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-jsrun's latency priority (\`-l\`) flag can be given lowercase values
-(i.e. gpu-cpu) or capitalized values (i.e. GPU-CPU). Expected behavior:
+jsrun's latency priority (``-l``) flag can be given lowercase values
+(i.e. gpu-cpu) or capitalized values (i.e. GPU-CPU).
 
-When capitalized, jsrun should not compromise on the resource layout,
-and will wait to begin the job step until the ideal resources are
-available. When given a lowercase value, jsrun will not wait, but
-initiate the job step with the most ideal layout as is available at the
-time. This also means that when there's no resource contention, such as
-running a single job step at a time, capitalization should not matter,
-as they should both yield the same resources.
+**Expected behavior**:
 
-Actual behavior:
+    When capitalized, jsrun should not compromise on the resource layout,
+    and will wait to begin the job step until the ideal resources are
+    available. When given a lowercase value, jsrun will not wait, but
+    initiate the job step with the most ideal layout as is available at the
+    time. This also means that when there's no resource contention, such as
+    running a single job step at a time, capitalization should not matter,
+    as they should both yield the same resources.
 
-Capitalizing the latency priority value may allocate incorrect
-resources, or even cause the job step to fail entirely.
+**Actual behavior**:
 
-Recommendation:
+    Capitalizing the latency priority value may allocate incorrect
+    resources, or even cause the job step to fail entirely.
 
-It is currently recommended to only use the lowercase values to (-l /
---latency\_priority). The system default is: gpu-cpu,cpu-mem,cpu-cpu.
-Since this ordering is used implicitly when the -l flag is omitted, this
-issue only impacts submissions which explicitly include a latency
-priority in the jsrun command.
+**Recommendation**:
+
+    It is currently recommended to only use the lowercase values to (-l /
+    --latency\_priority). The system default is: gpu-cpu,cpu-mem,cpu-cpu.
+    Since this ordering is used implicitly when the -l flag is omitted, this
+    issue only impacts submissions which explicitly include a latency
+    priority in the jsrun command.
 
 Error when using complex datatypes with MPI Collectives and GPUDirect
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -3133,27 +3117,58 @@ Collectives and GPUDirect:
     [h35n05:113509] coll:ibm:allreduce: GPU awareness in PAMI requested. It is not safe to defer to another component.
 
 This is a known issue with libcoll and the SMPI team is working to
-resolve it. In the mean time, a workaround is to treat the complex array
+resolve it. In the meantime, a workaround is to treat the complex array
 as a real array with double the length if the operation is not
 MPI\_Prod. Note: This requires code modification. An alternative
 workaround is to disable IBM optimized collectives. This will impact
 performance however but requires no code changes and should be correct
 for all MPI\_Allreduce operations. You can do this by adding the
 following option to your jsrun command line:
-``--smpiargs="-HCOLL -FCA -mca coll_hcoll_enable 1 -mca coll_hcoll_np 0 -mca coll ^basic -mca coll ^ibm -async"``
+``--smpiargs="-HCOLL -FCA -mca coll_hcoll_enable 1 -mca coll_hcoll_np 0
+-mca coll ^basic -mca coll ^ibm -async"``
 
 Resolved Issues
 ---------------
+
+The following issues were resolved with the July 16, 2019 software upgrade:
+
+
+Default nvprof setting clobbers ``LD_PRELOAD``, interfering with SpectrumMPI (Resolved: July 16, 2019)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+CUDA 10 adds a new feature to profile CPU side OpenMP constructs (see
+https://docs.nvidia.com/cuda/profiler-users-guide/index.html#openmp).
+This feature is enabled by default and has a bug which will cause it to
+overwrite the contents of ``LD_PRELOAD``. SpectrumMPI requires a library
+(``libpami_cuda_hook.so``) to be preloaded in order to function. All MPI
+applications on Summit will break when run in nvprof with default
+settings. The workaround is to disable the new OpenMP profiling feature:
+
+::
+
+    $ jsrun  nvprof --openmp-profiling off
+
+CSM-based launch is not currently supported (Resolved: July 16, 2019)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Users should not use ``JSMD_LAUNCH_MODE=csm`` in their ``~/.jsm.conf``
+file at this time. A bug has been filed with IBM to address this issue.
+
+--------------
 
 Parallel I/O crash on GPFS with latest MPI ROMIO
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 In some cases with large number of MPI processes when there is not
 enough memory available on the compute node, the Abstract-Device
-Interface for I/O (ADIO) driver can break with this error: Out of memory
+Interface for I/O (ADIO) driver can break with this error:
+
+Out of memory
 in file
 ../../../../../../../opensrc/ompi/ompi/mca/io/romio321/romio/adio/ad\_gpfs/ad\_gpfs\_rdcoll.c,
-line 1178 The solution is to declare in your submission script:
+line 1178
+
+The solution is to declare in your submission script:
 
 ::
 
@@ -3161,7 +3176,11 @@ line 1178 The solution is to declare in your submission script:
 
 This command will use non-blocking MPI calls and not MPI\_Alltoallv for
 exchange of data between the MPI I/O aggregators which requires
-significant more amount of memory. The following issues were resolved
+significant more amount of memory.
+
+--------------
+
+The following issues were resolved
 with the May 21, 2019 upgrade:
 
 Issue with CUDA Aware MPI with >1 resource set per node (Resolved: May 21, 2019)
@@ -3227,6 +3246,25 @@ job. Please note that hints must be tuned for a specific job.
     cb_buffer_size 16777216
     cb_nodes 2
 
+Job hangs in MPI\_Finalize (Resolved: March 12, 2019)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+There is a known issue in Spectrum MPI 10.2.0.10 provided by the
+``spectrum-mpi/10.2.0.10-20181214`` modulefile that causes a hang in
+``MPI_Finalize`` when ROMIO 3.2.1 is being used and the
+``darshan-runtime`` modulefile is loaded. The recommended and default
+Spectrum MPI version as of March 3, 2019 is Spectrum MPI 10.2.0.11
+provided by the ``spectrum-mpi/10.2.0.11-20190201`` modulefile. If you
+are seeing this issue, please make sure that you are using the latest
+version of Spectrum MPI. If you need to use a previous version of
+Spectrum MPI, your options are:
+
+-  Unload the ``darshan-runtime`` modulefile.
+-  Alternatively, set ``export OMPI_MCA_io=romio314`` in your
+   environment to use the previous version of ROMIO. Please note that
+   this version has known performance issues with parallel HDF5 (see
+   "Slow performance using parallel HDF5" issue below).
+
 --------------
 
 The following issues were resolved with the February 19, 2019 upgrade:
@@ -3271,20 +3309,23 @@ user environment ``PAMI_PMIX_USE_OLD_MAPCACHE=1`` and
 CUDA 10.1 Known Issues
 ----------------------
 
-Default nvprof setting clobbers ``LD_PRELOAD``, interfering with SpectrumMPI
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Intermittent failures with \`nvprof\` (Identified: July 11, 2019)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-CUDA 10 adds a new feature to profile CPU side OpenMP constructs (see
-https://docs.nvidia.com/cuda/profiler-users-guide/index.html#openmp).
-This feature is enabled by default and has a bug which will cause it to
-overwrite the contents of ``LD_PRELOAD``. SpectrumMPI requires a library
-(``libpami_cuda_hook.so``) to be preloaded in order to function. All MPI
-applications on Summit will break when run in nvprof with default
-settings. The workaround is to disable the new OpenMP profiling feature:
+We are seeing an intermittent issue that causes an error when
+profiling a code using `nvprof` from CUDA 10.1.168. We have filed
+a bug with NVIDIA (NV bug 2645669) and they have reproduced the
+problem. An update will be posted when a fix becomes available.
+
+When this issue is encountered, the profiler will exit with the
+following error message:
 
 ::
 
-    $ jsrun  nvprof --openmp-profiling off
+    ==99756== NVPROF is profiling process 99756, command: ./a.out
+    ==99756== Error: Internal profiling error 4306:999.
+    ======== Profiling result:
+    ======== Metric result:
 
 MPI annotation may cause segfaults with applications using MPI\_Init\_thread
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -3317,7 +3358,9 @@ this is compiled as C++11: in ``complex.h`` and ``complex.inl``,
 annotate the functions that deal with ``std::complex`` as
 ``__host__ __device__`` (they are the ones that are annotated only as
 ``__host__`` right now), and then compile with
-``--expt-relaxed-constexpr``. Users that encounter this issue, can use
+``--expt-relaxed-constexpr``.
+
+Users that encounter this issue, can use
 the following workaround. copy the entirety of
 ``${OLCF_CUDA_ROOT}/include/thrust`` to a private location, make the
 above edits to ``thrust/complex.h`` and
@@ -3337,14 +3380,18 @@ Breakpoints in CUDA kernels recommendation
 ``cuda-gdb`` allows for breakpoints to be set inside CUDA kernels to
 inspect the program state on the GPU. This can be a valuable debugging
 tool but breaking inside kernels does incur significant overhead that
-should be included in your expected runtime. The time required to hit a
-breakpoint inside a CUDA kernel depends on how many CUDA threads are
-used to execute the kernel. It may take several seconds to stop at
-kernel breakpoints for very large numbers of threads. For this reason,
-it is recommended to choose breakpoints judiciously, especially when
-running the debugger in "batch" or "offline" mode where this overhead
-may be misperceived as the code hanging. If possible, debugging a
-smaller problem size with fewer active threads can be more pleasant.
+should be included in your expected runtime.
+
+The time required to hit a breakpoint inside a CUDA kernel depends on
+how many CUDA threads are used to execute the kernel. It may take
+several seconds to stop at kernel breakpoints for very large numbers
+of threads. For this reason, it is recommended to choose breakpoints
+judiciously, especially when running the debugger in "batch" or
+"offline" mode where this overhead may be misperceived as the code
+hanging. If possible, debugging a smaller problem size with fewer
+active threads can be more pleasant.
+
+--------------
 
 .. _training-system-ascent:
 
