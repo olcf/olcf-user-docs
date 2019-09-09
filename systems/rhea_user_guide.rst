@@ -951,18 +951,15 @@ Batch Queues on Rhea
 --------------------
 
 The compute nodes on Rhea are separated into two partitions
-(`rhea TODO CHANGE </for-users/system-user-guides/rhea/system-overview/#rhea-partition>`__
-and
-`gpu TODO CHANGE </for-users/system-user-guides/rhea/system-overview/#gpu-partition>`__)
+(:ref:`rhea-partition` and :ref:`gpu-partition`)
 and are available through a single batch queue: ``batch``. The
 scheduling policies for the individual partitions are as follows:
 
 Rhea Partition Policy (default)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Jobs that do not specify a partition will run in the 512 node `rhea
-partition TODO CHANGE
-</for-users/system-user-guides/rhea/system-overview/#rhea-partition>`__.
+Jobs that do not specify a partition will run in the 512
+node :ref:`rhea-partition`.
 
 
 +-----+----------------+------------+-------------------------------------------+
@@ -979,8 +976,7 @@ partition TODO CHANGE
 GPU Partition Policy
 ^^^^^^^^^^^^^^^^^^^^
 
-To access the 9 node `gpu
-partition </for-users/system-user-guides/rhea/system-overview/#gpu-partition>`__,
+To access the 9 node :ref:`gpu-partition`,
 batch job submissions should request ``-lpartition=gpu``
 
 +------------+-------------+--------------------------+
