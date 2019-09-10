@@ -34,8 +34,9 @@ Data
 ------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
+   data/storage_overview.rst
    data/policies.rst
    data/transferring.rst
    data/archiving.rst
