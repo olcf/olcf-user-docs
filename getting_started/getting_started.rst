@@ -209,6 +209,8 @@ Home can be accessed through ssh utilities:
 
       ssh userid@home.ccs.ornl.gov
 
+For more information on connecting to OLCF resources, see the <.connecting>`__ section.
+
 Acceptable Tasks
 ^^^^^^^^^^^^^^^^^^^^^^
 

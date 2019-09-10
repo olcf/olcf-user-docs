@@ -76,6 +76,13 @@ such, any CPU- or memory-intensive tasks on these nodes could interrupt
 service to other users. As a courtesy, we ask that you refrain from
 doing any analysis or visualization tasks on the login nodes.
 
+To connect to Rhea, ssh to rhea.ccs.ornl.gov - 
+::
+
+	ssh username@rhea.ccs.ornl.gov
+
+For more information on connecting to OLCF resources, see :ref:`connecting-to-olcf`
+
 --------------
 
 File systems

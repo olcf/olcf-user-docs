@@ -17,6 +17,11 @@ Getting Started
 Connecting
 -----------
 
+.. toctree::
+   :maxdepth: 1
+
+   getting_started/connecting.rst
+
 Systems
 ---------------
 
