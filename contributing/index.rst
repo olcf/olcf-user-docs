@@ -19,9 +19,12 @@ Setup authoring environment
 #. Fork the documentation repository on GitHub
 
     Go to https://github.com/olcf/olcf-user-documentation, and click the "Fork"
-    button in the upper right corner
+    button in the upper right corner.
 
-    FIXME: add a screenshot with arrow
+    .. image:: /images/github_fork.png
+       :width: 80.0%
+       :align: center
+
 
 #. Clone your fork of the documentation repository::
 
@@ -63,7 +66,11 @@ Edit the docs
 
 #. Open a pull request on github
 
-   FIXME: add screenshots showing how
+    After you push your branch, you should see a button to open a pull request.
+
+    .. image:: /images/github_pr.png
+       :width: 80.0%
+       :align: center
 
 Resources
 ---------------
