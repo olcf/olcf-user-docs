@@ -32,22 +32,23 @@ directory on a per-user basis:
 -  Project Work Directory: ``$PROJWORK/[projid]``
 -  World Work Directory: ``$WORLDWORK/[projid]``
 
-
-*Information*
+-----------
+Information
+-----------
 
 -  Although there are no hard quota limits, an upper storage limit should be reported in the project request. The available space of a project can be modified upon request.
 -  The user will be informed when the project reaches 90% of the requested storage utilization.
 
-
-*Purge*
+------
+Purge
+------
 
 To keep the Spectrum Scale file system exceptionally performant, untouched files in the project and user areas are purged at the 
-intervals shown in the table above. Please make sure that valuable data is moved off of these systems regularly. See `HPSS Best
-Practices <./#hpss-best-practices>`__
-for information about using the HSI and
-HTAR utilities to archive data on HPSS.
+intervals shown in the table above. Please make sure that valuable data is moved off of these systems regularly. See :ref:`hpss`. for information about using the HSI and HTAR utilities to archive data on HPSS.
 
-*Retention*
+----------
+Retention
+----------
 
 At the completion of a project or at the end of a member's association with the project, data will be available for 90 days, except in areas that are
 purged, in that case, the data will be retained according to the purge policy. After 90 days, the data will not be available but not purged for another 60
