@@ -2934,7 +2934,7 @@ Documentation <http://docs.nvidia.com/cuda/profiler-users-guide/#nvprof-overview
 Vampir
 ------
 
-[ls\_content\_block id="24496" para="full"] For detailed information
+For detailed information
 about using Vampir on Summit and the builds available, please see the
 `Vampir Software Page <https://www.olcf.ornl.gov/software_package/vampir/>`__.
 
