@@ -1603,7 +1603,9 @@ data analysis and visualization application. ParaView users can quickly
 build visualizations to analyze their data using qualitative and
 quantitative techniques. The data exploration can be done interactively
 in 3D or programmatically using ParaView’s batch processing
-capabilities. ParaView was developed to analyze extremely large datasets
+capabilities.
+
+ParaView was developed to analyze extremely large datasets
 using distributed memory computing resources. The OLCF provides ParaView
 server installs on Rhea to facilitate large scale distributed
 visualizations. The ParaView server running on Rhea may be used in a
@@ -1631,8 +1633,7 @@ of very large data sets.
 
     **Warning:** In interactive mode your local ParaView version number must
     match the ParaView version number available on Rhea. Please check the
-    available ParaView versions using Rhea's `modules system
-    </for-users/system-user-guides/rhea/shell-and-programming-environments/#using-modules>`__.
+    available ParaView versions using Lmod
 
 Interactive Example
 """""""""""""""""""
@@ -1649,7 +1650,8 @@ most cases.
     **Warning:** For Windows clients, it is necessary to install PuTTY to
     create an ssh connection in step 2.
 
-**Step 1: Launch ParaView on your Desktop and fetch a connection script for Rhea**
+**Step 1: Launch ParaView on your Desktop and fetch a connection script
+for Rhea**
 
 Start ParaView and then select ``File/Connect`` to begin.
 
@@ -1668,9 +1670,12 @@ Next select the connection to Rhea for either windows or Mac/Linux and hit the
    :width: 600px
 
 You may now quit and restart ParaView in order to save connection setup in your
-preferences. **Step 2: Establish a connection to Rhea** Once restarted, and
-henceforth, simply select Rhea from the File->Connect dialog and click the
-“Connect” button.
+preferences.
+
+**Step 2: Establish a connection to Rhea**
+
+Once restarted, and henceforth, simply select Rhea from the File->Connect
+dialog and click the “Connect” button.
 
 .. image:: /images/paraview_step2a.png
    :width: 600px
@@ -1706,20 +1711,53 @@ Installing and Setting Up Visit
 VisIt uses a client-server architecture. You will obtain the best
 performance by running the VisIt client on your local computer and
 running the server on OLCF resources. VisIt for your local computer can
-be obtained here: `VisIt Installation <http://visit.llnl.gov>`__. The
-first time you launch VisIt (after installing), you will be prompted for
-a remote host preference. Make sure you select ORNL. You will then be
-prompted to exit and re-launch VisIt for the host preferences to become
-available. In order to finish setting up VisIt on your local machine:
+be obtained here: `VisIt Installation <http://visit.llnl.gov>`__. Rhea
+currently has Remote Backend Version 2.13.0 available, so the local client
+version 2.13.x is recommended.
 
--  Go to "Options→Host profiles" and choose "ORNL\_Rhea".
--  Make sure "Username" is set to your OLCF username.
--  Click on the "Launch Profiles" tab and then click on the "Parallel"
-   button. Here, you can set up the parallel launch configuration.
-   Default values will be filled in, but you will need to enter your
-   project ID in the "Bank/Account" section. When finished, click Apply
-   and close the "Host profiles" window.
--  To ensure these settings are saved, go to "Options→Save Settings".
+The first time you launch VisIt (after installing), you will be prompted
+for a remote host preference. Unfortunately, ORNL does not maintain this
+list and the ORNL entry is outdated. Click the “None” option instead.
+Restart VisIt, and go to Options->Host Profiles. Select “New Host”
+
+- For host nickname: Rhea (this is arbitrary)
+- Remote hostname: rhea.ccs.ornl.gov (required)
+- Host name aliases: rhea-login#g (required)
+- Maximum Nodes: unchecked (unless using the GPU partition on Rhea)
+- Maximum processors: unchecked (arbitrary but use fewer than cores available)
+- Path to VisIt Installation: /sw/rhea/visit (required)
+- Username: Your OLCF Username (required)
+- Tunnel data connections through SSH: Checked (required)
+
+Under the “Launch Profiles” tab create a launch profile. Most of
+these values are arbitrary
+
+- Profile Name: No GPU, MPI, Multinode (arbitrary)
+- Timeout: 480 (arbitrary)
+- Number of threads per task: 0 (arbitrary, but not tested
+  with OMP/pthread support)
+- Additional arguments: blank (arbitrary)
+
+Under the “Parallel” Tab:
+
+- Launch parallel engine: Checked (required)
+- Launch Tab:
+    - Parallel launch method:
+      qsub/mpirun (required)
+    - Partition/Pool/Queue: batch (required)
+    - Number of processors: 2 (arbitrary, but
+      high number may lead to OOM errors)
+    - Number of nodes: 2 (arbitrary)
+    - Bank/Account: Your OLCF project to use (required)
+    - Time Limit: 1:00:00 (arbitrary)
+    - Machine file: Unchecked (required – Lets VisIt get
+      the nodelist from the scheduler)
+    - Constraints: unchecked
+- Advanced tab – All boxes unchecked
+- GPU Acceleration
+    - Use cluster’s graphics cards: Unchecked
+
+Click “Apply”. Exit and re-launch VisIt.
 
 Usage
 ^^^^^
@@ -1736,6 +1774,12 @@ Once you have VisIt installed and set up on your local computer:
    and processors you would like to use (remember that each node of Rhea
    contains 16 processors) and the Project ID, which VisIt calls a
    "Bank" as shown below.
+
+.. image:: /images/Screen-Shot-2015-12-02-at-3.30.27-PM.png
+   :width: 400px
+   :height: 360px
+   :align: center
+
 -  Once specified, the server side of VisIt will be launched, and you
    can interact with your data.
 
@@ -1779,9 +1823,10 @@ should login to Rhea and enter "qstat" from the command line. Your VisIt
 job should appear in the queue. If you see it in a state marked "Q" you
 should wait a bit longer to see if it will start. If you do not see your
 job listed in the queue, check to make sure your project ID is entered
-in your VisIt host profile. See the `Modifying Host
-Profiles </for-users/system-user-guides/rhea/analysis-tools/#modifying-host-profiles>`__
+in your VisIt host profile. See the :ref:`modifying-host-profiles`
 section below for instructions.
+
+.. _modifying-host-profiles:
 
 Modifying Host Profiles
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -1872,7 +1917,7 @@ step 4 (local system)
 ^^^^^^^^^^^^^^^^^^^^^
 
 Launch the vncviewer. When you launch the vncviewer that you downloaded
-you will need to specify ‘localhost:5901’. You will also set a passoword
+you will need to specify ‘localhost:5901’. You will also set a password
 for the initial connection or enter the created password for subsequent
 connections.
 
