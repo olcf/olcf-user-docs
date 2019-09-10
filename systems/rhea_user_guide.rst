@@ -43,123 +43,6 @@ additionally, the olcf's `high performance storage
 system <../file-systems/#hpss-high-performance-storage-system>`__ (hpss)
 provides archival spaces.
 
-Compiling
-=========
-
-Compiling code on rhea is typical of commodity or beowulf-style hpc
-linux clusters.
-
-Available compilers
--------------------
-
-The following compilers are available on rhea:
-
-- `intel <https://www.olcf.ornl.gov/software_package/intel/>`__, intel composer xe (default)
-- `pgi <https://www.olcf.ornl.gov/software_package/pgi/>`__, the portland group compiler suite
-- `gcc <https://www.olcf.ornl.gov/software_package/gcc/>`__, the gnu compiler collection
-
-Upon login, default versions of the intel compiler and openmpi (message
-passing interface) libraries are automatically added to each user's
-environment. Users do not need to make any environment changes to use
-the default version of intel and openmpi.
-
---------------
-
-Changing compilers
-------------------
-
-If a different compiler is required, it is important to use the correct
-environment for each compiler. To aid users in pairing the correct
-compiler and environment, the module system on rhea automatically pulls
-in libraries compiled with a given compiler when changing compilers. The
-compiler modules will load the correct pairing of compiler version,
-message passing libraries, and other items required to build and run
-code. To change the default loaded intel environment to the gcc
-environment for example, use:
-
-.. code::
-
-    $ module load gcc
-
-This will automatically unload the current compiler and system libraries
-associated with it, load the new compiler environment and automatically
-load associated system libraries as well.
-
-Changing versions of the same compiler
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-To use a specific compiler *version*, you must first ensure the
-compiler's module is loaded, and *then* swap to the correct compiler
-version. For example, the following will configure the environment to
-use the gcc compilers, then load a non-default gcc compiler version:
-
-.. code::
-
-    $ module load gcc
-    $ module swap gcc gcc/4.7.1
-
-..
-
-    **note: we recommend the following general guidelines for using the
-    programming environment modules:**
-
-    -  Do not purge all modules; rather, use the default module environment
-       provided at the time of login, and modify it.
-    -  Do not swap moab, torque, or mysql modules after loading a
-       programming environment modulefile.
-
---------------
-
-Compiler wrappers
------------------
-
-Commodity clusters at the olcf can be accessed via the following wrapper
-programs:
-
--  ``mpicc`` to invoke the c compiler
--  ``mpicc``, ``mpicxx``, or ``mpic++`` to invoke the c++ compiler
--  ``mpif77`` or ``mpif90`` to invoke appropriate versions of the
-   fortran compiler
-
-These wrapper programs are cognizant of your currently loaded modules,
-and will ensure that your code links against our openmpi installation.
-more information about using openmpi at our center can be found in our
-`software documentation <https://www.olcf.ornl.gov/software_package/openmpi/>`__.
-
-Compiling threaded codes
-------------------------
-
-When building threaded codes, compiler-specific flags must be included
-to ensure a proper build.
-
-Openmp
-^^^^^^
-
-For pgi, add "-mp" to the build line.
-
-.. code::
-
-    $ mpicc -mp test.c -o test.x
-    $ export omp_num_threads=2
-
-For gnu, add "-fopenmp" to the build line.
-
-.. code::
-
-    $ mpicc -fopenmp test.c -o test.x
-    $ export omp_num_threads=2
-
-For intel, add "-qopenmp" to the build line.
-
-.. code::
-
-    $ mpicc -qopenmp test.c -o test.x
-    $ export omp_num_threads=2
-
-For information on *running threaded codes*, please see the  :ref:`thread-layout`
-subsection of the :ref:`rhea-running-jobs` section in
-this user guide.
-
 Shell and programming environments
 ==================================
 
@@ -326,6 +209,123 @@ scientific libraries for your use, in addition to taking `software
 installation requests <https://www.olcf.ornl.gov/support/software/software-request/>`__. See the
 `software <https://www.olcf.ornl.gov/for-users/software/>`__ page for complete details on
 existing installs.
+
+Compiling
+=========
+
+Compiling code on rhea is typical of commodity or beowulf-style hpc
+linux clusters.
+
+Available compilers
+-------------------
+
+The following compilers are available on rhea:
+
+- `intel <https://www.olcf.ornl.gov/software_package/intel/>`__, intel composer xe (default)
+- `pgi <https://www.olcf.ornl.gov/software_package/pgi/>`__, the portland group compiler suite
+- `gcc <https://www.olcf.ornl.gov/software_package/gcc/>`__, the gnu compiler collection
+
+Upon login, default versions of the intel compiler and openmpi (message
+passing interface) libraries are automatically added to each user's
+environment. Users do not need to make any environment changes to use
+the default version of intel and openmpi.
+
+--------------
+
+Changing compilers
+------------------
+
+If a different compiler is required, it is important to use the correct
+environment for each compiler. To aid users in pairing the correct
+compiler and environment, the module system on rhea automatically pulls
+in libraries compiled with a given compiler when changing compilers. The
+compiler modules will load the correct pairing of compiler version,
+message passing libraries, and other items required to build and run
+code. To change the default loaded intel environment to the gcc
+environment for example, use:
+
+.. code::
+
+    $ module load gcc
+
+This will automatically unload the current compiler and system libraries
+associated with it, load the new compiler environment and automatically
+load associated system libraries as well.
+
+Changing versions of the same compiler
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+To use a specific compiler *version*, you must first ensure the
+compiler's module is loaded, and *then* swap to the correct compiler
+version. For example, the following will configure the environment to
+use the gcc compilers, then load a non-default gcc compiler version:
+
+.. code::
+
+    $ module load gcc
+    $ module swap gcc gcc/4.7.1
+
+..
+
+    **note: we recommend the following general guidelines for using the
+    programming environment modules:**
+
+    -  Do not purge all modules; rather, use the default module environment
+       provided at the time of login, and modify it.
+    -  Do not swap moab, torque, or mysql modules after loading a
+       programming environment modulefile.
+
+--------------
+
+Compiler wrappers
+-----------------
+
+Commodity clusters at the olcf can be accessed via the following wrapper
+programs:
+
+-  ``mpicc`` to invoke the c compiler
+-  ``mpicc``, ``mpicxx``, or ``mpic++`` to invoke the c++ compiler
+-  ``mpif77`` or ``mpif90`` to invoke appropriate versions of the
+   fortran compiler
+
+These wrapper programs are cognizant of your currently loaded modules,
+and will ensure that your code links against our openmpi installation.
+more information about using openmpi at our center can be found in our
+`software documentation <https://www.olcf.ornl.gov/software_package/openmpi/>`__.
+
+Compiling threaded codes
+------------------------
+
+When building threaded codes, compiler-specific flags must be included
+to ensure a proper build.
+
+Openmp
+^^^^^^
+
+For pgi, add "-mp" to the build line.
+
+.. code::
+
+    $ mpicc -mp test.c -o test.x
+    $ export omp_num_threads=2
+
+For gnu, add "-fopenmp" to the build line.
+
+.. code::
+
+    $ mpicc -fopenmp test.c -o test.x
+    $ export omp_num_threads=2
+
+For intel, add "-qopenmp" to the build line.
+
+.. code::
+
+    $ mpicc -qopenmp test.c -o test.x
+    $ export omp_num_threads=2
+
+For information on *running threaded codes*, please see the
+:ref:`thread-layout` subsection of the :ref:`rhea-running-jobs`
+section in this user guide.
 
 .. _rhea-running-jobs:
 
