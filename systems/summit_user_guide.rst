@@ -126,7 +126,7 @@ Storage System (HPSS) for user and project archival storage.
 Operating System
 ----------------
 
-Summit is running Red Hat Enterprise Linux (RHEL) version 7.5.
+Summit is running Red Hat Enterprise Linux (RHEL) version 7.6.
 
 .. _hardware-threads:
 
