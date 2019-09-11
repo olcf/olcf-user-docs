@@ -382,8 +382,7 @@ login node.
 Slurm
 -----
 
-Rhea and DTN will migrate to the Slurm scheduler in September 2019.
-The following section provides batch scheduler instructions for Slurm.
+The following section provides batch scheduler instructions for Slurm, the batch scheduler in use on Rhea and the DTNs.
 Below is a comparison table to the schedulers used on other OLCF resources:
 
 +--------------------------------------------+--------------+-----------------------+-------------------+
@@ -552,8 +551,8 @@ starts, the user will be given an interactive prompt on the primary
 compute node within the allocated resource pool. Commands may then be
 executed directly (instead of through a batch script).
 
-Using to Debug
-^^^^^^^^^^^^^^
+Debugging
+^^^^^^^^^
 
 A common use of interactive batch is to aid in debugging efforts.
 interactive access to compute resources allows the ability to run a
@@ -576,11 +575,9 @@ job would start at 10:54.
     $ sbatch --test-only -N2 -t1:00:00 batch-script.slurm
 
       sbatch: Job 1375 to start at 2019-08-06T10:54:01 using 64 processors on nodes rhea[499-500] in partition batch
-      See the output of the ``showbf –help`` command for additional options.
 
-**Note:** The queue is fluid, the given time is an estimate made from
-the current queue state and load. Future job submissions and job
-completions can alter the estimate.
+**Note:** The queue is fluid, the given time is an estimate made from the current queue state and load. Future job submissions and job
+completions will alter the estimate.
 
 --------------
 
@@ -640,8 +637,7 @@ The following table summarizes frequently-used options to Slurm:
     the '–get-user-env' option is not recommended. Users should create the
     needed environment within the batch job.
 
-Further details and other Slurm options may be
-found through the ``sbatch`` man page.
+Further details and other Slurm options may be found through the ``sbatch`` man page.
 
 --------------
 
@@ -747,8 +743,8 @@ To see all of your queued jobs:
 ``sacct``
 """""""""
 
-The Moab utility ``sacct`` can be used to view jobs currently
-in the queue and those completed days prior. The utility can
+The Slurm utility ``sacct`` can be used to view jobs currently
+in the queue and those completed within the last few days. The utility can
 also be used to see job steps in each batch job.
 
 
@@ -806,8 +802,8 @@ Provides additional details of given job.
 """"""""""
 
 The ``sview`` tool provide a graphical queue monitoring tool. To use,
-you will need an x-server running on your local system. You will also
-need to tunnel x-traffic through your ssh connection:
+you will need an X server running on your local system. You will also
+need to tunnel X traffic through your ssh connection:
 
 .. code::
 
@@ -874,9 +870,9 @@ to execute an MPI binary on one or more compute nodes in parallel.
 | ``--cpu-bind=cores`` | Bind to cores                         |
 +----------------------+---------------------------------------+
 
-    **Note:** If you do not specify the number of MPI tasks to ``mpirun``
-    via ``-n``, the system will default to all available cores allocated to
-    the job.
+    **Note:** If you do not specify the number of MPI tasks to ``srun``
+    via ``-n``, the system will default to using only one task per node
+
 
 MPI Task Layout
 """""""""""""""""
@@ -921,7 +917,7 @@ Multiple Simultaneous Jobsteps
 """"""""""""""""""""""""""""""
 
 Multiple simultaneous sruns can be executed within a
-batch job by placing sruns in the background.
+batch job by placing each ``srun`` in the background.
 
 .. code::
 
@@ -966,9 +962,9 @@ node :ref:`rhea-partition`.
 | Bin | Node Count     | Duration   | Policy                                    |
 +=====+================+============+===========================================+
 | A   | 1 - 16 Nodes   | 0 - 48 hr  |                                           |
-+-----+----------------+------------+ | max 4 jobs running and 4 jobs eligible  |
-| B   | 17 - 64 Nodes  | 0 - 36 hr  | | **per user**                            |
-+-----+----------------+------------+ | in bins A, B, and C                     |
++-----+----------------+------------+  max 4 jobs running and 4 jobs eligible   |
+| B   | 17 - 64 Nodes  | 0 - 36 hr  |  **per user**                             |
++-----+----------------+------------+  in bins A, B, and C                      |
 | C   | 65 - 384 Nodes | 0 - 3 hr   |                                           |
 +-----+----------------+------------+-------------------------------------------+
 
@@ -977,14 +973,13 @@ GPU Partition Policy
 ^^^^^^^^^^^^^^^^^^^^
 
 To access the 9 node :ref:`gpu-partition`,
-batch job submissions should request ``-lpartition=gpu``
+batch job submissions should request ``-p gpu``
 
-+------------+-------------+--------------------------+
-| Node Count |  Duration   |  Policy                  |
-+============+=============+==========================+
-| 1-2 Nodes  |  0 - 48 hrs |    | max 1 job running   |
-|            |             |    | **per user**        |
-+------------+-------------+--------------------------+
++------------+-------------+-------------------------------------------+
+| Node Count |  Duration   |  Policy                                   |
++============+=============+===========================================+
+| 1-2 Nodes  |  0 - 48 hrs |     max 1 job running **per user**        |
++------------+-------------+-------------------------------------------+
 
     **Note:** The queue structure was designed based on user feedback and
     analysis of batch jobs over the recent years. However, we understand that
@@ -1043,7 +1038,7 @@ Viewing Allocation Utilization
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Projects are allocated time on Rhea in units of *node-hours*. This is
-separate from a project's Titan or Eos allocation, and usage of Rhea
+separate from a project's Summit allocation, and usage of Rhea
 does not count against that allocation. This page describes how such
 units are calculated, and how users can access more detailed information
 on their relevant allocations.
@@ -1076,8 +1071,9 @@ Utilization is calculated daily using batch jobs which complete between
 run state on Tuesday and completes Wednesday, the job's utilization will
 be recorded Thursday. Only batch jobs which write an end record are used
 to calculate utilization. Batch jobs which do not write end records due
-to system failure or other reasons are not used when calculating
-utilization.
+to system failure or other reasons are not used when calculating utilization. Jobs
+which fail because of run-time errors (e.g. the user's application causes a segmentation fault)
+are counted against the allocation. 
 
 Each user may view usage for projects on which they are
 members from the command line tool ``showusage`` and the `My OLCF
@@ -1124,7 +1120,7 @@ additional data, please contact the OLCF User Assistance Center.
 Enabling Workflows through Cross-System Batch Submission
 --------------------------------------------------------
 
-The OLCF now supports submitting jobs between OLCF systems via batch
+The OLCF supports submitting jobs between OLCF systems via batch
 scripts. This can be useful for automatically triggering analysis and
 storage of large data sets after a successful simulation job has ended,
 or for launching a simulation job automatically once the input deck has
@@ -1147,10 +1143,6 @@ feature is supported on the following hosts:
 | Host                         | Remote Submission Command            |
 +==============================+======================================+
 | Rhea                         | ``qsub -q rhea visualization.pbs``   |
-+------------------------------+--------------------------------------+
-| Eos                          | ``qsub -q eos visualization.pbs``    |
-+------------------------------+--------------------------------------+
-| Titan                        | ``qsub -q titan compute.pbs``        |
 +------------------------------+--------------------------------------+
 | Data Transfer Nodes (DTNs)   | ``qsub -q dtn retrieve_data.pbs``    |
 +------------------------------+--------------------------------------+
@@ -1770,8 +1762,8 @@ From a Rhea connection launch a batch job and execute the below
 matlab-vnc.sh script to start the vncserver and run matlab within:
 
 #. localsytem: ssh -X @rhea.ccs.ornl.gov
-#. rhea: qsub -I -A abc123 -X -l nodes=1,walltime=01:00:00
-   -lpartition=gpu
+#. rhea: salloc -A abc123 -X -l nodes=1,walltime=01:00:00
+   -p gpu
 #. rhea: ./matlab-vnc.sh
 
 .. code::
