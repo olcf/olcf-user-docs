@@ -622,14 +622,13 @@ for assistance. Most new implementations support this authentication
 type, and many ssh clients are available on the web. Login sessions will
 be automatically terminated after a period of inactivity. When you apply
 for an account, you will be mailed an RSA SecurID token. You will also
-be sent a request to complete identity verification. When your account
-is approved, your RSA SecurID token will also be enabled. Please refer
-to `OLCF System User Guides </for-users/system-user-guides/>`__ for more
-information on host access. DO NOT share your PIN or RSA SecurID token
-with anyone. Sharing of accounts will result in termination. If your
-SecurID token is stolen or misplaced, contact the OLCF immediately and
-report the missing token. Upon termination of your account access,
-return the token to the OLCF in person or via mail.
+be sent a request to complete identity verification. When your account is
+approved, your RSA SecurID token will also be enabled. Please refer to our
+:ref:`system-user-guides` for more information on host access. DO NOT share your
+PIN or RSA SecurID token with anyone. Sharing of accounts will result in
+termination. If your SecurID token is stolen or misplaced, contact the OLCF
+immediately and report the missing token. Upon termination of your account
+access, return the token to the OLCF in person or via mail.
 
 Data Management
 ---------------
@@ -659,12 +658,11 @@ apply to sensitive data:
 Data Transfer
 -------------
 
-The OLCF offers two dedicated data transfer nodes to users. The nodes
-have been tuned specifically for wide area data transfers, and also
-perform well on the local area. There are also several utilities that
-the OLCF recommends for data transfer. Please refer to our `System User
-Guides </for-users/system-user-guides/>`__ for information about the
-DTNs and available utilities.
+The OLCF offers two dedicated data transfer nodes to users. The nodes have been
+tuned specifically for wide area data transfers, and also perform well on the
+local area. There are also several utilities that the OLCF recommends for data
+transfer. Please refer to our :ref:`system-user-guides` for information about
+the DTNs and available utilities.
 
 Titan Scheduling Policy
 =======================
@@ -712,10 +710,10 @@ However, several factors are applied by the batch system to modify the
 -  The 8-week history of usage for the project associated with the job.
 -  The 8-week history of usage for the user associated with the job.
 
-If your jobs require resources outside these queue policies, please
-complete the relevant request form on the `Special
-Requests </support/getting-started/special-request-form/>`__ page. If
-you have any questions or comments on the queue policies below, please
+If your jobs require resources outside these queue policies, please complete the
+relevant request form on the `Special Requests
+<https://www.olcf.ornl.gov/support/getting-started/special-request-form/>`__
+page. If you have any questions or comments on the queue policies below, please
 direct them to the User Assistance Center.
 
 Job Priority by Processor Count
@@ -847,7 +845,7 @@ System Reservation Policy
 
 Projects may request to reserve a set of processors for a period of time
 through the reservation request form, which can be found on the `Special
-Requests <http://www.olcf.ornl.gov/support/getting-started/special-request-form/>`__
+Requests <https://www.olcf.ornl.gov/support/getting-started/special-request-form/>`__
 page. If the reservation is granted, the reserved processors will be
 blocked from general use for a given period of time. Only users that
 have been authorized to use the reservation can utilize those resources.
@@ -1001,9 +999,8 @@ Intellectual Property
 Special Requests and Policy Exemptions
 ======================================
 
-To request policy exemptions, please submit the appropriate webform
-available on the `Documents and Forms </for-users/documents-forms/>`__
-page. Special request forms allow a user to:
+To request policy exemptions, please submit the appropriate webform available on
+the :ref:`documents-and-forms` page. Special request forms allow a user to:
 
 -  Request Software installations
 -  Request relaxed queue limits for a job

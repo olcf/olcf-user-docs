@@ -19,9 +19,12 @@ Setup authoring environment
 #. Fork the documentation repository on GitHub
 
     Go to https://github.com/olcf/olcf-user-documentation, and click the "Fork"
-    button in the upper right corner
+    button in the upper right corner.
 
-    FIXME: add a screenshot with arrow
+    .. image:: /images/github_fork.png
+       :width: 80.0%
+       :align: center
+
 
 #. Clone your fork of the documentation repository::
 
@@ -63,7 +66,11 @@ Edit the docs
 
 #. Open a pull request on github
 
-   FIXME: add screenshots showing how
+    After you push your branch, you should see a button to open a pull request.
+
+    .. image:: /images/github_pr.png
+       :width: 80.0%
+       :align: center
 
 Resources
 ---------------
@@ -76,3 +83,21 @@ Submit suggestions
 ====================================
 
 Under construction - Use GitHub Issues
+
+GitHub Guidelines
+===================
+
+Here are some guidelines and common practices that we use in this project.
+
+- When you want to work on an issue, assign it to yourself if no one is assigned
+  yet. If there is somebody assigned, check in with that person about
+  collaborating.
+- Reference the issue(s) that your PR addresses with GitHub's '#' notation.
+- Use "WIP" in your PR title to indicate that it should not be merged yet.
+  Remove just the WIP when you are ready for it to be merged.
+- If you think certain individuals should be aware of your proposed changes,
+  suggest them as reviewers on the PR.
+- You do not need to assign labels to your PR, but you may do so if you have
+  suggestions. However, be aware that the labels might get changed.
+- If an issue or PR requires discussion with the OLCF's User Support Group,
+  use the GitHub Team tag ``@olcf/ua-support``.

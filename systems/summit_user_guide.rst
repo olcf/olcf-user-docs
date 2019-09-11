@@ -1,19 +1,27 @@
+.. _summit-user-guide:
+
 ******************
 Summit User Guide
 ******************
+
+.. _summit-documentation-resources:
 
 Summit Documentation Resources
 ==============================
 
 In addition to this Summit User Guide, there are other sources of
 documentation, instruction, and tutorials that could be useful for
-Summit users. The `OLCF Training
+Summit users.
+
+The `OLCF Training
 Archive <https://www.olcf.ornl.gov/for-users/training/training-archive/>`__
 provides a list of previous training events, including multi-day Summit
 Workshops. Some examples of topics addressed during these workshops
 include using Summit's NVME burst buffers, CUDA-aware MPI, advanced
 networking and MPI, and multiple ways of programming multiple GPUs per
 node.
+
+.. _system-overview:
 
 System Overview
 ===============
@@ -25,25 +33,29 @@ for a wide range of traditional computational science applications. It
 is also one of the "smartest" computers in the world for deep learning
 applications with a mixed-precision capability in excess of 3 EF.
 
+.. _summit-nodes:
+
 Summit Nodes
 ------------
 
 The basic building block of Summit is the IBM Power System AC922 node.
 Each of the approximately 4,600 compute nodes on Summit contains two IBM
-POWER9 processors and six `NVIDIA Volta
-V100 </for-users/system-user-guides/summit/nvidia-v100-gpus/>`__
-accelerators and provides a theoretical double-precision capability of
+POWER9 processors and six `NVIDIA Volta V100`_ accelerators and provides 
+a theoretical double-precision capability of
 approximately 40 TF. Each POWER9 processor is connected via dual NVLINK
 bricks, each capable of a 25GB/s transfer rate in each direction. Nodes
 contain 512 GB of DDR4 memory for use by the POWER9 processors and 96 GB
 of High Bandwidth Memory (HBM2) for use by the accelerators.
 Additionally, each node has 1.6TB of non-volatile memory that can be
-used as a burst buffer. The POWER9 processor is built around IBM’s SIMD
+used as a burst buffer.
+
+The POWER9 processor is built around IBM’s SIMD
 Multi-Core (SMC). The processor provides 22 SMCs with separate 32kB L1
 data and instruction caches. Pairs of SMCs share a 512kB L2 cache and a
 10MB L3 cache. SMCs support Simultaneous Multi-Threading (SMT) up to a
-level of 4, meaning each physical core supports up to 4 `hardware
-threads <#hardware-threads>`__. The POWER9 processors and V100
+level of 4, meaning each physical core supports up to 4 :ref:`hardware-threads`.
+
+The POWER9 processors and V100
 accelerators are cooled with cold plate technology. The remaining
 components are cooled through more traditional methods, although exhaust
 is passed through a back-of-cabinet heat exchanger prior to being
@@ -56,7 +68,7 @@ Node Types
 
 On Summit, there are three major types of nodes you will encounter:
 Login, Launch, and Compute. While all of these are similar in terms of
-`hardware <#summit-nodes>`__, they differ considerably in their intended
+hardware (see: :ref:`summit-nodes`), they differ considerably in their intended
 use.
 
 +-------------+----------------------------------------------------------------------------------+
@@ -114,7 +126,9 @@ Storage System (HPSS) for user and project archival storage.
 Operating System
 ----------------
 
-Summit is running Red Hat Enterprise Linux (RHEL) version 7.5.
+Summit is running Red Hat Enterprise Linux (RHEL) version 7.6.
+
+.. _hardware-threads:
 
 Hardware Threads
 ----------------
@@ -130,6 +144,9 @@ in SMT1 mode the four slices work together to execute the task/thread
 assigned to the physical core. Regardless of the SMT mode used, the four
 slices share the physical core’s L1 instruction & data caches.
 https://vimeo.com/283756938
+
+.. _nvidia-v100-gpus:
+.. _NVIDIA Volta V100:
 
 NVIDIA V100 GPUs
 ================
@@ -395,10 +412,14 @@ following (outside) links.
 * `NVIDIA Volta Architecture White Paper <http://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf>`_
 * `NVIDIA PARALLEL FORALL blog article <https://devblogs.nvidia.com/parallelforall/inside-volta/>`_
 
+.. _connecting:
+
 Connecting
 ==========
 
 FIXME
+
+.. _data-storage-transfers:
 
 Data Storage & Transfers
 ========================
@@ -951,11 +972,15 @@ HSI and HTAR. For more information on using HSI or HTAR, see the `HPSS
 Best Practices <./#hpss-best-practices>`__ section. [ls\_content\_block
 id="7126959"] [ls\_content\_block id="5798390"]
 
+.. _software:
+
 Software
 ========
 
 For a full list of software available at the OLCF, please see the
 `Software </for-users/software/>`__ section.
+
+.. _shell-programming-environments:
 
 Shell & Programming Environments
 ================================
@@ -980,7 +1005,7 @@ system. Currently, supported shells include:
 -  ksh
 
 If you would like to have your default shell changed, please contact the
-`OLCF User Assistance Center </for-users/user-assistance/>`__ at
+`OLCF User Assistance Center <https://www.olcf.ornl.gov/for-users/user-assistance/>`__ at
 help@nccs.gov.
 
 Environment Management with Lmod
@@ -993,13 +1018,14 @@ to the shell’s environment variables (such as ``PATH``,
 ``LD_LIBRARY_PATH``, and ``PKG_CONFIG_PATH``), Lmod allows you to alter
 the software available in your shell environment without the risk of
 creating package and version combinations that cannot coexist in a
-single environment. Lmod is a recursive environment module system,
-meaning it is aware of module compatibility and actively alters the
-environment to protect against conflicts. Messages to stderr are issued
-upon Lmod implicitly altering the environment. Environment modules are
-structured hierarchically by compiler family such that packages built
-with a given compiler will only be accessible if the compiler family is
-first present in the environment.
+single environment.
+
+Lmod is a recursive environment module system, meaning it is aware of module
+compatibility and actively alters the environment to protect against conflicts.
+Messages to stderr are issued upon Lmod implicitly altering the environment.
+Environment modules are structured hierarchically by compiler family such
+that packages built with a given compiler will only be accessible if the
+compiler family is first present in the environment.
 
     **Note:** Lmod can interpret both Lua modulefiles and legacy Tcl
     modulefiles. However, long and logic-heavy Tcl modulefiles may require
@@ -1107,6 +1133,8 @@ commands summarized in the following table.
 The following screencast shows an example of setting up user-defined
 module collections on Summit. https://vimeo.com/293582400
 
+.. _compiling:
+
 Compiling
 =========
 
@@ -1116,15 +1144,25 @@ Compilers
 Available Compilers
 ^^^^^^^^^^^^^^^^^^^
 
-The following compilers are available on Summit: **XL:** IBM XL
-Compilers *(loaded by default)* **LLVM:** LLVM compiler infrastructure
-**PGI:** Portland Group compiler suite **GNU:** GNU Compiler Collection
-**NVCC**: CUDA C compiler Upon login, the default versions of the XL
+The following compilers are available on Summit:
+
+**XL:** IBM XL Compilers *(loaded by default)*
+
+**LLVM:** LLVM compiler infrastructure
+
+**PGI:** Portland Group compiler suite
+
+**GNU:** GNU Compiler Collection
+
+**NVCC**: CUDA C compiler
+
+Upon login, the default versions of the XL
 compiler suite and Spectrum Message Passing Interface (MPI) are added to
 each user's environment through the modules system. No changes to the
-environment are needed to make use of the defaults. Multiple versions of
-each compiler family are provided, and can be inspected using the
-modules system:
+environment are needed to make use of the defaults.
+
+Multiple versions of each compiler family are provided, and can be inspected
+using the modules system:
 
 ::
 
@@ -1197,12 +1235,19 @@ MPI
 
 MPI on Summit is provided by IBM Spectrum MPI. Spectrum MPI provides
 compiler wrappers that automatically choose the proper compiler to build
-your application. The following compiler wrappers are available: **C**:
-``mpicc`` **C++**: ``mpic++``, ``mpiCC`` **Fortran**: ``mpifort``,
-``mpif77``, ``mpif90`` While these wrappers conveniently abstract away
-linking of Spectrum MPI, it's sometimes helpful to see exactly what's
-happening when invoked. The ``--showme`` flag will display the full link
-lines, without actually compiling:
+your application.
+
+The following compiler wrappers are available: 
+
+**C**: ``mpicc`` 
+
+**C++**: ``mpic++``, ``mpiCC`` 
+
+**Fortran**: ``mpifort``, ``mpif77``, ``mpif90`` 
+
+While these wrappers conveniently abstract away linking of Spectrum MPI, it's 
+sometimes helpful to see exactly what's happening when invoked. The ``--showme`` 
+flag will display the full link lines, without actually compiling:
 
 ::
 
@@ -1258,22 +1303,25 @@ CUDA compilation
 NVIDIA
 """"""
 
-CUDA C/C++ support is provided through the ``cuda`` module. **nvcc** :
-Primary CUDA C/C++ compiler
+CUDA C/C++ support is provided through the ``cuda`` module.
 
-Language support
+**nvcc** : Primary CUDA C/C++ compiler
 
-
-**-std=c++11** : provide C++11 support **--expt-extended-lambda** :
-provide experimental host/device lambda support
-**--expt-relaxed-constexpr** : provide experimental host/device
-constexpr support
-
-Compiler support
+**Language support**
 
 
-NVCC currently supports XL, GCC, and PGI C++ backends. **--ccbin** : set
-to host compiler location
+**-std=c++11** : provide C++11 support
+
+**--expt-extended-lambda** : provide experimental host/device lambda support
+
+**--expt-relaxed-constexpr** : provide experimental host/device constexpr
+support
+
+**Compiler support**
+
+NVCC currently supports XL, GCC, and PGI C++ backends.
+
+**--ccbin** : set to host compiler location
 
 CUDA Fortran compilation
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1282,25 +1330,36 @@ IBM
 """
 
 The IBM compiler suite is made available through the default loaded xl
-module, the cuda module is also required. xlcuf : primary Cuda fortran
-compiler, thread safe **Language support flags** -qlanglvl=90std :
-provide Fortran90 support -qlanglvl=95std : provide Fortran95 support
--qlanglvl=2003std : provide Fortran2003 support -qlanglvl=2008std :
-provide Fortran2003 support
+module, the cuda module is also required.
+
+xlcuf : primary Cuda fortran compiler, thread safe
+
+**Language support flags**
+
+-qlanglvl=90std : provide Fortran90 support
+
+-qlanglvl=95std : provide Fortran95 support
+
+-qlanglvl=2003std : provide Fortran2003 support
+
+-qlanglvl=2008std :provide Fortran2003 support
 
 PGI
 """
 
-The PGI compiler suite is available through the pgi module. pgfortran :
-Primary fortran compiler with CUDA Fortran support
+The PGI compiler suite is available through the pgi module.
 
-Language support:
+pgfortran : Primary fortran compiler with CUDA Fortran support
+
+**Language support:**
 
 
 Files with .cuf suffix automatically compiled with cuda fortran support
+
 Standard fortran suffixed source files determines the standard involved,
-see the man page for full details -Mcuda : Enable CUDA Fortran on
-provided source file
+see the man page for full details
+
+-Mcuda : Enable CUDA Fortran on provided source file
 
 Linking in Libraries
 --------------------
@@ -1341,6 +1400,8 @@ include/ directories:
 The following screencast shows an example of linking two libraries into
 a simple program on Summit. https://vimeo.com/292015868
 
+.. _running-jobs:
+
 Running Jobs
 ============
 
@@ -1366,18 +1427,19 @@ the batch scheduling system.
 Login, Launch, and Compute Nodes
 --------------------------------
 
-Recall from the `System
-Overview </for-users/system-user-guides/summit/system-overview/>`__
+Recall from the :ref:`system-overview`
 section that Summit has three types of nodes: login, launch, and
 compute. When you log into the system, you are placed on a login node.
-When your `batch scripts <#batch-scripts>`__ or `interactive
-jobs <#interactive-jobs>`__ run, the resulting shell will run on a
-launch node. Compute nodes are accessed via the ``jsrun`` command. The
-``jsrun`` command should only be issued from within an LSF job (either
-batch or interactive) on a launch node. Othewise, you will not have any
-compute nodes allocated and your parallel job will run on the login
-node. If this happens, your job will interfere with (and be interfered
-with by) other users' login node tasks.
+When your :ref:`batch-scripts` or :ref:`interactive-jobs` run,
+the resulting shell will run on a launch node. Compute nodes are accessed
+via the ``jsrun`` command. The ``jsrun`` command should only be issued
+from within an LSF job (either batch or interactive) on a launch node.
+Othewise, you will not have any compute nodes allocated and your parallel
+job will run on the login node. If this happens, your job will interfere with
+(and be interfered with by) other users' login node tasks.
+
+
+.. _batch-scripts:
 
 Batch Scripts
 -------------
@@ -1387,7 +1449,9 @@ A batch job is simply a shell script with added directives to request
 various resources from or provide certain information to the batch
 scheduling system. Aside from the lines containing LSF options, the
 batch script is simply the series commands needed to set up and run your
-job. To submit a batch script, use the bsub command: ``bsub myjob.lsf``
+job.
+
+To submit a batch script, use the bsub command: ``bsub myjob.lsf``
 
 If you’ve previously used LSF, you’re probably used to submitting a job
 with input redirection (i.e. ``bsub < myjob.lsf``). This is not needed
@@ -1447,6 +1511,8 @@ As an example, consider the following batch script:
 | 15       | -          | Copy output files from the scratch area into a more permanent location                     |
 +----------+------------+--------------------------------------------------------------------------------------------+
 
+.. _interactive-jobs:
+
 Interactive Jobs
 ----------------
 
@@ -1454,11 +1520,12 @@ Most users will find batch jobs to be the easiest way to interact with
 the system, since they permit you to hand off a job to the scheduler and
 then work on other tasks; however, it is sometimes preferable to run
 interactively on the system. This is especially true when developing,
-modifying, or debugging a code. Since all compute resources are
-managed/scheduled by LSF, it is not possible to simply log into the
-system and begin running a parallel code interactively. You must request
-the appropriate resources from the system and, if necessary, wait until
-they are available. This is done with an “interactive batch” job.
+modifying, or debugging a code.
+
+Since all compute resources are managed/scheduled by LSF, it is not possible
+to simply log into the system and begin running a parallel code interactively.
+You must request the appropriate resources from the system and, if necessary,
+wait until they are available. This is done with an “interactive batch” job.
 Interactive batch jobs are submitted via the command line, which
 supports the same options that are passed via ``#BSUB`` parameters in a
 batch script. The final options on the command line are what makes the
@@ -1479,8 +1546,7 @@ script. If conflicting options are specified (i.e. different walltime
 specified on the command line versus in the script), the option on the
 command line takes precedence. Note that LSF has numerous options; only
 the most common ones are described here. For more in-depth information
-about other LSF options, see the
-`documentation <#for-more-information>`__.
+about other LSF options, see the ``bsub`` man page.
 
 +--------------------+----------------------------------------+----------------------------------------------------------------------------------+
 | Option             | Example Usage                          | Description                                                                      |
@@ -1603,10 +1669,11 @@ that enable large jobs to run in a timely fashion.
     Summit.
 
 The basic priority-setting mechanism for jobs waiting in the queue is
-the time a job has been waiting relative to other jobs in the queue. If
-your jobs require resources outside these queue policies, please
+the time a job has been waiting relative to other jobs in the queue. 
+
+If your jobs require resources outside these queue policies, please
 complete the relevant request form on the `Special
-Requests </for-users/getting-started/special-request-form/>`__ page. If
+Requests <https://www.olcf.ornl.gov/for-users/documents-forms/special-request-form/>`__ page. If
 you have any questions or comments on the queue policies below, please
 direct them to the User Assistance Center.
 
@@ -1695,11 +1762,12 @@ remaining idle for an extended period of time, reservations are
 monitored for inactivity. If activity falls below 50% of the reserved
 resources for more than (30) minutes, the reservation will be canceled
 and the system will be returned to normal scheduling. A new reservation
-must be requested if this occurs. The requesting project's allocation is
-charged according to the time window granted, regardless of actually
-utilization. For example, an 8-hour, 2,000 node reservation on Summit
-would be equivalent to using 16,000 Summit node-hours of a project's
-allocation.
+must be requested if this occurs.
+
+The requesting project's allocation is charged according to the time window
+granted, regardless of actual utilization. For example, an 8-hour, 2,000
+node reservation on Summit would be equivalent to using 16,000 Summit
+node-hours of a project's allocation.
 
 --------------
 
@@ -1739,13 +1807,14 @@ Monitoring Jobs
 
 LSF provides several utilities with which you can monitor jobs. These
 include monitoring the queue, getting details about a particular job,
-viewing STDOUT/STDERR of running jobs, and more. The most
-straightforward monitoring is with the ``bjobs`` command. This command
-will show the current queue, including both pending and running jobs.
-Running ``bjobs -l`` will provide much more detail about a job (or group
-of jobs). For detailed output of a single job, specify the job id after
-the ``-l``. For example, for detailed output of job 12345, you can run
-``bjobs -l 12345`` . Other options to ``bjobs`` are shown below. In
+viewing STDOUT/STDERR of running jobs, and more.
+
+The most straightforward monitoring is with the ``bjobs`` command. This
+command will show the current queue, including both pending and running
+jobs. Running ``bjobs -l`` will provide much more detail about a job (or
+group of jobs). For detailed output of a single job, specify the job id
+after the ``-l``. For example, for detailed output of job 12345, you can
+run ``bjobs -l 12345`` . Other options to ``bjobs`` are shown below. In
 general, if the command is specified with ``-u all`` it will show
 information for all users/all jobs. Without that option, it only shows
 your jobs. Note that this is not an exhaustive list. See ``man bjobs``
@@ -1798,6 +1867,7 @@ identify jobs as running, eligible, or blocked. Run without arguments,
 ``jobstat`` provides a snapshot of the entire batch queue. Additional
 information, including the number of jobs in each state, total nodes
 available, and relative job priority are also included.
+
 ``jobstat -u <username>`` restricts output to only the jobs of a
 specific user. See the ``jobstat`` man page for a full list of
 formatting arguments.
@@ -1823,22 +1893,25 @@ Inspecting Backfill
 
 ``bjobs`` and ``jobstat`` help to identify what’s currently running and
 scheduled to run, but sometimes it’s beneficial to know how much of the
-system is *not* currently in use or scheduled for use. The ``bslots``
-command can be used to inspect backfill windows and answer the question
-“How many nodes are currently available, and for how long will they
-remain available?” This can be thought of as identifying gaps in the
-system’s current job schedule. By intentionally requesting resources
+system is *not* currently in use or scheduled for use.
+
+The ``bslots`` command can be used to inspect backfill windows and answer
+the question “How many nodes are currently available, and for how long
+will they remain available?” This can be thought of as identifying gaps in
+the system’s current job schedule. By intentionally requesting resources
 within the parameters of a backfill window, one can potentially shorten
-their queued time and improve overall system utilization. LSF uses
-“slots” to describe allocatable resources. Summit compute nodes have 1
+their queued time and improve overall system utilization.
+
+LSF uses “slots” to describe allocatable resources. Summit compute nodes have 1
 slot per CPU core, for a total of 42 per node ([2x] Power9 CPUs, each
 with 21 cores). Since Summit nodes are scheduled in whole-node
 allocations, the output from ``bslots`` can be divided by 42 to see how
-many nodes are currently available. By default, ``bslots`` output
-includes launch node slots, which can cause unwanted and inflated
-fractional node values. The output can be adjusted to reflect only
-available compute node slots with the flag ``-R”select[CN]”``. For
-example,
+many nodes are currently available.
+
+By default, ``bslots`` output includes launch node slots, which can
+cause unwanted and inflated fractional node values. The output can
+be adjusted to reflect only available compute node slots with the
+flag  ``-R”select[CN]”``. For example,
 
 ::
 
@@ -1848,9 +1921,10 @@ example,
     27384          1 hours 11 minutes 50 seconds
 
 27384 compute node slots / 42 slots per node = 652 compute nodes are
-available for 1 hour, 11 minutes, 50 seconds. A more specific ``bslots``
-query could check for a backfill window with space to fit a 1000 node
-job for 10 minutes:
+available for 1 hour, 11 minutes, 50 seconds.
+
+A more specific ``bslots`` query could check for a backfill window with
+space to fit a 1000 node job for 10 minutes:
 
 ::
 
@@ -1930,10 +2004,12 @@ checkpointing and restarting jobs, as well as the ``-k`` option to
 application specific and a wide range of applications run on OLCF
 resources, this type of checkpointing is not configured on Summit. If
 you wish to use checkpointing (which is highly encouraged), you’ll need
-to configure it within your application. If you wish to implement some
-form of on-demand checkpointing, keep in mind the ``bkill`` command is
-really a signaling command and you can have your job script/application
-checkpoint as a response to certain signals (such as ``SIGUSR1``).
+to configure it within your application.
+
+If you wish to implement some form of on-demand checkpointing, keep in mind
+the ``bkill`` command is really a signaling command and you can have your
+job script/application checkpoint as a response to certain signals (such
+as ``SIGUSR1``).
 
 Other LSF Commands
 ------------------
@@ -1944,7 +2020,7 @@ useful.
 +------------------+---------------------------------------------------------------------------+
 | Command          | Description                                                               |
 +==================+===========================================================================+
-| ``bparams -a``   | Show current parameters for LSF The behavior/available                    |
+| ``bparams -a``   | Show current parameters for LSF. The behavior/available                   |
 |                  | options for some LSF commands depend on settings in various configuration |
 |                  | files. This command shows those settings without having to search for the |
 |                  | actual files.                                                             |
@@ -1958,7 +2034,9 @@ PBS/Torque/MOAB-to-LSF Translation
 
 More details about these commands are given elsewhere in this section;
 the table below is simply for your convenience in looking up various LSF
-commands. Users of other OLCF resources are likely familiar with
+commands.
+
+Users of other OLCF resources are likely familiar with
 PBS-like commands which are used by the Torque/Moab instances on other
 systems. The table below summarizes the equivalent LSF command for
 various PBS/Torque/Moab commands.
@@ -1977,7 +2055,9 @@ various PBS/Torque/Moab commands.
 +--------------------------+----------------------------------+----------------------------------------------------+
 | ``bjobs -d``             | ``showq -c``                     | Get information about completed jobs               |
 +--------------------------+----------------------------------+----------------------------------------------------+
-| ``bjobs -p``             | ``showq -i showq -b checkjob``   | Get information about pending jobs                 |
+| ``bjobs -p``             | ``showq -i``                     | Get information about pending jobs                 |
+|                          | ``showq -b``                     |                                                    |
+|                          | ``checkjob``                     |                                                    |
 +--------------------------+----------------------------------+----------------------------------------------------+
 | ``bjobs -r``             | ``showq -r``                     | Get information about running jobs                 |
 +--------------------------+----------------------------------+----------------------------------------------------+
@@ -2016,20 +2096,23 @@ Easy Mode vs. Expert Mode
 The Cluster System Management (CSM) component of the job launch
 environment supports two methods of job submission, termed “easy” mode
 and “expert” mode. The difference in the modes is where the
-responsibility for creating the LSF resource string is placed. In easy
-mode, the system software converts options such as -nnodes in a batch
-script into the resource string needed by the scheduling system. In
-expert mode, the user is responsible for creating this string and
+responsibility for creating the LSF resource string is placed.
+
+In easy mode, the system software converts options such as -nnodes in
+a batch script into the resource string needed by the scheduling system.
+In expert mode, the user is responsible for creating this string and
 options such as -nnodes cannot be used. In easy mode, you will not be
 able to use ``bsub -R`` to create resource strings. The system will
 automatically create the resource string based on your other ``bsub``
 options. In expert mode, you will be able to use ``-R``, but you will
 not be able to use the following options to ``bsub``: ``-ln_slots``,
-``-ln_mem``, ``-cn_cu``, or ``-nnodes``. Most users will want to use
-easy mode. However, if you need precise control over your job’s
-resources, such as placement on (or avoidance of) specific nodes, you
-will need to use expert mode. To use expert mode, add ``#BSUB -csm y``
-to your batch script (or ``-csm y`` to your ``bsub`` command line).
+``-ln_mem``, ``-cn_cu``, or ``-nnodes``.
+
+Most users will want to use easy mode. However, if you need precise
+control over your job’s resources, such as placement on (or avoidance
+of) specific nodes, you will need to use expert mode. To use expert
+mode, add ``#BSUB -csm y`` to your batch script (or ``-csm y`` to
+your ``bsub`` command line).
 
 Hardware Threads
 ----------------
@@ -2056,6 +2139,7 @@ not available to jsrun. When listing available resources through jsrun,
 you will not see cores with hyperthreads 84-87 and 172-175. Isolating a
 socket's system services to a single core helps to reduce jitter and
 improve performance of tasks performed on the socket's remaining cores.
+
 The isolated core always operates at SMT4 regardless of the batch job's
 SMT level.
 
@@ -2083,8 +2167,7 @@ ranks) to concurrently share the resources on a single GPU. This is
 accomplished by starting an MPS server process, which funnels the work
 from multiple CUDA contexts (e.g. from multiple MPI ranks) into a single
 CUDA context. In some cases, this can increase performance due to better
-utilization of the resources. As mentioned in the `COMMON BSUB
-OPTIONS <https://www.olcf.ornl.gov/for-users/system-user-guides/summit/running-jobs/#common-bsub-options>`__
+utilization of the resources. As mentioned in the `Common bsub Options <#common-bsub-options>`__
 section above, MPS can be enabled with the ``-alloc_flags "gpumps"``
 option to bsub. The screencast below shows an example of how to start an
 MPS server process for a job. https://vimeo.com/292016149
@@ -2124,6 +2207,8 @@ based on the number of nodes allocated multiplied by the amount of time
 for which they were allocated. Thus, a job using only 1 core on each of
 its nodes is charged the same as a job using every core and every GPU on
 each of its nodes.
+
+.. _job-launcher-jsrun:
 
 Job Launcher (jsrun)
 --------------------
@@ -2194,7 +2279,7 @@ and how many resource set could fit on a node.
 
 .. image:: /images/summit-resource-set-subdivide.png
    :class: normal aligncenter size-full wp-image-775849
-   :width: 600px
+   :width: 780px
    :height: 360px
    :align: center
 
@@ -2241,16 +2326,19 @@ Designing a Resource Set
 Resource sets allow each jsrun to control how the node appears to a
 code. This method is unique to jsrun, and requires thinking of each job
 launch differently than aprun or mpirun. While the method is unique, the
-method is not complicated and can be reasoned in a few basic steps. The
-first step to creating resource sets is understanding how a code would
+method is not complicated and can be reasoned in a few basic steps.
+
+The first step to creating resource sets is understanding how a code would
 like the node to appear. For example, the number of tasks/threads per
 GPU. Once this is understood, the next step is to simply calculate the
 number of resource sets that can fit on a node. From here, the number of
-needed nodes can be calculated and passed to the batch job request. The
-basic steps to creating resource sets:
+needed nodes can be calculated and passed to the batch job request.
+
+The basic steps to creating resource sets:
 
 1) Understand how your code expects to interact with the system.
     How many tasks/threads per GPU?
+
     Does each task expect to see a single GPU? Do multiple tasks expect
     to share a GPU? Is the code written to internally manage task to GPU
     workload based on the number of available cores and GPUs?
@@ -2350,7 +2438,7 @@ For cases when the number of tasks per resource set (i.e. the ``-a``
 flag) is greater than one, the job must use ``-alloc_flags "gpumps"``.
 This allows multiple tasks to share the same GPU.
 
-  The following example images show how a single-gpu/single-task job
+The following example images show how a single-gpu/single-task job
 would be placed on a single Titan and Summit node. On Summit, the red
 box represents a resource set created by jsrun. The resource set looks
 similar to a Titan node, containing a single GPU, a single core, and
@@ -2405,12 +2493,14 @@ Single MPI Task, single GPU per RS
 """"""""""""""""""""""""""""""""""
 
 The following example will create 12 resource sets each with 1 MPI task
-and 1 GPU. Each MPI task will have access to a single GPU. Rank 0 will
-have access to GPU 0 on the first node ( red resource set). Rank 1 will
-have access to GPU 1 on the first node ( green resource set). This
-pattern will continue until 12 resources sets have been created. The
-following jsrun command will request 12 resource sets (``-n12``) 6 per
-node (``-r6``). Each resource set will contain 1 MPI task (``-a1``),
+and 1 GPU. Each MPI task will have access to a single GPU.
+
+Rank 0 will have access to GPU 0 on the first node ( red resource set).
+Rank 1 will have access to GPU 1 on the first node ( green resource set).
+This pattern will continue until 12 resources sets have been created.
+
+The following jsrun command will request 12 resource sets (``-n12``) 6
+per node (``-r6``). Each resource set will contain 1 MPI task (``-a1``),
 1 GPU (``-g1``), and 1 core (``-c1``).
 
 .. image:: /images/summit-jsrun-example-1Core-1GPU.png
@@ -2697,24 +2787,22 @@ information on ``jsrun``, Summit's job launch command. Many commands
 have much more information than can be easily presented here. More
 information about these commands is available via the online manual
 (i.e. ``man jsrun``). Additional LSF information can be found on `IBM’s
-website <https://www.ibm.com/developerworks/community/wikis/home?lang=en#!/wiki/New%20IBM%20Platform%20LSF%20Wiki/page/LSF%20documentation>`__,
-specifically the `Running
-Jobs <https://www.ibm.com/developerworks/community/wikis/form/anonymous/api/wiki/99245193-fced-40e5-90df-a0e9f50a0fb0/page/22e9aefe-a2e8-46e6-ad62-2ff5860f45aa/attachment/d6b2c089-eb88-48a6-80ce-acff94a7f02c/media/lsf_users_guide.pdf>`__
-and `Command
-Reference <https://www.ibm.com/developerworks/community/wikis/form/anonymous/api/wiki/99245193-fced-40e5-90df-a0e9f50a0fb0/page/22e9aefe-a2e8-46e6-ad62-2ff5860f45aa/attachment/f8aad44b-8e1c-4051-95c9-d2c80fe90cf3/media/lsf_command_ref.pdf>`__
-Documents.
+website <https://www.ibm.com/support/knowledgecenter/en/SSWRJV/product_welcome_spectrum_lsf.html>`__.
 
 CUDA-Aware MPI
 --------------
 
 CUDA-Aware MPI and GPUDirect are often used interchangeably, but they
-are distinct topics. CUDA-Aware MPI allows GPU buffers (e.g., GPU memory
-allocated with ``cudaMalloc``) to be used directly in MPI calls rather
-than requiring data to be manually transferred to/from a CPU buffer
-(e.g., using ``cudaMemcpy``) before/after passing data in MPI calls. By
-itself, CUDA-Aware MPI does not specify whether data is staged through
+are distinct topics.
+
+CUDA-Aware MPI allows GPU buffers (e.g., GPU memory allocated with
+``cudaMalloc``) to be used directly in MPI calls rather than requiring
+data to be manually transferred to/from a CPU buffer (e.g., using
+``cudaMemcpy``) before/after passing data in MPI calls. By itself,
+CUDA-Aware MPI does not specify whether data is staged through
 CPU memory or, for example, transferred directly between GPUs when
 passing GPU buffers to MPI calls. That is where GPUDirect comes in.
+
 GPUDirect is a technology that can be implemented on a system to enhance
 CUDA-Aware MPI by allowing data transfers directly between GPUs on the
 same node (peer-to-peer) and/or directly between GPUs on different nodes
@@ -2725,6 +2813,8 @@ CUDA-Aware MPI in a job, use the following argument to ``jsrun``:
 .. code::
 
     jsrun --smpiargs="-gpu" ...
+
+.. _debugging:
 
 Debugging
 =========
@@ -2743,6 +2833,7 @@ instructions for how to use it on OLCF systems can be found on the
 `Forge (DDT/MAP) Software Page <https://www.olcf.ornl.gov/software_package/forge/>`__. DDT is the
 OLCF's recommended debugging software for large parallel applications.
 
+
 GDB
 ---
 
@@ -2758,6 +2849,7 @@ on Summit under all compiler families:
 
 Additional information about GDB usage and OLCF-provided builds can be
 found on the `GDB Software Page <https://www.olcf.ornl.gov/software_package/gdb/>`__.
+
 
 Valgrind
 --------
@@ -2794,6 +2886,8 @@ Additional information about Valgrind usage and OLCF-provided builds can
 be found on the `Valgrind Software
 Page <https://www.olcf.ornl.gov/software_package/valgrind/>`__.
 
+.. _optimizing-and-profiling:
+
 Optimizing and Profiling
 ========================
 
@@ -2814,10 +2908,8 @@ To use ``nvprof``, the ``cuda`` module must be loaded.
     summit> module load cuda
 
 A simple "Hello, World!" run using ``nvprof`` can be done by adding
-"nvprof" to the
-`jsrun <#job-launcher-jsrun>`__
-line in your `batch
-script <#batch-scripts>`__.
+"nvprof" to the jsrun (see: :ref:`job-launcher-jsrun`)
+line in your batch script (see :ref:`batch-scripts`).
 
 ::
 
@@ -2861,16 +2953,36 @@ Documentation <http://docs.nvidia.com/cuda/profiler-users-guide/#nvprof-overview
 Score-P
 -------
 
+The `Score-P <http://score-p.org/>`__ measurement infrastructure is a
+highly scalable and easy-to-use tool suite for profiling, event
+tracing, and online analysis of HPC applications. Score-P supports
+analyzing C, C++ and Fortran applications that make use of
+multi-processing (MPI, SHMEM), thread parallelism (OpenMP, PThreads) and
+accelerators (CUDA, OpenCL, OpenACC) and combinations.
+
 For detailed information about using Score-P on Summit and the
 builds available, please see the
-`Score-P Software Page <https://www.olcf.ornl.gov/software_package/score-p/>`__.
+`Score-P Software Page. <https://www.olcf.ornl.gov/software_package/score-p/>`__
 
 Vampir
 ------
 
-For detailed information about using Vampir on Summit and the
-builds available, please see the
-`Vampir Software Page <https://www.olcf.ornl.gov/software_package/vampir/>`__.
+`Vampir <http://vampir.eu/>`__ is a software performance visualizer focused on highly
+parallel applications. It presents a unified view on an application
+run including the use of programming paradigms like MPI, OpenMP,
+PThreads, CUDA, OpenCL and OpenACC. It also incorporates file I/O,
+hardware performance counters and other performance data sources.
+Various interactive displays offer detailed insight into the performance
+behavior of the analyzed application. Vampir’s scalable analysis
+server and visualization engine enable interactive navigation of
+large amounts of performance data. `Score-P <https://olcf.ornl.gov/software_package/score-p>`__
+and `TAU <https://www.olcf.ornl.gov/software_package/tau>`__ generate OTF2
+trace files for Vampir to visualize.
+
+For detailed information about using Vampir on Summit and the builds available,
+please see the `Vampir Software Page <https://www.olcf.ornl.gov/software_package/vampir/>`__.
+
+.. _known-issues:
 
 Known Issues
 ============
@@ -2885,11 +2997,6 @@ Adding ``FAULT_TOLERANCE=1`` in your individual ``~/.jsm.conf`` file,
 will result in LSF jobs failing to successfully start. A bug has been
 filed with IBM to address this issue.
 
-CSM-based launch is not currently supported
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Users should not use ``JSMD_LAUNCH_MODE=csm`` in their ``~/.jsm.conf``
-file at this time. A bug has been filed with IBM to address this issue.
 
 Spindle is not currently supported
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -2927,11 +3034,13 @@ more detail information about the MPI communication of your job. To
 gather MPI tracing data, you can set
 ``export OMPI_LD_PRELOAD_POSTPEND=$OLCF_SPECTRUM_MPI_ROOT/lib/libmpitrace.so``
 in your environment. This will generate profile files with timings for
-the individual processes of your job. In addition, to debug slow startup
-JSM provides the option to create a progress file. The file will show
-information that can be helpful to pinpoint if a specific node is
-hanging or slowing down the job step launch. To enable it, you can use:
-``jsrun --progress ./my_progress_file_output.txt``.
+the individual processes of your job.
+
+In addition, to debug slow startup JSM provides the option to create a
+progress file. The file will show information that can be helpful to
+pinpoint if a specific node is hanging or slowing down the job step
+launch. To enable it, you can use: ``jsrun --progress
+./my_progress_file_output.txt``.
 
 -a flag ignored when using a jsrun resource set file with -U
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -2981,8 +3090,11 @@ jsrun explicit resource file (ERF) allocates incorrect resources
 
 When using an ERF that requests cores on a compute node’s second socket
 (hardware threads 88-171), the set of cores allocated on the second
-socket are shifted upwards by (1) physical core. For example: The
-following ERF requests the first physical core on each socket:
+socket are shifted upwards by (1) physical core.
+
+For example:
+
+The following ERF requests the first physical core on each socket:
 
 ::
 
@@ -2999,51 +3111,35 @@ physical core, allocating 92-95 instead of the specified 88-91.
 
     Task 1 ( 1/2, 1/2 ) is bound to cpu[s] 92-95 on host h36n03 with OMP_NUM_THREADS=1 and with OMP_PLACES={92:4}
 
-Job hangs in MPI\_Finalize
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-There is a known issue in Spectrum MPI 10.2.0.10 provided by the
-``spectrum-mpi/10.2.0.10-20181214`` modulefile that causes a hang in
-``MPI_Finalize`` when ROMIO 3.2.1 is being used and the
-``darshan-runtime`` modulefile is loaded. The recommended and default
-Spectrum MPI version as of March 3, 2019 is Spectrum MPI 10.2.0.11
-provided by the ``spectrum-mpi/10.2.0.11-20190201`` modulefile. If you
-are seeing this issue, please make sure that you are using the latest
-version of Spectrum MPI. If you need to use a previous version of
-Spectrum MPI, your options are:
-
--  Unload the ``darshan-runtime`` modulefile.
--  Alternatively, set ``export OMPI_MCA_io=romio314`` in your
-   environment to use the previous version of ROMIO. Please note that
-   this version has known performance issues with parallel HDF5 (see
-   "Slow performance using parallel HDF5" issue below).
 
 jsrun latency priority capitalization allocates incorrect resources
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-jsrun's latency priority (\`-l\`) flag can be given lowercase values
-(i.e. gpu-cpu) or capitalized values (i.e. GPU-CPU). Expected behavior:
+jsrun's latency priority (``-l``) flag can be given lowercase values
+(i.e. gpu-cpu) or capitalized values (i.e. GPU-CPU).
 
-When capitalized, jsrun should not compromise on the resource layout,
-and will wait to begin the job step until the ideal resources are
-available. When given a lowercase value, jsrun will not wait, but
-initiate the job step with the most ideal layout as is available at the
-time. This also means that when there's no resource contention, such as
-running a single job step at a time, capitalization should not matter,
-as they should both yield the same resources.
+**Expected behavior**:
 
-Actual behavior:
+    When capitalized, jsrun should not compromise on the resource layout,
+    and will wait to begin the job step until the ideal resources are
+    available. When given a lowercase value, jsrun will not wait, but
+    initiate the job step with the most ideal layout as is available at the
+    time. This also means that when there's no resource contention, such as
+    running a single job step at a time, capitalization should not matter,
+    as they should both yield the same resources.
 
-Capitalizing the latency priority value may allocate incorrect
-resources, or even cause the job step to fail entirely.
+**Actual behavior**:
 
-Recommendation:
+    Capitalizing the latency priority value may allocate incorrect
+    resources, or even cause the job step to fail entirely.
 
-It is currently recommended to only use the lowercase values to (-l /
---latency\_priority). The system default is: gpu-cpu,cpu-mem,cpu-cpu.
-Since this ordering is used implicitly when the -l flag is omitted, this
-issue only impacts submissions which explicitly include a latency
-priority in the jsrun command.
+**Recommendation**:
+
+    It is currently recommended to only use the lowercase values to (-l /
+    --latency\_priority). The system default is: gpu-cpu,cpu-mem,cpu-cpu.
+    Since this ordering is used implicitly when the -l flag is omitted, this
+    issue only impacts submissions which explicitly include a latency
+    priority in the jsrun command.
 
 Error when using complex datatypes with MPI Collectives and GPUDirect
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -3064,27 +3160,58 @@ Collectives and GPUDirect:
     [h35n05:113509] coll:ibm:allreduce: GPU awareness in PAMI requested. It is not safe to defer to another component.
 
 This is a known issue with libcoll and the SMPI team is working to
-resolve it. In the mean time, a workaround is to treat the complex array
+resolve it. In the meantime, a workaround is to treat the complex array
 as a real array with double the length if the operation is not
 MPI\_Prod. Note: This requires code modification. An alternative
 workaround is to disable IBM optimized collectives. This will impact
 performance however but requires no code changes and should be correct
 for all MPI\_Allreduce operations. You can do this by adding the
 following option to your jsrun command line:
-``--smpiargs="-HCOLL -FCA -mca coll_hcoll_enable 1 -mca coll_hcoll_np 0 -mca coll ^basic -mca coll ^ibm -async"``
+``--smpiargs="-HCOLL -FCA -mca coll_hcoll_enable 1 -mca coll_hcoll_np 0
+-mca coll ^basic -mca coll ^ibm -async"``
 
 Resolved Issues
 ---------------
+
+The following issues were resolved with the July 16, 2019 software upgrade:
+
+
+Default nvprof setting clobbers ``LD_PRELOAD``, interfering with SpectrumMPI (Resolved: July 16, 2019)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+CUDA 10 adds a new feature to profile CPU side OpenMP constructs (see
+https://docs.nvidia.com/cuda/profiler-users-guide/index.html#openmp).
+This feature is enabled by default and has a bug which will cause it to
+overwrite the contents of ``LD_PRELOAD``. SpectrumMPI requires a library
+(``libpami_cuda_hook.so``) to be preloaded in order to function. All MPI
+applications on Summit will break when run in nvprof with default
+settings. The workaround is to disable the new OpenMP profiling feature:
+
+::
+
+    $ jsrun  nvprof --openmp-profiling off
+
+CSM-based launch is not currently supported (Resolved: July 16, 2019)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Users should not use ``JSMD_LAUNCH_MODE=csm`` in their ``~/.jsm.conf``
+file at this time. A bug has been filed with IBM to address this issue.
+
+--------------
 
 Parallel I/O crash on GPFS with latest MPI ROMIO
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 In some cases with large number of MPI processes when there is not
 enough memory available on the compute node, the Abstract-Device
-Interface for I/O (ADIO) driver can break with this error: Out of memory
+Interface for I/O (ADIO) driver can break with this error:
+
+Out of memory
 in file
 ../../../../../../../opensrc/ompi/ompi/mca/io/romio321/romio/adio/ad\_gpfs/ad\_gpfs\_rdcoll.c,
-line 1178 The solution is to declare in your submission script:
+line 1178
+
+The solution is to declare in your submission script:
 
 ::
 
@@ -3092,7 +3219,11 @@ line 1178 The solution is to declare in your submission script:
 
 This command will use non-blocking MPI calls and not MPI\_Alltoallv for
 exchange of data between the MPI I/O aggregators which requires
-significant more amount of memory. The following issues were resolved
+significant more amount of memory.
+
+--------------
+
+The following issues were resolved
 with the May 21, 2019 upgrade:
 
 Issue with CUDA Aware MPI with >1 resource set per node (Resolved: May 21, 2019)
@@ -3158,6 +3289,25 @@ job. Please note that hints must be tuned for a specific job.
     cb_buffer_size 16777216
     cb_nodes 2
 
+Job hangs in MPI\_Finalize (Resolved: March 12, 2019)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+There is a known issue in Spectrum MPI 10.2.0.10 provided by the
+``spectrum-mpi/10.2.0.10-20181214`` modulefile that causes a hang in
+``MPI_Finalize`` when ROMIO 3.2.1 is being used and the
+``darshan-runtime`` modulefile is loaded. The recommended and default
+Spectrum MPI version as of March 3, 2019 is Spectrum MPI 10.2.0.11
+provided by the ``spectrum-mpi/10.2.0.11-20190201`` modulefile. If you
+are seeing this issue, please make sure that you are using the latest
+version of Spectrum MPI. If you need to use a previous version of
+Spectrum MPI, your options are:
+
+-  Unload the ``darshan-runtime`` modulefile.
+-  Alternatively, set ``export OMPI_MCA_io=romio314`` in your
+   environment to use the previous version of ROMIO. Please note that
+   this version has known performance issues with parallel HDF5 (see
+   "Slow performance using parallel HDF5" issue below).
+
 --------------
 
 The following issues were resolved with the February 19, 2019 upgrade:
@@ -3202,20 +3352,23 @@ user environment ``PAMI_PMIX_USE_OLD_MAPCACHE=1`` and
 CUDA 10.1 Known Issues
 ----------------------
 
-Default nvprof setting clobbers ``LD_PRELOAD``, interfering with SpectrumMPI
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Intermittent failures with \`nvprof\` (Identified: July 11, 2019)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-CUDA 10 adds a new feature to profile CPU side OpenMP constructs (see
-https://docs.nvidia.com/cuda/profiler-users-guide/index.html#openmp).
-This feature is enabled by default and has a bug which will cause it to
-overwrite the contents of ``LD_PRELOAD``. SpectrumMPI requires a library
-(``libpami_cuda_hook.so``) to be preloaded in order to function. All MPI
-applications on Summit will break when run in nvprof with default
-settings. The workaround is to disable the new OpenMP profiling feature:
+We are seeing an intermittent issue that causes an error when
+profiling a code using `nvprof` from CUDA 10.1.168. We have filed
+a bug with NVIDIA (NV bug 2645669) and they have reproduced the
+problem. An update will be posted when a fix becomes available.
+
+When this issue is encountered, the profiler will exit with the
+following error message:
 
 ::
 
-    $ jsrun  nvprof --openmp-profiling off
+    ==99756== NVPROF is profiling process 99756, command: ./a.out
+    ==99756== Error: Internal profiling error 4306:999.
+    ======== Profiling result:
+    ======== Metric result:
 
 MPI annotation may cause segfaults with applications using MPI\_Init\_thread
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -3248,7 +3401,9 @@ this is compiled as C++11: in ``complex.h`` and ``complex.inl``,
 annotate the functions that deal with ``std::complex`` as
 ``__host__ __device__`` (they are the ones that are annotated only as
 ``__host__`` right now), and then compile with
-``--expt-relaxed-constexpr``. Users that encounter this issue, can use
+``--expt-relaxed-constexpr``.
+
+Users that encounter this issue, can use
 the following workaround. copy the entirety of
 ``${OLCF_CUDA_ROOT}/include/thrust`` to a private location, make the
 above edits to ``thrust/complex.h`` and
@@ -3268,14 +3423,20 @@ Breakpoints in CUDA kernels recommendation
 ``cuda-gdb`` allows for breakpoints to be set inside CUDA kernels to
 inspect the program state on the GPU. This can be a valuable debugging
 tool but breaking inside kernels does incur significant overhead that
-should be included in your expected runtime. The time required to hit a
-breakpoint inside a CUDA kernel depends on how many CUDA threads are
-used to execute the kernel. It may take several seconds to stop at
-kernel breakpoints for very large numbers of threads. For this reason,
-it is recommended to choose breakpoints judiciously, especially when
-running the debugger in "batch" or "offline" mode where this overhead
-may be misperceived as the code hanging. If possible, debugging a
-smaller problem size with fewer active threads can be more pleasant.
+should be included in your expected runtime.
+
+The time required to hit a breakpoint inside a CUDA kernel depends on
+how many CUDA threads are used to execute the kernel. It may take
+several seconds to stop at kernel breakpoints for very large numbers
+of threads. For this reason, it is recommended to choose breakpoints
+judiciously, especially when running the debugger in "batch" or
+"offline" mode where this overhead may be misperceived as the code
+hanging. If possible, debugging a smaller problem size with fewer
+active threads can be more pleasant.
+
+--------------
+
+.. _training-system-ascent:
 
 Training System (Ascent)
 ========================
@@ -3285,9 +3446,7 @@ an OLCF user resource. Access to the system is only obtained through
 OLCF training events.
 
 Ascent is an 18-node stand-alone system with the same architecture as
-Summit (see `**Summit
-Nodes** <https://www.olcf.ornl.gov/for-users/system-user-guides/summit/summit-user-guide/#system-overview>`__
-section above), so most of this Summit User Guide can be referenced for
+Summit (see :ref:`summit-nodes` section above), so most of this Summit User Guide can be referenced for
 Ascent as well. However, aside from the number of compute nodes, there
 are other differences between the two systems. Most notably, Ascent sits
 in the NCCS Open Security Enclave, which is subject to fewer
@@ -3344,7 +3503,7 @@ OLCF training events.
 This sub-section describes the process of obtaining access to Ascent for
 an OLCF training event. Please follow the steps below to request access.
 
-Step 1: Fill out and submit an `**OLCF Account Application Form** <https://www.olcf.ornl.gov/for-users/documents-forms/olcf-account-application>`__
+Step 1: Fill out and submit an `OLCF Account Application Form <https://www.olcf.ornl.gov/for-users/documents-forms/olcf-account-application>`__
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Enter the requested information into the form. For "Project
@@ -3378,6 +3537,7 @@ Logging In to Ascent
 --------------------
 
 To log in to Ascent, please use your XCAMS/UCAMS username and password:
+
 ``$ ssh USERNAME@login1.ascent.olcf.ornl.gov``
 
 **NOTE:** You do not need to use an RSA token to log in to Ascent.

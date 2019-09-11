@@ -10,19 +10,69 @@ rhea is to provide a conduit for large-scale scientific discovery via
 pre/post processing and analysis of simulation data generated on Summit.
 Users with accounts on Summit will automatically be given access to rhea.
 
+--------------
+
 Compute nodes
 -------------
 
-.. include:: includes/rhea-compute-nodes.txt
+Rhea contains 521 compute nodes separated into two partitions:
+
++-------------+-------------+---------+-------------------+-----------------------------------+
+| Partition   | Node Count  | Memory  | GPU               | CPU                               |
++=============+=============+=========+===================+===================================+
+| rhea        | 512         | 128 GB  | -                 | [2x] Intel\ |R| Xeon\ |R| E5-2650 |
+| (default)   |             |         |                   | @2.0 GHz - 8 cores, 16 HT         |
+|             |             |         |                   | (total 16 cores, 32 HT *per node* |
++-------------+-------------+---------+-------------------+-----------------------------------+
+| gpu         | 9           | 1 TB    | [2x]              | [2x] Intel\ |R| Xeon\ |R| E5-2695 |
+|             |             |         | NVIDIA\ |R|       | @2.3 GHz - 14 cores, 28 HT        |
+|             |             |         | K80               | (total 28 cores, 56 HT *per node* |
++-------------+-------------+---------+-------------------+-----------------------------------+
+
+.. _rhea-partition:
+
+**Rhea Partition**
+
+The first 512 nodes make up the *rhea* partition, where each node contains two
+8-core 2.0 GHz Intel Xeon processors with Intel’s Hyper-Threading (HT)
+Technology and 128GB of main memory. Each CPU in this partition features 8
+physical cores, for a total of 16 physical cores per node. With Intel®
+Hyper-Threading Technology enabled, each node has 32 logical cores capable of
+executing 32 hardware threads for increased parallelism.
+
+.. _gpu-partition:
+
+**GPU Partition**
+
+Rhea also has nine large memory/GPU nodes, which make up the *gpu* partition.
+These nodes each have 1TB of main memory and two NVIDIA K80 GPUs in addition to
+two 14-core 2.30 GHz Intel Xeon processors with HT Technology. Each CPU in this
+partition features 14 physical cores, for a total of 28 physical cores per node.
+With Hyper-Threading enabled, these nodes have 56 logical cores that can execute
+56 hardware threads for increased parallelism.
+
+    **Note:** To access the gpu partition, batch job submissions should request
+    ``-lpartition=gpu``.
+
+Please see the :ref:`batch-queues-on-rhea` section to learn about the queuing
+policies for these two partitions. Both compute partitions are accessible
+through the same batch queue from Rhea’s :ref:`login-nodes`.
+
+Rhea features a 4X FDR Infiniband interconnect, with a maximum theoretical
+transfer rate of 56 Gb/s.
+
+--------------
+
+.. _login-nodes:
 
 Login nodes
 -----------
 
 Rhea features (4) login nodes which are identical to the compute nodes,
-but with 64gb of ram. The login nodes provide an environment for
-editing, compiling, and launching codes onto the compute nodes. All rhea
+but with 64GB of RAM. The login nodes provide an environment for
+editing, compiling, and launching codes onto the compute nodes. All Rhea
 users will access the system through these same login nodes, and as
-such, any cpu- or memory-intensive tasks on these nodes could interrupt
+such, any CPU- or memory-intensive tasks on these nodes could interrupt
 service to other users. As a courtesy, we ask that you refrain from
 doing any analysis or visualization tasks on the login nodes.
 
@@ -31,17 +81,184 @@ doing any analysis or visualization tasks on the login nodes.
 File systems
 ------------
 
-The olcf's center-wide lustre\ :sup:`®` file system, named
-`spider <../file-systems/#spider-the-centerwide-lustre-file-system>`_,
-is available on rhea for computational work. With over 26,000 clients
-and (32) pb of disk space, it is one of the largest-scale
-lustre\ :sup:`®` file systems in the world. A nfs-based file system
-provides `user home storage
-areas <../file-systems/#user-home-directories-nfs>`__ and `project home
+The OLCF's center-wide Lustre\ :sup:`®` file system, named
+`Spider <../file-systems/#spider-the-centerwide-lustre-file-system>`_,
+is available on Rhea for computational work. With over 26,000 clients
+and 32 pb of disk space, it is one of the largest-scale
+Lustre\ :sup:`®` file systems in the world. An NFS-based file system
+provides `User Home storage
+areas <../file-systems/#user-home-directories-nfs>`__ and `Project Home
 storage areas <../file-systems/#project-home-directories-nfs>`__.
-additionally, the olcf's `high performance storage
-system <../file-systems/#hpss-high-performance-storage-system>`__ (hpss)
+Additionally, the OLCF's `High Performance Storage
+System <../file-systems/#hpss-high-performance-storage-system>`__ (HPSS)
 provides archival spaces.
+
+Shell and programming environments
+==================================
+
+OLCF systems provide hundreds of software packages and scientific
+libraries pre-installed at the system-level for users to take advantage
+of. To facilitate this, environment management tools are employed to
+handle necessary changes to the shell dynamically. The sections below
+provide information about using the management tools at the OLCF.
+
+--------------
+
+Default shell
+-------------
+
+A user's default shell is selected when completing the user account
+request form. The chosen shell is set across all OLCF resources.
+Currently, supported shells include:
+
+-  bash
+-  tsch
+-  csh
+-  ksh
+
+If you would like to have your default shell changed, please contact the
+`OLCF user assistance center <https://www.olcf.ornl.gov/for-users/user-assistance/>`__ at
+help@olcf.ornl.gov.
+
+--------------
+
+Environment management with lmod
+--------------------------------
+
+The *modules* software package allows you to dynamically modify your
+user environment by using pre-written *modulefiles*. environment modules
+are provided through `Lmod <https://lmod.readthedocs.io/en/latest/>`__,
+a Lua-based module system for dynamically altering shell environments.
+by managing changes to the shell’s environment variables (such as
+``path``, ``ld_library_path``, and ``pkg_config_path``), Lmod allows you
+to alter the software available in your shell environment without the
+risk of creating package and version combinations that cannot coexist in
+a single environment.
+
+Lmod is a recursive environment module system, meaning it is aware of
+module compatibility and actively alters the environment to protect
+against conflicts. Messages to stderr are issued upon Lmod implicitly
+altering the environment. Environment modules are structured
+hierarchically by compiler family such that packages built with a given
+compiler will only be accessible if the compiler family is first present
+in the environment.
+
+    **note:** Lmod can interpret both Lua modulefiles and legacy Tcl
+    modulefiles. However, long and logic-heavy Tcl modulefiles may require
+    porting to Lua.
+
+General usage
+^^^^^^^^^^^^^
+
+Typical use of Lmod is very similar to that of interacting with
+modulefiles on other OLCF systems. The interface to Lmod is provided by
+the ``module`` command:
+
++----------------------------------+-----------------------------------------------------------------------+
+| Command                          | Description                                                           |
++==================================+=======================================================================+
+| module -t list                   | Shows a terse list of the currently loaded modules.                   |
++----------------------------------+-----------------------------------------------------------------------+
+| module avail                     | Shows a table of the currently available modules                      |
++----------------------------------+-----------------------------------------------------------------------+
+| module help <modulename>         | Shows help information about <modulename>                             |
++----------------------------------+-----------------------------------------------------------------------+
+| module show <modulename>         | Shows the environment changes made by the <modulename> modulefile     |
++----------------------------------+-----------------------------------------------------------------------+
+| module spider <string>           | Searches all possible modules according to <string>                   |
++----------------------------------+-----------------------------------------------------------------------+
+| module load <modulename> [...]   | Loads the given <modulename>(s) into the current environment          |
++----------------------------------+-----------------------------------------------------------------------+
+| module use <path>                | Adds <path> to the modulefile search cache and ``MODULESPATH``        |
++----------------------------------+-----------------------------------------------------------------------+
+| module unuse <path>              | Removes <path> from the modulefile search cache and ``MODULESPATH``   |
++----------------------------------+-----------------------------------------------------------------------+
+| module purge                     | Unloads all modules                                                   |
++----------------------------------+-----------------------------------------------------------------------+
+| module reset                     | Resets loaded modules to system defaults                              |
++----------------------------------+-----------------------------------------------------------------------+
+| module update                    | Reloads all currently loaded modules                                  |
++----------------------------------+-----------------------------------------------------------------------+
+
+    **Note:** Modules are changed recursively. Some commands, such as
+    ``module swap``, are available to maintain compatibility with scripts
+    using Tcl Environment Modules, but are not necessary since Lmod
+    recursively processes loaded modules and automatically resolves
+    conflicts.
+
+Searching for modules
+^^^^^^^^^^^^^^^^^^^^^
+
+Modules with dependencies are only available when the underlying
+dependencies, such as compiler families, are loaded. Thus,
+``module avail`` will only display modules that are compatible with the
+current state of the environment. To search the entire hierarchy across
+all possible dependencies, the ``spider`` sub-command can be used as
+summarized in the following table.
+
++----------------------------------------+------------------------------------------------------------------------------------+
+| Command                                | Description                                                                        |
++========================================+====================================================================================+
+| module spider                          | Shows the entire possible graph of modules                                         |
++----------------------------------------+------------------------------------------------------------------------------------+
+| module spider <modulename>             | Searches for modules named <modulename> in the graph of possible modules           |
++----------------------------------------+------------------------------------------------------------------------------------+
+| module spider <modulename>/<version>   | Searches for a specific version of <modulename> in the graph of possible modules   |
++----------------------------------------+------------------------------------------------------------------------------------+
+| module spider <string>                 | Searches for modulefiles containing <string>                                       |
++----------------------------------------+------------------------------------------------------------------------------------+
+
+ 
+
+Defining custom module collections
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Lmod supports caching commonly used collections of environment modules
+on a per-user basis in ``$home/.lmod.d``. to create a collection called
+"NAME" from the currently loaded modules, simply call
+``module save NAME``. omitting "NAME" will set the user’s default
+collection. Saved collections can be recalled and examined with the
+commands summarized in the following table.
+
++-------------------------+----------------------------------------------------------+
+| Command                 | Description                                              |
++=========================+==========================================================+
+| module restore NAME     | Recalls a specific saved user collection titled "NAME"   |
++-------------------------+----------------------------------------------------------+
+| module restore          | Recalls the user-defined defaults                        |
++-------------------------+----------------------------------------------------------+
+| module reset            | Resets loaded modules to system defaults                 |
++-------------------------+----------------------------------------------------------+
+| module restore system   | Recalls the system defaults                              |
++-------------------------+----------------------------------------------------------+
+| module savelist         | Shows the list user-defined saved collections            |
++-------------------------+----------------------------------------------------------+
+
+    **Note:** You should use unique names when creating collections to
+    specify the application (and possibly branch) you are working on. For
+    example, \`app1-development\`, \`app1-production\`, and
+    \`app2-production\`.
+
+    **Note:** In order to avoid conflicts between user-defined collections
+    on multiple compute systems that share a home file system (e.g.
+    /ccs/home/[userid]), lmod appends the hostname of each system to the
+    files saved in in your ~/.lmod.d directory (using the environment
+    variable lmod\_system\_name). This ensures that only collections
+    appended with the name of the current system are visible.
+
+The following screencast shows an example of setting up user-defined
+module collections on Summit. https://vimeo.com/293582400
+
+--------------
+
+Installed Software
+------------------
+
+The OLCF provides hundreds of pre-installed software packages and
+scientific libraries for your use, in addition to taking `software
+installation requests <https://www.olcf.ornl.gov/support/software/software-request/>`__. See the
+`software <https://www.olcf.ornl.gov/for-users/software/>`__ page for complete details on
+existing installs.
 
 Compiling
 =========
@@ -54,9 +271,9 @@ Available compilers
 
 The following compilers are available on rhea:
 
-- `intel </software_package/intel/>`__, intel composer xe (default)
-- `pgi </software_package/pgi/>`__, the portland group compiler suite
-- `gcc </software_package/gcc/>`__, the gnu compiler collection
+- `intel <https://www.olcf.ornl.gov/software_package/intel/>`__, intel composer xe (default)
+- `pgi <https://www.olcf.ornl.gov/software_package/pgi/>`__, the portland group compiler suite
+- `gcc <https://www.olcf.ornl.gov/software_package/gcc/>`__, the gnu compiler collection
 
 Upon login, default versions of the intel compiler and openmpi (message
 passing interface) libraries are automatically added to each user's
@@ -124,7 +341,7 @@ programs:
 These wrapper programs are cognizant of your currently loaded modules,
 and will ensure that your code links against our openmpi installation.
 more information about using openmpi at our center can be found in our
-`software documentation <https://www.olcf.ornl.gov/kb_articles/software-ompi/>`__.
+`software documentation <https://www.olcf.ornl.gov/software_package/openmpi/>`__.
 
 Compiling threaded codes
 ------------------------
@@ -156,176 +373,9 @@ For intel, add "-qopenmp" to the build line.
     $ mpicc -qopenmp test.c -o test.x
     $ export omp_num_threads=2
 
-For information on *running threaded codes*, please see the `thread
-layout </for-users/system-user-guides/rhea/running-jobs/#-thread-layout->`__
-subsection of the `running
-jobs </for-users/system-user-guides/rhea/running-jobs/>`__ section in
-this user guide.
-
-Shell and programming environments
-==================================
-
-Olcf systems provide hundreds of software packages and scientific
-libraries pre-installed at the system-level for users to take advantage
-of. To facilitate this, environment management tools are employed to
-handle necessary changes to the shell dynamically. The sections below
-provide information about using the management tools at the olcf.
-
---------------
-
-Default shell
--------------
-
-A user's default shell is selected when completing the user account
-request form. The chosen shell is set across all olcf resources.
-currently, supported shells include:
-
--  bash
--  tsch
--  csh
--  ksh
-
-If you would like to have your default shell changed, please contact the
-`olcf user assistance center </for-users/user-assistance/>`__ at
-help@olcf.ornl.gov.
-
---------------
-
-Environment management with lmod
---------------------------------
-
-The *modules* software package allows you to dynamically modify your
-user environment by using pre-written *modulefiles*. environment modules
-are provided through `lmod <https://lmod.readthedocs.io/en/latest/>`__,
-a lua-based module system for dynamically altering shell environments.
-by managing changes to the shell’s environment variables (such as
-``path``, ``ld_library_path``, and ``pkg_config_path``), lmod allows you
-to alter the software available in your shell environment without the
-risk of creating package and version combinations that cannot coexist in
-a single environment. Lmod is a recursive environment module system,
-meaning it is aware of module compatibility and actively alters the
-environment to protect against conflicts. Messages to stderr are issued
-upon lmod implicitly altering the environment. Environment modules are
-structured hierarchically by compiler family such that packages built
-with a given compiler will only be accessible if the compiler family is
-first present in the environment.
-
-    **note:** lmod can interpret both lua modulefiles and legacy tcl
-    modulefiles. However, long and logic-heavy tcl modulefiles may require
-    porting to lua.
-
-General usage
-^^^^^^^^^^^^^
-
-Typical use of lmod is very similar to that of interacting with
-modulefiles on other olcf systems. The interface to lmod is provided by
-the ``module`` command:
-
-+----------------------------------+-----------------------------------------------------------------------+
-| command                          | description                                                           |
-+==================================+=======================================================================+
-| module -t list                   | shows a terse list of the currently loaded modules.                   |
-+----------------------------------+-----------------------------------------------------------------------+
-| module avail                     | shows a table of the currently available modules                      |
-+----------------------------------+-----------------------------------------------------------------------+
-| module help <modulename>         | shows help information about <modulename>                             |
-+----------------------------------+-----------------------------------------------------------------------+
-| module show <modulename>         | shows the environment changes made by the <modulename> modulefile     |
-+----------------------------------+-----------------------------------------------------------------------+
-| module spider <string>           | searches all possible modules according to <string>                   |
-+----------------------------------+-----------------------------------------------------------------------+
-| module load <modulename> [...]   | loads the given <modulename>(s) into the current environment          |
-+----------------------------------+-----------------------------------------------------------------------+
-| module use <path>                | adds <path> to the modulefile search cache and ``modulespath``        |
-+----------------------------------+-----------------------------------------------------------------------+
-| module unuse <path>              | removes <path> from the modulefile search cache and ``modulespath``   |
-+----------------------------------+-----------------------------------------------------------------------+
-| module purge                     | unloads all modules                                                   |
-+----------------------------------+-----------------------------------------------------------------------+
-| module reset                     | resets loaded modules to system defaults                              |
-+----------------------------------+-----------------------------------------------------------------------+
-| module update                    | reloads all currently loaded modules                                  |
-+----------------------------------+-----------------------------------------------------------------------+
-
-    **note:** modules are changed recursively. Some commands, such as
-    ``module swap``, are available to maintain compatibility with scripts
-    using tcl environment modules, but are not necessary since lmod
-    recursively processes loaded modules and automatically resolves
-    conflicts.
-
-Searching for modules
-^^^^^^^^^^^^^^^^^^^^^
-
-Modules with dependencies are only available when the underlying
-dependencies, such as compiler families, are loaded. Thus,
-``module avail`` will only display modules that are compatible with the
-current state of the environment. To search the entire hierarchy across
-all possible dependencies, the ``spider`` sub-command can be used as
-summarized in the following table.
-
-+----------------------------------------+------------------------------------------------------------------------------------+
-| command                                | description                                                                        |
-+========================================+====================================================================================+
-| module spider                          | shows the entire possible graph of modules                                         |
-+----------------------------------------+------------------------------------------------------------------------------------+
-| module spider <modulename>             | searches for modules named <modulename> in the graph of possible modules           |
-+----------------------------------------+------------------------------------------------------------------------------------+
-| module spider <modulename>/<version>   | searches for a specific version of <modulename> in the graph of possible modules   |
-+----------------------------------------+------------------------------------------------------------------------------------+
-| module spider <string>                 | searches for modulefiles containing <string>                                       |
-+----------------------------------------+------------------------------------------------------------------------------------+
-
- 
-
-Defining custom module collections
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Lmod supports caching commonly used collections of environment modules
-on a per-user basis in ``$home/.lmod.d``. to create a collection called
-"name" from the currently loaded modules, simply call
-``module save name``. omitting "name" will set the user’s default
-collection. Saved collections can be recalled and examined with the
-commands summarized in the following table.
-
-+-------------------------+----------------------------------------------------------+
-| command                 | description                                              |
-+=========================+==========================================================+
-| module restore name     | recalls a specific saved user collection titled "name"   |
-+-------------------------+----------------------------------------------------------+
-| module restore          | recalls the user-defined defaults                        |
-+-------------------------+----------------------------------------------------------+
-| module reset            | resets loaded modules to system defaults                 |
-+-------------------------+----------------------------------------------------------+
-| module restore system   | recalls the system defaults                              |
-+-------------------------+----------------------------------------------------------+
-| module savelist         | shows the list user-defined saved collections            |
-+-------------------------+----------------------------------------------------------+
-
-    **note:** you should use unique names when creating collections to
-    specify the application (and possibly branch) you are working on. For
-    example, \`app1-development\`, \`app1-production\`, and
-    \`app2-production\`.
-
-    **note:** in order to avoid conflicts between user-defined collections
-    on multiple compute systems that share a home file system (e.g.
-    /ccs/home/[userid]), lmod appends the hostname of each system to the
-    files saved in in your ~/.lmod.d directory (using the environment
-    variable lmod\_system\_name). this ensures that only collections
-    appended with the name of the current system are visible.
-
-The following screencast shows an example of setting up user-defined
-module collections on summit. https://vimeo.com/293582400
-
---------------
-
-Installed software
-------------------
-
-The olcf provides hundreds of pre-installed software packages and
-scientific libraries for your use, in addition to taking `software
-installation requests </support/software/software-request/>`__. See the
-`software </for-users/software/>`__ page for complete details on
-existing installs.
+For information on *running threaded codes*, please see the
+:ref:`thread-layout` subsection of the :ref:`rhea-running-jobs`
+section in this user guide.
 
 .. _rhea-running-jobs:
 
@@ -1054,6 +1104,8 @@ The ``--report-bindings`` flag can be used to report task layout:
     [rhea4:104150] MCW rank 3 bound to socket 1[core 8[hwt 0-1]]: [../../../../../../../..][BB/../../../../../../..]
     $
 
+.. _thread-layout:
+
 Thread Layout
 """""""""""""""""
 
@@ -1551,7 +1603,9 @@ data analysis and visualization application. ParaView users can quickly
 build visualizations to analyze their data using qualitative and
 quantitative techniques. The data exploration can be done interactively
 in 3D or programmatically using ParaView’s batch processing
-capabilities. ParaView was developed to analyze extremely large datasets
+capabilities.
+
+ParaView was developed to analyze extremely large datasets
 using distributed memory computing resources. The OLCF provides ParaView
 server installs on Rhea to facilitate large scale distributed
 visualizations. The ParaView server running on Rhea may be used in a
@@ -1579,8 +1633,7 @@ of very large data sets.
 
     **Warning:** In interactive mode your local ParaView version number must
     match the ParaView version number available on Rhea. Please check the
-    available ParaView versions using Rhea's `modules system
-    </for-users/system-user-guides/rhea/shell-and-programming-environments/#using-modules>`__.
+    available ParaView versions using Lmod
 
 Interactive Example
 """""""""""""""""""
@@ -1597,7 +1650,8 @@ most cases.
     **Warning:** For Windows clients, it is necessary to install PuTTY to
     create an ssh connection in step 2.
 
-**Step 1: Launch ParaView on your Desktop and fetch a connection script for Rhea**
+**Step 1: Launch ParaView on your Desktop and fetch a connection script
+for Rhea**
 
 Start ParaView and then select ``File/Connect`` to begin.
 
@@ -1616,9 +1670,12 @@ Next select the connection to Rhea for either windows or Mac/Linux and hit the
    :width: 600px
 
 You may now quit and restart ParaView in order to save connection setup in your
-preferences. **Step 2: Establish a connection to Rhea** Once restarted, and
-henceforth, simply select Rhea from the File->Connect dialog and click the
-“Connect” button.
+preferences.
+
+**Step 2: Establish a connection to Rhea**
+
+Once restarted, and henceforth, simply select Rhea from the File->Connect
+dialog and click the “Connect” button.
 
 .. image:: /images/paraview_step2a.png
    :width: 600px
@@ -1654,20 +1711,53 @@ Installing and Setting Up Visit
 VisIt uses a client-server architecture. You will obtain the best
 performance by running the VisIt client on your local computer and
 running the server on OLCF resources. VisIt for your local computer can
-be obtained here: `VisIt Installation <http://visit.llnl.gov>`__. The
-first time you launch VisIt (after installing), you will be prompted for
-a remote host preference. Make sure you select ORNL. You will then be
-prompted to exit and re-launch VisIt for the host preferences to become
-available. In order to finish setting up VisIt on your local machine:
+be obtained here: `VisIt Installation <http://visit.llnl.gov>`__. Rhea
+currently has Remote Backend Version 2.13.0 available, so the local client
+version 2.13.x is recommended.
 
--  Go to "Options→Host profiles" and choose "ORNL\_Rhea".
--  Make sure "Username" is set to your OLCF username.
--  Click on the "Launch Profiles" tab and then click on the "Parallel"
-   button. Here, you can set up the parallel launch configuration.
-   Default values will be filled in, but you will need to enter your
-   project ID in the "Bank/Account" section. When finished, click Apply
-   and close the "Host profiles" window.
--  To ensure these settings are saved, go to "Options→Save Settings".
+The first time you launch VisIt (after installing), you will be prompted
+for a remote host preference. Unfortunately, ORNL does not maintain this
+list and the ORNL entry is outdated. Click the “None” option instead.
+Restart VisIt, and go to Options->Host Profiles. Select “New Host”
+
+- For host nickname: Rhea (this is arbitrary)
+- Remote hostname: rhea.ccs.ornl.gov (required)
+- Host name aliases: rhea-login#g (required)
+- Maximum Nodes: unchecked (unless using the GPU partition on Rhea)
+- Maximum processors: unchecked (arbitrary but use fewer than cores available)
+- Path to VisIt Installation: /sw/rhea/visit (required)
+- Username: Your OLCF Username (required)
+- Tunnel data connections through SSH: Checked (required)
+
+Under the “Launch Profiles” tab create a launch profile. Most of
+these values are arbitrary
+
+- Profile Name: No GPU, MPI, Multinode (arbitrary)
+- Timeout: 480 (arbitrary)
+- Number of threads per task: 0 (arbitrary, but not tested
+  with OMP/pthread support)
+- Additional arguments: blank (arbitrary)
+
+Under the “Parallel” Tab:
+
+- Launch parallel engine: Checked (required)
+- Launch Tab:
+    - Parallel launch method:
+      qsub/mpirun (required)
+    - Partition/Pool/Queue: batch (required)
+    - Number of processors: 2 (arbitrary, but
+      high number may lead to OOM errors)
+    - Number of nodes: 2 (arbitrary)
+    - Bank/Account: Your OLCF project to use (required)
+    - Time Limit: 1:00:00 (arbitrary)
+    - Machine file: Unchecked (required – Lets VisIt get
+      the nodelist from the scheduler)
+    - Constraints: unchecked
+- Advanced tab – All boxes unchecked
+- GPU Acceleration
+    - Use cluster’s graphics cards: Unchecked
+
+Click “Apply”. Exit and re-launch VisIt.
 
 Usage
 ^^^^^
@@ -1684,6 +1774,12 @@ Once you have VisIt installed and set up on your local computer:
    and processors you would like to use (remember that each node of Rhea
    contains 16 processors) and the Project ID, which VisIt calls a
    "Bank" as shown below.
+
+.. image:: /images/Screen-Shot-2015-12-02-at-3.30.27-PM.png
+   :width: 400px
+   :height: 360px
+   :align: center
+
 -  Once specified, the server side of VisIt will be launched, and you
    can interact with your data.
 
@@ -1727,9 +1823,10 @@ should login to Rhea and enter "qstat" from the command line. Your VisIt
 job should appear in the queue. If you see it in a state marked "Q" you
 should wait a bit longer to see if it will start. If you do not see your
 job listed in the queue, check to make sure your project ID is entered
-in your VisIt host profile. See the `Modifying Host
-Profiles </for-users/system-user-guides/rhea/analysis-tools/#modifying-host-profiles>`__
+in your VisIt host profile. See the :ref:`modifying-host-profiles`
 section below for instructions.
+
+.. _modifying-host-profiles:
 
 Modifying Host Profiles
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -1766,11 +1863,11 @@ Remote Visualization using VNC (non-GPU)
 ----------------------------------------
 
 In addition to the instructions below, `Benjamin
-Hernandez </directory/staff-member/benjamin-hernandez/>`__ of the `OLCF
+Hernandez <https://www.olcf.ornl.gov/directory/staff-member/benjamin-hernandez/>`__ of the `OLCF
 Advanced Data and Workflows
-Group </about-olcf/olcf-groups/advanced-data-and-workflows/>`__
+Group <https://www.olcf.ornl.gov/about-olcf/olcf-groups/advanced-data-and-workflows/>`__
 presented a related talk, `GPU Rendering in Rhea and
-Titan </wp-content/uploads/2016/01/GPURenderingRheaTitan-1.pdf>`__,
+Titan <https://www.olcf.ornl.gov/wp-content/uploads/2016/01/GPURenderingRheaTitan-1.pdf>`__,
 during the 2016 OLCF User Meeting.
 
 step 1 (local system)
@@ -1820,7 +1917,7 @@ step 4 (local system)
 ^^^^^^^^^^^^^^^^^^^^^
 
 Launch the vncviewer. When you launch the vncviewer that you downloaded
-you will need to specify ‘localhost:5901’. You will also set a passoword
+you will need to specify ‘localhost:5901’. You will also set a password
 for the initial connection or enter the created password for subsequent
 connections.
 
