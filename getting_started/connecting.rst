@@ -11,9 +11,7 @@ All connections to OLCF resources are done via Secure Shell (ssh). SSH encrypts
 the entire session between the user connecting and the OLCF systems and avoids
 risks associated with using plain-text communication. 
 
-::
-
-   Note: To access OLCF systems, your SSH client must support SSH protocol version 2 (this is common) and allow keyboard-interactive authentication
+**Note:** To access OLCF systems, your SSH client must support SSH protocol version 2 (this is common) and allow keyboard-interactive authentication
 
 
 For UNIX-based SSH clients, the following line should be in either the default ``ssh_config`` file or your ``$HOME/.ssh/config`` file:
@@ -26,13 +24,14 @@ For UNIX-based SSH clients, the following line should be in either the default `
 The line may also contain other authentication methods but ``keyboard-interactive`` must be included.
 
 SSH clients are available for Windows-based systems, such as `SecureCRT <https://www.vandyke.com/products/securecrt/>`_ published by VanDyke software.
-For recent SecureCTY versions, the preferred authentication setting shown above can be made through the "connection properties" menu.
+For recent SecureCRT versions, the preferred authentication setting shown above can be made through the "connection properties" menu.
+
+**Note:** SSH multiplexing is disabled on all of the OLCF’s user-facing systems. Users will receive an error message if they attempt to connect to an 
+OLCF resource that tries to reuse an SSH control path. To ensure SSH connections will not attempt multiplexing, you will need to modify 
+your ``$HOME/.ssh/config`` file by adding the following:
 
 ::
 
-   Note:  SSH multiplexing is disabled on all of the OLCF’s user-facing systems. 
-   Users will receive an error message if they attempt to connect to an OLCF resource that tries to reuse an SSH control path. 
-   To ensure SSH connections will not attempt multiplexing, you will need to modify your $HOME/.ssh/config file by adding the following:
    Host *.ccs.ornl.gov
       ControlMaster no
 
@@ -42,8 +41,8 @@ systems allocated to your project(s). All OLCF resources (except the Ascent
 training system) require two-factor authentication. This means you will need an 
 OLCF-provided RSA SecurID fob to log into any of the systems. 
 
-To activate a new SecurID fob:
-==============================
+Activating a new SecurID fob
+============================
 .. image:: /images/rsa_securid_fob.gif
 
 #. Initiate a SSH connection to ``username@home.ccs.ornl.gov``.
@@ -65,10 +64,10 @@ code shown on your SecurID fob and press enter. For example, if your pin
 is ``1234`` and the (6) digits on the fob are ``000987``, you would
 enter ``1234000987`` when prompted for a PASSCODE.
 
-    **Note:** The 6-digit code displayed on the SecurID fob can only be used
-    once. If prompted for multiple PASSCODE entries, always allow the code
-    to change between attempts. Re-using a code can cause your account to be
-    automatically locked.
+**Note:** The 6-digit code displayed on the SecurID fob can only be used
+once. If prompted for multiple PASSCODE entries, always allow the code
+to change between attempts. Re-using a code can cause your account to be
+automatically locked.
 
 
 PINs, Passcodes, and Tokencodes
@@ -110,9 +109,8 @@ Note that use of the -x option (lowercase) will **disable** X11 forwarding.
 All X11 data will go through an encrypted channel. The ``$DISPLAY`` environment variable set by SSH will point to the 
 remote machine with a port number greater than zero. This is normal, and happens because SSH creates a proxy X 
 server on the remote machine for forwarding the connections over an encrypted channel. The connection to the real X server will be made from the local machine.
-::
 
-	Warning: Users should not manually set the $DISPLAY environment variable for X11 forwarding; a non-encrypted channel may be used in this case.
+**Warning:** Users should not manually set the ``$DISPLAY`` environment variable for X11 forwarding; a non-encrypted channel may be used in this case.
 
 
 Systems Available to All Projects
@@ -181,29 +179,29 @@ System User Guide.
 
 OLCF System Hostnames
 =====================
-+---------------------+-----------------------------------------------+--------------------------------------------------------------+
-| *System Name*       | Full Hostname                                 | Hostkey Fingerprints                                         |
-+=====================+===============================================+==============================================================+
-| Home (machine)      |``home.ccs.ornl.gov``                          | - RSA MD5: ba:12:46:8d:23:e7:4d:37:92:39:94:82:91:ea:3d:e9   |
-|                     |                                               | - RSA SHA256: FjDs4sRAX8hglzA7TVkK22NzRKsjhDTTTdfeEAHwPEA    |
-|                     |                                               | - ECDSA MD5: 8a:92:0f:31:4d:38:2d:2c:ec:7d:53:ce:8b:46:73:d6 |
-|                     |                                               | - ECDSA SHA256: 0hc6SDou8vauFWgOaeXKUmhDSmKK8roj9jWpapV4qzc  |
-+---------------------+-----------------------------------------------+--------------------------------------------------------------+
-| Data Transfer Nodes |``dtn.ccs.ornl.gov``                           | - RSA MD5: d1:c5:84:5b:88:d3:0e:81:33:a7:c2:5f:8a:09:b2:7f   |
-|                     |                                               | - RSA SHA256: xAIWJhey/RCjetTR4Hll2GNE9WwCNrMUEOdyDhIeHeE    |
-|                     |                                               | - ECDSA MD5: bd:52:af:c3:8b:ad:a3:30:4f:28:75:9c:79:84:68:cd |
-|                     |                                               | - ECDSA SHA256: ITEbdZ0ddYNJJehefOh+/0JMgSvHwClpr+P+kak58Xc  |
-+---------------------+-----------------------------------------------+--------------------------------------------------------------+
-| Summit              |``summit.olcf.ornl.gov``                       | - RSA MD5: 08:d0:fe:3f:f3:41:96:9c:ae:73:73:a8:92:6c:79:34   |
-|                     |                                               | - RSA SHA256: nA7X4qyPvtEpXWxG5MDeXEC8xfpmm0UMiLq/LkgM33I    |
-|                     |                                               | - ECDSA MD5: cf:32:f9:35:fd:3f:2a:0f:ed:d3:84:b1:2d:f0:35:1b |
-|                     |                                               | - ECDSA SHA256: m0iF9JJEoJu6jJGA8FFbSABlpKFYPGKbdmi25rFC1AI  |
-+---------------------+-----------------------------------------------+--------------------------------------------------------------+
-| Rhea                |``rhea.ccs.ornl.gov``                          | - RSA MD5: 17:4a:49:f8:37:e2:1b:7c:b5:23:b3:5c:64:3a:c5:07   |
-|                     |                                               | - RSA SHA256: R9/5L+ZQ9+pR/jThxbLmmmxBtxRfVt3MsEGPEhv1uTQ    |
-|                     |                                               | - ECDSA Md5: e4:a4:b4:4a:24:bf:53:e0:9a:c4:10:9f:9f:3a:ec:f4 |
-|                     |                                               | - ECDSA SHA256: F92QU1abt3tN2cgYwONJla0MoyV0srD3mNoyoFe5Cxo  |
-+---------------------+-----------------------------------------------+--------------------------------------------------------------+
++---------------------+-----------------------------------------------+------------------------------------------------------------------+
+| *System Name*       | Full Hostname                                 | Hostkey Fingerprints                                             |
++=====================+===============================================+==================================================================+
+| Home (machine)      |``home.ccs.ornl.gov``                          | - RSA MD5: ``ba:12:46:8d:23:e7:4d:37:92:39:94:82:91:ea:3d:e9``   |
+|                     |                                               | - RSA SHA256: ``FjDs4sRAX8hglzA7TVkK22NzRKsjhDTTTdfeEAHwPEA``    |
+|                     |                                               | - ECDSA MD5: ``8a:92:0f:31:4d:38:2d:2c:ec:7d:53:ce:8b:46:73:d6`` |
+|                     |                                               | - ECDSA SHA256: ``0hc6SDou8vauFWgOaeXKUmhDSmKK8roj9jWpapV4qzc``  |
++---------------------+-----------------------------------------------+------------------------------------------------------------------+
+| Data Transfer Nodes |``dtn.ccs.ornl.gov``                           | - RSA MD5: ``d1:c5:84:5b:88:d3:0e:81:33:a7:c2:5f:8a:09:b2:7f``   |
+|                     |                                               | - RSA SHA256: ``xAIWJhey/RCjetTR4Hll2GNE9WwCNrMUEOdyDhIeHeE``    |
+|                     |                                               | - ECDSA MD5: ``bd:52:af:c3:8b:ad:a3:30:4f:28:75:9c:79:84:68:cd`` |
+|                     |                                               | - ECDSA SHA256: ``ITEbdZ0ddYNJJehefOh+/0JMgSvHwClpr+P+kak58Xc``  |
++---------------------+-----------------------------------------------+------------------------------------------------------------------+
+| Summit              |``summit.olcf.ornl.gov``                       | - RSA MD5: ``08:d0:fe:3f:f3:41:96:9c:ae:73:73:a8:92:6c:79:34``   |
+|                     |                                               | - RSA SHA256: ``nA7X4qyPvtEpXWxG5MDeXEC8xfpmm0UMiLq/LkgM33I``    |
+|                     |                                               | - ECDSA MD5: ``cf:32:f9:35:fd:3f:2a:0f:ed:d3:84:b1:2d:f0:35:1b`` |
+|                     |                                               | - ECDSA SHA256: ``m0iF9JJEoJu6jJGA8FFbSABlpKFYPGKbdmi25rFC1AI``  |
++---------------------+-----------------------------------------------+------------------------------------------------------------------+
+| Rhea                |``rhea.ccs.ornl.gov``                          | - RSA MD5: ``17:4a:49:f8:37:e2:1b:7c:b5:23:b3:5c:64:3a:c5:07``   |
+|                     |                                               | - RSA SHA256: ``R9/5L+ZQ9+pR/jThxbLmmmxBtxRfVt3MsEGPEhv1uTQ``    |
+|                     |                                               | - ECDSA Md5: ``e4:a4:b4:4a:24:bf:53:e0:9a:c4:10:9f:9f:3a:ec:f4`` |
+|                     |                                               | - ECDSA SHA256: ``F92QU1abt3tN2cgYwONJla0MoyV0srD3mNoyoFe5Cxo``  |
++---------------------+-----------------------------------------------+------------------------------------------------------------------+
 
 Occassionally, you may receive an error message upon logging in to a system such as the following:
 ::
