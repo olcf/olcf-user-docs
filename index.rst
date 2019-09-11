@@ -17,13 +17,18 @@ Getting Started
 Connecting
 -----------
 
+.. toctree::
+   :maxdepth: 2
+
+   connecting/index
+
 Systems
 ---------------
 
 .. toctree::
    :maxdepth: 2
 
-   systems/index.rst
+   systems/index
 
 Data
 ------
@@ -45,7 +50,7 @@ Training
 .. toctree::
    :maxdepth: 2
 
-   training/index.rst
+   training/index
 
 How to contribute to this documentation
 -----------------------------------------

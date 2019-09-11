@@ -417,7 +417,13 @@ following (outside) links.
 Connecting
 ==========
 
-FIXME
+To connect to Summit, ssh to summit.olcf.ornl.gov. For example:
+
+::
+
+    ssh username\@summit.olcf.ornl.gov
+
+For more information on connecting to OLCF resources, see :ref:`connecting-to-olcf`
 
 .. _data-storage-transfers:
 
