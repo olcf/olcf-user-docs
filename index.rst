@@ -39,6 +39,7 @@ Data
    data/storage_overview.rst
    data/policies.rst
    data/user_centric.rst
+   data/project_centric.rst
    data/transferring.rst
    data/archiving.rst
    data/filesystems.rst
