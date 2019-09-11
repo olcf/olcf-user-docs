@@ -42,7 +42,7 @@ Data
    data/project_centric.rst
    data/transferring.rst
    data/archiving.rst
-   data/filesystems.rst
+   data/burst_buffer.rst
 
 Accounts
 ---------
