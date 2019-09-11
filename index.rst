@@ -18,9 +18,9 @@ Connecting
 -----------
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
-   connecting/index.rst
+   connecting/index
 
 Systems
 ---------------
@@ -28,7 +28,7 @@ Systems
 .. toctree::
    :maxdepth: 2
 
-   systems/index.rst
+   systems/index
 
 Data
 ------
@@ -50,7 +50,7 @@ Training
 .. toctree::
    :maxdepth: 2
 
-   training/index.rst
+   training/index
 
 How to contribute to this documentation
 -----------------------------------------
