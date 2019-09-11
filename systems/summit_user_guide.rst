@@ -40,7 +40,7 @@ Summit Nodes
 
 The basic building block of Summit is the IBM Power System AC922 node.
 Each of the approximately 4,600 compute nodes on Summit contains two IBM
-POWER9 processors and six `NVIDIA Volta V100`_ accelerators and provides 
+POWER9 processors and six `NVIDIA Volta V100`_ accelerators and provides
 a theoretical double-precision capability of
 approximately 40 TF. Each POWER9 processor is connected via dual NVLINK
 bricks, each capable of a 25GB/s transfer rate in each direction. Nodes
@@ -985,7 +985,7 @@ For a full list of software available at the OLCF, please see the
 Shell & Programming Environments
 ================================
 
-OLCF systems provide hundreds of software packages and scientific
+OLCF systems provide many software packages and scientific
 libraries pre-installed at the system-level for users to take advantage
 of. To facilitate this, environment management tools are employed to
 handle necessary changes to the shell. The sections below provide
@@ -1168,66 +1168,71 @@ using the modules system:
 
     summit$ module -t avail pgi
     /sw/summit/modulefiles/site/linux-rhel7-ppc64le/Core:
-    pgi/17.10-patched
-    pgi/18.3
-    pgi/18.4
-    pgi/18.5
     pgi/18.7
+    pgi/18.10
+    pgi/19.1
+    pgi/19.4
+    pgi/19.5
+    pgi/19.7
 
 C compilation
 ^^^^^^^^^^^^^
 
     **Note:** type char is unsigned by default
 
-+--------------+------------------+----------------+---------------+------------------+------------------+---------------------------+--------------------+
-| **Vendor**   | **Module**       | **Compiler**   | **Version**   | **Enable C99**   | **Enable C11**   | **Default signed char**   | **Define macro**   |
-+==============+==================+================+===============+==================+==================+===========================+====================+
-| **IBM**      | xl               | xlc xlc\_r     | 13.1.6        | -std=gnu99       | -std=gnu11       | -qchar=signed             | -WF,-D             |
-+--------------+------------------+----------------+---------------+------------------+------------------+---------------------------+--------------------+
-| **GNU**      | system default   | gcc            | 4.8.5         | -std=gnu99       | -std=gnu11       | -fsigned-char             | -D                 |
-+--------------+------------------+----------------+---------------+------------------+------------------+---------------------------+--------------------+
-| **GNU**      | gcc              | gcc            | 6.4.0         | -std=gnu99       | -std=gnu11       | -fsigned-char             | -D                 |
-+--------------+------------------+----------------+---------------+------------------+------------------+---------------------------+--------------------+
-| **LLVM**     | llvm             | clang          | 3.8.0         | default          | -std=gnu11       | -fsigned-char             | -D                 |
-+--------------+------------------+----------------+---------------+------------------+------------------+---------------------------+--------------------+
-| **PGI**      | pgi              | pgcc           | 17.10         | -c99             | -c11             | -Mschar                   | -D                 |
-+--------------+------------------+----------------+---------------+------------------+------------------+---------------------------+--------------------+
++--------------+------------------+----------------+------------------+------------------+------------------+---------------------------+--------------------+
+| **Vendor**   | **Module**       | **Compiler**   | **Default**      | **Enable C99**   | **Enable C11**   | **Default signed char**   | **Define macro**   |
+|              |                  |                |                  |                  |                  |                           |                    |
++==============+==================+================+==================+==================+==================+===========================+====================+
+| **IBM**      | ``xl``           | xlc xlc\_r     | 16.1.1-3         | ``-std=gnu99``   | ``-std=gnu11``   | ``-qchar=signed``         | ``-WF,-D``         |
++--------------+------------------+----------------+------------------+------------------+------------------+---------------------------+--------------------+
+| **GNU**      | system default   | gcc            | 4.8.5            | ``-std=gnu99``   | ``-std=gnu11``   | ``-fsigned-char``         | ``-D``             |
++--------------+------------------+----------------+------------------+------------------+------------------+---------------------------+--------------------+
+| **GNU**      | ``gcc``          | gcc            | 6.4.0            | ``-std=gnu99``   | ``-std=gnu11``   | ``-fsigned-char``         | ``-D``             |
++--------------+------------------+----------------+------------------+------------------+------------------+---------------------------+--------------------+
+| **LLVM**     | ``llvm``         | clang          | 1.0-20190225     | default          | ``-std=gnu11``   | ``-fsigned-char``         | ``-D``             |
++--------------+------------------+----------------+------------------+------------------+------------------+---------------------------+--------------------+
+| **PGI**      | ``pgi``          | pgcc           | 19.4             | ``-c99``         | ``-c11``         | ``-Mschar``               | ``-D``             |
++--------------+------------------+----------------+------------------+------------------+------------------+---------------------------+--------------------+
 
 C++ compilations
 ^^^^^^^^^^^^^^^^
 
     **Note:** type char is unsigned by default
 
-+--------------+------------------+-------------------+---------------+--------------------------------+--------------------------------+---------------------------+--------------------+
-| **Vendor**   | **Module**       | **Compiler**      | **Version**   | **Enable C++11**               | **Enable C++14**               | **Default signed char**   | **Define macro**   |
-+==============+==================+===================+===============+================================+================================+===========================+====================+
-| **IBM**      | xl               | xlc++, xlc++\_r   | 13.1.6        | -std=gnu++11                   | -std=gnu++1y *(PARTIAL)*       | -qchar=signed             | -WF,-D             |
-+--------------+------------------+-------------------+---------------+--------------------------------+--------------------------------+---------------------------+--------------------+
-| **GNU**      | system default   | g++               | 4.8.5         | -std=gnu++11                   | -std=gnu++1y                   | -fsigned-char             | -D                 |
-+--------------+------------------+-------------------+---------------+--------------------------------+--------------------------------+---------------------------+--------------------+
-| **GNU**      | gcc              | g++               | 6.4.0         | -std=gnu++11                   | -std=gnu++1y                   | -fsigned-char             | -D                 |
-+--------------+------------------+-------------------+---------------+--------------------------------+--------------------------------+---------------------------+--------------------+
-| **LLVM**     | llvm             | clang++           | 3.8.0         | -std=gnu++11                   | -std=gnu++1y                   | -fsigned-char             | -D                 |
-+--------------+------------------+-------------------+---------------+--------------------------------+--------------------------------+---------------------------+--------------------+
-| **PGI**      | pgi              | pgc++             | 17.10         | -std=c++11 --gnu\_extensions   | -std=c++14 --gnu\_extensions   | -Mschar                   | -D                 |
-+--------------+------------------+-------------------+---------------+--------------------------------+--------------------------------+---------------------------+--------------------+
++--------------+------------------+-------------------+------------------+--------------------------------+--------------------------------+---------------------------+--------------------+
+| **Vendor**   | **Module**       | **Compiler**      | **Default**      | **Enable C++11**               | **Enable C++14**               | **Default signed char**   | **Define macro**   |
+|              |                  |                   |                  |                                |                                |                           |                    |
++==============+==================+===================+==================+================================+================================+===========================+====================+
+| **IBM**      | ``xl``           | xlc++, xlc++\_r   | 16.1.1-3         | ``-std=gnu++11``               | ``-std=gnu++1y`` (PARTIAL)*    | ``-qchar=signed``         | ``-WF,-D``         |
++--------------+------------------+-------------------+------------------+--------------------------------+--------------------------------+---------------------------+--------------------+
+| **GNU**      | system default   | g++               | 4.8.5            | ``-std=gnu++11``               | ``-std=gnu++1y``               | ``-fsigned-char``         | ``-D``             |
++--------------+------------------+-------------------+------------------+--------------------------------+--------------------------------+---------------------------+--------------------+
+| **GNU**      | ``gcc``          | g++               | 6.4.0            | ``-std=gnu++11``               | ``-std=gnu++1y``               | ``-fsigned-char``         | ``-D``             |
++--------------+------------------+-------------------+------------------+--------------------------------+--------------------------------+---------------------------+--------------------+
+| **LLVM**     | ``llvm``         | clang++           | 1.0-20190225     | ``-std=gnu++11``               | ``-std=gnu++1y``               | ``-fsigned-char``         | ``-D``             |
++--------------+------------------+-------------------+------------------+--------------------------------+--------------------------------+---------------------------+--------------------+
+| **PGI**      | ``pgi``          | pgc++             | 19.4             | ``-std=c++11 -gnu_extensions`` | ``-std=c++14 -gnu_extensions`` | ``-Mschar``               | ``-D``             |
++--------------+------------------+-------------------+------------------+--------------------------------+--------------------------------+---------------------------+--------------------+
 
 Fortran compilation
 ^^^^^^^^^^^^^^^^^^^
 
-+--------------+------------------+-----------------------------------+----------------+-------------------------------+-------------------------------+-------------------------------+--------------------+
-| **Vendor**   | **Module**       | **Compiler**                      | **Version**    | **Enable F90**                | **Enable F2003**              | **Enable F2008**              | **Define macro**   |
-+==============+==================+===================================+================+===============================+===============================+===============================+====================+
-| **IBM**      | xl               | xlf xlf90 xlf95 xlf2003 xlf2008   | 15.1.6         | -qlanglvl=90std               | -qlanglvl=2003std             | -qlanglvl=2008std             | -WF,-D             |
-+--------------+------------------+-----------------------------------+----------------+-------------------------------+-------------------------------+-------------------------------+--------------------+
-| **GNU**      | system default   | gfortran                          | 4.8.5, 6.4.0   | -std=f90                      | -std=f2003                    | -std=f2008                    | -D                 |
-+--------------+------------------+-----------------------------------+----------------+-------------------------------+-------------------------------+-------------------------------+--------------------+
-| **LLVM**     | llvm             | xlflang                           | 3.8.0          | n/a                           | n/a                           | n/a                           | -D                 |
-+--------------+------------------+-----------------------------------+----------------+-------------------------------+-------------------------------+-------------------------------+--------------------+
-| **PGI**      | pgi              | pgfortran                         | 17.10          | use .F90 source file suffix   | use .F03 source file suffix   | use .F08 source file suffix   | -D                 |
-+--------------+------------------+-----------------------------------+----------------+-------------------------------+-------------------------------+-------------------------------+--------------------+
++--------------+------------------+-----------------------------------+------------------+--------------------------+---------------------------+--------------------------+--------------------+
+| **Vendor**   | **Module**       | **Compiler**                      | **Default**      | **Enable F90**           | **Enable F2003**          | **Enable F2008**         | **Define macro**   |
+|              |                  |                                   |                  |                          |                           |                          |                    |
++==============+==================+===================================+==================+==========================+===========================+==========================+====================+
+| **IBM**      | ``xl``           | xlf xlf90 xlf95 xlf2003 xlf2008   | 16.1.1-3         | ``-qlanglvl=90std``      | ``-qlanglvl=2003std``     | ``-qlanglvl=2008std``    | ``-WF,-D``         |
++--------------+------------------+-----------------------------------+------------------+--------------------------+---------------------------+--------------------------+--------------------+
+| **GNU**      | system default   | gfortran                          | 4.8.5, 6.4.0     | ``-std=f90``             | ``-std=f2003``            | ``-std=f2008``           | ``-D``             |
++--------------+------------------+-----------------------------------+------------------+--------------------------+---------------------------+--------------------------+--------------------+
+| **LLVM**     | ``llvm``         | xlflang                           | 1.0-20190225     | n/a                      | n/a                       | n/a                      | ``-D``             |
++--------------+------------------+-----------------------------------+------------------+--------------------------+---------------------------+--------------------------+--------------------+
+| **PGI**      | ``pgi``          | pgfortran                         | 19.4             | use ``.F90`` source file |  use ``.F03`` source file | use ``.F08`` source file | ``-D``             |
+|              |                  |                                   |                  | suffix                   |  suffix                   | suffix                   |                    |
++--------------+------------------+-----------------------------------+------------------+--------------------------+---------------------------+--------------------------+--------------------+
 
-    **Note:** \* The xlflang module currently conflicts with the clang
+    **Note:** The xlflang module currently conflicts with the clang
     module. This restriction is expected to be lifted in future releases.
 
 MPI
@@ -1237,16 +1242,16 @@ MPI on Summit is provided by IBM Spectrum MPI. Spectrum MPI provides
 compiler wrappers that automatically choose the proper compiler to build
 your application.
 
-The following compiler wrappers are available: 
+The following compiler wrappers are available:
 
-**C**: ``mpicc`` 
+**C**: ``mpicc``
 
-**C++**: ``mpic++``, ``mpiCC`` 
+**C++**: ``mpic++``, ``mpiCC``
 
-**Fortran**: ``mpifort``, ``mpif77``, ``mpif90`` 
+**Fortran**: ``mpifort``, ``mpif77``, ``mpif90``
 
-While these wrappers conveniently abstract away linking of Spectrum MPI, it's 
-sometimes helpful to see exactly what's happening when invoked. The ``--showme`` 
+While these wrappers conveniently abstract away linking of Spectrum MPI, it's
+sometimes helpful to see exactly what's happening when invoked. The ``--showme``
 flag will display the full link lines, without actually compiling:
 
 ::
@@ -1269,33 +1274,34 @@ OpenMP
 +---------------+-------------------+---------------------+-------------------+---------------------------------------------------------------------------------+
 | **Vendor**    | **3.1 Support**   | **Enable OpenMP**   | **4.x Support**   | **Enable OpenMP 4.x Offload**                                                   |
 +===============+===================+=====================+===================+=================================================================================+
-| **IBM**       | FULL              | -qsmp=omp           | PARTIAL           | -qsmp=omp -qoffload                                                             |
+| **IBM**       | FULL              | ``-qsmp=omp``       | PARTIAL           | ``-qsmp=omp -qoffload``                                                         |
 +---------------+-------------------+---------------------+-------------------+---------------------------------------------------------------------------------+
-| **GNU**       | FULL              | -fopenmp            | PARTIAL           | -fopenmp                                                                        |
+| **GNU**       | FULL              | ``-fopenmp``        | PARTIAL           | ``-fopenmp``                                                                    |
 +---------------+-------------------+---------------------+-------------------+---------------------------------------------------------------------------------+
-| **clang**     | FULL              | -fopenmp            | PARTIAL           | -fopenmp -fopenmp-targets=nvptx64-nvidia-cuda --cuda-path=${OLCF\_CUDA\_ROOT}   |
+| **clang**     | FULL              | ``-fopenmp``        | PARTIAL           | ``-fopenmp -fopenmp-targets=nvptx64-nvidia-cuda --cuda-path=${OLCF_CUDA_ROOT}`` |
 +---------------+-------------------+---------------------+-------------------+---------------------------------------------------------------------------------+
-| **xlflang**   | FULL              | -fopenmp            | PARTIAL           | -fopenmp -fopenmp-targets=nvptx64-nvidia-cuda                                   |
+| **xlflang**   | FULL              | ``-fopenmp``        | PARTIAL           | ``-fopenmp -fopenmp-targets=nvptx64-nvidia-cuda``                               |
 +---------------+-------------------+---------------------+-------------------+---------------------------------------------------------------------------------+
-| **PGI**       | FULL              | -mp                 | NONE              | NONE                                                                            |
+| **PGI**       | FULL              | ``-mp``             | NONE              | NONE                                                                            |
 +---------------+-------------------+---------------------+-------------------+---------------------------------------------------------------------------------+
 
 OpenACC
 ^^^^^^^
 
-+--------------+--------------------+-----------------------+-------------------------+
-| **Vendor**   | **Module**         | **OpenACC Support**   | **Enable OpenACC**      |
-+==============+====================+=======================+=========================+
-| **IBM**      | xl                 | NONE                  | NONE                    |
-+--------------+--------------------+-----------------------+-------------------------+
-| **GNU**      | system default     | NONE                  | NONE                    |
-+--------------+--------------------+-----------------------+-------------------------+
-| **GNU**      | gcc                | 2.5                   | -fopenacc               |
-+--------------+--------------------+-----------------------+-------------------------+
-| **LLVM**     | clang or xlflang   | NONE                  | NONE                    |
-+--------------+--------------------+-----------------------+-------------------------+
-| **PGI**      | pgi                | 2.5                   | -acc, -ta=nvidia:cc70   |
-+--------------+--------------------+-----------------------+-------------------------+
++--------------+--------------------+-----------------------+---------------------------+
+| **Vendor**   | **Module**         | **OpenACC Support**   | **Enable OpenACC**        |
++==============+====================+=======================+===========================+
+| **IBM**      | ``xl``             | NONE                  | NONE                      |
++--------------+--------------------+-----------------------+---------------------------+
+| **GNU**      | system default     | NONE                  | NONE                      |
++--------------+--------------------+-----------------------+---------------------------+
+| **GNU**      | ``gcc``            | 2.5                   | ``-fopenacc``             |
++--------------+--------------------+-----------------------+---------------------------+
+| **LLVM**     | ``clang`` or       |                       |                           |
+|              | ``xlflang``        | NONE                  | NONE                      |
++--------------+--------------------+-----------------------+---------------------------+
+| **PGI**      | ``pgi``            | 2.5                   | ``-acc, -ta=nvidia:cc70`` |
++--------------+--------------------+-----------------------+---------------------------+
 
 CUDA compilation
 ^^^^^^^^^^^^^^^^
@@ -1305,23 +1311,22 @@ NVIDIA
 
 CUDA C/C++ support is provided through the ``cuda`` module.
 
-**nvcc** : Primary CUDA C/C++ compiler
+``nvcc`` : Primary CUDA C/C++ compiler
 
 **Language support**
 
 
-**-std=c++11** : provide C++11 support
+``-std=c++11`` : provide C++11 support
 
-**--expt-extended-lambda** : provide experimental host/device lambda support
+``--expt-extended-lambda`` : provide experimental host/device lambda support
 
-**--expt-relaxed-constexpr** : provide experimental host/device constexpr
-support
+``--expt-relaxed-constexpr`` : provide experimental host/device constexpr support
 
 **Compiler support**
 
 NVCC currently supports XL, GCC, and PGI C++ backends.
 
-**--ccbin** : set to host compiler location
+``--ccbin`` : set to host compiler location
 
 CUDA Fortran compilation
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1332,39 +1337,39 @@ IBM
 The IBM compiler suite is made available through the default loaded xl
 module, the cuda module is also required.
 
-xlcuf : primary Cuda fortran compiler, thread safe
+``xlcuf`` : primary Cuda fortran compiler, thread safe
 
 **Language support flags**
 
--qlanglvl=90std : provide Fortran90 support
+``-qlanglvl=90std`` : provide Fortran90 support
 
--qlanglvl=95std : provide Fortran95 support
+``-qlanglvl=95std`` : provide Fortran95 support
 
--qlanglvl=2003std : provide Fortran2003 support
+``-qlanglvl=2003std`` : provide Fortran2003 support
 
--qlanglvl=2008std :provide Fortran2003 support
+``-qlanglvl=2008std`` : provide Fortran2003 support
 
 PGI
 """
 
-The PGI compiler suite is available through the pgi module.
+The PGI compiler suite is available through the ``pgi`` module.
 
-pgfortran : Primary fortran compiler with CUDA Fortran support
+``pgfortran`` : Primary fortran compiler with CUDA Fortran support
 
 **Language support:**
 
 
-Files with .cuf suffix automatically compiled with cuda fortran support
+Files with ``.cuf`` suffix automatically compiled with cuda fortran support
 
 Standard fortran suffixed source files determines the standard involved,
 see the man page for full details
 
--Mcuda : Enable CUDA Fortran on provided source file
+``-Mcuda`` : Enable CUDA Fortran on provided source file
 
 Linking in Libraries
 --------------------
 
-OLCF systems provide hundreds of software packages and scientific
+OLCF systems provide many software packages and scientific
 libraries pre-installed at the system-level for users to take advantage
 of. In order to link these libraries into an application, users must
 direct the compiler to their location. The ``module show`` command can
@@ -1669,7 +1674,7 @@ that enable large jobs to run in a timely fashion.
     Summit.
 
 The basic priority-setting mechanism for jobs waiting in the queue is
-the time a job has been waiting relative to other jobs in the queue. 
+the time a job has been waiting relative to other jobs in the queue.
 
 If your jobs require resources outside these queue policies, please
 complete the relevant request form on the `Special
