@@ -147,8 +147,8 @@ running:
 
 Additionally, documentation can be found at the Gleicher Enterprises
 website, including an `HSI Reference
-Manual <http://scout.mgleicher.us/hsi/hsi_reference_manual_2/>`__ and
-man pages for `HSI <http://scout.mgleicher.us/hsi/hsi_man_page.html>`__.
+Manual <http://pal.mgleicher.us/HSI/hsi/hsi_reference_manual_2/>`__ and
+man pages for `HSI <http://pal.mgleicher.us/HSI/hsi/hsi_man_page.html>`__.
 
 Using HTAR
 ----------
