@@ -51,37 +51,34 @@ instructions above regarding transfer files from Atlas to Alpine:
 
 -  Declare path
 
-.. image:: /images/declare_path.png
+.. image:: /images/globus_first_endpoint.png
    :align: center
 
 
--  Open a second panel to declare where your files would like to be
-   transferred
+-  Open a second panel to declare the new endpoint called **OLCF HPSS** and use the appropriate path for HPSS
 
-add image
+.. image:: /images/globus_second_endpoint_hpss.png
+   :align: center
 
--  Declare the new endpoint called OLCF HPSS and use the appropriate
-   path for HPSS
+.. image:: /images/globus_second_endpoint_hpss2.png
+   :align: center
 
-add image
-add image
-add image
 
--  Select if you want an encrypt transfer, select your file/folder and
-   click start
+-  Select your file/folder and click start. hen an activity report will appear and you can click on it to see the status. When the transfer is finished or failed, you will receive an email
 
-add image  
+.. image:: /images/globus_select_start.png
+   :align: center
 
--  Then an activity report will appear and you can click on it to see
-   the status. When the transfer is finished or failed, you will receive
-   an email
+.. image:: /images/globus_activity.png
+   :align: center
 
-add image
 
--  When you click on the activity of the corresponding transfer, you can
-   see the status or the results when it is finished
+.. image:: /images/globus_activity_information.png
+   :align: center
 
-add image
+.. image:: /images/globus_activity_done.png
+   :align: center
+
 
 Using HSI
 ---------
