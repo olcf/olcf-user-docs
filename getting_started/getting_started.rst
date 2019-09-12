@@ -23,25 +23,26 @@ users. The type of project (INCITE, ALCC, or Director's Discretion) will
 determine the application and review procedures. \*Quarterly reports are
 required from industrial Director's Discretion projects only.
 
-+--------------------------+----------------------------------------------------+--------------------------------------------------------------------------------+--------------------------------------------------------------------------------+
-|                          | **INCITE**                                         | **Director's Discretion**                                                      | **ALCC**                                                                       |
-+==========================+====================================================+================================================================================+================================================================================+
-| **Allocations**          | Large                                              | Small                                                                          | Large                                                                          |
-+--------------------------+----------------------------------------------------+--------------------------------------------------------------------------------+--------------------------------------------------------------------------------+
-| **Call for Proposals**   | Once per year                                      | At any time                                                                    | Once per year                                                                  |
-+--------------------------+----------------------------------------------------+--------------------------------------------------------------------------------+--------------------------------------------------------------------------------+
-| **Duration**             | 1 year                                             | Up to 12 months                                                                | 1 year                                                                         |
-+--------------------------+----------------------------------------------------+--------------------------------------------------------------------------------+--------------------------------------------------------------------------------+
-| **Priority**             | High                                               | Medium                                                                         | High                                                                           |
-+--------------------------+----------------------------------------------------+--------------------------------------------------------------------------------+--------------------------------------------------------------------------------+
-| **Closeout Report**      | yes                                                | yes                                                                            | yes                                                                            |
-+--------------------------+----------------------------------------------------+--------------------------------------------------------------------------------+--------------------------------------------------------------------------------+
-| **Quarterly Reports**    | yes                                                | no*                                                                            | yes                                                                            |
-+--------------------------+----------------------------------------------------+--------------------------------------------------------------------------------+--------------------------------------------------------------------------------+
-| **Where to apply**       | `Apply for INCITE                                  | `Apply for DD                                                                  | `Apply for ALCC                                                                |
-|                          | <https://proposals.doeleadershipcomputing.org/>`__ | </for-users/documents-forms/olcf-directors-discretion-project-application/>`__ | <http://science.energy.gov/ascr/facilities/accessing-ascr-facilities/alcc/>`__ |
-+--------------------------+----------------------------------------------------+--------------------------------------------------------------------------------+--------------------------------------------------------------------------------+
++--------------------------+----------------------------------------------------+-----------------------------+--------------------------------------------------------------------------------+
+|                          | **INCITE**                                         | **Director's Discretion**   | **ALCC**                                                                       |
++==========================+====================================================+=============================+================================================================================+
+| **Allocations**          | Large                                              | Small                       | Large                                                                          |
++--------------------------+----------------------------------------------------+-----------------------------+--------------------------------------------------------------------------------+
+| **Call for Proposals**   | Once per year                                      | At any time                 | Once per year                                                                  |
++--------------------------+----------------------------------------------------+-----------------------------+--------------------------------------------------------------------------------+
+| **Duration**             | 1 year                                             | Up to 12 months             | 1 year                                                                         |
++--------------------------+----------------------------------------------------+-----------------------------+--------------------------------------------------------------------------------+
+| **Priority**             | High                                               | Medium                      | High                                                                           |
++--------------------------+----------------------------------------------------+-----------------------------+--------------------------------------------------------------------------------+
+| **Closeout Report**      | yes                                                | yes                         | yes                                                                            |
++--------------------------+----------------------------------------------------+-----------------------------+--------------------------------------------------------------------------------+
+| **Quarterly Reports**    | yes                                                | no*                         | yes                                                                            |
++--------------------------+----------------------------------------------------+-----------------------------+--------------------------------------------------------------------------------+
+| **Where to apply**       | `Apply for INCITE                                  | `Apply for DD`_             | `Apply for ALCC                                                                |
+|                          | <https://proposals.doeleadershipcomputing.org/>`__ |                             | <http://science.energy.gov/ascr/facilities/accessing-ascr-facilities/alcc/>`__ |
++--------------------------+----------------------------------------------------+-----------------------------+--------------------------------------------------------------------------------+
 
+.. _Apply for DD: https://www.olcf.ornl.gov/for-users/documents-forms/olcf-directors-discretion-project-application/
  
 
 What are the differences between project types?
@@ -79,12 +80,12 @@ productivity on leadership computing platforms. The OLCF Resource
 Utilization Council, as well as independent referees, review and approve
 all DD requests. Applications are accepted year round via the `OLCF
 Director's Discretion Project
-Application </for-users/documents-forms/olcf-directors-discretion-project-application/>`__.
+Application <https://www.olcf.ornl.gov/for-users/documents-forms/olcf-directors-discretion-project-application/>`__.
 
 **Vendor –** OLCF resources are also available to ORNL vendors.
 Applications may be submitted year round by completing the `Vendor
 Project
-Application </support/getting-started/olcf-vendor-project-application/>`__.
+Application <https://www.olcf.ornl.gov/support/getting-started/olcf-vendor-project-application/>`__.
 
     If you have questions about project types or application procedures,
     feel free to contact the OLCF Accounts Team at accounts@ccs.ornl.gov.
@@ -136,8 +137,9 @@ InfiniBand interconnect. The OLCF Director's Discretionary (DD) program
 allocates approximately 10% of the available Summit hours in a calendar
 year. **Summit is allocated in *node* hours, and a typical DD project is
 awarded between 15,000 - 20,000 *node* hours.** For more information
-about Summit, please visit the `Summit User
-Guide </for-users/system-user-guides/summit>`__.
+about Summit, please visit the :ref:`summit-user-guide`.
+
+.. _applying-for-a-user-account:
 
 Applying for a user account
 ================================
@@ -156,7 +158,7 @@ receiving a user account, and we're here to help you through them.
     Account Application and indicate you are an existing user.
 
 #. Apply for an account using the `Account Request
-   Form </support/getting-started/olcf-account-application>`__.
+   Form <https://www.olcf.ornl.gov/support/getting-started/olcf-account-application>`__.
 #. The principal investigator (PI) of the project must approve your
    account and system access. The Accounts Team will contact the PI for
    this approval.
@@ -179,105 +181,21 @@ created and you will be notified by email. Now that you have a user
 account and it has been associated with a project, you're ready to get
 to work. This website provides extensive documentation for OLCF systems,
 and can help you efficiently use your project's allocation. We recommend
-reading the `System User Guides </for-users/system-user-guides/>`__ for
-the machines you will be using often.
+reading the :ref:`system-user-guides` for the machines you will be using often.
 
-Systems Available to All Projects
+Systems and Connecting
 ======================================
 
 After a user account has been approved and created, the requesting user
 will be sent an email listing the system(s) to which the user has
-requested and been given access. In addition to the system(s) listed in
-the email, all users also have access to the following systems:
+requested and been given access.
 
-Home
------
-
-*Home* is a general purpose system that can be used to log into other
-OLCF systems that are not directly accessible from outside the OLCF
-network. For example, running the ``screen`` or ``tmux`` utility is one
-common use of Home. Compiling, data transfer, or executing long-running
-or memory-intensive tasks should never be performed on Home.
-
-Connecting to the ``home`` Host
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Home can be accessed through ssh utilities:
-
-.. code::
-
-      ssh userid@home.ccs.ornl.gov
-
-Acceptable Tasks
-^^^^^^^^^^^^^^^^^^^^^^
-
-The Home system should only be used to access systems within the OLCF
-network. The following are examples of appropriate uses of Home:
-
--  SSH
--  VI and other non-gui editors
--  Screen or other terminal multiplexers
-
-Unacceptable Tasks
-^^^^^^^^^^^^^^^^^^^
-
-The following are examples of inappropriate uses of Home:
-
--  Compiling
--  Data transfer
--  Long-running or memory-intensive tasks
-
-Data Transfer Nodes
-------------------------
-
-The *Data Transfer Nodes* (DTNs) are hosts specifically designed to
-provide optimized data transfer between OLCF systems and systems outside
-of the OLCF network. These nodes perform well on local-area transfers as
-well as the wide-area data transfers for which they are tuned. The OLCF
-recommends that users `employ these
-nodes <../file-systems/#employing-data-transfer-nodes>`__ to improve
-transfer speed and reduce load on computational systems' login and
-service nodes.
-
-High Performance Storage System (HPSS)
------------------------------------------
-
-The *High Performance Storage System (HPSS)* provides tape storage for
-large amounts of data created on OLCF systems. The HPSS can be accessed
-from any OLCF system through the ``hsi`` utility. More information about
-using HPSS can be found on the `HPSS section of the File Systems: Data
-Storage & Transfers
-page <../file-systems/#hpss-high-performance-storage-system>`__ in each
-System User Guide.
-
-Connecting for the first time
-================================
+For more information about the systems available to all projects, see
+:ref:`systems-available-to-all-projects`.
 
 With an active user account, you'll be able to log into any of the
 systems allocated to your project(s). Use of the OLCF-provided RSA
-SecurID fob is necessary since two-factor authentication is required. To
-activate a new SecurID fob:
+SecurID fob is necessary since two-factor authentication is required.
 
-#. Initiate a SSH connection to ``username@home.ccs.ornl.gov``.
-#. When prompted for a PASSCODE, enter the 6-digit code shown on the
-   fob.
-#. You will be asked if you are ready to set your PIN. Answer with "Y".
-#. You will be prompted to enter a PIN. Enter a (4) to (6) digit number
-   you can remember. You will then be prompted to re-enter your PIN.
-#. Allow the 6-digit code to change (codes regenerate every 30 seconds).
-   Once the (6) digits on your fob change, enter your PIN followed by
-   the new (6) digits displayed on the fob.
-#. Your PIN is now set, and your fob is activated for login to other
-   OLCF systems.
-
-Once activated, the RSA SecurID fob can be used to access OLCF systems.
-When initiating a SSH connection to a system, you will be prompted to
-enter your PASSCODE. Simply enter your PIN followed by the (6) digit
-code shown on your SecurID fob and press enter. For example, if your pin
-is ``1234`` and the (6) digits on the fob are ``000987``, you would
-enter ``1234000987`` when prompted for a PASSCODE.
-
-    **Note:** The 6-digit code displayed on the SecurID fob can only be used
-    once. If prompted for multiple PASSCODE entries, always allow the code
-    to change between attempts. Re-using a code can cause your account to be
-    automatically locked.
+For details about setting up your RSA token and logging in to the systems, see
+:ref:`connecting-to-olcf`.

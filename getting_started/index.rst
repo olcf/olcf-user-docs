@@ -1,3 +1,5 @@
+.. _getting-started-at-the-olcf:
+
 ############################
 Getting Started at the OLCF
 ############################
@@ -13,10 +15,9 @@ Getting Started at the OLCF
 Additional Resources
 ======================
 
-We're here to provide support at every step. We also provide a
-collection of `Tutorials </for-users/training/tutorials/>`__ for applied
-technical demonstrations, `System User
-Guides </for-users/system-user-guides/>`__, `Training
-Events </for-users/training/>`__, and the `User Assistance
-Center </for-users/user-assistance/>`__ to answer questions and resolve
-technical issues as they arise.
+We're here to provide support at every step. We also provide a collection of
+`Tutorials <https://www.olcf.ornl.gov/for-users/training/tutorials/>`__ for
+applied technical demonstrations, :ref:`system-user-guides`, `Training Events
+<https://www.olcf.ornl.gov/for-users/training/>`__, and the `User Assistance
+Center <https://www.olcf.ornl.gov/for-users/user-assistance/>`__ to answer
+questions and resolve technical issues as they arise.

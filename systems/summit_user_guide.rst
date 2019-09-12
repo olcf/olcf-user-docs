@@ -1,3 +1,5 @@
+.. _summit-user-guide:
+
 ******************
 Summit User Guide
 ******************
@@ -38,7 +40,7 @@ Summit Nodes
 
 The basic building block of Summit is the IBM Power System AC922 node.
 Each of the approximately 4,600 compute nodes on Summit contains two IBM
-POWER9 processors and six `NVIDIA Volta V100`_ accelerators and provides 
+POWER9 processors and six `NVIDIA Volta V100`_ accelerators and provides
 a theoretical double-precision capability of
 approximately 40 TF. Each POWER9 processor is connected via dual NVLINK
 bricks, each capable of a 25GB/s transfer rate in each direction. Nodes
@@ -124,7 +126,7 @@ Storage System (HPSS) for user and project archival storage.
 Operating System
 ----------------
 
-Summit is running Red Hat Enterprise Linux (RHEL) version 7.5.
+Summit is running Red Hat Enterprise Linux (RHEL) version 7.6.
 
 .. _hardware-threads:
 
@@ -415,7 +417,13 @@ following (outside) links.
 Connecting
 ==========
 
-FIXME
+To connect to Summit, ssh to summit.olcf.ornl.gov. For example:
+
+::
+
+    ssh username\@summit.olcf.ornl.gov
+
+For more information on connecting to OLCF resources, see :ref:`connecting-to-olcf`
 
 .. _data-storage-transfers:
 
@@ -983,7 +991,7 @@ For a full list of software available at the OLCF, please see the
 Shell & Programming Environments
 ================================
 
-OLCF systems provide hundreds of software packages and scientific
+OLCF systems provide many software packages and scientific
 libraries pre-installed at the system-level for users to take advantage
 of. To facilitate this, environment management tools are employed to
 handle necessary changes to the shell. The sections below provide
@@ -1016,13 +1024,14 @@ to the shell’s environment variables (such as ``PATH``,
 ``LD_LIBRARY_PATH``, and ``PKG_CONFIG_PATH``), Lmod allows you to alter
 the software available in your shell environment without the risk of
 creating package and version combinations that cannot coexist in a
-single environment. Lmod is a recursive environment module system,
-meaning it is aware of module compatibility and actively alters the
-environment to protect against conflicts. Messages to stderr are issued
-upon Lmod implicitly altering the environment. Environment modules are
-structured hierarchically by compiler family such that packages built
-with a given compiler will only be accessible if the compiler family is
-first present in the environment.
+single environment.
+
+Lmod is a recursive environment module system, meaning it is aware of module
+compatibility and actively alters the environment to protect against conflicts.
+Messages to stderr are issued upon Lmod implicitly altering the environment.
+Environment modules are structured hierarchically by compiler family such
+that packages built with a given compiler will only be accessible if the
+compiler family is first present in the environment.
 
     **Note:** Lmod can interpret both Lua modulefiles and legacy Tcl
     modulefiles. However, long and logic-heavy Tcl modulefiles may require
@@ -1165,66 +1174,71 @@ using the modules system:
 
     summit$ module -t avail pgi
     /sw/summit/modulefiles/site/linux-rhel7-ppc64le/Core:
-    pgi/17.10-patched
-    pgi/18.3
-    pgi/18.4
-    pgi/18.5
     pgi/18.7
+    pgi/18.10
+    pgi/19.1
+    pgi/19.4
+    pgi/19.5
+    pgi/19.7
 
 C compilation
 ^^^^^^^^^^^^^
 
     **Note:** type char is unsigned by default
 
-+--------------+------------------+----------------+---------------+------------------+------------------+---------------------------+--------------------+
-| **Vendor**   | **Module**       | **Compiler**   | **Version**   | **Enable C99**   | **Enable C11**   | **Default signed char**   | **Define macro**   |
-+==============+==================+================+===============+==================+==================+===========================+====================+
-| **IBM**      | xl               | xlc xlc\_r     | 13.1.6        | -std=gnu99       | -std=gnu11       | -qchar=signed             | -WF,-D             |
-+--------------+------------------+----------------+---------------+------------------+------------------+---------------------------+--------------------+
-| **GNU**      | system default   | gcc            | 4.8.5         | -std=gnu99       | -std=gnu11       | -fsigned-char             | -D                 |
-+--------------+------------------+----------------+---------------+------------------+------------------+---------------------------+--------------------+
-| **GNU**      | gcc              | gcc            | 6.4.0         | -std=gnu99       | -std=gnu11       | -fsigned-char             | -D                 |
-+--------------+------------------+----------------+---------------+------------------+------------------+---------------------------+--------------------+
-| **LLVM**     | llvm             | clang          | 3.8.0         | default          | -std=gnu11       | -fsigned-char             | -D                 |
-+--------------+------------------+----------------+---------------+------------------+------------------+---------------------------+--------------------+
-| **PGI**      | pgi              | pgcc           | 17.10         | -c99             | -c11             | -Mschar                   | -D                 |
-+--------------+------------------+----------------+---------------+------------------+------------------+---------------------------+--------------------+
++--------------+------------------+----------------+------------------+------------------+------------------+---------------------------+--------------------+
+| **Vendor**   | **Module**       | **Compiler**   | **Default**      | **Enable C99**   | **Enable C11**   | **Default signed char**   | **Define macro**   |
+|              |                  |                |                  |                  |                  |                           |                    |
++==============+==================+================+==================+==================+==================+===========================+====================+
+| **IBM**      | ``xl``           | xlc xlc\_r     | 16.1.1-3         | ``-std=gnu99``   | ``-std=gnu11``   | ``-qchar=signed``         | ``-WF,-D``         |
++--------------+------------------+----------------+------------------+------------------+------------------+---------------------------+--------------------+
+| **GNU**      | system default   | gcc            | 4.8.5            | ``-std=gnu99``   | ``-std=gnu11``   | ``-fsigned-char``         | ``-D``             |
++--------------+------------------+----------------+------------------+------------------+------------------+---------------------------+--------------------+
+| **GNU**      | ``gcc``          | gcc            | 6.4.0            | ``-std=gnu99``   | ``-std=gnu11``   | ``-fsigned-char``         | ``-D``             |
++--------------+------------------+----------------+------------------+------------------+------------------+---------------------------+--------------------+
+| **LLVM**     | ``llvm``         | clang          | 1.0-20190225     | default          | ``-std=gnu11``   | ``-fsigned-char``         | ``-D``             |
++--------------+------------------+----------------+------------------+------------------+------------------+---------------------------+--------------------+
+| **PGI**      | ``pgi``          | pgcc           | 19.4             | ``-c99``         | ``-c11``         | ``-Mschar``               | ``-D``             |
++--------------+------------------+----------------+------------------+------------------+------------------+---------------------------+--------------------+
 
 C++ compilations
 ^^^^^^^^^^^^^^^^
 
     **Note:** type char is unsigned by default
 
-+--------------+------------------+-------------------+---------------+--------------------------------+--------------------------------+---------------------------+--------------------+
-| **Vendor**   | **Module**       | **Compiler**      | **Version**   | **Enable C++11**               | **Enable C++14**               | **Default signed char**   | **Define macro**   |
-+==============+==================+===================+===============+================================+================================+===========================+====================+
-| **IBM**      | xl               | xlc++, xlc++\_r   | 13.1.6        | -std=gnu++11                   | -std=gnu++1y *(PARTIAL)*       | -qchar=signed             | -WF,-D             |
-+--------------+------------------+-------------------+---------------+--------------------------------+--------------------------------+---------------------------+--------------------+
-| **GNU**      | system default   | g++               | 4.8.5         | -std=gnu++11                   | -std=gnu++1y                   | -fsigned-char             | -D                 |
-+--------------+------------------+-------------------+---------------+--------------------------------+--------------------------------+---------------------------+--------------------+
-| **GNU**      | gcc              | g++               | 6.4.0         | -std=gnu++11                   | -std=gnu++1y                   | -fsigned-char             | -D                 |
-+--------------+------------------+-------------------+---------------+--------------------------------+--------------------------------+---------------------------+--------------------+
-| **LLVM**     | llvm             | clang++           | 3.8.0         | -std=gnu++11                   | -std=gnu++1y                   | -fsigned-char             | -D                 |
-+--------------+------------------+-------------------+---------------+--------------------------------+--------------------------------+---------------------------+--------------------+
-| **PGI**      | pgi              | pgc++             | 17.10         | -std=c++11 --gnu\_extensions   | -std=c++14 --gnu\_extensions   | -Mschar                   | -D                 |
-+--------------+------------------+-------------------+---------------+--------------------------------+--------------------------------+---------------------------+--------------------+
++--------------+------------------+-------------------+------------------+--------------------------------+--------------------------------+---------------------------+--------------------+
+| **Vendor**   | **Module**       | **Compiler**      | **Default**      | **Enable C++11**               | **Enable C++14**               | **Default signed char**   | **Define macro**   |
+|              |                  |                   |                  |                                |                                |                           |                    |
++==============+==================+===================+==================+================================+================================+===========================+====================+
+| **IBM**      | ``xl``           | xlc++, xlc++\_r   | 16.1.1-3         | ``-std=gnu++11``               | ``-std=gnu++1y`` (PARTIAL)*    | ``-qchar=signed``         | ``-WF,-D``         |
++--------------+------------------+-------------------+------------------+--------------------------------+--------------------------------+---------------------------+--------------------+
+| **GNU**      | system default   | g++               | 4.8.5            | ``-std=gnu++11``               | ``-std=gnu++1y``               | ``-fsigned-char``         | ``-D``             |
++--------------+------------------+-------------------+------------------+--------------------------------+--------------------------------+---------------------------+--------------------+
+| **GNU**      | ``gcc``          | g++               | 6.4.0            | ``-std=gnu++11``               | ``-std=gnu++1y``               | ``-fsigned-char``         | ``-D``             |
++--------------+------------------+-------------------+------------------+--------------------------------+--------------------------------+---------------------------+--------------------+
+| **LLVM**     | ``llvm``         | clang++           | 1.0-20190225     | ``-std=gnu++11``               | ``-std=gnu++1y``               | ``-fsigned-char``         | ``-D``             |
++--------------+------------------+-------------------+------------------+--------------------------------+--------------------------------+---------------------------+--------------------+
+| **PGI**      | ``pgi``          | pgc++             | 19.4             | ``-std=c++11 -gnu_extensions`` | ``-std=c++14 -gnu_extensions`` | ``-Mschar``               | ``-D``             |
++--------------+------------------+-------------------+------------------+--------------------------------+--------------------------------+---------------------------+--------------------+
 
 Fortran compilation
 ^^^^^^^^^^^^^^^^^^^
 
-+--------------+------------------+-----------------------------------+----------------+-------------------------------+-------------------------------+-------------------------------+--------------------+
-| **Vendor**   | **Module**       | **Compiler**                      | **Version**    | **Enable F90**                | **Enable F2003**              | **Enable F2008**              | **Define macro**   |
-+==============+==================+===================================+================+===============================+===============================+===============================+====================+
-| **IBM**      | xl               | xlf xlf90 xlf95 xlf2003 xlf2008   | 15.1.6         | -qlanglvl=90std               | -qlanglvl=2003std             | -qlanglvl=2008std             | -WF,-D             |
-+--------------+------------------+-----------------------------------+----------------+-------------------------------+-------------------------------+-------------------------------+--------------------+
-| **GNU**      | system default   | gfortran                          | 4.8.5, 6.4.0   | -std=f90                      | -std=f2003                    | -std=f2008                    | -D                 |
-+--------------+------------------+-----------------------------------+----------------+-------------------------------+-------------------------------+-------------------------------+--------------------+
-| **LLVM**     | llvm             | xlflang                           | 3.8.0          | n/a                           | n/a                           | n/a                           | -D                 |
-+--------------+------------------+-----------------------------------+----------------+-------------------------------+-------------------------------+-------------------------------+--------------------+
-| **PGI**      | pgi              | pgfortran                         | 17.10          | use .F90 source file suffix   | use .F03 source file suffix   | use .F08 source file suffix   | -D                 |
-+--------------+------------------+-----------------------------------+----------------+-------------------------------+-------------------------------+-------------------------------+--------------------+
++--------------+------------------+-----------------------------------+------------------+--------------------------+---------------------------+--------------------------+--------------------+
+| **Vendor**   | **Module**       | **Compiler**                      | **Default**      | **Enable F90**           | **Enable F2003**          | **Enable F2008**         | **Define macro**   |
+|              |                  |                                   |                  |                          |                           |                          |                    |
++==============+==================+===================================+==================+==========================+===========================+==========================+====================+
+| **IBM**      | ``xl``           | xlf xlf90 xlf95 xlf2003 xlf2008   | 16.1.1-3         | ``-qlanglvl=90std``      | ``-qlanglvl=2003std``     | ``-qlanglvl=2008std``    | ``-WF,-D``         |
++--------------+------------------+-----------------------------------+------------------+--------------------------+---------------------------+--------------------------+--------------------+
+| **GNU**      | system default   | gfortran                          | 4.8.5, 6.4.0     | ``-std=f90``             | ``-std=f2003``            | ``-std=f2008``           | ``-D``             |
++--------------+------------------+-----------------------------------+------------------+--------------------------+---------------------------+--------------------------+--------------------+
+| **LLVM**     | ``llvm``         | xlflang                           | 1.0-20190225     | n/a                      | n/a                       | n/a                      | ``-D``             |
++--------------+------------------+-----------------------------------+------------------+--------------------------+---------------------------+--------------------------+--------------------+
+| **PGI**      | ``pgi``          | pgfortran                         | 19.4             | use ``.F90`` source file |  use ``.F03`` source file | use ``.F08`` source file | ``-D``             |
+|              |                  |                                   |                  | suffix                   |  suffix                   | suffix                   |                    |
++--------------+------------------+-----------------------------------+------------------+--------------------------+---------------------------+--------------------------+--------------------+
 
-    **Note:** \* The xlflang module currently conflicts with the clang
+    **Note:** The xlflang module currently conflicts with the clang
     module. This restriction is expected to be lifted in future releases.
 
 MPI
@@ -1234,16 +1248,16 @@ MPI on Summit is provided by IBM Spectrum MPI. Spectrum MPI provides
 compiler wrappers that automatically choose the proper compiler to build
 your application.
 
-The following compiler wrappers are available: 
+The following compiler wrappers are available:
 
-**C**: ``mpicc`` 
+**C**: ``mpicc``
 
-**C++**: ``mpic++``, ``mpiCC`` 
+**C++**: ``mpic++``, ``mpiCC``
 
-**Fortran**: ``mpifort``, ``mpif77``, ``mpif90`` 
+**Fortran**: ``mpifort``, ``mpif77``, ``mpif90``
 
-While these wrappers conveniently abstract away linking of Spectrum MPI, it's 
-sometimes helpful to see exactly what's happening when invoked. The ``--showme`` 
+While these wrappers conveniently abstract away linking of Spectrum MPI, it's
+sometimes helpful to see exactly what's happening when invoked. The ``--showme``
 flag will display the full link lines, without actually compiling:
 
 ::
@@ -1266,33 +1280,34 @@ OpenMP
 +---------------+-------------------+---------------------+-------------------+---------------------------------------------------------------------------------+
 | **Vendor**    | **3.1 Support**   | **Enable OpenMP**   | **4.x Support**   | **Enable OpenMP 4.x Offload**                                                   |
 +===============+===================+=====================+===================+=================================================================================+
-| **IBM**       | FULL              | -qsmp=omp           | PARTIAL           | -qsmp=omp -qoffload                                                             |
+| **IBM**       | FULL              | ``-qsmp=omp``       | PARTIAL           | ``-qsmp=omp -qoffload``                                                         |
 +---------------+-------------------+---------------------+-------------------+---------------------------------------------------------------------------------+
-| **GNU**       | FULL              | -fopenmp            | PARTIAL           | -fopenmp                                                                        |
+| **GNU**       | FULL              | ``-fopenmp``        | PARTIAL           | ``-fopenmp``                                                                    |
 +---------------+-------------------+---------------------+-------------------+---------------------------------------------------------------------------------+
-| **clang**     | FULL              | -fopenmp            | PARTIAL           | -fopenmp -fopenmp-targets=nvptx64-nvidia-cuda --cuda-path=${OLCF\_CUDA\_ROOT}   |
+| **clang**     | FULL              | ``-fopenmp``        | PARTIAL           | ``-fopenmp -fopenmp-targets=nvptx64-nvidia-cuda --cuda-path=${OLCF_CUDA_ROOT}`` |
 +---------------+-------------------+---------------------+-------------------+---------------------------------------------------------------------------------+
-| **xlflang**   | FULL              | -fopenmp            | PARTIAL           | -fopenmp -fopenmp-targets=nvptx64-nvidia-cuda                                   |
+| **xlflang**   | FULL              | ``-fopenmp``        | PARTIAL           | ``-fopenmp -fopenmp-targets=nvptx64-nvidia-cuda``                               |
 +---------------+-------------------+---------------------+-------------------+---------------------------------------------------------------------------------+
-| **PGI**       | FULL              | -mp                 | NONE              | NONE                                                                            |
+| **PGI**       | FULL              | ``-mp``             | NONE              | NONE                                                                            |
 +---------------+-------------------+---------------------+-------------------+---------------------------------------------------------------------------------+
 
 OpenACC
 ^^^^^^^
 
-+--------------+--------------------+-----------------------+-------------------------+
-| **Vendor**   | **Module**         | **OpenACC Support**   | **Enable OpenACC**      |
-+==============+====================+=======================+=========================+
-| **IBM**      | xl                 | NONE                  | NONE                    |
-+--------------+--------------------+-----------------------+-------------------------+
-| **GNU**      | system default     | NONE                  | NONE                    |
-+--------------+--------------------+-----------------------+-------------------------+
-| **GNU**      | gcc                | 2.5                   | -fopenacc               |
-+--------------+--------------------+-----------------------+-------------------------+
-| **LLVM**     | clang or xlflang   | NONE                  | NONE                    |
-+--------------+--------------------+-----------------------+-------------------------+
-| **PGI**      | pgi                | 2.5                   | -acc, -ta=nvidia:cc70   |
-+--------------+--------------------+-----------------------+-------------------------+
++--------------+--------------------+-----------------------+---------------------------+
+| **Vendor**   | **Module**         | **OpenACC Support**   | **Enable OpenACC**        |
++==============+====================+=======================+===========================+
+| **IBM**      | ``xl``             | NONE                  | NONE                      |
++--------------+--------------------+-----------------------+---------------------------+
+| **GNU**      | system default     | NONE                  | NONE                      |
++--------------+--------------------+-----------------------+---------------------------+
+| **GNU**      | ``gcc``            | 2.5                   | ``-fopenacc``             |
++--------------+--------------------+-----------------------+---------------------------+
+| **LLVM**     | ``clang`` or       |                       |                           |
+|              | ``xlflang``        | NONE                  | NONE                      |
++--------------+--------------------+-----------------------+---------------------------+
+| **PGI**      | ``pgi``            | 2.5                   | ``-acc, -ta=nvidia:cc70`` |
++--------------+--------------------+-----------------------+---------------------------+
 
 CUDA compilation
 ^^^^^^^^^^^^^^^^
@@ -1302,23 +1317,22 @@ NVIDIA
 
 CUDA C/C++ support is provided through the ``cuda`` module.
 
-**nvcc** : Primary CUDA C/C++ compiler
+``nvcc`` : Primary CUDA C/C++ compiler
 
 **Language support**
 
 
-**-std=c++11** : provide C++11 support
+``-std=c++11`` : provide C++11 support
 
-**--expt-extended-lambda** : provide experimental host/device lambda support
+``--expt-extended-lambda`` : provide experimental host/device lambda support
 
-**--expt-relaxed-constexpr** : provide experimental host/device constexpr
-support
+``--expt-relaxed-constexpr`` : provide experimental host/device constexpr support
 
 **Compiler support**
 
 NVCC currently supports XL, GCC, and PGI C++ backends.
 
-**--ccbin** : set to host compiler location
+``--ccbin`` : set to host compiler location
 
 CUDA Fortran compilation
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1329,39 +1343,39 @@ IBM
 The IBM compiler suite is made available through the default loaded xl
 module, the cuda module is also required.
 
-xlcuf : primary Cuda fortran compiler, thread safe
+``xlcuf`` : primary Cuda fortran compiler, thread safe
 
 **Language support flags**
 
--qlanglvl=90std : provide Fortran90 support
+``-qlanglvl=90std`` : provide Fortran90 support
 
--qlanglvl=95std : provide Fortran95 support
+``-qlanglvl=95std`` : provide Fortran95 support
 
--qlanglvl=2003std : provide Fortran2003 support
+``-qlanglvl=2003std`` : provide Fortran2003 support
 
--qlanglvl=2008std :provide Fortran2003 support
+``-qlanglvl=2008std`` : provide Fortran2003 support
 
 PGI
 """
 
-The PGI compiler suite is available through the pgi module.
+The PGI compiler suite is available through the ``pgi`` module.
 
-pgfortran : Primary fortran compiler with CUDA Fortran support
+``pgfortran`` : Primary fortran compiler with CUDA Fortran support
 
 **Language support:**
 
 
-Files with .cuf suffix automatically compiled with cuda fortran support
+Files with ``.cuf`` suffix automatically compiled with cuda fortran support
 
 Standard fortran suffixed source files determines the standard involved,
 see the man page for full details
 
--Mcuda : Enable CUDA Fortran on provided source file
+``-Mcuda`` : Enable CUDA Fortran on provided source file
 
 Linking in Libraries
 --------------------
 
-OLCF systems provide hundreds of software packages and scientific
+OLCF systems provide many software packages and scientific
 libraries pre-installed at the system-level for users to take advantage
 of. In order to link these libraries into an application, users must
 direct the compiler to their location. The ``module show`` command can
@@ -1434,6 +1448,9 @@ from within an LSF job (either batch or interactive) on a launch node.
 Othewise, you will not have any compute nodes allocated and your parallel
 job will run on the login node. If this happens, your job will interfere with
 (and be interfered with by) other users' login node tasks.
+
+
+.. _batch-scripts:
 
 Batch Scripts
 -------------
@@ -1540,8 +1557,7 @@ script. If conflicting options are specified (i.e. different walltime
 specified on the command line versus in the script), the option on the
 command line takes precedence. Note that LSF has numerous options; only
 the most common ones are described here. For more in-depth information
-about other LSF options, see the
-`documentation <#for-more-information>`__.
+about other LSF options, see the ``bsub`` man page.
 
 +--------------------+----------------------------------------+----------------------------------------------------------------------------------+
 | Option             | Example Usage                          | Description                                                                      |
@@ -1664,7 +1680,7 @@ that enable large jobs to run in a timely fashion.
     Summit.
 
 The basic priority-setting mechanism for jobs waiting in the queue is
-the time a job has been waiting relative to other jobs in the queue. 
+the time a job has been waiting relative to other jobs in the queue.
 
 If your jobs require resources outside these queue policies, please
 complete the relevant request form on the `Special
@@ -2880,8 +2896,9 @@ codes. No extra compiling steps are required to use ``nvprof``. The
 profiler includes tracing capability as well as the ability to gather
 many performance metrics, including FLOPS. The profiler data output can
 be saved and imported into the NVIDIA Visual Profiler for additional
-graphical analysis. To use ``nvprof``, the ``cuda`` module must be
-loaded.
+graphical analysis.
+
+To use ``nvprof``, the ``cuda`` module must be loaded.
 
 ::
 
@@ -2930,12 +2947,37 @@ more useful. For information on how to view the output of ``nvprof`` in
 the NVIDIA Visual Profiler, see the `NVIDIA
 Documentation <http://docs.nvidia.com/cuda/profiler-users-guide/#nvprof-overview>`__.
 
+Score-P
+-------
+
+The `Score-P <http://score-p.org/>`__ measurement infrastructure is a
+highly scalable and easy-to-use tool suite for profiling, event
+tracing, and online analysis of HPC applications. Score-P supports
+analyzing C, C++ and Fortran applications that make use of
+multi-processing (MPI, SHMEM), thread parallelism (OpenMP, PThreads) and
+accelerators (CUDA, OpenCL, OpenACC) and combinations.
+
+For detailed information about using Score-P on Summit and the
+builds available, please see the
+`Score-P Software Page. <https://www.olcf.ornl.gov/software_package/score-p/>`__
+
 Vampir
 ------
 
-[ls\_content\_block id="24496" para="full"] For detailed information
-about using Vampir on Summit and the builds available, please see the
-`Vampir Software Page <https://www.olcf.ornl.gov/software_package/vampir/>`__.
+`Vampir <http://vampir.eu/>`__ is a software performance visualizer focused on highly
+parallel applications. It presents a unified view on an application
+run including the use of programming paradigms like MPI, OpenMP,
+PThreads, CUDA, OpenCL and OpenACC. It also incorporates file I/O,
+hardware performance counters and other performance data sources.
+Various interactive displays offer detailed insight into the performance
+behavior of the analyzed application. Vampir’s scalable analysis
+server and visualization engine enable interactive navigation of
+large amounts of performance data. `Score-P <https://olcf.ornl.gov/software_package/score-p>`__
+and `TAU <https://www.olcf.ornl.gov/software_package/tau>`__ generate OTF2
+trace files for Vampir to visualize.
+
+For detailed information about using Vampir on Summit and the builds available,
+please see the `Vampir Software Page <https://www.olcf.ornl.gov/software_package/vampir/>`__.
 
 .. _known-issues:
 
@@ -2952,11 +2994,6 @@ Adding ``FAULT_TOLERANCE=1`` in your individual ``~/.jsm.conf`` file,
 will result in LSF jobs failing to successfully start. A bug has been
 filed with IBM to address this issue.
 
-CSM-based launch is not currently supported
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Users should not use ``JSMD_LAUNCH_MODE=csm`` in their ``~/.jsm.conf``
-file at this time. A bug has been filed with IBM to address this issue.
 
 Spindle is not currently supported
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -2994,11 +3031,13 @@ more detail information about the MPI communication of your job. To
 gather MPI tracing data, you can set
 ``export OMPI_LD_PRELOAD_POSTPEND=$OLCF_SPECTRUM_MPI_ROOT/lib/libmpitrace.so``
 in your environment. This will generate profile files with timings for
-the individual processes of your job. In addition, to debug slow startup
-JSM provides the option to create a progress file. The file will show
-information that can be helpful to pinpoint if a specific node is
-hanging or slowing down the job step launch. To enable it, you can use:
-``jsrun --progress ./my_progress_file_output.txt``.
+the individual processes of your job.
+
+In addition, to debug slow startup JSM provides the option to create a
+progress file. The file will show information that can be helpful to
+pinpoint if a specific node is hanging or slowing down the job step
+launch. To enable it, you can use: ``jsrun --progress
+./my_progress_file_output.txt``.
 
 -a flag ignored when using a jsrun resource set file with -U
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -3048,8 +3087,11 @@ jsrun explicit resource file (ERF) allocates incorrect resources
 
 When using an ERF that requests cores on a compute node’s second socket
 (hardware threads 88-171), the set of cores allocated on the second
-socket are shifted upwards by (1) physical core. For example: The
-following ERF requests the first physical core on each socket:
+socket are shifted upwards by (1) physical core.
+
+For example:
+
+The following ERF requests the first physical core on each socket:
 
 ::
 
@@ -3066,51 +3108,35 @@ physical core, allocating 92-95 instead of the specified 88-91.
 
     Task 1 ( 1/2, 1/2 ) is bound to cpu[s] 92-95 on host h36n03 with OMP_NUM_THREADS=1 and with OMP_PLACES={92:4}
 
-Job hangs in MPI\_Finalize
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-There is a known issue in Spectrum MPI 10.2.0.10 provided by the
-``spectrum-mpi/10.2.0.10-20181214`` modulefile that causes a hang in
-``MPI_Finalize`` when ROMIO 3.2.1 is being used and the
-``darshan-runtime`` modulefile is loaded. The recommended and default
-Spectrum MPI version as of March 3, 2019 is Spectrum MPI 10.2.0.11
-provided by the ``spectrum-mpi/10.2.0.11-20190201`` modulefile. If you
-are seeing this issue, please make sure that you are using the latest
-version of Spectrum MPI. If you need to use a previous version of
-Spectrum MPI, your options are:
-
--  Unload the ``darshan-runtime`` modulefile.
--  Alternatively, set ``export OMPI_MCA_io=romio314`` in your
-   environment to use the previous version of ROMIO. Please note that
-   this version has known performance issues with parallel HDF5 (see
-   "Slow performance using parallel HDF5" issue below).
 
 jsrun latency priority capitalization allocates incorrect resources
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-jsrun's latency priority (\`-l\`) flag can be given lowercase values
-(i.e. gpu-cpu) or capitalized values (i.e. GPU-CPU). Expected behavior:
+jsrun's latency priority (``-l``) flag can be given lowercase values
+(i.e. gpu-cpu) or capitalized values (i.e. GPU-CPU).
 
-When capitalized, jsrun should not compromise on the resource layout,
-and will wait to begin the job step until the ideal resources are
-available. When given a lowercase value, jsrun will not wait, but
-initiate the job step with the most ideal layout as is available at the
-time. This also means that when there's no resource contention, such as
-running a single job step at a time, capitalization should not matter,
-as they should both yield the same resources.
+**Expected behavior**:
 
-Actual behavior:
+    When capitalized, jsrun should not compromise on the resource layout,
+    and will wait to begin the job step until the ideal resources are
+    available. When given a lowercase value, jsrun will not wait, but
+    initiate the job step with the most ideal layout as is available at the
+    time. This also means that when there's no resource contention, such as
+    running a single job step at a time, capitalization should not matter,
+    as they should both yield the same resources.
 
-Capitalizing the latency priority value may allocate incorrect
-resources, or even cause the job step to fail entirely.
+**Actual behavior**:
 
-Recommendation:
+    Capitalizing the latency priority value may allocate incorrect
+    resources, or even cause the job step to fail entirely.
 
-It is currently recommended to only use the lowercase values to (-l /
---latency\_priority). The system default is: gpu-cpu,cpu-mem,cpu-cpu.
-Since this ordering is used implicitly when the -l flag is omitted, this
-issue only impacts submissions which explicitly include a latency
-priority in the jsrun command.
+**Recommendation**:
+
+    It is currently recommended to only use the lowercase values to (-l /
+    --latency\_priority). The system default is: gpu-cpu,cpu-mem,cpu-cpu.
+    Since this ordering is used implicitly when the -l flag is omitted, this
+    issue only impacts submissions which explicitly include a latency
+    priority in the jsrun command.
 
 Error when using complex datatypes with MPI Collectives and GPUDirect
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -3131,27 +3157,58 @@ Collectives and GPUDirect:
     [h35n05:113509] coll:ibm:allreduce: GPU awareness in PAMI requested. It is not safe to defer to another component.
 
 This is a known issue with libcoll and the SMPI team is working to
-resolve it. In the mean time, a workaround is to treat the complex array
+resolve it. In the meantime, a workaround is to treat the complex array
 as a real array with double the length if the operation is not
 MPI\_Prod. Note: This requires code modification. An alternative
 workaround is to disable IBM optimized collectives. This will impact
 performance however but requires no code changes and should be correct
 for all MPI\_Allreduce operations. You can do this by adding the
 following option to your jsrun command line:
-``--smpiargs="-HCOLL -FCA -mca coll_hcoll_enable 1 -mca coll_hcoll_np 0 -mca coll ^basic -mca coll ^ibm -async"``
+``--smpiargs="-HCOLL -FCA -mca coll_hcoll_enable 1 -mca coll_hcoll_np 0
+-mca coll ^basic -mca coll ^ibm -async"``
 
 Resolved Issues
 ---------------
+
+The following issues were resolved with the July 16, 2019 software upgrade:
+
+
+Default nvprof setting clobbers ``LD_PRELOAD``, interfering with SpectrumMPI (Resolved: July 16, 2019)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+CUDA 10 adds a new feature to profile CPU side OpenMP constructs (see
+https://docs.nvidia.com/cuda/profiler-users-guide/index.html#openmp).
+This feature is enabled by default and has a bug which will cause it to
+overwrite the contents of ``LD_PRELOAD``. SpectrumMPI requires a library
+(``libpami_cuda_hook.so``) to be preloaded in order to function. All MPI
+applications on Summit will break when run in nvprof with default
+settings. The workaround is to disable the new OpenMP profiling feature:
+
+::
+
+    $ jsrun  nvprof --openmp-profiling off
+
+CSM-based launch is not currently supported (Resolved: July 16, 2019)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Users should not use ``JSMD_LAUNCH_MODE=csm`` in their ``~/.jsm.conf``
+file at this time. A bug has been filed with IBM to address this issue.
+
+--------------
 
 Parallel I/O crash on GPFS with latest MPI ROMIO
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 In some cases with large number of MPI processes when there is not
 enough memory available on the compute node, the Abstract-Device
-Interface for I/O (ADIO) driver can break with this error: Out of memory
+Interface for I/O (ADIO) driver can break with this error:
+
+Out of memory
 in file
 ../../../../../../../opensrc/ompi/ompi/mca/io/romio321/romio/adio/ad\_gpfs/ad\_gpfs\_rdcoll.c,
-line 1178 The solution is to declare in your submission script:
+line 1178
+
+The solution is to declare in your submission script:
 
 ::
 
@@ -3159,7 +3216,11 @@ line 1178 The solution is to declare in your submission script:
 
 This command will use non-blocking MPI calls and not MPI\_Alltoallv for
 exchange of data between the MPI I/O aggregators which requires
-significant more amount of memory. The following issues were resolved
+significant more amount of memory.
+
+--------------
+
+The following issues were resolved
 with the May 21, 2019 upgrade:
 
 Issue with CUDA Aware MPI with >1 resource set per node (Resolved: May 21, 2019)
@@ -3225,6 +3286,25 @@ job. Please note that hints must be tuned for a specific job.
     cb_buffer_size 16777216
     cb_nodes 2
 
+Job hangs in MPI\_Finalize (Resolved: March 12, 2019)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+There is a known issue in Spectrum MPI 10.2.0.10 provided by the
+``spectrum-mpi/10.2.0.10-20181214`` modulefile that causes a hang in
+``MPI_Finalize`` when ROMIO 3.2.1 is being used and the
+``darshan-runtime`` modulefile is loaded. The recommended and default
+Spectrum MPI version as of March 3, 2019 is Spectrum MPI 10.2.0.11
+provided by the ``spectrum-mpi/10.2.0.11-20190201`` modulefile. If you
+are seeing this issue, please make sure that you are using the latest
+version of Spectrum MPI. If you need to use a previous version of
+Spectrum MPI, your options are:
+
+-  Unload the ``darshan-runtime`` modulefile.
+-  Alternatively, set ``export OMPI_MCA_io=romio314`` in your
+   environment to use the previous version of ROMIO. Please note that
+   this version has known performance issues with parallel HDF5 (see
+   "Slow performance using parallel HDF5" issue below).
+
 --------------
 
 The following issues were resolved with the February 19, 2019 upgrade:
@@ -3269,20 +3349,23 @@ user environment ``PAMI_PMIX_USE_OLD_MAPCACHE=1`` and
 CUDA 10.1 Known Issues
 ----------------------
 
-Default nvprof setting clobbers ``LD_PRELOAD``, interfering with SpectrumMPI
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Intermittent failures with \`nvprof\` (Identified: July 11, 2019)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-CUDA 10 adds a new feature to profile CPU side OpenMP constructs (see
-https://docs.nvidia.com/cuda/profiler-users-guide/index.html#openmp).
-This feature is enabled by default and has a bug which will cause it to
-overwrite the contents of ``LD_PRELOAD``. SpectrumMPI requires a library
-(``libpami_cuda_hook.so``) to be preloaded in order to function. All MPI
-applications on Summit will break when run in nvprof with default
-settings. The workaround is to disable the new OpenMP profiling feature:
+We are seeing an intermittent issue that causes an error when
+profiling a code using `nvprof` from CUDA 10.1.168. We have filed
+a bug with NVIDIA (NV bug 2645669) and they have reproduced the
+problem. An update will be posted when a fix becomes available.
+
+When this issue is encountered, the profiler will exit with the
+following error message:
 
 ::
 
-    $ jsrun  nvprof --openmp-profiling off
+    ==99756== NVPROF is profiling process 99756, command: ./a.out
+    ==99756== Error: Internal profiling error 4306:999.
+    ======== Profiling result:
+    ======== Metric result:
 
 MPI annotation may cause segfaults with applications using MPI\_Init\_thread
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -3315,7 +3398,9 @@ this is compiled as C++11: in ``complex.h`` and ``complex.inl``,
 annotate the functions that deal with ``std::complex`` as
 ``__host__ __device__`` (they are the ones that are annotated only as
 ``__host__`` right now), and then compile with
-``--expt-relaxed-constexpr``. Users that encounter this issue, can use
+``--expt-relaxed-constexpr``.
+
+Users that encounter this issue, can use
 the following workaround. copy the entirety of
 ``${OLCF_CUDA_ROOT}/include/thrust`` to a private location, make the
 above edits to ``thrust/complex.h`` and
@@ -3335,14 +3420,18 @@ Breakpoints in CUDA kernels recommendation
 ``cuda-gdb`` allows for breakpoints to be set inside CUDA kernels to
 inspect the program state on the GPU. This can be a valuable debugging
 tool but breaking inside kernels does incur significant overhead that
-should be included in your expected runtime. The time required to hit a
-breakpoint inside a CUDA kernel depends on how many CUDA threads are
-used to execute the kernel. It may take several seconds to stop at
-kernel breakpoints for very large numbers of threads. For this reason,
-it is recommended to choose breakpoints judiciously, especially when
-running the debugger in "batch" or "offline" mode where this overhead
-may be misperceived as the code hanging. If possible, debugging a
-smaller problem size with fewer active threads can be more pleasant.
+should be included in your expected runtime.
+
+The time required to hit a breakpoint inside a CUDA kernel depends on
+how many CUDA threads are used to execute the kernel. It may take
+several seconds to stop at kernel breakpoints for very large numbers
+of threads. For this reason, it is recommended to choose breakpoints
+judiciously, especially when running the debugger in "batch" or
+"offline" mode where this overhead may be misperceived as the code
+hanging. If possible, debugging a smaller problem size with fewer
+active threads can be more pleasant.
+
+--------------
 
 .. _training-system-ascent:
 
@@ -3411,7 +3500,7 @@ OLCF training events.
 This sub-section describes the process of obtaining access to Ascent for
 an OLCF training event. Please follow the steps below to request access.
 
-Step 1: Fill out and submit an `**OLCF Account Application Form** <https://www.olcf.ornl.gov/for-users/documents-forms/olcf-account-application>`__
+Step 1: Fill out and submit an `OLCF Account Application Form <https://www.olcf.ornl.gov/for-users/documents-forms/olcf-account-application>`__
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Enter the requested information into the form. For "Project
@@ -3445,6 +3534,7 @@ Logging In to Ascent
 --------------------
 
 To log in to Ascent, please use your XCAMS/UCAMS username and password:
+
 ``$ ssh USERNAME@login1.ascent.olcf.ornl.gov``
 
 **NOTE:** You do not need to use an RSA token to log in to Ascent.
@@ -3455,3 +3545,79 @@ systems such as Summit).
 **NOTE:** It will take ~5 minutes for your directories to be created, so
 if your account was just created and you log in and you do not have a
 home directory, this is likely the reason.
+
+Preparing For Frontier
+======================
+
+This section of the Summit User Guide is intended to show current OLCF
+users how to start preparing their applications to run on the upcoming
+Frontier system. We will continue to add more topics to this section in
+the coming months. Please see the topics below to get started.
+
+HIP
+---
+
+HIP (Heterogeneous-Compute Interface for Portability) is a C++ runtime
+API that allows developers to write portable code to run on AMD and NVIDIA
+GPUs. It is an interface that uses the underlying Radeon Open Compute (ROCm)
+or CUDA platform that is installed on a system. The API is similar to CUDA
+so porting existing codes from CUDA to HIP should be fairly straightforward
+in most cases. In addition, HIP provides porting tools which can be used to
+help port CUDA codes to the HIP layer, with no overhead compared to the
+original CUDA application. HIP is not intended to be a drop-in replacement
+for CUDA, so some manual coding and performance tuning work should be
+expected to complete the port.
+
+Key features include:
+
+- HIP is a thin layer and has little or no performance impact over
+  coding directly in CUDA.
+
+- HIP allows coding in a single-source C++ programming language including
+  features such as templates, C++11 lambdas, classes, namespaces, and more.
+
+- The “hipify” tools automatically convert source from CUDA to HIP.
+
+- Developers can specialize for the platform (CUDA or HIP) to tune for
+  performance or handle tricky cases.
+
+Using HIP on Summit
+-------------------
+
+As mentioned above, HIP can be used on systems running on either the ROCm
+or CUDA platform, so OLCF users can start preparing their applications for
+Frontier today on Summit. To use HIP on Summit, you must load the HIP module:
+
+::
+
+    $ module load hip
+
+This will automatically load the appropriate CUDA module as well.
+
+Learning to Program with HIP
+----------------------------
+
+The HIP API is very similar to CUDA, so if you are already familiar with
+using CUDA, the transition to using HIP should be fairly straightforward.
+Whether you are already familiar with CUDA or not, the best place to start
+learning about HIP is this Introduction to HIP webinar that was recently
+given by AMD:
+
+- **Introduction to AMD GPU Programming with HIP**:
+  (`slides <https://www.exascaleproject.org/wp-content/uploads/2017/05/ORNL_HIP_webinar_20190606_final.pdf>`__ | `recording <https://youtu.be/3ZXbRJVvgJs>`__)
+
+
+More useful resources, provided by AMD, can be found here:
+
+- `HIP Programming Guide <https://rocm-documentation.readthedocs.io/en/latest/Programming_Guides/HIP-GUIDE.html>`__
+
+- `HIP API Documentation <https://rocm-documentation.readthedocs.io/en/latest/ROCm_API_References/HIP-API.html>`__
+
+- `HIP Porting Guide <https://github.com/ROCm-Developer-Tools/HIP/blob/master/docs/markdown/hip_porting_guide.md>`__
+
+The OLCF is currently adding some simple HIP tutorials here as well:
+
+- OLCF Tutorials – `Simple HIP Examples <https://github.com/olcf-tutorials/simple_HIP_examples>`__
+
+Please check back to this section regularly as we will continue
+to add new content for our users.
