@@ -183,7 +183,6 @@ under development.   Tutorials about NVME:   Burst Buffer on Summit
 (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_BB_markomanolis.pdf>`__,
 `video <https://vimeo.com/306890779>`__) Summit Burst Buffer Libraries
 (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_BB_zimmer.pdf>`__,
-`video <https://vimeo.com/306891012>`__) To read more information about
-the Spectral library to save automatically checkpoint files from NVMe to
-GPFS, click \ `here <https://www.olcf.ornl.gov/spectral-library>`__
+`video <https://vimeo.com/306891012>`__). Below is presented the Spectral library.
 
+.. include:: spectral.rst
