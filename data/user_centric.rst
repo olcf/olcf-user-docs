@@ -103,8 +103,6 @@ Each file and directory on HPSS is associated with an HPSS storage
 allocation. For information on HPSS storage allocations, please visit
 the :ref:`policy` section.
 
-For information on usage and best practices for HPSS, please see the
-:ref:`hpss` documentation.
+For information on usage and best practices for HPSS, please see the :ref:`hpss` documentation.
 
---------------
 
