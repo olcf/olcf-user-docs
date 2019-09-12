@@ -45,7 +45,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # a list of builtin themes.
 #
 html_theme = 'sphinx_rtd_theme'
-html_logo = 'images/OLCF_official_white_10_26_15.png'
+#html_logo = 'images/OLCF_official_white_10_26_15.png'
 html_favicon = 'images/favicon.png'
 
 # Add any paths that contain custom static files (such as style sheets) here,
@@ -56,6 +56,7 @@ html_static_path = ['_static']
 html_context = {
   'css_files': [
       '_static/theme_overrides.css',  # override wide tables in RTD theme
+      '_static/logo.css'
   ],
 }
 
@@ -66,7 +67,6 @@ html_theme_options = {
   'sticky_navigation': True,
   'navigation_depth': 4,
   'style_external_links': True,
-  'logo_only': True
 }
 
 # for opening external links in new tabs (from

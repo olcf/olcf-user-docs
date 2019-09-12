@@ -11,3 +11,19 @@
       overflow: visible !important;
    }
 }
+
+.pseudolink_bar {
+    background-color: #524e4e !important;
+    cursor: pointer !important;
+    color: #f2f2f2 !important;
+
+}
+
+.pseudolink_text {
+    text-transform: none;
+}
+
+p.pseudolink_bar:hover {
+    background-color: #757575 !important;
+
+}
