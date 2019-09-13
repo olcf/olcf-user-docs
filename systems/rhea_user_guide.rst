@@ -12,6 +12,8 @@ Users with accounts on Summit will automatically be given access to rhea.
 
 --------------
 
+.. _compute-nodes:
+
 Compute nodes
 -------------
 
@@ -29,8 +31,6 @@ Rhea contains 521 compute nodes separated into two partitions:
 |             |             |         | K80               | (total 28 cores, 56 HT *per node* |
 +-------------+-------------+---------+-------------------+-----------------------------------+
 
-.. _rhea-partition:
-
 **Rhea Partition**
 
 The first 512 nodes make up the *rhea* partition, where each node contains two
@@ -39,8 +39,6 @@ Technology and 128GB of main memory. Each CPU in this partition features 8
 physical cores, for a total of 16 physical cores per node. With Intel®
 Hyper-Threading Technology enabled, each node has 32 logical cores capable of
 executing 32 hardware threads for increased parallelism.
-
-.. _gpu-partition:
 
 **GPU Partition**
 
@@ -1005,8 +1003,8 @@ will likely be placed on the same resources.
 Batch Queues on Rhea
 --------------------
 
-The compute nodes on Rhea are separated into two partitions
-(:ref:`rhea-partition` and :ref:`gpu-partition`)
+The compute nodes on Rhea are separated into two partitions, the default rhea
+and gpu partitions (see :ref:`compute-nodes` for details).
 and are available through a single batch queue: ``batch``. The
 scheduling policies for the individual partitions are as follows:
 
@@ -1014,7 +1012,7 @@ Rhea Partition Policy (default)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Jobs that do not specify a partition will run in the 512
-node :ref:`rhea-partition`.
+node rhea partition.
 
 
 +-----+----------------+------------+-------------------------------------------+
@@ -1031,8 +1029,8 @@ node :ref:`rhea-partition`.
 GPU Partition Policy
 ^^^^^^^^^^^^^^^^^^^^
 
-To access the 9 node :ref:`gpu-partition`,
-batch job submissions should request ``-p gpu``
+To access the 9 node gpu partition, batch job submissions should request ``-p
+gpu``
 
 +------------+-------------+-------------------------------------------+
 | Node Count |  Duration   |  Policy                                   |
