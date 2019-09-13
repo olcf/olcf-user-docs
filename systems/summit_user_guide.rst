@@ -2842,7 +2842,11 @@ debugging features (setting breakpoints, stepping through code,
 examining variables), DDT also supports attaching to already-running
 processes and memory debugging. In-depth details of DDT can be found in
 the `Official DDT User
-Guide <https://www.allinea.com/user-guide/forge/userguide.html>`__.
+Guide <https://www.allinea.com/user-guide/forge/userguide.html>`__, and
+instructions for how to use it on OLCF systems can be found on the
+`Forge (DDT/MAP) Software Page <https://www.olcf.ornl.gov/software_package/forge/>`__. DDT is the
+OLCF's recommended debugging software for large parallel applications.
+
 
 GDB
 ---
@@ -2857,6 +2861,9 @@ on Summit under all compiler families:
 
     module load gdb
 
+Additional information about GDB usage and OLCF-provided builds can be
+found on the `GDB Software Page <https://www.olcf.ornl.gov/software_package/gdb/>`__.
+
 
 Valgrind
 --------
@@ -2865,12 +2872,15 @@ Valgrind
 building dynamic analysis tools. There are Valgrind tools that can
 automatically detect many memory management and threading bugs, and
 profile your programs in detail. You can also use Valgrind to build new
-tools. The Valgrind distribution currently includes five
-production-quality tools: a memory error detector, a thread error
-detector, a cache and branch-prediction profiler, a call-graph
-generating cache profiler, and a heap profiler. It also includes two
-experimental tools: a data race detector, and an instant memory leak
-detector. The Valgrind tool suite provides a number of debugging and
+tools.
+
+The Valgrind distribution currently includes five production-quality
+tools: a memory error detector, a thread error detector, a cache and
+branch-prediction profiler, a call-graph generating cache profiler,
+and a heap profiler. It also includes two experimental tools: a data
+race detector, and an instant memory leak detector.
+
+The Valgrind tool suite provides a number of debugging and
 profiling tools. The most popular is Memcheck, a memory checking tool
 which can detect many common memory errors such as:
 
@@ -2885,6 +2895,10 @@ Valgrind is available on Summit under all compiler families:
 .. code::
 
     module load valgrind
+
+Additional information about Valgrind usage and OLCF-provided builds can
+be found on the `Valgrind Software
+Page <https://www.olcf.ornl.gov/software_package/valgrind/>`__.
 
 .. _optimizing-and-profiling:
 
