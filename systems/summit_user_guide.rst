@@ -1452,6 +1452,13 @@ Othewise, you will not have any compute nodes allocated and your parallel
 job will run on the login node. If this happens, your job will interfere with
 (and be interfered with by) other users' login node tasks.
 
+Because the login nodes are resources shared by all Summit users, we utilize
+cgroups to limit each user's memory, CPU, and GPU access.  By default, each
+user is limited to 8 hardware-threads, 8GB of memory, and 1 GPU.  Once a process
+reaches 4-hours of CPU-time, all of the user's processes will be limited to 
+.5 hardware-thread. Please note that limits are set per user and not individual
+login sessions.  If a process from any of a user's login sessions reaches 4-hours
+of CPU-time, all login sessions will be limited to .5 hardware-thread.
 
 .. _batch-scripts:
 
