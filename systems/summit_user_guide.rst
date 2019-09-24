@@ -1452,13 +1452,26 @@ Othewise, you will not have any compute nodes allocated and your parallel
 job will run on the login node. If this happens, your job will interfere with
 (and be interfered with by) other users' login node tasks.
 
-Because the login nodes are resources shared by all Summit users, we utilize
-cgroups to limit each user's memory, CPU, and GPU access.  By default, each
-user is limited to 8 hardware-threads, 8GB of memory, and 1 GPU.  Once a process
-reaches 4-hours of CPU-time, all of the user's processes will be limited to 
-.5 hardware-thread. Please note that limits are set per user and not individual
-login sessions.  If a process from any of a user's login sessions reaches 4-hours
-of CPU-time, all login sessions will be limited to .5 hardware-thread.
+Per-User Login Node Resource Limits
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Because the login nodes are resources shared by all Summit users, we utilize ``cgroups`` to help 
+better ensure resource availability for all users of the shared nodes. By default each user is 
+limited to **8 hardware-threads**, **8GB of memory**, and **1 GPU**.  
+Please note that limits are set per user and not individual 
+login sessions. All user processes on a node are contained within a single cgroup and share the 
+cgroup's limits.  
+
+In addition to the default settings, 
+once one of a user’s processes on a node reaches 4-hours of CPU-time, all of the user’s processes 
+will be limited to **.5 hardware-thread**. If a process from any of a user’s login sessions reaches 4-hours of CPU-time, all 
+login sessions will be limited to .5 hardware-thread. To reset the cgroup limits on a node to default once 
+the 4-hour reduction has been reached, you do not need to log out and back in, but will need 
+to start a new login session to the node.
+
+
+    .. note:: Login node limits are set per user and not per individual login session.  All user processes on a node
+              are contained within a single cgroup and will share the cgroup's limits.
+
 
 .. _batch-scripts:
 
