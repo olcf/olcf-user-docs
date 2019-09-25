@@ -819,7 +819,7 @@ is migrated to tape, it is done so in a first-in, first-out fashion.
 
 User archive areas on HPSS are intended for storage of data not
 immediately needed in either User Home directories (NFS) or User Work
-directories (Lustre®). User Archive areas also serve as a location for
+directories (Lustre\ |R|). User Archive areas also serve as a location for
 users to store backup copies of user files. User Archive directories
 should not be used to store project-related data. Rather, Project
 Archive directories should be used for project data.
@@ -2142,7 +2142,7 @@ Hardware Threads
 Hardware threads are a feature of the POWER9 processor through which
 individual physical cores can support multiple execution streams,
 essentially looking like one or more virtual cores (similar to
-hyperthreading on some Intel® microprocessors). This feature is often
+hyperthreading on some Intel\ |R| microprocessors). This feature is often
 called Simultaneous Multithreading or SMT. The POWER9 processor on
 Summit supports SMT levels of 1, 2, or 4, meaning (respectively) each
 physical core looks like 1, 2, or 4 virtual cores. The SMT level is

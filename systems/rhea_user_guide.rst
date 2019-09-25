@@ -36,7 +36,7 @@ Rhea contains 521 compute nodes separated into two partitions:
 The first 512 nodes make up the *rhea* partition, where each node contains two
 8-core 2.0 GHz Intel Xeon processors with Intel’s Hyper-Threading (HT)
 Technology and 128GB of main memory. Each CPU in this partition features 8
-physical cores, for a total of 16 physical cores per node. With Intel®
+physical cores, for a total of 16 physical cores per node. With Intel\ |R|
 Hyper-Threading Technology enabled, each node has 32 logical cores capable of
 executing 32 hardware threads for increased parallelism.
 
@@ -86,11 +86,11 @@ For more information on connecting to OLCF resources, see :ref:`connecting-to-ol
 File systems
 ------------
 
-The OLCF's center-wide Lustre\ :sup:`®` file system, named
+The OLCF's center-wide Lustre\ |R| ` file system, named
 `Spider <../file-systems/#spider-the-centerwide-lustre-file-system>`_,
 is available on Rhea for computational work. With over 26,000 clients
 and 32 pb of disk space, it is one of the largest-scale
-Lustre\ :sup:`®` file systems in the world. An NFS-based file system
+Lustre\ |R| file systems in the world. An NFS-based file system
 provides `User Home storage
 areas <../file-systems/#user-home-directories-nfs>`__ and `Project Home
 storage areas <../file-systems/#project-home-directories-nfs>`__.

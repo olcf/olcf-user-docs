@@ -81,9 +81,9 @@ class PatchedHTMLTranslator(HTMLTranslator):
 def setup(app):
     app.set_translator('html', PatchedHTMLTranslator)
 
+
 # globally-available substitutions
 
-rst_prolog = """
+rst_prolog = r"""
 .. |R| replace:: \ :sup:`®`
 """
-
