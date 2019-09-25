@@ -508,17 +508,18 @@ after the last line of the script is executed.
 Example Batch Script
 ^^^^^^^^^^^^^^^^^^^^
 
-.. code::
+.. code-block:: bash
+   :linenos:
 
-    1: #!/bin/bash
-    2: #SBATCH -A XXXYYY
-    3: #SBATCH -J test
-    4: #SBATCH -N 2
-    5: #SBATCH -t 1:00:00
-    6:
-    7: cd $SLURM_SUBMIT_DIR
-    8: date
-    9: srun -n 8 ./a.out
+   #!/bin/bash
+   #SBATCH -A XXXYYY
+   #SBATCH -J test
+   #SBATCH -N 2
+   #SBATCH -t 1:00:00
+   
+   cd $SLURM_SUBMIT_DIR
+   date
+   srun -n 8 ./a.out
 
 This batch script shows examples of the three sections outlined above:
 
@@ -976,19 +977,20 @@ Multiple Simultaneous Jobsteps
 Multiple simultaneous sruns can be executed within a
 batch job by placing each ``srun`` in the background.
 
-.. code::
+.. code-block:: bash
+   :linenos:
 
-    #!/bin/bash
-    #SBATCH -N 2
-    #SBATCH -t 1:00:00
-    #SBATCH -A prj123
-    #SBATCH -J simultaneous-jobsteps
+   #!/bin/bash
+   #SBATCH -N 2
+   #SBATCH -t 1:00:00
+   #SBATCH -A prj123
+   #SBATCH -J simultaneous-jobsteps
 
-    srun -n16 -N2 -c1 --cpu-bind=cores --exclusive ./a.out &
-    srun -n8 -N2 -c1 --cpu-bind=cores --exclusive ./b.out &
-    srun -n4 -N1 -c1 --cpu-bind=threads --exclusive ./c.out &
-    srun -n4 -N1 -c1 --cpu-bind=threads --exclusive ./c.out &
-    wait
+   srun -n16 -N2 -c1 --cpu-bind=cores --exclusive ./a.out &
+   srun -n8 -N2 -c1 --cpu-bind=cores --exclusive ./b.out &
+   srun -n4 -N1 -c1 --cpu-bind=threads --exclusive ./c.out &
+   srun -n4 -N1 -c1 --cpu-bind=threads --exclusive ./c.out &
+   wait
 
 **Notice:** The ``wait`` command must be used in a batch script
 to prevent the shell from exiting before all backgrounded

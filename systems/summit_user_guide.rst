@@ -1480,23 +1480,24 @@ with input redirection (i.e. ``bsub < myjob.lsf``). This is not needed
 
 As an example, consider the following batch script:
 
-.. code::
+.. code-block:: bash
+   :linenos:
 
-    1.   #!/bin/bash
-    2.  # Begin LSF Directives
-    3.  #BSUB -P ABC123
-    4.  #BSUB -W 3:00
-    5.  #BSUB -nnodes 2048
-    6.  #BSUB -alloc_flags gpumps
-    7.  #BSUB -J RunSim123
-    8.  #BSUB -o RunSim123.%J
-    9.  #BSUB -e RunSim123.%J
-    10.
-    11. cd $MEMBERWORK/abc123
-    12. cp $PROJWORK/abc123/RunData/Input.123 ./Input.123
-    13. date
-    14. jsrun -n 4092 -r 2 -a 12 -g 3 ./a.out
-    15. cp my_output_file /ccs/proj/abc123/Output.123
+    #!/bin/bash
+    # Begin LSF Directives
+    #BSUB -P ABC123
+    #BSUB -W 3:00
+    #BSUB -nnodes 2048
+    #BSUB -alloc_flags gpumps
+    #BSUB -J RunSim123
+    #BSUB -o RunSim123.%J
+    #BSUB -e RunSim123.%J
+    
+    cd $MEMBERWORK/abc123
+    cp $PROJWORK/abc123/RunData/Input.123 ./Input.123
+    date
+    jsrun -n 4092 -r 2 -a 12 -g 3 ./a.out
+    cp my_output_file /ccs/proj/abc123/Output.123
 
 +----------+------------+--------------------------------------------------------------------------------------------+
 | Line #   | Option     | Description                                                                                |
