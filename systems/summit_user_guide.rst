@@ -1480,6 +1480,22 @@ following policies:
     Eligible-to-run jobs have not started and are waiting for resources.
     Running jobs are actually executing.
 
+``killable`` Queue Policy
+""""""""""""""""""""""""""
+
+The ``killable`` queue is a preemptable queue that allows jobs in bins 4 and 5 to request walltimes up to 24 hours. Jobs submitted to the killable queue will be preemptable once the job reaches a minimum runtime limit. Currently the minimum runtime limit matches the maximum runtime of the job’s corresponding batch queue maximum walltime. For example, a job in bin 5 submitted to the killable queue can request a walltime of 24 hours. The job will be preemptable after two hours of run time. Similarly, a job in bin 4 will be preemptable after six hours of run time. Once a job is preempted, the job will be resubmitted by default. To prevent a preempted job from being requeued, the ``BSUB -rn`` flag can be used at submit time.
+
+**Preemptable job limits:**
+
++----------+-----------+--------------+----------------------------------+
+|Min Nodes | Max Nodes | Max Walltime | Minimum Runtime (nonpreemptable) |
++==========+===========+==============+==================================+
+| 46       | 91        | 24 hrs       | 6 hrs                            |
++----------+-----------+--------------+----------------------------------+
+| 1        | 45        | 24 hrs       | 2 hrs                            |
++----------+-----------+--------------+----------------------------------+
+
+
 Allocation Overuse Policy
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
