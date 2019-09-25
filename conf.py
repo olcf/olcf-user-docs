@@ -1,4 +1,7 @@
 # Configuration file for the Sphinx documentation builder.
+
+import datetime as dt
+
 #
 # This file only contains a selection of the most common options. For a full
 # list see the documentation:
@@ -14,11 +17,10 @@
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 
-
 # -- Project information -----------------------------------------------------
 
 project = 'OLCF User Documentation'
-copyright = '2019, OLCF'
+copyright = '%s, OLCF' % dt.datetime.now().year
 author = 'OLCF'
 
 
