@@ -819,7 +819,7 @@ is migrated to tape, it is done so in a first-in, first-out fashion.
 
 User archive areas on HPSS are intended for storage of data not
 immediately needed in either User Home directories (NFS) or User Work
-directories (Lustre®). User Archive areas also serve as a location for
+directories (Lustre\ |R|). User Archive areas also serve as a location for
 users to store backup copies of user files. User Archive directories
 should not be used to store project-related data. Rather, Project
 Archive directories should be used for project data.
@@ -1495,23 +1495,24 @@ with input redirection (i.e. ``bsub < myjob.lsf``). This is not needed
 
 As an example, consider the following batch script:
 
-.. code::
+.. code-block:: bash
+   :linenos:
 
-    1.   #!/bin/bash
-    2.  # Begin LSF Directives
-    3.  #BSUB -P ABC123
-    4.  #BSUB -W 3:00
-    5.  #BSUB -nnodes 2048
-    6.  #BSUB -alloc_flags gpumps
-    7.  #BSUB -J RunSim123
-    8.  #BSUB -o RunSim123.%J
-    9.  #BSUB -e RunSim123.%J
-    10.
-    11. cd $MEMBERWORK/abc123
-    12. cp $PROJWORK/abc123/RunData/Input.123 ./Input.123
-    13. date
-    14. jsrun -n 4092 -r 2 -a 12 -g 3 ./a.out
-    15. cp my_output_file /ccs/proj/abc123/Output.123
+    #!/bin/bash
+    # Begin LSF Directives
+    #BSUB -P ABC123
+    #BSUB -W 3:00
+    #BSUB -nnodes 2048
+    #BSUB -alloc_flags gpumps
+    #BSUB -J RunSim123
+    #BSUB -o RunSim123.%J
+    #BSUB -e RunSim123.%J
+    
+    cd $MEMBERWORK/abc123
+    cp $PROJWORK/abc123/RunData/Input.123 ./Input.123
+    date
+    jsrun -n 4092 -r 2 -a 12 -g 3 ./a.out
+    cp my_output_file /ccs/proj/abc123/Output.123
 
 +----------+------------+--------------------------------------------------------------------------------------------+
 | Line #   | Option     | Description                                                                                |
@@ -2156,7 +2157,7 @@ Hardware Threads
 Hardware threads are a feature of the POWER9 processor through which
 individual physical cores can support multiple execution streams,
 essentially looking like one or more virtual cores (similar to
-hyperthreading on some Intel® microprocessors). This feature is often
+hyperthreading on some Intel\ |R| microprocessors). This feature is often
 called Simultaneous Multithreading or SMT. The POWER9 processor on
 Summit supports SMT levels of 1, 2, or 4, meaning (respectively) each
 physical core looks like 1, 2, or 4 virtual cores. The SMT level is

@@ -36,7 +36,7 @@ Rhea contains 521 compute nodes separated into two partitions:
 The first 512 nodes make up the *rhea* partition, where each node contains two
 8-core 2.0 GHz Intel Xeon processors with Intel’s Hyper-Threading (HT)
 Technology and 128GB of main memory. Each CPU in this partition features 8
-physical cores, for a total of 16 physical cores per node. With Intel®
+physical cores, for a total of 16 physical cores per node. With Intel\ |R|
 Hyper-Threading Technology enabled, each node has 32 logical cores capable of
 executing 32 hardware threads for increased parallelism.
 
@@ -86,11 +86,11 @@ For more information on connecting to OLCF resources, see :ref:`connecting-to-ol
 File systems
 ------------
 
-The OLCF's center-wide Lustre\ :sup:`®` file system, named
+The OLCF's center-wide Lustre\ |R| ` file system, named
 `Spider <../file-systems/#spider-the-centerwide-lustre-file-system>`_,
 is available on Rhea for computational work. With over 26,000 clients
 and 32 pb of disk space, it is one of the largest-scale
-Lustre\ :sup:`®` file systems in the world. An NFS-based file system
+Lustre\ |R| file systems in the world. An NFS-based file system
 provides `User Home storage
 areas <../file-systems/#user-home-directories-nfs>`__ and `Project Home
 storage areas <../file-systems/#project-home-directories-nfs>`__.
@@ -508,17 +508,18 @@ after the last line of the script is executed.
 Example Batch Script
 ^^^^^^^^^^^^^^^^^^^^
 
-.. code::
+.. code-block:: bash
+   :linenos:
 
-    1: #!/bin/bash
-    2: #SBATCH -A XXXYYY
-    3: #SBATCH -J test
-    4: #SBATCH -N 2
-    5: #SBATCH -t 1:00:00
-    6:
-    7: cd $SLURM_SUBMIT_DIR
-    8: date
-    9: srun -n 8 ./a.out
+   #!/bin/bash
+   #SBATCH -A XXXYYY
+   #SBATCH -J test
+   #SBATCH -N 2
+   #SBATCH -t 1:00:00
+   
+   cd $SLURM_SUBMIT_DIR
+   date
+   srun -n 8 ./a.out
 
 This batch script shows examples of the three sections outlined above:
 
@@ -976,19 +977,20 @@ Multiple Simultaneous Jobsteps
 Multiple simultaneous sruns can be executed within a
 batch job by placing each ``srun`` in the background.
 
-.. code::
+.. code-block:: bash
+   :linenos:
 
-    #!/bin/bash
-    #SBATCH -N 2
-    #SBATCH -t 1:00:00
-    #SBATCH -A prj123
-    #SBATCH -J simultaneous-jobsteps
+   #!/bin/bash
+   #SBATCH -N 2
+   #SBATCH -t 1:00:00
+   #SBATCH -A prj123
+   #SBATCH -J simultaneous-jobsteps
 
-    srun -n16 -N2 -c1 --cpu-bind=cores --exclusive ./a.out &
-    srun -n8 -N2 -c1 --cpu-bind=cores --exclusive ./b.out &
-    srun -n4 -N1 -c1 --cpu-bind=threads --exclusive ./c.out &
-    srun -n4 -N1 -c1 --cpu-bind=threads --exclusive ./c.out &
-    wait
+   srun -n16 -N2 -c1 --cpu-bind=cores --exclusive ./a.out &
+   srun -n8 -N2 -c1 --cpu-bind=cores --exclusive ./b.out &
+   srun -n4 -N1 -c1 --cpu-bind=threads --exclusive ./c.out &
+   srun -n4 -N1 -c1 --cpu-bind=threads --exclusive ./c.out &
+   wait
 
 **Notice:** The ``wait`` command must be used in a batch script
 to prevent the shell from exiting before all backgrounded

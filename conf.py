@@ -1,8 +1,17 @@
-# Configuration file for the Sphinx documentation builder.
+"""
+Configuration file for the Sphinx documentation builder.
+
+This file only contains a selection of the most common options. For a full
+list see the documentation:
+http://www.sphinx-doc.org/en/master/config
+"""
+
+# pylint: disable=import-error, invalid-name, redefined-builtin
+
+import datetime as dt
+from sphinx.writers.html import HTMLTranslator
+
 #
-# This file only contains a selection of the most common options. For a full
-# list see the documentation:
-# http://www.sphinx-doc.org/en/master/config
 
 # -- Path setup --------------------------------------------------------------
 
@@ -14,11 +23,10 @@
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 
-
 # -- Project information -----------------------------------------------------
 
 project = 'OLCF User Documentation'
-copyright = '2019, OLCF'
+copyright = '%s, OLCF' % dt.datetime.now().year
 author = 'OLCF'
 
 
@@ -52,36 +60,46 @@ html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
 
 html_context = {
-  'css_files': [
-      '_static/theme_overrides.css',  # override wide tables in RTD theme
-  ],
+    'css_files': [
+        '_static/theme_overrides.css',  # override wide tables in RTD theme
+    ],
 }
 
 # see https://sphinx-rtd-theme.readthedocs.io/en/stable/configuring.html
 html_theme_options = {
-  'canonical_url': 'https://docs.olcf.ornl.gov',
-  'collapse_navigation': False,
-  'sticky_navigation': True,
-  'navigation_depth': 4,
-  'style_external_links': True
+    'canonical_url': 'https://docs.olcf.ornl.gov',
+    'collapse_navigation': False,
+    'sticky_navigation': True,
+    'navigation_depth': 4,
+    'style_external_links': True
 }
 
-# for opening external links in new tabs (from
-# http://jack.rosenth.al/hacking-docutils.html#sphinx-hacks
 
-from sphinx.writers.html import HTMLTranslator
+# pylint: disable=too-few-public-methods
 class PatchedHTMLTranslator(HTMLTranslator):
+    '''HTMLTranslator patched to open external links in new tabs.
+
+    Taken from: 'http://jack.rosenth.al/hacking-docutils.html#sphinx-hacks'
+    '''
     def visit_reference(self, node):
-        if node.get('newtab') or not (node.get('target') or node.get('internal') or 'refuri' not in node):
+        '''Sets link target to '_blank' (new page tab) if link node is
+        external to the site.
+        '''
+        if (node.get('newtab')
+                or not (node.get('target')
+                        or node.get('internal')
+                        or 'refuri' not in node)):
             node['target'] = '_blank'
         super().visit_reference(node)
 
+
 def setup(app):
+    '''Function to setup sphinx customizations.'''
     app.set_translator('html', PatchedHTMLTranslator)
+
 
 # globally-available substitutions
 
-rst_prolog = """
+rst_prolog = r"""
 .. |R| replace:: \ :sup:`®`
 """
-
