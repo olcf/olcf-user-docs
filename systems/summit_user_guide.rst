@@ -430,9 +430,275 @@ To connect to Summit, ssh to summit.olcf.ornl.gov. For example:
 
 For more information on connecting to OLCF resources, see :ref:`connecting-to-olcf`
 
-.. include:: ../data/burst_buffer.rst
+Data and Storage
+==================
 
-.. include:: ../data/spectral.rst
+For more information about center-wide file systems and data archiving available
+on Summit, please refer to the pages on :ref:`data-storage-and-transfers.`
+
+.. _burst-buffer:
+
+Burst Buffer
+=============
+
+NVMe (XFS)
+----------
+
+Each compute node on Summit has a \ **N**\ on-\ **V**\ olatile **Me**\ mory
+(NVMe) storage device, colloquially known as a "Burst Buffer" with theoretical
+performance peak of 2.1 GB/s for writing and 5.5 GB/s for reading. Starting
+September 24th, 100GB of each NVMe will be reserved for NFS cache to help speed
+access to common libraries. Users will have access to an 1500 GB partition of
+each NVMe. The NVMes could be used to reduce the time that applications wait for
+I/O. Using an SSD drive per compute node, the burst buffer will be used to
+transfers data to or from the drive before the application reads a file or after
+it writes a file. The result will be that the application benefits from native
+SSD performance for a portion of its I/O requests. Users are not required to use
+the NVMes. Data can also be written directly to the parallel filesystem.
+
+.. figure:: /images/nvme_arch.jpg
+   :align: center
+
+   The NVMes on Summitdev are local to each node.
+
+Current NVMe Usage
+-------------------
+
+Tools for using the burst buffers are still under development.  Currently, the
+user will have access to a writeable directory on each node's NVMe and then
+explicitly move data to and from the NVMes with posix commands during a job.
+This mode of usage only supports writing file-per-process or file-per-node.
+It does not support automatic "n to 1" file writing, writing from multiple nodes
+to a single file.  After a job completes the NVMes are trimmed, a process
+that irreversibly deletes data from the devices, so all desired data from the
+NVMes will need to be copied back to the parallel filesystem before the job
+ends. This largely manual mode of usage will not be the recommended way to use
+the burst buffer for most applications because tools are actively being
+developed to automate and improve the NVMe transfer and data management process.
+Here are the basic steps for using the BurstBuffers in their current limited
+mode of usage:
+
+
+#. Modify your application to write to /mnt/bb/$USER, a directory that will be
+   created on each NVMe.
+
+#. Modify either your application or your job submission script to copy the
+   desired data from /mnt/bb/$USER back to the parallel filesystem before the
+   job ends.
+
+#. Modify your job submission script to include the ``-alloc_flags NVME``  bsub
+   option. Then on each reserved Burst Buffer node will be available a directory
+   called /mnt/bb/$USER.
+
+#. Submit your bash script or run the application.
+
+#. Assemble the resulting data as needed.
+
+Interactive Jobs Using the NVMe
+--------------------------------
+
+The NVMe can be setup for test usage within an interactive job as follows:
+
+.. code::
+
+    bsub -W 30 -nnodes 1 -alloc_flags "NVME" -P project123 -Is bash
+
+The ``-alloc_flags NVME`` option will create a directory called /mnt/bb/$USER on
+each requested node's NVMe. The ``/mnt/bb/$USER`` directories will be writeable
+and readable until the interactive job ends. Outside of a job ``/mnt/bb/`` will
+be empty and you will not be able to write to it.
+
+NVMe Usage Example
+-------------------
+
+The following example illustrates how to use the burst buffers (NVMes) by
+default on Summit. This example uses a hello_world bash script, called
+test_nvme.sh, and its submission script, check_nvme.lsf. It is assumed that the
+files are saved in the user's Lustre scratch area,
+/gpfs/alpine/scratch/$USER/projid, and that the user is operating from there as
+well. Do not forget that for all the commands on NVMe, it is required to use
+jsrun. **Job submssion script: check_nvme.lsf.** This will submit a job to run
+on one node.
+
+.. code::
+
+    #!/bin/bash
+    #BSUB -P project123
+    #BSUB -J name_test
+    #BSUB -o nvme_test.o%J
+    #BSUB -W 2
+    #BSUB -nnodes 1
+    #BSUB -alloc_flags NVME
+
+    #Declare your project in the variable
+    projid=xxxxx
+    cd /gpfs/alpine/scratch/$USER/$projid
+
+   #Save the hostname of the compute node in a file
+   jsrun -n 1 echo $HOSTNAME > test_file
+
+   #Check what files are saved on the NVMe, always use jsrun to access the NVMe devices
+   jsrun -n 1 ls -l /mnt/bb/$USER/
+
+   #Copy the test_file in your NVMe
+   jsrun -n 1 cp test_file /mnt/bb/$USER/
+
+   #Delete the test_file from your local space
+   rm test_file
+
+   #Check again what the NVMe folder contains
+   jsrun -n 1 ls -l /mnt/bb/$USER/
+
+   #Output of the test_file contents
+   jsrun -n 1 cat /mnt/bb/$USER/test_file
+
+   #Copy the file from the NVMe to your local space
+   jsrun -n 1 cp /mnt/bb/$USER/test_file .
+
+   #Check the file locally
+   ls -l test_file
+
+To run this example: ``bsub ./check_nvme.lsf``.   We could include all the
+commands in a script and call this file as jsrun argument in order to avoid
+changing numbers of processes for all the jsrun calls. You can see in the table
+below the differences of a submission script for executing an application on
+GPFS and NVMe. In this case we copy the binary and the input file on NVMe, but
+this depends on the application as it is not always necessary, we can execute
+the binary on the GPFS and write/read the data from NVMe if it is supported by
+the application.
+
+.. role:: raw-html(raw)
+    :format: html
+
+
+
++----------------------------------------+------------------------------------------------+
+| *Using GPFS*          		 | *Using NVMe*         			  |
++----------------------------------------+------------------------------------------------+
+|               	``#!/bin/bash``  | ``#!/bin/bash`` 	     			  |
++----------------------------------------+------------------------------------------------+
+| 	 	       ``#BSUB -P xxx``  | ``#BSUB -P xxx``  		   	          |
++----------------------------------------+------------------------------------------------+
+|	  	  ``#BSUB -J NAS-BTIO``  | ``#BSUB -J NAS-BTIO``  			  |
++----------------------------------------+--------------+---------------------------------+
+|   	       ``#BSUB -o nasbtio.o%J``  | ``#BSUB -o nasbtio.o%J`` 	                  |
++----------------------------------------+---------------+--------------------------------+
+|              ``#BSUB -e nasbtio.e%J``  | ``#BSUB -e nasbtio.e%J``   			  |
++----------------------------------------+------------------------------------------------+
+|			``#BSUB -W 10``  | ``#BSUB -W 10``    		 	          |
++----------------------------------------+------------------------------------------------+
+|	     ``#BSUB -nnodes 1``         | ``#BSUB -nnodes 1``  	 		  |
++----------------------------------------+------------------------------------------------+
+| 		    			 | ``#BSUB -alloc_flags nvme`` 			  |
+|					 +------------------------------------------------+
+| 	            			 | ``export BBPATH=/mnt/bb/$USER/``		  |
+|					 +------------------------------------------------+
+| 		    			 | ``jsrun -n 1 cp btio ${BBPATH}``		  |
+|					 +------------------------------------------------+
+| 		    			 | ``jsrun -n 1 cp input* ${BBPATH}``		  |
+|					 +------------------------------------------------+
+| ``jsrun -n 1 -a 16 -c 16 -r 1 ./btio`` | ``jsrun -n 1 -a 16 -c 16 -r 1 ${BBPATH}/btio`` |
+|					 +------------------------------------------------+
+| ``ls -l``		`		 | ``jsrun -n 1 ls -l ${BBPATH}/``		  |
+|					 +------------------------------------------------+
+|					 | ``jsrun -n 1 cp ${BBPATH}/* .``		  |
++----------------------------------------+------------------------------------------------+
+
+When a user occupies more than one compute node, then is using more NVMe and the
+I/O can scale linear. For example in the following plot you can observe the
+scalability of the IOR benchmark on 2048 compute nodes on Summit where the write
+performance achieves 4TB/s and the read 11,3 TB/s
+
+
+.. image:: /images/nvme_ior_summit.png
+   :align: center
+
+Remember that by default NVMe support one file per MPI process up to one file
+per compute node. If users desire a single file as output from data staged on
+the NMVe they will need to construct it.  Tools to save automatically checkpoint
+files from NVMe to GPFS as also methods that allow automatic n to 1 file writing
+with NVMe staging are under development.   Tutorials about NVME:   Burst Buffer
+on Summit (`slides
+<https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_BB_markomanolis.pdf>`__,
+`video <https://vimeo.com/306890779>`__) Summit Burst Buffer Libraries (`slides
+<https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_BB_zimmer.pdf>`__,
+`video <https://vimeo.com/306891012>`__). Below is presented the Spectral
+library.
+
+.. _spectral-library:
+
+Spectral Library
+----------------
+
+Spectral is a portable and transparent middleware library to enable use of the
+node-local burst buffers for accelerated application output on Summit. It is
+used to transfer files from node-local NVMe back to the parallel GPFS file
+system without the need of the user to interact during the job execution.
+Spectral runs on the isolated core of each reserved node, so it does not occupy
+resources and based on some parameters the user could define which folder to be
+copied to the GPFS. In order to use Spectral, the user has to do the following
+steps in the submission script:
+
+#. Request Spectral resources instead of NVMe
+#. Declare the path where the files will be saved in the node-local NVMe
+   (PERSIST_DIR)
+#. Declare the path on GPFS where the files will be copied (PFS_DIR)
+#. Execute the script spectral_wait.py when the application is finished in order
+   to copy the files from NVMe to GPFS
+
+The following table shows the differences of executing an application on GPFS,
+NVMe, and NVMe with Spectral. This example is using one compute node. We copy
+the executable and input file for the NVMe cases but this is not always
+necessary, it depends on the application, you could execute the binary from the
+GPFS and save the output files on NVMe, In the table is the execution command of
+the binary and take the data back in case that the Spectral library is not used.
+Adjust your parameters to copy, if necessary, the executable and input files on
+all the NVMes devices.
+
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| *Using GPFS* 			         | *Using NVMe*                                   | *Using NVME with Spectral library*             |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``#!/bin/bash``		         | ``#!/bin/bash``                                | ``#!/bin/bash``                                |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``#BSUB -P xxx``		         | ``#BSUB -P xxx``                               | ``#BSUB -P xxx``                               |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``#BSUB -J NAS-BTIO``		         | ``#BSUB -J NAS-BTIO``                          | ``#BSUB -J NAS-BTIO``                          |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``#BSUB -o nasbtio.o%J``	         | ``#BSUB -o nasbtio.o%J``                       | ``#BSUB -o nasbtio.o%J``                       |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``#BSUB -e nasbtio.e%J``	         | ``#BSUB -e nasbtio.e%J``                       | ``#BSUB -e nasbtio.e%J``                       |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``#BSUB -W 10``		         | ``#BSUB -W 10``                                | ``#BSUB -W 10``                                |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``#BSUB -nnodes 1``		         | ``#BSUB -nnodes 1``                            | ``#BSUB -nnodes 1``                            |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| 				         | ``#BSUB -alloc_flags nvme``                    | ``#BSUB -alloc_flags spectral``                |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| 				         |                                                | ``module load spectral``                       |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| 				         |                                                | ``export PERSIST_DIR=${BBPATH}``               |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| 				         |                                                | ``export PFS_DIR=$PWD/spect/``                 |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| 				         | ``export BBPATH=/mnt/bb/$USER/``               | ``export BBPATH=/mnt/bb/$USER/``               |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| 				         | ``jsrun -n 1 cp btio ${BBPATH}``               | ``jsrun -n 1 cp btio ${BBPATH}``               |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| 				         | ``jsrun -n 1 cp input* ${BBPATH}``             | ``jsrun -n 1 cp input* ${BBPATH}``             |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``jsrun -n 1 -a 16 -c 16 -r 1 ./btio`` | ``jsrun -n 1 -a 16 -c 16 -r 1 ${BBPATH}/btio`` | ``jsrun -n 1 -a 16 -c 16 -r 1 ${BBPATH}/btio`` |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``ls -l``			         | ``jsrun -n 1 ls -l ${BBPATH}/``	          | ``jsrun -n 1 ls -l ${BBPATH}/``	           |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| 				         | ``jsrun -n 1 cp ${BBPATH}/* .``                | ``spectral_wait.py``                           |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+
+
+You could observe that with Spectral library there is no reason to explicitly
+ask for the data to be copied to GPFS as it is done automatically through the
+spectral_wait.py script. Also a a log file called spectral.log will be created
+with information on the files that were copied.
+
 
 .. _software:
 
@@ -473,21 +739,20 @@ help@nccs.gov.
 Environment Management with Lmod
 --------------------------------
 
-Environment modules are provided through
-`Lmod <https://lmod.readthedocs.io/en/latest/>`__, a Lua-based module
-system for dynamically altering shell environments. By managing changes
-to the shell’s environment variables (such as ``PATH``,
-``LD_LIBRARY_PATH``, and ``PKG_CONFIG_PATH``), Lmod allows you to alter
-the software available in your shell environment without the risk of
-creating package and version combinations that cannot coexist in a
-single environment.
+Environment modules are provided through `Lmod
+<https://lmod.readthedocs.io/en/latest/>`__, a Lua-based module system for
+dynamically altering shell environments. By managing changes to the shell’s
+environment variables (such as ``PATH``, ``LD_LIBRARY_PATH``, and
+``PKG_CONFIG_PATH``), Lmod allows you to alter the software available in your
+shell environment without the risk of creating package and version combinations
+that cannot coexist in a single environment.
 
 Lmod is a recursive environment module system, meaning it is aware of module
 compatibility and actively alters the environment to protect against conflicts.
 Messages to stderr are issued upon Lmod implicitly altering the environment.
-Environment modules are structured hierarchically by compiler family such
-that packages built with a given compiler will only be accessible if the
-compiler family is first present in the environment.
+Environment modules are structured hierarchically by compiler family such that
+packages built with a given compiler will only be accessible if the compiler
+family is first present in the environment.
 
 .. note::
     Lmod can interpret both Lua modulefiles and legacy Tcl
@@ -537,12 +802,11 @@ the ``module`` command:
 Searching for modules
 ^^^^^^^^^^^^^^^^^^^^^
 
-Modules with dependencies are only available when the underlying
-dependencies, such as compiler families, are loaded. Thus,
-``module avail`` will only display modules that are compatible with the
-current state of the environment. To search the entire hierarchy across
-all possible dependencies, the ``spider`` sub-command can be used as
-summarized in the following table.
+Modules with dependencies are only available when the underlying dependencies,
+such as compiler families, are loaded. Thus, ``module avail`` will only display
+modules that are compatible with the current state of the environment. To search
+the entire hierarchy across all possible dependencies, the ``spider``
+sub-command can be used as summarized in the following table.
 
 +----------------------------------------+------------------------------------------------------------------------------------+
 | Command                                | Description                                                                        |
@@ -561,12 +825,11 @@ summarized in the following table.
 Defining custom module collections
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Lmod supports caching commonly used collections of environment modules
-on a per-user basis in ``$HOME/.lmod.d``. To create a collection called
-"NAME" from the currently loaded modules, simply call
-``module save NAME``. Omitting "NAME" will set the user’s default
-collection. Saved collections can be recalled and examined with the
-commands summarized in the following table.
+Lmod supports caching commonly used collections of environment modules on a
+per-user basis in ``$HOME/.lmod.d``. To create a collection called "NAME" from
+the currently loaded modules, simply call ``module save NAME``. Omitting "NAME"
+will set the user’s default collection. Saved collections can be recalled and
+examined with the commands summarized in the following table.
 
 +-------------------------+----------------------------------------------------------+
 | Command                 | Description                                              |
@@ -622,10 +885,9 @@ The following compilers are available on Summit:
 
 **NVCC**: CUDA C compiler
 
-Upon login, the default versions of the XL
-compiler suite and Spectrum Message Passing Interface (MPI) are added to
-each user's environment through the modules system. No changes to the
-environment are needed to make use of the defaults.
+Upon login, the default versions of the XL compiler suite and Spectrum Message
+Passing Interface (MPI) are added to each user's environment through the modules
+system. No changes to the environment are needed to make use of the defaults.
 
 Multiple versions of each compiler family are provided, and can be inspected
 using the modules system:
@@ -707,9 +969,9 @@ Fortran compilation
 MPI
 ^^^
 
-MPI on Summit is provided by IBM Spectrum MPI. Spectrum MPI provides
-compiler wrappers that automatically choose the proper compiler to build
-your application.
+MPI on Summit is provided by IBM Spectrum MPI. Spectrum MPI provides compiler
+wrappers that automatically choose the proper compiler to build your
+application.
 
 The following compiler wrappers are available:
 

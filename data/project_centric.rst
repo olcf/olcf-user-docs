@@ -1,13 +1,13 @@
-===========================================================
+*****************************
 Project-Centric Data Storage
-===========================================================
+*****************************
 
 
 Project directories provide members of a project with a common place to
 store code, data, and other files related to their project.
 
 Project Home Directories (NFS)
-------------------------------
+===============================
 
 ============== ====================== ==== =========== ======= ====== =====
 *Name*         Path                   Type Permissions Backups Purged Quota
@@ -22,20 +22,20 @@ Project Home is an NFS-mounted filesystem, its performance will not be
 as high as other filesystems.
 
 Project Home Path
-~~~~~~~~~~~~~~~~~
+------------------
 
 Project Home area is accessible at ``/ccs/proj/abc123`` (where
 ``abc123`` is your project ID).
 
 Project Home Quotas
-~~~~~~~~~~~~~~~~~~~
+---------------------
 
 To check your project’s current usage, run ``df -h /ccs/proj/abc123``
 (where ``abc123`` is your project ID). Quotas are enforced on project
 home directories. The current limit is shown in the table above.
 
 Project Home Permissions
-~~~~~~~~~~~~~~~~~~~~~~~~
+-------------------------
 
 The default permissions for project home directories are ``0770`` (full
 access to the user and group). The directory is owned by root and the
@@ -45,7 +45,7 @@ members of project “ABC123” should be members of the “abc123” UNIX
 group.
 
 Three Project Work Areas to Facilitate Collaboration
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------------------------------------
 
 To facilitate collaboration among researchers, the OLCF provides (3)
 distinct types of project-centric work storage areas: *Member Work*
@@ -60,7 +60,7 @@ computationally-intensive HPC jobs related to a project.
 +----------------+--------------------------------------------+-----------------+-------------+---------+-----------+-------+
 | *Project Work* | ``/gpfs/alpine/proj-shared/[projid]``      | Spectrum Scale  | 770         | no      | 90 days   | 50TB  |
 +----------------+--------------------------------------------+-----------------+-------------+---------+-----------+-------+
-|*World Work*    | ``/gpfs/alpine/world-shared/[projid]``     | Spectrum Scale  | 775         | no      | 90 days   | 50TB  |
+| *World Work*   | ``/gpfs/alpine/world-shared/[projid]``     | Spectrum Scale  | 775         | no      | 90 days   | 50TB  |
 +----------------+--------------------------------------------+-----------------+-------------+---------+-----------+-------+
 
 
@@ -91,14 +91,14 @@ researchers outside of a project, keep them in the project’s World Work
 directory.
 
 Backups
-~~~~~~~
+--------
 
 Member Work, Project Work, and World Work directories **are not backed
 up**. Project members are responsible for backing up these files, either
 to Project Archive areas (HPSS) or to an off-site location.
 
 Project Archive Directories
----------------------------
+============================
 
 ================= ================== ==== =========== ======= ====== =====
 *Name*            Path               Type Permissions Backups Purged Quota
@@ -117,13 +117,13 @@ immediately needed in either Project Home (NFS) areas nor Project Work
 project-related files.
 
 Project Archive Path
-~~~~~~~~~~~~~~~~~~~~
+---------------------
 
 The project archive directories are located at ``/proj/pjt000`` (where
 ``pjt000`` is your Project ID).
 
 Project Archive Access
-~~~~~~~~~~~~~~~~~~~~~~
+-----------------------
 
 Project Archive directories may only be accessed via utilities called
 HSI and HTAR. For more information on using HSI or HTAR, see the :ref:`hpss` section.

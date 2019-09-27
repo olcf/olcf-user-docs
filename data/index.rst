@@ -1,3 +1,5 @@
+.. _data-storage-and-transfers:
+
 ############################
 Data Storage and Transfers
 ############################
@@ -11,5 +13,11 @@ Data Storage and Transfers
    project_centric
    transferring
    archiving
-   burst_buffer
-   spectral
+
+**********************************
+Burst Buffer and Spectral Library
+**********************************
+
+Summit has node-local NVMe devices that can be used as :ref:`burst-buffer` by
+jobs, and the :ref:`spectral-library` can help with some of these use cases.
+
