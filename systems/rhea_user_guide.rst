@@ -433,7 +433,8 @@ the number of simultaneous tasks performed on the login resources. For
 example, a user should not run (10) simultaneous ``tar`` processes on a
 login node.
 
-    **Warning:** Compute-intensive, memory-intensive, or otherwise
+.. warning::
+    Compute-intensive, memory-intensive, or otherwise
     disruptive processes running on login nodes may be killed without
     warning.
 
@@ -975,8 +976,9 @@ two threads. The ``-c`` flag will provide room for the threads.
 .. image:: /images/Rhea-layout-thread-per-hyperthread.png
    :align: center
 
-**Warning:** Not adding enough resources using the ``-c`` flag,
-threads may be placed on the same resource.
+.. warning::
+    Not adding enough resources using the ``-c`` flag,
+    threads may be placed on the same resource.
 
 Multiple Simultaneous Jobsteps
 """"""""""""""""""""""""""""""
@@ -1004,9 +1006,10 @@ batch job by placing each ``srun`` in the background.
     to prevent the shell from exiting before all backgrounded
     sruns have completed.
 
-**Warning:** The ``--exclusive`` flag must be used to prevent
-resource sharing. Without the flag each backgrounded srun
-will likely be placed on the same resources.
+.. warning::
+    The ``--exclusive`` flag must be used to prevent
+    resource sharing. Without the flag each backgrounded srun
+    will likely be placed on the same resources.
 
 .. _batch-queues-on-rhea:
 
@@ -1482,7 +1485,8 @@ maintain and debug. Workflows that contain loops or recursion (jobs that
 can submit themselves again) may inadvertently waste allocation hours if
 a suitable exit condition is not reached.
 
-    **Warning:** Recursive workflows which do not exit will drain your
+.. warning::
+    Recursive workflows which do not exit will drain your
     project's allocation. Refunds will not be granted. Please be extremely
     cautious when designing workflows that cause jobs to re-submit themselves.
 
@@ -1535,7 +1539,8 @@ local ParaView client to display and interact with your data while the
 ParaView server runs in a Rhea batch job, allowing interactive analysis
 of very large data sets.
 
-    **Warning:** In interactive mode your local ParaView version number must
+.. warning::
+    In interactive mode your local ParaView version number must
     match the ParaView version number available on Rhea. Please check the
     available ParaView versions using Lmod
 
@@ -1547,11 +1552,12 @@ Rhea and connecting to it from a locally running ParaView client.
 Although several methods may be used the one described should work in
 most cases.
 
-    **Warning:** For Macintosh clients, it is necessary to install `XQuartz
+.. warning::
+    For Macintosh clients, it is necessary to install `XQuartz
     (X11) <https://support.apple.com/en-us/HT201341>`__ to get a command prompt
     in which you will securely enter your OLCF credentials.
 
-    **Warning:** For Windows clients, it is necessary to install PuTTY to
+    For Windows clients, it is necessary to install PuTTY to
     create an ssh connection in step 2.
 
 **Step 1: Launch ParaView on your Desktop and fetch a connection script

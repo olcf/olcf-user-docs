@@ -814,7 +814,8 @@ enforces the following policies:
 -  Limit of (1) job per user *regardless of the job's state*.
 -  Jobs receive a (2)-day priority aging boost for scheduling.
 
-    **Warning:** Users who misuse the ``debug`` queue may have further
+.. warning::
+    Users who misuse the ``debug`` queue may have further
     access to the queue denied.
 
 Allocation Overuse Policy

@@ -119,7 +119,8 @@ All X11 data will go through an encrypted channel. The ``$DISPLAY`` environment 
 remote machine with a port number greater than zero. This is normal, and happens because SSH creates a proxy X 
 server on the remote machine for forwarding the connections over an encrypted channel. The connection to the real X server will be made from the local machine.
 
-**Warning:** Users should not manually set the ``$DISPLAY`` environment variable for X11 forwarding; a non-encrypted channel may be used in this case.
+.. warning::
+    Users should not manually set the ``$DISPLAY`` environment variable for X11 forwarding; a non-encrypted channel may be used in this case.
 
 .. _systems-available-to-all-projects:
 
