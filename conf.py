@@ -65,6 +65,10 @@ html_context = {
     ],
 }
 
+html_js_files = [
+    'js/custom.js',
+]
+
 # see https://sphinx-rtd-theme.readthedocs.io/en/stable/configuring.html
 html_theme_options = {
     'canonical_url': 'https://docs.olcf.ornl.gov',
