@@ -42,8 +42,6 @@ Information
 - Although there are no hard quota limits for the project storage, an upper
   storage limit should be reported in the project request. The available space
   of a project can be modified upon request.
-- The user will be informed when the project reaches 90% of the requested
-  storage utilization.
 
 Purge
 ======
