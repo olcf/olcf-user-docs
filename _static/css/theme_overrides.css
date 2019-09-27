@@ -1,3 +1,11 @@
+.wy-side-nav-search, .wy-nav-top {
+   background: #007833;
+}
+
+.wy-nav-content {
+   max-width: 1200px;
+}
+
 /* override table width restrictions */
 @media screen and (min-width: 767px) {
 
