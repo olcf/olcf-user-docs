@@ -6,13 +6,13 @@
 Welcome to the OLCF User Documentation!
 ===================================================
 
-Getting Started
-----------------
+Accounts
+---------
 
 .. toctree::
    :maxdepth: 2
 
-   getting_started/index
+   accounts/index
 
 Connecting
 -----------
@@ -37,9 +37,6 @@ Data
    :maxdepth: 2
 
    data/index
-
-Accounts
----------
 
 Software
 ---------

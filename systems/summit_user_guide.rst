@@ -299,13 +299,13 @@ full system memory size. The combination of GPU page faulting and larger
 virtual addressing allows programs to oversubscribe the system memory,
 so very large data sets can be processed. In addition, new CUDA API
 functions introduced in CUDA8 allow users to fine tune the use of
-unified memory. 
+unified memory.
 
 Unified memory is further improved on Volta GPUs through
 the use of access counters that can be used to automatically tune
-unified memory by determining where a page is most often accessed. 
+unified memory by determining where a page is most often accessed.
 
-For more information, please see the following section of NVIDIA's 
+For more information, please see the following section of NVIDIA's
 CUDA Programming Guide:
 http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#um-unified-memory-programming-hd
 
@@ -1181,7 +1181,7 @@ Because the login nodes are resources shared by all Summit users, we utilize
 shared nodes. By default each user is limited to **8 hardware-threads**, **8GB
 of memory**, and **1 GPU**.  Please note that limits are set per user and not
 individual login sessions. All user processes on a node are contained within a
-single cgroup and share the cgroup's limits.  
+single cgroup and share the cgroup's limits.
 
 In addition to the default settings, once one of a user’s processes on a node
 reaches 4-hours of CPU-time, all of the user’s processes will be limited to **.5
@@ -1193,8 +1193,8 @@ new login session to the node.
 
 
     .. note:: Login node limits are set per user and not per individual login
-    session.  All user processes on a node are contained within a single cgroup
-    and will share the cgroup's limits.
+      session. All user processes on a node are contained within a single cgroup
+      and will share the cgroup's limits.
 
 
 .. _batch-scripts:
@@ -1229,7 +1229,7 @@ As an example, consider the following batch script:
     #BSUB -J RunSim123
     #BSUB -o RunSim123.%J
     #BSUB -e RunSim123.%J
-    
+
     cd $MEMBERWORK/abc123
     cp $PROJWORK/abc123/RunData/Input.123 ./Input.123
     date

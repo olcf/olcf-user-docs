@@ -1,6 +1,3 @@
-.. *********************
-.. Getting started
-.. *********************
 
 **New to the Oak Ridge Leadership Computing Facility?**
 
@@ -185,19 +182,16 @@ to work. This website provides extensive documentation for OLCF systems,
 and can help you efficiently use your project's allocation. We recommend
 reading the :ref:`system-user-guides` for the machines you will be using often.
 
-Systems and Connecting
+Get access to additional projects
 ======================================
 
-After a user account has been approved and created, the requesting user
-will be sent an email listing the system(s) to which the user has
-requested and been given access.
+This process is similar to applying for a new user account. However, if you
+already have a user account at the OLCF, your exiting credentials can be reused
+on multiple projects.
 
-For more information about the systems available to all projects, see
-:ref:`systems-available-to-all-projects`.
-
-With an active user account, you'll be able to log into any of the
-systems allocated to your project(s). Use of the OLCF-provided RSA
-SecurID fob is necessary since two-factor authentication is required.
-
-For details about setting up your RSA token and logging in to the systems, see
-:ref:`connecting-to-olcf`.
+To gain access to another project, fill out the `Account Request Form
+<https://www.olcf.ornl.gov/support/getting-started/olcf-account-application>`__,
+and indicate your username, Once the PI of that project has been contacted and
+given permission, your username will be added to the relevant charge accounts
+and unix groups, and you will see these additions when you log in with your OLCF
+username and PIN+tokencode.
