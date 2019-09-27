@@ -19,7 +19,7 @@ transfer.
 
   Follow these steps:
 
--  Visit https://www.globus.org/globus-connect-personal and Install Globus
+- Visit https://www.globus.org/globus-connect-personal and Install Globus
   Connect Personal, it is available foe Windows, Mac, and Linux
 
 - Selecting the appropriate link there are detailed instructions about the

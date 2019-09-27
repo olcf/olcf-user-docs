@@ -25,13 +25,13 @@ to tar the small files.  Otherwise, if the files are larger, Globus will handle
 them. To transfer the files, follow the steps which some are identical with the
 instructions above regarding transfer files from Atlas to Alpine:
 
--  Visit www.globus.org and login
+- Visit www.globus.org and login
 
 .. image:: /images/globus_first_page.png
    :align: center
 
 
--  Then select the organization that you belong, if you don't work for ORNL, do
+- Then select the organization that you belong, if you don't work for ORNL, do
   not select ORNL. If your organization is not in the list, create a Globus
   account
 
@@ -39,7 +39,7 @@ instructions above regarding transfer files from Atlas to Alpine:
    :align: center
 
 
--  Search for the endpoint **OLCF DTN**
+- Search for the endpoint **OLCF DTN**
 
 .. image:: /images/search_endpoint1.png
    :align: center
@@ -48,13 +48,13 @@ instructions above regarding transfer files from Atlas to Alpine:
    :align: center
 
 
--  Declare path
+- Declare path
 
 .. image:: /images/globus_first_endpoint.png
    :align: center
 
 
--  Open a second panel to declare the new endpoint called **OLCF HPSS** and use
+- Open a second panel to declare the new endpoint called **OLCF HPSS** and use
   the appropriate path for HPSS
 
 .. image:: /images/globus_second_endpoint_hpss.png
@@ -64,7 +64,7 @@ instructions above regarding transfer files from Atlas to Alpine:
    :align: center
 
 
--  Select your file/folder and click start. hen an activity report will appear
+- Select your file/folder and click start. hen an activity report will appear
   and you can click on it to see the status. When the transfer is finished or
   failed, you will receive an email
 

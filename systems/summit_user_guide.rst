@@ -434,7 +434,7 @@ Data and Storage
 ==================
 
 For more information about center-wide file systems and data archiving available
-on Summit, please refer to the pages on :ref:`data-storage-and-transfers.`
+on Summit, please refer to the pages on :ref:`data-storage-and-transfers`.
 
 .. _burst-buffer:
 

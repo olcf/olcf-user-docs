@@ -47,14 +47,14 @@ the expected performance.
 Tips
 -----
 
--  For best performance on the IBM Spectrum Scale filesystem, use large page
+- For best performance on the IBM Spectrum Scale filesystem, use large page
   aligned I/O and asynchronous reads and writes. The filesystem blocksize is
   16MB, the minimum fragment size is 16K so when a file under 16K is stored, it
   will still use 16K of the disk. Writing files of 16 MB or larger, will achieve
   better performance. All files are striped across LUNs which are distributed
   across all IO servers.
 
--  If your application occupies up to two compute nodes and it requires a
+- If your application occupies up to two compute nodes and it requires a
   significant number of I/O operations, you could try to add the following flag
   in your job script  file and investigate if the total execution time is
   decreased. This flag could cause worse results, it depends on the application.
@@ -67,7 +67,7 @@ Major difference between Lustre and IBM Spectrum Scale
 The file systems have many technical differences, but we will mention only what
 a user needs to be familiar with:
 
--  On Summit, there is no concept of striping from the user point of view, the
+- On Summit, there is no concept of striping from the user point of view, the
   user uses the Alpine storage without the need to declare the striping for
   files/directories. The GPFS will handle the workload, the file system was
   tuned during the installation.
@@ -83,25 +83,25 @@ Spectrum Scale, and a Project Archive area on HPSS. These project storage areas
 are intended to house project-centric files. We have defined several areas as
 listed below by function:
 
--  **User Home:** Long-term data for routine access that is unrelated to a
+- **User Home:** Long-term data for routine access that is unrelated to a
   project. It is mounted on compute nodes of Summit as read only
 
--  **User Archive:** Long-term data for archival access that is unrelated to a
+- **User Archive:** Long-term data for archival access that is unrelated to a
   project.
 
--  **Project Home:** Long-term project data for routine access that's shared
+- **Project Home:** Long-term project data for routine access that's shared
   with other project members. It is mounted on compute nodes of Summit as read
   only
 
--  **Member Work:** Short-term user data for fast, batch-job access that is not
+- **Member Work:** Short-term user data for fast, batch-job access that is not
   shared with other project members.
 
--  **Project Work:** Short-term project data for fast, batch-job access that's
+- **Project Work:** Short-term project data for fast, batch-job access that's
   shared with other project members.
 
--  **World Work:** Short-term project data for fast, batch-job access that's
+- **World Work:** Short-term project data for fast, batch-job access that's
   shared with OLCF users outside your project.
 
--  **Project Archive:** Long-term project data for archival access that's shared
+- **Project Archive:** Long-term project data for archival access that's shared
   with other project members.
 

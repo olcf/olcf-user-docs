@@ -1016,16 +1016,15 @@ batch job by placing each ``srun`` in the background.
 Batch Queues on Rhea
 --------------------
 
-The compute nodes on Rhea are separated into two partitions, the default rhea
-and gpu partitions (see :ref:`compute-nodes` for details).
-and are available through a single batch queue: ``batch``. The
-scheduling policies for the individual partitions are as follows:
+The compute nodes on Rhea are separated into two partitions the "Rhea partition"
+and the "GPU partition" as described in the :ref:`compute-nodes` section, and
+they are available through a single batch queue: ``batch``. The scheduling
+policies for the individual partitions are as follows:
 
 Rhea Partition Policy (default)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Jobs that do not specify a partition will run in the 512
-node rhea partition.
+Jobs that do not specify a partition will run in the 512 node Rhea partition:
 
 
 +-----+----------------+------------+-------------------------------------------+
@@ -1042,7 +1041,7 @@ node rhea partition.
 GPU Partition Policy
 ^^^^^^^^^^^^^^^^^^^^
 
-To access the 9 node gpu partition, batch job submissions should request ``-p
+To access the 9 node GPU Partition batch job submissions should request ``-p
 gpu``
 
 +------------+-------------+-------------------------------------------+
