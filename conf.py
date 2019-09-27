@@ -63,6 +63,10 @@ html_css_files = [
     'css/theme_overrides.css',
 ]
 
+html_js_files = [
+    'js/custom.js',
+]
+
 # see https://sphinx-rtd-theme.readthedocs.io/en/stable/configuring.html
 html_theme_options = {
     'canonical_url': 'https://docs.olcf.ornl.gov',
