@@ -12,3 +12,4 @@ Data Storage and Transfers
    transferring
    archiving
    burst_buffer
+   spectral
