@@ -33,10 +33,10 @@ Systems
 Data
 ------
 
-* Policies
-* Transferring
-* Storage/Archiving
-* Filesystems
+.. toctree::
+   :maxdepth: 2
+
+   data/index
 
 Accounts
 ---------

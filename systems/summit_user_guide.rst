@@ -430,558 +430,275 @@ To connect to Summit, ssh to summit.olcf.ornl.gov. For example:
 
 For more information on connecting to OLCF resources, see :ref:`connecting-to-olcf`
 
-.. _data-storage-transfers:
+Data and Storage
+==================
 
-Data Storage & Transfers
-========================
+For more information about center-wide file systems and data archiving available
+on Summit, please refer to the pages on :ref:`data-storage-and-transfers`.
 
-Storage Overview
-----------------
+.. _burst-buffer:
 
-OLCF users have many options for data storage. Each user has multiple
-user-affiliated storage spaces, and each project has multiple
-project-affiliated storage spaces where data can be shared for
-collaboration. Below we give an overview and explain where each storage
-area is mounted.
+Burst Buffer
+=============
 
-Alpine IBM Spectrum Scale Filesystem
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+NVMe (XFS)
+----------
 
-Summit mounts a POSIX-based IBM Spectrum Scale parallel filesystem
-called Alpine. Alpine's maximum capacity is 250 PB. It is consisted of
-77 IBM Elastic Storage Server (ESS) GL4 nodes running IBM Spectrum Scale
-5.x which are called Network Shared Disk (NSD) servers. Each IBM ESS GL4
-node, is a scalable storage unit (SSU), constituted by two dual-socket
-IBM POWER9 storage servers, and a 4X EDR InfiniBand network for up to
-100Gbit/sec of networking bandwidth. The maximum performance of the
-final production system will be about 2.5 TB/s for sequential I/O and
-2.2 TB/s for random I/O under FPP mode, which means each process, writes
-its own file. Metada operations are improved with around to minimum
-50,000 file access per sec and aggregated up to 2.6 million accesses of
-32KB small files.
+Each compute node on Summit has a \ **N**\ on-\ **V**\ olatile **Me**\ mory
+(NVMe) storage device, colloquially known as a "Burst Buffer" with theoretical
+performance peak of 2.1 GB/s for writing and 5.5 GB/s for reading. Starting
+September 24th, 100GB of each NVMe will be reserved for NFS cache to help speed
+access to common libraries. Users will have access to an 1500 GB partition of
+each NVMe. The NVMes could be used to reduce the time that applications wait for
+I/O. Using an SSD drive per compute node, the burst buffer will be used to
+transfers data to or from the drive before the application reads a file or after
+it writes a file. The result will be that the application benefits from native
+SSD performance for a portion of its I/O requests. Users are not required to use
+the NVMes. Data can also be written directly to the parallel filesystem.
 
-.. figure:: /images/summit_nds_final.png
-   :class: normal aligncenter wp-image-5726545 size-full
-   :width: 779px
-   :height: 462px
+.. figure:: /images/nvme_arch.jpg
    :align: center
 
-   Figure 1. An example of the NDS servers on Summit
+   The NVMes on Summitdev are local to each node.
 
-Performance under not ideal workload
-""""""""""""""""""""""""""""""""""""
+Current NVMe Usage
+-------------------
 
-The I/O performance can be lower than the optimal one when you save one
-single shared file with non-optimal I/O pattern. Moreover, the previous
-performance results are achieved under an ideal system, the system is
-dedicated, and a specific number of compute nodes are used. The file
-system is shared across many users; the I/O performance can vary because
-other users that perform heavy I/O as also executing large scale jobs
-and stress the interconnection network. Finally, if the I/O pattern is
-not aligned, then the I/O performance can be significantly lower than
-the ideal one. Similar, related to the number of the concurrent users,
-is applied for the metadata operations, they can be lower than the
-expected performance.
-
-Tips
-""""
-
--  For best performance on the IBM Spectrum Scale filesystem, use large
-   page aligned I/O and asynchronous reads and writes. The filesystem
-   blocksize is 16MB, the minimum fragment size is 16K so when a file
-   under 16K is stored, it will still use 16K of the disk. Writing files
-   of 16 MB or larger, will achieve better performance. All files are
-   striped across LUNs which are distributed across all IO servers.
--  If your application occupies up to two compute nodes and it requires
-   a significant number of I/O operations, you could try to add the
-   following flag in your job script file and investigate if the total
-   execution time is decreased. This flag could cause worse results, it
-   depends on the application.
-
-``#BSUB -alloc_flags maximizegpfs``
-
-Major difference between Titan (Lustre) and Summit (IBM Spectrum Scale)
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-The file systems have many technical differences, but we will mention
-only what a user needs to be familiar with:
-
--  On Summit, there is no concept of striping from the user point of
-   view, the user uses the Alpine storage without the need to declare
-   the striping for files/directories. The GPFS will handle the
-   workload, the file system was tuned during the installation.
-
-Storage Areas
----------------
-
-The storage area to use in any given situation depends upon the activity
-you wish to carry out. Each user has a User Home area on a Network File
-System (NFS) and a User Archive area on the archival High Performance
-Storage System (HPSS). These user storage areas are intended to house
-user-specific files. Each project has a Project Home area on NFS,
-multiple Project Work areas on Lustre and Spectrum Scale, and a Project
-Archive area on HPSS. These project storage areas are intended to house
-project-centric files. We have defined several areas as listed below by
-function:
-
-*  **User Home:** Long-term data for routine access that is unrelated to
-   a project. It is mounted on compute nodes of Summit as read only
-*  **User Archive:** Long-term data for archival access that is
-   unrelated to a project.
-*  **Project Home:** Long-term project data for routine access that's
-   shared with other project members. It is mounted on compute nodes of
-   Summit as read only
-*  **Member Work:** Short-term user data for fast, batch-job access that
-   is not shared with other project members. There are versions of this
-   on both the Atlas Lustre filesystem and the Alpine Spectrum Scale
-   filesystem.
-*  **Project Work:** Short-term project data for fast, batch-job access
-   that's shared with other project members. There are versions of this
-   on both the Atlas Lustre filesystem and the Alpine Spectrum Scale
-   filesystem.
-*  **World Work:** Short-term project data for fast, batch-job access
-   that's shared with OLCF users outside your project. There are
-   versions of this on both the Atlas Lustre filesystem and the Alpine
-   Spectrum Scale filesystem.
-*  **Project Archive:** Long-term project data for archival access
-   that's shared with other project members.
-
-Storage policy
------------------
-
-A brief description of each area and basic guidelines to follow are
-provided in the table below:
-
-+---------------------+-----------------------------------------------+------------------+---------------+-----------+-----------+---------+----------------------------+
-| *Name*              | Path                                          | Type             | Permissions   | Backups   | Purged    | Quota   | Mounted on Compute nodes   |
-+=====================+===============================================+==================+===============+===========+===========+=========+============================+
-| *User Home*         | ``$HOME``                                     | NFS              | User Set      | yes       | no        | 50GB    | Read-only                  |
-+---------------------+-----------------------------------------------+------------------+---------------+-----------+-----------+---------+----------------------------+
-| *User Archive*      | ``/home/$USER``                               | HPSS             | User Set      | no        | no        | 2TB     | No                         |
-+---------------------+-----------------------------------------------+------------------+---------------+-----------+-----------+---------+----------------------------+
-| *Project Home*      | ``/ccs/proj/[projid]``                        | NFS              | 770           | yes       | no        | 50GB    | Read-only                  |
-+---------------------+-----------------------------------------------+------------------+---------------+-----------+-----------+---------+----------------------------+
-| *Member Work*       | ``/gpfs/alpine/scratch/[userid]/[projid]/``   | Spectrum Scale   | 700           | no        | 90 days   | 50TB    | Yes                        |
-+---------------------+-----------------------------------------------+------------------+---------------+-----------+-----------+---------+----------------------------+
-| *Project Work*      | ``/gpfs/alpine/proj-shared/[projid]``         | Spectrum Scale   | 770           | no        | 90 days   | 50TB    | Yes                        |
-+---------------------+-----------------------------------------------+------------------+---------------+-----------+-----------+---------+----------------------------+
-| *World Work*        | ``/gpfs/alpine/world-shared/[projid]``        | Spectrum Scale   | 775           | no        | 90 days   | 50TB    | Yes                        |
-+---------------------+-----------------------------------------------+------------------+---------------+-----------+-----------+---------+----------------------------+
-| *Project Archive*   | ``/proj/[projid]``                            | HPSS             | 770           | no        | no        | 100TB   | No                         |
-+---------------------+-----------------------------------------------+------------------+---------------+-----------+-----------+---------+----------------------------+
-
-For storage policy on TITAN, click here
-
-On Summit paths to the various project-centric work storage areas are
-simplified by the use of environment variables that point to the proper
-directory on a per-user basis:
-
--  Member Work Directory: ``$MEMBERWORK/[projid]``
--  Project Work Directory: ``$PROJWORK/[projid]``
--  World Work Directory: ``$WORLDWORK/[projid]``
-
-These environment variables are not set on the data transfer nodes.
-
-Information
-^^^^^^^^^^^
-
--  Although there are no hard quota limits, an upper storage limit
-   should be reported in the project request. The available space of a
-   project can be modified upon request.
--  The user will be informed when the project reaches 90% of the
-   requested storage utilization.
-
-Purge
-^^^^^
-
-To keep the Lustre and Spectrum Scale file systems exceptionally
-performant, untouched files in the project and user areas are purged at
-the intervals shown in the table above. Please make sure that valuable
-data is moved off of these systems regularly. See `HPSS Best
-Practices <./#hpss-best-practices>`__ for information about using the
-HSI and HTAR utilities to archive data on HPSS.
-
-Retention
-^^^^^^^^^
-
-At the completion of a project or at the end of a member's association
-with the project, data will be available for 90 days, except in areas
-that are purged, in that case, the data will be retained according to
-the purge policy. After 90 days, the data will not be available but not
-purged for another 60 days, where the data will be removed if it not
-requested otherwise.
-
-Other OLCF Storage Systems
-----------------------------
-
-The High Performance Storage System (HPSS) at the OLCF provides
-longer-term storage for the large amounts of data created on the OLCF
-compute systems. The HPSS is accessible from all OLCF Filesystems
-through utilities called HSI and HTAR. For more information on using HSI
-or HTAR, see the `HPSS Best Practices <./#hpss-best-practices>`__
-documentation. OLCF also has a Network File System, referred to as NFS,
-and Lustre filesystems called Atlas. Summit does not mount Lustre.
-However, during the early use of Summit, users may need to use Lustre in
-a multi-stage process with HPSS for larger data transfer with Alpine. To
-learn more about this please see `Data Transfer and
-Summit <./#data-transfer-and-summit>`__ section below. The following
-shows the availability of each of the filesystems on primary OLCF
-clusters and supercomputers.
-
-+------------------------------------+------------+-------------+------------+-----------------------+------------+------------+
-| Area                               | Summit     | Summitdev   | Titan      | Data Transfer Nodes   | Rhea       | Eos        |
-+====================================+============+=============+============+=======================+============+============+
-| Atlas Lustre Filesystem            | no         | no          | yes        | yes                   | yes        | yes        |
-+------------------------------------+------------+-------------+------------+-----------------------+------------+------------+
-| Alpine Spectrum Scale Filesystem   | yes        | yes         | no         | yes                   | no         | no         |
-+------------------------------------+------------+-------------+------------+-----------------------+------------+------------+
-| NFS Network Filesystem             | yes        | yes         | yes        | yes                   | yes        | yes        |
-+------------------------------------+------------+-------------+------------+-----------------------+------------+------------+
-| HPSS                               | HSI/Htar   | HSI/Htar    | HSI/Htar   | HSI/Htar              | HSI/Htar   | HSI/Htar   |
-+------------------------------------+------------+-------------+------------+-----------------------+------------+------------+
-
-Guidelines
------------
-
-A brief description of each area and basic guidelines to follow are
-provided in the table below:
-
-+-------------------+-------------------+---------------------------------------------+----------------+-------------+---------+------------+-------+
-| *System*          | *Name*            | Path                                        | Type           | Permissions | Backups | Purged     | Quota |
-+===================+===================+=============================================+================+=============+=========+============+=======+
-| *User Home*       | *User Home*       | ``$HOME``                                   | NFS            | User Set    | yes     | no         | 50GB  |
-+-------------------+-------------------+---------------------------------------------+----------------+-------------+---------+------------+-------+
-| *User Archive*    | *User Archive*    | ``/home/$USER``                             | HPSS           | User Set    | no      | no         | 2TB   |
-+-------------------+-------------------+---------------------------------------------+----------------+-------------+---------+------------+-------+
-| *Project Home*    | *Project Home*    | ``/ccs/proj/[projid]``                      | NFS            | 770         | yes     | no         | 50GB  |
-+-------------------+-------------------+---------------------------------------------+----------------+-------------+---------+------------+-------+
-| **Alpine**        | *Member Work*     | ``/gpfs/alpine/scratch/[userid]/[projid]/`` | Spectrum Scale | 700         | no      | 90 days    | 50TB  |
-+                   +-------------------+---------------------------------------------+----------------+-------------+---------+------------+-------+
-|                   | *Project Work*    | ``/gpfs/alpine/proj-shared/[projid]/``      | Spectrum Scale | 770         | no      | 90 days    | 50TB  |
-+                   +-------------------+---------------------------------------------+----------------+-------------+---------+------------+-------+
-|                   | *World Work*      | ``/gpfs/alpine/world-shared/[projid]/``     | Spectrum Scale | 775         | no      | 90 days    | 50TB  |
-+-------------------+-------------------+---------------------------------------------+----------------+-------------+---------+------------+-------+
-| **Atlas**         | *Member Work*     | ``/lustre/atlas/scratch/[userid]/[projid]`` | Lustre         | 700         | no      | 14 days    | 10TB  |
-+                   +-------------------+---------------------------------------------+----------------+-------------+---------+------------+-------+
-|                   | *Project Work*    | ``/lustre/atlas/proj-shared/[projid]``      | Lustre         | 770         | no      | 90 days    | 100TB |
-+                   +-------------------+---------------------------------------------+----------------+-------------+---------+------------+-------+
-|                   | *World Work*      | ``/lustre/atlas/world-shared/[projid]``     | Lustre         | 775         | no      | 90 days    | 10TB  |
-+-------------------+-------------------+---------------------------------------------+----------------+-------------+---------+------------+-------+
-| *Project Archive* | *Project Archive* | ``/proj/[projid]``                          | HPSS           | 770         | no      | no         | 100TB |
-+-------------------+-------------------+---------------------------------------------+----------------+-------------+---------+------------+-------+
+Tools for using the burst buffers are still under development.  Currently, the
+user will have access to a writeable directory on each node's NVMe and then
+explicitly move data to and from the NVMes with posix commands during a job.
+This mode of usage only supports writing file-per-process or file-per-node.
+It does not support automatic "n to 1" file writing, writing from multiple nodes
+to a single file.  After a job completes the NVMes are trimmed, a process
+that irreversibly deletes data from the devices, so all desired data from the
+NVMes will need to be copied back to the parallel filesystem before the job
+ends. This largely manual mode of usage will not be the recommended way to use
+the burst buffer for most applications because tools are actively being
+developed to automate and improve the NVMe transfer and data management process.
+Here are the basic steps for using the BurstBuffers in their current limited
+mode of usage:
 
 
-Backups for Files on NFS
-^^^^^^^^^^^^^^^^^^^^^^^^
+#. Modify your application to write to /mnt/bb/$USER, a directory that will be
+   created on each NVMe.
 
-Online backups are performed at regular intervals for your files in
-project home and user home. Hourly backups for the past 24 hours, daily
-backups for the last 7 days, and 1 weekly backup are available. The
-backup directories are named ``hourly.*``, ``daily.* ``, and
-``weekly.* `` where ``*`` is the date/time stamp of the backup. For
-example, ``hourly.2016-12-01-0905`` is an hourly backup made on December
-1, 2016 at 9:05 AM. The backups are accessed via the ``.snapshot``
-subdirectory. You may list your available hourly/daily/weekly backups by
-doing “\ ``ls .snapshot``\ ”. The ``.snapshot`` feature is available in
-any subdirectory of your home directory and will show the online backup
-of that subdirectory. In other words, you don’t have to start at
-``/ccs/home/$USER`` and navigate the full directory structure; if you’re
-in a /ccs/home subdirectory several “levels” deep, an
-“\ ``ls .snapshot``\ ” will access the available backups of that
-subdirectory. To retrieve a backup, simply copy it into your desired
-destination with the ``cp`` command.
+#. Modify either your application or your job submission script to copy the
+   desired data from /mnt/bb/$USER back to the parallel filesystem before the
+   job ends.
 
-Retention
-^^^^^^^^^
+#. Modify your job submission script to include the ``-alloc_flags NVME``  bsub
+   option. Then on each reserved Burst Buffer node will be available a directory
+   called /mnt/bb/$USER.
 
-At the completion of a project or at the end of a member's association
-with the project, data will be retained for 90 days, except in areas
-that are purged, in that case the data will be retained according the
-purge policy. A more detailed description of each storage area is given
-below. [ls\_content\_block id="26702"]
+#. Submit your bash script or run the application.
 
-User-Centric Data Storage
--------------------------
+#. Assemble the resulting data as needed.
 
-Users are provided with several storage areas, each of which serve
-different purposes. These areas are intended for storage of user data,
-not for storage of project data.
+Interactive Jobs Using the NVMe
+--------------------------------
 
-The following table summarizes user-centric storage areas available on
-OLCF resources and lists relevant polices.
-
-**User-Centric Storage Areas**
-
-+--------------+-----------------+------+-----------------+-------------+---------+--------+-----------+
-| Area         | Path            | Type | Permissions     | Quota       | Backups | Purged | Retention |
-+==============+=================+======+=================+=============+=========+========+===========+
-| User Home    | ``$HOME``       | NFS  | User-controlled | 50 GB       | Yes     | No     | 90 days   |
-+--------------+-----------------+------+-----------------+-------------+---------+--------+-----------+
-| User Archive | ``/home/$USER`` | HPSS | User-controlled | 2 TB [#f1]_ | **No**  | No     | 90 days   |
-+--------------+-----------------+------+-----------------+-------------+---------+--------+-----------+
-
-.. rubric:: footnotes
-
-.. [#f1] In addition, there is a quota/limit of 2,000 files on this directory.
-
-User Home Directories (NFS)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Each user is provided a home directory to store frequently used items
-such as source code, binaries, and scripts.
-
-User Home Path
-""""""""""""""
-
-Home directories are located in a Network File System (NFS) that is
-accessible from all OLCF resources as ``/ccs/home/$USER``.
-
-The environment variable ``$HOME`` will always point to your current
-home directory. It is recommended, where possible, that you use this
-variable to reference your home directory. In cases in which using
-``$HOME`` is not feasible, it is recommended that you use
-``/ccs/home/$USER``.
-
-Users should note that since this is an NFS-mounted filesystem, its
-performance will not be as high as other filesystems.
-
-User Home Quotas
-""""""""""""""""
-
-Quotas are enforced on user home directories. To request an increased
-quota, contact the OLCF User Assistance Center. To view your current
-quota and usage, use the ``quota`` command:
+The NVMe can be setup for test usage within an interactive job as follows:
 
 .. code::
 
-    $ quota -Qs
-    Disk quotas for user usrid (uid 12345):
-         Filesystem  blocks   quota   limit   grace   files   quota   limit   grace
-    nccsfiler1a.ccs.ornl.gov:/vol/home
-                      4858M   5000M   5000M           29379   4295m   4295m
+    bsub -W 30 -nnodes 1 -alloc_flags "NVME" -P project123 -Is bash
 
-User Home Backups
-"""""""""""""""""
+The ``-alloc_flags NVME`` option will create a directory called /mnt/bb/$USER on
+each requested node's NVMe. The ``/mnt/bb/$USER`` directories will be writeable
+and readable until the interactive job ends. Outside of a job ``/mnt/bb/`` will
+be empty and you will not be able to write to it.
 
-If you accidentally delete files from your home directory, you may be
-able to retrieve them. Online backups are performed at regular
-intervals. Hourly backups for the past 24 hours, daily backups for the
-last 7 days, and 1 weekly backup are available. It is possible that the
-deleted files are available in one of those backups. The backup
-directories are named ``hourly.*``, ``daily.* ``, and ``weekly.* ``
-where ``*`` is the date/time stamp of the backup. For example,
-``hourly.2016-12-01-0905`` is an hourly backup made on December 1, 2016
-at 9:05 AM.
+NVMe Usage Example
+-------------------
 
-The backups are accessed via the ``.snapshot`` subdirectory. Note that
-if you do an ``ls`` (even with the ``-a`` option) of any directory you
-won’t see a ``.snapshot`` subdirectory, but you’ll be able to do
-“\ ``ls .snapshot``\ ” nonetheless. This will show you the
-hourly/daily/weekly backups available. The ``.snapshot`` feature is
-available in any subdirectory of your home directory and will show the
-online backup of that subdirectory. In other words, you don’t have to
-start at ``/ccs/home/$USER`` and navigate the full directory structure;
-if you’re in a /ccs/home subdirectory several “levels” deep, an
-“\ ``ls .snapshot``\ ” will access the available backups of that
-subdirectory.
+The following example illustrates how to use the burst buffers (NVMes) by
+default on Summit. This example uses a hello_world bash script, called
+test_nvme.sh, and its submission script, check_nvme.lsf. It is assumed that the
+files are saved in the user's Lustre scratch area,
+/gpfs/alpine/scratch/$USER/projid, and that the user is operating from there as
+well. Do not forget that for all the commands on NVMe, it is required to use
+jsrun. **Job submssion script: check_nvme.lsf.** This will submit a job to run
+on one node.
 
-To retrieve a backup, simply copy it into your desired destination with
-the ``cp`` command.
+.. code::
 
-User Home Permissions
-"""""""""""""""""""""
+    #!/bin/bash
+    #BSUB -P project123
+    #BSUB -J name_test
+    #BSUB -o nvme_test.o%J
+    #BSUB -W 2
+    #BSUB -nnodes 1
+    #BSUB -alloc_flags NVME
 
-The default permissions for user home directories are ``0750`` (full
-access to the user, read and execute for the group). Users have the
-ability to change permissions on their home directories, although it is
-recommended that permissions be set to as restrictive as possible
-(without interfering with your work).
+    #Declare your project in the variable
+    projid=xxxxx
+    cd /gpfs/alpine/scratch/$USER/$projid
 
-User Website Directory
-""""""""""""""""""""""
+   #Save the hostname of the compute node in a file
+   jsrun -n 1 echo $HOSTNAME > test_file
 
-Users interested in sharing files publicly via the World Wide Web can
-request a user website directory be created for their account. User
-website directories (``~/www``) have a 5GB storage quota and allow
-access to files at ``http://users.nccs.gov/~user`` (where ``user`` is
-your userid). If you are interested in having a user website directory
-created, please contact the User Assistance Center at
-help@olcf.ornl.gov.
+   #Check what files are saved on the NVMe, always use jsrun to access the NVMe devices
+   jsrun -n 1 ls -l /mnt/bb/$USER/
 
-User Archive Directories (HPSS)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   #Copy the test_file in your NVMe
+   jsrun -n 1 cp test_file /mnt/bb/$USER/
 
-The High Performance Storage System (HPSS) at the OLCF provides
-longer-term storage for the large amounts of data created on the OLCF
-compute systems. The mass storage facility consists of tape and disk
-storage components, servers, and the HPSS software. After data is
-uploaded, it persists on disk for some period of time. The length of its
-life on disk is determined by how full the disk caches become. When data
-is migrated to tape, it is done so in a first-in, first-out fashion.
+   #Delete the test_file from your local space
+   rm test_file
 
-User archive areas on HPSS are intended for storage of data not
-immediately needed in either User Home directories (NFS) or User Work
-directories (Lustre\ |R|). User Archive areas also serve as a location for
-users to store backup copies of user files. User Archive directories
-should not be used to store project-related data. Rather, Project
-Archive directories should be used for project data.
+   #Check again what the NVMe folder contains
+   jsrun -n 1 ls -l /mnt/bb/$USER/
 
-User archive directories are located at ``/home/$USER``.
+   #Output of the test_file contents
+   jsrun -n 1 cat /mnt/bb/$USER/test_file
 
-User Archive Access
-"""""""""""""""""""
+   #Copy the file from the NVMe to your local space
+   jsrun -n 1 cp /mnt/bb/$USER/test_file .
 
-Each OLCF user receives an HPSS account automatically. Users can
-transfer data to HPSS from any OLCF system using the HSI or HTAR
-utilities. For more information on using HSI or HTAR, see the `HPSS Best
-Practices <./#hpss-best-practices>`__ section.
+   #Check the file locally
+   ls -l test_file
 
-User Archive Accounting
-"""""""""""""""""""""""
+To run this example: ``bsub ./check_nvme.lsf``.   We could include all the
+commands in a script and call this file as jsrun argument in order to avoid
+changing numbers of processes for all the jsrun calls. You can see in the table
+below the differences of a submission script for executing an application on
+GPFS and NVMe. In this case we copy the binary and the input file on NVMe, but
+this depends on the application as it is not always necessary, we can execute
+the binary on the GPFS and write/read the data from NVMe if it is supported by
+the application.
 
-Each file and directory on HPSS is associated with an HPSS storage
-allocation. For information on HPSS storage allocations, please visit
-the `HPSS Archive Accounting <./#hpss-archive-accounting>`__ section.
-
-For information on usage and best practices for HPSS, please see the
-section `HPSS - High Performance Storage
-System <./#hpss-high-performance-storage-system>`__ below.
-
---------------
+.. role:: raw-html(raw)
+    :format: html
 
 
-Project-Centric Data Storage
-----------------------------
 
-Project directories provide members of a project with a common place to
-store code, data, and other files related to their project.
++----------------------------------------+------------------------------------------------+
+| *Using GPFS*          		 | *Using NVMe*         			  |
++----------------------------------------+------------------------------------------------+
+|               	``#!/bin/bash``  | ``#!/bin/bash`` 	     			  |
++----------------------------------------+------------------------------------------------+
+| 	 	       ``#BSUB -P xxx``  | ``#BSUB -P xxx``  		   	          |
++----------------------------------------+------------------------------------------------+
+|	  	  ``#BSUB -J NAS-BTIO``  | ``#BSUB -J NAS-BTIO``  			  |
++----------------------------------------+--------------+---------------------------------+
+|   	       ``#BSUB -o nasbtio.o%J``  | ``#BSUB -o nasbtio.o%J`` 	                  |
++----------------------------------------+---------------+--------------------------------+
+|              ``#BSUB -e nasbtio.e%J``  | ``#BSUB -e nasbtio.e%J``   			  |
++----------------------------------------+------------------------------------------------+
+|			``#BSUB -W 10``  | ``#BSUB -W 10``    		 	          |
++----------------------------------------+------------------------------------------------+
+|	     ``#BSUB -nnodes 1``         | ``#BSUB -nnodes 1``  	 		  |
++----------------------------------------+------------------------------------------------+
+| 		    			 | ``#BSUB -alloc_flags nvme`` 			  |
+|					 +------------------------------------------------+
+| 	            			 | ``export BBPATH=/mnt/bb/$USER/``		  |
+|					 +------------------------------------------------+
+| 		    			 | ``jsrun -n 1 cp btio ${BBPATH}``		  |
+|					 +------------------------------------------------+
+| 		    			 | ``jsrun -n 1 cp input* ${BBPATH}``		  |
+|					 +------------------------------------------------+
+| ``jsrun -n 1 -a 16 -c 16 -r 1 ./btio`` | ``jsrun -n 1 -a 16 -c 16 -r 1 ${BBPATH}/btio`` |
+|					 +------------------------------------------------+
+| ``ls -l``		`		 | ``jsrun -n 1 ls -l ${BBPATH}/``		  |
+|					 +------------------------------------------------+
+|					 | ``jsrun -n 1 cp ${BBPATH}/* .``		  |
++----------------------------------------+------------------------------------------------+
 
-Project Home Directories (NFS)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+When a user occupies more than one compute node, then is using more NVMe and the
+I/O can scale linear. For example in the following plot you can observe the
+scalability of the IOR benchmark on 2048 compute nodes on Summit where the write
+performance achieves 4TB/s and the read 11,3 TB/s
 
-+------------------+--------------------------+--------+---------------+-----------+----------+---------+
-| *Name*           | Path                     | Type   | Permissions   | Backups   | Purged   | Quota   |
-+==================+==========================+========+===============+===========+==========+=========+
-| *Project Home*   | ``/ccs/proj/[projid]``   | NFS    | 770           | yes       | no       | 50GB    |
-+------------------+--------------------------+--------+---------------+-----------+----------+---------+
 
-Projects are provided with a Project Home storage area in the
-NFS-mounted filesystem. This area is intended for storage of data, code,
-and other files that are of interest to all members of a project. Since
-Project Home is an NFS-mounted filesystem, its performance will not be
-as high as other filesystems.
+.. image:: /images/nvme_ior_summit.png
+   :align: center
 
-Project Home Path
-"""""""""""""""""
+Remember that by default NVMe support one file per MPI process up to one file
+per compute node. If users desire a single file as output from data staged on
+the NMVe they will need to construct it.  Tools to save automatically checkpoint
+files from NVMe to GPFS as also methods that allow automatic n to 1 file writing
+with NVMe staging are under development.   Tutorials about NVME:   Burst Buffer
+on Summit (`slides
+<https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_BB_markomanolis.pdf>`__,
+`video <https://vimeo.com/306890779>`__) Summit Burst Buffer Libraries (`slides
+<https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_BB_zimmer.pdf>`__,
+`video <https://vimeo.com/306891012>`__). Below is presented the Spectral
+library.
 
-Project Home area is accessible at ``/ccs/proj/abc123`` (where
-``abc123`` is your project ID).
+.. _spectral-library:
 
-Project Home Quotas
-"""""""""""""""""""
+Spectral Library
+----------------
 
-To check your project's current usage, run ``df -h /ccs/proj/abc123``
-(where ``abc123`` is your project ID). Quotas are enforced on project
-home directories. The current limit is shown in the table above.
+Spectral is a portable and transparent middleware library to enable use of the
+node-local burst buffers for accelerated application output on Summit. It is
+used to transfer files from node-local NVMe back to the parallel GPFS file
+system without the need of the user to interact during the job execution.
+Spectral runs on the isolated core of each reserved node, so it does not occupy
+resources and based on some parameters the user could define which folder to be
+copied to the GPFS. In order to use Spectral, the user has to do the following
+steps in the submission script:
 
-Project Home Permissions
-""""""""""""""""""""""""
+#. Request Spectral resources instead of NVMe
+#. Declare the path where the files will be saved in the node-local NVMe
+   (PERSIST_DIR)
+#. Declare the path on GPFS where the files will be copied (PFS_DIR)
+#. Execute the script spectral_wait.py when the application is finished in order
+   to copy the files from NVMe to GPFS
 
-The default permissions for project home directories are ``0770`` (full
-access to the user and group). The directory is owned by root and the
-group includes the project's group members. All members of a project
-should also be members of that group-specific project. For example, all
-members of project "ABC123" should be members of the "abc123" UNIX
-group.
+The following table shows the differences of executing an application on GPFS,
+NVMe, and NVMe with Spectral. This example is using one compute node. We copy
+the executable and input file for the NVMe cases but this is not always
+necessary, it depends on the application, you could execute the binary from the
+GPFS and save the output files on NVMe, In the table is the execution command of
+the binary and take the data back in case that the Spectral library is not used.
+Adjust your parameters to copy, if necessary, the executable and input files on
+all the NVMes devices.
 
-Three Project Work Areas to Facilitate Collaboration
-""""""""""""""""""""""""""""""""""""""""""""""""""""
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| *Using GPFS* 			         | *Using NVMe*                                   | *Using NVME with Spectral library*             |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``#!/bin/bash``		         | ``#!/bin/bash``                                | ``#!/bin/bash``                                |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``#BSUB -P xxx``		         | ``#BSUB -P xxx``                               | ``#BSUB -P xxx``                               |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``#BSUB -J NAS-BTIO``		         | ``#BSUB -J NAS-BTIO``                          | ``#BSUB -J NAS-BTIO``                          |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``#BSUB -o nasbtio.o%J``	         | ``#BSUB -o nasbtio.o%J``                       | ``#BSUB -o nasbtio.o%J``                       |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``#BSUB -e nasbtio.e%J``	         | ``#BSUB -e nasbtio.e%J``                       | ``#BSUB -e nasbtio.e%J``                       |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``#BSUB -W 10``		         | ``#BSUB -W 10``                                | ``#BSUB -W 10``                                |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``#BSUB -nnodes 1``		         | ``#BSUB -nnodes 1``                            | ``#BSUB -nnodes 1``                            |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| 				         | ``#BSUB -alloc_flags nvme``                    | ``#BSUB -alloc_flags spectral``                |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| 				         |                                                | ``module load spectral``                       |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| 				         |                                                | ``export PERSIST_DIR=${BBPATH}``               |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| 				         |                                                | ``export PFS_DIR=$PWD/spect/``                 |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| 				         | ``export BBPATH=/mnt/bb/$USER/``               | ``export BBPATH=/mnt/bb/$USER/``               |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| 				         | ``jsrun -n 1 cp btio ${BBPATH}``               | ``jsrun -n 1 cp btio ${BBPATH}``               |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| 				         | ``jsrun -n 1 cp input* ${BBPATH}``             | ``jsrun -n 1 cp input* ${BBPATH}``             |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``jsrun -n 1 -a 16 -c 16 -r 1 ./btio`` | ``jsrun -n 1 -a 16 -c 16 -r 1 ${BBPATH}/btio`` | ``jsrun -n 1 -a 16 -c 16 -r 1 ${BBPATH}/btio`` |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``ls -l``			         | ``jsrun -n 1 ls -l ${BBPATH}/``	          | ``jsrun -n 1 ls -l ${BBPATH}/``	           |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| 				         | ``jsrun -n 1 cp ${BBPATH}/* .``                | ``spectral_wait.py``                           |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
 
-To facilitate collaboration among researchers, the OLCF provides (3)
-distinct types of project-centric work storage areas: *Member Work*
-directories, *Project Work* directories, and *World Work* directories.
-Each directory should be used for storing files generated by
-computationally-intensive HPC jobs related to a project.
 
-+----------------+--------------------------------------------+-----------------+-------------+---------+-----------+-------+
-| *Name*         | Path                                       | Type            | Permissions | Backups | Purged    | Quota |
-+================+============================================+=================+=============+=========+===========+=======+
-| *Member Work*  | ``/lustre/atlas/scratch/[projid]``         | Lustre          | 700         | no      | 14 days   | 10TB  |
-+                +--------------------------------------------+-----------------+-------------+---------+-----------+-------+
-|                | ``/gpfs/alpine/scratch/[userid]/[projid]`` | Spectrum Scale  | 700         | no      | 90 days   | 50TB  |
-+----------------+--------------------------------------------+-----------------+-------------+---------+-----------+-------+
-| *Project Work* | ``/lustre/atlas/proj-shared/[projid]``     | Lustre          | 770         | no      | 90 days   | 100TB |
-+                +--------------------------------------------+-----------------+-------------+---------+-----------+-------+
-|                | ``/gpfs/alpine/proj-shared/[projid]``      | Spectrum Scale  | 770         | no      | 90 days   | 50TB  |
-+----------------+--------------------------------------------+-----------------+-------------+---------+-----------+-------+
-| *World Work*   | ``/lustre/atlas/world-shared/[projid]``    | Lustre          | 775         | no      | 90 days   | 10TB  |
-+                +--------------------------------------------+-----------------+-------------+---------+-----------+-------+
-|                | ``/gpfs/alpine/world-shared/[projid]``     | Spectrum Scale  | 775         | no      | 90 days   | 50TB  |
-+----------------+--------------------------------------------+-----------------+-------------+---------+-----------+-------+
+You could observe that with Spectral library there is no reason to explicitly
+ask for the data to be copied to GPFS as it is done automatically through the
+spectral_wait.py script. Also a a log file called spectral.log will be created
+with information on the files that were copied.
 
-The difference between the three lies in the accessibility of the data
-to project members and to researchers outside of the project. Member
-Work directories are accessible only by an individual project member by
-default. Project Work directories are accessible by all project members.
-World Work directories are readable by any user on the system.
-
-Permissions
-''''''''''''
-
-UNIX Permissions on each project-centric work storage area differ
-according to the area's intended collaborative use. Under this setup,
-the process of sharing data with other researchers amounts to simply
-ensuring that the data resides in the proper work directory.
-
--  Member Work Directory: ``700``
--  Project Work Directory: ``770``
--  World Work Directory: ``775``
-
-For example, if you have data that must be restricted only to yourself,
-keep them in your Member Work directory for that project (and leave the
-default permissions unchanged). If you have data that you intend to
-share with researchers within your project, keep them in the project's
-Project Work directory. If you have data that you intend to share with
-researchers outside of a project, keep them in the project's World Work
-directory.
-
-Backups
-"""""""
-
-Member Work, Project Work, and World Work directories **are not backed
-up**. Project members are responsible for backing up these files, either
-to Project Archive areas (HPSS) or to an off-site location.
-
-Project Archive Directories
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-+---------------------+----------------------+--------+---------------+-----------+----------+---------+
-| *Name*              | Path                 | Type   | Permissions   | Backups   | Purged   | Quota   |
-+=====================+======================+========+===============+===========+==========+=========+
-| *Project Archive*   | ``/proj/[projid]``   | HPSS   | 770           | no        | no       | 100TB   |
-+---------------------+----------------------+--------+---------------+-----------+----------+---------+
-
-Projects are also allocated project-specific archival space on the High
-Performance Storage System (HPSS). The default quota is shown on the
-table above. If a higher quota is needed, contact the User Assistance
-Center. The Project Archive space on HPSS is intended for storage of
-data not immediately needed in either Project Home (NFS) areas nor
-Project Work (Alpine) areas, and to serve as a location to store backup
-copies of project-related files.
-
-Project Archive Path
-""""""""""""""""""""
-
-The project archive directories are located at ``/proj/pjt000`` (where
-``pjt000`` is your Project ID).
-
-Project Archive Access
-""""""""""""""""""""""
-
-Project Archive directories may only be accessed via utilities called
-HSI and HTAR. For more information on using HSI or HTAR, see the `HPSS
-Best Practices <./#hpss-best-practices>`__ section. [ls\_content\_block
-id="7126959"] [ls\_content\_block id="5798390"]
 
 .. _software:
 
@@ -1022,21 +739,20 @@ help@nccs.gov.
 Environment Management with Lmod
 --------------------------------
 
-Environment modules are provided through
-`Lmod <https://lmod.readthedocs.io/en/latest/>`__, a Lua-based module
-system for dynamically altering shell environments. By managing changes
-to the shell’s environment variables (such as ``PATH``,
-``LD_LIBRARY_PATH``, and ``PKG_CONFIG_PATH``), Lmod allows you to alter
-the software available in your shell environment without the risk of
-creating package and version combinations that cannot coexist in a
-single environment.
+Environment modules are provided through `Lmod
+<https://lmod.readthedocs.io/en/latest/>`__, a Lua-based module system for
+dynamically altering shell environments. By managing changes to the shell’s
+environment variables (such as ``PATH``, ``LD_LIBRARY_PATH``, and
+``PKG_CONFIG_PATH``), Lmod allows you to alter the software available in your
+shell environment without the risk of creating package and version combinations
+that cannot coexist in a single environment.
 
 Lmod is a recursive environment module system, meaning it is aware of module
 compatibility and actively alters the environment to protect against conflicts.
 Messages to stderr are issued upon Lmod implicitly altering the environment.
-Environment modules are structured hierarchically by compiler family such
-that packages built with a given compiler will only be accessible if the
-compiler family is first present in the environment.
+Environment modules are structured hierarchically by compiler family such that
+packages built with a given compiler will only be accessible if the compiler
+family is first present in the environment.
 
 .. note::
     Lmod can interpret both Lua modulefiles and legacy Tcl
@@ -1086,12 +802,11 @@ the ``module`` command:
 Searching for modules
 ^^^^^^^^^^^^^^^^^^^^^
 
-Modules with dependencies are only available when the underlying
-dependencies, such as compiler families, are loaded. Thus,
-``module avail`` will only display modules that are compatible with the
-current state of the environment. To search the entire hierarchy across
-all possible dependencies, the ``spider`` sub-command can be used as
-summarized in the following table.
+Modules with dependencies are only available when the underlying dependencies,
+such as compiler families, are loaded. Thus, ``module avail`` will only display
+modules that are compatible with the current state of the environment. To search
+the entire hierarchy across all possible dependencies, the ``spider``
+sub-command can be used as summarized in the following table.
 
 +----------------------------------------+------------------------------------------------------------------------------------+
 | Command                                | Description                                                                        |
@@ -1110,12 +825,11 @@ summarized in the following table.
 Defining custom module collections
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Lmod supports caching commonly used collections of environment modules
-on a per-user basis in ``$HOME/.lmod.d``. To create a collection called
-"NAME" from the currently loaded modules, simply call
-``module save NAME``. Omitting "NAME" will set the user’s default
-collection. Saved collections can be recalled and examined with the
-commands summarized in the following table.
+Lmod supports caching commonly used collections of environment modules on a
+per-user basis in ``$HOME/.lmod.d``. To create a collection called "NAME" from
+the currently loaded modules, simply call ``module save NAME``. Omitting "NAME"
+will set the user’s default collection. Saved collections can be recalled and
+examined with the commands summarized in the following table.
 
 +-------------------------+----------------------------------------------------------+
 | Command                 | Description                                              |
@@ -1171,10 +885,9 @@ The following compilers are available on Summit:
 
 **NVCC**: CUDA C compiler
 
-Upon login, the default versions of the XL
-compiler suite and Spectrum Message Passing Interface (MPI) are added to
-each user's environment through the modules system. No changes to the
-environment are needed to make use of the defaults.
+Upon login, the default versions of the XL compiler suite and Spectrum Message
+Passing Interface (MPI) are added to each user's environment through the modules
+system. No changes to the environment are needed to make use of the defaults.
 
 Multiple versions of each compiler family are provided, and can be inspected
 using the modules system:
@@ -1256,9 +969,9 @@ Fortran compilation
 MPI
 ^^^
 
-MPI on Summit is provided by IBM Spectrum MPI. Spectrum MPI provides
-compiler wrappers that automatically choose the proper compiler to build
-your application.
+MPI on Summit is provided by IBM Spectrum MPI. Spectrum MPI provides compiler
+wrappers that automatically choose the proper compiler to build your
+application.
 
 The following compiler wrappers are available:
 
@@ -1335,7 +1048,6 @@ CUDA C/C++ support is provided through the ``cuda`` module.
 
 **Language support**
 
-
 ``-std=c++11`` : provide C++11 support
 
 ``--expt-extended-lambda`` : provide experimental host/device lambda support
@@ -1377,7 +1089,6 @@ The PGI compiler suite is available through the ``pgi`` module.
 ``pgfortran`` : Primary fortran compiler with CUDA Fortran support
 
 **Language support:**
-
 
 Files with ``.cuf`` suffix automatically compiled with cuda fortran support
 
