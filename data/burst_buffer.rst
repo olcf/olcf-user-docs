@@ -1,8 +1,7 @@
 .. _burst_buffer:
 
-===========================================================
 Burst Buffer
-===========================================================
+=============
 
 NVMe (XFS)
 ----------
@@ -10,8 +9,9 @@ NVMe (XFS)
 Each compute node on Summit has a \ **N**\ on-\ **V**\ olatile
 **Me**\ mory (NVMe) storage device, colloquially known as a "Burst
 Buffer" with theoretical performance peak of 2.1 GB/s for writing and
-5.5 GB/s for reading. Users will have access to an 1600 GB partition of
-each NVMe. The NVMes could be used to reduce the time that applications
+5.5 GB/s for reading. Starting September 24th, 100GB of each NVMe will be reserved for 
+NFS cache to help speed access to common libraries. Users will have access to 
+an 1500 GB partition of each NVMe. The NVMes could be used to reduce the time that applications
 wait for I/O. Using an SSD drive per compute node, the burst buffer will
 be used to transfers data to or from the drive before the application
 reads a file or after it writes a file. The result will be that the
@@ -185,4 +185,3 @@ under development.   Tutorials about NVME:   Burst Buffer on Summit
 (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_BB_zimmer.pdf>`__,
 `video <https://vimeo.com/306891012>`__). Below is presented the Spectral library.
 
-.. include:: spectral.rst
