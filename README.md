@@ -14,4 +14,4 @@ Just send us a [Pull Request](https://help.github.com/articles/using-pull-reques
 
 <hr>
 
-##### Contact: [OLCF User Assistance Group](https://www.olcf.ornl.gov/about-olcf/olcf-groups/user-assistance-outreach/), [help@olcf.ornl.gov](help@olcf.ornl.gov)
+##### Contact: [OLCF User Assistance Group](https://www.olcf.ornl.gov/about-olcf/olcf-groups/user-assistance-outreach/), <help@olcf.ornl.gov>
