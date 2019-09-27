@@ -9,6 +9,41 @@ storage spaces where data can be shared for collaboration.  Below we give an
 overview and explain where each storage area is mounted.
 
 
+Storage Areas
+=============
+
+The storage area to use in any given situation depends upon the activity you
+wish to carry out. Each user has a User Home area on a Network File System (NFS)
+and a User Archive area on the archival High Performance Storage System (HPSS).
+These user storage areas are intended to house user-specific files. Each project
+has a Project Home area on NFS, multiple Project Work areas on Lustre and
+Spectrum Scale, and a Project Archive area on HPSS. These project storage areas
+are intended to house project-centric files. We have defined several areas as
+listed below by function:
+
+- **User Home:** Long-term data for routine access that is unrelated to a
+  project. It is mounted on compute nodes of Summit as read only
+
+- **User Archive:** Long-term data for archival access that is unrelated to a
+  project.
+
+- **Project Home:** Long-term project data for routine access that's shared
+  with other project members. It is mounted on compute nodes of Summit as read
+  only
+
+- **Member Work:** Short-term user data for fast, batch-job access that is not
+  shared with other project members.
+
+- **Project Work:** Short-term project data for fast, batch-job access that's
+  shared with other project members.
+
+- **World Work:** Short-term project data for fast, batch-job access that's
+  shared with OLCF users outside your project.
+
+- **Project Archive:** Long-term project data for archival access that's shared
+  with other project members.
+
+
 Alpine IBM Spectrum Scale Filesystem
 =====================================
 
@@ -31,7 +66,7 @@ minimum 50,000 file access per sec and aggregated up to 2.6 million accesses of
    Figure 1. An example of the NDS servers on Summit
 
 Performance under not ideal workload
-=====================================
+------------------------------------
 
 The I/O performance can be lower than the optimal one when you save one single
 shared file with non-optimal I/O pattern. Moreover, the previous performance
@@ -72,36 +107,4 @@ a user needs to be familiar with:
   files/directories. The GPFS will handle the workload, the file system was
   tuned during the installation.
 
-*Storage Areas*
-
-The storage area to use in any given situation depends upon the activity you
-wish to carry out. Each user has a User Home area on a Network File System (NFS)
-and a User Archive area on the archival High Performance Storage System (HPSS).
-These user storage areas are intended to house user-specific files. Each project
-has a Project Home area on NFS, multiple Project Work areas on Lustre and
-Spectrum Scale, and a Project Archive area on HPSS. These project storage areas
-are intended to house project-centric files. We have defined several areas as
-listed below by function:
-
-- **User Home:** Long-term data for routine access that is unrelated to a
-  project. It is mounted on compute nodes of Summit as read only
-
-- **User Archive:** Long-term data for archival access that is unrelated to a
-  project.
-
-- **Project Home:** Long-term project data for routine access that's shared
-  with other project members. It is mounted on compute nodes of Summit as read
-  only
-
-- **Member Work:** Short-term user data for fast, batch-job access that is not
-  shared with other project members.
-
-- **Project Work:** Short-term project data for fast, batch-job access that's
-  shared with other project members.
-
-- **World Work:** Short-term project data for fast, batch-job access that's
-  shared with OLCF users outside your project.
-
-- **Project Archive:** Long-term project data for archival access that's shared
-  with other project members.
 
