@@ -149,10 +149,12 @@ Collaborators involved with an approved and activated OLCF project can
 apply for a user account associated with it. There are several steps in
 receiving a user account, and we're here to help you through them.
 
-    **Note:** Project PIs do not receive a user account with project
+.. note::
+    Project PIs do not receive a user account with project
     creation, and must also submit a User Account Application.
 
-    **Note:** If you will be contributing to multiple projects, your user
+.. note::
+    If you will be contributing to multiple projects, your user
     account will need to be associated with each. If you already have a user
     account and need to be added to additional projects, complete the User
     Account Application and indicate you are an existing user.

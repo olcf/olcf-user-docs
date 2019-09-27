@@ -101,7 +101,8 @@ utilities such as ``autoconf`` and ``cmake``) will have access to the
 same type of hardware that is on compute nodes and should not require
 intervention that might be required on non-homogeneous systems.
 
-    **NOTE:** Login nodes have (2) 16-core Power9 CPUs and (4) V100 GPUs.
+.. note::
+    Login nodes have (2) 16-core Power9 CPUs and (4) V100 GPUs.
     Compute nodes have (2) 22-core Power9 CPUs and (6) V100 GPUs.
 
 System Interconnect
@@ -192,7 +193,8 @@ interconnect. Each link has a peak bandwidth of 25 GB/s (in each
 direction), and since there are 2 links between processors, data can be
 transferred from GPU-to-GPU and CPU-to-GPU at a peak rate of 50 GB/s.
 
-    **NOTE:** The 50-GB/s peak bandwidth stated above is for data transfers
+.. note::
+    The 50-GB/s peak bandwidth stated above is for data transfers
     in a single direction. However, this bandwidth can be achieved in both
     directions simultaneously, giving a peak "bi-directional" bandwidth of
     100 GB/s between processors.
@@ -1036,7 +1038,8 @@ Environment modules are structured hierarchically by compiler family such
 that packages built with a given compiler will only be accessible if the
 compiler family is first present in the environment.
 
-    **Note:** Lmod can interpret both Lua modulefiles and legacy Tcl
+.. note::
+    Lmod can interpret both Lua modulefiles and legacy Tcl
     modulefiles. However, long and logic-heavy Tcl modulefiles may require
     porting to Lua.
 
@@ -1073,7 +1076,8 @@ the ``module`` command:
 | module update                    | Reloads all currently loaded modules                                  |
 +----------------------------------+-----------------------------------------------------------------------+
 
-    **Note:** Modules are changed recursively. Some commands, such as
+.. note::
+    Modules are changed recursively. Some commands, such as
     ``module swap``, are available to maintain compatibility with scripts
     using Tcl Environment Modules, but are not necessary since Lmod
     recursively processes loaded modules and automatically resolves
@@ -1127,16 +1131,18 @@ commands summarized in the following table.
 | module savelist         | Shows the list user-defined saved collections            |
 +-------------------------+----------------------------------------------------------+
 
-    **Note:** You should use unique names when creating collections to
+.. note::
+    You should use unique names when creating collections to
     specify the application (and possibly branch) you are working on. For
-    example, \`app1-development\`, \`app1-production\`, and
-    \`app2-production\`.
+    example, ``app1-development``, ``app1-production``, and
+    ``app2-production``.
 
-    **Note:** In order to avoid conflicts between user-defined collections
+.. note::
+    In order to avoid conflicts between user-defined collections
     on multiple compute systems that share a home file system (e.g.
-    /ccs/home/[userid]), lmod appends the hostname of each system to the
-    files saved in in your ~/.lmod.d directory (using the environment
-    variable LMOD\_SYSTEM\_NAME). This ensures that only collections
+    ``/ccs/home/[userid]``), lmod appends the hostname of each system to the
+    files saved in in your ``~/.lmod.d`` directory (using the environment
+    variable ``LMOD_SYSTEM_NAME``). This ensures that only collections
     appended with the name of the current system are visible.
 
 The following screencast shows an example of setting up user-defined
@@ -1187,7 +1193,8 @@ using the modules system:
 C compilation
 ^^^^^^^^^^^^^
 
-    **Note:** type char is unsigned by default
+.. note::
+    type char is unsigned by default
 
 +--------------+------------------+----------------+------------------+------------------+---------------------------+--------------------+
 | **Vendor**   | **Module**       | **Compiler**   |  **Enable C99**  | **Enable C11**   | **Default signed char**   | **Define macro**   |
@@ -1207,7 +1214,8 @@ C compilation
 C++ compilations
 ^^^^^^^^^^^^^^^^
 
-    **Note:** type char is unsigned by default
+.. note::
+    type char is unsigned by default
 
 +--------------+------------------+-------------------+--------------------------------+--------------------------------+---------------------------+--------------------+
 | **Vendor**   | **Module**       | **Compiler**      | **Enable C++11**               | **Enable C++14**               | **Default signed char**   | **Define macro**   |
@@ -1241,7 +1249,8 @@ Fortran compilation
 |              |                  |                                   | suffix                   |  suffix                   | suffix                   |                    |
 +--------------+------------------+-----------------------------------+--------------------------+---------------------------+--------------------------+--------------------+
 
-    **Note:** The xlflang module currently conflicts with the clang
+.. note::
+    The xlflang module currently conflicts with the clang
     module. This restriction is expected to be lifted in future releases.
 
 MPI
@@ -1271,12 +1280,14 @@ flag will display the full link lines, without actually compiling:
 OpenMP
 ^^^^^^
 
-    **Note:** When using OpenMP with IBM XL compilers, the thread-safe
+.. note::
+    When using OpenMP with IBM XL compilers, the thread-safe
     compiler variant is required; These variants have the same name as the
     non-thread-safe compilers with an additional ``_r`` suffix. e.g. to
     compile OpenMPI C code one would use ``xlc_r``
 
-    **Note:** OpenMP offloading support is still under active development.
+.. note::
+    OpenMP offloading support is still under active development.
     Performance and debugging capabilities in particular are expected to
     improve as the implementations mature.
 
@@ -1701,7 +1712,8 @@ strongly encourage users to run jobs on Summit that are as large as
 their code will warrant. To that end, the OLCF implements queue policies
 that enable large jobs to run in a timely fashion.
 
-    **Note:** The OLCF implements queue policies that encourage the
+.. note::
+    The OLCF implements queue policies that encourage the
     submission and timely execution of large, leadership-class jobs on
     Summit.
 
@@ -1750,7 +1762,8 @@ following policies:
 -  Users may have only (100) jobs queued at any state at any time.
    Additional jobs will be rejected at submit time.
 
-    **Note:** The *eligible-to-run* state is not the *running* state.
+.. note::
+    The *eligible-to-run* state is not the *running* state.
     Eligible-to-run jobs have not started and are waiting for resources.
     Running jobs are actually executing.
 
@@ -3478,9 +3491,10 @@ active threads can be more pleasant.
 Training System (Ascent)
 ========================
 
-**NOTE:** Ascent is a training system that is not intended to be used as
-an OLCF user resource. Access to the system is only obtained through
-OLCF training events.
+.. note::
+    Ascent is a training system that is not intended to be used as
+    an OLCF user resource. Access to the system is only obtained through
+    OLCF training events.
 
 Ascent is an 18-node stand-alone system with the same architecture as
 Summit (see :ref:`summit-nodes` section above), so most of this Summit User Guide can be referenced for
@@ -3533,9 +3547,10 @@ nodes. Under ``/gpfs/wolf/[projid]``, there are 3 directories:
 Obtaining Access to Ascent
 --------------------------
 
-**NOTE:** Ascent is a training system that is not intended to be used as
-an OLCF user resource. Access to the system is only obtained through
-OLCF training events.
+.. note::
+    Ascent is a training system that is not intended to be used as
+    an OLCF user resource. Access to the system is only obtained through
+    OLCF training events.
 
 This sub-section describes the process of obtaining access to Ascent for
 an OLCF training event. Please follow the steps below to request access.
@@ -3556,9 +3571,11 @@ For "Account Information", enter the following:
 
 .. image:: /images/Ascent_Account_Application_3.png
 
-**NOTE:** After submitting your application, it will need to pass
-through the approval process. Depending on when you submit, approval
-might not occur until the next business day.
+
+.. note::
+    After submitting your application, it will need to pass
+    through the approval process. Depending on when you submit, approval
+    might not occur until the next business day.
 
 Step 2: Set Your XCAMS/UCAMS Password
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -3577,14 +3594,16 @@ To log in to Ascent, please use your XCAMS/UCAMS username and password:
 
 ``$ ssh USERNAME@login1.ascent.olcf.ornl.gov``
 
-**NOTE:** You do not need to use an RSA token to log in to Ascent.
-Please use your XCAMS/UCAMS username and password (which is different
-from the username and PIN + RSA token code used to log in to other OLCF
-systems such as Summit).
+.. note::
+    You do not need to use an RSA token to log in to Ascent.
+    Please use your XCAMS/UCAMS username and password (which is different
+    from the username and PIN + RSA token code used to log in to other OLCF
+    systems such as Summit).
 
-**NOTE:** It will take ~5 minutes for your directories to be created, so
-if your account was just created and you log in and you do not have a
-home directory, this is likely the reason.
+.. note::
+    It will take ~5 minutes for your directories to be created, so
+    if your account was just created and you log in and you do not have a
+    home directory, this is likely the reason.
 
 Preparing For Frontier
 ======================

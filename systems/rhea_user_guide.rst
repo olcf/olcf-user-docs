@@ -49,8 +49,8 @@ partition features 14 physical cores, for a total of 28 physical cores per node.
 With Hyper-Threading enabled, these nodes have 56 logical cores that can execute
 56 hardware threads for increased parallelism.
 
-    **Note:** To access the gpu partition, batch job submissions should request
-    ``-lpartition=gpu``.
+.. note::
+    To access the gpu partition, batch job submissions should request ``-lpartition=gpu``.
 
 Please see the :ref:`batch-queues-on-rhea` section to learn about the queuing
 policies for these two partitions. Both compute partitions are accessible
@@ -185,7 +185,8 @@ the ``module`` command:
 | module update                    | Reloads all currently loaded modules                                  |
 +----------------------------------+-----------------------------------------------------------------------+
 
-    **Note:** Modules are changed recursively. Some commands, such as
+.. note::
+    Modules are changed recursively. Some commands, such as
     ``module swap``, are available to maintain compatibility with scripts
     using Tcl Environment Modules, but are not necessary since Lmod
     recursively processes loaded modules and automatically resolves
@@ -239,16 +240,18 @@ commands summarized in the following table.
 | module savelist         | Shows the list user-defined saved collections            |
 +-------------------------+----------------------------------------------------------+
 
-    **Note:** You should use unique names when creating collections to
+.. note::
+    You should use unique names when creating collections to
     specify the application (and possibly branch) you are working on. For
-    example, \`app1-development\`, \`app1-production\`, and
-    \`app2-production\`.
+    example, ``app1-development``, ``app1-production``, and
+    ``app2-production``.
 
-    **Note:** In order to avoid conflicts between user-defined collections
+.. note::
+    In order to avoid conflicts between user-defined collections
     on multiple compute systems that share a home file system (e.g.
-    /ccs/home/[userid]), lmod appends the hostname of each system to the
-    files saved in in your ~/.lmod.d directory (using the environment
-    variable lmod\_system\_name). This ensures that only collections
+    ``/ccs/home/[userid]``), lmod appends the hostname of each system to the
+    files saved in in your ``~/.lmod.d`` directory (using the environment
+    variable ``lmod_system_name``). This ensures that only collections
     appended with the name of the current system are visible.
 
 The following screencast shows an example of setting up user-defined
@@ -430,7 +433,8 @@ the number of simultaneous tasks performed on the login resources. For
 example, a user should not run (10) simultaneous ``tar`` processes on a
 login node.
 
-    **Warning:** Compute-intensive, memory-intensive, or otherwise
+.. warning::
+    Compute-intensive, memory-intensive, or otherwise
     disruptive processes running on login nodes may be killed without
     warning.
 
@@ -634,8 +638,9 @@ job would start at 10:54.
 
       sbatch: Job 1375 to start at 2019-08-06T10:54:01 using 64 processors on nodes rhea[499-500] in partition batch
 
-**Note:** The queue is fluid, the given time is an estimate made from the current queue state and load. Future job submissions and job
-completions will alter the estimate.
+.. note::
+    The queue is fluid, the given time is an estimate made from the current queue state and load. Future job submissions and job
+    completions will alter the estimate.
 
 --------------
 
@@ -691,8 +696,9 @@ The following table summarizes frequently-used options to Slurm:
 +----------------+-------------------------------+-----------------------------------------------------------+
 
 
-    **Note:** Because the login nodes differ from the service nodes, using
-    the '–get-user-env' option is not recommended. Users should create the
+.. note::
+    Because the login nodes differ from the service nodes, using
+    the ``–get-user-env`` option is not recommended. Users should create the
     needed environment within the batch job.
 
 Further details and other Slurm options may be found through the ``sbatch`` man page.
@@ -903,8 +909,9 @@ used below to display layout options.
 .. image:: /images/Rhea-Node-Description.png
    :align: center
 
-**Note:** The Intel cores are numbered in a round robin fashion.
-0 and 16 are on the same physical core.
+.. note::
+    The Intel cores are numbered in a round robin fashion.
+    0 and 16 are on the same physical core.
 
 
 Using ``srun``
@@ -928,8 +935,9 @@ to execute an MPI binary on one or more compute nodes in parallel.
 | ``--cpu-bind=cores`` | Bind to cores                         |
 +----------------------+---------------------------------------+
 
-    **Note:** If you do not specify the number of MPI tasks to ``srun``
-    via ``-n``, the system will default to using only one task per node
+.. note::
+    If you do not specify the number of MPI tasks to ``srun``
+    via ``-n``, the system will default to using only one task per node.
 
 
 MPI Task Layout
@@ -968,8 +976,9 @@ two threads. The ``-c`` flag will provide room for the threads.
 .. image:: /images/Rhea-layout-thread-per-hyperthread.png
    :align: center
 
-**Warning:** Not adding enough resources using the ``-c`` flag,
-threads may be placed on the same resource.
+.. warning::
+    Not adding enough resources using the ``-c`` flag,
+    threads may be placed on the same resource.
 
 Multiple Simultaneous Jobsteps
 """"""""""""""""""""""""""""""
@@ -992,13 +1001,15 @@ batch job by placing each ``srun`` in the background.
    srun -n4 -N1 -c1 --cpu-bind=threads --exclusive ./c.out &
    wait
 
-**Notice:** The ``wait`` command must be used in a batch script
-to prevent the shell from exiting before all backgrounded
-sruns have completed.
+.. note::
+    The ``wait`` command must be used in a batch script
+    to prevent the shell from exiting before all backgrounded
+    sruns have completed.
 
-**Warning:** The ``--exclusive`` flag must be used to prevent
-resource sharing. Without the flag each backgrounded srun
-will likely be placed on the same resources.
+.. warning::
+    The ``--exclusive`` flag must be used to prevent
+    resource sharing. Without the flag each backgrounded srun
+    will likely be placed on the same resources.
 
 .. _batch-queues-on-rhea:
 
@@ -1040,7 +1051,8 @@ gpu``
 | 1-2 Nodes  |  0 - 48 hrs |     max 1 job running **per user**        |
 +------------+-------------+-------------------------------------------+
 
-    **Note:** The queue structure was designed based on user feedback and
+.. note::
+    The queue structure was designed based on user feedback and
     analysis of batch jobs over the recent years. However, we understand that
     the structure may not meet the needs of all users. **If this structure
     limits your use of the system, please let us know.** We want Rhea to be a
@@ -1473,7 +1485,8 @@ maintain and debug. Workflows that contain loops or recursion (jobs that
 can submit themselves again) may inadvertently waste allocation hours if
 a suitable exit condition is not reached.
 
-    **Warning:** Recursive workflows which do not exit will drain your
+.. warning::
+    Recursive workflows which do not exit will drain your
     project's allocation. Refunds will not be granted. Please be extremely
     cautious when designing workflows that cause jobs to re-submit themselves.
 
@@ -1526,7 +1539,8 @@ local ParaView client to display and interact with your data while the
 ParaView server runs in a Rhea batch job, allowing interactive analysis
 of very large data sets.
 
-    **Warning:** In interactive mode your local ParaView version number must
+.. warning::
+    In interactive mode your local ParaView version number must
     match the ParaView version number available on Rhea. Please check the
     available ParaView versions using Lmod
 
@@ -1538,11 +1552,12 @@ Rhea and connecting to it from a locally running ParaView client.
 Although several methods may be used the one described should work in
 most cases.
 
-    **Warning:** For Macintosh clients, it is necessary to install `XQuartz
+.. warning::
+    For Macintosh clients, it is necessary to install `XQuartz
     (X11) <https://support.apple.com/en-us/HT201341>`__ to get a command prompt
     in which you will securely enter your OLCF credentials.
 
-    **Warning:** For Windows clients, it is necessary to install PuTTY to
+    For Windows clients, it is necessary to install PuTTY to
     create an ssh connection in step 2.
 
 **Step 1: Launch ParaView on your Desktop and fetch a connection script

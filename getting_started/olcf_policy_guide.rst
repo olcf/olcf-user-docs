@@ -17,7 +17,8 @@ that speak to work performed on OLCF resources:
 Computing Policy
 ================
 
-    **Note:** This details an official policy of the OLCF, and must be
+.. note::
+    This details an official policy of the OLCF, and must be
     agreed to by the following persons as a condition of access to and use
     of OLCF computational resources:
 
@@ -192,7 +193,8 @@ resources.  
 Data Management Policy
 ======================
 
-    **Note:** This details an official policy of the OLCF, and must be
+.. note::
+    This details an official policy of the OLCF, and must be
     agreed to by the following persons as a condition of access to or use of
     OLCF computational resources:
 
@@ -570,7 +572,8 @@ computing resources.  
 Security Policy
 ===============
 
-    **Note:** This details an official policy of the OLCF, and must be
+.. note::
+    This details an official policy of the OLCF, and must be
     agreed to by the following persons as a condition of access to or use of
     OLCF computational resources:
 
@@ -667,7 +670,8 @@ the DTNs and available utilities.
 Titan Scheduling Policy
 =======================
 
-    **Note:** This details an official policy of the OLCF, and must be
+.. note::
+    This details an official policy of the OLCF, and must be
     agreed to by the following persons as a condition of access to or use of
     OLCF computational resources:
 
@@ -696,7 +700,8 @@ strongly encourage users to run jobs on Titan that are as large as their
 code will warrant. To that end, the OLCF implements queue policies that
 enable large jobs to run in a timely fashion.
 
-    **Note:** The OLCF implements queue policies that encourage the
+.. note::
+    The OLCF implements queue policies that encourage the
     submission and timely execution of large, leadership-class jobs on
     Titan.
 
@@ -772,7 +777,8 @@ following policies:
    additional jobs will be blocked until one of the running jobs
    completes.
 
-    **Note:** The *eligible-to-run* state is not the *running* state.
+.. note::
+    The *eligible-to-run* state is not the *running* state.
     Eligible-to-run jobs have not started and are waiting for resources.
     Running jobs are actually executing.
 
@@ -808,7 +814,8 @@ enforces the following policies:
 -  Limit of (1) job per user *regardless of the job's state*.
 -  Jobs receive a (2)-day priority aging boost for scheduling.
 
-    **Warning:** Users who misuse the ``debug`` queue may have further
+.. warning::
+    Users who misuse the ``debug`` queue may have further
     access to the queue denied.
 
 Allocation Overuse Policy
@@ -865,7 +872,8 @@ CPU-time equivalent to
 INCITE Allocation Under-utilization Policy
 ==========================================
 
-    **Note:** This details an official policy of the OLCF, and must be
+.. note::
+    This details an official policy of the OLCF, and must be
     agreed to by the following persons as a condition of access to and use
     of OLCF computational resources:
 
@@ -900,7 +908,8 @@ For example, a 1,000,000 core-hour INCITE project that has utilized only
 Project Reporting Policy
 ========================
 
-    **Note:** This details an official policy of the OLCF, and must be
+.. note::
+    This details an official policy of the OLCF, and must be
     agreed to by the following persons as a condition of access to and use
     of OLCF computational resources:
 
@@ -928,7 +937,8 @@ imposes the following penalties for late submission:
 Non-proprietary Institutional User Agreement Policy
 ===================================================
 
-    **Note:** This details an official policy of the OLCF, and must be
+.. note::
+    This details an official policy of the OLCF, and must be
     agreed to by the following persons as a condition of access to and use
     of OLCF computational resources:
 

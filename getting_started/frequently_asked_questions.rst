@@ -42,7 +42,8 @@ Similar to individual user accounts being granted resources by their
 association with a project, individual user accounts are granted the
 resources of a subproject upon association with the subproject.
 
-    **Note:** Subprojects do not inherit the accesses of their primary
+.. note::
+    Subprojects do not inherit the accesses of their primary
     projects, and users can be associated with a subproject without
     association with the primary project.
 
@@ -58,7 +59,8 @@ primary project users must be associated with a subproject(s). If you
 have any questions, or would like to request a subproject, please
 contact the OLCF Accounts Team at accounts@ccs.ornl.gov.
 
-    **Note:** Subprojects are created at the request of project PIs.
+.. note::
+    Subprojects are created at the request of project PIs.
 
 
 I no longer need my account. Who should I inform and what should I do with my OLCF issued RSA SecurID token?
