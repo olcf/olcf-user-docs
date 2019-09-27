@@ -13,4 +13,5 @@ Share it with us by [opening an issue](https://github.com/olcf/olcf-user-docs/is
 Just send us a [Pull Request](https://help.github.com/articles/using-pull-requests/)! See [Contributing to these Docs](https://github.com/olcf/olcf-user-docs/blob/master/contributing/index.rst) for a step-by-step breakdown. 
 
 <hr>
+
 ##### Contact: [OLCF User Assistance Group](https://www.olcf.ornl.gov/about-olcf/olcf-groups/user-assistance-outreach/), [help@olcf.ornl.gov](mailto: help@olcf.ornl.gov)
