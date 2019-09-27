@@ -12,8 +12,7 @@ All connections to OLCF resources are done via Secure Shell (ssh). SSH encrypts
 the entire session between the user connecting and the OLCF systems and avoids
 risks associated with using plain-text communication. 
 
-**Note:** To access OLCF systems, your SSH client must support SSH protocol
-version 2 (this is common) and allow keyboard-interactive authentication
+.. note:: To access OLCF systems, your SSH client must support SSH protocol version 2 (this is common) and allow keyboard-interactive authentication.
 
 
 For UNIX-based SSH clients, the following line should be in either the default
@@ -32,17 +31,15 @@ SSH clients are available for Windows-based systems, such as `SecureCRT
 For recent SecureCRT versions, the preferred authentication setting shown above
 can be made through the "connection properties" menu.
 
-**Note:** SSH multiplexing is disabled on all of the OLCF’s user-facing systems.
-Users will receive an error message if they attempt to connect to an OLCF
-resource that tries to reuse an SSH control path. To ensure SSH connections will
-not attempt multiplexing, you will need to modify your ``$HOME/.ssh/config``
-file by adding the following:
-
-::
-
-   Host *.ccs.ornl.gov
-      ControlMaster no
-
+.. note:: 
+    SSH multiplexing is disabled on all of the OLCF’s user-facing systems.
+    Users will receive an error message if they attempt to connect to an OLCF
+    resource that tries to reuse an SSH control path. To ensure SSH connections will
+    not attempt multiplexing, you will need to modify your ``$HOME/.ssh/config``
+    file by adding the following:
+    ::
+        Host *.ccs.ornl.gov
+          ControlMaster no
 
 With an active user account, you'll be able to log into any of the
 systems allocated to your project(s). All OLCF resources (except the Ascent 
@@ -73,7 +70,8 @@ code shown on your SecurID fob and press enter. For example, if your pin
 is ``1234`` and the (6) digits on the fob are ``000987``, you would
 enter ``1234000987`` when prompted for a PASSCODE.
 
-    **Note:** The 6-digit code displayed on the SecurID fob can only be used
+.. note::
+    The 6-digit code displayed on the SecurID fob can only be used
     once. If prompted for multiple PASSCODE entries, always allow the code to
     change between attempts. Re-using a code can cause your account to be
     automatically locked.
