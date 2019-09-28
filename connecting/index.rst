@@ -52,6 +52,7 @@ OLCF-provided RSA SecurID fob to log into any of the systems.
 Activating a new SecurID fob
 *****************************
 .. image:: /images/rsa_securid_fob.gif
+   :align: center
 
 #. Initiate a SSH connection to ``username@home.ccs.ornl.gov``.
 #. When prompted for a PASSCODE, enter the 6-digit code shown on the

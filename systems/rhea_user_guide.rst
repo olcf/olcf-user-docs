@@ -1197,9 +1197,7 @@ or for launching a simulation job automatically once the input deck has
 been retrieved from HPSS and pre-processed.
 
 .. image:: /images/Cross-Submission-Workflow-544x300.png
-   :class: size-medium wp-image-4468
-   :width: 544px
-   :height: 300px
+   :align: center
 
 The key to remote job submission is the command qsub -q host script.pbs
 which will submit the file script.pbs to the batch queue on the specified
@@ -1227,6 +1225,7 @@ to be submitted on Titan, and a second to be submitted automatically to
 Rhea. Visually, this workflow may look something like the following:
 
 .. image:: /images/remote_submission.stage-compute-e1392655934134.png
+   :align: center
 
 The batch scripts for such a workflow could be implemented as follows:
 
@@ -1284,6 +1283,7 @@ stage it to your project's scratch area before beginning. Once the
 computation is done, we will automatically archive the output.
 
 .. image:: /images/remote_submission.stage-compute-archive-e1392655850482.png
+   :align: center
 
 **Batch-script-1.pbs**
 
@@ -1351,6 +1351,7 @@ visualizations have finished, we will transfer them to a remote
 institution.
 
 .. image:: /images/remote_submission.stag-compute-archive-vis-transfer-e1392822417662.png
+   :align: center
 
 **Step-1.prepare-data.pbs**
 
@@ -1491,6 +1492,7 @@ a suitable exit condition is not reached.
 
 
 .. image:: /images/remote_submission.circular-e1392656023400.png
+   :align: center
 
 As always, users on multiple projects are strongly advised to double
 check that the ``#PBS -A <PROJECTID>`` field is set to the correct
@@ -1565,18 +1567,18 @@ for Rhea**
 Start ParaView and then select ``File/Connect`` to begin.
 
 .. image:: /images/paraview_step1a.png
-   :width: 700px
+   :align: center
 
 Next Select ``Fetch Servers``
 
 .. image:: /images/paraview1.2.png
-   :width: 600px
+   :align: center
 
 Next select the connection to Rhea for either windows or Mac/Linux and hit the
 “Import Selected” button.
 
 .. image:: /images//paraview_step1c.png
-   :width: 600px
+   :align: center
 
 You may now quit and restart ParaView in order to save connection setup in your
 preferences.
@@ -1587,19 +1589,19 @@ Once restarted, and henceforth, simply select Rhea from the File->Connect
 dialog and click the “Connect” button.
 
 .. image:: /images/paraview_step2a.png
-   :width: 600px
+   :align: center
 
 A dialog box follows, in which you must enter in your username and project
 allocation, the number of nodes to reserve and a duration to reserve them for.
 
 .. image:: /images/paraview_step2b.png
-   :width: 500px
+   :align: center
 
 When you click OK, a windows command prompt or ``xterm`` pops up. In this
 window enter your credentials at the OLCF login prompt.
 
 .. image:: /images/paraview_step2c.png
-   :width: 700px
+   :align: center
 
 When your job reaches the top of the queue, the ``RenderView1`` view window
 will return. At this point you are connected to Rhea and can open files that
@@ -1685,8 +1687,6 @@ Once you have VisIt installed and set up on your local computer:
    "Bank" as shown below.
 
 .. image:: /images/Screen-Shot-2015-12-02-at-3.30.27-PM.png
-   :width: 400px
-   :height: 360px
    :align: center
 
 -  Once specified, the server side of VisIt will be launched, and you
@@ -1710,8 +1710,7 @@ select "Change username" and then enter your OLCF username when
 prompted.
 
 .. image:: /images/Screen-Shot-2016-01-06-at-11.10.19-AM.png
-   :width: 330px
-   :height: 125px
+   :align: center
 
 This will give you a new opportunity to enter your PIN + token code and
 your username will appear in login request box as shown below. If you
@@ -1721,8 +1720,7 @@ Profiles </for-users/system-user-guides/rhea/analysis-tools/#modifying-host-prof
 section below for more details.
 
 .. image:: /images/Screen-Shot-2016-01-06-at-11.06.25-AM1.png
-   :width: 360px
-   :height: 125px
+   :align: center
 
 VisIt will not connect when you try to draw an image.
 """""""""""""""""""""""""""""""""""""""""""""""""""""

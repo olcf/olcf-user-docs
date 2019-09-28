@@ -1987,7 +1987,6 @@ sets and layout.
 
 
 .. image:: /images/summit-node-description-1.png
-   :class: normal aligncenter wp-image-775250
    :width: 85%
    :align: center
 
@@ -2039,9 +2038,6 @@ smaller groups. The following examples show how a node can be subdivided
 and how many resource set could fit on a node.
 
 .. image:: /images/summit-resource-set-subdivide.png
-   :class: normal aligncenter size-full wp-image-775849
-   :width: 780px
-   :height: 360px
    :align: center
 
 Multiple Methods to Creating Resource Sets
@@ -2054,18 +2050,14 @@ tasks access to a single GPU.
 #. 6 resource sets per node: 1 GPU, 2 cores per (Titan)
 
    .. image:: https://www.olcf.ornl.gov/wp-content/uploads/2018/03/RS-summit-example-1GPU-2Cores.png
-      :class: normal aligncenter size-full wp-image-775999
-      :width: 500px
-      :height: 300px
+      :align: center
 
    In this case, CPUs can only see single assigned GPU.
 
 #. 2 resource sets per node: 3 GPUs and 6 cores per socket
 
    .. image:: https://www.olcf.ornl.gov/wp-content/uploads/2018/03/RS-summit-example-3GPU-6Cores.png
-      :class: normal aligncenter size-full wp-image-776000
-      :width: 600px
-      :height: 360px
+      :align: center
 
    In this case, all 6 CPUs can see 3 GPUs. Code must manage CPU -> GPU
    communication. CPUs on socket0 can not access GPUs or Memory on socket1.
@@ -2073,9 +2065,7 @@ tasks access to a single GPU.
 #. Single resource set per node: 6 GPUs, 12 cores
 
    .. image:: https://www.olcf.ornl.gov/wp-content/uploads/2018/03/RS-summit-example-6GPU-12Core.png
-      :class: normal aligncenter size-full wp-image-776142
-      :width: 600px
-      :height: 360px
+      :align: center
 
    In this case, all 12 CPUs can see all node’s 6 GPUs. Code must manage CPU to
    GPU communication. CPUs on socket0 can access GPUs and Memory on socket1.
@@ -2228,9 +2218,7 @@ the ``-n`` flag is all that changed between the above single resource
 set example. The ``-n`` flag tells jsrun to create six resource sets.
 
 .. figure:: https://www.olcf.ornl.gov/wp-content/uploads/2018/03/summit-2node-1taskpergpu.png
-   :class: normal aligncenter size-full wp-image-776599
-   :width: 1318px
-   :height: 520px
+   :align: center
  
    ``jsrun -n 6 -g 1 -a 1 -c 1`` starts 6 resource sets, each indicated by
    differing colors.  Each resource contains 1 GPU, 1 Core, and memory.  The
@@ -2265,9 +2253,7 @@ per node (``-r6``). Each resource set will contain 1 MPI task (``-a1``),
 1 GPU (``-g1``), and 1 core (``-c1``).
 
 .. image:: /images/summit-jsrun-example-1Core-1GPU.png
-   :class: normal aligncenter size-full wp-image-776751
-   :width: 600px
-   :height: 300px
+   :align: center
 
 ::
 
@@ -2298,9 +2284,8 @@ node ( green resource set). This pattern will continue until 12 resource
 sets have been created.
 
 .. image:: /images/summit-jsrun-example-2taskperGPU.png
-   :class: normal aligncenter size-full wp-image-777053
-   :width: 600px
-   :height: 300px
+   :align: center
+
 
 **Adding cores to the RS:** The ``-c`` flag should be used to request
 the needed cores for tasks and treads. The default -c core count is 1.
@@ -2362,9 +2347,7 @@ contain 6 MPI tasks (``-a6``), 3 GPUs (``-g3``), and 6 cores
 (``-c6``).
 
 .. image:: /images/RS-summit-example-24Tasks-3GPU-6Cores.png
-   :class: normal aligncenter size-full wp-image-792423
-   :width: 600px
-   :height: 300px
+   :align: center
 
 ::
 
@@ -2415,9 +2398,7 @@ to place threads. Without requesting additional cores, threads will be
 placed on a single core.
 
 .. image:: /images/RS-summit-example-4Threads-4Core-1GPU.png
-   :class: normal aligncenter size-full wp-image-792873
-   :width: 600px
-   :height: 300px
+   :align: center
 
 **Requesting Cores for Threads:** The ``-c`` flag should be used to
 request additional cores for thread placement. Without requesting
@@ -2486,9 +2467,7 @@ SMT4
     {0:4}
 
 .. image:: /images/FS-summit-example-MultiThreadPerCore.png
-   :class: normal aligncenter size-full wp-image-797960
-   :width: 600px
-   :height: 300px
+   :align: center
 
 Common Use Cases
 """"""""""""""""
@@ -3273,14 +3252,17 @@ Enter the requested information into the form. For "Project
 Information", enter the following:
 
 .. image:: /images/Ascent_Account_Application_1.png
+   :align: center
 
 For "Project Information", enter the following:
 
 .. image:: /images/Ascent_Account_Application_2.png
+   :align: center
 
 For "Account Information", enter the following:
 
 .. image:: /images/Ascent_Account_Application_3.png
+   :align: center
 
 
 .. note::
