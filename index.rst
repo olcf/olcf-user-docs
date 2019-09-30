@@ -3,8 +3,14 @@
    completely to your liking, but it should at least contain the root `toctree`
    directive.
 
-Welcome to the OLCF User Documentation!
-===================================================
+OLCF User Documentation
+=======================
+
+This technical documentation is a reference guide for the user community
+to efficiently use OLCF compute and storage resources.
+
+.. note::
+    Suggestions and contributions are welcomed! See :doc:`contributing/index`.
 
 Accounts
 ---------
