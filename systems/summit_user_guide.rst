@@ -444,17 +444,19 @@ Burst Buffer
 NVMe (XFS)
 ----------
 
-Each compute node on Summit has a \ **N**\ on-\ **V**\ olatile **Me**\ mory
-(NVMe) storage device, colloquially known as a "Burst Buffer" with theoretical
-performance peak of 2.1 GB/s for writing and 5.5 GB/s for reading. Starting
-September 24th, 100GB of each NVMe will be reserved for NFS cache to help speed
-access to common libraries. Users will have access to an 1500 GB partition of
-each NVMe. The NVMes could be used to reduce the time that applications wait for
+Each compute node on Summit has a 1.6TB \ **N**\ on-\ **V**\ olatile **Me**\
+mory (NVMe) storage device, colloquially known as a "Burst Buffer" with
+theoretical performance peak of 2.1 GB/s for writing and 5.5 GB/s for reading.
+100GB of each NVMe is reserved for NFS cache to help speed access to common
+libraries. When calculating maximum usable storage size, this cache and
+formatting overhead should be considered; We recommend a maximum storage of
+1.4TB. The NVMes could be used to reduce the time that applications wait for
 I/O. Using an SSD drive per compute node, the burst buffer will be used to
-transfers data to or from the drive before the application reads a file or after
-it writes a file. The result will be that the application benefits from native
-SSD performance for a portion of its I/O requests. Users are not required to use
-the NVMes. Data can also be written directly to the parallel filesystem.
+transfer data to or from the drive before the application reads a file or
+after it writes a file.  The result will be that the application benefits from
+native SSD performance for a portion of its I/O requests. Users are not
+required to use the NVMes.  Data can also be written directly to the parallel
+filesystem.
 
 .. figure:: /images/nvme_arch.jpg
    :align: center
