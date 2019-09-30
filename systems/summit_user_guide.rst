@@ -452,7 +452,7 @@ libraries. When calculating maximum usable storage size, this cache and
 formatting overhead should be considered; We recommend a maximum storage of
 1.4TB. The NVMes could be used to reduce the time that applications wait for
 I/O. Using an SSD drive per compute node, the burst buffer will be used to
-transfers data to or from the drive before the application reads a file or
+transfer data to or from the drive before the application reads a file or
 after it writes a file.  The result will be that the application benefits from
 native SSD performance for a portion of its I/O requests. Users are not
 required to use the NVMes.  Data can also be written directly to the parallel
