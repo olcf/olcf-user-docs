@@ -1,4 +1,4 @@
-***************************** 
+*****************************
 Frequently Asked Questions
 *****************************
 
@@ -7,7 +7,7 @@ How do I apply for an account?
 
 Detailed instructions for account application can be found in the
 :ref:`applying-for-a-user-account`
-section of the :ref:`getting-started-at-the-olcf` page.
+section of the :ref:`accounts-and-projects` page.
 
 What is the status of my application?
 =======================================

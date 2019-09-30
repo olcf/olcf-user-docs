@@ -1,16 +1,16 @@
-.. _getting-started-at-the-olcf:
+.. _accounts-and-projects:
 
 ############################
-Getting Started at the OLCF
+Accounts and Projects
 ############################
 
 .. toctree::
    :maxdepth: 2
 
-   getting_started
+   accounts_and_projects
+   frequently_asked_questions
    documents_and_forms
    olcf_policy_guide
-   frequently_asked_questions
 
 Additional Resources
 ======================
