@@ -33,13 +33,11 @@ transfer.
 
 .. image:: /images/globus_personal1.png
    :align: center
-   :width: 200
 
 - Globus will ask you to login, choose the *Sign in with Google*
 
 .. image:: /images/globus_google.png
    :align: center
-   :width: 600
 
 - Now you are in the main globus web page, we select two panels (up right), we
   declare left the endpoint of the laptop and on the right the *OLCF DTN* (the

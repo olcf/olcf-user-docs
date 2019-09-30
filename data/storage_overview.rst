@@ -16,10 +16,10 @@ The storage area to use in any given situation depends upon the activity you
 wish to carry out. Each user has a User Home area on a Network File System (NFS)
 and a User Archive area on the archival High Performance Storage System (HPSS).
 These user storage areas are intended to house user-specific files. Each project
-has a Project Home area on NFS, multiple Project Work areas on Lustre and
-Spectrum Scale, and a Project Archive area on HPSS. These project storage areas
-are intended to house project-centric files. We have defined several areas as
-listed below by function:
+has a Project Home area on NFS, multiple Project Work areas on Spectrum Scale,
+and a Project Archive area on HPSS. These project storage areas are intended to
+house project-centric files. We have defined several areas as listed below by
+function:
 
 - **User Home:** Long-term data for routine access that is unrelated to a
   project. It is mounted on compute nodes of Summit as read only
@@ -43,6 +43,8 @@ listed below by function:
 - **Project Archive:** Long-term project data for archival access that's shared
   with other project members.
 
+
+.. _alpine-ibm-spectrum-scale-filesystem:
 
 Alpine IBM Spectrum Scale Filesystem
 =====================================
