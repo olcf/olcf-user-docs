@@ -6,6 +6,8 @@ Project-Centric Data Storage
 Project directories provide members of a project with a common place to
 store code, data, and other files related to their project.
 
+.. _project-home-directories-nfs:
+
 Project Home Directories (NFS)
 ===============================
 

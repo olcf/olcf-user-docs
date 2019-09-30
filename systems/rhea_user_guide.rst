@@ -5,10 +5,10 @@ Rhea User Guide
 Overview
 =========
 
-Rhea is a 521-node commodity-type linux cluster. The primary purpose of
-rhea is to provide a conduit for large-scale scientific discovery via
-pre/post processing and analysis of simulation data generated on Summit.
-Users with accounts on Summit will automatically be given access to rhea.
+Rhea is a 521-node commodity-type linux cluster. The primary purpose of rhea is
+to provide a conduit for large-scale scientific discovery via pre/post
+processing and analysis of simulation data generated on Summit.  Users with
+accounts on Summit will automatically be given access to rhea.
 
 --------------
 
@@ -66,15 +66,15 @@ transfer rate of 56 Gb/s.
 Login nodes
 -----------
 
-Rhea features (4) login nodes which are identical to the compute nodes,
-but with 64GB of RAM. The login nodes provide an environment for
-editing, compiling, and launching codes onto the compute nodes. All Rhea
-users will access the system through these same login nodes, and as
-such, any CPU- or memory-intensive tasks on these nodes could interrupt
-service to other users. As a courtesy, we ask that you refrain from
-doing any analysis or visualization tasks on the login nodes.
+Rhea features (4) login nodes which are identical to the compute nodes, but with
+64GB of RAM. The login nodes provide an environment for editing, compiling, and
+launching codes onto the compute nodes. All Rhea users will access the system
+through these same login nodes, and as such, any CPU- or memory-intensive tasks
+on these nodes could interrupt service to other users. As a courtesy, we ask
+that you refrain from doing any analysis or visualization tasks on the login
+nodes.
 
-To connect to Rhea, ssh to rhea.ccs.ornl.gov - 
+To connect to Rhea, ssh to rhea.ccs.ornl.gov -
 ::
 
 	ssh username@rhea.ccs.ornl.gov
@@ -86,35 +86,28 @@ For more information on connecting to OLCF resources, see :ref:`connecting-to-ol
 File systems
 ------------
 
-The OLCF's center-wide Lustre\ |R| ` file system, named
-`Spider <../file-systems/#spider-the-centerwide-lustre-file-system>`_,
-is available on Rhea for computational work. With over 26,000 clients
-and 32 pb of disk space, it is one of the largest-scale
-Lustre\ |R| file systems in the world. An NFS-based file system
-provides `User Home storage
-areas <../file-systems/#user-home-directories-nfs>`__ and `Project Home
-storage areas <../file-systems/#project-home-directories-nfs>`__.
-Additionally, the OLCF's `High Performance Storage
-System <../file-systems/#hpss-high-performance-storage-system>`__ (HPSS)
-provides archival spaces.
+The OLCF's center-wide :ref:`alpine-ibm-spectrum-scale-filesystem` name Alpine
+is available on Rhea for computational work.  An NFS-based file system provides
+:ref:`user-home-directories-nfs` and :ref:`project-home-directories-nfs`.
+Additionally, the OLCF's :ref:`hpss` provides archival spaces.
 
 Shell and programming environments
 ==================================
 
-OLCF systems provide hundreds of software packages and scientific
-libraries pre-installed at the system-level for users to take advantage
-of. To facilitate this, environment management tools are employed to
-handle necessary changes to the shell dynamically. The sections below
-provide information about using the management tools at the OLCF.
+OLCF systems provide hundreds of software packages and scientific libraries
+pre-installed at the system-level for users to take advantage of. To facilitate
+this, environment management tools are employed to handle necessary changes to
+the shell dynamically. The sections below provide information about using the
+management tools at the OLCF.
 
 --------------
 
 Default shell
 -------------
 
-A user's default shell is selected when completing the user account
-request form. The chosen shell is set across all OLCF resources.
-Currently, supported shells include:
+A user's default shell is selected when completing the user account request
+form. The chosen shell is set across all OLCF resources.  Currently, supported
+shells include:
 
 -  bash
 -  tsch
@@ -130,23 +123,21 @@ help@olcf.ornl.gov.
 Environment management with lmod
 --------------------------------
 
-The *modules* software package allows you to dynamically modify your
-user environment by using pre-written *modulefiles*. environment modules
-are provided through `Lmod <https://lmod.readthedocs.io/en/latest/>`__,
-a Lua-based module system for dynamically altering shell environments.
-by managing changes to the shell’s environment variables (such as
-``path``, ``ld_library_path``, and ``pkg_config_path``), Lmod allows you
-to alter the software available in your shell environment without the
-risk of creating package and version combinations that cannot coexist in
-a single environment.
+The *modules* software package allows you to dynamically modify your user
+environment by using pre-written *modulefiles*. environment modules are provided
+through `Lmod <https://lmod.readthedocs.io/en/latest/>`__, a Lua-based module
+system for dynamically altering shell environments.  by managing changes to the
+shell’s environment variables (such as ``path``, ``ld_library_path``, and
+``pkg_config_path``), Lmod allows you to alter the software available in your
+shell environment without the risk of creating package and version combinations
+that cannot coexist in a single environment.
 
-Lmod is a recursive environment module system, meaning it is aware of
-module compatibility and actively alters the environment to protect
-against conflicts. Messages to stderr are issued upon Lmod implicitly
-altering the environment. Environment modules are structured
-hierarchically by compiler family such that packages built with a given
-compiler will only be accessible if the compiler family is first present
-in the environment.
+Lmod is a recursive environment module system, meaning it is aware of module
+compatibility and actively alters the environment to protect against conflicts.
+Messages to stderr are issued upon Lmod implicitly altering the environment.
+Environment modules are structured hierarchically by compiler family such that
+packages built with a given compiler will only be accessible if the compiler
+family is first present in the environment.
 
     **note:** Lmod can interpret both Lua modulefiles and legacy Tcl
     modulefiles. However, long and logic-heavy Tcl modulefiles may require
@@ -155,9 +146,8 @@ in the environment.
 General usage
 ^^^^^^^^^^^^^
 
-Typical use of Lmod is very similar to that of interacting with
-modulefiles on other OLCF systems. The interface to Lmod is provided by
-the ``module`` command:
+Typical use of Lmod is very similar to that of interacting with modulefiles on
+other OLCF systems. The interface to Lmod is provided by the ``module`` command:
 
 +----------------------------------+-----------------------------------------------------------------------+
 | Command                          | Description                                                           |
@@ -195,12 +185,11 @@ the ``module`` command:
 Searching for modules
 ^^^^^^^^^^^^^^^^^^^^^
 
-Modules with dependencies are only available when the underlying
-dependencies, such as compiler families, are loaded. Thus,
-``module avail`` will only display modules that are compatible with the
-current state of the environment. To search the entire hierarchy across
-all possible dependencies, the ``spider`` sub-command can be used as
-summarized in the following table.
+Modules with dependencies are only available when the underlying dependencies,
+such as compiler families, are loaded. Thus, ``module avail`` will only display
+modules that are compatible with the current state of the environment. To search
+the entire hierarchy across all possible dependencies, the ``spider``
+sub-command can be used as summarized in the following table.
 
 +----------------------------------------+------------------------------------------------------------------------------------+
 | Command                                | Description                                                                        |
@@ -219,12 +208,11 @@ summarized in the following table.
 Defining custom module collections
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Lmod supports caching commonly used collections of environment modules
-on a per-user basis in ``$home/.lmod.d``. to create a collection called
-"NAME" from the currently loaded modules, simply call
-``module save NAME``. omitting "NAME" will set the user’s default
-collection. Saved collections can be recalled and examined with the
-commands summarized in the following table.
+Lmod supports caching commonly used collections of environment modules on a
+per-user basis in ``$home/.lmod.d``. to create a collection called "NAME" from
+the currently loaded modules, simply call ``module save NAME``. omitting "NAME"
+will set the user’s default collection. Saved collections can be recalled and
+examined with the commands summarized in the following table.
 
 +-------------------------+----------------------------------------------------------+
 | Command                 | Description                                              |
@@ -254,25 +242,25 @@ commands summarized in the following table.
     variable ``lmod_system_name``). This ensures that only collections
     appended with the name of the current system are visible.
 
-The following screencast shows an example of setting up user-defined
-module collections on Summit. https://vimeo.com/293582400
+The following screencast shows an example of setting up user-defined module
+collections on Summit. https://vimeo.com/293582400
 
 --------------
 
 Installed Software
 ------------------
 
-The OLCF provides hundreds of pre-installed software packages and
-scientific libraries for your use, in addition to taking `software
-installation requests <https://www.olcf.ornl.gov/support/software/software-request/>`__. See the
-`software <https://www.olcf.ornl.gov/for-users/software/>`__ page for complete details on
-existing installs.
+The OLCF provides hundreds of pre-installed software packages and scientific
+libraries for your use, in addition to taking `software installation requests
+<https://www.olcf.ornl.gov/support/software/software-request/>`__. See the
+`software <https://www.olcf.ornl.gov/for-users/software/>`__ page for complete
+details on existing installs.
 
 Compiling
 =========
 
-Compiling code on rhea is typical of commodity or beowulf-style hpc
-linux clusters.
+Compiling code on rhea is typical of commodity or beowulf-style hpc linux
+clusters.
 
 Available compilers
 -------------------
@@ -283,10 +271,10 @@ The following compilers are available on rhea:
 - `pgi <https://www.olcf.ornl.gov/software_package/pgi/>`__, the portland group compiler suite
 - `gcc <https://www.olcf.ornl.gov/software_package/gcc/>`__, the gnu compiler collection
 
-Upon login, default versions of the intel compiler and openmpi (message
-passing interface) libraries are automatically added to each user's
-environment. Users do not need to make any environment changes to use
-the default version of intel and openmpi.
+Upon login, default versions of the intel compiler and openmpi (message passing
+interface) libraries are automatically added to each user's environment. Users
+do not need to make any environment changes to use the default version of intel
+and openmpi.
 
 --------------
 
@@ -294,29 +282,28 @@ Changing compilers
 ------------------
 
 If a different compiler is required, it is important to use the correct
-environment for each compiler. To aid users in pairing the correct
-compiler and environment, the module system on rhea automatically pulls
-in libraries compiled with a given compiler when changing compilers. The
-compiler modules will load the correct pairing of compiler version,
-message passing libraries, and other items required to build and run
-code. To change the default loaded intel environment to the gcc
-environment for example, use:
+environment for each compiler. To aid users in pairing the correct compiler and
+environment, the module system on rhea automatically pulls in libraries compiled
+with a given compiler when changing compilers. The compiler modules will load
+the correct pairing of compiler version, message passing libraries, and other
+items required to build and run code. To change the default loaded intel
+environment to the gcc environment for example, use:
 
 .. code::
 
     $ module load gcc
 
 This will automatically unload the current compiler and system libraries
-associated with it, load the new compiler environment and automatically
-load associated system libraries as well.
+associated with it, load the new compiler environment and automatically load
+associated system libraries as well.
 
 Changing versions of the same compiler
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-To use a specific compiler *version*, you must first ensure the
-compiler's module is loaded, and *then* swap to the correct compiler
-version. For example, the following will configure the environment to
-use the gcc compilers, then load a non-default gcc compiler version:
+To use a specific compiler *version*, you must first ensure the compiler's
+module is loaded, and *then* swap to the correct compiler version. For example,
+the following will configure the environment to use the gcc compilers, then load
+a non-default gcc compiler version:
 
 .. code::
 
@@ -346,16 +333,16 @@ programs:
 -  ``mpif77`` or ``mpif90`` to invoke appropriate versions of the
    fortran compiler
 
-These wrapper programs are cognizant of your currently loaded modules,
-and will ensure that your code links against our openmpi installation.
-more information about using openmpi at our center can be found in our
-`software documentation <https://www.olcf.ornl.gov/software_package/openmpi/>`__.
+These wrapper programs are cognizant of your currently loaded modules, and will
+ensure that your code links against our openmpi installation.  more information
+about using openmpi at our center can be found in our `software documentation
+<https://www.olcf.ornl.gov/software_package/openmpi/>`__.
 
 Compiling threaded codes
 ------------------------
 
-When building threaded codes, compiler-specific flags must be included
-to ensure a proper build.
+When building threaded codes, compiler-specific flags must be included to ensure
+a proper build.
 
 Openmp
 ^^^^^^
@@ -381,23 +368,20 @@ For intel, add "-qopenmp" to the build line.
     $ mpicc -qopenmp test.c -o test.x
     $ export omp_num_threads=2
 
-For information on *running threaded codes*, please see the
-:ref:`thread-layout` subsection of the :ref:`rhea-running-jobs`
-section in this user guide.
+For information on *running threaded codes*, please see the :ref:`thread-layout`
+subsection of the :ref:`rhea-running-jobs` section in this user guide.
 
 .. _rhea-running-jobs:
 
 Running Jobs
 ============
 
-In High Performance Computing (HPC), computational work is performed by
-*jobs*. Individual jobs produce data that lend relevant insight into
-grand challenges in science and engineering. As such, the timely,
-efficient execution of jobs is the primary concern in the operation of
-any HPC system.
+In High Performance Computing (HPC), computational work is performed by *jobs*.
+Individual jobs produce data that lend relevant insight into grand challenges in
+science and engineering. As such, the timely, efficient execution of jobs is the
+primary concern in the operation of any HPC system.
 
-A job on a commodity cluster typically comprises a few
-different components:
+A job on a commodity cluster typically comprises a few different components:
 
 -  A batch submission script.
 -  A binary executable.
@@ -411,8 +395,8 @@ And the process for running a job, in general, is to:
 #. Submit the batch script to the batch scheduler.
 #. Optionally monitor the job before and during execution.
 
-The following sections describe in detail how to create, submit, and
-manage jobs for execution on commodity clusters.
+The following sections describe in detail how to create, submit, and manage jobs
+for execution on commodity clusters.
 
 --------------
 
@@ -422,29 +406,28 @@ Login vs Compute Nodes on Commodity Clusters
 Login Nodes
 ^^^^^^^^^^^
 
-When you log into an OLCF cluster, you are placed on a *login* node.
-Login node resources are shared by all users of the system. Because of
-this, users should be mindful when performing tasks on a login node.
+When you log into an OLCF cluster, you are placed on a *login* node.  Login node
+resources are shared by all users of the system. Because of this, users should
+be mindful when performing tasks on a login node.
 
 Login nodes should be used for basic tasks such as file editing, code
-compilation, data backup, and job submission. Login nodes should *not*
-be used for memory- or compute-intensive tasks. Users should also limit
-the number of simultaneous tasks performed on the login resources. For
-example, a user should not run (10) simultaneous ``tar`` processes on a
-login node.
+compilation, data backup, and job submission. Login nodes should *not* be used
+for memory- or compute-intensive tasks. Users should also limit the number of
+simultaneous tasks performed on the login resources. For example, a user should
+not run (10) simultaneous ``tar`` processes on a login node.
 
 .. warning::
-    Compute-intensive, memory-intensive, or otherwise
-    disruptive processes running on login nodes may be killed without
-    warning.
+    Compute-intensive, memory-intensive, or otherwise disruptive processes
+    running on login nodes may be killed without warning.
 
 
 
 Slurm
 -----
 
-The following section provides batch scheduler instructions for Slurm, the batch scheduler in use on Rhea and the DTNs.
-Below is a comparison table to the schedulers used on other OLCF resources:
+The following section provides batch scheduler instructions for Slurm, the batch
+scheduler in use on Rhea and the DTNs.  Below is a comparison table to the
+schedulers used on other OLCF resources:
 
 +--------------------------------------------+--------------+-----------------------+-------------------+
 | Task                                       | Moab         | LSF                   | Slurm             |
@@ -462,16 +445,16 @@ Below is a comparison table to the schedulers used on other OLCF resources:
 Writing Batch Scripts
 ^^^^^^^^^^^^^^^^^^^^^
 
-Batch scripts, or job submission scripts, are the mechanism by which a
-user configures and submits a job for execution. A batch script is
-simply a shell script that also includes commands to be interpreted by
-the batch scheduling software (e.g. Slurm).
+Batch scripts, or job submission scripts, are the mechanism by which a user
+configures and submits a job for execution. A batch script is simply a shell
+script that also includes commands to be interpreted by the batch scheduling
+software (e.g. Slurm).
 
-Batch scripts are submitted to the batch scheduler, where they are then
-parsed for the scheduling configuration options. The batch scheduler then
-places the script in the appropriate queue, where it is designated as a
-batch job. Once the batch jobs makes its way through the queue, the script
-will be executed on the primary compute node of the allocated resources.
+Batch scripts are submitted to the batch scheduler, where they are then parsed
+for the scheduling configuration options. The batch scheduler then places the
+script in the appropriate queue, where it is designated as a batch job. Once the
+batch jobs makes its way through the queue, the script will be executed on the
+primary compute node of the allocated resources.
 
 Components of a Batch Script
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -481,33 +464,32 @@ Batch scripts are parsed into the following (3) sections:
 Interpreter Line
 """"""""""""""""
 
-The first line of a script can be used to specify the script’s
-interpreter; this line is optional. If not used, the submitter’s default
-shell will be used. The line uses the *hash-bang* syntax, i.e.,
-``#!/path/to/shell``.
+The first line of a script can be used to specify the script’s interpreter; this
+line is optional. If not used, the submitter’s default shell will be used. The
+line uses the *hash-bang* syntax, i.e., ``#!/path/to/shell``.
 
 Slurm Submission Options
 """"""""""""""""""""""""
 
-The Slurm submission options are preceded by the string ``#SBATCH``, making
-them appear as comments to a shell. Slurm will look for ``#SBATCH`` options
-in a batch script from the script’s first line through the first
-non-comment line. A comment line begins with ``#``. ``#SBATCH`` options
-entered after the first non-comment line will not be read by Slurm.
+The Slurm submission options are preceded by the string ``#SBATCH``, making them
+appear as comments to a shell. Slurm will look for ``#SBATCH`` options in a
+batch script from the script’s first line through the first non-comment line. A
+comment line begins with ``#``. ``#SBATCH`` options entered after the first
+non-comment line will not be read by Slurm.
 
 Shell Commands
 """"""""""""""
 
 The shell commands follow the last ``#SBATCH`` option and represent the
-executable content of the batch job. If any ``#SBATCH`` lines follow
-executable statements, they will be treated as comments only.
+executable content of the batch job. If any ``#SBATCH`` lines follow executable
+statements, they will be treated as comments only.
 
-The execution section of a script will be interpreted by a shell and can
-contain multiple lines of executables, shell commands, and comments.
-when the job's queue wait time is finished, commands within this section
-will be executed on the primary compute node of the job's allocated
-resources. Under normal circumstances, the batch job will exit the queue
-after the last line of the script is executed.
+The execution section of a script will be interpreted by a shell and can contain
+multiple lines of executables, shell commands, and comments.  when the job's
+queue wait time is finished, commands within this section will be executed on
+the primary compute node of the job's allocated resources. Under normal
+circumstances, the batch job will exit the queue after the last line of the
+script is executed.
 
 Example Batch Script
 ^^^^^^^^^^^^^^^^^^^^
@@ -520,7 +502,7 @@ Example Batch Script
    #SBATCH -J test
    #SBATCH -N 2
    #SBATCH -t 1:00:00
-   
+
    cd $SLURM_SUBMIT_DIR
    date
    srun -n 8 ./a.out
@@ -530,8 +512,8 @@ This batch script shows examples of the three sections outlined above:
 Interpreter Line
 """"""""""""""""
 
-1: This line is optional and can be used to specify a shell to
-interpret the script. In this example, the bash shell will be used.
+1: This line is optional and can be used to specify a shell to interpret the
+script. In this example, the bash shell will be used.
 
 Slurm Options
 """""""""""""
@@ -568,8 +550,9 @@ For example, the following will submit the batch script named ``test.slurm``:
 
 If successfully submitted, a Slurm job ID will be returned. This ID can be used
 to track the job. It is also helpful in troubleshooting a failed job; make a
-note of the job ID for each of your jobs in case you must contact the
-`OLCF User Assistance Center for support <https://www.olcf.ornl.gov/for-users/user-assistance/>`__.
+note of the job ID for each of your jobs in case you must contact the `OLCF User
+Assistance Center for support
+<https://www.olcf.ornl.gov/for-users/user-assistance/>`__.
 
 
 
@@ -578,16 +561,14 @@ note of the job ID for each of your jobs in case you must contact the
 Interactive Batch Jobs on Commodity Clusters
 --------------------------------------------
 
-Batch scripts are useful when one has a pre-determined group of commands
-to execute, the results of which can be viewed at a later time. However,
-it is often necessary to run tasks on compute resources interactively.
+Batch scripts are useful when one has a pre-determined group of commands to
+execute, the results of which can be viewed at a later time. However, it is
+often necessary to run tasks on compute resources interactively.
 
-
-Users are not allowed to access cluster compute nodes directly from a
-login node. Instead, users must use an *interactive batch job* to
-allocate and gain access to compute resources. This is done by using the
-Slurm ``salloc`` command. Other Slurm options are passed to ``salloc`` on
-the command line as well:
+Users are not allowed to access cluster compute nodes directly from a login
+node. Instead, users must use an *interactive batch job* to allocate and gain
+access to compute resources. This is done by using the Slurm ``salloc`` command.
+Other Slurm options are passed to ``salloc`` on the command line as well:
 
 .. code::
 
@@ -607,30 +588,30 @@ This request will:
 | ``-t 1:00:00``             | ...for (1) hour                                                |
 +----------------------------+----------------------------------------------------------------+
 
-After running this command, the job will wait until enough compute nodes
-are available, just as any other batch job must. However, once the job
-starts, the user will be given an interactive prompt on the primary
-compute node within the allocated resource pool. Commands may then be
-executed directly (instead of through a batch script).
+After running this command, the job will wait until enough compute nodes are
+available, just as any other batch job must. However, once the job starts, the
+user will be given an interactive prompt on the primary compute node within the
+allocated resource pool. Commands may then be executed directly (instead of
+through a batch script).
 
 Debugging
 ^^^^^^^^^
 
-A common use of interactive batch is to aid in debugging efforts.
-interactive access to compute resources allows the ability to run a
-process to the point of failure; however, unlike a batch job, the
-process can be restarted after brief changes are made without losing the
-compute resource pool; thus speeding up the debugging effort.
+A common use of interactive batch is to aid in debugging efforts.  interactive
+access to compute resources allows the ability to run a process to the point of
+failure; however, unlike a batch job, the process can be restarted after brief
+changes are made without losing the compute resource pool; thus speeding up the
+debugging effort.
 
 Choosing a Job Size
 ^^^^^^^^^^^^^^^^^^^
 
-Because interactive jobs must sit in the queue until enough resources
-become available to allocate, it is useful to know when a job can start.
+Because interactive jobs must sit in the queue until enough resources become
+available to allocate, it is useful to know when a job can start.
 
 Use the ``sbatch --test-only`` command to see when a job of a specific size
-could be scheduled. For example, the snapshot below shows that a (2) node
-job would start at 10:54.
+could be scheduled. For example, the snapshot below shows that a (2) node job
+would start at 10:54.
 
 .. code::
 
@@ -701,15 +682,16 @@ The following table summarizes frequently-used options to Slurm:
     the ``–get-user-env`` option is not recommended. Users should create the
     needed environment within the batch job.
 
-Further details and other Slurm options may be found through the ``sbatch`` man page.
+Further details and other Slurm options may be found through the ``sbatch`` man
+page.
 
 --------------
 
 Batch Environment Variables
 ---------------------------
 
-Slurm sets multiple environment variables at submission time. The
-following Slurm variables are useful within batch scripts:
+Slurm sets multiple environment variables at submission time. The following
+Slurm variables are useful within batch scripts:
 
 +--------------------------+-------------------------------------------------------+
 | Variable                 | Description                                           |
@@ -781,8 +763,8 @@ remove a job from the held state.
 Monitoring Batch Jobs
 ---------------------
 
-Slurm provides multiple tools to view queue, system, and job
-status. Below are the most common and useful of these tools.
+Slurm provides multiple tools to view queue, system, and job status. Below are
+the most common and useful of these tools.
 
 Job Monitoring Commands
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -807,9 +789,9 @@ To see all of your queued jobs:
 ``sacct``
 """""""""
 
-The Slurm utility ``sacct`` can be used to view jobs currently
-in the queue and those completed within the last few days. The utility can
-also be used to see job steps in each batch job.
+The Slurm utility ``sacct`` can be used to view jobs currently in the queue and
+those completed within the last few days. The utility can also be used to see
+job steps in each batch job.
 
 
 To see all jobs currently in the queue:
@@ -865,9 +847,9 @@ Provides additional details of given job.
 ``sview``
 """"""""""
 
-The ``sview`` tool provide a graphical queue monitoring tool. To use,
-you will need an X server running on your local system. You will also
-need to tunnel X traffic through your ssh connection:
+The ``sview`` tool provide a graphical queue monitoring tool. To use, you will
+need an X server running on your local system. You will also need to tunnel X
+traffic through your ssh connection:
 
 .. code::
 
@@ -879,23 +861,22 @@ need to tunnel X traffic through your ssh connection:
 Job Execution
 -------------
 
-Once resources have been allocated through the batch system, users have
-the option of running commands on the allocated resources' primary
-compute node (a serial job) and/or running an MPI/OpenMP executable
-across all the resources in the allocated resource pool simultaneously
-(a parallel job).
+Once resources have been allocated through the batch system, users have the
+option of running commands on the allocated resources' primary compute node (a
+serial job) and/or running an MPI/OpenMP executable across all the resources in
+the allocated resource pool simultaneously (a parallel job).
 
 Serial Job Execution
 ^^^^^^^^^^^^^^^^^^^^
 
-The executable portion of batch scripts is interpreted by the shell
-specified on the first line of the script. If a shell is not specified,
-the submitting user’s default shell will be used.
+The executable portion of batch scripts is interpreted by the shell specified on
+the first line of the script. If a shell is not specified, the submitting user’s
+default shell will be used.
 
-The serial portion of the batch script may contain comments, shell
-commands, executable scripts, and compiled executables. These can be
-used in combination to, for example, navigate file systems, set up job
-execution, run serial executables, and even submit other batch jobs.
+The serial portion of the batch script may contain comments, shell commands,
+executable scripts, and compiled executables. These can be used in combination
+to, for example, navigate file systems, set up job execution, run serial
+executables, and even submit other batch jobs.
 
 Parallel Job Execution
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -903,8 +884,8 @@ Parallel Job Execution
 Rhea Compute Node Description
 """""""""""""""""""""""""""""
 
-The following image represents a high level compute node that will be
-used below to display layout options.
+The following image represents a high level compute node that will be used below
+to display layout options.
 
 .. image:: /images/Rhea-Node-Description.png
    :align: center
@@ -918,8 +899,8 @@ Using ``srun``
 """"""""""""""
 
 By default, commands will be executed on the job’s primary compute node,
-sometimes referred to as the job’s head node. The ``srun`` command is used
-to execute an MPI binary on one or more compute nodes in parallel.
+sometimes referred to as the job’s head node. The ``srun`` command is used to
+execute an MPI binary on one or more compute nodes in parallel.
 
 ``srun`` accepts the following common options:
 
@@ -943,23 +924,22 @@ to execute an MPI binary on one or more compute nodes in parallel.
 MPI Task Layout
 """""""""""""""""
 
-Each compute node on Rhea contains two sockets each with 8 cores.
-Depending on your job, it may be useful to control task layout within
-and across nodes.
+Each compute node on Rhea contains two sockets each with 8 cores.  Depending on
+your job, it may be useful to control task layout within and across nodes.
 
 Physical Core Binding
 """""""""""""""""""""
 
-The following will run four copies of a.out, one per CPU, two
-per node with physical core binding
+The following will run four copies of a.out, one per CPU, two per node with
+physical core binding
 
 .. image:: /images/Rhea-layout-physical-core-1-per-CPU.png
    :align: center
 
 Hyper Thread Binding
 """"""""""""""""""""
-The following will run four copies of a.out, one per hyper-thread,
-two per node using a round robin task layout between nodes:
+The following will run four copies of a.out, one per hyper-thread, two per node
+using a round robin task layout between nodes:
 
 .. image:: /images/Rhea-layout-1-per-hyper-thread-cyclic-1500x783.png
    :align: center
@@ -970,8 +950,8 @@ Thread Layout
 """""""""""""
 **Thread per Hyper-Thread**
 
-The following will run four copies of a.out. Each task will launch
-two threads. The ``-c`` flag will provide room for the threads.
+The following will run four copies of a.out. Each task will launch two threads.
+The ``-c`` flag will provide room for the threads.
 
 .. image:: /images/Rhea-layout-thread-per-hyperthread.png
    :align: center
@@ -983,8 +963,8 @@ two threads. The ``-c`` flag will provide room for the threads.
 Multiple Simultaneous Jobsteps
 """"""""""""""""""""""""""""""
 
-Multiple simultaneous sruns can be executed within a
-batch job by placing each ``srun`` in the background.
+Multiple simultaneous sruns can be executed within a batch job by placing each
+``srun`` in the background.
 
 .. code-block:: bash
    :linenos:
@@ -1065,23 +1045,21 @@ Form <https://www.olcf.ornl.gov/for-users/getting-started/special-request-form/>
 Allocation Overuse Policy
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Projects that overrun their allocation are still allowed to run on OLCF
-systems, although at a reduced priority. Like the adjustment for the
-number of processors requested above, this is an adjustment to the
-apparent submit time of the job. However, this adjustment has the effect
-of making jobs appear much younger than jobs submitted under projects
-that have not exceeded their allocation. In addition to the priority
-change, these jobs are also limited in the amount of wall time that can
-be used.
+Projects that overrun their allocation are still allowed to run on OLCF systems,
+although at a reduced priority. Like the adjustment for the number of processors
+requested above, this is an adjustment to the apparent submit time of the job.
+However, this adjustment has the effect of making jobs appear much younger than
+jobs submitted under projects that have not exceeded their allocation. In
+addition to the priority change, these jobs are also limited in the amount of
+wall time that can be used.
 
-For example, consider that ``job1`` is submitted at the same time as
-``job2``. The project associated with ``job1`` is over its allocation,
-while the project for ``job2`` is not. The batch system will consider
-``job2`` to have been waiting for a longer time than ``job1``. In
-addition, projects that are at 125% of their allocated time will be limited
-to only one running job at a time. The adjustment to the apparent submit
-time depends upon the percentage that the project is over its
-allocation, as shown in the table below:
+For example, consider that ``job1`` is submitted at the same time as ``job2``.
+The project associated with ``job1`` is over its allocation, while the project
+for ``job2`` is not. The batch system will consider ``job2`` to have been
+waiting for a longer time than ``job1``. In addition, projects that are at 125%
+of their allocated time will be limited to only one running job at a time. The
+adjustment to the apparent submit time depends upon the percentage that the
+project is over its allocation, as shown in the table below:
 
 +------------------------+----------------------+--------------------------+------------------+
 | % Of Allocation Used   | Priority Reduction   | number eligible-to-run   | number running   |
@@ -1098,20 +1076,19 @@ allocation, as shown in the table below:
 Job Accounting on Rhea
 ----------------------
 
-Jobs on Rhea are scheduled in full node increments; a node's cores
-cannot be allocated to multiple jobs. Because the OLCF charges based on
-what a job makes *unavailable* to other users, a job is charged for an
-entire node even if it uses only one core on a node. To simplify the
-process, users are given a multiples of entire nodes through Slurm.
+Jobs on Rhea are scheduled in full node increments; a node's cores cannot be
+allocated to multiple jobs. Because the OLCF charges based on what a job makes
+*unavailable* to other users, a job is charged for an entire node even if it
+uses only one core on a node. To simplify the process, users are given a
+multiples of entire nodes through Slurm.
 
 Viewing Allocation Utilization
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Projects are allocated time on Rhea in units of *node-hours*. This is
-separate from a project's Summit allocation, and usage of Rhea
-does not count against that allocation. This page describes how such
-units are calculated, and how users can access more detailed information
-on their relevant allocations.
+Projects are allocated time on Rhea in units of *node-hours*. This is separate
+from a project's Summit allocation, and usage of Rhea does not count against
+that allocation. This page describes how such units are calculated, and how
+users can access more detailed information on their relevant allocations.
 
 Node-Hour Calculation
 ^^^^^^^^^^^^^^^^^^^^^
@@ -1122,32 +1099,30 @@ The *node-hour* charge for each batch job will be calculated as follows:
 
     node-hours = nodes requested * ( batch job endtime - batch job starttime )
 
-Where *batch job starttime* is the time the job moves into a running
-state, and *batch job endtime* is the time the job exits a running
-state.
+Where *batch job starttime* is the time the job moves into a running state, and
+*batch job endtime* is the time the job exits a running state.
 
-A batch job's usage is calculated solely on requested nodes and
-the batch job's start and end time. The number of cores actually used
-within any particular node within the batch job is not used in the
-calculation. For example, if a job requests (6) nodes through the batch
-script, runs for (1) hour, uses only (2) CPU cores per node, the job
-will still be charged for 6 nodes \* 1 hour = *6 node-hours*.
+A batch job's usage is calculated solely on requested nodes and the batch job's
+start and end time. The number of cores actually used within any particular node
+within the batch job is not used in the calculation. For example, if a job
+requests (6) nodes through the batch script, runs for (1) hour, uses only (2)
+CPU cores per node, the job will still be charged for 6 nodes \* 1 hour = *6
+node-hours*.
 
 Viewing Usage
 ^^^^^^^^^^^^^
 
-Utilization is calculated daily using batch jobs which complete between
-00:00 and 23:59 of the previous day. For example, if a job moves into a
-run state on Tuesday and completes Wednesday, the job's utilization will
-be recorded Thursday. Only batch jobs which write an end record are used
-to calculate utilization. Batch jobs which do not write end records due
-to system failure or other reasons are not used when calculating utilization. Jobs
-which fail because of run-time errors (e.g. the user's application causes a segmentation fault)
-are counted against the allocation. 
+Utilization is calculated daily using batch jobs which complete between 00:00
+and 23:59 of the previous day. For example, if a job moves into a run state on
+Tuesday and completes Wednesday, the job's utilization will be recorded
+Thursday. Only batch jobs which write an end record are used to calculate
+utilization. Batch jobs which do not write end records due to system failure or
+other reasons are not used when calculating utilization. Jobs which fail because
+of run-time errors (e.g. the user's application causes a segmentation fault) are
+counted against the allocation.
 
-Each user may view usage for projects on which they are
-members from the command line tool ``showusage`` and the `My OLCF
-site <https://users.nccs.gov>`__.
+Each user may view usage for projects on which they are members from the command
+line tool ``showusage`` and the `My OLCF site <https://users.nccs.gov>`__.
 
 On the Command Line via ``showusage``
 """""""""""""""""""""""""""""""""""""
@@ -1169,9 +1144,9 @@ The ``-h`` option will list more usage details.
 On the Web via My OLCF
 """"""""""""""""""""""
 
-More detailed metrics may be found on each project's usage section of
-the `My OLCF site <https://users.nccs.gov>`__. The following information
-is available for each project:
+More detailed metrics may be found on each project's usage section of the `My
+OLCF site <https://users.nccs.gov>`__. The following information is available
+for each project:
 
 -  YTD usage by system, subproject, and project member
 -  Monthly usage by system, subproject, and project member
@@ -1181,323 +1156,9 @@ is available for each project:
 -  Batch system priorities by project and subproject
 -  Project members
 
-The My OLCF site is provided to aid in the utilization and management of
-OLCF allocations. If you have any questions or have a request for
-additional data, please contact the OLCF User Assistance Center.
-
---------------
-
-Enabling Workflows through Cross-System Batch Submission
---------------------------------------------------------
-
-The OLCF supports submitting jobs between OLCF systems via batch
-scripts. This can be useful for automatically triggering analysis and
-storage of large data sets after a successful simulation job has ended,
-or for launching a simulation job automatically once the input deck has
-been retrieved from HPSS and pre-processed.
-
-.. image:: /images/Cross-Submission-Workflow-544x300.png
-   :align: center
-
-The key to remote job submission is the command qsub -q host script.pbs
-which will submit the file script.pbs to the batch queue on the specified
-host. This command can be inserted at the end of an existing batch script
-in order to automatically trigger work on another OLCF resource. This
-feature is supported on the following hosts:
-
-
-
-+------------------------------+--------------------------------------+
-| Host                         | Remote Submission Command            |
-+==============================+======================================+
-| Rhea                         | ``qsub -q rhea visualization.pbs``   |
-+------------------------------+--------------------------------------+
-| Data Transfer Nodes (DTNs)   | ``qsub -q dtn retrieve_data.pbs``    |
-+------------------------------+--------------------------------------+
-
-Example Workflow 1: Automatic Post-Processing
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-The simplest example of a remote submission workflow would be
-automatically triggering an analysis task on Rhea at the completion of a
-compute job on Titan. This workflow would require two batch scripts, one
-to be submitted on Titan, and a second to be submitted automatically to
-Rhea. Visually, this workflow may look something like the following:
-
-.. image:: /images/remote_submission.stage-compute-e1392655934134.png
-   :align: center
-
-The batch scripts for such a workflow could be implemented as follows:
-
-**Batch-script-1.pbs**
-
-.. code::
-
-    #PBS -l walltime=0:30:00
-    #PBS -l nodes=4096
-    #PBS -A PRJ123
-    #PBS -l gres=atlas1%atlas2
-
-    # run compute job on titan
-    cd $MEMBERWORK/prj123
-    aprun -n 65536 ./run_simulation.exe
-
-    # Submit visualization processing job to Rhea
-    qsub -q rhea Batch-script-2.pbs
-
-**Batch-script-2.pbs**
-
-.. code::
-
-    #PBS -l walltime=2:00:00
-    #PBS -l nodes=10
-    #PBS -A PRJ123
-    #PBS -l gres=atlas1%atlas2
-
-    # Launch exectuable
-    cd $MEMBERWORK/prj123
-    mpirun -n 10 ./post_process_job.exe
-
-The key to this workflow is the
-``qsub -q batch@rhea-batch Batch-script-2.pbs`` command, which tells
-``qsub`` to submit the file ``Batch-script-2.pbs`` to the batch queue on
-Rhea.
-
-Initializing the Workflow
-"""""""""""""""""""""""""
-
-We can initialize this workflow in one of two ways:
-
--  Log into ``titan.ccs.ornl.gov`` and run ``qsub Batch-script-1.pbs``
-
-   OR
-
--  From Titan or Rhea, run ``qsub -q titan Batch-script-1.pbs``
-
-Example Workflow 2: Data Staging, Compute, and Archival
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Now we give another example of a linear workflow. This example shows how
-to use the Data Transfer Nodes (DTNs) to retrieve data from HPSS and
-stage it to your project's scratch area before beginning. Once the
-computation is done, we will automatically archive the output.
-
-.. image:: /images/remote_submission.stage-compute-archive-e1392655850482.png
-   :align: center
-
-**Batch-script-1.pbs**
-
-.. code::
-
-    #PBS -l walltime=0:30:00
-    #PBS -l nodes=1
-    #PBS -A PRJ123
-    #PBS -l gres=atlas1%atlas2
-
-    # Retrieve Data from HPSS
-    cd $MEMBERWORK/prj123
-    htar -xf /proj/prj123/input_data.htar input_data/
-
-    # Launch compute job
-    qsub -q titan Batch-script-2.pbs
-
-**Batch-script-2.pbs**
-
-.. code::
-
-    #PBS -l walltime=6:00:00
-    #PBS -l nodes=4096
-    #PBS -A PRJ123
-    #PBS -l gres=atlas1%atlas2
-
-    # Launch exectuable
-    cd $MEMBERWORK/prj123
-    aprun -n 65536 ./analysis-task.exe
-
-    # Submit data archival job to DTNs
-    qsub -q dtn Batch-script-3.pbs
-
-**Batch-script-3.pbs**
-
-.. code::
-
-    #PBS -l walltime=0:30:00
-    #PBS -l nodes=1
-    #PBS -A PRJ123
-    #PBS -l gres=atlas1%atlas2
-
-    # Launch exectuable
-    cd $MEMBERWORK/prj123
-    htar -cf /proj/prj123/viz_output.htar viz_output/
-    htar -cf /proj/prj123/compute_data.htar compute_data/
-
-Initializing the Workflow
-
-
-We can initialize this workflow in one of two ways:
-
--  Log into ``dtn.ccs.ornl.gov`` and run ``qsub Batch-script-1.pbs`` OR
--  From Titan or Rhea, run ``qsub -q dtn Batch-script-1.pbs``
-
-Example Workflow 3: Data Staging, Compute, Visualization, and Archival
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-This is an example of a "branching" workflow. What we will do is first
-use Rhea to prepare a mesh for our simulation on Titan. We will then
-launch the compute task on Titan, and once this has completed, our
-workflow will branch into two separate paths: one to archive the
-simulation output data, and one to visualize it. After the
-visualizations have finished, we will transfer them to a remote
-institution.
-
-.. image:: /images/remote_submission.stag-compute-archive-vis-transfer-e1392822417662.png
-   :align: center
-
-**Step-1.prepare-data.pbs**
-
-.. code::
-
-    #PBS -l walltime=0:30:00
-    #PBS -l nodes=10
-    #PBS -A PRJ123
-    #PBS -l gres=atlas1%atlas2
-
-    # Prepare Mesh for Simulation
-    mpirun -n 160 ./prepare-mesh.exe
-
-    # Launch compute job
-    qsub -q titan Step-2.compute.pbs
-
-**Step-2.compute.pbs**
-
-.. code::
-
-    #PBS -l walltime=6:00:00
-    #PBS -l nodes=4096
-    #PBS -A PRJ123
-    #PBS -l gres=atlas1%atlas2
-
-    # Launch exectuable
-    cd $MEMBERWORK/prj123
-    aprun -n 65536 ./analysis-task.exe
-
-    # Workflow branches at this stage, launching 2 separate jobs
-
-    # - Launch Archival task on DTNs
-    qsub -q dtn@dtn-batch Step-3.archive-compute-data.pbs
-
-    # - Launch Visualization task on Rhea
-    qsub -q rhea Step-4.visualize-compute-data.pbs
-
-**Step-3.archive-compute-data.pbs**
-
-.. code::
-
-    #PBS -l walltime=0:30:00
-    #PBS -l nodes=1
-    #PBS -A PRJ123
-    #PBS -l gres=atlas1%atlas2
-
-    # Archive compute data in HPSS
-    cd $MEMBERWORK/prj123
-    htar -cf /proj/prj123/compute_data.htar compute_data/
-
-**Step-4.visualize-compute-data.pbs**
-
-.. code::
-
-    #PBS -l walltime=2:00:00
-    #PBS -l nodes=64
-    #PBS -A PRJ123
-    #PBS -l gres=atlas1%atlas2
-
-    # Visualize Compute data
-    cd $MEMBERWORK/prj123
-    mpirun -n 768 ./visualization-task.py
-
-    # Launch transfer task
-    qsub -q dtn Step-5.transfer-visualizations-to-campus.pbs
-
-**Step-5.transfer-visualizations-to-campus.pbs**
-
-.. code::
-
-    #PBS -l walltime=2:00:00
-    #PBS -l nodes=1
-    #PBS -A PRJ123
-    #PBS -l gres=atlas1%atlas2
-
-    # Transfer visualizations to storage area at home institution
-    cd $MEMBERWORK/prj123
-    SOURCE=gsiftp://dtn03.ccs.ornl.gov/$MEMBERWORK/visualization.mpg
-    DEST=gsiftp://dtn.university-name.edu/userid/visualization.mpg
-    globus-url-copy -tcp-bs 12M -bs 12M -p 4 $SOURCE $DEST
-
-Initializing the Workflow
-
-
-We can initialize this workflow in one of two ways:
-
--  Log into ``rhea.ccs.ornl.gov`` and run
-   ``qsub Step-1.prepare-data.pbs`` OR
--  From Titan or the DTNs, run ``qsub -q rhea Step-1.prepare-data.pbs``
-
-Checking Job Status
-^^^^^^^^^^^^^^^^^^^
-
-+------------------------------+-----------------------------+--------------------------------+
-| Host                         | Remote qstat                | Remote showq                   |
-+==============================+=============================+================================+
-| Rhea                         | ``qstat -a @rhea-batch``    | ``showq --host=rhea-batch``    |
-+------------------------------+-----------------------------+--------------------------------+
-| Eos                          | ``qstat -a @eos-batch``     | ``showq --host=eos-batch``     |
-+------------------------------+-----------------------------+--------------------------------+
-| Titan                        | ``qstat -a @titan-batch``   | ``showq --host=titan-batch``   |
-+------------------------------+-----------------------------+--------------------------------+
-| Data Transfer Nodes (DTNs)   | ``qstat -a @dtn-batch``     | ``showq --host=dtn-batch``     |
-+------------------------------+-----------------------------+--------------------------------+
-
-Deleting Remote Jobs
-^^^^^^^^^^^^^^^^^^^^
-
-In order to delete a job (say, job number 18688) from a remote queue,
-you can do the following
-
-+------------------------------+------------------------------+
-| Host                         | Remote qdel                  |
-+==============================+==============================+
-| Rhea                         | ``qdel 18688@rhea-batch``    |
-+------------------------------+------------------------------+
-| Eos                          | ``qdel 18688@eos-batch``     |
-+------------------------------+------------------------------+
-| Titan                        | ``qdel 18688@titan-batch``   |
-+------------------------------+------------------------------+
-| Data Transfer Nodes (DTNs)   | ``qdel 18688@dtn-batch``     |
-+------------------------------+------------------------------+
-
-Potential Pitfalls
-^^^^^^^^^^^^^^^^^^
-
-The OLCF advises users to keep their remote submission workflows simple,
-short, and mostly linear. Workflows that contain many layers of
-branches, or that trigger many jobs at once, may prove difficult to
-maintain and debug. Workflows that contain loops or recursion (jobs that
-can submit themselves again) may inadvertently waste allocation hours if
-a suitable exit condition is not reached.
-
-.. warning::
-    Recursive workflows which do not exit will drain your
-    project's allocation. Refunds will not be granted. Please be extremely
-    cautious when designing workflows that cause jobs to re-submit themselves.
-
-
-.. image:: /images/remote_submission.circular-e1392656023400.png
-   :align: center
-
-As always, users on multiple projects are strongly advised to double
-check that the ``#PBS -A <PROJECTID>`` field is set to the correct
-project prior to submission. This will ensure that resource usage is
-associated with the intended project.
+The My OLCF site is provided to aid in the utilization and management of OLCF
+allocations. If you have any questions or have a request for additional data,
+please contact the OLCF User Assistance Center.
 
 --------------
 
@@ -1507,38 +1168,35 @@ Analysis tools
 ParaView
 --------
 
-`ParaView <http://paraview.org>`__ is an open-source, multi-platform
-data analysis and visualization application. ParaView users can quickly
-build visualizations to analyze their data using qualitative and
-quantitative techniques. The data exploration can be done interactively
-in 3D or programmatically using ParaView’s batch processing
-capabilities.
+`ParaView <http://paraview.org>`__ is an open-source, multi-platform data
+analysis and visualization application. ParaView users can quickly build
+visualizations to analyze their data using qualitative and quantitative
+techniques. The data exploration can be done interactively in 3D or
+programmatically using ParaView’s batch processing capabilities.
 
-ParaView was developed to analyze extremely large datasets
-using distributed memory computing resources. The OLCF provides ParaView
-server installs on Rhea to facilitate large scale distributed
-visualizations. The ParaView server running on Rhea may be used in a
-headless batch processing mode or be used to drive a ParaView GUI client
-running on your local machine.
+ParaView was developed to analyze extremely large datasets using distributed
+memory computing resources. The OLCF provides ParaView server installs on Rhea
+to facilitate large scale distributed visualizations. The ParaView server
+running on Rhea may be used in a headless batch processing mode or be used to
+drive a ParaView GUI client running on your local machine.
 
 ParaView client
 ^^^^^^^^^^^^^^^
 
-A ParaView client instance is not available on Rhea. Interactive mode
-requires that your local machine have a version matched ParaView client
-installation and batch mode can benefit from a local installation as
-well to aid in script generation. Precompiled ParaView binaries for
-Windows, Macintosh, and Linux can be downloaded from
-`Kitware <http://paraview.org/paraview/resources/software.php>`__.
+A ParaView client instance is not available on Rhea. Interactive mode requires
+that your local machine have a version matched ParaView client installation and
+batch mode can benefit from a local installation as well to aid in script
+generation. Precompiled ParaView binaries for Windows, Macintosh, and Linux can
+be downloaded from `Kitware
+<http://paraview.org/paraview/resources/software.php>`__.
 
 Interactive mode
 ^^^^^^^^^^^^^^^^
 
-Although in a single machine setup both the ParaView client and server
-run on the same host, this need not be the case. It is possible to run a
-local ParaView client to display and interact with your data while the
-ParaView server runs in a Rhea batch job, allowing interactive analysis
-of very large data sets.
+Although in a single machine setup both the ParaView client and server run on
+the same host, this need not be the case. It is possible to run a local ParaView
+client to display and interact with your data while the ParaView server runs in
+a Rhea batch job, allowing interactive analysis of very large data sets.
 
 .. warning::
     In interactive mode your local ParaView version number must
@@ -1548,10 +1206,9 @@ of very large data sets.
 Interactive Example
 """""""""""""""""""
 
-The following provides an example of launching the ParaView server on
-Rhea and connecting to it from a locally running ParaView client.
-Although several methods may be used the one described should work in
-most cases.
+The following provides an example of launching the ParaView server on Rhea and
+connecting to it from a locally running ParaView client.  Although several
+methods may be used the one described should work in most cases.
 
 .. warning::
     For Macintosh clients, it is necessary to install `XQuartz
@@ -1640,8 +1297,8 @@ Restart VisIt, and go to Options->Host Profiles. Select “New Host”
 - Username: Your OLCF Username (required)
 - Tunnel data connections through SSH: Checked (required)
 
-Under the “Launch Profiles” tab create a launch profile. Most of
-these values are arbitrary
+Under the “Launch Profiles” tab create a launch profile. Most of these values
+are arbitrary
 
 - Profile Name: No GPU, MPI, Multinode (arbitrary)
 - Timeout: 480 (arbitrary)
@@ -1692,11 +1349,11 @@ Once you have VisIt installed and set up on your local computer:
 -  Once specified, the server side of VisIt will be launched, and you
    can interact with your data.
 
-Please do not run VisIt's client from an OLCF machine. You will get much
-better performance if you install a client on your workstation and
-launch locally. You can directly connect to OLCF machines from inside
-VisIt and access your data remotely. For additional resources, please
-see the `VisIt Wiki <http://www.visitusers.org>`__.
+Please do not run VisIt's client from an OLCF machine. You will get much better
+performance if you install a client on your workstation and launch locally. You
+can directly connect to OLCF machines from inside VisIt and access your data
+remotely. For additional resources, please see the `VisIt Wiki
+<http://www.visitusers.org>`__.
 
 Troubleshooting
 ^^^^^^^^^^^^^^^
@@ -1704,19 +1361,18 @@ Troubleshooting
 VisIt keeps asking for your password.
 """""""""""""""""""""""""""""""""""""
 
-If VisIt keeps asking for your "Password" in the dialog box below, and
-you are entering your correct PIN + RSA token code, you might need to
-select "Change username" and then enter your OLCF username when
-prompted.
+If VisIt keeps asking for your "Password" in the dialog box below, and you are
+entering your correct PIN + RSA token code, you might need to select "Change
+username" and then enter your OLCF username when prompted.
 
 .. image:: /images/Screen-Shot-2016-01-06-at-11.10.19-AM.png
    :align: center
 
-This will give you a new opportunity to enter your PIN + token code and
-your username will appear in login request box as shown below. If you
-want you OLCF username to be filled in by default, go to "Options→Host
-profiles" and enter it under "Username". See the `Modifying Host
-Profiles </for-users/system-user-guides/rhea/analysis-tools/#modifying-host-profiles>`__
+This will give you a new opportunity to enter your PIN + token code and your
+username will appear in login request box as shown below. If you want you OLCF
+username to be filled in by default, go to "Options→Host profiles" and enter it
+under "Username". See the `Modifying Host Profiles
+</for-users/system-user-guides/rhea/analysis-tools/#modifying-host-profiles>`__
 section below for more details.
 
 .. image:: /images/Screen-Shot-2016-01-06-at-11.06.25-AM1.png
@@ -1725,13 +1381,12 @@ section below for more details.
 VisIt will not connect when you try to draw an image.
 """""""""""""""""""""""""""""""""""""""""""""""""""""
 
-If VisIt will not connect to Rhea when you try to draw an image, you
-should login to Rhea and enter "qstat" from the command line. Your VisIt
-job should appear in the queue. If you see it in a state marked "Q" you
-should wait a bit longer to see if it will start. If you do not see your
-job listed in the queue, check to make sure your project ID is entered
-in your VisIt host profile. See the :ref:`modifying-host-profiles`
-section below for instructions.
+If VisIt will not connect to Rhea when you try to draw an image, you should
+login to Rhea and enter "qstat" from the command line. Your VisIt job should
+appear in the queue. If you see it in a state marked "Q" you should wait a bit
+longer to see if it will start. If you do not see your job listed in the queue,
+check to make sure your project ID is entered in your VisIt host profile. See
+the :ref:`modifying-host-profiles` section below for instructions.
 
 .. _modifying-host-profiles:
 
@@ -1749,9 +1404,9 @@ To make changes to an exiting host profile, do the following:
 -  Once you have made your changes, press the "Apply" button, and then
    save the settings (Options/Save Settings).
 
-Each host can have several launch profiles. A launch profile specifies
-VisIt can be run on a given host computer. To make changes to a host's
-launch profile, do the following:
+Each host can have several launch profiles. A launch profile specifies VisIt can
+be run on a given host computer. To make changes to a host's launch profile, do
+the following:
 
 -  Go to "Options→Host Profiles".
 -  Select the host in the left side of the window.
@@ -1780,15 +1435,15 @@ during the 2016 OLCF User Meeting.
 step 1 (local system)
 ^^^^^^^^^^^^^^^^^^^^^
 
-Install a vncviewer (turbovnc, tigervnc, etc.) on your local machine.
-When running vncviewer for the first time, it will ask to set a password
-for this and future vnc sessions.
+Install a vncviewer (turbovnc, tigervnc, etc.) on your local machine.  When
+running vncviewer for the first time, it will ask to set a password for this and
+future vnc sessions.
 
 step 2 (terminal 1)
 ^^^^^^^^^^^^^^^^^^^
 
-From a Rhea connection launch a batch job and execute the below
-matlab-vnc.sh script to start the vncserver and run matlab within:
+From a Rhea connection launch a batch job and execute the below matlab-vnc.sh
+script to start the vncserver and run matlab within:
 
 #. localsytem: ssh -X @rhea.ccs.ornl.gov
 #. rhea: qsub -I -A abc123 -X -l nodes=1,walltime=01:00:00
@@ -1815,18 +1470,17 @@ matlab-vnc.sh script to start the vncserver and run matlab within:
 step 3 (terminal 2)
 ^^^^^^^^^^^^^^^^^^^
 
-In a second terminal on your local system open a tunneling connection
-following the instructions given by the vnc start-up script:
+In a second terminal on your local system open a tunneling connection following
+the instructions given by the vnc start-up script:
 
 -  localsystem: ssh @rhea.ccs.ornl.gov -L 5901:rhea99:5901
 
 step 4 (local system)
 ^^^^^^^^^^^^^^^^^^^^^
 
-Launch the vncviewer. When you launch the vncviewer that you downloaded
-you will need to specify ‘localhost:5901’. You will also set a password
-for the initial connection or enter the created password for subsequent
-connections.
+Launch the vncviewer. When you launch the vncviewer that you downloaded you will
+need to specify ‘localhost:5901’. You will also set a password for the initial
+connection or enter the created password for subsequent connections.
 
 matlab-vnc.sh (non-GPU rendering)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1867,15 +1521,15 @@ Remote Visualization using VNC (GPU nodes)
 step 1 (local system)
 ^^^^^^^^^^^^^^^^^^^^^
 
-Install a vncviewer (turbovnc, tigervnc, etc.) on your local machine.
-When running vncviewer for the first time, it will ask to set a password
-for this and future vnc sessions.
+Install a vncviewer (turbovnc, tigervnc, etc.) on your local machine.  When
+running vncviewer for the first time, it will ask to set a password for this and
+future vnc sessions.
 
 step 2 (terminal 1)
 ^^^^^^^^^^^^^^^^^^^
 
-From a Rhea connection launch a batch job and execute the below
-matlab-vnc.sh script to start the vncserver and run matlab within:
+From a Rhea connection launch a batch job and execute the below matlab-vnc.sh
+script to start the vncserver and run matlab within:
 
 #. localsytem: ssh -X @rhea.ccs.ornl.gov
 #. rhea: salloc -A abc123 -X -l nodes=1,walltime=01:00:00
@@ -1903,18 +1557,17 @@ matlab-vnc.sh script to start the vncserver and run matlab within:
 step 3 (terminal 2)
 ^^^^^^^^^^^^^^^^^^^
 
-In a second terminal on your local system open a tunneling connection
-following the instructions given by the vnc start-up script:
+In a second terminal on your local system open a tunneling connection following
+the instructions given by the vnc start-up script:
 
 -  localsystem: ssh @rhea.ccs.ornl.gov -L 5901:rhea99:5901
 
 step 4 (local system)
 ^^^^^^^^^^^^^^^^^^^^^
 
-Launch the vncviewer. When you launch the vncviewer that you downloaded
-you will need to specify ‘localhost:5901’. You will also set a passoword
-for the initial connection or enter the created password for subsequent
-connections.
+Launch the vncviewer. When you launch the vncviewer that you downloaded you will
+need to specify ‘localhost:5901’. You will also set a passoword for the initial
+connection or enter the created password for subsequent connections.
 
 vmd-vgl.sh (GPU rendering)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1987,9 +1640,9 @@ Open a tunneling connection with gpu node ``N``, given by hostname:
 
     ssh user@rhea.ccs.ornl.gov -L 8443:rhea-gpuN:8443
 
-Open your web browser using the following link and use your credentials
-to access OLCF systems: ``https://localhost:8443`` When finished, kill
-the dcv session in first terminal:
+Open your web browser using the following link and use your credentials to
+access OLCF systems: ``https://localhost:8443`` When finished, kill the dcv
+session in first terminal:
 
 .. code::
 

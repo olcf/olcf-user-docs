@@ -516,7 +516,7 @@ NVMe Usage Example
 The following example illustrates how to use the burst buffers (NVMes) by
 default on Summit. This example uses a hello_world bash script, called
 test_nvme.sh, and its submission script, check_nvme.lsf. It is assumed that the
-files are saved in the user's Lustre scratch area,
+files are saved in the user's GPFS scratch area,
 /gpfs/alpine/scratch/$USER/projid, and that the user is operating from there as
 well. Do not forget that for all the commands on NVMe, it is required to use
 jsrun. **Job submssion script: check_nvme.lsf.** This will submit a job to run

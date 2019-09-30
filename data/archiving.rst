@@ -1,8 +1,8 @@
 .. _hpss:
 
-********************
-HPSS Best Practices
-********************
+**************************
+HPSS Data Archival System
+**************************
 
 Currently, HSI and HTAR are offered for archiving data into HPSS or retrieving
 data from the HPSS archive. For optimal transfer performance, we recommend
@@ -22,8 +22,7 @@ transfers, so it is required to transfer a lot of data on each transfer than
 less data across many transfers. If a folder is constituted with mixed files
 including thousands of small files (less than 1MB each one), it would be better
 to tar the small files.  Otherwise, if the files are larger, Globus will handle
-them. To transfer the files, follow the steps which some are identical with the
-instructions above regarding transfer files from Atlas to Alpine:
+them. To transfer the files, follow these steps:
 
 - Visit www.globus.org and login
 

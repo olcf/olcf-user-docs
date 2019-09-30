@@ -22,6 +22,8 @@ resources and lists relevant polices.
 .. [#f1] In addition, there is a quota/limit of 2,000 files on this directory.
 
 
+.. _user-home-directories-nfs:
+
 User Home Directories (NFS)
 ============================
 
@@ -81,7 +83,7 @@ caches become. When data is migrated to tape, it is done so in a first-in,
 first-out fashion.
 
 User archive areas on HPSS are intended for storage of data not immediately
-needed in either User Home directories (NFS) or User Work directories (Lustre®).
+needed in either User Home directories (NFS) or User Work directories (GPFS).
 User Archive directories should not be used to store project-related data.
 Rather, Project Archive directories should be used for project data.
 
