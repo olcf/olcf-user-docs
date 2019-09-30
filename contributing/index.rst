@@ -2,6 +2,12 @@
 Contributing to these docs
 ###########################
 
+Submitting suggestions
+====================================
+
+Have a suggestion for improvement? Share it with us by `opening an issue
+<https://github.com/olcf/olcf-user-docs/issues/new>`_.
+
 
 Authoring content
 ==================
@@ -78,11 +84,6 @@ Resources
 | `Sphinx Quickstart <http://www.sphinx-doc.org/en/master/usage/quickstart.html>`_
 | `restructuredText Primer <http://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html>`_
 | `restructuredText Reference <http://docutils.sourceforge.net/rst.html>`_
-
-Submit suggestions
-====================================
-
-Under construction - Use GitHub Issues
 
 GitHub Guidelines
 ===================
