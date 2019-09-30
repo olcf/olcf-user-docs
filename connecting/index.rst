@@ -180,14 +180,12 @@ The following are examples of inappropriate uses of Home:
 Data Transfer Nodes
 ========================
 
-The *Data Transfer Nodes* (DTNs) are hosts specifically designed to
-provide optimized data transfer between OLCF systems and systems outside
-of the OLCF network. These nodes perform well on local-area transfers as
-well as the wide-area data transfers for which they are tuned. The OLCF
-recommends that users `employ these
-nodes <../file-systems/#employing-data-transfer-nodes>`__ to improve
-transfer speed and reduce load on computational systems' login and
-service nodes.
+The *Data Transfer Nodes* (DTNs) are hosts specifically designed to provide
+optimized data transfer between OLCF systems and systems outside of the OLCF
+network. These nodes perform well on local-area transfers as well as the
+wide-area data transfers for which they are tuned. The OLCF recommends that
+users use these nodes to improve transfer speed and reduce load on computational
+systems' login and service nodes.
 
 High Performance Storage System (HPSS)
 =========================================
@@ -195,10 +193,7 @@ High Performance Storage System (HPSS)
 The *High Performance Storage System (HPSS)* provides tape storage for
 large amounts of data created on OLCF systems. The HPSS can be accessed
 from any OLCF system through the ``hsi`` utility. More information about
-using HPSS can be found on the `HPSS section of the File Systems: Data
-Storage & Transfers
-page <../file-systems/#hpss-high-performance-storage-system>`__ in each
-System User Guide.
+using HPSS can be found on the :ref:`hpss` page.
 
 *****************************
 OLCF System Hostnames
