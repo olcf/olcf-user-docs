@@ -86,16 +86,10 @@ For more information on connecting to OLCF resources, see :ref:`connecting-to-ol
 File systems
 ------------
 
-The OLCF's center-wide Lustre\ |R| ` file system, named `Spider
-<../file-systems/#spider-the-centerwide-lustre-file-system>`_, is available on
-Rhea for computational work. With over 26,000 clients and 32 pb of disk space,
-it is one of the largest-scale Lustre\ |R| file systems in the world. An
-NFS-based file system provides `User Home storage areas
-<../file-systems/#user-home-directories-nfs>`__ and `Project Home storage areas
-<../file-systems/#project-home-directories-nfs>`__.  Additionally, the OLCF's
-`High Performance Storage System
-<../file-systems/#hpss-high-performance-storage-system>`__ (HPSS) provides
-archival spaces.
+The OLCF's center-wide :ref:`alpine-ibm-spectrum-scale-filesystem` name Alpine
+is available on Rhea for computational work.  An NFS-based file system provides
+:ref:`user-home-directories-nfs` and :ref:`project-home-directories-nfs`.
+Additionally, the OLCF's :ref:`hpss` provides archival spaces.
 
 Shell and programming environments
 ==================================

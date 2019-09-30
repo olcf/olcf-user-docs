@@ -44,6 +44,8 @@ function:
   with other project members.
 
 
+.. _alpine-ibm-spectrum-scale-filesystem:
+
 Alpine IBM Spectrum Scale Filesystem
 =====================================
 

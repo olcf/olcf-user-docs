@@ -1,8 +1,8 @@
 .. _hpss:
 
-********************
-HPSS Best Practices
-********************
+**************************
+HPSS Data Archival System
+**************************
 
 Currently, HSI and HTAR are offered for archiving data into HPSS or retrieving
 data from the HPSS archive. For optimal transfer performance, we recommend
