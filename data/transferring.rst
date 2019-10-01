@@ -62,6 +62,48 @@ archive file and transfer this file. However, everything depends on the total si
 
    	   rsync -avz  $USER@dtn.ccs.ornl.gov:/path/dir/ mydir/
 
+	* Transfer data over shh for secure connection
+
+        .. code::
+
+           rsync -avze ssh  mydir/ $USER@dtn.ccs.ornl.gov:/path/
+
+        * Transfer data over shh for secure connection and show progress while transferring
+
+        .. code::
+
+           rsync -avze ssh --progress mydir/ $USER@dtn.ccs.ornl.gov:/path/
+
+	* Include files or directories starting with T and exclude the rest ones
+
+        .. code::
+
+           rsync -avze ssh --progress --include 'T*' --exclude '*' mydir/ $USER@dtn.ccs.ornl.gov:/path/
+
+	* If the file or directory exists at the targer but not not on the source, then delete it
+
+        .. code::
+
+           rsync -avz --delete $USER@dtn.ccs.ornl.gov:/path/ .
+
+	* Transfer only the files that are smaller than 1MB
+
+        .. code::
+
+           rsync -avz --max-size='1m' mydir/ $USER@dtn.ccs.ornl.gov:/path/
+
+	* If you are not sure if the command could create some problems, execute a dry-run
+
+        .. code::
+
+           rsync -avz --dry-run mydir/ $USER@dtn.ccs.ornl.gov:/path/
+
+For more informaiton execute:
+
+.. code::
+
+   man scp
+   man rsync
 
 
 How to use Globus from my laptop
