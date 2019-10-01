@@ -5,17 +5,72 @@ Transferring Data
 Data Transfer
 ===============
 
-Many users would like to transfer their data from or to Summit through Globus,
-but their institute does not provide a globus infrastructure. In the following
-instructions, you can learn how to create your own Globus endpoint. We don't
-know if or when globus will not support this approach anymore.
+
+Using well know terminal tools
+------------------------------
+
+Overall, when you want to transfer data from outside OLCF to inside, or the opposite, with a terminal command,
+start the transfer from outside OLCF. Moreover, if you have many small files, then better compress them into one
+archive file and transfer this file. However, everything depends on the total size, maybe better to split to a few large files
+
+``scp`` and ``rsync`` are available on Summit for remote transfers.
+
+* SCP 
+
+	* Sending a file to OLCF:
+
+	.. code::
+
+   	   scp yourfile $USER@dtn.ccs.ornl.gov:/path/
+
+
+	* Retrieving a file from OLCF
+
+	.. code::
+
+   	   scp $USER@dtn.ccs.ornl.gov:/path/yourfile .
+
+
+	* Sending a directory to OLCF:
+
+	.. code::
+
+   	   scp -r yourdirectory $USER@dtn.ccs.ornl.gov:/path/
+
+
+* Rsync
+
+
+	* Sync a folder called mydir from your local system to OLCF:
+
+	.. code::
+
+   	   rsync -avz mydir/ $USER@dtn.ccs.ornl.gov:/path/
+
+
+	where:
+
+  		* a is for archive mode\
+  		* v is for verbose mode\
+  		* z is for compressed mode\
+
+	If any file exists already, then only it's difference will be sent
+
+	* Sync a folder from OLCF to a local folder
+
+	.. code::
+
+   	   rsync -avz  $USER@dtn.ccs.ornl.gov:/path/dir/ mydir/
+
+
 
 How to use Globus from my laptop
 --------------------------------
 
-``scp`` and ``rsync`` are available on Summit for small remote transfers. For
-larger remote transfers with Alpine, we recommend using Globus to do the remote
-transfer.
+Many users would like to transfer their data from or to Summit through Globus,
+but their institute does not provide a globus infrastructure. In the following
+instructions, you can learn how to create your own Globus endpoint. We don't
+know if or when globus will not support this approach anymore.
 
   Follow these steps:
 
