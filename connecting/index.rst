@@ -199,29 +199,34 @@ using HPSS can be found on the :ref:`hpss` page.
 OLCF System Hostnames
 *****************************
 
-+---------------------+--------------------------+------------------------------------------------------------------+
-| *System Name*       | Full Hostname            | Hostkey Fingerprints                                             |
-+=====================+==========================+==================================================================+
-| Home (machine)      | ``home.ccs.ornl.gov``    | - RSA MD5: ``ba:12:46:8d:23:e7:4d:37:92:39:94:82:91:ea:3d:e9``   |
-|                     |                          | - RSA SHA256: ``FjDs4sRAX8hglzA7TVkK22NzRKsjhDTTTdfeEAHwPEA``    |
-|                     |                          | - ECDSA MD5: ``8a:92:0f:31:4d:38:2d:2c:ec:7d:53:ce:8b:46:73:d6`` |
-|                     |                          | - ECDSA SHA256: ``0hc6SDou8vauFWgOaeXKUmhDSmKK8roj9jWpapV4qzc``  |
-+---------------------+--------------------------+------------------------------------------------------------------+
-| Data Transfer Nodes | ``dtn.ccs.ornl.gov``     | - RSA MD5: ``d1:c5:84:5b:88:d3:0e:81:33:a7:c2:5f:8a:09:b2:7f``   |
-|                     |                          | - RSA SHA256: ``xAIWJhey/RCjetTR4Hll2GNE9WwCNrMUEOdyDhIeHeE``    |
-|                     |                          | - ECDSA MD5: ``bd:52:af:c3:8b:ad:a3:30:4f:28:75:9c:79:84:68:cd`` |
-|                     |                          | - ECDSA SHA256: ``ITEbdZ0ddYNJJehefOh+/0JMgSvHwClpr+P+kak58Xc``  |
-+---------------------+--------------------------+------------------------------------------------------------------+
-| Summit              | ``summit.olcf.ornl.gov`` | - RSA MD5: ``08:d0:fe:3f:f3:41:96:9c:ae:73:73:a8:92:6c:79:34``   |
-|                     |                          | - RSA SHA256: ``nA7X4qyPvtEpXWxG5MDeXEC8xfpmm0UMiLq/LkgM33I``    |
-|                     |                          | - ECDSA MD5: ``cf:32:f9:35:fd:3f:2a:0f:ed:d3:84:b1:2d:f0:35:1b`` |
-|                     |                          | - ECDSA SHA256: ``m0iF9JJEoJu6jJGA8FFbSABlpKFYPGKbdmi25rFC1AI``  |
-+---------------------+--------------------------+------------------------------------------------------------------+
-| Rhea                | ``rhea.ccs.ornl.gov``    | - RSA MD5: ``17:4a:49:f8:37:e2:1b:7c:b5:23:b3:5c:64:3a:c5:07``   |
-|                     |                          | - RSA SHA256: ``R9/5L+ZQ9+pR/jThxbLmmmxBtxRfVt3MsEGPEhv1uTQ``    |
-|                     |                          | - ECDSA Md5: ``e4:a4:b4:4a:24:bf:53:e0:9a:c4:10:9f:9f:3a:ec:f4`` |
-|                     |                          | - ECDSA SHA256: ``F92QU1abt3tN2cgYwONJla0MoyV0srD3mNoyoFe5Cxo``  |
-+---------------------+--------------------------+------------------------------------------------------------------+
++---------------------+----------------------------+------------------------------------------------------------------+
+| *System Name*       | Full Hostname              | Hostkey Fingerprints                                             |
++=====================+============================+==================================================================+
+| Home (machine)      | ``home.ccs.ornl.gov``      | - RSA MD5: ``ba:12:46:8d:23:e7:4d:37:92:39:94:82:91:ea:3d:e9``   |
+|                     |                            | - RSA SHA256: ``FjDs4sRAX8hglzA7TVkK22NzRKsjhDTTTdfeEAHwPEA``    |
+|                     |                            | - ECDSA MD5: ``8a:92:0f:31:4d:38:2d:2c:ec:7d:53:ce:8b:46:73:d6`` |
+|                     |                            | - ECDSA SHA256: ``0hc6SDou8vauFWgOaeXKUmhDSmKK8roj9jWpapV4qzc``  |
++---------------------+----------------------------+------------------------------------------------------------------+
+| Data Transfer Nodes | ``dtn.ccs.ornl.gov``       | - RSA MD5: ``d1:c5:84:5b:88:d3:0e:81:33:a7:c2:5f:8a:09:b2:7f``   |
+|                     |                            | - RSA SHA256: ``xAIWJhey/RCjetTR4Hll2GNE9WwCNrMUEOdyDhIeHeE``    |
+|                     |                            | - ECDSA MD5: ``bd:52:af:c3:8b:ad:a3:30:4f:28:75:9c:79:84:68:cd`` |
+|                     |                            | - ECDSA SHA256: ``ITEbdZ0ddYNJJehefOh+/0JMgSvHwClpr+P+kak58Xc``  |
++---------------------+----------------------------+------------------------------------------------------------------+
+| Summit              | ``summit.olcf.ornl.gov``   | - RSA MD5: ``08:d0:fe:3f:f3:41:96:9c:ae:73:73:a8:92:6c:79:34``   |
+|                     |                            | - RSA SHA256: ``nA7X4qyPvtEpXWxG5MDeXEC8xfpmm0UMiLq/LkgM33I``    |
+|                     |                            | - ECDSA MD5: ``cf:32:f9:35:fd:3f:2a:0f:ed:d3:84:b1:2d:f0:35:1b`` |
+|                     |                            | - ECDSA SHA256: ``m0iF9JJEoJu6jJGA8FFbSABlpKFYPGKbdmi25rFC1AI``  |
++---------------------+----------------------------+------------------------------------------------------------------+
+| SummitDev           | ``summitdev.ccs.ornl.gov`` | - RSA MD5: ``47:4a:ae:30:be:ff:55:87:b8:c1:33:a2:34:3a:00:16``   |
+|                     |                            | - RSA SHA256: ``qlOwMg8uFFZqRYvrasGNHuutditwOFU/ydXcDNciJHs``    |
+|                     |                            | - ECDSA MD5: ``61:12:39:7d:3f:09:0e:d6:38:63:35:a2:cc:d0:f9:44`` |
+|                     |                            | - ECDSA SHA256: ``LFmcA7m6BIMjTyrNnQGkgwxTK9QQkjud20wVn4QNDlQ``  |
++---------------------+----------------------------+------------------------------------------------------------------+
+| Rhea                | ``rhea.ccs.ornl.gov``      | - RSA MD5: ``17:4a:49:f8:37:e2:1b:7c:b5:23:b3:5c:64:3a:c5:07``   |
+|                     |                            | - RSA SHA256: ``R9/5L+ZQ9+pR/jThxbLmmmxBtxRfVt3MsEGPEhv1uTQ``    |
+|                     |                            | - ECDSA MD5: ``e4:a4:b4:4a:24:bf:53:e0:9a:c4:10:9f:9f:3a:ec:f4`` |
+|                     |                            | - ECDSA SHA256: ``F92QU1abt3tN2cgYwONJla0MoyV0srD3mNoyoFe5Cxo``  |
++---------------------+----------------------------+------------------------------------------------------------------+
 
 Occassionally, you may receive an error message upon logging in to a system such
 as the following:
