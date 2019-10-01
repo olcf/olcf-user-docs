@@ -9,3 +9,4 @@ System User Guides
 
    summit_user_guide
    rhea_user_guide
+   summitdev_user_guide
