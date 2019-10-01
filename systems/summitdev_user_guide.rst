@@ -91,3 +91,4 @@ Batch Queue Limits
 | > 4   | 1 Hour       |
 +-------+--------------+
 
+Each user is allowed to have 2 jobs in a running state.
