@@ -2,9 +2,11 @@
 
 <hr>
 
-This respository contains technical documentation for Oak Ridge Leadership Computing Facility resources.
+This respository contains technical documentation for Oak Ridge Leadership
+Computing Facility resources.
 
-Visit **[https://docs.olcf.ornl.gov](https://docs.olcf.ornl.gov)** for the rendered version of this documentation. *(Under construction* 🚧 *coming soon!)*
+Visit **[https://docs.olcf.ornl.gov](https://docs.olcf.ornl.gov)** for the
+rendered version of this documentation.
 
 #### Have a suggestion for improvement? 
 Share it with us by [opening an issue](https://github.com/olcf/olcf-user-docs/issues/new)! 
