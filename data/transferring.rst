@@ -106,6 +106,14 @@ For more informaiton execute:
    man rsync
 
 
+* Differences:
+	* scp is always encrypted, rsync demands extra flag
+	* scp Can not continue if it is interrupted while rsync can
+	* scp is less performance optimized compared to rsync
+	* rsync checks by default if the transfer of the data was done correctly
+	* rsync will transfer only the differences of the files, if they exist already in the destination
+
+
 How to use Globus from my laptop
 --------------------------------
 
