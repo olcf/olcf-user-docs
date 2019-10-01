@@ -53,11 +53,11 @@ these systems regularly. See :ref:`hpss`. for information about using the HSI
 and HTAR utilities to archive data on HPSS. Just to note that when you read a
 file, then the 90 days counter restarts.
 
-Retention
-==========
+Data Retention
+==============
 
-At the completion of a project or at the end of a member's association with the
-project, data will be available for 90 days, except in areas that are purged, in
-that case, the data will be retained according to the purge policy. After 90
-days, the data will not be available but not purged for another 60 days, where
-the data will be removed if not requested otherwise.
+By default, the OLCF does not guarantee lifetime data retention on any OLCF
+resources. Following a user account deactivation or project end, user and
+project data in non-purged areas will be retained for 90 days. After this
+timeframe, the OLCF retains the right to delete data. Data in purged areas
+remains subject to normal purge policies.
