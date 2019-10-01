@@ -6,11 +6,12 @@
 OLCF User Documentation
 =======================
 
-This technical documentation is a reference guide for the user community
-to efficiently use OLCF compute and storage resources.
+This technical documentation is a reference for the user community to
+efficiently use OLCF compute and storage resources.
 
-.. note::
-    Suggestions and contributions are welcomed! See :doc:`contributing/index`.
+Have an idea to improve this documentation? See :doc:`contributing/index`.
+
+Have a question? We're here to help -- help\@olcf.ornl.gov.
 
 Accounts
 ---------
