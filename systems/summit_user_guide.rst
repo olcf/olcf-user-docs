@@ -428,7 +428,7 @@ To connect to Summit, ssh to summit.olcf.ornl.gov. For example:
 
     ssh username@summit.olcf.ornl.gov
 
-For more information on connecting to OLCF resources, see :ref:`connecting-to-olcf`
+For more information on connecting to OLCF resources, see :ref:`connecting-to-olcf`.
 
 Data and Storage
 ==================

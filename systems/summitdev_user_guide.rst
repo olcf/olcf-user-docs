@@ -36,6 +36,17 @@ Access
 Access to SummitDev may be granted to Director's Discretion projects with the
 intention of moving to Summit.
 
+Connecting
+==========
+
+To connect to SummitDev, ssh to ``summitdev.ccs.ornl.gov``. For example:
+
+::
+
+    ssh username@summitdev.ccs.ornl.gov
+
+For more information on connecting to OLCF resources, see :ref:`connecting-to-olcf`.
+
 General Use
 ===========
 

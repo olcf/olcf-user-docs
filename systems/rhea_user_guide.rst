@@ -79,7 +79,7 @@ To connect to Rhea, ssh to rhea.ccs.ornl.gov -
 
 	ssh username@rhea.ccs.ornl.gov
 
-For more information on connecting to OLCF resources, see :ref:`connecting-to-olcf`
+For more information on connecting to OLCF resources, see :ref:`connecting-to-olcf`.
 
 --------------
 
