@@ -6,7 +6,7 @@ Data Transfer
 ===============
 
 
-Using well know terminal tools
+Using commonl terminal tools
 ------------------------------
 
 Overall, when you want to transfer data from outside OLCF to inside, or the opposite, with a terminal command,
@@ -62,23 +62,17 @@ archive file and transfer this file. However, everything depends on the total si
 
    	   rsync -avz  $USER@dtn.ccs.ornl.gov:/path/dir/ mydir/
 
-	* Transfer data over shh for secure connection
+        * Transfer data and show progress while transferring
 
         .. code::
 
-           rsync -avze ssh  mydir/ $USER@dtn.ccs.ornl.gov:/path/
+           rsync -avz --progress mydir/ $USER@dtn.ccs.ornl.gov:/path/
 
-        * Transfer data over shh for secure connection and show progress while transferring
-
-        .. code::
-
-           rsync -avze ssh --progress mydir/ $USER@dtn.ccs.ornl.gov:/path/
-
-	* Include files or directories starting with T and exclude the rest ones
+	* Include files or directories starting with T and exclude all others
 
         .. code::
 
-           rsync -avze ssh --progress --include 'T*' --exclude '*' mydir/ $USER@dtn.ccs.ornl.gov:/path/
+           rsync -avz --progress --include 'T*' --exclude '*' mydir/ $USER@dtn.ccs.ornl.gov:/path/
 
 	* If the file or directory exists at the targer but not not on the source, then delete it
 
@@ -107,7 +101,6 @@ For more informaiton execute:
 
 
 * Differences:
-	* scp is always encrypted, rsync demands extra flag
 	* scp Can not continue if it is interrupted while rsync can
 	* scp is less performance optimized compared to rsync
 	* rsync checks by default if the transfer of the data was done correctly
