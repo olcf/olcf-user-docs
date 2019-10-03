@@ -67,13 +67,22 @@ html_js_files = [
     'js/custom.js',
 ]
 
+html_context = {
+    'vcs_pageview_mode': 'edit',
+    'display_github': True,
+    'github_user': 'olcf', # Username
+    'github_repo': 'olcf-user-docs', # Repo name
+    'github_version': 'master', # Version
+    'conf_py_path': '/', # Path in the checkout to the docs root
+}
+
 # see https://sphinx-rtd-theme.readthedocs.io/en/stable/configuring.html
 html_theme_options = {
     'canonical_url': 'https://docs.olcf.ornl.gov',
     'collapse_navigation': False,
     'sticky_navigation': True,
     'navigation_depth': 4,
-    'style_external_links': True
+    'style_external_links': True,
 }
 
 
