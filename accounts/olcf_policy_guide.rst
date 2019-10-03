@@ -667,6 +667,7 @@ local area. There are also several utilities that the OLCF recommends for data
 transfer. Please refer to our :ref:`system-user-guides` for information about
 the DTNs and available utilities.
 
+<<<<<<< Updated upstream:getting_started/olcf_policy_guide.rst
 Titan Scheduling Policy
 =======================
 
@@ -868,6 +869,209 @@ unavailable to the general user population, projects that are granted
 reservations will be charged (regardless of their actual utilization) a
 CPU-time equivalent to
 ``(# of cores reserved) * (length of reservation in hours)``.
+=======
+.. Titan Scheduling Policy
+.. =======================
+..
+.. .. note::
+..     This details an official policy of the OLCF, and must be
+..     agreed to by the following persons as a condition of access to or use of
+..     OLCF computational resources:
+..
+..     -  Principal Investigators (Non-Profit)
+..     -  Principal Investigators (Industry)
+..     -  All Users
+..
+..     **Title:** Titan Scheduling Policy **Version:** 13.02
+..
+.. In a simple batch queue system, jobs run in a first-in, first-out (FIFO)
+.. order. This often does not make effective use of the system. A large job
+.. may be next in line to run. If the system is using a strict FIFO queue,
+.. many processors sit idle while the large job waits to run. *Backfilling*
+.. would allow smaller, shorter jobs to use those otherwise idle resources,
+.. and with the proper algorithm, the start time of the large job would not
+.. be delayed. While this does make more effective use of the system, it
+.. indirectly encourages the submission of smaller jobs.
+..
+.. The DOE Leadership-Class Job Mandate
+.. ------------------------------------
+..
+.. As a DOE Leadership Computing Facility, the OLCF has a mandate that a
+.. large portion of Titan's usage come from large, *leadership-class* (aka
+.. *capability*) jobs. To ensure the OLCF complies with DOE directives, we
+.. strongly encourage users to run jobs on Titan that are as large as their
+.. code will warrant. To that end, the OLCF implements queue policies that
+.. enable large jobs to run in a timely fashion.
+..
+.. .. note::
+..     The OLCF implements queue policies that encourage the
+..     submission and timely execution of large, leadership-class jobs on
+..     Titan.
+..
+.. The basic priority-setting mechanism for jobs waiting in the queue is
+.. the time a job has been waiting relative to other jobs in the queue.
+.. However, several factors are applied by the batch system to modify the
+.. *apparent* time a job has been waiting. These factors include:
+..
+.. -  The number of nodes requested by the job.
+.. -  The queue to which the job is submitted.
+.. -  The 8-week history of usage for the project associated with the job.
+.. -  The 8-week history of usage for the user associated with the job.
+..
+.. If your jobs require resources outside these queue policies, please complete the
+.. relevant request form on the `Special Requests
+.. <https://www.olcf.ornl.gov/support/getting-started/special-request-form/>`__
+.. page. If you have any questions or comments on the queue policies below, please
+.. direct them to the User Assistance Center.
+..
+.. Job Priority by Processor Count
+.. -------------------------------
+..
+.. Jobs are *aged* according to the job's requested processor count (older
+.. age equals higher queue priority). Each job's requested processor count
+.. places it into a specific *bin*. Each bin has a different aging
+.. parameter, which all jobs in the bin receive.
+..
+.. +-------+-------------+-------------+------------------------+----------------------+
+.. | Bin   | Min Nodes   | Max Nodes   | Max Walltime (Hours)   | Aging Boost (Days)   |
+.. +=======+=============+=============+========================+======================+
+.. | 1     | 11,250      | --          | 24.0                   | 15                   |
+.. +-------+-------------+-------------+------------------------+----------------------+
+.. | 2     | 3,750       | 11,249      | 24.0                   | 5                    |
+.. +-------+-------------+-------------+------------------------+----------------------+
+.. | 3     | 313         | 3,749       | 12.0                   | 0                    |
+.. +-------+-------------+-------------+------------------------+----------------------+
+.. | 4     | 126         | 312         | 6.0                    | 0                    |
+.. +-------+-------------+-------------+------------------------+----------------------+
+.. | 5     | 1           | 125         | 2.0                    | 0                    |
+.. +-------+-------------+-------------+------------------------+----------------------+
+..
+.. FairShare Scheduling Policy
+.. ---------------------------
+..
+.. FairShare, as its name suggests, tries to push each user and project
+.. towards their fair share of the system's utilization: in this case, 5%
+.. of the system's utilization per user and 10% of the system's utilization
+.. per project. To do this, the job scheduler adds (30) minutes priority
+.. aging per user and (1) hour of priority aging per project for every (1)
+.. percent the user or project is under its fair share value for the prior
+.. (8) weeks. Similarly, the job scheduler subtracts priority in the same
+.. way for users or projects that are over their fair share. For instance,
+.. a user who has personally used 0.0% of the system's utilization over the
+.. past (8) weeks who is on a project that has also used 0.0% of the
+.. system's utilization will get a (12.5) hour bonus (5 \* 30 min for the
+.. user + 10 \* 1 hour for the project). In contrast, a user who has
+.. personally used 0.0% of the system's utilization on a project that has
+.. used 12.5% of the system's utilization would get no bonus (5 \* 30 min
+.. for the user - 2.5 \* 1 hour for the project).
+..
+.. ``batch`` Queue Policy
+.. ----------------------
+..
+.. The ``batch`` queue is the default queue for production work on Titan.
+.. Most work on Titan is handled through this queue. It enforces the
+.. following policies:
+..
+.. -  Limit of (4) *eligible-to-run* jobs per user.
+.. -  Jobs in excess of the per user limit above will be placed into a
+..    *held* state, but will change to eligible-to-run at the appropriate
+..    time.
+.. -  Users may have only (2) jobs in bin 5 *running* at any time. Any
+..    additional jobs will be blocked until one of the running jobs
+..    completes.
+..
+.. .. note::
+..     The *eligible-to-run* state is not the *running* state.
+..     Eligible-to-run jobs have not started and are waiting for resources.
+..     Running jobs are actually executing.
+..
+.. ``killable`` Queue Policy
+.. -------------------------
+..
+.. At the start of a scheduled system outage, a *queue reservation* is used
+.. to ensure that no jobs are running. In the ``batch`` queue, the
+.. scheduler will not start a job if it expects that the job would not
+.. complete (based on the job's user-specified max walltime) before the
+.. reservation's start time. In constrast, the ``killable`` queue allows
+.. the scheduler to start a job even if it will *not* complete before a
+.. scheduled reservation. It enforces the following policies:
+..
+.. -  Jobs will be killed if still running when a system outage begins.
+.. -  The scheduler will stop scheduling jobs in the ``killable`` queue (1)
+..    hour before a scheduled outage.
+.. -  Maximum-job-per-user limits are the same (i.e., in conjunction with)
+..    the ``batch`` queue.
+.. -  Any killed jobs will be automatically re-queued after a system outage
+..    completes.
+..
+.. ``debug`` Queue Policy
+.. ----------------------
+..
+.. The ``debug`` queue is intended to provide faster turnaround times for
+.. the code development, testing, and debugging cycle. For example,
+.. interactive parallel work is an ideal use for the debug queue. It
+.. enforces the following policies:
+..
+.. -  Production jobs are not allowed.
+.. -  Maximum job walltime of (1) hour.
+.. -  Limit of (1) job per user *regardless of the job's state*.
+.. -  Jobs receive a (2)-day priority aging boost for scheduling.
+..
+.. .. warning::
+..     Users who misuse the ``debug`` queue may have further
+..     access to the queue denied.
+..
+.. Allocation Overuse Policy
+.. -------------------------
+..
+.. Projects that overrun their allocation are still allowed to run on OLCF
+.. systems, although at a reduced priority. Like the adjustment for the
+.. number of processors requested above, this is an adjustment to the
+.. apparent submit time of the job. However, this adjustment has the effect
+.. of making jobs appear much younger than jobs submitted under projects
+.. that have not exceeded their allocation. In addition to the priority
+.. change, these jobs are also limited in the amount of wall time that can
+.. be used. For example, consider that ``job1`` is submitted at the same
+.. time as ``job2``. The project associated with ``job1`` is over its
+.. allocation, while the project for ``job2`` is not. The batch system will
+.. consider ``job2`` to have been waiting for a longer time than ``job1``.
+.. Also projects that are at 125% of their allocated time will be limited
+.. to only one running job at a time. The adjustment to the apparent submit
+.. time depends upon the percentage that the project is over its
+.. allocation, as shown in the table below:
+..
+.. +------------------------+----------------------+--------------------------+------------------+
+.. | % Of Allocation Used   | Priority Reduction   | Number eligible-to-run   | Number running   |
+.. +========================+======================+==========================+==================+
+.. | < 100%                 | 0 days               | 4 jobs                   | unlimited jobs   |
+.. +------------------------+----------------------+--------------------------+------------------+
+.. | 100% to 125%           | 30 days              | 4 jobs                   | unlimited jobs   |
+.. +------------------------+----------------------+--------------------------+------------------+
+.. | > 125%                 | 365 days             | 4 jobs                   | 1 job            |
+.. +------------------------+----------------------+--------------------------+------------------+
+..
+.. System Reservation Policy
+.. -------------------------
+..
+.. Projects may request to reserve a set of processors for a period of time
+.. through the reservation request form, which can be found on the `Special
+.. Requests <https://www.olcf.ornl.gov/support/getting-started/special-request-form/>`__
+.. page. If the reservation is granted, the reserved processors will be
+.. blocked from general use for a given period of time. Only users that
+.. have been authorized to use the reservation can utilize those resources.
+.. Since no other users can access the reserved resources, it is crucial
+.. that groups given reservations take care to ensure the utilization on
+.. those resources remains high. To prevent reserved resources from
+.. remaining idle for an extended period of time, reservations are
+.. monitored for inactivity. If activity falls below 50% of the reserved
+.. resources for more than (30) minutes, the reservation will be canceled
+.. and the system will be returned to normal scheduling. A new reservation
+.. must be requested if this occurs. Since a reservation makes resources
+.. unavailable to the general user population, projects that are granted
+.. reservations will be charged (regardless of their actual utilization) a
+.. CPU-time equivalent to
+.. ``(# of cores reserved) * (length of reservation in hours)``.
+>>>>>>> Stashed changes:accounts/olcf_policy_guide.rst
 
 INCITE Allocation Under-utilization Policy
 ==========================================
