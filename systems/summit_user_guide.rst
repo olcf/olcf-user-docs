@@ -1504,9 +1504,9 @@ original limits as requested in the job script and will have the same ``JOBID``.
 
 .. warning:: If a job in the ``killable`` queue does not reach its requested
     walltime, it will continue to use allocation time with each automatic
-    resubmission until it either reaches the requested walltime, or is manually
-    killed by the user. Allocations are always charged based on actual compute
-    time used by all jobs.
+    resubmission until it either reaches the requested walltime during a single
+    continuous run, or is manually killed by the user. Allocations are always
+    charged based on actual compute time used by all jobs.
 
 To submit a job to the ``killable`` queue, add the `-q killable` option to your
 ``bsub`` command or ``#BSUB -q killable`` to your job script.
