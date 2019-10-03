@@ -1480,6 +1480,40 @@ following policies:
     Eligible-to-run jobs have not started and are waiting for resources.
     Running jobs are actually executing.
 
+``killable`` Queue Policy
+""""""""""""""""""""""""""
+
+The ``killable`` queue is a preemptable queue that allows jobs in bins 4 and 5
+to request walltimes up to 24 hours. Jobs submitted to the killable queue will
+be preemptable once the job reaches the guaranteed runtime limit as shown in the
+table below. For example, a job in bin 5 submitted to the killable queue can
+request a walltime of 24 hours. The job will be preemptable after two hours of
+run time. Similarly, a job in bin 4 will be preemptable after six hours of run
+time. Once a job is preempted, the job will be resubmitted by default with the
+original limits as requested in the job script and will have the same ``JOBID``.
+
+**Preemptable job limits:**
+
++-------+-------------+-------------+------------------------+----------------------+
+| Bin   | Min Nodes   | Max Nodes   | Max Walltime (Hours)   | Guaranteed Walltime  |
++=======+=============+=============+========================+======================+
+| 4     | 46          | 91          | 24.0                   |  6.0 (hours)         |
++-------+-------------+-------------+------------------------+----------------------+
+| 5     | 1           | 45          | 24.0                   |  2.0 (hours)         |
++-------+-------------+-------------+------------------------+----------------------+
+
+.. warning:: If a job in the ``killable`` queue does not reach its requested
+    walltime, it will continue to use allocation time with each automatic
+    resubmission until it either reaches the requested walltime, or is manually
+    killed by the user. Allocations are always charged based on actual compute
+    time used by all jobs.
+
+To submit a job to the ``killable`` queue, add the `-q killable` option to your
+``bsub`` command or ``#BSUB -q killable`` to your job script.
+
+To prevent a preempted job from being automatically requeued, the ``BSUB -rn``
+flag can be used at submit time.
+
 Allocation Overuse Policy
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
