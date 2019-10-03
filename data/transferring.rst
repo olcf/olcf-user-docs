@@ -54,7 +54,6 @@ archive file and transfer this file. However, everything depends on the total si
   		* v is for verbose mode\
   		* z is for compressed mode\
 
-	If any file exists already, then only it's difference will be sent
 
 	* Sync a folder from OLCF to a local folder
 
@@ -101,10 +100,9 @@ For more informaiton execute:
 
 
 * Differences:
-	* scp Can not continue if it is interrupted while rsync can
+	* scp can not continue if it is interrupted while rsync can
 	* scp is less performance optimized compared to rsync
 	* rsync checks by default if the transfer of the data was done correctly
-	* rsync will transfer only the differences of the files, if they exist already in the destination
 
 
 How to use Globus from my laptop
