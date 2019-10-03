@@ -1508,7 +1508,7 @@ original limits as requested in the job script and will have the same ``JOBID``.
     killed by the user. Allocations are always charged based on actual compute
     time used by all jobs.
 
-To submit a job to the ``killable`` queue, add the `-q killable` option to your
+To submit a job to the ``killable`` queue, add the ``-q killable`` option to your
 ``bsub`` command or ``#BSUB -q killable`` to your job script.
 
 To prevent a preempted job from being automatically requeued, the ``BSUB -rn``
