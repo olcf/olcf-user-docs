@@ -6,18 +6,19 @@ Data Transfer
 ===============
 
 
-Using commonl terminal tools
-------------------------------
+Using common terminal tools
+---------------------------
 
-Overall, when you want to transfer data from outside OLCF to inside, or the opposite, with a terminal command,
-start the transfer from outside OLCF. Moreover, if you have many small files, then better compress them into one
-archive file and transfer this file. However, everything depends on the total size, maybe better to split to a few large files
+In general, when transferring data into or out of the OLCF from the command
+line, it's best to initiate the transfer from outside the OLCF. If moving many
+small files, it can be beneficial to compress them into a single archive file,
+then transfer just the one archive file. 
 
-``scp`` and ``rsync`` are available on Summit for remote transfers.
+``scp`` and ``rsync`` are available for remote transfers.
 
-* SCP 
+* ``scp`` 
 
-	* Sending a file to OLCF:
+	* Sending a file to OLCF
 
 	.. code::
 
@@ -31,17 +32,17 @@ archive file and transfer this file. However, everything depends on the total si
    	   scp $USER@dtn.ccs.ornl.gov:/path/yourfile .
 
 
-	* Sending a directory to OLCF:
+	* Sending a directory to OLCF
 
 	.. code::
 
    	   scp -r yourdirectory $USER@dtn.ccs.ornl.gov:/path/
 
 
-* Rsync
+* ``rsync``
 
 
-	* Sync a folder called mydir from your local system to OLCF:
+	* Sync a directory named ``mydir`` from your local system to the OLCF
 
 	.. code::
 
@@ -55,7 +56,7 @@ archive file and transfer this file. However, everything depends on the total si
   		* z is for compressed mode\
 
 
-	* Sync a folder from OLCF to a local folder
+	* Sync a directory from the OLCF to a local directory
 
 	.. code::
 
@@ -73,7 +74,7 @@ archive file and transfer this file. However, everything depends on the total si
 
            rsync -avz --progress --include 'T*' --exclude '*' mydir/ $USER@dtn.ccs.ornl.gov:/path/
 
-	* If the file or directory exists at the targer but not not on the source, then delete it
+	* If the file or directory exists at the target but not on the source, then delete it
 
         .. code::
 
@@ -85,13 +86,13 @@ archive file and transfer this file. However, everything depends on the total si
 
            rsync -avz --max-size='1m' mydir/ $USER@dtn.ccs.ornl.gov:/path/
 
-	* If you are not sure if the command could create some problems, execute a dry-run
+	* If you want to verify the behavior is as intended, execute a dry-run
 
         .. code::
 
            rsync -avz --dry-run mydir/ $USER@dtn.ccs.ornl.gov:/path/
 
-For more informaiton execute:
+For more information execute:
 
 .. code::
 
@@ -100,13 +101,13 @@ For more informaiton execute:
 
 
 * Differences:
-	* scp can not continue if it is interrupted while rsync can
-	* scp is less performance optimized compared to rsync
-	* rsync checks by default if the transfer of the data was done correctly
+	* ``scp`` cannot continue if it is interrupted. ``rsync`` can.
+	* ``rsync`` is optimized for performance.
+	* By default, ``rsync`` checks if the transfer of the data was successful.
 
 
-How to use Globus from my laptop
---------------------------------
+Using Globus from your local machine
+------------------------------------
 
 Many users would like to transfer their data from or to Summit through Globus,
 but their institute does not provide a globus infrastructure. In the following
