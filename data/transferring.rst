@@ -2,12 +2,8 @@
 Transferring Data
 ******************
 
-Data Transfer
-===============
-
-
 Using common terminal tools
----------------------------
+============================
 
 In general, when transferring data into or out of the OLCF from the command
 line, it's best to initiate the transfer from outside the OLCF. If moving many
@@ -107,7 +103,7 @@ See the manual pages for more information:
 
 
 Using Globus from your local machine
-------------------------------------
+=====================================
 
 Globus is most frequently used to facilitate data transfer between two
 institutional filesystems. However, it can also be used to facilitate data
