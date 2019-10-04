@@ -16,7 +16,7 @@ then transfer just the one archive file.
 
 ``scp`` and ``rsync`` are available for remote transfers.
 
-* ``scp`` 
+* ``scp`` - secure copy (remote file copy program)
 
 	* Sending a file to OLCF
 
@@ -39,7 +39,7 @@ then transfer just the one archive file.
    	   scp -r yourdirectory $USER@dtn.ccs.ornl.gov:/path/
 
 
-* ``rsync``
+* ``rsync`` - a fast, versatile, remote (and local) file-copying tool
 
 
 	* Sync a directory named ``mydir`` from your local system to the OLCF
@@ -51,9 +51,9 @@ then transfer just the one archive file.
 
 	where:
 
-  		* a is for archive mode\
-  		* v is for verbose mode\
-  		* z is for compressed mode\
+  		* ``a`` is for archive mode\
+  		* ``v`` is for verbose mode\
+  		* ``z`` is for compressed mode\
 
 
 	* Sync a directory from the OLCF to a local directory
@@ -92,12 +92,12 @@ then transfer just the one archive file.
 
            rsync -avz --dry-run mydir/ $USER@dtn.ccs.ornl.gov:/path/
 
-For more information execute:
+See the manual pages for more information:
 
 .. code::
 
-   man scp
-   man rsync
+    $ man scp
+    $ man rsync
 
 
 * Differences:
@@ -109,54 +109,53 @@ For more information execute:
 Using Globus from your local machine
 ------------------------------------
 
-Many users would like to transfer their data from or to Summit through Globus,
-but their institute does not provide a globus infrastructure. In the following
-instructions, you can learn how to create your own Globus endpoint. We don't
-know if or when globus will not support this approach anymore.
-
-  Follow these steps:
+Globus is most frequently used to facilitate data transfer between two
+institutional filesystems. However, it can also be used to facilitate data
+transfer involving an individual workstation or laptop. The following
+instructions demonstrate creating a local Globus endpoint, and initiating a
+transfer from it to the OLCF's Alpine GPFS filesystem.
 
 - Visit https://www.globus.org/globus-connect-personal and Install Globus
-  Connect Personal, it is available foe Windows, Mac, and Linux
+  Connect Personal, it is available for Windows, Mac, and Linux.
 
-- Selecting the appropriate link there are detailed instructions about the
-  installation, for example, for Mac:
-  https://docs.globus.org/how-to/globus-connect-personal-mac/
-- Remember the name of the endpoint that you declared, in this example, the
-  endpoint is *laptop_gmarkom*
+- Make note of the endpoint name given during setup. In this example, the
+  endpoint is *laptop_gmarkom*.
 
-- When the installation has finished, click on the globus icon and select *Web:
+- When the installation has finished, click on the Globus icon and select *Web:
   Transfer Files* as below
 
 .. image:: /images/globus_personal1.png
    :align: center
 
-- Globus will ask you to login, choose the *Sign in with Google*
+- Globus will ask you to login. If your institution does not have an
+  organizational login, you may choose to either *Sign in with Google* or *Sign
+  in with ORCiD iD*.
 
 .. image:: /images/globus_google.png
    :align: center
 
-- Now you are in the main globus web page, we select two panels (up right), we
-  declare left the endpoint of the laptop and on the right the *OLCF DTN* (the
-  order does not matter) and
+- In the main Globus web page, select the two-panel view, then set the source
+  and destination endpoints. (Left/Right order does not matter)
 
 .. image:: /images/globus_laptop_summit.png
    :align: center
 
-- Then navigate to the appropriate paths to select the files you want to tranfer
+- Next, navigate to the appropriate source and destination paths to select the
+  files you want to transfer. Click the "Start" button to begin the transfer.
 
 .. image:: /images/globus_laptop_transfer.png
    :align: center
 
-- Then an activity report will appear and you can click on it to see
-   the status. When the transfer is finished or failed, you will receive
-   an email
+- An activity report will appear, and you can click on it to see the status of
+  the transfer.
 
 .. image:: /images/globus_laptop_activity.png
    :align: center
 
 
--  You can see the status when you click to the activity report
+-  Various information about the transfer is shown in the activity report. You
+   will receive an email once the transfer is finished, including if it fails
+   for any reason.
 
 .. image:: /images/globus_laptop_activity_done.png
    :align: center
