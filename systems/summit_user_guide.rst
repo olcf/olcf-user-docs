@@ -1181,7 +1181,7 @@ Per-User Login Node Resource Limits
 
 Because the login nodes are resources shared by all Summit users, we utilize
 ``cgroups`` to help better ensure resource availability for all users of the
-shared nodes. By default each user is limited to **8 hardware-threads**, **8GB
+shared nodes. By default each user is limited to **16 hardware-threads**, **16GB
 of memory**, and **1 GPU**.  Please note that limits are set per user and not
 individual login sessions. All user processes on a node are contained within a
 single cgroup and share the cgroup's limits.
