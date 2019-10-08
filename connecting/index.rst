@@ -242,3 +242,13 @@ public key, or could be an actual security incident.  If the RSA fingerprint
 displayed by your SSH client does not match the OLCF-authorized RSA fingerprint
 (shown in the table above) for the machine you are accessing, do not continue
 authentication; instead, contact help@olcf.ornl.gov.
+
+
+*****************************
+Checking System Availability
+*****************************
+
+The `OLCF home page <https://www.olcf.ornl.gov/>`_ includes a current status
+listing and scheduled downtimes for our major compute and storage resources.
+This information also has a dedicated `Center Status
+<https://www.olcf.ornl.gov/for-users/center-status/>`_ page. 
