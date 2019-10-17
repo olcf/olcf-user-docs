@@ -144,39 +144,6 @@ will be sent an email listing the system(s) to which the user has
 requested and been given access. In addition to the system(s) listed in
 the email, all users also have access to the following systems:
 
-Home
-=====
-
-*home* is a general purpose system that can be used to log into other
-OLCF systems that are not directly accessible from outside the OLCF
-network. For example, running the ``screen`` or ``tmux`` utility is one
-common use of Home. Compiling, data transfer, or executing long-running
-or memory-intensive tasks should never be performed on Home.
-
-Connecting to the ``home`` Host
-----------------------------------
-
-Home can be accessed through ssh: ``ssh userid@home.ccs.ornl.gov``
-
-Acceptable Tasks
-----------------------------------
-
-The Home system should only be used to access systems within the OLCF
-network. The following are examples of appropriate uses of Home:
-
--  SSH
--  VI and other non-gui editors
--  Screen or other terminal multiplexers
-
-Unacceptable Tasks
-----------------------------------
-
-The following are examples of inappropriate uses of Home:
-
--  Compiling
--  Data transfer
--  Long-running or memory-intensive tasks
-
 Data Transfer Nodes
 ========================
 
