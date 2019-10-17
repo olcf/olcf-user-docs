@@ -139,10 +139,9 @@ connection to the real X server will be made from the local machine.
 Systems Available to All Projects
 **********************************
 
-After a user account has been approved and created, the requesting user
-will be sent an email listing the system(s) to which the user has
-requested and been given access. In addition to the system(s) listed in
-the email, all users also have access to the following systems:
+* :ref:`home-user-guide`
+* :ref:`dtn-user-guide`
+* :ref:`hpss-user-guide` (Subject to Export Control restrictions)
 
 *****************************
 OLCF System Hostnames
