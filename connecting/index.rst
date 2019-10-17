@@ -144,16 +144,6 @@ will be sent an email listing the system(s) to which the user has
 requested and been given access. In addition to the system(s) listed in
 the email, all users also have access to the following systems:
 
-Data Transfer Nodes
-========================
-
-The *Data Transfer Nodes* (DTNs) are hosts specifically designed to provide
-optimized data transfer between OLCF systems and systems outside of the OLCF
-network. These nodes perform well on local-area transfers as well as the
-wide-area data transfers for which they are tuned. The OLCF recommends that
-users use these nodes to improve transfer speed and reduce load on computational
-systems' login and service nodes.
-
 High Performance Storage System (HPSS)
 =========================================
 
