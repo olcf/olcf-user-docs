@@ -8,6 +8,7 @@ Data Transfer Nodes (DTNs)
 
 System Overview
 ===============
+
 The Data Transfer Nodes ("DTNs"; ``dtn.ccs.ornl.gov``) are hosts specifically
 designed to provide optimized data transfer between OLCF systems and systems
 outside of the OLCF network. These nodes perform well on local-area transfers
@@ -19,6 +20,7 @@ on computational systems’ login and service nodes.
 
 Access & Connecting
 ===================
+
 DTN access is automatically granted to all enabled OLCF users.
 
 To connect to the DTNs, SSH to ``dtn.ccs.ornl.gov``. For example:

@@ -8,6 +8,7 @@ Home
 
 System Overview
 ===============
+
 ``home.ccs.ornl.gov`` (Home) is a general purpose system that can be used to
 log into other OLCF systems that are not directly accessible from outside the
 OLCF network. For example, running the ``screen`` or ``tmux`` utility is one
@@ -19,6 +20,7 @@ memory-intensive tasks should never be performed on Home.
 
 Access & Connecting
 ===================
+
 Home access is automatically granted to all enabled OLCF users.
 
 To connect to Home, SSH to ``home.ccs.ornl.gov``. For example:
