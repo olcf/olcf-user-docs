@@ -144,14 +144,6 @@ will be sent an email listing the system(s) to which the user has
 requested and been given access. In addition to the system(s) listed in
 the email, all users also have access to the following systems:
 
-High Performance Storage System (HPSS)
-=========================================
-
-The *High Performance Storage System (HPSS)* provides tape storage for
-large amounts of data created on OLCF systems. The HPSS can be accessed
-from any OLCF system through the ``hsi`` utility. More information about
-using HPSS can be found on the :ref:`hpss` page.
-
 *****************************
 OLCF System Hostnames
 *****************************
