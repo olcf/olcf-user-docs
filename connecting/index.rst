@@ -139,61 +139,9 @@ connection to the real X server will be made from the local machine.
 Systems Available to All Projects
 **********************************
 
-After a user account has been approved and created, the requesting user
-will be sent an email listing the system(s) to which the user has
-requested and been given access. In addition to the system(s) listed in
-the email, all users also have access to the following systems:
-
-Home
-=====
-
-*home* is a general purpose system that can be used to log into other
-OLCF systems that are not directly accessible from outside the OLCF
-network. For example, running the ``screen`` or ``tmux`` utility is one
-common use of Home. Compiling, data transfer, or executing long-running
-or memory-intensive tasks should never be performed on Home.
-
-Connecting to the ``home`` Host
-----------------------------------
-
-Home can be accessed through ssh: ``ssh userid@home.ccs.ornl.gov``
-
-Acceptable Tasks
-----------------------------------
-
-The Home system should only be used to access systems within the OLCF
-network. The following are examples of appropriate uses of Home:
-
--  SSH
--  VI and other non-gui editors
--  Screen or other terminal multiplexers
-
-Unacceptable Tasks
-----------------------------------
-
-The following are examples of inappropriate uses of Home:
-
--  Compiling
--  Data transfer
--  Long-running or memory-intensive tasks
-
-Data Transfer Nodes
-========================
-
-The *Data Transfer Nodes* (DTNs) are hosts specifically designed to provide
-optimized data transfer between OLCF systems and systems outside of the OLCF
-network. These nodes perform well on local-area transfers as well as the
-wide-area data transfers for which they are tuned. The OLCF recommends that
-users use these nodes to improve transfer speed and reduce load on computational
-systems' login and service nodes.
-
-High Performance Storage System (HPSS)
-=========================================
-
-The *High Performance Storage System (HPSS)* provides tape storage for
-large amounts of data created on OLCF systems. The HPSS can be accessed
-from any OLCF system through the ``hsi`` utility. More information about
-using HPSS can be found on the :ref:`hpss` page.
+* :ref:`home-user-guide`
+* :ref:`dtn-user-guide`
+* :ref:`hpss-user-guide` (Subject to Export Control restrictions)
 
 *****************************
 OLCF System Hostnames

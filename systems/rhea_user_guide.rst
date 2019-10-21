@@ -2,8 +2,8 @@
 Rhea User Guide
 *********************
 
-Overview
-=========
+System Overview
+===============
 
 Rhea is a 521-node commodity-type linux cluster. The primary purpose of rhea is
 to provide a conduit for large-scale scientific discovery via pre/post
