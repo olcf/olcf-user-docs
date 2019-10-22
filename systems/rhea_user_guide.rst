@@ -1,3 +1,5 @@
+.. _rhea-user-guide:
+
 *********************
 Rhea User Guide
 *********************
@@ -1162,8 +1164,10 @@ please contact the OLCF User Assistance Center.
 
 --------------
 
-Analysis tools
-==============
+.. _visualization-tools:
+
+Visualization tools
+====================
 
 ParaView
 --------
