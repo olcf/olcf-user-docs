@@ -3,19 +3,31 @@
    completely to your liking, but it should at least contain the root `toctree`
    directive.
 
-Welcome to the OLCF User Documentation!
-===================================================
+OLCF User Documentation
+=======================
 
-Getting Started
-----------------
+This technical documentation is a reference for the user community to
+efficiently use OLCF compute and storage resources.
+
+Have an idea to improve this documentation? See :doc:`contributing/index`.
+
+Have a question? We're here to help -- help\@olcf.ornl.gov.
+
+Accounts
+---------
 
 .. toctree::
    :maxdepth: 2
 
-   getting_started/index
+   accounts/index
 
 Connecting
 -----------
+
+.. toctree::
+   :maxdepth: 2
+
+   connecting/index
 
 Systems
 ---------------
@@ -23,18 +35,15 @@ Systems
 .. toctree::
    :maxdepth: 2
 
-   systems/index.rst
+   systems/index
 
 Data
 ------
 
-* Policies
-* Transferring
-* Storage/Archiving
-* Filesystems
+.. toctree::
+   :maxdepth: 2
 
-Accounts
----------
+   data/index
 
 Software
 ---------
@@ -42,11 +51,10 @@ Software
 Training
 ---------
 
-* `Tutorials <https://www.olcf.ornl.gov/for-users/training/tutorials/>`_
-* `Archive <https://www.olcf.ornl.gov/for-users/training/training-archive/>`_
-* `Calendar <https://www.olcf.ornl.gov/for-users/training/training-calendar/>`_
-* `Hackathons <https://www.olcf.ornl.gov/for-users/training/gpu-hackathons/>`_
-* `OLCF Training Channel <https://vimeo.com/channels/olcftraining>`_
+.. toctree::
+   :maxdepth: 2
+
+   training/index
 
 How to contribute to this documentation
 -----------------------------------------
@@ -55,10 +63,3 @@ How to contribute to this documentation
    :maxdepth: 2
 
    contributing/index
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`

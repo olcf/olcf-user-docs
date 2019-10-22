@@ -1,4 +1,4 @@
-***************************** 
+*****************************
 Frequently Asked Questions
 *****************************
 
@@ -6,9 +6,8 @@ How do I apply for an account?
 =================================
 
 Detailed instructions for account application can be found in the
-`'Applying For a User
-Account' </for-users/getting-started/#applying-for-a-user-account>`__
-section of the `Getting Started </for-users/getting-started>`__ page.
+:ref:`applying-for-a-user-account`
+section of the :ref:`accounts-and-projects` page.
 
 What is the status of my application?
 =======================================
@@ -43,7 +42,8 @@ Similar to individual user accounts being granted resources by their
 association with a project, individual user accounts are granted the
 resources of a subproject upon association with the subproject.
 
-    **Note:** Subprojects do not inherit the accesses of their primary
+.. note::
+    Subprojects do not inherit the accesses of their primary
     projects, and users can be associated with a subproject without
     association with the primary project.
 
@@ -59,7 +59,8 @@ primary project users must be associated with a subproject(s). If you
 have any questions, or would like to request a subproject, please
 contact the OLCF Accounts Team at accounts@ccs.ornl.gov.
 
-    **Note:** Subprojects are created at the request of project PIs.
+.. note::
+    Subprojects are created at the request of project PIs.
 
 
 I no longer need my account. Who should I inform and what should I do with my OLCF issued RSA SecurID token?
@@ -86,10 +87,9 @@ statement <https://www.emc.com/collateral/legal/token-disposal-statement.pdf>`__
 Additional Resources
 =======================
 
-We're here to provide support at every step. We also provide a
-collection of `Tutorials </for-users/training/tutorials/>`__ for applied
-technical demonstrations, `System User
-Guides </for-users/system-user-guides/>`__, `Training
-Events </for-users/training/>`__, and the `User Assistance
-Center </for-users/user-assistance/>`__ to answer questions and resolve
-technical issues as they arise.
+We're here to provide support at every step. We also provide a collection of
+`Tutorials <https://www.olcf.ornl.gov/for-users/training/tutorials/>`__ for
+applied technical demonstrations, :ref:`system-user-guides`, `Training Events
+<https://www.olcf.ornl.gov/for-users/training/>`__, and the `User Assistance
+Center <https://www.olcf.ornl.gov/for-users/user-assistance/>`__ to answer
+questions and resolve technical issues as they arise.

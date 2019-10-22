@@ -1,19 +1,27 @@
+.. _summit-user-guide:
+
 ******************
 Summit User Guide
 ******************
+
+.. _summit-documentation-resources:
 
 Summit Documentation Resources
 ==============================
 
 In addition to this Summit User Guide, there are other sources of
 documentation, instruction, and tutorials that could be useful for
-Summit users. The `OLCF Training
+Summit users.
+
+The `OLCF Training
 Archive <https://www.olcf.ornl.gov/for-users/training/training-archive/>`__
 provides a list of previous training events, including multi-day Summit
 Workshops. Some examples of topics addressed during these workshops
 include using Summit's NVME burst buffers, CUDA-aware MPI, advanced
 networking and MPI, and multiple ways of programming multiple GPUs per
 node.
+
+.. _system-overview:
 
 System Overview
 ===============
@@ -25,25 +33,29 @@ for a wide range of traditional computational science applications. It
 is also one of the "smartest" computers in the world for deep learning
 applications with a mixed-precision capability in excess of 3 EF.
 
+.. _summit-nodes:
+
 Summit Nodes
 ------------
 
 The basic building block of Summit is the IBM Power System AC922 node.
 Each of the approximately 4,600 compute nodes on Summit contains two IBM
-POWER9 processors and six `NVIDIA Volta
-V100 </for-users/system-user-guides/summit/nvidia-v100-gpus/>`__
-accelerators and provides a theoretical double-precision capability of
+POWER9 processors and six `NVIDIA Volta V100`_ accelerators and provides
+a theoretical double-precision capability of
 approximately 40 TF. Each POWER9 processor is connected via dual NVLINK
 bricks, each capable of a 25GB/s transfer rate in each direction. Nodes
 contain 512 GB of DDR4 memory for use by the POWER9 processors and 96 GB
 of High Bandwidth Memory (HBM2) for use by the accelerators.
 Additionally, each node has 1.6TB of non-volatile memory that can be
-used as a burst buffer. The POWER9 processor is built around IBM’s SIMD
+used as a burst buffer.
+
+The POWER9 processor is built around IBM’s SIMD
 Multi-Core (SMC). The processor provides 22 SMCs with separate 32kB L1
 data and instruction caches. Pairs of SMCs share a 512kB L2 cache and a
 10MB L3 cache. SMCs support Simultaneous Multi-Threading (SMT) up to a
-level of 4, meaning each physical core supports up to 4 `hardware
-threads <#hardware-threads>`__. The POWER9 processors and V100
+level of 4, meaning each physical core supports up to 4 :ref:`hardware-threads`.
+
+The POWER9 processors and V100
 accelerators are cooled with cold plate technology. The remaining
 components are cooled through more traditional methods, although exhaust
 is passed through a back-of-cabinet heat exchanger prior to being
@@ -56,7 +68,7 @@ Node Types
 
 On Summit, there are three major types of nodes you will encounter:
 Login, Launch, and Compute. While all of these are similar in terms of
-`hardware <#summit-nodes>`__, they differ considerably in their intended
+hardware (see: :ref:`summit-nodes`), they differ considerably in their intended
 use.
 
 +-------------+----------------------------------------------------------------------------------+
@@ -89,7 +101,8 @@ utilities such as ``autoconf`` and ``cmake``) will have access to the
 same type of hardware that is on compute nodes and should not require
 intervention that might be required on non-homogeneous systems.
 
-    **NOTE:** Login nodes have (2) 16-core Power9 CPUs and (4) V100 GPUs.
+.. note::
+    Login nodes have (2) 16-core Power9 CPUs and (4) V100 GPUs.
     Compute nodes have (2) 22-core Power9 CPUs and (6) V100 GPUs.
 
 System Interconnect
@@ -114,7 +127,9 @@ Storage System (HPSS) for user and project archival storage.
 Operating System
 ----------------
 
-Summit is running Red Hat Enterprise Linux (RHEL) version 7.5.
+Summit is running Red Hat Enterprise Linux (RHEL) version 7.6.
+
+.. _hardware-threads:
 
 Hardware Threads
 ----------------
@@ -130,6 +145,9 @@ in SMT1 mode the four slices work together to execute the task/thread
 assigned to the physical core. Regardless of the SMT mode used, the four
 slices share the physical core’s L1 instruction & data caches.
 https://vimeo.com/283756938
+
+.. _nvidia-v100-gpus:
+.. _NVIDIA Volta V100:
 
 NVIDIA V100 GPUs
 ================
@@ -175,7 +193,8 @@ interconnect. Each link has a peak bandwidth of 25 GB/s (in each
 direction), and since there are 2 links between processors, data can be
 transferred from GPU-to-GPU and CPU-to-GPU at a peak rate of 50 GB/s.
 
-    **NOTE:** The 50-GB/s peak bandwidth stated above is for data transfers
+.. note::
+    The 50-GB/s peak bandwidth stated above is for data transfers
     in a single direction. However, this bandwidth can be achieved in both
     directions simultaneously, giving a peak "bi-directional" bandwidth of
     100 GB/s between processors.
@@ -253,7 +272,7 @@ Pascal).
    :width: 65.0%
    :align: center
 
-  For more information, please see the following document from NVIDIA:
+For more information, please see the following document from NVIDIA:
 https://docs.nvidia.com/deploy/pdf/CUDA_Multi_Process_Service_Overview.pdf
 
 Unified Memory
@@ -271,7 +290,7 @@ eliminates the need for explicit data transfers.
    :width: 60.0%
    :align: center
 
-  On Pascal-generation GPUs and later, this automatic migration is
+On Pascal-generation GPUs and later, this automatic migration is
 enhanced with hardware support. A page migration engine enables GPU page
 faulting, which allows the desired pages to be migrated to the GPU "on
 demand" instead of the entire "managed" allocation. In addition, 49-bit
@@ -280,11 +299,14 @@ full system memory size. The combination of GPU page faulting and larger
 virtual addressing allows programs to oversubscribe the system memory,
 so very large data sets can be processed. In addition, new CUDA API
 functions introduced in CUDA8 allow users to fine tune the use of
-unified memory. Unified memory is further improved on Volta GPUs through
+unified memory.
+
+Unified memory is further improved on Volta GPUs through
 the use of access counters that can be used to automatically tune
-unified memory by determining where a page is most often accessed. For
-more information, please see the following section of NVIDIA's CUDA
-Programming Guide:
+unified memory by determining where a page is most often accessed.
+
+For more information, please see the following section of NVIDIA's
+CUDA Programming Guide:
 http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#um-unified-memory-programming-hd
 
 Independent Thread Scheduling
@@ -395,561 +417,292 @@ following (outside) links.
 * `NVIDIA Volta Architecture White Paper <http://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf>`_
 * `NVIDIA PARALLEL FORALL blog article <https://devblogs.nvidia.com/parallelforall/inside-volta/>`_
 
+.. _connecting:
+
 Connecting
 ==========
 
-FIXME
+To connect to Summit, ssh to summit.olcf.ornl.gov. For example:
 
-Data Storage & Transfers
-========================
+::
 
-Storage Overview
-----------------
+    ssh username@summit.olcf.ornl.gov
 
-OLCF users have many options for data storage. Each user has multiple
-user-affiliated storage spaces, and each project has multiple
-project-affiliated storage spaces where data can be shared for
-collaboration. Below we give an overview and explain where each storage
-area is mounted.
+For more information on connecting to OLCF resources, see :ref:`connecting-to-olcf`.
 
-Alpine IBM Spectrum Scale Filesystem
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Data and Storage
+==================
 
-Summit mounts a POSIX-based IBM Spectrum Scale parallel filesystem
-called Alpine. Alpine's maximum capacity is 250 PB. It is consisted of
-77 IBM Elastic Storage Server (ESS) GL4 nodes running IBM Spectrum Scale
-5.x which are called Network Shared Disk (NSD) servers. Each IBM ESS GL4
-node, is a scalable storage unit (SSU), constituted by two dual-socket
-IBM POWER9 storage servers, and a 4X EDR InfiniBand network for up to
-100Gbit/sec of networking bandwidth. The maximum performance of the
-final production system will be about 2.5 TB/s for sequential I/O and
-2.2 TB/s for random I/O under FPP mode, which means each process, writes
-its own file. Metada operations are improved with around to minimum
-50,000 file access per sec and aggregated up to 2.6 million accesses of
-32KB small files.
+For more information about center-wide file systems and data archiving available
+on Summit, please refer to the pages on :ref:`data-storage-and-transfers`.
 
-.. figure:: /images/summit_nds_final.png
-   :class: normal aligncenter wp-image-5726545 size-full
-   :width: 779px
-   :height: 462px
+.. _burst-buffer:
+
+Burst Buffer
+=============
+
+NVMe (XFS)
+----------
+
+Each compute node on Summit has a 1.6TB \ **N**\ on-\ **V**\ olatile **Me**\
+mory (NVMe) storage device, colloquially known as a "Burst Buffer" with
+theoretical performance peak of 2.1 GB/s for writing and 5.5 GB/s for reading.
+100GB of each NVMe is reserved for NFS cache to help speed access to common
+libraries. When calculating maximum usable storage size, this cache and
+formatting overhead should be considered; We recommend a maximum storage of
+1.4TB. The NVMes could be used to reduce the time that applications wait for
+I/O. Using an SSD drive per compute node, the burst buffer will be used to
+transfer data to or from the drive before the application reads a file or
+after it writes a file.  The result will be that the application benefits from
+native SSD performance for a portion of its I/O requests. Users are not
+required to use the NVMes.  Data can also be written directly to the parallel
+filesystem.
+
+.. figure:: /images/nvme_arch.jpg
    :align: center
 
-   Figure 1. An example of the NDS servers on Summit
+   The NVMes on Summitdev are local to each node.
 
-Performance under not ideal workload
-""""""""""""""""""""""""""""""""""""
+Current NVMe Usage
+-------------------
 
-The I/O performance can be lower than the optimal one when you save one
-single shared file with non-optimal I/O pattern. Moreover, the previous
-performance results are achieved under an ideal system, the system is
-dedicated, and a specific number of compute nodes are used. The file
-system is shared across many users; the I/O performance can vary because
-other users that perform heavy I/O as also executing large scale jobs
-and stress the interconnection network. Finally, if the I/O pattern is
-not aligned, then the I/O performance can be significantly lower than
-the ideal one. Similar, related to the number of the concurrent users,
-is applied for the metadata operations, they can be lower than the
-expected performance.
-
-Tips
-""""
-
--  For best performance on the IBM Spectrum Scale filesystem, use large
-   page aligned I/O and asynchronous reads and writes. The filesystem
-   blocksize is 16MB, the minimum fragment size is 16K so when a file
-   under 16K is stored, it will still use 16K of the disk. Writing files
-   of 16 MB or larger, will achieve better performance. All files are
-   striped across LUNs which are distributed across all IO servers.
--  If your application occupies up to two compute nodes and it requires
-   a significant number of I/O operations, you could try to add the
-   following flag in your job script file and investigate if the total
-   execution time is decreased. This flag could cause worse results, it
-   depends on the application.
-
-``#BSUB -alloc_flags maximizegpfs``
-
-Major difference between Titan (Lustre) and Summit (IBM Spectrum Scale)
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-The file systems have many technical differences, but we will mention
-only what a user needs to be familiar with:
-
--  On Summit, there is no concept of striping from the user point of
-   view, the user uses the Alpine storage without the need to declare
-   the striping for files/directories. The GPFS will handle the
-   workload, the file system was tuned during the installation.
-
-Storage Areas
----------------
-
-The storage area to use in any given situation depends upon the activity
-you wish to carry out. Each user has a User Home area on a Network File
-System (NFS) and a User Archive area on the archival High Performance
-Storage System (HPSS). These user storage areas are intended to house
-user-specific files. Each project has a Project Home area on NFS,
-multiple Project Work areas on Lustre and Spectrum Scale, and a Project
-Archive area on HPSS. These project storage areas are intended to house
-project-centric files. We have defined several areas as listed below by
-function:
-
-*  **User Home:** Long-term data for routine access that is unrelated to
-   a project. It is mounted on compute nodes of Summit as read only
-*  **User Archive:** Long-term data for archival access that is
-   unrelated to a project.
-*  **Project Home:** Long-term project data for routine access that's
-   shared with other project members. It is mounted on compute nodes of
-   Summit as read only
-*  **Member Work:** Short-term user data for fast, batch-job access that
-   is not shared with other project members. There are versions of this
-   on both the Atlas Lustre filesystem and the Alpine Spectrum Scale
-   filesystem.
-*  **Project Work:** Short-term project data for fast, batch-job access
-   that's shared with other project members. There are versions of this
-   on both the Atlas Lustre filesystem and the Alpine Spectrum Scale
-   filesystem.
-*  **World Work:** Short-term project data for fast, batch-job access
-   that's shared with OLCF users outside your project. There are
-   versions of this on both the Atlas Lustre filesystem and the Alpine
-   Spectrum Scale filesystem.
-*  **Project Archive:** Long-term project data for archival access
-   that's shared with other project members.
-
-Storage policy
------------------
-
-A brief description of each area and basic guidelines to follow are
-provided in the table below:
-
-+---------------------+-----------------------------------------------+------------------+---------------+-----------+-----------+---------+----------------------------+
-| *Name*              | Path                                          | Type             | Permissions   | Backups   | Purged    | Quota   | Mounted on Compute nodes   |
-+=====================+===============================================+==================+===============+===========+===========+=========+============================+
-| *User Home*         | ``$HOME``                                     | NFS              | User Set      | yes       | no        | 50GB    | Read-only                  |
-+---------------------+-----------------------------------------------+------------------+---------------+-----------+-----------+---------+----------------------------+
-| *User Archive*      | ``/home/$USER``                               | HPSS             | User Set      | no        | no        | 2TB     | No                         |
-+---------------------+-----------------------------------------------+------------------+---------------+-----------+-----------+---------+----------------------------+
-| *Project Home*      | ``/ccs/proj/[projid]``                        | NFS              | 770           | yes       | no        | 50GB    | Read-only                  |
-+---------------------+-----------------------------------------------+------------------+---------------+-----------+-----------+---------+----------------------------+
-| *Member Work*       | ``/gpfs/alpine/scratch/[userid]/[projid]/``   | Spectrum Scale   | 700           | no        | 90 days   | 50TB    | Yes                        |
-+---------------------+-----------------------------------------------+------------------+---------------+-----------+-----------+---------+----------------------------+
-| *Project Work*      | ``/gpfs/alpine/proj-shared/[projid]``         | Spectrum Scale   | 770           | no        | 90 days   | 50TB    | Yes                        |
-+---------------------+-----------------------------------------------+------------------+---------------+-----------+-----------+---------+----------------------------+
-| *World Work*        | ``/gpfs/alpine/world-shared/[projid]``        | Spectrum Scale   | 775           | no        | 90 days   | 50TB    | Yes                        |
-+---------------------+-----------------------------------------------+------------------+---------------+-----------+-----------+---------+----------------------------+
-| *Project Archive*   | ``/proj/[projid]``                            | HPSS             | 770           | no        | no        | 100TB   | No                         |
-+---------------------+-----------------------------------------------+------------------+---------------+-----------+-----------+---------+----------------------------+
-
-For storage policy on TITAN, click here
-
-On Summit paths to the various project-centric work storage areas are
-simplified by the use of environment variables that point to the proper
-directory on a per-user basis:
-
--  Member Work Directory: ``$MEMBERWORK/[projid]``
--  Project Work Directory: ``$PROJWORK/[projid]``
--  World Work Directory: ``$WORLDWORK/[projid]``
-
-These environment variables are not set on the data transfer nodes.
-
-Information
-^^^^^^^^^^^
-
--  Although there are no hard quota limits, an upper storage limit
-   should be reported in the project request. The available space of a
-   project can be modified upon request.
--  The user will be informed when the project reaches 90% of the
-   requested storage utilization.
-
-Purge
-^^^^^
-
-To keep the Lustre and Spectrum Scale file systems exceptionally
-performant, untouched files in the project and user areas are purged at
-the intervals shown in the table above. Please make sure that valuable
-data is moved off of these systems regularly. See `HPSS Best
-Practices <./#hpss-best-practices>`__ for information about using the
-HSI and HTAR utilities to archive data on HPSS.
-
-Retention
-^^^^^^^^^
-
-At the completion of a project or at the end of a member's association
-with the project, data will be available for 90 days, except in areas
-that are purged, in that case, the data will be retained according to
-the purge policy. After 90 days, the data will not be available but not
-purged for another 60 days, where the data will be removed if it not
-requested otherwise.
-
-Other OLCF Storage Systems
-----------------------------
-
-The High Performance Storage System (HPSS) at the OLCF provides
-longer-term storage for the large amounts of data created on the OLCF
-compute systems. The HPSS is accessible from all OLCF Filesystems
-through utilities called HSI and HTAR. For more information on using HSI
-or HTAR, see the `HPSS Best Practices <./#hpss-best-practices>`__
-documentation. OLCF also has a Network File System, referred to as NFS,
-and Lustre filesystems called Atlas. Summit does not mount Lustre.
-However, during the early use of Summit, users may need to use Lustre in
-a multi-stage process with HPSS for larger data transfer with Alpine. To
-learn more about this please see `Data Transfer and
-Summit <./#data-transfer-and-summit>`__ section below. The following
-shows the availability of each of the filesystems on primary OLCF
-clusters and supercomputers.
-
-+------------------------------------+------------+-------------+------------+-----------------------+------------+------------+
-| Area                               | Summit     | Summitdev   | Titan      | Data Transfer Nodes   | Rhea       | Eos        |
-+====================================+============+=============+============+=======================+============+============+
-| Atlas Lustre Filesystem            | no         | no          | yes        | yes                   | yes        | yes        |
-+------------------------------------+------------+-------------+------------+-----------------------+------------+------------+
-| Alpine Spectrum Scale Filesystem   | yes        | yes         | no         | yes                   | no         | no         |
-+------------------------------------+------------+-------------+------------+-----------------------+------------+------------+
-| NFS Network Filesystem             | yes        | yes         | yes        | yes                   | yes        | yes        |
-+------------------------------------+------------+-------------+------------+-----------------------+------------+------------+
-| HPSS                               | HSI/Htar   | HSI/Htar    | HSI/Htar   | HSI/Htar              | HSI/Htar   | HSI/Htar   |
-+------------------------------------+------------+-------------+------------+-----------------------+------------+------------+
-
-Guidelines
------------
-
-A brief description of each area and basic guidelines to follow are
-provided in the table below:
-
-+-------------------+-------------------+---------------------------------------------+----------------+-------------+---------+------------+-------+
-| *System*          | *Name*            | Path                                        | Type           | Permissions | Backups | Purged     | Quota |
-+===================+===================+=============================================+================+=============+=========+============+=======+
-| *User Home*       | *User Home*       | ``$HOME``                                   | NFS            | User Set    | yes     | no         | 50GB  |
-+-------------------+-------------------+---------------------------------------------+----------------+-------------+---------+------------+-------+
-| *User Archive*    | *User Archive*    | ``/home/$USER``                             | HPSS           | User Set    | no      | no         | 2TB   |
-+-------------------+-------------------+---------------------------------------------+----------------+-------------+---------+------------+-------+
-| *Project Home*    | *Project Home*    | ``/ccs/proj/[projid]``                      | NFS            | 770         | yes     | no         | 50GB  |
-+-------------------+-------------------+---------------------------------------------+----------------+-------------+---------+------------+-------+
-| **Alpine**        | *Member Work*     | ``/gpfs/alpine/scratch/[userid]/[projid]/`` | Spectrum Scale | 700         | no      | 90 days    | 50TB  |
-+                   +-------------------+---------------------------------------------+----------------+-------------+---------+------------+-------+
-|                   | *Project Work*    | ``/gpfs/alpine/proj-shared/[projid]/``      | Spectrum Scale | 770         | no      | 90 days    | 50TB  |
-+                   +-------------------+---------------------------------------------+----------------+-------------+---------+------------+-------+
-|                   | *World Work*      | ``/gpfs/alpine/world-shared/[projid]/``     | Spectrum Scale | 775         | no      | 90 days    | 50TB  |
-+-------------------+-------------------+---------------------------------------------+----------------+-------------+---------+------------+-------+
-| **Atlas**         | *Member Work*     | ``/lustre/atlas/scratch/[userid]/[projid]`` | Lustre         | 700         | no      | 14 days    | 10TB  |
-+                   +-------------------+---------------------------------------------+----------------+-------------+---------+------------+-------+
-|                   | *Project Work*    | ``/lustre/atlas/proj-shared/[projid]``      | Lustre         | 770         | no      | 90 days    | 100TB |
-+                   +-------------------+---------------------------------------------+----------------+-------------+---------+------------+-------+
-|                   | *World Work*      | ``/lustre/atlas/world-shared/[projid]``     | Lustre         | 775         | no      | 90 days    | 10TB  |
-+-------------------+-------------------+---------------------------------------------+----------------+-------------+---------+------------+-------+
-| *Project Archive* | *Project Archive* | ``/proj/[projid]``                          | HPSS           | 770         | no      | no         | 100TB |
-+-------------------+-------------------+---------------------------------------------+----------------+-------------+---------+------------+-------+
+Tools for using the burst buffers are still under development.  Currently, the
+user will have access to a writeable directory on each node's NVMe and then
+explicitly move data to and from the NVMes with posix commands during a job.
+This mode of usage only supports writing file-per-process or file-per-node.
+It does not support automatic "n to 1" file writing, writing from multiple nodes
+to a single file.  After a job completes the NVMes are trimmed, a process
+that irreversibly deletes data from the devices, so all desired data from the
+NVMes will need to be copied back to the parallel filesystem before the job
+ends. This largely manual mode of usage will not be the recommended way to use
+the burst buffer for most applications because tools are actively being
+developed to automate and improve the NVMe transfer and data management process.
+Here are the basic steps for using the BurstBuffers in their current limited
+mode of usage:
 
 
-Backups for Files on NFS
-^^^^^^^^^^^^^^^^^^^^^^^^
+#. Modify your application to write to /mnt/bb/$USER, a directory that will be
+   created on each NVMe.
 
-Online backups are performed at regular intervals for your files in
-project home and user home. Hourly backups for the past 24 hours, daily
-backups for the last 7 days, and 1 weekly backup are available. The
-backup directories are named ``hourly.*``, ``daily.* ``, and
-``weekly.* `` where ``*`` is the date/time stamp of the backup. For
-example, ``hourly.2016-12-01-0905`` is an hourly backup made on December
-1, 2016 at 9:05 AM. The backups are accessed via the ``.snapshot``
-subdirectory. You may list your available hourly/daily/weekly backups by
-doing “\ ``ls .snapshot``\ ”. The ``.snapshot`` feature is available in
-any subdirectory of your home directory and will show the online backup
-of that subdirectory. In other words, you don’t have to start at
-``/ccs/home/$USER`` and navigate the full directory structure; if you’re
-in a /ccs/home subdirectory several “levels” deep, an
-“\ ``ls .snapshot``\ ” will access the available backups of that
-subdirectory. To retrieve a backup, simply copy it into your desired
-destination with the ``cp`` command.
+#. Modify either your application or your job submission script to copy the
+   desired data from /mnt/bb/$USER back to the parallel filesystem before the
+   job ends.
 
-Retention
-^^^^^^^^^
+#. Modify your job submission script to include the ``-alloc_flags NVME``  bsub
+   option. Then on each reserved Burst Buffer node will be available a directory
+   called /mnt/bb/$USER.
 
-At the completion of a project or at the end of a member's association
-with the project, data will be retained for 90 days, except in areas
-that are purged, in that case the data will be retained according the
-purge policy. A more detailed description of each storage area is given
-below. [ls\_content\_block id="26702"]
+#. Submit your bash script or run the application.
 
-User-Centric Data Storage
--------------------------
+#. Assemble the resulting data as needed.
 
-Users are provided with several storage areas, each of which serve
-different purposes. These areas are intended for storage of user data,
-not for storage of project data.
+Interactive Jobs Using the NVMe
+--------------------------------
 
-The following table summarizes user-centric storage areas available on
-OLCF resources and lists relevant polices.
-
-**User-Centric Storage Areas**
-
-+--------------+-----------------+------+-----------------+-------------+---------+--------+-----------+
-| Area         | Path            | Type | Permissions     | Quota       | Backups | Purged | Retention |
-+==============+=================+======+=================+=============+=========+========+===========+
-| User Home    | ``$HOME``       | NFS  | User-controlled | 50 GB       | Yes     | No     | 90 days   |
-+--------------+-----------------+------+-----------------+-------------+---------+--------+-----------+
-| User Archive | ``/home/$USER`` | HPSS | User-controlled | 2 TB [#f1]_ | **No**  | No     | 90 days   |
-+--------------+-----------------+------+-----------------+-------------+---------+--------+-----------+
-
-.. rubric:: footnotes
-
-.. [#f1] In addition, there is a quota/limit of 2,000 files on this directory.
-
-User Home Directories (NFS)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Each user is provided a home directory to store frequently used items
-such as source code, binaries, and scripts.
-
-User Home Path
-""""""""""""""
-
-Home directories are located in a Network File System (NFS) that is
-accessible from all OLCF resources as ``/ccs/home/$USER``.
-
-The environment variable ``$HOME`` will always point to your current
-home directory. It is recommended, where possible, that you use this
-variable to reference your home directory. In cases in which using
-``$HOME`` is not feasible, it is recommended that you use
-``/ccs/home/$USER``.
-
-Users should note that since this is an NFS-mounted filesystem, its
-performance will not be as high as other filesystems.
-
-User Home Quotas
-""""""""""""""""
-
-Quotas are enforced on user home directories. To request an increased
-quota, contact the OLCF User Assistance Center. To view your current
-quota and usage, use the ``quota`` command:
+The NVMe can be setup for test usage within an interactive job as follows:
 
 .. code::
 
-    $ quota -Qs
-    Disk quotas for user usrid (uid 12345):
-         Filesystem  blocks   quota   limit   grace   files   quota   limit   grace
-    nccsfiler1a.ccs.ornl.gov:/vol/home
-                      4858M   5000M   5000M           29379   4295m   4295m
+    bsub -W 30 -nnodes 1 -alloc_flags "NVME" -P project123 -Is bash
 
-User Home Backups
-"""""""""""""""""
+The ``-alloc_flags NVME`` option will create a directory called /mnt/bb/$USER on
+each requested node's NVMe. The ``/mnt/bb/$USER`` directories will be writeable
+and readable until the interactive job ends. Outside of a job ``/mnt/bb/`` will
+be empty and you will not be able to write to it.
 
-If you accidentally delete files from your home directory, you may be
-able to retrieve them. Online backups are performed at regular
-intervals. Hourly backups for the past 24 hours, daily backups for the
-last 7 days, and 1 weekly backup are available. It is possible that the
-deleted files are available in one of those backups. The backup
-directories are named ``hourly.*``, ``daily.* ``, and ``weekly.* ``
-where ``*`` is the date/time stamp of the backup. For example,
-``hourly.2016-12-01-0905`` is an hourly backup made on December 1, 2016
-at 9:05 AM.
+NVMe Usage Example
+-------------------
 
-The backups are accessed via the ``.snapshot`` subdirectory. Note that
-if you do an ``ls`` (even with the ``-a`` option) of any directory you
-won’t see a ``.snapshot`` subdirectory, but you’ll be able to do
-“\ ``ls .snapshot``\ ” nonetheless. This will show you the
-hourly/daily/weekly backups available. The ``.snapshot`` feature is
-available in any subdirectory of your home directory and will show the
-online backup of that subdirectory. In other words, you don’t have to
-start at ``/ccs/home/$USER`` and navigate the full directory structure;
-if you’re in a /ccs/home subdirectory several “levels” deep, an
-“\ ``ls .snapshot``\ ” will access the available backups of that
-subdirectory.
+The following example illustrates how to use the burst buffers (NVMes) by
+default on Summit. This example uses a hello_world bash script, called
+test_nvme.sh, and its submission script, check_nvme.lsf. It is assumed that the
+files are saved in the user's GPFS scratch area,
+/gpfs/alpine/scratch/$USER/projid, and that the user is operating from there as
+well. Do not forget that for all the commands on NVMe, it is required to use
+jsrun. **Job submssion script: check_nvme.lsf.** This will submit a job to run
+on one node.
 
-To retrieve a backup, simply copy it into your desired destination with
-the ``cp`` command.
+.. code::
 
-User Home Permissions
-"""""""""""""""""""""
+    #!/bin/bash
+    #BSUB -P project123
+    #BSUB -J name_test
+    #BSUB -o nvme_test.o%J
+    #BSUB -W 2
+    #BSUB -nnodes 1
+    #BSUB -alloc_flags NVME
 
-The default permissions for user home directories are ``0750`` (full
-access to the user, read and execute for the group). Users have the
-ability to change permissions on their home directories, although it is
-recommended that permissions be set to as restrictive as possible
-(without interfering with your work).
+    #Declare your project in the variable
+    projid=xxxxx
+    cd /gpfs/alpine/scratch/$USER/$projid
 
-User Website Directory
-""""""""""""""""""""""
+   #Save the hostname of the compute node in a file
+   jsrun -n 1 echo $HOSTNAME > test_file
 
-Users interested in sharing files publicly via the World Wide Web can
-request a user website directory be created for their account. User
-website directories (``~/www``) have a 5GB storage quota and allow
-access to files at ``http://users.nccs.gov/~user`` (where ``user`` is
-your userid). If you are interested in having a user website directory
-created, please contact the User Assistance Center at
-help@olcf.ornl.gov.
+   #Check what files are saved on the NVMe, always use jsrun to access the NVMe devices
+   jsrun -n 1 ls -l /mnt/bb/$USER/
 
-User Archive Directories (HPSS)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   #Copy the test_file in your NVMe
+   jsrun -n 1 cp test_file /mnt/bb/$USER/
 
-The High Performance Storage System (HPSS) at the OLCF provides
-longer-term storage for the large amounts of data created on the OLCF
-compute systems. The mass storage facility consists of tape and disk
-storage components, servers, and the HPSS software. After data is
-uploaded, it persists on disk for some period of time. The length of its
-life on disk is determined by how full the disk caches become. When data
-is migrated to tape, it is done so in a first-in, first-out fashion.
+   #Delete the test_file from your local space
+   rm test_file
 
-User archive areas on HPSS are intended for storage of data not
-immediately needed in either User Home directories (NFS) or User Work
-directories (Lustre®). User Archive areas also serve as a location for
-users to store backup copies of user files. User Archive directories
-should not be used to store project-related data. Rather, Project
-Archive directories should be used for project data.
+   #Check again what the NVMe folder contains
+   jsrun -n 1 ls -l /mnt/bb/$USER/
 
-User archive directories are located at ``/home/$USER``.
+   #Output of the test_file contents
+   jsrun -n 1 cat /mnt/bb/$USER/test_file
 
-User Archive Access
-"""""""""""""""""""
+   #Copy the file from the NVMe to your local space
+   jsrun -n 1 cp /mnt/bb/$USER/test_file .
 
-Each OLCF user receives an HPSS account automatically. Users can
-transfer data to HPSS from any OLCF system using the HSI or HTAR
-utilities. For more information on using HSI or HTAR, see the `HPSS Best
-Practices <./#hpss-best-practices>`__ section.
+   #Check the file locally
+   ls -l test_file
 
-User Archive Accounting
-"""""""""""""""""""""""
+To run this example: ``bsub ./check_nvme.lsf``.   We could include all the
+commands in a script and call this file as jsrun argument in order to avoid
+changing numbers of processes for all the jsrun calls. You can see in the table
+below the differences of a submission script for executing an application on
+GPFS and NVMe. In this case we copy the binary and the input file on NVMe, but
+this depends on the application as it is not always necessary, we can execute
+the binary on the GPFS and write/read the data from NVMe if it is supported by
+the application.
 
-Each file and directory on HPSS is associated with an HPSS storage
-allocation. For information on HPSS storage allocations, please visit
-the `HPSS Archive Accounting <./#hpss-archive-accounting>`__ section.
-
-For information on usage and best practices for HPSS, please see the
-section `HPSS - High Performance Storage
-System <./#hpss-high-performance-storage-system>`__ below.
-
---------------
+.. role:: raw-html(raw)
+    :format: html
 
 
-Project-Centric Data Storage
-----------------------------
 
-Project directories provide members of a project with a common place to
-store code, data, and other files related to their project.
++----------------------------------------+------------------------------------------------+
+| *Using GPFS*          		 | *Using NVMe*         			  |
++----------------------------------------+------------------------------------------------+
+|               	``#!/bin/bash``  | ``#!/bin/bash`` 	     			  |
++----------------------------------------+------------------------------------------------+
+| 	 	       ``#BSUB -P xxx``  | ``#BSUB -P xxx``  		   	          |
++----------------------------------------+------------------------------------------------+
+|	  	  ``#BSUB -J NAS-BTIO``  | ``#BSUB -J NAS-BTIO``  			  |
++----------------------------------------+--------------+---------------------------------+
+|   	       ``#BSUB -o nasbtio.o%J``  | ``#BSUB -o nasbtio.o%J`` 	                  |
++----------------------------------------+---------------+--------------------------------+
+|              ``#BSUB -e nasbtio.e%J``  | ``#BSUB -e nasbtio.e%J``   			  |
++----------------------------------------+------------------------------------------------+
+|			``#BSUB -W 10``  | ``#BSUB -W 10``    		 	          |
++----------------------------------------+------------------------------------------------+
+|	     ``#BSUB -nnodes 1``         | ``#BSUB -nnodes 1``  	 		  |
++----------------------------------------+------------------------------------------------+
+| 		    			 | ``#BSUB -alloc_flags nvme`` 			  |
+|					 +------------------------------------------------+
+| 	            			 | ``export BBPATH=/mnt/bb/$USER/``		  |
+|					 +------------------------------------------------+
+| 		    			 | ``jsrun -n 1 cp btio ${BBPATH}``		  |
+|					 +------------------------------------------------+
+| 		    			 | ``jsrun -n 1 cp input* ${BBPATH}``		  |
+|					 +------------------------------------------------+
+| ``jsrun -n 1 -a 16 -c 16 -r 1 ./btio`` | ``jsrun -n 1 -a 16 -c 16 -r 1 ${BBPATH}/btio`` |
+|					 +------------------------------------------------+
+| ``ls -l``		`		 | ``jsrun -n 1 ls -l ${BBPATH}/``		  |
+|					 +------------------------------------------------+
+|					 | ``jsrun -n 1 cp ${BBPATH}/* .``		  |
++----------------------------------------+------------------------------------------------+
 
-Project Home Directories (NFS)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+When a user occupies more than one compute node, then is using more NVMe and the
+I/O can scale linear. For example in the following plot you can observe the
+scalability of the IOR benchmark on 2048 compute nodes on Summit where the write
+performance achieves 4TB/s and the read 11,3 TB/s
 
-+------------------+--------------------------+--------+---------------+-----------+----------+---------+
-| *Name*           | Path                     | Type   | Permissions   | Backups   | Purged   | Quota   |
-+==================+==========================+========+===============+===========+==========+=========+
-| *Project Home*   | ``/ccs/proj/[projid]``   | NFS    | 770           | yes       | no       | 50GB    |
-+------------------+--------------------------+--------+---------------+-----------+----------+---------+
 
-Projects are provided with a Project Home storage area in the
-NFS-mounted filesystem. This area is intended for storage of data, code,
-and other files that are of interest to all members of a project. Since
-Project Home is an NFS-mounted filesystem, its performance will not be
-as high as other filesystems.
+.. image:: /images/nvme_ior_summit.png
+   :align: center
 
-Project Home Path
-"""""""""""""""""
+Remember that by default NVMe support one file per MPI process up to one file
+per compute node. If users desire a single file as output from data staged on
+the NMVe they will need to construct it.  Tools to save automatically checkpoint
+files from NVMe to GPFS as also methods that allow automatic n to 1 file writing
+with NVMe staging are under development.   Tutorials about NVME:   Burst Buffer
+on Summit (`slides
+<https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_BB_markomanolis.pdf>`__,
+`video <https://vimeo.com/306890779>`__) Summit Burst Buffer Libraries (`slides
+<https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_BB_zimmer.pdf>`__,
+`video <https://vimeo.com/306891012>`__). Below is presented the Spectral
+library.
 
-Project Home area is accessible at ``/ccs/proj/abc123`` (where
-``abc123`` is your project ID).
+.. _spectral-library:
 
-Project Home Quotas
-"""""""""""""""""""
+Spectral Library
+----------------
 
-To check your project's current usage, run ``df -h /ccs/proj/abc123``
-(where ``abc123`` is your project ID). Quotas are enforced on project
-home directories. The current limit is shown in the table above.
+Spectral is a portable and transparent middleware library to enable use of the
+node-local burst buffers for accelerated application output on Summit. It is
+used to transfer files from node-local NVMe back to the parallel GPFS file
+system without the need of the user to interact during the job execution.
+Spectral runs on the isolated core of each reserved node, so it does not occupy
+resources and based on some parameters the user could define which folder to be
+copied to the GPFS. In order to use Spectral, the user has to do the following
+steps in the submission script:
 
-Project Home Permissions
-""""""""""""""""""""""""
+#. Request Spectral resources instead of NVMe
+#. Declare the path where the files will be saved in the node-local NVMe
+   (PERSIST_DIR)
+#. Declare the path on GPFS where the files will be copied (PFS_DIR)
+#. Execute the script spectral_wait.py when the application is finished in order
+   to copy the files from NVMe to GPFS
 
-The default permissions for project home directories are ``0770`` (full
-access to the user and group). The directory is owned by root and the
-group includes the project's group members. All members of a project
-should also be members of that group-specific project. For example, all
-members of project "ABC123" should be members of the "abc123" UNIX
-group.
+The following table shows the differences of executing an application on GPFS,
+NVMe, and NVMe with Spectral. This example is using one compute node. We copy
+the executable and input file for the NVMe cases but this is not always
+necessary, it depends on the application, you could execute the binary from the
+GPFS and save the output files on NVMe, In the table is the execution command of
+the binary and take the data back in case that the Spectral library is not used.
+Adjust your parameters to copy, if necessary, the executable and input files on
+all the NVMes devices.
 
-Three Project Work Areas to Facilitate Collaboration
-""""""""""""""""""""""""""""""""""""""""""""""""""""
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| *Using GPFS* 			         | *Using NVMe*                                   | *Using NVME with Spectral library*             |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``#!/bin/bash``		         | ``#!/bin/bash``                                | ``#!/bin/bash``                                |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``#BSUB -P xxx``		         | ``#BSUB -P xxx``                               | ``#BSUB -P xxx``                               |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``#BSUB -J NAS-BTIO``		         | ``#BSUB -J NAS-BTIO``                          | ``#BSUB -J NAS-BTIO``                          |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``#BSUB -o nasbtio.o%J``	         | ``#BSUB -o nasbtio.o%J``                       | ``#BSUB -o nasbtio.o%J``                       |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``#BSUB -e nasbtio.e%J``	         | ``#BSUB -e nasbtio.e%J``                       | ``#BSUB -e nasbtio.e%J``                       |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``#BSUB -W 10``		         | ``#BSUB -W 10``                                | ``#BSUB -W 10``                                |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``#BSUB -nnodes 1``		         | ``#BSUB -nnodes 1``                            | ``#BSUB -nnodes 1``                            |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| 				         | ``#BSUB -alloc_flags nvme``                    | ``#BSUB -alloc_flags spectral``                |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| 				         |                                                | ``module load spectral``                       |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| 				         |                                                | ``export PERSIST_DIR=${BBPATH}``               |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| 				         |                                                | ``export PFS_DIR=$PWD/spect/``                 |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| 				         | ``export BBPATH=/mnt/bb/$USER/``               | ``export BBPATH=/mnt/bb/$USER/``               |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| 				         | ``jsrun -n 1 cp btio ${BBPATH}``               | ``jsrun -n 1 cp btio ${BBPATH}``               |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| 				         | ``jsrun -n 1 cp input* ${BBPATH}``             | ``jsrun -n 1 cp input* ${BBPATH}``             |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``jsrun -n 1 -a 16 -c 16 -r 1 ./btio`` | ``jsrun -n 1 -a 16 -c 16 -r 1 ${BBPATH}/btio`` | ``jsrun -n 1 -a 16 -c 16 -r 1 ${BBPATH}/btio`` |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``ls -l``			         | ``jsrun -n 1 ls -l ${BBPATH}/``	          | ``jsrun -n 1 ls -l ${BBPATH}/``	           |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| 				         | ``jsrun -n 1 cp ${BBPATH}/* .``                | ``spectral_wait.py``                           |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
 
-To facilitate collaboration among researchers, the OLCF provides (3)
-distinct types of project-centric work storage areas: *Member Work*
-directories, *Project Work* directories, and *World Work* directories.
-Each directory should be used for storing files generated by
-computationally-intensive HPC jobs related to a project.
 
-+----------------+--------------------------------------------+-----------------+-------------+---------+-----------+-------+
-| *Name*         | Path                                       | Type            | Permissions | Backups | Purged    | Quota |
-+================+============================================+=================+=============+=========+===========+=======+
-| *Member Work*  | ``/lustre/atlas/scratch/[projid]``         | Lustre          | 700         | no      | 14 days   | 10TB  |
-+                +--------------------------------------------+-----------------+-------------+---------+-----------+-------+
-|                | ``/gpfs/alpine/scratch/[userid]/[projid]`` | Spectrum Scale  | 700         | no      | 90 days   | 50TB  |
-+----------------+--------------------------------------------+-----------------+-------------+---------+-----------+-------+
-| *Project Work* | ``/lustre/atlas/proj-shared/[projid]``     | Lustre          | 770         | no      | 90 days   | 100TB |
-+                +--------------------------------------------+-----------------+-------------+---------+-----------+-------+
-|                | ``/gpfs/alpine/proj-shared/[projid]``      | Spectrum Scale  | 770         | no      | 90 days   | 50TB  |
-+----------------+--------------------------------------------+-----------------+-------------+---------+-----------+-------+
-| *World Work*   | ``/lustre/atlas/world-shared/[projid]``    | Lustre          | 775         | no      | 90 days   | 10TB  |
-+                +--------------------------------------------+-----------------+-------------+---------+-----------+-------+
-|                | ``/gpfs/alpine/world-shared/[projid]``     | Spectrum Scale  | 775         | no      | 90 days   | 50TB  |
-+----------------+--------------------------------------------+-----------------+-------------+---------+-----------+-------+
+You could observe that with Spectral library there is no reason to explicitly
+ask for the data to be copied to GPFS as it is done automatically through the
+spectral_wait.py script. Also a a log file called spectral.log will be created
+with information on the files that were copied.
 
-The difference between the three lies in the accessibility of the data
-to project members and to researchers outside of the project. Member
-Work directories are accessible only by an individual project member by
-default. Project Work directories are accessible by all project members.
-World Work directories are readable by any user on the system.
 
-Permissions
-''''''''''''
-
-UNIX Permissions on each project-centric work storage area differ
-according to the area's intended collaborative use. Under this setup,
-the process of sharing data with other researchers amounts to simply
-ensuring that the data resides in the proper work directory.
-
--  Member Work Directory: ``700``
--  Project Work Directory: ``770``
--  World Work Directory: ``775``
-
-For example, if you have data that must be restricted only to yourself,
-keep them in your Member Work directory for that project (and leave the
-default permissions unchanged). If you have data that you intend to
-share with researchers within your project, keep them in the project's
-Project Work directory. If you have data that you intend to share with
-researchers outside of a project, keep them in the project's World Work
-directory.
-
-Backups
-"""""""
-
-Member Work, Project Work, and World Work directories **are not backed
-up**. Project members are responsible for backing up these files, either
-to Project Archive areas (HPSS) or to an off-site location.
-
-Project Archive Directories
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-+---------------------+----------------------+--------+---------------+-----------+----------+---------+
-| *Name*              | Path                 | Type   | Permissions   | Backups   | Purged   | Quota   |
-+=====================+======================+========+===============+===========+==========+=========+
-| *Project Archive*   | ``/proj/[projid]``   | HPSS   | 770           | no        | no       | 100TB   |
-+---------------------+----------------------+--------+---------------+-----------+----------+---------+
-
-Projects are also allocated project-specific archival space on the High
-Performance Storage System (HPSS). The default quota is shown on the
-table above. If a higher quota is needed, contact the User Assistance
-Center. The Project Archive space on HPSS is intended for storage of
-data not immediately needed in either Project Home (NFS) areas nor
-Project Work (Alpine) areas, and to serve as a location to store backup
-copies of project-related files.
-
-Project Archive Path
-""""""""""""""""""""
-
-The project archive directories are located at ``/proj/pjt000`` (where
-``pjt000`` is your Project ID).
-
-Project Archive Access
-""""""""""""""""""""""
-
-Project Archive directories may only be accessed via utilities called
-HSI and HTAR. For more information on using HSI or HTAR, see the `HPSS
-Best Practices <./#hpss-best-practices>`__ section. [ls\_content\_block
-id="7126959"] [ls\_content\_block id="5798390"]
+.. _software:
 
 Software
 ========
@@ -957,10 +710,12 @@ Software
 For a full list of software available at the OLCF, please see the
 `Software </for-users/software/>`__ section.
 
+.. _shell-programming-environments:
+
 Shell & Programming Environments
 ================================
 
-OLCF systems provide hundreds of software packages and scientific
+OLCF systems provide many software packages and scientific
 libraries pre-installed at the system-level for users to take advantage
 of. To facilitate this, environment management tools are employed to
 handle necessary changes to the shell. The sections below provide
@@ -980,28 +735,29 @@ system. Currently, supported shells include:
 -  ksh
 
 If you would like to have your default shell changed, please contact the
-`OLCF User Assistance Center </for-users/user-assistance/>`__ at
+`OLCF User Assistance Center <https://www.olcf.ornl.gov/for-users/user-assistance/>`__ at
 help@nccs.gov.
 
 Environment Management with Lmod
 --------------------------------
 
-Environment modules are provided through
-`Lmod <https://lmod.readthedocs.io/en/latest/>`__, a Lua-based module
-system for dynamically altering shell environments. By managing changes
-to the shell’s environment variables (such as ``PATH``,
-``LD_LIBRARY_PATH``, and ``PKG_CONFIG_PATH``), Lmod allows you to alter
-the software available in your shell environment without the risk of
-creating package and version combinations that cannot coexist in a
-single environment. Lmod is a recursive environment module system,
-meaning it is aware of module compatibility and actively alters the
-environment to protect against conflicts. Messages to stderr are issued
-upon Lmod implicitly altering the environment. Environment modules are
-structured hierarchically by compiler family such that packages built
-with a given compiler will only be accessible if the compiler family is
-first present in the environment.
+Environment modules are provided through `Lmod
+<https://lmod.readthedocs.io/en/latest/>`__, a Lua-based module system for
+dynamically altering shell environments. By managing changes to the shell’s
+environment variables (such as ``PATH``, ``LD_LIBRARY_PATH``, and
+``PKG_CONFIG_PATH``), Lmod allows you to alter the software available in your
+shell environment without the risk of creating package and version combinations
+that cannot coexist in a single environment.
 
-    **Note:** Lmod can interpret both Lua modulefiles and legacy Tcl
+Lmod is a recursive environment module system, meaning it is aware of module
+compatibility and actively alters the environment to protect against conflicts.
+Messages to stderr are issued upon Lmod implicitly altering the environment.
+Environment modules are structured hierarchically by compiler family such that
+packages built with a given compiler will only be accessible if the compiler
+family is first present in the environment.
+
+.. note::
+    Lmod can interpret both Lua modulefiles and legacy Tcl
     modulefiles. However, long and logic-heavy Tcl modulefiles may require
     porting to Lua.
 
@@ -1038,7 +794,8 @@ the ``module`` command:
 | module update                    | Reloads all currently loaded modules                                  |
 +----------------------------------+-----------------------------------------------------------------------+
 
-    **Note:** Modules are changed recursively. Some commands, such as
+.. note::
+    Modules are changed recursively. Some commands, such as
     ``module swap``, are available to maintain compatibility with scripts
     using Tcl Environment Modules, but are not necessary since Lmod
     recursively processes loaded modules and automatically resolves
@@ -1047,12 +804,11 @@ the ``module`` command:
 Searching for modules
 ^^^^^^^^^^^^^^^^^^^^^
 
-Modules with dependencies are only available when the underlying
-dependencies, such as compiler families, are loaded. Thus,
-``module avail`` will only display modules that are compatible with the
-current state of the environment. To search the entire hierarchy across
-all possible dependencies, the ``spider`` sub-command can be used as
-summarized in the following table.
+Modules with dependencies are only available when the underlying dependencies,
+such as compiler families, are loaded. Thus, ``module avail`` will only display
+modules that are compatible with the current state of the environment. To search
+the entire hierarchy across all possible dependencies, the ``spider``
+sub-command can be used as summarized in the following table.
 
 +----------------------------------------+------------------------------------------------------------------------------------+
 | Command                                | Description                                                                        |
@@ -1071,12 +827,11 @@ summarized in the following table.
 Defining custom module collections
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Lmod supports caching commonly used collections of environment modules
-on a per-user basis in ``$HOME/.lmod.d``. To create a collection called
-"NAME" from the currently loaded modules, simply call
-``module save NAME``. Omitting "NAME" will set the user’s default
-collection. Saved collections can be recalled and examined with the
-commands summarized in the following table.
+Lmod supports caching commonly used collections of environment modules on a
+per-user basis in ``$HOME/.lmod.d``. To create a collection called "NAME" from
+the currently loaded modules, simply call ``module save NAME``. Omitting "NAME"
+will set the user’s default collection. Saved collections can be recalled and
+examined with the commands summarized in the following table.
 
 +-------------------------+----------------------------------------------------------+
 | Command                 | Description                                              |
@@ -1092,20 +847,24 @@ commands summarized in the following table.
 | module savelist         | Shows the list user-defined saved collections            |
 +-------------------------+----------------------------------------------------------+
 
-    **Note:** You should use unique names when creating collections to
+.. note::
+    You should use unique names when creating collections to
     specify the application (and possibly branch) you are working on. For
-    example, \`app1-development\`, \`app1-production\`, and
-    \`app2-production\`.
+    example, ``app1-development``, ``app1-production``, and
+    ``app2-production``.
 
-    **Note:** In order to avoid conflicts between user-defined collections
+.. note::
+    In order to avoid conflicts between user-defined collections
     on multiple compute systems that share a home file system (e.g.
-    /ccs/home/[userid]), lmod appends the hostname of each system to the
-    files saved in in your ~/.lmod.d directory (using the environment
-    variable LMOD\_SYSTEM\_NAME). This ensures that only collections
+    ``/ccs/home/[userid]``), lmod appends the hostname of each system to the
+    files saved in in your ``~/.lmod.d`` directory (using the environment
+    variable ``LMOD_SYSTEM_NAME``). This ensures that only collections
     appended with the name of the current system are visible.
 
 The following screencast shows an example of setting up user-defined
 module collections on Summit. https://vimeo.com/293582400
+
+.. _compiling:
 
 Compiling
 =========
@@ -1116,93 +875,117 @@ Compilers
 Available Compilers
 ^^^^^^^^^^^^^^^^^^^
 
-The following compilers are available on Summit: **XL:** IBM XL
-Compilers *(loaded by default)* **LLVM:** LLVM compiler infrastructure
-**PGI:** Portland Group compiler suite **GNU:** GNU Compiler Collection
-**NVCC**: CUDA C compiler Upon login, the default versions of the XL
-compiler suite and Spectrum Message Passing Interface (MPI) are added to
-each user's environment through the modules system. No changes to the
-environment are needed to make use of the defaults. Multiple versions of
-each compiler family are provided, and can be inspected using the
-modules system:
+The following compilers are available on Summit:
+
+**XL:** IBM XL Compilers *(loaded by default)*
+
+**LLVM:** LLVM compiler infrastructure
+
+**PGI:** Portland Group compiler suite
+
+**GNU:** GNU Compiler Collection
+
+**NVCC**: CUDA C compiler
+
+Upon login, the default versions of the XL compiler suite and Spectrum Message
+Passing Interface (MPI) are added to each user's environment through the modules
+system. No changes to the environment are needed to make use of the defaults.
+
+Multiple versions of each compiler family are provided, and can be inspected
+using the modules system:
 
 ::
 
     summit$ module -t avail pgi
     /sw/summit/modulefiles/site/linux-rhel7-ppc64le/Core:
-    pgi/17.10-patched
-    pgi/18.3
-    pgi/18.4
-    pgi/18.5
     pgi/18.7
+    pgi/18.10
+    pgi/19.1
+    pgi/19.4
+    pgi/19.5
+    pgi/19.7
 
 C compilation
 ^^^^^^^^^^^^^
 
-    **Note:** type char is unsigned by default
+.. note::
+    type char is unsigned by default
 
-+--------------+------------------+----------------+---------------+------------------+------------------+---------------------------+--------------------+
-| **Vendor**   | **Module**       | **Compiler**   | **Version**   | **Enable C99**   | **Enable C11**   | **Default signed char**   | **Define macro**   |
-+==============+==================+================+===============+==================+==================+===========================+====================+
-| **IBM**      | xl               | xlc xlc\_r     | 13.1.6        | -std=gnu99       | -std=gnu11       | -qchar=signed             | -WF,-D             |
-+--------------+------------------+----------------+---------------+------------------+------------------+---------------------------+--------------------+
-| **GNU**      | system default   | gcc            | 4.8.5         | -std=gnu99       | -std=gnu11       | -fsigned-char             | -D                 |
-+--------------+------------------+----------------+---------------+------------------+------------------+---------------------------+--------------------+
-| **GNU**      | gcc              | gcc            | 6.4.0         | -std=gnu99       | -std=gnu11       | -fsigned-char             | -D                 |
-+--------------+------------------+----------------+---------------+------------------+------------------+---------------------------+--------------------+
-| **LLVM**     | llvm             | clang          | 3.8.0         | default          | -std=gnu11       | -fsigned-char             | -D                 |
-+--------------+------------------+----------------+---------------+------------------+------------------+---------------------------+--------------------+
-| **PGI**      | pgi              | pgcc           | 17.10         | -c99             | -c11             | -Mschar                   | -D                 |
-+--------------+------------------+----------------+---------------+------------------+------------------+---------------------------+--------------------+
++--------------+------------------+----------------+------------------+------------------+---------------------------+--------------------+
+| **Vendor**   | **Module**       | **Compiler**   |  **Enable C99**  | **Enable C11**   | **Default signed char**   | **Define macro**   |
+|              |                  |                |                  |                  |                           |                    |
++==============+==================+================+==================+==================+===========================+====================+
+| **IBM**      | ``xl``           | xlc xlc\_r     | ``-std=gnu99``   | ``-std=gnu11``   | ``-qchar=signed``         | ``-WF,-D``         |
++--------------+------------------+----------------+------------------+------------------+---------------------------+--------------------+
+| **GNU**      | system default   | gcc            | ``-std=gnu99``   | ``-std=gnu11``   | ``-fsigned-char``         | ``-D``             |
++--------------+------------------+----------------+------------------+------------------+---------------------------+--------------------+
+| **GNU**      | ``gcc``          | gcc            | ``-std=gnu99``   | ``-std=gnu11``   | ``-fsigned-char``         | ``-D``             |
++--------------+------------------+----------------+------------------+------------------+---------------------------+--------------------+
+| **LLVM**     | ``llvm``         | clang          | default          | ``-std=gnu11``   | ``-fsigned-char``         | ``-D``             |
++--------------+------------------+----------------+------------------+------------------+---------------------------+--------------------+
+| **PGI**      | ``pgi``          | pgcc           | ``-c99``         | ``-c11``         | ``-Mschar``               | ``-D``             |
++--------------+------------------+----------------+------------------+------------------+---------------------------+--------------------+
 
 C++ compilations
 ^^^^^^^^^^^^^^^^
 
-    **Note:** type char is unsigned by default
+.. note::
+    type char is unsigned by default
 
-+--------------+------------------+-------------------+---------------+--------------------------------+--------------------------------+---------------------------+--------------------+
-| **Vendor**   | **Module**       | **Compiler**      | **Version**   | **Enable C++11**               | **Enable C++14**               | **Default signed char**   | **Define macro**   |
-+==============+==================+===================+===============+================================+================================+===========================+====================+
-| **IBM**      | xl               | xlc++, xlc++\_r   | 13.1.6        | -std=gnu++11                   | -std=gnu++1y *(PARTIAL)*       | -qchar=signed             | -WF,-D             |
-+--------------+------------------+-------------------+---------------+--------------------------------+--------------------------------+---------------------------+--------------------+
-| **GNU**      | system default   | g++               | 4.8.5         | -std=gnu++11                   | -std=gnu++1y                   | -fsigned-char             | -D                 |
-+--------------+------------------+-------------------+---------------+--------------------------------+--------------------------------+---------------------------+--------------------+
-| **GNU**      | gcc              | g++               | 6.4.0         | -std=gnu++11                   | -std=gnu++1y                   | -fsigned-char             | -D                 |
-+--------------+------------------+-------------------+---------------+--------------------------------+--------------------------------+---------------------------+--------------------+
-| **LLVM**     | llvm             | clang++           | 3.8.0         | -std=gnu++11                   | -std=gnu++1y                   | -fsigned-char             | -D                 |
-+--------------+------------------+-------------------+---------------+--------------------------------+--------------------------------+---------------------------+--------------------+
-| **PGI**      | pgi              | pgc++             | 17.10         | -std=c++11 --gnu\_extensions   | -std=c++14 --gnu\_extensions   | -Mschar                   | -D                 |
-+--------------+------------------+-------------------+---------------+--------------------------------+--------------------------------+---------------------------+--------------------+
++--------------+------------------+-------------------+--------------------------------+--------------------------------+---------------------------+--------------------+
+| **Vendor**   | **Module**       | **Compiler**      | **Enable C++11**               | **Enable C++14**               | **Default signed char**   | **Define macro**   |
+|              |                  |                   |                                |                                |                           |                    |
++==============+==================+===================+================================+================================+===========================+====================+
+| **IBM**      | ``xl``           | xlc++, xlc++\_r   | ``-std=gnu++11``               | ``-std=gnu++1y`` (PARTIAL)*    | ``-qchar=signed``         | ``-WF,-D``         |
++--------------+------------------+-------------------+--------------------------------+--------------------------------+---------------------------+--------------------+
+| **GNU**      | system default   | g++               | ``-std=gnu++11``               | ``-std=gnu++1y``               | ``-fsigned-char``         | ``-D``             |
++--------------+------------------+-------------------+--------------------------------+--------------------------------+---------------------------+--------------------+
+| **GNU**      | ``gcc``          | g++               | ``-std=gnu++11``               | ``-std=gnu++1y``               | ``-fsigned-char``         | ``-D``             |
++--------------+------------------+-------------------+--------------------------------+--------------------------------+---------------------------+--------------------+
+| **LLVM**     | ``llvm``         | clang++           | ``-std=gnu++11``               | ``-std=gnu++1y``               | ``-fsigned-char``         | ``-D``             |
++--------------+------------------+-------------------+--------------------------------+--------------------------------+---------------------------+--------------------+
+| **PGI**      | ``pgi``          | pgc++             | ``-std=c++11 -gnu_extensions`` | ``-std=c++14 -gnu_extensions`` | ``-Mschar``               | ``-D``             |
++--------------+------------------+-------------------+--------------------------------+--------------------------------+---------------------------+--------------------+
 
 Fortran compilation
 ^^^^^^^^^^^^^^^^^^^
 
-+--------------+------------------+-----------------------------------+----------------+-------------------------------+-------------------------------+-------------------------------+--------------------+
-| **Vendor**   | **Module**       | **Compiler**                      | **Version**    | **Enable F90**                | **Enable F2003**              | **Enable F2008**              | **Define macro**   |
-+==============+==================+===================================+================+===============================+===============================+===============================+====================+
-| **IBM**      | xl               | xlf xlf90 xlf95 xlf2003 xlf2008   | 15.1.6         | -qlanglvl=90std               | -qlanglvl=2003std             | -qlanglvl=2008std             | -WF,-D             |
-+--------------+------------------+-----------------------------------+----------------+-------------------------------+-------------------------------+-------------------------------+--------------------+
-| **GNU**      | system default   | gfortran                          | 4.8.5, 6.4.0   | -std=f90                      | -std=f2003                    | -std=f2008                    | -D                 |
-+--------------+------------------+-----------------------------------+----------------+-------------------------------+-------------------------------+-------------------------------+--------------------+
-| **LLVM**     | llvm             | xlflang                           | 3.8.0          | n/a                           | n/a                           | n/a                           | -D                 |
-+--------------+------------------+-----------------------------------+----------------+-------------------------------+-------------------------------+-------------------------------+--------------------+
-| **PGI**      | pgi              | pgfortran                         | 17.10          | use .F90 source file suffix   | use .F03 source file suffix   | use .F08 source file suffix   | -D                 |
-+--------------+------------------+-----------------------------------+----------------+-------------------------------+-------------------------------+-------------------------------+--------------------+
++--------------+------------------+-----------------------------------+--------------------------+---------------------------+--------------------------+--------------------+
+| **Vendor**   | **Module**       | **Compiler**                      | **Enable F90**           | **Enable F2003**          | **Enable F2008**         | **Define macro**   |
+|              |                  |                                   |                          |                           |                          |                    |
++==============+==================+===================================+==========================+===========================+==========================+====================+
+| **IBM**      | ``xl``           | xlf xlf90 xlf95 xlf2003 xlf2008   | ``-qlanglvl=90std``      | ``-qlanglvl=2003std``     | ``-qlanglvl=2008std``    | ``-WF,-D``         |
++--------------+------------------+-----------------------------------+--------------------------+---------------------------+--------------------------+--------------------+
+| **GNU**      | system default   | gfortran                          | ``-std=f90``             | ``-std=f2003``            | ``-std=f2008``           | ``-D``             |
++--------------+------------------+-----------------------------------+--------------------------+---------------------------+--------------------------+--------------------+
+| **LLVM**     | ``llvm``         | xlflang                           | n/a                      | n/a                       | n/a                      | ``-D``             |
++--------------+------------------+-----------------------------------+--------------------------+---------------------------+--------------------------+--------------------+
+| **PGI**      | ``pgi``          | pgfortran                         | use ``.F90`` source file |  use ``.F03`` source file | use ``.F08`` source file | ``-D``             |
+|              |                  |                                   | suffix                   |  suffix                   | suffix                   |                    |
++--------------+------------------+-----------------------------------+--------------------------+---------------------------+--------------------------+--------------------+
 
-    **Note:** \* The xlflang module currently conflicts with the clang
+.. note::
+    The xlflang module currently conflicts with the clang
     module. This restriction is expected to be lifted in future releases.
 
 MPI
 ^^^
 
-MPI on Summit is provided by IBM Spectrum MPI. Spectrum MPI provides
-compiler wrappers that automatically choose the proper compiler to build
-your application. The following compiler wrappers are available: **C**:
-``mpicc`` **C++**: ``mpic++``, ``mpiCC`` **Fortran**: ``mpifort``,
-``mpif77``, ``mpif90`` While these wrappers conveniently abstract away
-linking of Spectrum MPI, it's sometimes helpful to see exactly what's
-happening when invoked. The ``--showme`` flag will display the full link
-lines, without actually compiling:
+MPI on Summit is provided by IBM Spectrum MPI. Spectrum MPI provides compiler
+wrappers that automatically choose the proper compiler to build your
+application.
+
+The following compiler wrappers are available:
+
+**C**: ``mpicc``
+
+**C++**: ``mpic++``, ``mpiCC``
+
+**Fortran**: ``mpifort``, ``mpif77``, ``mpif90``
+
+While these wrappers conveniently abstract away linking of Spectrum MPI, it's
+sometimes helpful to see exactly what's happening when invoked. The ``--showme``
+flag will display the full link lines, without actually compiling:
 
 ::
 
@@ -1212,45 +995,48 @@ lines, without actually compiling:
 OpenMP
 ^^^^^^
 
-    **Note:** When using OpenMP with IBM XL compilers, the thread-safe
+.. note::
+    When using OpenMP with IBM XL compilers, the thread-safe
     compiler variant is required; These variants have the same name as the
     non-thread-safe compilers with an additional ``_r`` suffix. e.g. to
     compile OpenMPI C code one would use ``xlc_r``
 
-    **Note:** OpenMP offloading support is still under active development.
+.. note::
+    OpenMP offloading support is still under active development.
     Performance and debugging capabilities in particular are expected to
     improve as the implementations mature.
 
 +---------------+-------------------+---------------------+-------------------+---------------------------------------------------------------------------------+
 | **Vendor**    | **3.1 Support**   | **Enable OpenMP**   | **4.x Support**   | **Enable OpenMP 4.x Offload**                                                   |
 +===============+===================+=====================+===================+=================================================================================+
-| **IBM**       | FULL              | -qsmp=omp           | PARTIAL           | -qsmp=omp -qoffload                                                             |
+| **IBM**       | FULL              | ``-qsmp=omp``       | PARTIAL           | ``-qsmp=omp -qoffload``                                                         |
 +---------------+-------------------+---------------------+-------------------+---------------------------------------------------------------------------------+
-| **GNU**       | FULL              | -fopenmp            | PARTIAL           | -fopenmp                                                                        |
+| **GNU**       | FULL              | ``-fopenmp``        | PARTIAL           | ``-fopenmp``                                                                    |
 +---------------+-------------------+---------------------+-------------------+---------------------------------------------------------------------------------+
-| **clang**     | FULL              | -fopenmp            | PARTIAL           | -fopenmp -fopenmp-targets=nvptx64-nvidia-cuda --cuda-path=${OLCF\_CUDA\_ROOT}   |
+| **clang**     | FULL              | ``-fopenmp``        | PARTIAL           | ``-fopenmp -fopenmp-targets=nvptx64-nvidia-cuda --cuda-path=${OLCF_CUDA_ROOT}`` |
 +---------------+-------------------+---------------------+-------------------+---------------------------------------------------------------------------------+
-| **xlflang**   | FULL              | -fopenmp            | PARTIAL           | -fopenmp -fopenmp-targets=nvptx64-nvidia-cuda                                   |
+| **xlflang**   | FULL              | ``-fopenmp``        | PARTIAL           | ``-fopenmp -fopenmp-targets=nvptx64-nvidia-cuda``                               |
 +---------------+-------------------+---------------------+-------------------+---------------------------------------------------------------------------------+
-| **PGI**       | FULL              | -mp                 | NONE              | NONE                                                                            |
+| **PGI**       | FULL              | ``-mp``             | NONE              | NONE                                                                            |
 +---------------+-------------------+---------------------+-------------------+---------------------------------------------------------------------------------+
 
 OpenACC
 ^^^^^^^
 
-+--------------+--------------------+-----------------------+-------------------------+
-| **Vendor**   | **Module**         | **OpenACC Support**   | **Enable OpenACC**      |
-+==============+====================+=======================+=========================+
-| **IBM**      | xl                 | NONE                  | NONE                    |
-+--------------+--------------------+-----------------------+-------------------------+
-| **GNU**      | system default     | NONE                  | NONE                    |
-+--------------+--------------------+-----------------------+-------------------------+
-| **GNU**      | gcc                | 2.5                   | -fopenacc               |
-+--------------+--------------------+-----------------------+-------------------------+
-| **LLVM**     | clang or xlflang   | NONE                  | NONE                    |
-+--------------+--------------------+-----------------------+-------------------------+
-| **PGI**      | pgi                | 2.5                   | -acc, -ta=nvidia:cc70   |
-+--------------+--------------------+-----------------------+-------------------------+
++--------------+--------------------+-----------------------+---------------------------+
+| **Vendor**   | **Module**         | **OpenACC Support**   | **Enable OpenACC**        |
++==============+====================+=======================+===========================+
+| **IBM**      | ``xl``             | NONE                  | NONE                      |
++--------------+--------------------+-----------------------+---------------------------+
+| **GNU**      | system default     | NONE                  | NONE                      |
++--------------+--------------------+-----------------------+---------------------------+
+| **GNU**      | ``gcc``            | 2.5                   | ``-fopenacc``             |
++--------------+--------------------+-----------------------+---------------------------+
+| **LLVM**     | ``clang`` or       |                       |                           |
+|              | ``xlflang``        | NONE                  | NONE                      |
++--------------+--------------------+-----------------------+---------------------------+
+| **PGI**      | ``pgi``            | 2.5                   | ``-acc, -ta=nvidia:cc70`` |
++--------------+--------------------+-----------------------+---------------------------+
 
 CUDA compilation
 ^^^^^^^^^^^^^^^^
@@ -1258,22 +1044,23 @@ CUDA compilation
 NVIDIA
 """"""
 
-CUDA C/C++ support is provided through the ``cuda`` module. **nvcc** :
-Primary CUDA C/C++ compiler
+CUDA C/C++ support is provided through the ``cuda`` module.
 
-Language support
+``nvcc`` : Primary CUDA C/C++ compiler
 
+**Language support**
 
-**-std=c++11** : provide C++11 support **--expt-extended-lambda** :
-provide experimental host/device lambda support
-**--expt-relaxed-constexpr** : provide experimental host/device
-constexpr support
+``-std=c++11`` : provide C++11 support
 
-Compiler support
+``--expt-extended-lambda`` : provide experimental host/device lambda support
 
+``--expt-relaxed-constexpr`` : provide experimental host/device constexpr support
 
-NVCC currently supports XL, GCC, and PGI C++ backends. **--ccbin** : set
-to host compiler location
+**Compiler support**
+
+NVCC currently supports XL, GCC, and PGI C++ backends.
+
+``--ccbin`` : set to host compiler location
 
 CUDA Fortran compilation
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1282,30 +1069,40 @@ IBM
 """
 
 The IBM compiler suite is made available through the default loaded xl
-module, the cuda module is also required. xlcuf : primary Cuda fortran
-compiler, thread safe **Language support flags** -qlanglvl=90std :
-provide Fortran90 support -qlanglvl=95std : provide Fortran95 support
--qlanglvl=2003std : provide Fortran2003 support -qlanglvl=2008std :
-provide Fortran2003 support
+module, the cuda module is also required.
+
+``xlcuf`` : primary Cuda fortran compiler, thread safe
+
+**Language support flags**
+
+``-qlanglvl=90std`` : provide Fortran90 support
+
+``-qlanglvl=95std`` : provide Fortran95 support
+
+``-qlanglvl=2003std`` : provide Fortran2003 support
+
+``-qlanglvl=2008std`` : provide Fortran2003 support
 
 PGI
 """
 
-The PGI compiler suite is available through the pgi module. pgfortran :
-Primary fortran compiler with CUDA Fortran support
+The PGI compiler suite is available through the ``pgi`` module.
 
-Language support:
+``pgfortran`` : Primary fortran compiler with CUDA Fortran support
 
+**Language support:**
 
-Files with .cuf suffix automatically compiled with cuda fortran support
+Files with ``.cuf`` suffix automatically compiled with cuda fortran support
+
 Standard fortran suffixed source files determines the standard involved,
-see the man page for full details -Mcuda : Enable CUDA Fortran on
-provided source file
+see the man page for full details
+
+``-Mcuda`` : Enable CUDA Fortran on provided source file
 
 Linking in Libraries
 --------------------
 
-OLCF systems provide hundreds of software packages and scientific
+OLCF systems provide many software packages and scientific
 libraries pre-installed at the system-level for users to take advantage
 of. In order to link these libraries into an application, users must
 direct the compiler to their location. The ``module show`` command can
@@ -1341,6 +1138,8 @@ include/ directories:
 The following screencast shows an example of linking two libraries into
 a simple program on Summit. https://vimeo.com/292015868
 
+.. _running-jobs:
+
 Running Jobs
 ============
 
@@ -1366,18 +1165,38 @@ the batch scheduling system.
 Login, Launch, and Compute Nodes
 --------------------------------
 
-Recall from the `System
-Overview </for-users/system-user-guides/summit/system-overview/>`__
+Recall from the :ref:`system-overview`
 section that Summit has three types of nodes: login, launch, and
 compute. When you log into the system, you are placed on a login node.
-When your `batch scripts <#batch-scripts>`__ or `interactive
-jobs <#interactive-jobs>`__ run, the resulting shell will run on a
-launch node. Compute nodes are accessed via the ``jsrun`` command. The
-``jsrun`` command should only be issued from within an LSF job (either
-batch or interactive) on a launch node. Othewise, you will not have any
-compute nodes allocated and your parallel job will run on the login
-node. If this happens, your job will interfere with (and be interfered
-with by) other users' login node tasks.
+When your :ref:`batch-scripts` or :ref:`interactive-jobs` run,
+the resulting shell will run on a launch node. Compute nodes are accessed
+via the ``jsrun`` command. The ``jsrun`` command should only be issued
+from within an LSF job (either batch or interactive) on a launch node.
+Othewise, you will not have any compute nodes allocated and your parallel
+job will run on the login node. If this happens, your job will interfere with
+(and be interfered with by) other users' login node tasks.
+
+Per-User Login Node Resource Limits
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Because the login nodes are resources shared by all Summit users, we utilize
+``cgroups`` to help better ensure resource availability for all users of the
+shared nodes. By default each user is limited to **16 hardware-threads**, **16GB
+of memory**, and **1 GPU**.  Please note that limits are set per user and not
+individual login sessions. All user processes on a node are contained within a
+single cgroup and share the cgroup's limits.
+
+If a process from any of a user’s login sessions reaches 4-hours of CPU-time,
+all login sessions will be limited to **.5 hardware-thread**.  To reset the
+cgroup limits on a node to default once the 4-hour CPU-time reduction has been
+reached, kill the offending process and start a new login session to the node.
+
+    .. note:: Login node limits are set per user and not per individual login
+        session.  All user processes on a node are contained within a single cgroup
+        and will share the cgroup's limits.
+
+
+.. _batch-scripts:
 
 Batch Scripts
 -------------
@@ -1387,7 +1206,9 @@ A batch job is simply a shell script with added directives to request
 various resources from or provide certain information to the batch
 scheduling system. Aside from the lines containing LSF options, the
 batch script is simply the series commands needed to set up and run your
-job. To submit a batch script, use the bsub command: ``bsub myjob.lsf``
+job.
+
+To submit a batch script, use the bsub command: ``bsub myjob.lsf``
 
 If you’ve previously used LSF, you’re probably used to submitting a job
 with input redirection (i.e. ``bsub < myjob.lsf``). This is not needed
@@ -1395,23 +1216,24 @@ with input redirection (i.e. ``bsub < myjob.lsf``). This is not needed
 
 As an example, consider the following batch script:
 
-.. code::
+.. code-block:: bash
+   :linenos:
 
-    1.   #!/bin/bash
-    2.  # Begin LSF Directives
-    3.  #BSUB -P ABC123
-    4.  #BSUB -W 3:00
-    5.  #BSUB -nnodes 2048
-    6.  #BSUB -alloc_flags gpumps
-    7.  #BSUB -J RunSim123
-    8.  #BSUB -o RunSim123.%J
-    9.  #BSUB -e RunSim123.%J
-    10.
-    11. cd $MEMBERWORK/abc123
-    12. cp $PROJWORK/abc123/RunData/Input.123 ./Input.123
-    13. date
-    14. jsrun -n 4092 -r 2 -a 12 -g 3 ./a.out
-    15. cp my_output_file /ccs/proj/abc123/Output.123
+    #!/bin/bash
+    # Begin LSF Directives
+    #BSUB -P ABC123
+    #BSUB -W 3:00
+    #BSUB -nnodes 2048
+    #BSUB -alloc_flags gpumps
+    #BSUB -J RunSim123
+    #BSUB -o RunSim123.%J
+    #BSUB -e RunSim123.%J
+
+    cd $MEMBERWORK/abc123
+    cp $PROJWORK/abc123/RunData/Input.123 ./Input.123
+    date
+    jsrun -n 4092 -r 2 -a 12 -g 3 ./a.out
+    cp my_output_file /ccs/proj/abc123/Output.123
 
 +----------+------------+--------------------------------------------------------------------------------------------+
 | Line #   | Option     | Description                                                                                |
@@ -1447,6 +1269,8 @@ As an example, consider the following batch script:
 | 15       | -          | Copy output files from the scratch area into a more permanent location                     |
 +----------+------------+--------------------------------------------------------------------------------------------+
 
+.. _interactive-jobs:
+
 Interactive Jobs
 ----------------
 
@@ -1454,11 +1278,12 @@ Most users will find batch jobs to be the easiest way to interact with
 the system, since they permit you to hand off a job to the scheduler and
 then work on other tasks; however, it is sometimes preferable to run
 interactively on the system. This is especially true when developing,
-modifying, or debugging a code. Since all compute resources are
-managed/scheduled by LSF, it is not possible to simply log into the
-system and begin running a parallel code interactively. You must request
-the appropriate resources from the system and, if necessary, wait until
-they are available. This is done with an “interactive batch” job.
+modifying, or debugging a code.
+
+Since all compute resources are managed/scheduled by LSF, it is not possible
+to simply log into the system and begin running a parallel code interactively.
+You must request the appropriate resources from the system and, if necessary,
+wait until they are available. This is done with an “interactive batch” job.
 Interactive batch jobs are submitted via the command line, which
 supports the same options that are passed via ``#BSUB`` parameters in a
 batch script. The final options on the command line are what makes the
@@ -1479,8 +1304,7 @@ script. If conflicting options are specified (i.e. different walltime
 specified on the command line versus in the script), the option on the
 command line takes precedence. Note that LSF has numerous options; only
 the most common ones are described here. For more in-depth information
-about other LSF options, see the
-`documentation <#for-more-information>`__.
+about other LSF options, see the ``bsub`` man page.
 
 +--------------------+----------------------------------------+----------------------------------------------------------------------------------+
 | Option             | Example Usage                          | Description                                                                      |
@@ -1598,15 +1422,17 @@ strongly encourage users to run jobs on Summit that are as large as
 their code will warrant. To that end, the OLCF implements queue policies
 that enable large jobs to run in a timely fashion.
 
-    **Note:** The OLCF implements queue policies that encourage the
+.. note::
+    The OLCF implements queue policies that encourage the
     submission and timely execution of large, leadership-class jobs on
     Summit.
 
 The basic priority-setting mechanism for jobs waiting in the queue is
-the time a job has been waiting relative to other jobs in the queue. If
-your jobs require resources outside these queue policies, please
+the time a job has been waiting relative to other jobs in the queue.
+
+If your jobs require resources outside these queue policies, please
 complete the relevant request form on the `Special
-Requests </for-users/getting-started/special-request-form/>`__ page. If
+Requests <https://www.olcf.ornl.gov/for-users/documents-forms/special-request-form/>`__ page. If
 you have any questions or comments on the queue policies below, please
 direct them to the User Assistance Center.
 
@@ -1646,9 +1472,44 @@ following policies:
 -  Users may have only (100) jobs queued at any state at any time.
    Additional jobs will be rejected at submit time.
 
-    **Note:** The *eligible-to-run* state is not the *running* state.
+.. note::
+    The *eligible-to-run* state is not the *running* state.
     Eligible-to-run jobs have not started and are waiting for resources.
     Running jobs are actually executing.
+
+``killable`` Queue Policy
+""""""""""""""""""""""""""
+
+The ``killable`` queue is a preemptable queue that allows jobs in bins 4 and 5
+to request walltimes up to 24 hours. Jobs submitted to the killable queue will
+be preemptable once the job reaches the guaranteed runtime limit as shown in the
+table below. For example, a job in bin 5 submitted to the killable queue can
+request a walltime of 24 hours. The job will be preemptable after two hours of
+run time. Similarly, a job in bin 4 will be preemptable after six hours of run
+time. Once a job is preempted, the job will be resubmitted by default with the
+original limits as requested in the job script and will have the same ``JOBID``.
+
+**Preemptable job limits:**
+
++-------+-------------+-------------+------------------------+----------------------+
+| Bin   | Min Nodes   | Max Nodes   | Max Walltime (Hours)   | Guaranteed Walltime  |
++=======+=============+=============+========================+======================+
+| 4     | 46          | 91          | 24.0                   |  6.0 (hours)         |
++-------+-------------+-------------+------------------------+----------------------+
+| 5     | 1           | 45          | 24.0                   |  2.0 (hours)         |
++-------+-------------+-------------+------------------------+----------------------+
+
+.. warning:: If a job in the ``killable`` queue does not reach its requested
+    walltime, it will continue to use allocation time with each automatic
+    resubmission until it either reaches the requested walltime during a single
+    continuous run, or is manually killed by the user. Allocations are always
+    charged based on actual compute time used by all jobs.
+
+To submit a job to the ``killable`` queue, add the ``-q killable`` option to your
+``bsub`` command or ``#BSUB -q killable`` to your job script.
+
+To prevent a preempted job from being automatically requeued, the ``BSUB -rn``
+flag can be used at submit time.
 
 Allocation Overuse Policy
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1695,11 +1556,12 @@ remaining idle for an extended period of time, reservations are
 monitored for inactivity. If activity falls below 50% of the reserved
 resources for more than (30) minutes, the reservation will be canceled
 and the system will be returned to normal scheduling. A new reservation
-must be requested if this occurs. The requesting project's allocation is
-charged according to the time window granted, regardless of actually
-utilization. For example, an 8-hour, 2,000 node reservation on Summit
-would be equivalent to using 16,000 Summit node-hours of a project's
-allocation.
+must be requested if this occurs.
+
+The requesting project's allocation is charged according to the time window
+granted, regardless of actual utilization. For example, an 8-hour, 2,000
+node reservation on Summit would be equivalent to using 16,000 Summit
+node-hours of a project's allocation.
 
 --------------
 
@@ -1739,13 +1601,14 @@ Monitoring Jobs
 
 LSF provides several utilities with which you can monitor jobs. These
 include monitoring the queue, getting details about a particular job,
-viewing STDOUT/STDERR of running jobs, and more. The most
-straightforward monitoring is with the ``bjobs`` command. This command
-will show the current queue, including both pending and running jobs.
-Running ``bjobs -l`` will provide much more detail about a job (or group
-of jobs). For detailed output of a single job, specify the job id after
-the ``-l``. For example, for detailed output of job 12345, you can run
-``bjobs -l 12345`` . Other options to ``bjobs`` are shown below. In
+viewing STDOUT/STDERR of running jobs, and more.
+
+The most straightforward monitoring is with the ``bjobs`` command. This
+command will show the current queue, including both pending and running
+jobs. Running ``bjobs -l`` will provide much more detail about a job (or
+group of jobs). For detailed output of a single job, specify the job id
+after the ``-l``. For example, for detailed output of job 12345, you can
+run ``bjobs -l 12345`` . Other options to ``bjobs`` are shown below. In
 general, if the command is specified with ``-u all`` it will show
 information for all users/all jobs. Without that option, it only shows
 your jobs. Note that this is not an exhaustive list. See ``man bjobs``
@@ -1798,6 +1661,7 @@ identify jobs as running, eligible, or blocked. Run without arguments,
 ``jobstat`` provides a snapshot of the entire batch queue. Additional
 information, including the number of jobs in each state, total nodes
 available, and relative job priority are also included.
+
 ``jobstat -u <username>`` restricts output to only the jobs of a
 specific user. See the ``jobstat`` man page for a full list of
 formatting arguments.
@@ -1823,22 +1687,25 @@ Inspecting Backfill
 
 ``bjobs`` and ``jobstat`` help to identify what’s currently running and
 scheduled to run, but sometimes it’s beneficial to know how much of the
-system is *not* currently in use or scheduled for use. The ``bslots``
-command can be used to inspect backfill windows and answer the question
-“How many nodes are currently available, and for how long will they
-remain available?” This can be thought of as identifying gaps in the
-system’s current job schedule. By intentionally requesting resources
+system is *not* currently in use or scheduled for use.
+
+The ``bslots`` command can be used to inspect backfill windows and answer
+the question “How many nodes are currently available, and for how long
+will they remain available?” This can be thought of as identifying gaps in
+the system’s current job schedule. By intentionally requesting resources
 within the parameters of a backfill window, one can potentially shorten
-their queued time and improve overall system utilization. LSF uses
-“slots” to describe allocatable resources. Summit compute nodes have 1
+their queued time and improve overall system utilization.
+
+LSF uses “slots” to describe allocatable resources. Summit compute nodes have 1
 slot per CPU core, for a total of 42 per node ([2x] Power9 CPUs, each
 with 21 cores). Since Summit nodes are scheduled in whole-node
 allocations, the output from ``bslots`` can be divided by 42 to see how
-many nodes are currently available. By default, ``bslots`` output
-includes launch node slots, which can cause unwanted and inflated
-fractional node values. The output can be adjusted to reflect only
-available compute node slots with the flag ``-R”select[CN]”``. For
-example,
+many nodes are currently available.
+
+By default, ``bslots`` output includes launch node slots, which can
+cause unwanted and inflated fractional node values. The output can
+be adjusted to reflect only available compute node slots with the
+flag  ``-R”select[CN]”``. For example,
 
 ::
 
@@ -1848,9 +1715,10 @@ example,
     27384          1 hours 11 minutes 50 seconds
 
 27384 compute node slots / 42 slots per node = 652 compute nodes are
-available for 1 hour, 11 minutes, 50 seconds. A more specific ``bslots``
-query could check for a backfill window with space to fit a 1000 node
-job for 10 minutes:
+available for 1 hour, 11 minutes, 50 seconds.
+
+A more specific ``bslots`` query could check for a backfill window with
+space to fit a 1000 node job for 10 minutes:
 
 ::
 
@@ -1930,10 +1798,12 @@ checkpointing and restarting jobs, as well as the ``-k`` option to
 application specific and a wide range of applications run on OLCF
 resources, this type of checkpointing is not configured on Summit. If
 you wish to use checkpointing (which is highly encouraged), you’ll need
-to configure it within your application. If you wish to implement some
-form of on-demand checkpointing, keep in mind the ``bkill`` command is
-really a signaling command and you can have your job script/application
-checkpoint as a response to certain signals (such as ``SIGUSR1``).
+to configure it within your application.
+
+If you wish to implement some form of on-demand checkpointing, keep in mind
+the ``bkill`` command is really a signaling command and you can have your
+job script/application checkpoint as a response to certain signals (such
+as ``SIGUSR1``).
 
 Other LSF Commands
 ------------------
@@ -1944,7 +1814,7 @@ useful.
 +------------------+---------------------------------------------------------------------------+
 | Command          | Description                                                               |
 +==================+===========================================================================+
-| ``bparams -a``   | Show current parameters for LSF The behavior/available                    |
+| ``bparams -a``   | Show current parameters for LSF. The behavior/available                   |
 |                  | options for some LSF commands depend on settings in various configuration |
 |                  | files. This command shows those settings without having to search for the |
 |                  | actual files.                                                             |
@@ -1958,7 +1828,9 @@ PBS/Torque/MOAB-to-LSF Translation
 
 More details about these commands are given elsewhere in this section;
 the table below is simply for your convenience in looking up various LSF
-commands. Users of other OLCF resources are likely familiar with
+commands.
+
+Users of other OLCF resources are likely familiar with
 PBS-like commands which are used by the Torque/Moab instances on other
 systems. The table below summarizes the equivalent LSF command for
 various PBS/Torque/Moab commands.
@@ -1977,7 +1849,9 @@ various PBS/Torque/Moab commands.
 +--------------------------+----------------------------------+----------------------------------------------------+
 | ``bjobs -d``             | ``showq -c``                     | Get information about completed jobs               |
 +--------------------------+----------------------------------+----------------------------------------------------+
-| ``bjobs -p``             | ``showq -i showq -b checkjob``   | Get information about pending jobs                 |
+| ``bjobs -p``             | ``showq -i``                     | Get information about pending jobs                 |
+|                          | ``showq -b``                     |                                                    |
+|                          | ``checkjob``                     |                                                    |
 +--------------------------+----------------------------------+----------------------------------------------------+
 | ``bjobs -r``             | ``showq -r``                     | Get information about running jobs                 |
 +--------------------------+----------------------------------+----------------------------------------------------+
@@ -2016,20 +1890,23 @@ Easy Mode vs. Expert Mode
 The Cluster System Management (CSM) component of the job launch
 environment supports two methods of job submission, termed “easy” mode
 and “expert” mode. The difference in the modes is where the
-responsibility for creating the LSF resource string is placed. In easy
-mode, the system software converts options such as -nnodes in a batch
-script into the resource string needed by the scheduling system. In
-expert mode, the user is responsible for creating this string and
+responsibility for creating the LSF resource string is placed.
+
+In easy mode, the system software converts options such as -nnodes in
+a batch script into the resource string needed by the scheduling system.
+In expert mode, the user is responsible for creating this string and
 options such as -nnodes cannot be used. In easy mode, you will not be
 able to use ``bsub -R`` to create resource strings. The system will
 automatically create the resource string based on your other ``bsub``
 options. In expert mode, you will be able to use ``-R``, but you will
 not be able to use the following options to ``bsub``: ``-ln_slots``,
-``-ln_mem``, ``-cn_cu``, or ``-nnodes``. Most users will want to use
-easy mode. However, if you need precise control over your job’s
-resources, such as placement on (or avoidance of) specific nodes, you
-will need to use expert mode. To use expert mode, add ``#BSUB -csm y``
-to your batch script (or ``-csm y`` to your ``bsub`` command line).
+``-ln_mem``, ``-cn_cu``, or ``-nnodes``.
+
+Most users will want to use easy mode. However, if you need precise
+control over your job’s resources, such as placement on (or avoidance
+of) specific nodes, you will need to use expert mode. To use expert
+mode, add ``#BSUB -csm y`` to your batch script (or ``-csm y`` to
+your ``bsub`` command line).
 
 Hardware Threads
 ----------------
@@ -2037,7 +1914,7 @@ Hardware Threads
 Hardware threads are a feature of the POWER9 processor through which
 individual physical cores can support multiple execution streams,
 essentially looking like one or more virtual cores (similar to
-hyperthreading on some Intel® microprocessors). This feature is often
+hyperthreading on some Intel\ |R| microprocessors). This feature is often
 called Simultaneous Multithreading or SMT. The POWER9 processor on
 Summit supports SMT levels of 1, 2, or 4, meaning (respectively) each
 physical core looks like 1, 2, or 4 virtual cores. The SMT level is
@@ -2056,6 +1933,7 @@ not available to jsrun. When listing available resources through jsrun,
 you will not see cores with hyperthreads 84-87 and 172-175. Isolating a
 socket's system services to a single core helps to reduce jitter and
 improve performance of tasks performed on the socket's remaining cores.
+
 The isolated core always operates at SMT4 regardless of the batch job's
 SMT level.
 
@@ -2083,8 +1961,7 @@ ranks) to concurrently share the resources on a single GPU. This is
 accomplished by starting an MPS server process, which funnels the work
 from multiple CUDA contexts (e.g. from multiple MPI ranks) into a single
 CUDA context. In some cases, this can increase performance due to better
-utilization of the resources. As mentioned in the `COMMON BSUB
-OPTIONS <https://www.olcf.ornl.gov/for-users/system-user-guides/summit/running-jobs/#common-bsub-options>`__
+utilization of the resources. As mentioned in the `Common bsub Options <#common-bsub-options>`__
 section above, MPS can be enabled with the ``-alloc_flags "gpumps"``
 option to bsub. The screencast below shows an example of how to start an
 MPS server process for a job. https://vimeo.com/292016149
@@ -2125,6 +2002,8 @@ for which they were allocated. Thus, a job using only 1 core on each of
 its nodes is charged the same as a job using every core and every GPU on
 each of its nodes.
 
+.. _job-launcher-jsrun:
+
 Job Launcher (jsrun)
 --------------------
 
@@ -2141,7 +2020,6 @@ sets and layout.
 
 
 .. image:: /images/summit-node-description-1.png
-   :class: normal aligncenter wp-image-775250
    :width: 85%
    :align: center
 
@@ -2193,9 +2071,6 @@ smaller groups. The following examples show how a node can be subdivided
 and how many resource set could fit on a node.
 
 .. image:: /images/summit-resource-set-subdivide.png
-   :class: normal aligncenter size-full wp-image-775849
-   :width: 600px
-   :height: 360px
    :align: center
 
 Multiple Methods to Creating Resource Sets
@@ -2208,18 +2083,14 @@ tasks access to a single GPU.
 #. 6 resource sets per node: 1 GPU, 2 cores per (Titan)
 
    .. image:: https://www.olcf.ornl.gov/wp-content/uploads/2018/03/RS-summit-example-1GPU-2Cores.png
-      :class: normal aligncenter size-full wp-image-775999
-      :width: 500px
-      :height: 300px
+      :align: center
 
    In this case, CPUs can only see single assigned GPU.
 
 #. 2 resource sets per node: 3 GPUs and 6 cores per socket
 
    .. image:: https://www.olcf.ornl.gov/wp-content/uploads/2018/03/RS-summit-example-3GPU-6Cores.png
-      :class: normal aligncenter size-full wp-image-776000
-      :width: 600px
-      :height: 360px
+      :align: center
 
    In this case, all 6 CPUs can see 3 GPUs. Code must manage CPU -> GPU
    communication. CPUs on socket0 can not access GPUs or Memory on socket1.
@@ -2227,9 +2098,7 @@ tasks access to a single GPU.
 #. Single resource set per node: 6 GPUs, 12 cores
 
    .. image:: https://www.olcf.ornl.gov/wp-content/uploads/2018/03/RS-summit-example-6GPU-12Core.png
-      :class: normal aligncenter size-full wp-image-776142
-      :width: 600px
-      :height: 360px
+      :align: center
 
    In this case, all 12 CPUs can see all node’s 6 GPUs. Code must manage CPU to
    GPU communication. CPUs on socket0 can access GPUs and Memory on socket1.
@@ -2241,16 +2110,19 @@ Designing a Resource Set
 Resource sets allow each jsrun to control how the node appears to a
 code. This method is unique to jsrun, and requires thinking of each job
 launch differently than aprun or mpirun. While the method is unique, the
-method is not complicated and can be reasoned in a few basic steps. The
-first step to creating resource sets is understanding how a code would
+method is not complicated and can be reasoned in a few basic steps.
+
+The first step to creating resource sets is understanding how a code would
 like the node to appear. For example, the number of tasks/threads per
 GPU. Once this is understood, the next step is to simply calculate the
 number of resource sets that can fit on a node. From here, the number of
-needed nodes can be calculated and passed to the batch job request. The
-basic steps to creating resource sets:
+needed nodes can be calculated and passed to the batch job request.
+
+The basic steps to creating resource sets:
 
 1) Understand how your code expects to interact with the system.
     How many tasks/threads per GPU?
+
     Does each task expect to see a single GPU? Do multiple tasks expect
     to share a GPU? Is the code written to internally manage task to GPU
     workload based on the number of available cores and GPUs?
@@ -2350,7 +2222,7 @@ For cases when the number of tasks per resource set (i.e. the ``-a``
 flag) is greater than one, the job must use ``-alloc_flags "gpumps"``.
 This allows multiple tasks to share the same GPU.
 
-  The following example images show how a single-gpu/single-task job
+The following example images show how a single-gpu/single-task job
 would be placed on a single Titan and Summit node. On Summit, the red
 box represents a resource set created by jsrun. The resource set looks
 similar to a Titan node, containing a single GPU, a single core, and
@@ -2379,9 +2251,7 @@ the ``-n`` flag is all that changed between the above single resource
 set example. The ``-n`` flag tells jsrun to create six resource sets.
 
 .. figure:: https://www.olcf.ornl.gov/wp-content/uploads/2018/03/summit-2node-1taskpergpu.png
-   :class: normal aligncenter size-full wp-image-776599
-   :width: 1318px
-   :height: 520px
+   :align: center
  
    ``jsrun -n 6 -g 1 -a 1 -c 1`` starts 6 resource sets, each indicated by
    differing colors.  Each resource contains 1 GPU, 1 Core, and memory.  The
@@ -2405,18 +2275,18 @@ Single MPI Task, single GPU per RS
 """"""""""""""""""""""""""""""""""
 
 The following example will create 12 resource sets each with 1 MPI task
-and 1 GPU. Each MPI task will have access to a single GPU. Rank 0 will
-have access to GPU 0 on the first node ( red resource set). Rank 1 will
-have access to GPU 1 on the first node ( green resource set). This
-pattern will continue until 12 resources sets have been created. The
-following jsrun command will request 12 resource sets (``-n12``) 6 per
-node (``-r6``). Each resource set will contain 1 MPI task (``-a1``),
+and 1 GPU. Each MPI task will have access to a single GPU.
+
+Rank 0 will have access to GPU 0 on the first node ( red resource set).
+Rank 1 will have access to GPU 1 on the first node ( green resource set).
+This pattern will continue until 12 resources sets have been created.
+
+The following jsrun command will request 12 resource sets (``-n12``) 6
+per node (``-r6``). Each resource set will contain 1 MPI task (``-a1``),
 1 GPU (``-g1``), and 1 core (``-c1``).
 
 .. image:: /images/summit-jsrun-example-1Core-1GPU.png
-   :class: normal aligncenter size-full wp-image-776751
-   :width: 600px
-   :height: 300px
+   :align: center
 
 ::
 
@@ -2447,9 +2317,8 @@ node ( green resource set). This pattern will continue until 12 resource
 sets have been created.
 
 .. image:: /images/summit-jsrun-example-2taskperGPU.png
-   :class: normal aligncenter size-full wp-image-777053
-   :width: 600px
-   :height: 300px
+   :align: center
+
 
 **Adding cores to the RS:** The ``-c`` flag should be used to request
 the needed cores for tasks and treads. The default -c core count is 1.
@@ -2511,9 +2380,7 @@ contain 6 MPI tasks (``-a6``), 3 GPUs (``-g3``), and 6 cores
 (``-c6``).
 
 .. image:: /images/RS-summit-example-24Tasks-3GPU-6Cores.png
-   :class: normal aligncenter size-full wp-image-792423
-   :width: 600px
-   :height: 300px
+   :align: center
 
 ::
 
@@ -2564,9 +2431,7 @@ to place threads. Without requesting additional cores, threads will be
 placed on a single core.
 
 .. image:: /images/RS-summit-example-4Threads-4Core-1GPU.png
-   :class: normal aligncenter size-full wp-image-792873
-   :width: 600px
-   :height: 300px
+   :align: center
 
 **Requesting Cores for Threads:** The ``-c`` flag should be used to
 request additional cores for thread placement. Without requesting
@@ -2635,9 +2500,7 @@ SMT4
     {0:4}
 
 .. image:: /images/FS-summit-example-MultiThreadPerCore.png
-   :class: normal aligncenter size-full wp-image-797960
-   :width: 600px
-   :height: 300px
+   :align: center
 
 Common Use Cases
 """"""""""""""""
@@ -2697,24 +2560,22 @@ information on ``jsrun``, Summit's job launch command. Many commands
 have much more information than can be easily presented here. More
 information about these commands is available via the online manual
 (i.e. ``man jsrun``). Additional LSF information can be found on `IBM’s
-website <https://www.ibm.com/developerworks/community/wikis/home?lang=en#!/wiki/New%20IBM%20Platform%20LSF%20Wiki/page/LSF%20documentation>`__,
-specifically the `Running
-Jobs <https://www.ibm.com/developerworks/community/wikis/form/anonymous/api/wiki/99245193-fced-40e5-90df-a0e9f50a0fb0/page/22e9aefe-a2e8-46e6-ad62-2ff5860f45aa/attachment/d6b2c089-eb88-48a6-80ce-acff94a7f02c/media/lsf_users_guide.pdf>`__
-and `Command
-Reference <https://www.ibm.com/developerworks/community/wikis/form/anonymous/api/wiki/99245193-fced-40e5-90df-a0e9f50a0fb0/page/22e9aefe-a2e8-46e6-ad62-2ff5860f45aa/attachment/f8aad44b-8e1c-4051-95c9-d2c80fe90cf3/media/lsf_command_ref.pdf>`__
-Documents.
+website <https://www.ibm.com/support/knowledgecenter/en/SSWRJV/product_welcome_spectrum_lsf.html>`__.
 
 CUDA-Aware MPI
 --------------
 
 CUDA-Aware MPI and GPUDirect are often used interchangeably, but they
-are distinct topics. CUDA-Aware MPI allows GPU buffers (e.g., GPU memory
-allocated with ``cudaMalloc``) to be used directly in MPI calls rather
-than requiring data to be manually transferred to/from a CPU buffer
-(e.g., using ``cudaMemcpy``) before/after passing data in MPI calls. By
-itself, CUDA-Aware MPI does not specify whether data is staged through
+are distinct topics.
+
+CUDA-Aware MPI allows GPU buffers (e.g., GPU memory allocated with
+``cudaMalloc``) to be used directly in MPI calls rather than requiring
+data to be manually transferred to/from a CPU buffer (e.g., using
+``cudaMemcpy``) before/after passing data in MPI calls. By itself,
+CUDA-Aware MPI does not specify whether data is staged through
 CPU memory or, for example, transferred directly between GPUs when
 passing GPU buffers to MPI calls. That is where GPUDirect comes in.
+
 GPUDirect is a technology that can be implemented on a system to enhance
 CUDA-Aware MPI by allowing data transfers directly between GPUs on the
 same node (peer-to-peer) and/or directly between GPUs on different nodes
@@ -2725,6 +2586,8 @@ CUDA-Aware MPI in a job, use the following argument to ``jsrun``:
 .. code::
 
     jsrun --smpiargs="-gpu" ...
+
+.. _debugging:
 
 Debugging
 =========
@@ -2740,8 +2603,9 @@ processes and memory debugging. In-depth details of DDT can be found in
 the `Official DDT User
 Guide <https://www.allinea.com/user-guide/forge/userguide.html>`__, and
 instructions for how to use it on OLCF systems can be found on the
-`Forge (DDT/MAP) Software Page </software_package/forge/>`__. DDT is the
+`Forge (DDT/MAP) Software Page <https://www.olcf.ornl.gov/software_package/forge/>`__. DDT is the
 OLCF's recommended debugging software for large parallel applications.
+
 
 GDB
 ---
@@ -2757,7 +2621,8 @@ on Summit under all compiler families:
     module load gdb
 
 Additional information about GDB usage and OLCF-provided builds can be
-found on the `GDB Software Page </software_package/gdb/>`__.
+found on the `GDB Software Page <https://www.olcf.ornl.gov/software_package/gdb/>`__.
+
 
 Valgrind
 --------
@@ -2766,12 +2631,15 @@ Valgrind
 building dynamic analysis tools. There are Valgrind tools that can
 automatically detect many memory management and threading bugs, and
 profile your programs in detail. You can also use Valgrind to build new
-tools. The Valgrind distribution currently includes five
-production-quality tools: a memory error detector, a thread error
-detector, a cache and branch-prediction profiler, a call-graph
-generating cache profiler, and a heap profiler. It also includes two
-experimental tools: a data race detector, and an instant memory leak
-detector. The Valgrind tool suite provides a number of debugging and
+tools.
+
+The Valgrind distribution currently includes five production-quality
+tools: a memory error detector, a thread error detector, a cache and
+branch-prediction profiler, a call-graph generating cache profiler,
+and a heap profiler. It also includes two experimental tools: a data
+race detector, and an instant memory leak detector.
+
+The Valgrind tool suite provides a number of debugging and
 profiling tools. The most popular is Memcheck, a memory checking tool
 which can detect many common memory errors such as:
 
@@ -2789,7 +2657,9 @@ Valgrind is available on Summit under all compiler families:
 
 Additional information about Valgrind usage and OLCF-provided builds can
 be found on the `Valgrind Software
-Page </software_package/valgrind/>`__.
+Page <https://www.olcf.ornl.gov/software_package/valgrind/>`__.
+
+.. _optimizing-and-profiling:
 
 Optimizing and Profiling
 ========================
@@ -2802,18 +2672,17 @@ codes. No extra compiling steps are required to use ``nvprof``. The
 profiler includes tracing capability as well as the ability to gather
 many performance metrics, including FLOPS. The profiler data output can
 be saved and imported into the NVIDIA Visual Profiler for additional
-graphical analysis. To use ``nvprof``, the ``cuda`` module must be
-loaded.
+graphical analysis.
+
+To use ``nvprof``, the ``cuda`` module must be loaded.
 
 ::
 
     summit> module load cuda
 
 A simple "Hello, World!" run using ``nvprof`` can be done by adding
-"nvprof" to the
-`jsrun </for-users/system-user-guides/summit/running-jobs/#job-launcher>`__
-line in your `batch
-script </for-users/system-user-guides/summit/running-jobs/#batch-scripts>`__.
+"nvprof" to the jsrun (see: :ref:`job-launcher-jsrun`)
+line in your batch script (see :ref:`batch-scripts`).
 
 ::
 
@@ -2857,16 +2726,36 @@ Documentation <http://docs.nvidia.com/cuda/profiler-users-guide/#nvprof-overview
 Score-P
 -------
 
-[ls\_content\_block id="24659" para="full"] For detailed information
-about using Score-P on Summit and the builds available, please see the
-`Score-P Software Page </software_package/score-p/>`__.
+The `Score-P <http://score-p.org/>`__ measurement infrastructure is a
+highly scalable and easy-to-use tool suite for profiling, event
+tracing, and online analysis of HPC applications. Score-P supports
+analyzing C, C++ and Fortran applications that make use of
+multi-processing (MPI, SHMEM), thread parallelism (OpenMP, PThreads) and
+accelerators (CUDA, OpenCL, OpenACC) and combinations.
+
+For detailed information about using Score-P on Summit and the
+builds available, please see the
+`Score-P Software Page. <https://www.olcf.ornl.gov/software_package/score-p/>`__
 
 Vampir
 ------
 
-[ls\_content\_block id="24496" para="full"] For detailed information
-about using Vampir on Summit and the builds available, please see the
-`Vampir Software Page </software_package/vampir/>`__.
+`Vampir <http://vampir.eu/>`__ is a software performance visualizer focused on highly
+parallel applications. It presents a unified view on an application
+run including the use of programming paradigms like MPI, OpenMP,
+PThreads, CUDA, OpenCL and OpenACC. It also incorporates file I/O,
+hardware performance counters and other performance data sources.
+Various interactive displays offer detailed insight into the performance
+behavior of the analyzed application. Vampir’s scalable analysis
+server and visualization engine enable interactive navigation of
+large amounts of performance data. `Score-P <https://olcf.ornl.gov/software_package/score-p>`__
+and `TAU <https://www.olcf.ornl.gov/software_package/tau>`__ generate OTF2
+trace files for Vampir to visualize.
+
+For detailed information about using Vampir on Summit and the builds available,
+please see the `Vampir Software Page <https://www.olcf.ornl.gov/software_package/vampir/>`__.
+
+.. _known-issues:
 
 Known Issues
 ============
@@ -2881,11 +2770,6 @@ Adding ``FAULT_TOLERANCE=1`` in your individual ``~/.jsm.conf`` file,
 will result in LSF jobs failing to successfully start. A bug has been
 filed with IBM to address this issue.
 
-CSM-based launch is not currently supported
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Users should not use ``JSMD_LAUNCH_MODE=csm`` in their ``~/.jsm.conf``
-file at this time. A bug has been filed with IBM to address this issue.
 
 Spindle is not currently supported
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -2923,11 +2807,13 @@ more detail information about the MPI communication of your job. To
 gather MPI tracing data, you can set
 ``export OMPI_LD_PRELOAD_POSTPEND=$OLCF_SPECTRUM_MPI_ROOT/lib/libmpitrace.so``
 in your environment. This will generate profile files with timings for
-the individual processes of your job. In addition, to debug slow startup
-JSM provides the option to create a progress file. The file will show
-information that can be helpful to pinpoint if a specific node is
-hanging or slowing down the job step launch. To enable it, you can use:
-``jsrun --progress ./my_progress_file_output.txt``.
+the individual processes of your job.
+
+In addition, to debug slow startup JSM provides the option to create a
+progress file. The file will show information that can be helpful to
+pinpoint if a specific node is hanging or slowing down the job step
+launch. To enable it, you can use: ``jsrun --progress
+./my_progress_file_output.txt``.
 
 -a flag ignored when using a jsrun resource set file with -U
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -2977,8 +2863,11 @@ jsrun explicit resource file (ERF) allocates incorrect resources
 
 When using an ERF that requests cores on a compute node’s second socket
 (hardware threads 88-171), the set of cores allocated on the second
-socket are shifted upwards by (1) physical core. For example: The
-following ERF requests the first physical core on each socket:
+socket are shifted upwards by (1) physical core.
+
+For example:
+
+The following ERF requests the first physical core on each socket:
 
 ::
 
@@ -2995,51 +2884,35 @@ physical core, allocating 92-95 instead of the specified 88-91.
 
     Task 1 ( 1/2, 1/2 ) is bound to cpu[s] 92-95 on host h36n03 with OMP_NUM_THREADS=1 and with OMP_PLACES={92:4}
 
-Job hangs in MPI\_Finalize
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-There is a known issue in Spectrum MPI 10.2.0.10 provided by the
-``spectrum-mpi/10.2.0.10-20181214`` modulefile that causes a hang in
-``MPI_Finalize`` when ROMIO 3.2.1 is being used and the
-``darshan-runtime`` modulefile is loaded. The recommended and default
-Spectrum MPI version as of March 3, 2019 is Spectrum MPI 10.2.0.11
-provided by the ``spectrum-mpi/10.2.0.11-20190201`` modulefile. If you
-are seeing this issue, please make sure that you are using the latest
-version of Spectrum MPI. If you need to use a previous version of
-Spectrum MPI, your options are:
-
--  Unload the ``darshan-runtime`` modulefile.
--  Alternatively, set ``export OMPI_MCA_io=romio314`` in your
-   environment to use the previous version of ROMIO. Please note that
-   this version has known performance issues with parallel HDF5 (see
-   "Slow performance using parallel HDF5" issue below).
 
 jsrun latency priority capitalization allocates incorrect resources
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-jsrun's latency priority (\`-l\`) flag can be given lowercase values
-(i.e. gpu-cpu) or capitalized values (i.e. GPU-CPU). Expected behavior:
+jsrun's latency priority (``-l``) flag can be given lowercase values
+(i.e. gpu-cpu) or capitalized values (i.e. GPU-CPU).
 
-When capitalized, jsrun should not compromise on the resource layout,
-and will wait to begin the job step until the ideal resources are
-available. When given a lowercase value, jsrun will not wait, but
-initiate the job step with the most ideal layout as is available at the
-time. This also means that when there's no resource contention, such as
-running a single job step at a time, capitalization should not matter,
-as they should both yield the same resources.
+**Expected behavior**:
 
-Actual behavior:
+    When capitalized, jsrun should not compromise on the resource layout,
+    and will wait to begin the job step until the ideal resources are
+    available. When given a lowercase value, jsrun will not wait, but
+    initiate the job step with the most ideal layout as is available at the
+    time. This also means that when there's no resource contention, such as
+    running a single job step at a time, capitalization should not matter,
+    as they should both yield the same resources.
 
-Capitalizing the latency priority value may allocate incorrect
-resources, or even cause the job step to fail entirely.
+**Actual behavior**:
 
-Recommendation:
+    Capitalizing the latency priority value may allocate incorrect
+    resources, or even cause the job step to fail entirely.
 
-It is currently recommended to only use the lowercase values to (-l /
---latency\_priority). The system default is: gpu-cpu,cpu-mem,cpu-cpu.
-Since this ordering is used implicitly when the -l flag is omitted, this
-issue only impacts submissions which explicitly include a latency
-priority in the jsrun command.
+**Recommendation**:
+
+    It is currently recommended to only use the lowercase values to (-l /
+    --latency\_priority). The system default is: gpu-cpu,cpu-mem,cpu-cpu.
+    Since this ordering is used implicitly when the -l flag is omitted, this
+    issue only impacts submissions which explicitly include a latency
+    priority in the jsrun command.
 
 Error when using complex datatypes with MPI Collectives and GPUDirect
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -3060,27 +2933,58 @@ Collectives and GPUDirect:
     [h35n05:113509] coll:ibm:allreduce: GPU awareness in PAMI requested. It is not safe to defer to another component.
 
 This is a known issue with libcoll and the SMPI team is working to
-resolve it. In the mean time, a workaround is to treat the complex array
+resolve it. In the meantime, a workaround is to treat the complex array
 as a real array with double the length if the operation is not
 MPI\_Prod. Note: This requires code modification. An alternative
 workaround is to disable IBM optimized collectives. This will impact
 performance however but requires no code changes and should be correct
 for all MPI\_Allreduce operations. You can do this by adding the
 following option to your jsrun command line:
-``--smpiargs="-HCOLL -FCA -mca coll_hcoll_enable 1 -mca coll_hcoll_np 0 -mca coll ^basic -mca coll ^ibm -async"``
+``--smpiargs="-HCOLL -FCA -mca coll_hcoll_enable 1 -mca coll_hcoll_np 0
+-mca coll ^basic -mca coll ^ibm -async"``
 
 Resolved Issues
 ---------------
+
+The following issues were resolved with the July 16, 2019 software upgrade:
+
+
+Default nvprof setting clobbers ``LD_PRELOAD``, interfering with SpectrumMPI (Resolved: July 16, 2019)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+CUDA 10 adds a new feature to profile CPU side OpenMP constructs (see
+https://docs.nvidia.com/cuda/profiler-users-guide/index.html#openmp).
+This feature is enabled by default and has a bug which will cause it to
+overwrite the contents of ``LD_PRELOAD``. SpectrumMPI requires a library
+(``libpami_cuda_hook.so``) to be preloaded in order to function. All MPI
+applications on Summit will break when run in nvprof with default
+settings. The workaround is to disable the new OpenMP profiling feature:
+
+::
+
+    $ jsrun  nvprof --openmp-profiling off
+
+CSM-based launch is not currently supported (Resolved: July 16, 2019)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Users should not use ``JSMD_LAUNCH_MODE=csm`` in their ``~/.jsm.conf``
+file at this time. A bug has been filed with IBM to address this issue.
+
+--------------
 
 Parallel I/O crash on GPFS with latest MPI ROMIO
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 In some cases with large number of MPI processes when there is not
 enough memory available on the compute node, the Abstract-Device
-Interface for I/O (ADIO) driver can break with this error: Out of memory
+Interface for I/O (ADIO) driver can break with this error:
+
+Out of memory
 in file
 ../../../../../../../opensrc/ompi/ompi/mca/io/romio321/romio/adio/ad\_gpfs/ad\_gpfs\_rdcoll.c,
-line 1178 The solution is to declare in your submission script:
+line 1178
+
+The solution is to declare in your submission script:
 
 ::
 
@@ -3088,7 +2992,11 @@ line 1178 The solution is to declare in your submission script:
 
 This command will use non-blocking MPI calls and not MPI\_Alltoallv for
 exchange of data between the MPI I/O aggregators which requires
-significant more amount of memory. The following issues were resolved
+significant more amount of memory.
+
+--------------
+
+The following issues were resolved
 with the May 21, 2019 upgrade:
 
 Issue with CUDA Aware MPI with >1 resource set per node (Resolved: May 21, 2019)
@@ -3154,6 +3062,25 @@ job. Please note that hints must be tuned for a specific job.
     cb_buffer_size 16777216
     cb_nodes 2
 
+Job hangs in MPI\_Finalize (Resolved: March 12, 2019)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+There is a known issue in Spectrum MPI 10.2.0.10 provided by the
+``spectrum-mpi/10.2.0.10-20181214`` modulefile that causes a hang in
+``MPI_Finalize`` when ROMIO 3.2.1 is being used and the
+``darshan-runtime`` modulefile is loaded. The recommended and default
+Spectrum MPI version as of March 3, 2019 is Spectrum MPI 10.2.0.11
+provided by the ``spectrum-mpi/10.2.0.11-20190201`` modulefile. If you
+are seeing this issue, please make sure that you are using the latest
+version of Spectrum MPI. If you need to use a previous version of
+Spectrum MPI, your options are:
+
+-  Unload the ``darshan-runtime`` modulefile.
+-  Alternatively, set ``export OMPI_MCA_io=romio314`` in your
+   environment to use the previous version of ROMIO. Please note that
+   this version has known performance issues with parallel HDF5 (see
+   "Slow performance using parallel HDF5" issue below).
+
 --------------
 
 The following issues were resolved with the February 19, 2019 upgrade:
@@ -3198,20 +3125,23 @@ user environment ``PAMI_PMIX_USE_OLD_MAPCACHE=1`` and
 CUDA 10.1 Known Issues
 ----------------------
 
-Default nvprof setting clobbers ``LD_PRELOAD``, interfering with SpectrumMPI
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Intermittent failures with \`nvprof\` (Identified: July 11, 2019)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-CUDA 10 adds a new feature to profile CPU side OpenMP constructs (see
-https://docs.nvidia.com/cuda/profiler-users-guide/index.html#openmp).
-This feature is enabled by default and has a bug which will cause it to
-overwrite the contents of ``LD_PRELOAD``. SpectrumMPI requires a library
-(``libpami_cuda_hook.so``) to be preloaded in order to function. All MPI
-applications on Summit will break when run in nvprof with default
-settings. The workaround is to disable the new OpenMP profiling feature:
+We are seeing an intermittent issue that causes an error when
+profiling a code using `nvprof` from CUDA 10.1.168. We have filed
+a bug with NVIDIA (NV bug 2645669) and they have reproduced the
+problem. An update will be posted when a fix becomes available.
+
+When this issue is encountered, the profiler will exit with the
+following error message:
 
 ::
 
-    $ jsrun  nvprof --openmp-profiling off
+    ==99756== NVPROF is profiling process 99756, command: ./a.out
+    ==99756== Error: Internal profiling error 4306:999.
+    ======== Profiling result:
+    ======== Metric result:
 
 MPI annotation may cause segfaults with applications using MPI\_Init\_thread
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -3244,7 +3174,9 @@ this is compiled as C++11: in ``complex.h`` and ``complex.inl``,
 annotate the functions that deal with ``std::complex`` as
 ``__host__ __device__`` (they are the ones that are annotated only as
 ``__host__`` right now), and then compile with
-``--expt-relaxed-constexpr``. Users that encounter this issue, can use
+``--expt-relaxed-constexpr``.
+
+Users that encounter this issue, can use
 the following workaround. copy the entirety of
 ``${OLCF_CUDA_ROOT}/include/thrust`` to a private location, make the
 above edits to ``thrust/complex.h`` and
@@ -3264,26 +3196,31 @@ Breakpoints in CUDA kernels recommendation
 ``cuda-gdb`` allows for breakpoints to be set inside CUDA kernels to
 inspect the program state on the GPU. This can be a valuable debugging
 tool but breaking inside kernels does incur significant overhead that
-should be included in your expected runtime. The time required to hit a
-breakpoint inside a CUDA kernel depends on how many CUDA threads are
-used to execute the kernel. It may take several seconds to stop at
-kernel breakpoints for very large numbers of threads. For this reason,
-it is recommended to choose breakpoints judiciously, especially when
-running the debugger in "batch" or "offline" mode where this overhead
-may be misperceived as the code hanging. If possible, debugging a
-smaller problem size with fewer active threads can be more pleasant.
+should be included in your expected runtime.
+
+The time required to hit a breakpoint inside a CUDA kernel depends on
+how many CUDA threads are used to execute the kernel. It may take
+several seconds to stop at kernel breakpoints for very large numbers
+of threads. For this reason, it is recommended to choose breakpoints
+judiciously, especially when running the debugger in "batch" or
+"offline" mode where this overhead may be misperceived as the code
+hanging. If possible, debugging a smaller problem size with fewer
+active threads can be more pleasant.
+
+--------------
+
+.. _training-system-ascent:
 
 Training System (Ascent)
 ========================
 
-**NOTE:** Ascent is a training system that is not intended to be used as
-an OLCF user resource. Access to the system is only obtained through
-OLCF training events.
+.. note::
+    Ascent is a training system that is not intended to be used as
+    an OLCF user resource. Access to the system is only obtained through
+    OLCF training events.
 
 Ascent is an 18-node stand-alone system with the same architecture as
-Summit (see `**Summit
-Nodes** <https://www.olcf.ornl.gov/for-users/system-user-guides/summit/summit-user-guide/#system-overview>`__
-section above), so most of this Summit User Guide can be referenced for
+Summit (see :ref:`summit-nodes` section above), so most of this Summit User Guide can be referenced for
 Ascent as well. However, aside from the number of compute nodes, there
 are other differences between the two systems. Most notably, Ascent sits
 in the NCCS Open Security Enclave, which is subject to fewer
@@ -3333,32 +3270,38 @@ nodes. Under ``/gpfs/wolf/[projid]``, there are 3 directories:
 Obtaining Access to Ascent
 --------------------------
 
-**NOTE:** Ascent is a training system that is not intended to be used as
-an OLCF user resource. Access to the system is only obtained through
-OLCF training events.
+.. note::
+    Ascent is a training system that is not intended to be used as
+    an OLCF user resource. Access to the system is only obtained through
+    OLCF training events.
 
 This sub-section describes the process of obtaining access to Ascent for
 an OLCF training event. Please follow the steps below to request access.
 
-Step 1: Fill out and submit an `**OLCF Account Application Form** <https://www.olcf.ornl.gov/for-users/documents-forms/olcf-account-application>`__
+Step 1: Fill out and submit an `OLCF Account Application Form <https://www.olcf.ornl.gov/for-users/documents-forms/olcf-account-application>`__
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Enter the requested information into the form. For "Project
 Information", enter the following:
 
 .. image:: /images/Ascent_Account_Application_1.png
+   :align: center
 
 For "Project Information", enter the following:
 
 .. image:: /images/Ascent_Account_Application_2.png
+   :align: center
 
 For "Account Information", enter the following:
 
 .. image:: /images/Ascent_Account_Application_3.png
+   :align: center
 
-**NOTE:** After submitting your application, it will need to pass
-through the approval process. Depending on when you submit, approval
-might not occur until the next business day.
+
+.. note::
+    After submitting your application, it will need to pass
+    through the approval process. Depending on when you submit, approval
+    might not occur until the next business day.
 
 Step 2: Set Your XCAMS/UCAMS Password
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -3374,13 +3317,92 @@ Logging In to Ascent
 --------------------
 
 To log in to Ascent, please use your XCAMS/UCAMS username and password:
+
 ``$ ssh USERNAME@login1.ascent.olcf.ornl.gov``
 
-**NOTE:** You do not need to use an RSA token to log in to Ascent.
-Please use your XCAMS/UCAMS username and password (which is different
-from the username and PIN + RSA token code used to log in to other OLCF
-systems such as Summit).
+.. note::
+    You do not need to use an RSA token to log in to Ascent.
+    Please use your XCAMS/UCAMS username and password (which is different
+    from the username and PIN + RSA token code used to log in to other OLCF
+    systems such as Summit).
 
-**NOTE:** It will take ~5 minutes for your directories to be created, so
-if your account was just created and you log in and you do not have a
-home directory, this is likely the reason.
+.. note::
+    It will take ~5 minutes for your directories to be created, so
+    if your account was just created and you log in and you do not have a
+    home directory, this is likely the reason.
+
+Preparing For Frontier
+======================
+
+This section of the Summit User Guide is intended to show current OLCF
+users how to start preparing their applications to run on the upcoming
+Frontier system. We will continue to add more topics to this section in
+the coming months. Please see the topics below to get started.
+
+HIP
+---
+
+HIP (Heterogeneous-Compute Interface for Portability) is a C++ runtime
+API that allows developers to write portable code to run on AMD and NVIDIA
+GPUs. It is an interface that uses the underlying Radeon Open Compute (ROCm)
+or CUDA platform that is installed on a system. The API is similar to CUDA
+so porting existing codes from CUDA to HIP should be fairly straightforward
+in most cases. In addition, HIP provides porting tools which can be used to
+help port CUDA codes to the HIP layer, with no overhead compared to the
+original CUDA application. HIP is not intended to be a drop-in replacement
+for CUDA, so some manual coding and performance tuning work should be
+expected to complete the port.
+
+Key features include:
+
+- HIP is a thin layer and has little or no performance impact over
+  coding directly in CUDA.
+
+- HIP allows coding in a single-source C++ programming language including
+  features such as templates, C++11 lambdas, classes, namespaces, and more.
+
+- The “hipify” tools automatically convert source from CUDA to HIP.
+
+- Developers can specialize for the platform (CUDA or HIP) to tune for
+  performance or handle tricky cases.
+
+Using HIP on Summit
+-------------------
+
+As mentioned above, HIP can be used on systems running on either the ROCm
+or CUDA platform, so OLCF users can start preparing their applications for
+Frontier today on Summit. To use HIP on Summit, you must load the HIP module:
+
+::
+
+    $ module load hip
+
+This will automatically load the appropriate CUDA module as well.
+
+Learning to Program with HIP
+----------------------------
+
+The HIP API is very similar to CUDA, so if you are already familiar with
+using CUDA, the transition to using HIP should be fairly straightforward.
+Whether you are already familiar with CUDA or not, the best place to start
+learning about HIP is this Introduction to HIP webinar that was recently
+given by AMD:
+
+- **Introduction to AMD GPU Programming with HIP**:
+  (`slides <https://www.exascaleproject.org/wp-content/uploads/2017/05/ORNL_HIP_webinar_20190606_final.pdf>`__ | `recording <https://youtu.be/3ZXbRJVvgJs>`__)
+
+
+More useful resources, provided by AMD, can be found here:
+
+- `HIP Programming Guide <https://rocm-documentation.readthedocs.io/en/latest/Programming_Guides/HIP-GUIDE.html>`__
+
+- `HIP API Documentation <https://rocm-documentation.readthedocs.io/en/latest/ROCm_API_References/HIP-API.html>`__
+
+- `HIP Porting Guide <https://github.com/ROCm-Developer-Tools/HIP/blob/master/docs/markdown/hip_porting_guide.md>`__
+
+The OLCF is currently adding some simple HIP tutorials here as well:
+
+- OLCF Tutorials – `Simple HIP Examples <https://github.com/olcf-tutorials/simple_HIP_examples>`__
+
+Please check back to this section regularly as we will continue
+to add new content for our users.
