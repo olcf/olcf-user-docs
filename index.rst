@@ -49,6 +49,12 @@ Data
 Software
 ---------
 
+.. toctree::
+   :maxdepth: 2
+
+   software/index
+
+
 Training
 ---------
 
