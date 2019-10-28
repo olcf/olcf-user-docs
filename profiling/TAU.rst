@@ -332,3 +332,20 @@ Paraprof
 .. image:: /images/tau_mpi_context_event.png
    :align: center
 
+- Options -> Show Derived Metric Panel, select the metrics and then operator and then click Apply. Then uncheck the Show Derived Metric
+
+.. image:: /images/tau_mpi_derived_metric.png
+   :align: center
+
+- Click on the new metric, PAPI_TOT_INS/PAPI_TOT_CYC
+
+.. image:: /images/tau_mpi_ipc.png
+   :align: center
+
+- Click on the label mean:
+
+.. image:: /images/tau_mpi_mean_ipc.png
+   :align: center
+
+For the non-MPI routines/calls, the IPC that is lower than 1.5 means that there is a potential for performance improvement.
+
