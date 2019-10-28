@@ -11,7 +11,8 @@ efficiently use OLCF compute and storage resources.
 
 Have an idea to improve this documentation? See :doc:`contributing/index`.
 
-Have a question? We're here to help -- help\@olcf.ornl.gov.
+Have a question? Write to us at -- help\@olcf.ornl.gov -- and consider the
+guidelines for :ref:`getting-help`.
 
 Accounts
 ---------
