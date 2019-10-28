@@ -104,6 +104,8 @@ get faster resolution by supporting a few best practices:
   slow down response time and make finding relevant information harder thereby
   slowing down time to resolution.
 - Let us know if you've solved the issue yourself (and let us know what worked!)
+- MOST IMPORTANT: do not hesitate to contact us (help@olcf.ornl.gov); we will
+  work through the details with you.
 
 
 Additional Resources
