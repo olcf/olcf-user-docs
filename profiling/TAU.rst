@@ -349,3 +349,19 @@ Paraprof
 
 For the non-MPI routines/calls, the IPC that is lower than 1.5 means that there is a potential for performance improvement.
 
+- Menu Windows -> 3D Visualization (3D demands OpenGL)
+- Exclusive Time and Exclusive Floating operations
+
+
+.. image:: /images/tau_mpi_3d_fp_ops.png
+   :align: center
+
+- Menu Windows -> 3D Visualization (3D demands OpenGL)
+- Exclusive Time and Exclusive Total Instructions
+
+.. image:: /images/tau_mpi_3d_tot_ins.png
+   :align: center
+
+You can explroe the various options
+
+
