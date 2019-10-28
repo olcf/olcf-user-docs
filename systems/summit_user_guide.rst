@@ -1526,7 +1526,7 @@ time as ``job2``. The project associated with ``job1`` is over its
 allocation, while the project for ``job2`` is not. The batch system will
 consider ``job2`` to have been waiting for a longer time than ``job1``.
 Additionally, projects that are at 125% of their allocated time will be
-limited to only one running job at a time. The adjustment to the
+limited to only 3 running jobs at a time. The adjustment to the
 apparent submit time depends upon the percentage that the project is
 over its allocation, as shown in the table below:
 
