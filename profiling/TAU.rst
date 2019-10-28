@@ -362,6 +362,38 @@ For the non-MPI routines/calls, the IPC that is lower than 1.5 means that there 
 .. image:: /images/tau_mpi_3d_tot_ins.png
    :align: center
 
-You can explroe the various options
+You can explore the various options
+
+Which loops consume most of the time?
+=====================================
+
+- Create a file called for example select.tau with the content:
+
+.. code::
+
+	BEGIN_INSTRUMENT_SECTION
+	loops routine="#"
+	END_INSTRUMENT_SECTION
+
+Then declare the options
+
+.. code::
+
+	export TAU_OPTIONS="-optTauSelectFile=select.tau -optLinking=lpnetcdf -optVerbose"
+
+- Do not forget to unset TAU_OPTIONS when not necessary
+- Execute as previously
 
 
+- Now you can see the duration of all the loops
+
+.. image:: /images/tau_mpi_loops1.png
+   :align: center
+
+
+- Select Options -> Select Metric… -> Exclusive… -> PAPI_TOT_INS/PAPI_TOT_CYC
+
+.. image:: /images/tau_mpi_loops2.png
+   :align: center
+
+The loops with less than 1.5 IPC can be improved.
