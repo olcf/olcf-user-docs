@@ -68,10 +68,25 @@ I no longer need my account. Who should I inform and what should I do with my OL
 
 Please inform the Accounts Team via email at accounts@ccs.ornl.gov and
 return the RSA SecurID Token to the following address depending on the
-mail service: *For US mail:* *Accounts Team Oak Ridge National
-Laboratory PO Box 2008, MS 6014* *Oak Ridge, TN 37830-6014* For
-FedEx/UPS: *Accounts Team Oak Ridge National Laboratory 1 Bethel Valley
-Road, MS 6014* *Oak Ridge, TN 37831-6014*
+mail service: 
+
+For US Mail:
+
+::
+
+	Accounts Team
+	Oak Ridge National Laboratory
+	PO Box 2008, MS 6014
+	Oak Ridge, TN 37830-6014
+
+For FedEx/UPS:
+
+::
+
+	Accounts Team
+	Oak Ridge National Laboratory
+	1 Bethel Valley Road, MS 6014
+	Oak Ridge, TN 37831-6014
 
 My SecurID token is broken/expired. What should I do?
 =======================================================
