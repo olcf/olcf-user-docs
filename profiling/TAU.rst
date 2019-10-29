@@ -204,7 +204,7 @@ Instrumenting the serial version of MiniWeather:
 	- If you do not declare the TAU_METRICS variable, then by default is used the TIME and the profiling files are not in a folder When the execution ends, there will be one file per process, called profile.X.Y.Z, in this case is just one file, called profile.0.0.0
 
 - We can export a text file with some information through pprof tool or visualize through paraprof
-
+- If an application has no MPI, use the arguments --smpiargs="off" for the jsrun
 
 .. code::
 
@@ -397,3 +397,98 @@ Then declare the options
    :align: center
 
 The loops with less than 1.5 IPC can be improved.
+
+MPI+OpenMP
+==========
+
+The difference with before is the TAU Makefile
+
+.. code::
+
+	export TAU_MAKEFILE=/sw/summit/tau/tau2//ibm64linux/lib/Makefile.tau-pgi-papi-mpi-cupti-pdt-openmp-pgi
+        make openmp
+
+
+- Now you can see the duration of parallelfor loops and decide when they should be improved or even removed.
+
+.. image:: /images/tau_openmp1.png
+   :align: center
+
+
+GPU
+===
+
+- For the current TAU version, you should use the tau_exec and not the TAU wrappers only
+- Use the mpic++ compiler in the Makefile
+- Execute: make openacc
+- Add the following in your submission file:
+
+.. code:: 
+
+	export TAU_METRICS=TIME
+	export TAU_PROFILE=1
+	export TAU_TRACK_MESSAGE=1
+	export TAU_COMM_MATRIX=1
+	jsrun -n 6 -r 6 --smpiargs="-gpu" -g 1  tau_exec -T mpi,pgi,pdt -openacc ./miniWeather_mpi_openacc
+
+
+- CUPTI metrics for OpenACC are not supported yet for TAU
+
+
+- We can observe the duration of the OpenACC calls
+
+.. image:: /images/tau_openacc.png
+   :align: center
+
+- From the main window right click one label and select “Show User Event Statistics Window”. Then, we can see the data transfered to the devices
+
+.. image:: /images/tau_mpi_openacc_data.png
+   :align: center
+
+CUDA Profiling Tools Interface 
+===============================
+
+The CUDA Profiling Tools Interface (CUPTI) is used by profiling and tracing tools that target CUDA applications. 
+
+- https://docs.nvidia.com/cupti/Cupti/r_main.html#metrics-reference
+
+.. image:: /images/cupti.png
+   :align: center
+
+- Demonstration with a matrix multiplication example with MPI+OpenMP
+
+.. code::
+
+	export TAU_METRICS=TIME,achieved_occupancy
+	jsrun -n 2 -r 2 -g 1  tau_exec -T mpi,pdt,papi,cupti,openmp -ompt -cupti  ./add
+
+- Output folders
+
+.. code::
+
+	MULTI__TAUGPU_TIME
+	MULTI__CUDA.Tesla_V100-SXM2-16GB.domain_d.active_warps
+	MULTI__CUDA.Tesla_V100-SXM2-16GB.domain_d.active_cycles
+	MULTI__achieved_occupancy
+
+- Achieved_occupancy=CUDA.Tesla_V100-SXM2-16GB.domain_d.active_warps/CUDA.Tesla_V100-SXM2-16GB.domain_d.active_cycles
+
+- You can see the first windows that opens after you pack the profiling files and execute paraprof. You can see that the profiling data are not across all the processes, it depends if a routine (color) is executed across all of them or not. 
+
+.. image:: /images/cupti_main.png
+   :align: center
+
+.. image:: /images/cupti_main_window.png
+   :align: center
+
+- Select the metric achieved occupancy
+
+.. image:: /images/cupti_occupancy.png
+   :align: center
+
+- Click on the colored bar
+- The achieved occupancy for this simple benchmark is 6.2%
+
+
+.. image:: /images/cupti_occupancy_kernel.png
+   :align: center
