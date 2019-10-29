@@ -492,3 +492,85 @@ The CUDA Profiling Tools Interface (CUPTI) is used by profiling and tracing tool
 
 .. image:: /images/cupti_occupancy_kernel.png
    :align: center
+
+
+- Similar approach for other metrics, not all of them can be used.
+- TAU provides a tool called tau_cupti_avail where we can see the list of available metrics, then we have to figured out which CUPTI metrics use these ones.
+
+Tracing
+=======
+
+
+- Activate tracing and declare the data format to OTF2. It supports only MPI and OpenSHMEM applications	
+
+.. code::
+
+	export TAU_TRACE=1
+	export TAU_TRACE_FORMAT=otf2
+
+- Use Vampir for Visualization
+
+
+Selective Instrumentation
+=========================
+
+- For example, do not instrument routine sort*(int *)
+	- Create a file select.tau
+
+.. code::
+
+	BEGIN_EXCLUDE_LIST
+	void sort_#(int *)
+	END_EXCLUDE_LIST
+
+- Declare the TAU_OPTIONS
+
+.. code::
+
+	export TAU_OPTIONS=“-optTauSelectFile=select.tau”
+
+- Now, the routine sort*(int *) is excluded from the instrumentation
+
+Dynamic Phase
+=============
+
+- Create a file called phase.tau
+
+.. code::
+
+	BEGIN_INSTRUMENT_SECTION
+	dynamic phase name=“phase1” file=“miniWeather_mpi.cpp” line=300 to line=327
+	END_INSTRUMENT_SECTION
+
+- Declare the TAU_OPTIONS
+
+.. code::
+
+        export TAU_OPTIONS=“-optTauSelectFile=phase.tau”
+
+- Now when you instrument your application, the phase called phase 1 are the lines 300-327 of the fiile miniWeather_mpi.cpp. Every call will be instrumented. This could create signiificant overhead, thus you should be careful when you use it.
+
+Static Phase
+============
+
+
+- Create a file called phases.tau
+
+.. code::
+
+        BEGIN_INSTRUMENT_SECTION
+	static phase name="phase1" file="miniWeather_mpi.cpp" line=300 to line=327
+	static phase name="phase2" file="miniWeather_mpi.cpp" line=333 to line=346
+        END_INSTRUMENT_SECTION
+
+- Declare the TAU_OPTIONS
+
+.. code::
+
+        export TAU_OPTIONS=“-optTauSelectFile=phases.tau”
+
+- Now, when you use paraprof, you can see different colors for the phase1 and phase2
+
+.. image:: /images/tau_static_phases.png
+   :align: center
+
