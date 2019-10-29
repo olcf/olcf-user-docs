@@ -1888,6 +1888,8 @@ functionality.
 | ``#BSUB -alloc_flags gpumps``   | No equivalent (set via environment variable)   | Enable multiple MPI tasks to simultaneously access a GPU   |
 +---------------------------------+------------------------------------------------+------------------------------------------------------------+
 
+.. _easy_mode_v_expert_mode:
+
 Easy Mode vs. Expert Mode
 -------------------------
 
