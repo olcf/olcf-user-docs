@@ -9,18 +9,20 @@ The instrumentation can be done by inserting in the source code using an automat
 based on the Program Database Toolkit (PDT), on the compiler instrumentation, 
 or manually using the instrumentation API.
 
-TAU is installed with Program Database Toolkit (PDT) on Summit. PDT is a framework for analyzing source code written in several programming
+Webpage: https://www.cs.uoregon.edu/research/tau/home.php
+
+TAU is installed with `Program Database Toolkit (PDT) <https://www.cs.uoregon.edu/research/pdt/home.php>`_ on Summit. PDT is a framework for analyzing source code written in several programming
 languages. In this section, some approaches for profiling and tracing will be presented.
 
 In the most cases, we need to use wrappers to recompile the application:
 
-- For C: replace the compiler with tau_cc.sh
-- For C++: replace the compiler with tau_cxx.sh
-- For Fortran: replace the compiler with tau_f90.sh/tau_f77.sh
+- For C: replace the compiler with the TAU wrapper ``tau_cc.sh``
+- For C++: replace the compiler with the TAU wrapper ``tau_cxx.sh``
+- For Fortran: replace the compiler with the TAU wrapper ``tau_f90.sh/tau_f77.sh``
 
-If you compile your application with non TAU wrapper, then you can profile some basic functionalities with *tau_exec*, for example:
+If you **don't** compile your application with a TAU wrapper, then you can profile some basic functionalities with *tau_exec*, for example:
 
-..code::
+.. code::
 
 	jsrun -n 4 –r 4 –a 1 –c 1 tau_exec -T mpi ./test
 
@@ -104,8 +106,8 @@ TAU Compile-Time Environment Variables
 
 For the following examples, we'll use the MiniWeather application https://github.com/mrnorman/miniWeather
 
-Prepare the application:
-------------------------
+Prepare the application the MiniWeather:
+----------------------------------------
 
 .. code::
 
@@ -137,8 +139,8 @@ We'll use the PGI compiler, this application supports serial, MPI, MPI+OpenMP, a
 In order to use TAU for each case, follow the instructions below:
 
 
-Preparation
-===========
+Modifications
+=============
 
 
 - Edit the makefile and replace *mpic++* with *tau_cxx.sh*
@@ -170,8 +172,8 @@ The available Makefiles are named with the used compiler and are located in:
         /sw/summit/tau/tau2//ibm64linux/lib/Makefile.tau-pgi_memory_manager-papi-mpi-cupti-pdt-pgi
 
 
-Instrumenting the serial version of MiniWeather:
-================================================
+Instrumenting the serial version of MiniWeather
+-----------------------------------------------
 
 
 - For a serial application we should not declare a Makefile with a programming model such as MPI, OpenMP. However, as the source code includes MPI header that are not excluded during the compilation of the serial version, we should declare a Makefile with MPI. Moreover, with TAU_OPTIONS below, we add options to the linker.
@@ -200,11 +202,10 @@ Instrumenting the serial version of MiniWeather:
 	time jsrun -n 1 -r 1 -a 1 -c 1 -g 1  ./miniWeather_serial
 
 
-- When the execution finishes, there is one folder for each TAU_METRICS declaration with the format MULTI__
+- When the execution finishes, there is one folder for each TAU_METRICS declaration with the format ``MULTI__``
 	- If you do not declare the TAU_METRICS variable, then by default is used the TIME and the profiling files are not in a folder When the execution ends, there will be one file per process, called profile.X.Y.Z, in this case is just one file, called profile.0.0.0
-
 - We can export a text file with some information through pprof tool or visualize through paraprof
-- If an application has no MPI, use the arguments --smpiargs="off" for the jsrun
+- If an application has no MPI, use the argument --smpiargs="off" for the jsrun
 
 .. code::
 
@@ -253,8 +254,8 @@ Instrumenting the serial version of MiniWeather:
 
 We will present paraprof tool for the MPI version of the MiniWeather.
 
-Instrumenting the MPI version of MiniWeather:
-================================================
+Instrumenting the MPI version of MiniWeather
+--------------------------------------------
 
 - For the MPI version we should use a makefile with MPI. The conpilation could fail if the makefile supports MPI+OpenMP but the code doesn't include any OpenMP calls. Moreover, with TAU_OPTIONS below, we add options to the linker.
 
@@ -276,13 +277,76 @@ Instrumenting the MPI version of MiniWeather:
         export TAU_CALLPATH=1
         export TAU_CALLPATH_DEPTH=10
 
+	#Track MPI messages
+	export TAU_TRACK_MESSAGE=1
+	export TAU_COMM_MATRIX=1
+
         #Activate tracing
         #export TAU_TRACE=1
 
-        time jsrun -n 64 -r 8 -a 1 -c 1   ./miniWeather_mpi
+        jsrun -n 64 -r 8 -a 1 -c 1 ./miniWeather_mpi
 
 
-- When the execution finishes, there is one folder for each TAU_METRICS declaration with the format MULTI__
+
+Instrumenting the MPI+OpenMP version of MiniWeather
+---------------------------------------------------
+
+The difference with the MPI instrumentation is the TAU Makefile, the jsrun execution command and the declaration of the OpenMP threads.
+
+
+.. code::
+
+        module load tau
+        export TAU_MAKEFILE=/sw/summit/tau/tau2/ibm64linux/lib/Makefile.tau-pgi-papi-mpi-cupti-pdt-openmp-pgi
+        export TAU_OPTIONS='-optLinking=-lpnetcdf -optVerbose'
+        make openmp
+
+- Add to your submission script the TAU variables that you want to use (or uncomment the below). By default the TAU will apply profiling and not tracing.
+
+.. code::
+
+        #PAPI metrics
+        export TAU_METRICS=TIME:PAPI_TOT_INS:PAPI_TOT_CYC
+
+        # Instrument the callpath
+        export TAU_CALLPATH=1
+        export TAU_CALLPATH_DEPTH=10
+
+	#Track MPI messages
+	export TAU_TRACK_MESSAGE=1
+	export TAU_COMM_MATRIX=1
+
+        #Activate tracing
+        #export TAU_TRACE=1
+
+	export OMP_NUM_THREADS=4
+	jsrun -n 16 -r 8 -a 1 -c 4 -b packed:4 ./miniWeather_mpi_openmp 
+
+
+Instrumenting the MPI+OpenACC version of MiniWeather
+----------------------------------------------------
+
+- For the current TAU version, you should use the ``tau_exec`` and not the TAU wrappers only for the compilation
+- Use the ``mpic++`` compiler in the Makefile
+- Execute: ``make openacc``
+- Add the following in your submission file:
+
+.. code::
+
+        export TAU_METRICS=TIME
+        export TAU_PROFILE=1
+        export TAU_TRACK_MESSAGE=1
+        export TAU_COMM_MATRIX=1
+        jsrun -n 6 -r 6 --smpiargs="-gpu" -g 1  tau_exec -T mpi,pgi,pdt -openacc ./miniWeather_mpi_openacc
+
+- We declare to TAU to profile the MPI with PDT through -T parameters as long as use the pgi tag for the TAU makefile and OpenACC
+
+- CUPTI metrics for OpenACC are not supported yet for TAU
+
+Preparing profiling data
+------------------------
+
+- When the execution of the instrumented application finishes, there is one folder for each TAU_METRICS declaration with the format MULTI__
         - If you do not declare the TAU_METRICS variable, then by default is used the TIME and the profiling files are not in a folder When the execution ends, there will be one file per process, called profile.X.Y.Z.
 
 - In order to use paraprof to visualize the data, your ssh connection should support X11 forward.
@@ -291,13 +355,13 @@ Instrumenting the MPI version of MiniWeather:
 
 .. code::
 
-	paraprof --pack name.ppk
-	paraprof name.ppk
+        paraprof --pack name.ppk
+        paraprof name.ppk
 
 Paraprof
-========
+--------
 
-- The first window that opens shows the experiment and the used metrics (TIME, PAPI_FP_OPS, PAPI_TOT_INS, PAPI_TOT_CYC)
+- The first window that opens when the ``paraprof`` command is executed, shows the experiment and the used metrics (TIME, PAPI_FP_OPS, PAPI_TOT_INS, PAPI_TOT_CYC)
 
 .. image:: /images/tau_paraprof_manager.png
    :align: center
@@ -401,40 +465,17 @@ The loops with less than 1.5 IPC can be improved.
 MPI+OpenMP
 ==========
 
-The difference with before is the TAU Makefile
-
-.. code::
-
-	export TAU_MAKEFILE=/sw/summit/tau/tau2//ibm64linux/lib/Makefile.tau-pgi-papi-mpi-cupti-pdt-openmp-pgi
-        make openmp
-
 
 - Now you can see the duration of parallelfor loops and decide when they should be improved or even removed.
 
-.. image:: /images/tau_openmp1.png
+.. image:: /images/tau_openmp.png
    :align: center
 
 
 GPU
 ===
 
-- For the current TAU version, you should use the tau_exec and not the TAU wrappers only
-- Use the mpic++ compiler in the Makefile
-- Execute: make openacc
-- Add the following in your submission file:
-
-.. code:: 
-
-	export TAU_METRICS=TIME
-	export TAU_PROFILE=1
-	export TAU_TRACK_MESSAGE=1
-	export TAU_COMM_MATRIX=1
-	jsrun -n 6 -r 6 --smpiargs="-gpu" -g 1  tau_exec -T mpi,pgi,pdt -openacc ./miniWeather_mpi_openacc
-
-
-- CUPTI metrics for OpenACC are not supported yet for TAU
-
-
+- When we instrument the MPI with OpenACC, we have the following through paraprof
 - We can observe the duration of the OpenACC calls
 
 .. image:: /images/tau_openacc.png
