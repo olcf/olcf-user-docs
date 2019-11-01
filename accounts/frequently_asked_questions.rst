@@ -68,10 +68,25 @@ I no longer need my account. Who should I inform and what should I do with my OL
 
 Please inform the Accounts Team via email at accounts@ccs.ornl.gov and
 return the RSA SecurID Token to the following address depending on the
-mail service: *For US mail:* *Accounts Team Oak Ridge National
-Laboratory PO Box 2008, MS 6014* *Oak Ridge, TN 37830-6014* For
-FedEx/UPS: *Accounts Team Oak Ridge National Laboratory 1 Bethel Valley
-Road, MS 6014* *Oak Ridge, TN 37831-6014*
+mail service: 
+
+For US Mail:
+
+::
+
+	Accounts Team
+	Oak Ridge National Laboratory
+	PO Box 2008, MS 6014
+	Oak Ridge, TN 37830-6014
+
+For FedEx/UPS:
+
+::
+
+	Accounts Team
+	Oak Ridge National Laboratory
+	1 Bethel Valley Road, MS 6014
+	Oak Ridge, TN 37831-6014
 
 My SecurID token is broken/expired. What should I do?
 =======================================================
@@ -83,6 +98,30 @@ the User Assistance Team (help@olcf.ornl.gov) or the Accounts Team
 need to return the broken/expired RSA token to OLCF. Disposal and
 recycling information can be found in the vendor's `disposal
 statement <https://www.emc.com/collateral/legal/token-disposal-statement.pdf>`__.
+
+.. _getting-help:
+
+Getting Help
+==============
+
+When submitting a ticket to help@olcf.ornl.gov requesting help, you will likely
+get faster resolution by supporting a few best practices:
+
+- Where possible, provide helpful details that can help speed the process. For
+  example: Project ID, relevant directories, job scripts, jobIDs, modules at
+  compile/runtime, host name, etc.
+- When replying to a ticket, do not modify the subject line.
+- Do not piggyback unrelated questions on existing tickets. This leads to slower
+  response times and inflates ticket history.
+- Do not open multiple tickets on the same unresolved topic. Doing so can
+  fragment resources and slow down the time to resolution.
+- Please do not respond to previous tickets with new, unrelated issues. This can
+  slow down response time and make finding relevant information harder thereby
+  slowing down time to resolution.
+- Let us know if you've solved the issue yourself (and let us know what worked!)
+- MOST IMPORTANT: do not hesitate to contact us (help@olcf.ornl.gov); we will
+  work through the details with you.
+
 
 Additional Resources
 =======================
