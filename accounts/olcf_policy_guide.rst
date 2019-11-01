@@ -366,7 +366,7 @@ available at the OLCF.
 | User Archive | ``/home/user``  | HPSS | User-controlled |  2TB [#f1]_| No      | No     | 90 days   |
 +--------------+-----------------+------+-----------------+------------+---------+--------+-----------+
 
-**User-Centric Storage Areas**
+**Project-Centric Storage Areas**
 
 +-----------------+---------------------------+--------+-----------------+---------------+---------+---------+-----------+
 | Area            | Path                      | Type   | Permissions     |  Quota        | Backups | Purged  | Retention |

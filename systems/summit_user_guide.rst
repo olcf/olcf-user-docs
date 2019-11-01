@@ -707,8 +707,12 @@ with information on the files that were copied.
 Software
 ========
 
+Visualization and analysis tasks should be done on the Rhea cluster. There are a
+few tools provided for various visualization tasks, as described in the
+:ref:`visualization-tools` section of the :ref:`rhea-user-guide`.
+
 For a full list of software available at the OLCF, please see the
-`Software </for-users/software/>`__ section.
+Software section (coming soon).
 
 .. _shell-programming-environments:
 
@@ -1884,6 +1888,8 @@ functionality.
 | ``#BSUB -alloc_flags gpumps``   | No equivalent (set via environment variable)   | Enable multiple MPI tasks to simultaneously access a GPU   |
 +---------------------------------+------------------------------------------------+------------------------------------------------------------+
 
+.. _easy_mode_v_expert_mode:
+
 Easy Mode vs. Expert Mode
 -------------------------
 
@@ -2759,6 +2765,8 @@ please see the `Vampir Software Page <https://www.olcf.ornl.gov/software_package
 
 Known Issues
 ============
+
+Last Updated: 09 September 2019
 
 Open Issues
 -----------
