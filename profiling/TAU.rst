@@ -126,7 +126,7 @@ We'll use the PGI compiler, this application supports serial, MPI, MPI+OpenMP, a
 	module load pgi
 	module load parallel-netcdf
 
-- Different compilations:
+- Different compilations for Serial, MPI, MPI+OpenMP, and MPI+OpenACC:
 
 .. code::
 
@@ -143,10 +143,9 @@ Modifications
 =============
 
 
-- Edit the makefile and replace *mpic++* with *tau_cxx.sh*
-
-- TAU works with makefiles to declare what programming models are expected from the application:
-        The available makefiles are located inside TAU installation:
+- Edit the makefile and replace `mpic++` with `tau_cxx.sh`. This applies only for the non-GPU versions.
+- TAU works with special TAU makefiles to declare what programming models are expected from the application:
+	- The available makefiles are located inside TAU installation:
 
 .. code::
 
@@ -155,8 +154,8 @@ Modifications
            /sw/summit/modulefiles/core/tau/2.28.1:
         ---------------------------------------------------------------
         whatis("TAU 2.28.1 github ")
-        setenv("TAU_DIR","/sw/summit/tau/tau2//ibm64linux")
-        prepend_path("PATH","/sw/summit/tau/tau2//ibm64linux/bin")
+        setenv("TAU_DIR","/sw/summit/tau/tau2/ibm64linux")
+        prepend_path("PATH","/sw/summit/tau/tau2/ibm64linux/bin")
         help([[https://www.olcf.ornl.gov/software_package/tau
         ]])
 
@@ -165,11 +164,17 @@ The available Makefiles are named with the used compiler and are located in:
 
 .. code::
 
-        ls /sw/summit/tau/tau2//ibm64linux/lib/Makefile.tau-pgi*
-        /sw/summit/tau/tau2//ibm64linux/lib/Makefile.tau-pgi-papi-mpi-cupti-pdt-openmp-pgi
-        /sw/summit/tau/tau2//ibm64linux/lib/Makefile.tau-pgi-papi-mpi-cupti-pdt-pgi
-        /sw/summit/tau/tau2//ibm64linux/lib/Makefile.tau-pgi-papi-pdt-pgi
-        /sw/summit/tau/tau2//ibm64linux/lib/Makefile.tau-pgi_memory_manager-papi-mpi-cupti-pdt-pgi
+        ls ${TAU_DIR}/lib/Makefile.tau-pgi*
+        /sw/summit/tau/tau2/ibm64linux/lib/Makefile.tau-pgi-papi-mpi-cupti-pdt-openmp-pgi
+        /sw/summit/tau/tau2/ibm64linux/lib/Makefile.tau-pgi-papi-mpi-cupti-pdt-pgi
+        /sw/summit/tau/tau2/ibm64linux/lib/Makefile.tau-pgi-papi-pdt-pgi
+        /sw/summit/tau/tau2/ibm64linux/lib/Makefile.tau-pgi_memory_manager-papi-mpi-cupti-pdt-pgi
+
+- List with all TAU makefiles:
+
+.. code::
+
+        ls ${TAU_DIR}/lib/Makefile.tau*
 
 
 Instrumenting the serial version of MiniWeather
@@ -181,7 +186,7 @@ Instrumenting the serial version of MiniWeather
 .. code::
 
 	module load tau
-	export TAU_MAKEFILE=/sw/summit/tau/tau2//ibm64linux/lib/Makefile.tau-pgi-papi-mpi-cupti-pdt-pgi
+	export TAU_MAKEFILE=/sw/summit/tau/tau2/ibm64linux/lib/Makefile.tau-pgi-papi-mpi-cupti-pdt-pgi
 	export TAU_OPTIONS='-optLinking=-lpnetcdf -optVerbose'
 	make serial
 
@@ -262,7 +267,7 @@ Instrumenting the MPI version of MiniWeather
 .. code::
 
         module load tau
-        export TAU_MAKEFILE=/sw/summit/tau/tau2//ibm64linux/lib/Makefile.tau-pgi-papi-mpi-cupti-pdt-pgi
+        export TAU_MAKEFILE=/sw/summit/tau/tau2/ibm64linux/lib/Makefile.tau-pgi-papi-mpi-cupti-pdt-pgi
         export TAU_OPTIONS='-optLinking=-lpnetcdf -optVerbose'
         make mpi
 
@@ -361,7 +366,7 @@ Preparing profiling data
 Paraprof
 --------
 
-- The first window that opens when the ``paraprof`` command is executed, shows the experiment and the used metrics (TIME, PAPI_FP_OPS, PAPI_TOT_INS, PAPI_TOT_CYC)
+- The first window that opens when the ``paraprof name.ppk`` command is executed, shows the experiment and the used metrics (TIME, PAPI_FP_OPS, PAPI_TOT_INS, PAPI_TOT_CYC)
 
 .. image:: /images/tau_paraprof_manager.png
    :align: center
