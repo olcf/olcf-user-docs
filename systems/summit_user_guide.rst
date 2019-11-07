@@ -205,32 +205,6 @@ CPU and GPUs on a single socket of a Summit node.
 .. image:: /images/NVLink2.png
    :align: center
 
-Tensor Cores
-------------
-
-The Tesla V100 contains 640 tensor cores (8 per SM) intended to enable
-faster training of large neural networks. Each tensor core performs a
-``D = AB + C`` operation on 4x4 matrices. A and B are FP16 matrices,
-while C and D can be either FP16 or FP32:
-
-.. image:: /images/nv_tensor_core_1.png
-   :width: 85.0%
-   :align: center
-
-Each of the 16 elements that result from the AB matrix multiplication
-come from 4 floating-point fused-multiply-add (FMA) operations
-(basically a dot product between a row of A and a column of B). Each
-FP16 multiply yields a full-precision product which is accumulated in a
-FP32 result:
-
-.. image:: /images/nv_tensor_core_2.png
-   :width: 85.0%
-   :align: center
-
-Each tensor core performs 64 of these FMA operations per clock. The 4x4
-matrix operations outlined here can be combined to perform matrix
-operations on larger (and higher dimensional) matrices.
-
 Volta Multi-Process Service
 ---------------------------
 
@@ -352,6 +326,230 @@ branch to reach their sync point.
 For more information, please see the following section of NVIDIA's CUDA
 Programming Guide:
 http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#independent-thread-scheduling-7-x
+
+Tensor Cores
+------------
+
+The Tesla V100 contains 640 tensor cores (8 per SM) intended to enable
+faster training of large neural networks. Each tensor core performs a
+``D = AB + C`` operation on 4x4 matrices. A and B are FP16 matrices,
+while C and D can be either FP16 or FP32:
+
+.. image:: /images/nv_tensor_core_1.png
+   :width: 85.0%
+   :align: center
+
+Each of the 16 elements that result from the AB matrix multiplication
+come from 4 floating-point fused-multiply-add (FMA) operations
+(basically a dot product between a row of A and a column of B). Each
+FP16 multiply yields a full-precision product which is accumulated in a
+FP32 result:
+
+.. image:: /images/nv_tc_1.png
+   :width: 85.0%
+   :align: center
+
+Each tensor core performs 64 of these FMA operations per clock. The 4x4
+matrix operations outlined here can be combined to perform matrix
+operations on larger (and higher dimensional) matrices.
+
+Using the Tensor Cores on Summit
+________________________________
+
+The NVIDIA Tesla V100 GPUs in Summit are capable of over 7TF/s of double-precision and 15 TF/s of single-precision floating point performance. Additionally, the V100 is capable of over 120 TF/s of half-precision floating point performance when using its Tensor Core feature. The Tensor Cores are purpose-built accelerators for half-precision matrix multiplication operations. While they were designed especially to accelerate machine learning workflows, they are exposed through several other APIs that are useful to other HPC applications. This section provides information for using the V100 Tensor Cores.
+
+The V100 Tensor Cores perform a warp-synchronous multiply and accumulate of 16-bit matrices in the form of D = A * B + C. The operands of this matrix multiplication are 16-bit A and B matrices, while the C and D accumulation matrices may be 16 or 32-bit matrices with comparable performance for either precision.
+
+.. image:: /images/nv_tc_2.png
+   :width: 85.0%
+   :align: center
+
+Half precision floating point representation has a dramatically lower range of numbers than Double or Single precision. Half precision representation consists of 1 sign bit, a 5-bit exponent, and a 10-bit mantissa. This results in a dynamic range of 5.96e-8 to 65,504
+
+Tensor Core Programming Models
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This section details a variety of high and low-level Tensor Core programming models. Which programming model is appropriate to a given application is highly situational, so this document will present multiple programming models to allow the reader to evaluate each for their merits within the needs of the application.
+
+cuBLAS Library
+``````````````
+
+cuBLAS is NVIDIA’s implementation of the Basic Linear Algebra Subroutines library for GPUs. It contains not only the Level 1, 2, and 3 BLAS routines, but several extensions to these routines that add important capabilities to the library, such as the ability to batch operations and work with varying precisions.
+
+The cuBLAS libraries provides access to the TensorCores using 3 different routines, depending on the application needs. The `cublasHgemm <https://docs.nvidia.com/cuda/cublas/index.html#cublas-lt-t-gt-gemm>`_ routine performs a general matrix multiplication of half-precision matrices. The numerical operands to this routine must be of type half and math mode must be set to CUBLAS_TENSOR_OP_MATH to enable Tensor Core use. Additionally, if the `cublasSgemm <https://docs.nvidia.com/cuda/cublas/index.html#cublas-lt-t-gt-gemm>`_ routine will down-convert from single precision to half precision when the math mode is set to CUBLAS_TENSOR_OP_MATH, enabling simple conversion from SGEMM to HGEMM using Tensor Cores. For either of these two methods the `cublasSetMathMode <https://docs.nvidia.com/cuda/cublas/index.html#cublassetmathmode>`_ function must be used to change from CUBLAS_DEFAULT_MATH to CUBLAS_TENSOR_OP_MATH mode.
+
+cuBLAS provides a non-standard extension of GEMM with the `cublasGemmEx <https://docs.nvidia.com/cuda/cublas/index.html#cublas-GemmEx>`_ routine, which provides additional flexibility about the data types of the operands. In particular, the A, B, and C matrices can be of arbitrary and different types, with the types of each declared using the Atype, Btype, and Ctype parameters. The algo parameter works similar to the math mode above. If the math mode is set to CUBLAS_TESNOR_OP_MATH and the algo parameter is set to CUBLAS_GEMM_DEFAULT, then the Tensor Cores will be used. If algo is CUBLAS_GEMM_DEFAULT_TENSOR_OP or CUBLAS_GEMM_ALGO{0-15}_TENSOR_OP, then the Tensor Cores will be used regardless of the math setting. The table below outlines the rules stated in the past two paragraphs.
+
++----------------------------------------------------------+------------------------------------+--------------------------------------+
+|                                                          | ``mathMode = CUBLAS_DEFAULT_MATH`` | ``mathMode = CUBLAS_TENSOR_OP_MATH`` |
++==========================================================+====================================+======================================+
+| ``cublasHgemm, cublasSgemm, cublasGemmEx(algo=DEFAULT)`` | Disallowed                         | Allowed                              |
++----------------------------------------------------------+------------------------------------+--------------------------------------+
+| ``cublasGemmEx(algo=*_TENSOR_OP)``                       | Allowed                            | Allowed                              |
++----------------------------------------------------------+------------------------------------+--------------------------------------+
+
+
+When using any of these methods to access the Tensor Cores, the M, N, K, LDA, LDB, LDC, and A, B, and C pointers must all be aligned to 8 bytes due to the high bandwidth necessary to utilize the Tensor Cores effective.
+
+Many of the routines listed above are also available in batched form, see the `cuBLAS documentation <https://docs.nvidia.com/cuda/cublas/index.html>`_ for more information. Advanced users wishing to have increased control over the specifics of data layout, type, and underlying algorithms may wish to use the more advanced `cuBLAS-Lt interface <https://docs.nvidia.com/cuda/cublas/index.html#using-the-cublasLt-api>`_. This interface uses the same underlying GPU kernels, but provides developers with a higher degree of control.
+
+Iterative Refinement of Linear Solvers
+``````````````````````````````````````
+
+Iterative Refinement is a technique for performing linear algebra solvers in a reduced precision, then iterating to improve the results and return them to full precision. This technique has been used for several years to use 32-bit math operations and achieve 64-bit results, which often results in a speed-up due to single precision math often have a 2X performance advantage on modern CPUs and many GPUs. NVIDIA and the University of Tennessee have been working to extend this technique to perform operations in half-precision and obtain higher precision results. One such place where this technique has been applied is in calculating an LU factorization of the linear system Ax = B. This operation is dominated by a matrix multiplication operation, which is illustrated in green in the image below. It is possible to perform the GEMM operations at a reduced precision, while leaving the panel and trailing matrices in a higher precision. This technique allows for the majority of the math operations to be done at the higher FP16 throughput. The matrix used in the GEMM is generally not square, which is often the best performing GEMM operation, but is referred to as rank-k and generally still very fast when using matrix multiplication libraries.
+
+.. image:: /images/nv_tc_3.png
+   :width: 85.0%
+   :align: center
+
+A summary of the algorithm used for calculating in mixed precision is in the following image.
+
+.. image:: /images/nv_tc_4.png
+   :width: 85.0%
+   :align: center
+
+We see in the graph below that it is possible to achieved a 3-4X performance improvement over the double-precision solver, while achieving the same level of accuracy. It has also been observed that the use of Tensor Cores makes the problem more likely to converge than strict half-precision GEMMs due to the ability to accumulate into 32-bit results.
+
+.. image:: /images/nv_tc_5.png
+   :width: 85.0%
+   :align: center
+
+NVIDIA will be shipping official support for IR solvers in their cuSOLVER library in the latter half of 2019. The image below provides estimated release dates, which are subject to change.
+
+.. image:: /images/nv_tc_6.png
+   :width: 85.0%
+   :align: center
+
+Automatic Mixed Precision (AMP) in Machine Learning Frameworks
+``````````````````````````````````````````````````````````````
+
+NVIDIA has a Training With Mixed Precision guide available for developers wishing to explicitly use mixed precision and Tensor Cores in their training of neural networks. This is a good place to start when investigating Tensor Cores for machine learning applications. Developers should specifically read the Optimizing For Tensor Cores section.
+
+NVIDIA has also integrated a technology called Automatic Mixed Precision (AMP) into several common frameworks, TensorFlow, PyTorch, and MXNet at time of writing. In most cases AMP can be enabled via a small code change or via setting and environment variable. AMP does not strictly replace all matrix multiplication operations with half precision, but uses graph optimization techniques to determine whether a given layer is best run in full or half precision.
+
+Examples are provided for using AMP, but the following sections summarize the usage in the three supported frameworks.
+
+TensorFlow
+..........
+
+With TensorFlow AMP can be enabled using one of the following techniques.
+
+::
+
+  os.environ['TF_ENABLE_AUTO_MIXED_PRECISION'] = '1'
+
+OR
+
+::
+
+  export TF_ENABLE_AUTO_MIXED_PRECISION=1
+
+Explicit optimizer wrapper available in NVIDIA Container 19.07+, TF 1.14+, TF 2.0:
+
+::
+
+  opt = tf.train.experimental.enable_mixed_precision_graph_rewrite(opt)
+
+
+PyTorch
+.......
+
+Adding the following to a PyTorch model will enable AMP:
+
+::
+
+  model, optimizer = amp.initialize(model, optimizer, opt_level="O1")
+  with amp.scale_loss(loss, optimizer) as scaled_loss:
+    scaled_loss.backward()
+
+MXNet
+.....
+
+The code below will enable AMP for MXNet:
+
+::
+
+  amp.init()
+  amp.init_trainer(trainer)
+  with amp.scale_loss(loss, trainer) as scaled_loss:
+    autograd.backward(scaled_loss)
+
+
+WMMA
+````
+
+The Warp Matrix Multiply and Accumulate (WMMA) API was introduced in CUDA 9 explicitly for programming the Tesla V100 Tensor Cores. This is a low-level API that supports loading matrix data into fragments within the threads of a warp, applying a Tensor Core multiplication on that data, and then restoring it to the main GPU memory. This API is called within CUDA kernels and all WMMA operations are warp-synchronous, meaning the threads in a warp will leave the operation synchronously. Examples are available for using the WMMA instructions in C++ and CUDA Fortran. The image below demonstrates the general pattern for WMMA usage.
+
+.. image:: /images/nv_tc_7.png
+   :width: 85.0%
+   :align: center
+
+The example above performs a 16-bit accumulate operation, but 32-bit is also supported. Please see the provided samples and the `WMMA documentation <https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#wmma>`_ for more details.
+
+CUDA 10 introduced a lower-level alternative to WMMA with the mma.sync() instruction. This is a very low-level instruction that requires the programmer handle the data movement provided by WMMA explicitly, but is capable of higher performance. Details of `mma.sync <https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#warp-level-matrix-instructions-wmma-mma>`_ can be found in the PTX documentation and examples for using this feature via CUTLASS cane be found in the second half of this `GTC presentation <https://on-demand-gtc.gputechconf.com/gtcnew/sessionview.php?sessionName=s9593-cutensor%3a+high-performance+tensor+operations+in+cuda>`_.
+
+CUTLASS
+```````
+
+`CUTLASS <https://github.com/nvidia/cutlass/>`_ is an open-source library provided by NVIDIA for building matrix multiplication operations using C++ templates. The goal is to provide performance that is nearly as good as the hand-tuned cuBLAS library, but in a more expressive, composible manner.
+
+The CUTLASS library provides a variety of primitives that are optimized for proper data layout and movement to achieve the maximum possible performance of a matrix multiplation on an NVIDIA GPU. These include iterators for blocking, loading, and storing matrix tiles, plus optimized classes for transforming the data and performing the actual multiplication. CUTLASS provides `extensive documentation <https://github.com/NVIDIA/cutlass/blob/master/CUTLASS.md>`_ of these features and examples have been provided. Interested developers are also encouraged to watch the `CUTLASS introduction video <https://on-demand-gtc.gputechconf.com/gtcnew/sessionview.php?sessionName=s8854-cutlass%3a+software+primitives+for+dense+linear+algebra+at+all+levels+and+scales+within+cuda>`_ from GTC2018.
+
+Measuring Tensor Core Utilization
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+When attempting to use Tensor Cores it is useful to measure and confirm that the Tensor Cores are being used within your code. For implicit use via a library like cuBLAS, the Tensor Cores will only be used above a certain threshold, so Tensor Core use should not be assumed. The NVIDIA Tools provide a performance metric to measure Tensor Core utilization on a scale from 0 (Idle) to 10 (Max) utilization.
+
+When using NVIDIA’s nvprof profiler, one should add the `-m tensor_precision_fu_utilization` option to measure Tensor Core utilization. Below is the output from measuring this metric on one of the example programs.
+
+::
+
+  $ nvprof -m tensor_precision_fu_utilization ./simpleCUBLAS
+  ==43727== NVPROF is profiling process 43727, command: ./simpleCUBLAS
+  GPU Device 0: "Tesla V100-SXM2-16GB" with compute capability 7.0
+
+  simpleCUBLAS test running..
+  simpleCUBLAS test passed.
+  ==43727== Profiling application: ./simpleCUBLAS
+  ==43727== Profiling result:
+  ==43727== Metric result:
+  Invocations                               Metric Name                           Metric Description         Min         Max         Avg
+  Device "Tesla V100-SXM2-16GB (0)"
+      Kernel: volta_h884gemm_128x64_ldg8_nn
+            1           tensor_precision_fu_utilization   Tensor-Precision Function Unit Utilization     Low (3)     Low (3)     Low (3)
+
+
+NVIDIA’s Nsight Compute may also be used to measure tensor core utilization via the sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_active metric, as follows:
+
+::
+
+  $ nv-nsight-cu-cli --metrics sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_active ./cudaTensorCoreGemm
+
+  [  compute_gemm, 2019-Aug-08 12:48:39, Context 1, Stream 7
+        Section: Command line profiler metrics
+        ---------------------------------------------------------------------- 
+        sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_active                    %                       43.44
+        ----------------------------------------------------------------------
+
+
+When to Try Tensor Cores
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+Tensor Cores provide the potential for an enormous performance boost over full-precision operations, but when their use is appropriate is highly application and even problem independent. Iterative Refinement techniques can suffer from slow or possible a complete lack of convergence if the condition number of the matrix is very large. By using Tensor Cores, which support 32-bit accumulation, rather than strict 16-bit math operations, iterative refinement becomes a viable option in a much larger number of cases, so it should be attempted when an application is already using a supported solver.
+
+Even if iterative techniques are not available for an application, direct use of Tensor Cores may be beneficial if at least the A and B matrices can be constructed from the input data without significant loss of precision. Since the C and D matrices may be 32-bit, the output may have a higher degree of precision than the input. It may be possible to try these operations automatically by setting the math mode in cuBLAS, as detailed above, to determine whether the loss of precision is an acceptable trade-off for increased performance in a given application. If it is, the cublasGemmEx API allows the programmer to control when the conversion to 16-bit occurs, which may result in higher throughput than allowing the cuBLAS library to do the conversion at call time.
+
+Some non-traditional uses of Tensor Cores can come from places where integers that fall within the FP16 range are used in an application. For instance, in “Attacking the Opioid Epidemic: Determining the Epistatic and Pleiotropic Genetic Architectures for Chronic Pain and Opioid Addiction,” a 2018 Gordon Bell Prize-winning paper, the authors used Tensor Cores in place of small integers, allowing them very high performance over performing the same calculation in integer space. This technique is certainly not applicable to all applications, but does show that Tensor Cores may be used in algorithms that might not have been represented by a floating point matrix multiplication otherwise.
+
+Lastly, when performing the training step of a deep learning application it is often beneficial to do at least some of the layer calculations in reduced precision. The AMP technique described above can be tried with little to know code changes, making it highly advisable to attempt in any machine learning application.
+
+Tensor Core Examples and Other Materials
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+NVIDIA has provided several example codes for using Tensor Cores from a variety of the APIs listed above. These examples can be found on `GitHub <https://github.com/olcf/NVIDIA-tensor-core-examples>`_.
+
+NVIDIA Tensor Core Workshop (August 2018): `slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/11/ORNL_Tensor_Core_Training_Aug2019.pdf>`_, recording (coming soon)
+
 
 Tesla V100 Specifications
 -------------------------
