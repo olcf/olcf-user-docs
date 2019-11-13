@@ -4,15 +4,20 @@
 Tuning and Analysis Utilities (TAU)
 ************************************
 
-TAU is a portable profiling and tracing toolkit that supports many programming languages. 
-The instrumentation can be done by inserting in the source code using an automatic tool 
-based on the Program Database Toolkit (PDT), on the compiler instrumentation, 
-or manually using the instrumentation API.
+TAU is a portable profiling and tracing toolkit that supports many programming
+languages.  The instrumentation can be done by inserting in the source code
+using an automatic tool based on the Program Database Toolkit (PDT), on the
+compiler instrumentation, or manually using the instrumentation API.
 
 Webpage: https://www.cs.uoregon.edu/research/tau/home.php
 
-TAU is installed with `Program Database Toolkit (PDT) <https://www.cs.uoregon.edu/research/pdt/home.php>`_ on Summit. PDT is a framework for analyzing source code written in several programming
-languages. Moreover, `Performance Application Programming Interface (PAPI) <https://icl.utk.edu/papi/>`_  is supported. PAPI counters are used to assess the CPU performance. In this section, some approaches for profiling and tracing will be presented.
+TAU is installed with `Program Database Toolkit (PDT)
+<https://www.cs.uoregon.edu/research/pdt/home.php>`_ on Summit. PDT is a
+framework for analyzing source code written in several programming languages.
+Moreover, `Performance Application Programming Interface (PAPI)
+<https://icl.utk.edu/papi/>`_  is supported. PAPI counters are used to assess
+the CPU performance. In this section, some approaches for profiling and tracing
+will be presented.
 
 In most cases, we need to use wrappers to recompile the application:
 
@@ -20,13 +25,15 @@ In most cases, we need to use wrappers to recompile the application:
 - For C++: replace the compiler with the TAU wrapper ``tau_cxx.sh``
 - For Fortran: replace the compiler with the TAU wrapper ``tau_f90.sh/tau_f77.sh``
 
-If you **don't** compile your application with a TAU wrapper, then you can profile some basic functionalities with *tau_exec*, for example:
+If you **don't** compile your application with a TAU wrapper, then you can
+profile some basic functionalities with *tau_exec*, for example:
 
 .. code::
 
 	jsrun -n 4 –r 4 –a 1 –c 1 tau_exec -T mpi ./test
 
-The above command profiles the MPI for the binary, test which was not compiled with TAU wrapper.
+The above command profiles the MPI for the binary, test which was not compiled
+with TAU wrapper.
 
 
 TAU Environment Variables
@@ -34,37 +41,37 @@ TAU Environment Variables
 
 These are environment variables that can be used in tour submission job script
 
-+----------------------+--------+------------------------------------------------------------------------------------------------------------+
-|Variable  	       |Default | Description			     									     |
-+======================+========+============================================================================================================+
-|TAU_TRACE	       |    0   |Setting to 1 turns on tracing       									     |
-+----------------------+--------+------------------------------------------------------------------------------------------------------------+
-|TAU_CALLPATH          |    0   |Setting to 1 turns on callpath profiling							             |
-+----------------------+--------+------------------------------------------------------------------------------------------------------------+
-|TAU_TRACK_MEMORY_LEAKS|    0   |Setting to 1 turns on leak detection									     |
-+----------------------+--------+------------------------------------------------------------------------------------------------------------+
-|TAU_TRACK_HEAP        |    0   |Setting to 1 turns on heap memory routine entry/exit							     |
-+----------------------+--------+------------------------------------------------------------------------------------------------------------+
-|TAU_CALLPATH_DEPTH    |    2   |Specifies depth of callpath         		     							     |
-+----------------------+--------+------------------------------------------------------------------------------------------------------------+
-|TAU_TRACK_IO_PARAMS   |    0   |Setting 1 with -optTrackIO	     		     							     |
-+----------------------+--------+------------------------------------------------------------------------------------------------------------+
-|TAU_SAMPLING	       |    1   |Generates sample based profiles     		     							     |
-+----------------------+--------+------------------------------------------------------------------------------------------------------------+
-|TAU_COMM_MATRIX       |    0   |Setting to 1 generates communication matrix	    							     |
-+----------------------+--------+------------------------------------------------------------------------------------------------------------+
-|TAU_THROTTLE          |    1   |Setting to 0 turns off throttling, by default removes overhead       					     |
-+----------------------+--------+------------------------------------------------------------------------------------------------------------+
-|TAU_THROTTLE_NUMCALLS |100000  |Number of calls before testing throttling 								     |
-+----------------------+--------+------------------------------------------------------------------------------------------------------------+
-|TAU_THROTTLE_PERCALL  |    10  |If a routine is called more than 100000 times and it takes less than  10 usec of inclusive time, throttle it|
-+----------------------+--------+------------------------------------------------------------------------------------------------------------+
-|TAU_COMPENSATE        |    10  |Setting to 1 enables runtime compensation of instrumentation overhead 					     |
-+----------------------+--------+------------------------------------------------------------------------------------------------------------+
-|TAU_PROFILE_FORMAT    |Profile |Setting to "merged" generates a single file, "snapshot" generates a snapshot per thread 		     |
-+----------------------+--------+------------------------------------------------------------------------------------------------------------+
-|TAU_METRICS           |  TIME  |Setting to a comma separated list (TIME:PAPI_TOT_INS)							     |
-+----------------------+--------+------------------------------------------------------------------------------------------------------------+
++------------------------+---------+-------------------------------------------------------------------------------------------------------------+
+| Variable  	         | Default | Description			     									 |
++========================+=========+=============================================================================================================+
+| TAU_TRACE	         |    0    | Setting to 1 turns on tracing       									 |
++------------------------+---------+-------------------------------------------------------------------------------------------------------------+
+| TAU_CALLPATH           |    0    | Setting to 1 turns on callpath profiling							                 |
++------------------------+---------+-------------------------------------------------------------------------------------------------------------+
+| TAU_TRACK_MEMORY_LEAKS |    0    | Setting to 1 turns on leak detection									 |
++------------------------+---------+-------------------------------------------------------------------------------------------------------------+
+| TAU_TRACK_HEAP         |    0    | Setting to 1 turns on heap memory routine entry/exit							 |
++------------------------+---------+-------------------------------------------------------------------------------------------------------------+
+| TAU_CALLPATH_DEPTH     |    2    | Specifies depth of callpath         		     							 |
++------------------------+---------+-------------------------------------------------------------------------------------------------------------+
+| TAU_TRACK_IO_PARAMS    |    0    | Setting 1 with -optTrackIO	     		     							         |
++------------------------+---------+-------------------------------------------------------------------------------------------------------------+
+| TAU_SAMPLING	         |    1    | Generates sample based profiles     		     							 |
++------------------------+---------+-------------------------------------------------------------------------------------------------------------+
+| TAU_COMM_MATRIX        |    0    | Setting to 1 generates communication matrix	    							 |
++------------------------+---------+-------------------------------------------------------------------------------------------------------------+
+| TAU_THROTTLE           |    1    | Setting to 0 turns off throttling, by default removes overhead       					 |
++------------------------+---------+-------------------------------------------------------------------------------------------------------------+
+| TAU_THROTTLE_NUMCALLS  | 100000  | Number of calls before testing throttling 								         |
++------------------------+---------+-------------------------------------------------------------------------------------------------------------+
+| TAU_THROTTLE_PERCALL   |    10   | If a routine is called more than 100000 times and it takes less than 10 usec of inclusive time, throttle it |
++------------------------+---------+-------------------------------------------------------------------------------------------------------------+
+| TAU_COMPENSATE         |    10   | Setting to 1 enables runtime compensation of instrumentation overhead 				         |
++------------------------+---------+-------------------------------------------------------------------------------------------------------------+
+| TAU_PROFILE_FORMAT     | Profile | Setting to "merged" generates a single file, "snapshot" generates a snapshot per thread 		         |
++------------------------+---------+-------------------------------------------------------------------------------------------------------------+
+| TAU_METRICS            |  TIME   | Setting to a comma separated list (TIME:PAPI_TOT_INS)						         |
++------------------------+---------+-------------------------------------------------------------------------------------------------------------+
 
 
 
@@ -73,46 +80,47 @@ TAU Compile-Time Environment Variables
 
 Environment variables to be used during compilation through the environment variable ``TAU_OPTIONS``
 
-+---------------------------+------------------------------------------------------------------------------+
-|Variable                   |Description                                                                   |
-+===========================+==============================================================================+
-|-optVerbose                |    Turn on verbose debugging messages                                        |
-+---------------------------+------------------------------------------------------------------------------+
-|-optCompInst               |    Use compiler based instrumentation                                        |
-+---------------------------+------------------------------------------------------------------------------+
-|-optNoCompInst             |    Do not revert to compiler instrumentation if source instrumentation fails |
-+---------------------------+------------------------------------------------------------------------------+
-|-optTrackIO                |    Wrap POSIX I/O call and calculate vol/bw of I/O operations                |
-+---------------------------+------------------------------------------------------------------------------+
-|-optKeepFiles              |    Do not remove .pdb and .inst.* files                                      |
-+---------------------------+------------------------------------------------------------------------------+
-|-optPreProcess             |    Preprocess Fortran sources before instrumentation                         |
-+---------------------------+------------------------------------------------------------------------------+
-|-optTauSelectFile="<file>" |    Specify selective instrumentation file for tau_instrumentor               |
-+---------------------------+------------------------------------------------------------------------------+
-|-optTwauWrapFile="<file>"  |    Specify path to link_options.tau generated by tau_gen_wrapper             |
-+---------------------------+------------------------------------------------------------------------------+
-|-optHeaderInst             |    Enable instrumentation of headers                                         |
-+---------------------------+------------------------------------------------------------------------------+
-|-optLinking=""             |    Options passed to the linker                                              |
-+---------------------------+------------------------------------------------------------------------------+
-|-optCompile=""             |    Options passed to the compiler 					   |
-+---------------------------+------------------------------------------------------------------------------+
-|-optPdtF95Opts=""          |    Add options to the Fortran parser in PDT                                  |
-+---------------------------+------------------------------------------------------------------------------+
-|-optPdtF95Reset=""         |    Reset options for Fortran parser in PDT                    		   |
-+---------------------------+------------------------------------------------------------------------------+
-|-optPdtCOpts=""            |    Options for C parser in PDT                                               |
-+---------------------------+------------------------------------------------------------------------------+
-|-optPdtCXXOpts=""          |    Options for C++ parser in PDT                                             |
-+---------------------------+------------------------------------------------------------------------------+
++----------------------------+------------------------------------------------------------------------------+
+| Variable                   | Description                                                                  |
++============================+==============================================================================+
+| -optVerbose                |    Turn on verbose debugging messages                                        |
++----------------------------+------------------------------------------------------------------------------+
+| -optCompInst               |    Use compiler based instrumentation                                        |
++----------------------------+------------------------------------------------------------------------------+
+| -optNoCompInst             |    Do not revert to compiler instrumentation if source instrumentation fails |
++----------------------------+------------------------------------------------------------------------------+
+| -optTrackIO                |    Wrap POSIX I/O call and calculate vol/bw of I/O operations                |
++----------------------------+------------------------------------------------------------------------------+
+| -optKeepFiles              |    Do not remove .pdb and .inst.* files                                      |
++----------------------------+------------------------------------------------------------------------------+
+| -optPreProcess             |    Preprocess Fortran sources before instrumentation                         |
++----------------------------+------------------------------------------------------------------------------+
+| -optTauSelectFile="<file>" |    Specify selective instrumentation file for tau_instrumentor               |
++----------------------------+------------------------------------------------------------------------------+
+| -optTwauWrapFile="<file>"  |    Specify path to link_options.tau generated by tau_gen_wrapper             |
++----------------------------+------------------------------------------------------------------------------+
+| -optHeaderInst             |    Enable instrumentation of headers                                         |
++----------------------------+------------------------------------------------------------------------------+
+| -optLinking=""             |    Options passed to the linker                                              |
++----------------------------+------------------------------------------------------------------------------+
+| -optCompile=""             |    Options passed to the compiler 					    |
++----------------------------+------------------------------------------------------------------------------+
+| -optPdtF95Opts=""          |    Add options to the Fortran parser in PDT                                  |
++----------------------------+------------------------------------------------------------------------------+
+| -optPdtF95Reset=""         |    Reset options for Fortran parser in PDT                    		    |
++----------------------------+------------------------------------------------------------------------------+
+| -optPdtCOpts=""            |    Options for C parser in PDT                                               |
++----------------------------+------------------------------------------------------------------------------+
+| -optPdtCXXOpts=""          |    Options for C++ parser in PDT                                             |
++----------------------------+------------------------------------------------------------------------------+
 
 
 Prepare the application the MiniWeather:
 ----------------------------------------
 
 - Connect to Summit in your project space
-- For the following examples, we'll use the MiniWeather application https://github.com/mrnorman/miniWeather
+- For the following examples, we'll use the MiniWeather application
+  https://github.com/mrnorman/miniWeather
 
 .. code::
 
@@ -148,9 +156,12 @@ Modifications
 =============
 
 
-- Edit the makefile and replace ``mpic++`` with ``tau_cxx.sh``. This applies only for the non-GPU versions
-- TAU works with special TAU makefiles to declare what programming models are expected from the application:
-	- The available makefiles are located inside TAU installation:
+- Edit the makefile and replace ``mpic++`` with ``tau_cxx.sh``. This applies
+  only for the non-GPU versions
+- TAU works with special TAU makefiles to declare what programming models are
+  expected from the application:
+
+  - The available makefiles are located inside TAU installation:
 
 .. code::
 
@@ -186,7 +197,13 @@ Instrumenting the serial version of MiniWeather
 -----------------------------------------------
 
 
-- For a serial application, we should not use a Makefile with a programming model such as MPI, OpenMP. However, as the source code for this **specific** case, includes MPI headers that are not excluded during the compilation of the serial version, we should declare a Makefile with MPI. We can declare a TAU makefile with the environment variable ``TAU_MAKEFILE``. Moreover, with TAU_OPTIONS below, we add options to the linker as the application depends on PNetCDF.
+- For a serial application, we should not use a Makefile with a programming
+  model such as MPI, OpenMP. However, as the source code for this **specific**
+  case, includes MPI headers that are not excluded during the compilation of the
+  serial version, we should declare a Makefile with MPI. We can declare a TAU
+  makefile with the environment variable ``TAU_MAKEFILE``. Moreover, with
+  ``TAU_OPTIONS`` below, we add options to the linker as the application depends on
+  PNetCDF.
 
 
 .. code::
@@ -196,8 +213,12 @@ Instrumenting the serial version of MiniWeather
 	export TAU_OPTIONS='-optLinking=-lpnetcdf -optVerbose'
 	make serial
 
-- If there were no MPI headers, you should select the makefile ``/sw/summit/tau/tau2//ibm64linux/lib/Makefile.tau-pgi-papi-pdt-pgi`` or if you don't want PDT support, ``/sw/summit/tau/tau2//ibm64linux/lib/Makefile.tau-pgi-papi-pgi``
-- Add to your submission script the TAU variables that you want to use (or uncomment the below). By default the TAU will apply profiling and not tracing.
+- If there were no MPI headers, you should select the makefile
+  ``/sw/summit/tau/tau2//ibm64linux/lib/Makefile.tau-pgi-papi-pdt-pgi`` or if
+  you don't want PDT support,
+  ``/sw/summit/tau/tau2//ibm64linux/lib/Makefile.tau-pgi-papi-pgi``
+- Add to your submission script the TAU variables that you want to use (or
+  uncomment the below). By default the TAU will apply profiling and not tracing.
 
 .. code::
 
@@ -214,10 +235,19 @@ Instrumenting the serial version of MiniWeather
 	time jsrun -n 1 -r 1 -a 1 -c 1 -g 1  ./miniWeather_serial
 
 
-- When the execution finishes, there is one folder for each TAU_METRICS declaration with the format ``MULTI__``
-	- If you do not declare the TAU_METRICS variable, then by default is used the TIME and the profiling files are not in a folder When the execution ends, there will be one file per process, called profile.X.Y.Z, in this case, is just one file, called **profile.0.0.0**
-- We can export a text file with some information through pprof tool or visualize through paraprof
-- If an application has no MPI at all, use the argument ``--smpiargs="off"`` for the jsrun otherwise, TAU will fail as MPI is active by default, and probably int he TAU makefile is not declared any MPI. 
+- When the execution finishes, there is one folder for each ``TAU_METRICS``
+  declaration with the format ``MULTI__``
+
+  - If you do not declare the ``TAU_METRICS`` variable, then by default is used the
+    TIME and the profiling files are not in a folder When the execution ends,
+    there will be one file per process, called profile.X.Y.Z, in this case, is
+    just one file, called **profile.0.0.0**
+
+- We can export a text file with some information through pprof tool or
+  visualize through paraprof
+- If an application has no MPI at all, use the argument ``--smpiargs="off"`` for
+  the jsrun otherwise, TAU will fail as MPI is active by default, and probably
+  int he TAU makefile is not declared any MPI.
 
 .. code::
 
@@ -257,11 +287,15 @@ Instrumenting the serial version of MiniWeather
 
 
 - Explanation:
-	- One process was running as it is a serial application, even MPI calls are executed from a single thread.
-        - The total execution time is 70.733 seconds and only 9 msec are exclusive for the main routine and the rest are caused by subroutines
-	- The exclusive time is the time caused by the mentioned routine, and the inclusive is with the execution time from the subroutines 
-	- The #Subrs is the number of the called subroutines
-	- There is also information about the parallel I/O if any exists, the bytes, and the bandwidth.
+    - One process was running as it is a serial application, even MPI calls
+      are executed from a single thread.
+    - The total execution time is 70.733 seconds and only 9 msec are
+      exclusive for the main routine and the rest are caused by subroutines
+    - The exclusive time is the time caused by the mentioned routine, and
+      the inclusive is with the execution time from the subroutines
+    - The #Subrs is the number of the called subroutines
+    - There is also information about the parallel I/O if any exists, the
+      bytes, and the bandwidth.
 
 
 We will present paraprof tool for the MPI version of the MiniWeather.
@@ -269,7 +303,10 @@ We will present paraprof tool for the MPI version of the MiniWeather.
 Instrumenting the MPI version of MiniWeather
 --------------------------------------------
 
-- For the MPI version, we should use a makefile with MPI. The compilation could fail if the makefile supports MPI+OpenMP, but the code doesn't include any OpenMP calls. Moreover, with `TAU_OPTIONS` declared below, we add options to the linker.
+- For the MPI version, we should use a makefile with MPI. The compilation could
+  fail if the makefile supports MPI+OpenMP, but the code doesn't include any
+  OpenMP calls. Moreover, with ``TAU_OPTIONS`` declared below, we add options to
+  the linker.
 
 .. code::
 
@@ -278,7 +315,9 @@ Instrumenting the MPI version of MiniWeather
         export TAU_OPTIONS='-optLinking=-lpnetcdf -optVerbose'
         make mpi
 
-- Add to your submission script the TAU variables that you want to use (or uncomment the below). By default, the TAU will apply profiling and not tracing.
+- Add to your submission script the TAU variables that you want to use (or
+  uncomment the below). By default, the TAU will apply profiling and not
+  tracing.
 
 .. code::
 
@@ -303,7 +342,8 @@ Instrumenting the MPI version of MiniWeather
 Instrumenting the MPI+OpenMP version of MiniWeather
 ---------------------------------------------------
 
-The difference with the MPI instrumentation is the TAU Makefile, the jsrun execution command, and the declaration of the OpenMP threads.
+The difference with the MPI instrumentation is the TAU Makefile, the jsrun
+execution command, and the declaration of the OpenMP threads.
 
 
 .. code::
@@ -313,7 +353,9 @@ The difference with the MPI instrumentation is the TAU Makefile, the jsrun execu
         export TAU_OPTIONS='-optLinking=-lpnetcdf -optVerbose'
         make openmp
 
-- Add to your submission script the TAU variables that you want to use (or uncomment the below). By default, the TAU will apply profiling and not tracing.
+- Add to your submission script the TAU variables that you want to use (or
+  uncomment the below). By default, the TAU will apply profiling and not
+  tracing.
 
 .. code::
 
@@ -332,14 +374,16 @@ The difference with the MPI instrumentation is the TAU Makefile, the jsrun execu
         #export TAU_TRACE=1
 
 	export OMP_NUM_THREADS=4
-	jsrun -n 16 -r 8 -a 1 -c 4 -b packed:4 ./miniWeather_mpi_openmp 
+	jsrun -n 16 -r 8 -a 1 -c 4 -b packed:4 ./miniWeather_mpi_openmp
 
 
 Instrumenting the MPI+OpenACC version of MiniWeather
 ----------------------------------------------------
 
-- For the current TAU version, you should use the ``tau_exec`` and not the TAU wrappers only for the compilation
-- Use the ``mpic++`` compiler in the Makefile, do not use TAU wrapper (at least for this version)
+- For the current TAU version, you should use the ``tau_exec`` and not the TAU
+  wrappers only for the compilation
+- Use the ``mpic++`` compiler in the Makefile, do not use TAU wrapper (at least
+  for this version)
 - Execute: ``make openacc``
 - Add the following in your submission file:
 
@@ -351,17 +395,23 @@ Instrumenting the MPI+OpenACC version of MiniWeather
         export TAU_COMM_MATRIX=1
         jsrun -n 6 -r 6 --smpiargs="-gpu" -g 1  tau_exec -T mpi,pgi,pdt -openacc ./miniWeather_mpi_openacc
 
-- We declare to TAU to profile the MPI with PDT support through -T parameters as long as use the `pgi` tag for the TAU makefile and OpenACC
+- We declare to TAU to profile the MPI with PDT support through -T parameters as
+  long as use the ``pgi`` tag for the TAU makefile and OpenACC
 
 - CUPTI metrics for OpenACC are not supported yet for TAU
 
 Preparing profiling data
 ------------------------
 
-- When the execution of the instrumented application finishes, there is one folder for each TAU_METRICS declaration with the format MULTI__
-        - If you do not declare the TAU_METRICS variable, then by default is used the TIME and the profiling files are not in a folder When the execution ends, there will be one file per process, called profile.X.Y.Z.
+- When the execution of the instrumented application finishes, there is one
+  folder for each ``TAU_METRICS`` declaration with the format ``MULTI__``
 
-- In order to use paraprof to visualize the data, your ssh connection should support X11 forward.
+  - If you do not declare the ``TAU_METRICS`` variable, then by default is used the
+    TIME and the profiling files are not in a folder When the execution ends,
+    there will be one file per process, called profile.X.Y.Z.
+
+- In order to use paraprof to visualize the data, your ssh connection should
+  support X11 forward.
 
 - Pack the profiling data with a name that you prefer and start the paraprof GUI
 
@@ -373,14 +423,19 @@ Preparing profiling data
 Paraprof
 --------
 
-- The first window that opens when the ``paraprof name.ppk`` command is executed, shows the experiment and the used metrics, for this case, TIME, PAPI_FP_OPS, PAPI_TOT_INS, PAPI_TOT_CYC
+- The first window that opens when the ``paraprof name.ppk`` command is
+  executed, shows the experiment and the used metrics, for this case, TIME,
+  PAPI_FP_OPS, PAPI_TOT_INS, PAPI_TOT_CYC
 
 .. image:: /images/tau_paraprof_manager.png
    :align: center
 
 - The user is responsible for understanding which PAPI metrics should be used
 
-- The second window that is automatically loaded, shows the `TIME` metric for each process (they are called nodes), each color is a different call. Each horizontal line is a process or Std.Dev./mean/max/min. The length of each color is related to the metric, if it is TIME, is duration.
+- The second window that is automatically loaded, shows the ``TIME`` metric for
+  each process (they are called nodes), each color is a different call. Each
+  horizontal line is a process or Std.Dev./mean/max/min. The length of each
+  color is related to the metric, if it is TIME, is duration.
 
 
 
@@ -394,28 +449,35 @@ Paraprof
 .. image:: /images/tau_mpi_stack_bars.png
    :align: center
 
-- If you click on any color, then a new window opens with information about the specific routine
+- If you click on any color, then a new window opens with information about the
+  specific routine
 
 .. image:: /images/tau_mpi_click_color.png
    :align: center
 
-- If you click on the label (node 0, node 1, max, etc.), you can see the value across each routine in your application.
+- If you click on the label (node 0, node 1, max, etc.), you can see the value
+  across each routine in your application.
 
 .. image:: /images/tau_mpi_sort_time.png
    :align: center
 
 
-- Right click on the label (node 0, node 1, max, etc.), and then select "Show Context Event Window" (with callpath activated). Then we can see various calls from where they were executed, how many times and various information
+- Right click on the label (node 0, node 1, max, etc.), and then select "Show
+  Context Event Window" (with callpath activated). Then we can see various calls
+  from where they were executed, how many times and various information
 
 .. image:: /images/tau_mpi_context_event.png
    :align: center
 
-- Select Options -> Show Derived Metric Panel, choose the metrics and then the operator that you want and then click Apply. Then uncheck the Show Derived Metric
+- Select Options -> Show Derived Metric Panel, choose the metrics and then the
+  operator that you want and then click Apply. Then uncheck the Show Derived
+  Metric
 
 .. image:: /images/tau_mpi_derived_metric.png
    :align: center
 
-- Click on the new metric, PAPI_TOT_INS/PAPI_TOT_CYC to see the instructions per cycle (IPC) across the various routines
+- Click on the new metric, PAPI_TOT_INS/PAPI_TOT_CYC to see the instructions per
+  cycle (IPC) across the various routines
 
 .. image:: /images/tau_mpi_ipc.png
    :align: center
@@ -425,17 +487,21 @@ Paraprof
 .. image:: /images/tau_mpi_mean_ipc.png
    :align: center
 
-- For the non-MPI routines/calls, the IPC that is lower than 1.5 means that there is a potential for performance improvement.
+- For the non-MPI routines/calls, the IPC that is lower than 1.5 means that
+  there is a potential for performance improvement.
 
-- Menu Windows -> 3D Visualization (3D demands OpenGL), it will not work on Summit, download the data on your laptop and install TAU locally.
-- You can see per MPI rank, per routine, the exclusive time and the floating operations
+- Menu Windows -> 3D Visualization (3D demands OpenGL), it will not work on
+  Summit, download the data on your laptop and install TAU locally.
+- You can see per MPI rank, per routine, the exclusive time and the floating
+  operations
 
 
 .. image:: /images/tau_mpi_3d_fp_ops.png
    :align: center
 
 - Change the PAPI_FP_OPS to (PAPI_TOT_INS/PAPI_TOT_CYC)
-- You can see per MPI rank, per routine, the exclusive time and the corresponding IPC
+- You can see per MPI rank, per routine, the exclusive time and the
+  corresponding IPC
 
 .. image:: /images/tau_mpi_3d_tot_ins.png
    :align: center
@@ -459,8 +525,9 @@ Then declare the options in your submission script
 
 	export TAU_OPTIONS="-optTauSelectFile=select.tau -optLinking=lpnetcdf -optVerbose"
 
-- The linking option is required for this application, not for all the applications
-- Do not forget to unset TAU_OPTIONS when not necessary
+- The linking option is required for this application, not for all the
+  applications
+- Do not forget to unset ``TAU_OPTIONS`` when not necessary
 - Execute the application as previously
 
 
@@ -475,13 +542,15 @@ Then declare the options in your submission script
 .. image:: /images/tau_mpi_loops2.png
    :align: center
 
-The loops with less than 1.5 IPC have poor performance and probably they could be improved.
+The loops with less than 1.5 IPC have poor performance and probably they could
+be improved.
 
 MPI+OpenMP
 ==========
 
 - Execute the MPI+OpenMP version
-- Now you can see the duration of parallelfor loops and decide when they should be improved or even removed.
+- Now you can see the duration of parallelfor loops and decide when they should
+  be improved or even removed.
 
 .. image:: /images/tau_openmp.png
    :align: center
@@ -496,15 +565,17 @@ GPU
 .. image:: /images/tau_openacc.png
    :align: center
 
-- From the main window right click one label and select “Show User Event Statistics Window”. Then, we can see the data transfered to the devices
+- From the main window right click one label and select “Show User Event
+  Statistics Window”. Then, we can see the data transfered to the devices
 
 .. image:: /images/tau_mpi_openacc_data.png
    :align: center
 
-CUDA Profiling Tools Interface 
+CUDA Profiling Tools Interface
 ===============================
 
-The CUDA Profiling Tools Interface (CUPTI) is used by profiling and tracing tools that target CUDA applications. 
+The CUDA Profiling Tools Interface (CUPTI) is used by profiling and tracing
+tools that target CUDA applications.
 
 - https://docs.nvidia.com/cupti/Cupti/r_main.html#metrics-reference
 
@@ -519,7 +590,7 @@ The CUDA Profiling Tools Interface (CUPTI) is used by profiling and tracing tool
 	jsrun -n 2 -r 2 -g 1  tau_exec -T mpi,pdt,papi,cupti,openmp -ompt -cupti  ./add
 
 
-- We selecte to use tau_exec with MPI, PDT, PAPI, CUPTI, and OpenMP
+- We selecte to use ``tau_exec`` with MPI, PDT, PAPI, CUPTI, and OpenMP
 - Output folders
 
 .. code::
@@ -529,10 +600,15 @@ The CUDA Profiling Tools Interface (CUPTI) is used by profiling and tracing tool
 	MULTI__CUDA.Tesla_V100-SXM2-16GB.domain_d.active_cycles
 	MULTI__achieved_occupancy
 
-- There are many folders because the achieved occupancy is calculated with this formula
-	- Achieved_occupancy=CUDA.Tesla_V100-SXM2-16GB.domain_d.active_warps/CUDA.Tesla_V100-SXM2-16GB.domain_d.active_cycles
+- There are many folders because the achieved occupancy is calculated with this
+  formula
 
-- You can see in the window with the profilinf data after you pack them and execute paraprof, the profiling data are not across all the processes, it depends if a routine (color) is executed across all of them or not based on the type of the rourine CPU/GPU
+  - Achieved_occupancy=CUDA.Tesla_V100-SXM2-16GB.domain_d.active_warps/CUDA.Tesla_V100-SXM2-16GB.domain_d.active_cycles
+
+- You can see in the window with the profilinf data after you pack them and
+  execute paraprof, the profiling data are not across all the processes, it
+  depends if a routine (color) is executed across all of them or not based on
+  the type of the rourine CPU/GPU
 
 .. image:: /images/cupti_main.png
    :align: center
@@ -554,13 +630,16 @@ The CUDA Profiling Tools Interface (CUPTI) is used by profiling and tracing tool
 
 
 - A similar approach for other metrics, not all of them can be used.
-- TAU provides a tool called tau_cupti_avail, where we can see the list of available metrics, then we have to figure out which CUPTI metrics use these ones.
+- TAU provides a tool called tau_cupti_avail, where we can see the list of
+  available metrics, then we have to figure out which CUPTI metrics use these
+  ones.
 
 Tracing
 =======
 
 
-- Activate tracing and declare the data format to OTF2. OTF2 format is  supported only by MPI and OpenSHMEM applications.
+- Activate tracing and declare the data format to OTF2. OTF2 format is
+  supported only by MPI and OpenSHMEM applications.
 
 .. code::
 
@@ -573,8 +652,9 @@ Tracing
 Selective Instrumentation
 =========================
 
-- For example, do not instrument routine sort*(int *)
-	- Create a file select.tau
+For example, do not instrument routine ``sort*(int *)``
+
+- Create a file ``select.tau``
 
 .. code::
 
@@ -582,18 +662,18 @@ Selective Instrumentation
 	void sort_#(int *)
 	END_EXCLUDE_LIST
 
-- Declare the TAU_OPTIONS
+- Declare the ``TAU_OPTIONS``
 
 .. code::
 
 	export TAU_OPTIONS=“-optTauSelectFile=select.tau”
 
-- Now, the routine sort*(int *) is excluded from the instrumentation
+- Now, the routine ``sort*(int *)`` is excluded from the instrumentation
 
 Dynamic Phase
 =============
 
-- Create a file called phase.tau
+- Create a file called ``phase.tau``
 
 .. code::
 
@@ -601,19 +681,22 @@ Dynamic Phase
 	dynamic phase name=“phase1” file=“miniWeather_mpi.cpp” line=300 to line=327
 	END_INSTRUMENT_SECTION
 
-- Declare the TAU_OPTIONS
+- Declare the ``TAU_OPTIONS``
 
 .. code::
 
         export TAU_OPTIONS=“-optTauSelectFile=phase.tau”
 
-- Now when you instrument your application, the phase called phase 1 are the lines 300-327 of the fiile miniWeather_mpi.cpp. Every call will be instrumented. This could create signiificant overhead, thus you should be careful when you use it.
+- Now when you instrument your application, the phase called phase 1 are the
+  lines 300-327 of the file ``miniWeather_mpi.cpp``. Every call will be
+  instrumented. This could create signiificant overhead, thus you should be
+  careful when you use it.
 
 Static Phase
 ============
 
 
-- Create a file called phases.tau
+- Create a file called ``phases.tau``
 
 .. code::
 
@@ -622,7 +705,7 @@ Static Phase
 	static phase name="phase2" file="miniWeather_mpi.cpp" line=333 to line=346
         END_INSTRUMENT_SECTION
 
-- Declare the TAU_OPTIONS
+- Declare the ``TAU_OPTIONS``
 
 .. code::
 
