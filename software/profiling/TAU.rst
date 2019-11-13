@@ -5,7 +5,7 @@ Tuning and Analysis Utilities (TAU)
 ************************************
 
 TAU is a portable profiling and tracing toolkit that supports many programming
-languages.  The instrumentation can be done by inserting in the source code
+languages. The instrumentation can be done by inserting in the source code
 using an automatic tool based on the Program Database Toolkit (PDT), on the
 compiler instrumentation, or manually using the instrumentation API.
 
@@ -15,7 +15,7 @@ TAU is installed with `Program Database Toolkit (PDT)
 <https://www.cs.uoregon.edu/research/pdt/home.php>`_ on Summit. PDT is a
 framework for analyzing source code written in several programming languages.
 Moreover, `Performance Application Programming Interface (PAPI)
-<https://icl.utk.edu/papi/>`_  is supported. PAPI counters are used to assess
+<https://icl.utk.edu/papi/>`_ is supported. PAPI counters are used to assess
 the CPU performance. In this section, some approaches for profiling and tracing
 will be presented.
 
@@ -132,7 +132,8 @@ Prepare the application the MiniWeather:
 Compile the application:
 ------------------------
 
-- We'll use the PGI compiler; this application supports serial, MPI, MPI+OpenMP, and MPI+OpenACC
+- We'll use the PGI compiler; this application supports serial, MPI, MPI+OpenMP,
+  and MPI+OpenACC
 
 .. code::
 
@@ -238,16 +239,16 @@ Instrumenting the serial version of MiniWeather
 - When the execution finishes, there is one folder for each ``TAU_METRICS``
   declaration with the format ``MULTI__``
 
-  - If you do not declare the ``TAU_METRICS`` variable, then by default is used the
-    TIME and the profiling files are not in a folder When the execution ends,
-    there will be one file per process, called profile.X.Y.Z, in this case, is
-    just one file, called **profile.0.0.0**
+  - If you do not declare the ``TAU_METRICS`` variable, then ``TIME`` is used by
+    default, and the profiling files are not in a folder. When the execution
+    ends there will be one file per process called profile.X.Y.Z. In this
+    case there is just one file, called **profile.0.0.0**
 
-- We can export a text file with some information through pprof tool or
-  visualize through paraprof
+- We can export a text file with some information through the ``pprof`` tool or
+  visualize through ``paraprof``.
 - If an application has no MPI at all, use the argument ``--smpiargs="off"`` for
-  the jsrun otherwise, TAU will fail as MPI is active by default, and probably
-  int he TAU makefile is not declared any MPI.
+  ``jsrun``, otherwise, TAU will fail as MPI is active by default and probably
+  the TAU makefile does not contain any declared MPI.
 
 .. code::
 
@@ -298,7 +299,7 @@ Instrumenting the serial version of MiniWeather
       bytes, and the bandwidth.
 
 
-We will present paraprof tool for the MPI version of the MiniWeather.
+We will present the ``paraprof`` tool for the MPI version of the MiniWeather.
 
 Instrumenting the MPI version of MiniWeather
 --------------------------------------------
@@ -395,8 +396,8 @@ Instrumenting the MPI+OpenACC version of MiniWeather
         export TAU_COMM_MATRIX=1
         jsrun -n 6 -r 6 --smpiargs="-gpu" -g 1  tau_exec -T mpi,pgi,pdt -openacc ./miniWeather_mpi_openacc
 
-- We declare to TAU to profile the MPI with PDT support through -T parameters as
-  long as use the ``pgi`` tag for the TAU makefile and OpenACC
+- We declare to TAU to profile the MPI with PDT support through ``-T``
+  parameters as well as using the ``pgi`` tag for the TAU makefile and OpenACC
 
 - CUPTI metrics for OpenACC are not supported yet for TAU
 
@@ -406,12 +407,12 @@ Preparing profiling data
 - When the execution of the instrumented application finishes, there is one
   folder for each ``TAU_METRICS`` declaration with the format ``MULTI__``
 
-  - If you do not declare the ``TAU_METRICS`` variable, then by default is used the
-    TIME and the profiling files are not in a folder When the execution ends,
-    there will be one file per process, called profile.X.Y.Z.
+  - If you do not declare the ``TAU_METRICS`` variable, then by default ``TIME``
+    is used and the profiling files are not in a folder. When the execution
+    ends, there will be one file per process, called profile.X.Y.Z.
 
 - In order to use paraprof to visualize the data, your ssh connection should
-  support X11 forward.
+  support X11 forwarding.
 
 - Pack the profiling data with a name that you prefer and start the paraprof GUI
 
@@ -424,18 +425,18 @@ Paraprof
 --------
 
 - The first window that opens when the ``paraprof name.ppk`` command is
-  executed, shows the experiment and the used metrics, for this case, TIME,
-  PAPI_FP_OPS, PAPI_TOT_INS, PAPI_TOT_CYC
+  executed shows the experiment and the used metrics, for this case, ``TIME``,
+  ``PAPI_FP_OPS``, ``PAPI_TOT_INS``, ``PAPI_TOT_CYC``
 
 .. image:: /images/tau_paraprof_manager.png
    :align: center
 
 - The user is responsible for understanding which PAPI metrics should be used
 
-- The second window that is automatically loaded, shows the ``TIME`` metric for
-  each process (they are called nodes), each color is a different call. Each
-  horizontal line is a process or Std.Dev./mean/max/min. The length of each
-  color is related to the metric, if it is TIME, is duration.
+- The second window that is automatically loaded shows the ``TIME`` metric for
+  each process (they are called nodes) where each color is a different call.
+  Each horizontal line is a process or Std.Dev./mean/max/min. The length of each
+  color is related to the metric, if it is ``TIME``, it is duration.
 
 
 
