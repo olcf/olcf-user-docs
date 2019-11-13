@@ -8,7 +8,3 @@ Profiling Tools
    :maxdepth: 2
 
    TAU
-   Score-P
-   Scalasca
-   Extrae
-
