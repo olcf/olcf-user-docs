@@ -3771,5 +3771,12 @@ The OLCF is currently adding some simple HIP tutorials here as well:
 
 - OLCF Tutorials – `Simple HIP Examples <https://github.com/olcf-tutorials/simple_HIP_examples>`__
 
+Previous Frontier Training Events
+---------------------------------
+
+The links below point to event pages from previous Frontier training events. Under the "Presentations" tab on each event page, you will find the presentations given during the event.
+
+`Frontier Application Readiness Kick-Off Workshop (October 2019) <https://www.olcf.ornl.gov/frontier-application-readiness-kick-off-workshop/>`__
+
 Please check back to this section regularly as we will continue
 to add new content for our users.
