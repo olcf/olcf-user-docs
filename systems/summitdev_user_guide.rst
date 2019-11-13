@@ -28,6 +28,9 @@ has 16GB HBM2 memory. A node-local NVMe device provides 800GB of high-speed
 scratch storage. Nodes are connected in a full fat-tree by EDR InfiniBand.
 Summitdev has access to Alpine, the same GPFS filesystem mounted on Summit.
 
+.. note::
+    SummitDev does not have dedicated batch/launch nodes. Interactive sessions and job scripts execute on login nodes.
+
 .. _summitdev-access:
 
 Access
