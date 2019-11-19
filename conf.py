@@ -104,10 +104,55 @@ class PatchedHTMLTranslator(HTMLTranslator):
         super().visit_reference(node)
 
 
+def mk_tbl(tbl, hdrs):
+    ''' Create a text table from the dictionary.
+
+        tbl  : {str:[str]} = a mapping of column headers to lists of entries
+        hdrs : [str] = a selection of columns you would like to pull from tbl
+
+        returns a string containing the grid-formatted table
+    '''
+    cols = [[h.title()] + tbl[h] for h in hdrs] # select cols
+    widths = [max(map(len, col)) for col in cols]
+    brk = '+-' + '-+-'.join(['-'*w for w in widths]) + '-+'
+    lines = [brk]
+    for i in range(len(cols[0])):
+        lines.append('| ' + ' | '.join(
+                   '{0: <{1}}'.format(c[i], w)
+                      for w, c in zip(widths,cols)) + ' |')
+        if i == 0:
+            lines.append('+=' + '=+='.join(['='*w for w in widths]) + '=+')
+        else:
+            lines.append(brk)
+    return '\n'.join(lines) + '\n'
+
+import yaml
+
+with open("systems.yaml") as f:
+    x = yaml.load(f, Loader=yaml.FullLoader)
+    attrs = x[0].keys()
+    Filesystems = dict((h, [y[h] for y in x]) for h in attrs)
+
+rst_context = {
+        'Filesystems': Filesystems,
+        'mk_tbl': mk_tbl,
+        }
+def rstjinja(app, docname, source):
+    """
+    Render our pages as a jinja template for fancy templating goodness.
+    """
+    if app.builder.format != 'html':
+        return
+    src = source[0]
+    rendered = app.builder.templates.render_string(
+        src, rst_context
+    )
+    source[0] = rendered
+
 def setup(app):
     '''Function to setup sphinx customizations.'''
     app.set_translator('html', PatchedHTMLTranslator)
-
+    app.connect("source-read", rstjinja)
 
 # globally-available substitutions
 

@@ -1,0 +1,70 @@
+  - area: "User Home"
+    purpose: "Long-term data for routine access that is unrelated to a project"
+    path: "$HOME"
+    permissions: "User-controlled"
+    type: NFS
+    backups: Yes
+    purged: No
+    quota: "50 GB"
+    retention: "90 days"
+
+  - area: "User Archive"
+    purpose: "Long-term data for archival access that is unrelated to a project"
+    path: "/home/$USER"
+    permissions: "User-controlled"
+    type: HPSS
+    backups: No
+    purged: No
+    quota: "2 TB"
+    retention: "90 days"
+
+  - area: "Project Home"
+    purpose: "Long-term project data for routine access that’s shared with other project members"
+    path: "/ccs/proj/[projid]"
+    permissions: "770"
+    type: NFS
+    backups: Yes
+    purged: No
+    quota: "50 GB"
+    retention: "90 days"
+
+  - area: "Member Work"
+    purpose: "Short-term project data for fast, batch-job access that you don’t want to share"
+    path: "$MEMBERWORK/[projid]"
+    permissions: "700"
+    type: Spectrum Scale
+    backups: No
+    purged: "90 days"
+    quota: "50 TB"
+    retention: "NA"
+
+  - area: "Project Work"
+    purpose: "Short-term project data for fast, batch-job access that’s shared with other project members"
+    path: "$PROJWORK/[projid]"
+    permissions: "770"
+    type: Spectrum Scale
+    backups: No
+    purged: "90 days"
+    quota: "50 TB"
+    retention: "NA"
+
+  - area: "World Work"
+    purpose: "Short-term project data for fast, batch-job access that’s shared with those outside your project"
+    path: "$WORLDWORK/[projid]"
+    permissions: "775"
+    type: Spectrum Scale
+    backups: No
+    purged: "90 days"
+    quota: "50 TB"
+    retention: "NA"
+
+  - area: "Project Archive"
+    purpose: "Long-term project data for archival access that’s shared with other project members"
+    path: "/proj/[projid]"
+    permissions: "770"
+    type: HPSS
+    backups: No
+    purged: No
+    quota: "100 TB"
+    retention: "90 days"
+
