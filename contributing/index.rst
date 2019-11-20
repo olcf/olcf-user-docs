@@ -59,7 +59,14 @@ Setup authoring environment
 Edit the docs
 -------------------------
 
-#. Setup your environment as above
+After having set up your environment as described above, you can reuse your
+local environment to make multiple changes.
+
+#. Update your local clone from the upstream repository::
+
+      $ git checkout master
+      $ git pull
+
 #. Make your edits in a new git branch::
 
       $ git checkout -b my-edits-branch
