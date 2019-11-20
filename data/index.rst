@@ -14,10 +14,12 @@ Data Storage and Transfers
    transferring
    archiving
 
-**********************************
-Burst Buffer and Spectral Library
-**********************************
+.. seealso::
 
-Summit has node-local NVMe devices that can be used as :ref:`burst-buffer` by
-jobs, and the :ref:`spectral-library` can help with some of these use cases.
+   :ref:`burst-buffer`
+         Documentation for using Summit's node-local storage
+         to achieve short segments of high I/O bandwidth.
+
+   :ref:`spectral-library`
+         I/O library for using the burst buffer effectively.
 

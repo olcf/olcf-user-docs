@@ -9,17 +9,11 @@ resources and lists relevant polices.
 
 **User-Centric Storage Areas**
 
-+--------------+-----------------+------+-----------------+-------------+---------+--------+-----------+
-| Area         | Path            | Type | Permissions     | Quota       | Backups | Purged | Retention |
-+==============+=================+======+=================+=============+=========+========+===========+
-| User Home    | ``$HOME``       | NFS  | User-controlled | 50 GB       | Yes     | No     | 90 days   |
-+--------------+-----------------+------+-----------------+-------------+---------+--------+-----------+
-| User Archive | ``/home/$USER`` | HPSS | User-controlled | 2 TB [#f1]_ | **No**  | No     | 90 days   |
-+--------------+-----------------+------+-----------------+-------------+---------+--------+-----------+
+{{ mk_tbl(UserFilesystems, "area", "path", "type", "permissions", "quota", "backups", "purged", "retention") }}
 
-.. rubric:: footnotes
+.. note::
 
-.. [#f1] In addition, there is a quota/limit of 2,000 files on this directory.
+    * The *User Archive* also has a quota/limit of 2,000 files.
 
 
 .. _user-home-directories-nfs:

@@ -104,7 +104,7 @@ class PatchedHTMLTranslator(HTMLTranslator):
         super().visit_reference(node)
 
 
-def mk_tbl(tbl, hdrs):
+def mk_tbl(tbl, *hdrs):
     ''' Create a text table from the dictionary.
 
         tbl  : {str:[str]} = a mapping of column headers to lists of entries
@@ -128,13 +128,17 @@ def mk_tbl(tbl, hdrs):
 
 import yaml
 
-with open("systems.yaml") as f:
+with open("storage.yaml") as f:
     x = yaml.load(f, Loader=yaml.FullLoader)
     attrs = x[0].keys()
     Filesystems = dict((h, [y[h] for y in x]) for h in attrs)
+    UserFilesystems = dict((h, [y[h] for y in x if "User" in y['area']]) for h in attrs)
+    ProjFilesystems = dict((h, [y[h] for y in x if "User" not in y['area']]) for h in attrs)
 
 rst_context = {
         'Filesystems': Filesystems,
+        'UserFilesystems': UserFilesystems,
+        'ProjFilesystems': ProjFilesystems,
         'mk_tbl': mk_tbl,
         }
 def rstjinja(app, docname, source):

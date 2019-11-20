@@ -223,23 +223,7 @@ categories: those intended for user data and those intended for project
 data. Within each of the two categories, we provide different sub-areas,
 each with an intended purpose:
 
-+----------------------------------------------------------------------------------------------------+---------------------+----------------------------+
-| Purpose                                                                                            | Storage Area        | Path                       |
-+====================================================================================================+=====================+============================+
-| Long-term data for routine access that is unrelated to a project                                   | *User Home*         | ``$HOME``                  |
-+----------------------------------------------------------------------------------------------------+---------------------+----------------------------+
-| Long-term data for archival access that is unrelated to a project                                  | *User Archive*      | ``/home/$USER``            |
-+----------------------------------------------------------------------------------------------------+---------------------+----------------------------+
-| Long-term project data for routine access that's shared with other project members                 | *Project Home*      | ``/ccs/proj/[projid]``     |
-+----------------------------------------------------------------------------------------------------+---------------------+----------------------------+
-| Short-term project data for fast, batch-job access that you don't want to share                    | *Member Work*       | ``$MEMBERWORK/[projid]``   |
-+----------------------------------------------------------------------------------------------------+---------------------+----------------------------+
-| Short-term project data for fast, batch-job access that's shared with other project members        | *Project Work*      | ``$PROJWORK/[projid]``     |
-+----------------------------------------------------------------------------------------------------+---------------------+----------------------------+
-| Short-term project data for fast, batch-job access that's shared with those outside your project   | *World Work*        | ``$WORLDWORK/[projid]``    |
-+----------------------------------------------------------------------------------------------------+---------------------+----------------------------+
-| Long-term project data for archival access that's shared with other project members                | *Project Archive*   | ``/proj/[projid]``         |
-+----------------------------------------------------------------------------------------------------+---------------------+----------------------------+
+{{ mk_tbl(Filesystems, "purpose", "area", "path") }}
 
 User Home
 ^^^^^^^^^
@@ -358,29 +342,11 @@ available at the OLCF.
 
 **User-Centric Storage Areas**
 
-+--------------+-----------------+------+-----------------+------------+---------+--------+-----------+
-| Area         | Path            | Type | Permissions     |  Quota     | Backups | Purged | Retention |
-+==============+=================+======+=================+============+=========+========+===========+
-| User Home    | ``$HOME``       | NFS  | User-controlled |  50 GB     | Yes     | No     | 90 days   |
-+--------------+-----------------+------+-----------------+------------+---------+--------+-----------+
-| User Archive | ``/home/user``  | HPSS | User-controlled |  2TB [#f1]_| No      | No     | 90 days   |
-+--------------+-----------------+------+-----------------+------------+---------+--------+-----------+
+{{ mk_tbl(UserFilesystems, "area", "path", "type", "permissions", "quota", "backups", "purged", "retention") }}
 
 **Project-Centric Storage Areas**
 
-+-----------------+---------------------------+--------+-----------------+---------------+---------+---------+-----------+
-| Area            | Path                      | Type   | Permissions     |  Quota        | Backups | Purged  | Retention |
-+=================+===========================+========+=================+===============+=========+=========+===========+
-| Project Home    | ``/ccs/proj/[projid]``    | NFS    | 770             |  50 GB        | Yes     | No      | 90 days   |
-+-----------------+---------------------------+--------+-----------------+---------------+---------+---------+-----------+
-| Member Work     | ``$MEMBERWORK/[projid]``  | Lustre | 700 [#f2]_      |  10TB         | No      | 14 days | [#f4]_    |
-+-----------------+---------------------------+--------+-----------------+---------------+---------+---------+-----------+
-| Project Work    | ``$PROJWORK/projid]``     | Lustre | 770             |  100TB        | No      | 90 days | [#f4]_    |
-+-----------------+---------------------------+--------+-----------------+---------------+---------+---------+-----------+
-| World Work      | ``$WORLDWORK/[projid]``   | Lustre | 775             |  10TB         | No      | 90 days | [#f4]_    |
-+-----------------+---------------------------+--------+-----------------+---------------+---------+---------+-----------+
-| Project Archive | ``/proj/[projid]``        | HPSS   | 770             |  100TB [#f3]_ | No      | No      | 90 days   |
-+-----------------+---------------------------+--------+-----------------+---------------+---------+---------+-----------+
+{{ mk_tbl(ProjFilesystems, "area", "path", "type", "permissions", "quota", "backups", "purged", "retention") }}
 
 | *Area -* The general name of storage area.
 | *Path -* The path (symlink) to the storage area's directory.
@@ -395,15 +361,15 @@ available at the OLCF.
     Project Work, World Work) are *not* backed up and are *purged* on a
     regular basis according to the timeframes listed above.
 
-.. rubric:: Footnotes
+.. note::
 
-.. [#f1] In addition, there is a quota/limit of 2,000 files on this directory.
+    * The *User Archive* also has a quota/limit of 2,000 files.
 
-.. [#f2] Permissions on Member Work directories can be controlled to an extent by project members. By default, only the project member has any accesses, but accesses can be granted to other project members by setting group permissions accordingly on the Member Work directory. The parent directory of the Member Work directory prevents accesses by "UNIX-others" and cannot be changed (security measures).
+    * The *Project Archive* also has a quota/limit of 100,000 files.
 
-.. [#f3] In addition, there is a quota/limit of 100,000 files on this directory.
+    * Retention is marked NA where files will follow purge cycle.
 
-.. [#f4] Retention is not applicable as files will follow purge cycle.
+    * Permissions on Member Work directories can be controlled to an extent by project members. By default, only the project member has any accesses, but accesses can be granted to other project members by setting group permissions accordingly on the Member Work directory. The parent directory of the Member Work directory prevents accesses by "UNIX-others" and cannot be changed (security measures).
 
 Data Retention Overview
 ^^^^^^^^^^^^^^^^^^^^^^^
