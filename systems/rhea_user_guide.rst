@@ -1619,7 +1619,7 @@ Launch an interactive job:
 
 .. code::
 
-     salloc -A PROJECT_ID -p gpu -N 1 -t 60:00 -M rhea -C DCV bash
+     salloc -A PROJECT_ID -p gpu -N 1 -t 60:00 -M rhea -C DCV
 
 Run the following commands:
 
