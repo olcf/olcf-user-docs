@@ -1621,12 +1621,7 @@ Launch an interactive job:
 
 .. code::
 
-     qsub -I -A projectID   -l nodes=1 -l walltime=00:30:00 -l partition=gpu
-
-As of April 29, the dcv feature will be required:
-.. code::
-
-     qsub -I -A projectID   -l nodes=1 -l walltime=00:30:00 -l partition=gpu -l feature=dcv
+     salloc -A PROJECT_ID -p gpu -N 1 -t 60:00 -M rhea -C DCV
 
 Run the following commands:
 
