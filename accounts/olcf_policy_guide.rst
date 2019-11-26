@@ -368,7 +368,7 @@ available at the OLCF.
 +==============+=================+======+=================+============+=========+========+===========+
 | User Home    | ``$HOME``       | NFS  | User-controlled |  50 GB     | Yes     | No     | 90 days   |
 +--------------+-----------------+------+-----------------+------------+---------+--------+-----------+
-| User Archive | ``/home/user``  | HPSS | User-controlled |  2TB [#f1]_| No      | No     | 90 days   |
+| User Archive | ``/home/user``  | HPSS | User-controlled |  2TB       | No      | No     | 90 days   |
 +--------------+-----------------+------+-----------------+------------+---------+--------+-----------+
 
 **Project-Centric Storage Areas**
@@ -378,13 +378,13 @@ available at the OLCF.
 +=================+===========================+===============+=================+===============+=========+=========+===========+
 | Project Home    | ``/ccs/proj/[projid]``    | NFS           | 770             |  50 GB        | Yes     | No      | 90 days   |
 +-----------------+---------------------------+---------------+-----------------+---------------+---------+---------+-----------+
-| Member Work     | ``$MEMBERWORK/[projid]``  | Spectrum Scale| 700 [#f2]_      |  50 TB        | No      | 90 days | [#f4]_    |
+| Member Work     | ``$MEMBERWORK/[projid]``  | Spectrum Scale| 700 [#f1]_      |  50 TB        | No      | 90 days | [#f2]_    |
 +-----------------+---------------------------+---------------+-----------------+---------------+---------+---------+-----------+
-| Project Work    | ``$PROJWORK/projid]``     | Spectrum Scale| 770             |  50 TB        | No      | 90 days | [#f4]_    |
+| Project Work    | ``$PROJWORK/projid]``     | Spectrum Scale| 770             |  50 TB        | No      | 90 days | [#f2]_    |
 +-----------------+---------------------------+---------------+-----------------+---------------+---------+---------+-----------+
-| World Work      | ``$WORLDWORK/[projid]``   | Spectrum Scale| 775             |  50 TB        | No      | 90 days | [#f4]_    |
+| World Work      | ``$WORLDWORK/[projid]``   | Spectrum Scale| 775             |  50 TB        | No      | 90 days | [#f2]_    |
 +-----------------+---------------------------+---------------+-----------------+---------------+---------+---------+-----------+
-| Project Archive | ``/proj/[projid]``        | HPSS          | 770             | 100 TB [#f3]_ | No      | No      | 90 days   |
+| Project Archive | ``/proj/[projid]``        | HPSS          | 770             | 100 TB        | No      | No      | 90 days   |
 +-----------------+---------------------------+---------------+-----------------+---------------+---------+---------+-----------+
 
 | *Area -* The general name of storage area.
@@ -402,13 +402,9 @@ available at the OLCF.
 
 .. rubric:: Footnotes
 
-.. [#f1] In addition, there is a quota/limit of 2,000 files on this directory.
+.. [#f1] Permissions on Member Work directories can be controlled to an extent by project members. By default, only the project member has any accesses, but accesses can be granted to other project members by setting group permissions accordingly on the Member Work directory. The parent directory of the Member Work directory prevents accesses by "UNIX-others" and cannot be changed (security measures).
 
-.. [#f2] Permissions on Member Work directories can be controlled to an extent by project members. By default, only the project member has any accesses, but accesses can be granted to other project members by setting group permissions accordingly on the Member Work directory. The parent directory of the Member Work directory prevents accesses by "UNIX-others" and cannot be changed (security measures).
-
-.. [#f3] In addition, there is a quota/limit of 100,000 files on this directory.
-
-.. [#f4] Retention is not applicable as files will follow purge cycle.
+.. [#f2] Retention is not applicable as files will follow purge cycle.
 
 Data Retention Overview
 ^^^^^^^^^^^^^^^^^^^^^^^
