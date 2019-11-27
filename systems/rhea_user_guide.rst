@@ -52,7 +52,7 @@ With Hyper-Threading enabled, these nodes have 56 logical cores that can execute
 56 hardware threads for increased parallelism.
 
 .. note::
-    To access the gpu partition, batch job submissions should request ``-lpartition=gpu``.
+    To access the gpu partition, batch job submissions should request ``-p gpu``.
 
 Please see the :ref:`batch-queues-on-rhea` section to learn about the queuing
 policies for these two partitions. Both compute partitions are accessible
@@ -239,7 +239,7 @@ examined with the commands summarized in the following table.
 .. note::
     In order to avoid conflicts between user-defined collections
     on multiple compute systems that share a home file system (e.g.
-    ``/ccs/home/[userid]``), lmod appends the hostname of each system to the
+    ``/ccs/home/[username]``), lmod appends the hostname of each system to the
     files saved in in your ``~/.lmod.d`` directory (using the environment
     variable ``lmod_system_name``). This ensures that only collections
     appended with the name of the current system are visible.
@@ -427,21 +427,21 @@ not run (10) simultaneous ``tar`` processes on a login node.
 Slurm
 -----
 
-The following section provides batch scheduler instructions for Slurm, the batch
-scheduler in use on Rhea and the DTNs.  Below is a comparison table to the
-schedulers used on other OLCF resources:
+Most OLCF resources now use the Slurm batch scheduler. Previously, most OLCF resources
+used the Moab scheduler. Summit and other IBM hardware use the LSF scheduler.
+Below is a comparison table of useful commands among the three schedulers.
 
-+--------------------------------------------+--------------+-----------------------+-------------------+
-| Task                                       | Moab         | LSF                   | Slurm             |
-+============================================+==============+=======================+===================+
-| View batch queue                           | ``showq``    | ``jobstat``           | ``squeue``        |
-+--------------------------------------------+--------------+-----------------------+-------------------+
-| Submit batch script                        | ``qsub``     | ``bsub``              | ``sbatch``        |
-+--------------------------------------------+--------------+-----------------------+-------------------+
-| Submit interactive batch job               | ``qsub -I``  | ``bsub -Is $SHELL``   | ``salloc``        |
-+--------------------------------------------+--------------+-----------------------+-------------------+
-| Run parallel code within batch job         | ``mpirun``   | ``jsrun``             | ``srun``          |
-+--------------------------------------------+--------------+-----------------------+-------------------+
++--------------------------------------------+-------------------+-----------------------+-------------------+
+| Task                                       | Moab (historical) | LSF (Summit)          | Slurm             |
++============================================+===================+=======================+===================+
+| View batch queue                           | ``showq``         | ``jobstat``           | ``squeue``        |
++--------------------------------------------+-------------------+-----------------------+-------------------+
+| Submit batch script                        | ``qsub``          | ``bsub``              | ``sbatch``        |
++--------------------------------------------+-------------------+-----------------------+-------------------+
+| Submit interactive batch job               | ``qsub -I``       | ``bsub -Is $SHELL``   | ``salloc``        |
++--------------------------------------------+-------------------+-----------------------+-------------------+
+| Run parallel code within batch job         | ``mpirun``        | ``jsrun``             | ``srun``          |
++--------------------------------------------+-------------------+-----------------------+-------------------+
 
 
 Writing Batch Scripts
@@ -542,7 +542,7 @@ from where the script was submitted.
 on the compute nodes allocated by the batch system.
 
 
-Batch scripts can be submitted for execution using the ``qsub`` command.
+Batch scripts can be submitted for execution using the ``sbatch`` command.
 For example, the following will submit the batch script named ``test.slurm``:
 
 
@@ -857,7 +857,7 @@ traffic through your ssh connection:
 
 .. code::
 
-    local-system> ssh -Y userid@rhea.ccs.ornl.gov
+    local-system> ssh -Y username@rhea.ccs.ornl.gov
     rhea-login> sview
 
 --------------
@@ -1317,7 +1317,7 @@ Under the “Parallel” Tab:
 - Launch parallel engine: Checked (required)
 - Launch Tab:
     - Parallel launch method:
-      qsub/mpirun (required)
+      sbatch/srun (required)
     - Partition/Pool/Queue: batch (required)
     - Number of processors: 2 (arbitrary, but
       high number may lead to OOM errors)
@@ -1451,8 +1451,8 @@ step 2 (terminal 1)
 From a Rhea connection launch a batch job and execute the below matlab-vnc.sh
 script to start the vncserver and run matlab within:
 
-#. localsytem: ssh -X @rhea.ccs.ornl.gov
-#. rhea: qsub -I -A abc123 -X -l nodes=1,walltime=01:00:00
+#. localsytem: ssh -X username@rhea.ccs.ornl.gov
+#. rhea: salloc -A abc123 -X11 -N 1 -t 1:00:00
 #. rhea: ./matlab-vnc.sh
 
 .. code::
@@ -1468,7 +1468,7 @@ script to start the vncserver and run matlab within:
 
     In a new terminal, open a tunneling connection with rhea6 and port 5901
     example:
-             userid@rhea.ccs.ornl.gov -L 5901:rhea6:5901
+             username@rhea.ccs.ornl.gov -L 5901:rhea6:5901
      **************************************************************************
 
     MATLAB is selecting SOFTWARE OPENGL rendering.
@@ -1479,7 +1479,7 @@ step 3 (terminal 2)
 In a second terminal on your local system open a tunneling connection following
 the instructions given by the vnc start-up script:
 
--  localsystem: ssh @rhea.ccs.ornl.gov -L 5901:rhea99:5901
+-  localsystem: ssh username@rhea.ccs.ornl.gov -L 5901:rhea99:5901
 
 step 4 (local system)
 ^^^^^^^^^^^^^^^^^^^^^
@@ -1510,7 +1510,7 @@ matlab-vnc.sh (non-GPU rendering)
     echo
     echo "In a new terminal, open a tunneling connection with $(what) and port 5901"
     echo "example:"
-    echo  "         userid@rhea.ccs.ornl.gov -L 5901:$(what):5901 "
+    echo  "         username@rhea.ccs.ornl.gov -L 5901:$(what):5901 "
     echo
     echo "**************************************************************************"
     echo
@@ -1537,9 +1537,8 @@ step 2 (terminal 1)
 From a Rhea connection launch a batch job and execute the below matlab-vnc.sh
 script to start the vncserver and run matlab within:
 
-#. localsytem: ssh -X @rhea.ccs.ornl.gov
-#. rhea: salloc -A abc123 -X -l nodes=1,walltime=01:00:00
-   -p gpu
+#. localsytem: ssh -X username@rhea.ccs.ornl.gov
+#. rhea: salloc -A abc123 -X11 -N 1 -t 1:00:00 -p gpu
 #. rhea: ./matlab-vnc.sh
 
 .. code::
@@ -1555,7 +1554,7 @@ script to start the vncserver and run matlab within:
 
     In a new terminal, open a tunneling connection with rhea6 and port 5901
     example:
-             userid@rhea.ccs.ornl.gov -L 5901:rhea6:5901
+             username@rhea.ccs.ornl.gov -L 5901:rhea6:5901
      **************************************************************************
 
     MATLAB is selecting SOFTWARE OPENGL rendering.
@@ -1566,7 +1565,7 @@ step 3 (terminal 2)
 In a second terminal on your local system open a tunneling connection following
 the instructions given by the vnc start-up script:
 
--  localsystem: ssh @rhea.ccs.ornl.gov -L 5901:rhea99:5901
+-  localsystem: ssh username@rhea.ccs.ornl.gov -L 5901:rhea99:5901
 
 step 4 (local system)
 ^^^^^^^^^^^^^^^^^^^^^
@@ -1601,7 +1600,7 @@ vmd-vgl.sh (GPU rendering)
     echo
     echo "In a new terminal, open a tunneling connection with $(what) and port 5901"
     echo "example:"
-    echo  "         userid@rhea.ccs.ornl.gov -L 5901:$(what):5901 "
+    echo  "         username@rhea.ccs.ornl.gov -L 5901:$(what):5901 "
     echo
     echo "**************************************************************************"
     echo
@@ -1639,7 +1638,7 @@ Open a tunneling connection with gpu node ``N``, given by hostname:
 
 .. code::
 
-    ssh user@rhea.ccs.ornl.gov -L 8443:rhea-gpuN:8443
+    ssh username@rhea.ccs.ornl.gov -L 8443:rhea-gpuN:8443
 
 Open your web browser using the following link and use your credentials to
 access OLCF systems: ``https://localhost:8443`` When finished, kill the dcv
