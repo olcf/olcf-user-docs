@@ -23,23 +23,23 @@ In most cases, we need to use wrappers to recompile the application:
 
 - For C: replace the compiler with the TAU wrapper ``tau_cc.sh``
 - For C++: replace the compiler with the TAU wrapper ``tau_cxx.sh``
-- For Fortran: replace the compiler with the TAU wrapper ``tau_f90.sh/tau_f77.sh``
+- For Fortran: replace the compiler with the TAU wrapper ``tau_f90.sh`` / ``tau_f77.sh``
 
-If you **don't** compile your application with a TAU wrapper, then you can
-profile some basic functionalities with *tau_exec*, for example:
+Even if you don't compile your application with a TAU wrapper, you can
+profile some basic functionalities with ``tau_exec``, for example:
 
 .. code::
 
 	jsrun -n 4 –r 4 –a 1 –c 1 tau_exec -T mpi ./test
 
-The above command profiles the MPI for the binary, test which was not compiled
-with TAU wrapper.
+The above command profiles MPI for the binary ``test``, which was not compiled
+with the TAU wrapper.
 
 
 TAU Environment Variables
--------------------------
+=========================
 
-These are environment variables that can be used in tour submission job script
+The following TAU environment variables may be useful in job submission scripts.
 
 +------------------------+---------+-------------------------------------------------------------------------------------------------------------+
 | Variable  	         | Default | Description			     									 |
@@ -54,7 +54,7 @@ These are environment variables that can be used in tour submission job script
 +------------------------+---------+-------------------------------------------------------------------------------------------------------------+
 | TAU_CALLPATH_DEPTH     |    2    | Specifies depth of callpath         		     							 |
 +------------------------+---------+-------------------------------------------------------------------------------------------------------------+
-| TAU_TRACK_IO_PARAMS    |    0    | Setting 1 with -optTrackIO	     		     							         |
+| TAU_TRACK_IO_PARAMS    |    0    | Setting 1 with ``-optTrackIO``                   							         |
 +------------------------+---------+-------------------------------------------------------------------------------------------------------------+
 | TAU_SAMPLING	         |    1    | Generates sample based profiles     		     							 |
 +------------------------+---------+-------------------------------------------------------------------------------------------------------------+
@@ -76,7 +76,7 @@ These are environment variables that can be used in tour submission job script
 
 
 TAU Compile-Time Environment Variables
----------------------------------------
+======================================
 
 Environment variables to be used during compilation through the environment variable ``TAU_OPTIONS``
 
@@ -115,21 +115,24 @@ Environment variables to be used during compilation through the environment vari
 +----------------------------+------------------------------------------------------------------------------+
 
 
-Prepare the application the MiniWeather:
-----------------------------------------
+MiniWeather, an Example Application:
+====================================
 
-- Connect to Summit in your project space
-- For the following examples, we'll use the MiniWeather application
+Getting the source code
+-----------------------
+
+- Connect to Summit and navigate to your project space
+- For the following examples, we'll use the MiniWeather application:
   https://github.com/mrnorman/miniWeather
 
 .. code::
 
-	git clone https://github.com/mrnorman/miniWeather.git
-	cd miniWeather/c/
-	cp Makefile.summit Makefile
+	$ git clone https://github.com/mrnorman/miniWeather.git
+	$ cd miniWeather/c/
+	$ cp Makefile.summit Makefile
 
 
-Compile the application:
+Compile the application
 ------------------------
 
 - We'll use the PGI compiler; this application supports serial, MPI, MPI+OpenMP,
@@ -137,28 +140,27 @@ Compile the application:
 
 .. code::
 
-	module load pgi
-	module load parallel-netcdf
+	$ module load pgi
+	$ module load parallel-netcdf
 
 - Different compilations for Serial, MPI, MPI+OpenMP, and MPI+OpenACC:
 
 .. code::
 
-	make serial
-	make mpi
-	make openmp
-	make openacc
+	$ make serial
+	$ make mpi
+	$ make openmp
+	$ make openacc
 
 
-In order to use TAU for each case, follow the instructions below
+Below, we'll look at using TAU to profile each case.
 
 
 Modifications
-=============
-
+-------------
 
 - Edit the makefile and replace ``mpic++`` with ``tau_cxx.sh``. This applies
-  only for the non-GPU versions
+  only for the non-GPU versions.
 - TAU works with special TAU makefiles to declare what programming models are
   expected from the application:
 
@@ -166,7 +168,7 @@ Modifications
 
 .. code::
 
-        module show tau
+        $ module show tau
         ---------------------------------------------------------------
            /sw/summit/modulefiles/core/tau/2.28.1:
         ---------------------------------------------------------------
@@ -177,49 +179,47 @@ Modifications
         ]])
 
 
-The available Makefiles are named with the used compiler and are located in:
+The available Makefiles are named per-compiler and are located in:
 
 .. code::
 
-        ls ${TAU_DIR}/lib/Makefile.tau-pgi*
+        $ ls ${TAU_DIR}/lib/Makefile.tau-pgi*
         /sw/summit/tau/tau2/ibm64linux/lib/Makefile.tau-pgi-papi-mpi-cupti-pdt-openmp-pgi
         /sw/summit/tau/tau2/ibm64linux/lib/Makefile.tau-pgi-papi-mpi-cupti-pdt-pgi
         /sw/summit/tau/tau2/ibm64linux/lib/Makefile.tau-pgi-papi-pdt-pgi
         /sw/summit/tau/tau2/ibm64linux/lib/Makefile.tau-pgi_memory_manager-papi-mpi-cupti-pdt-pgi
 
-- List with all TAU makefiles:
+- To list all TAU makefiles:
 
 .. code::
 
-        ls ${TAU_DIR}/lib/Makefile.tau*
+        $ ls ${TAU_DIR}/lib/Makefile.tau*
 
 
 Instrumenting the serial version of MiniWeather
 -----------------------------------------------
 
-
-- For a serial application, we should not use a Makefile with a programming
-  model such as MPI, OpenMP. However, as the source code for this **specific**
-  case, includes MPI headers that are not excluded during the compilation of the
-  serial version, we should declare a Makefile with MPI. We can declare a TAU
-  makefile with the environment variable ``TAU_MAKEFILE``. Moreover, with
-  ``TAU_OPTIONS`` below, we add options to the linker as the application depends on
-  PNetCDF.
-
+For a serial application, we should not use a Makefile with a programming
+model such as MPI or OpenMP. However, as the source code for this **specific**
+case includes MPI headers that are not excluded during the compilation of the
+serial version, we should declare a Makefile with MPI. We can declare a TAU
+makefile with the environment variable ``TAU_MAKEFILE``. Moreover, with
+``TAU_OPTIONS`` below, we add options to the linker as the application depends on
+PNetCDF.
 
 .. code::
 
-	module load tau
-	export TAU_MAKEFILE=/sw/summit/tau/tau2/ibm64linux/lib/Makefile.tau-pgi-papi-mpi-cupti-pdt-pgi
-	export TAU_OPTIONS='-optLinking=-lpnetcdf -optVerbose'
-	make serial
+	$ module load tau
+	$ export TAU_MAKEFILE=/sw/summit/tau/tau2/ibm64linux/lib/Makefile.tau-pgi-papi-mpi-cupti-pdt-pgi
+	$ export TAU_OPTIONS='-optLinking=-lpnetcdf -optVerbose'
+	$ make serial
 
-- If there were no MPI headers, you should select the makefile
-  ``/sw/summit/tau/tau2//ibm64linux/lib/Makefile.tau-pgi-papi-pdt-pgi`` or if
-  you don't want PDT support,
-  ``/sw/summit/tau/tau2//ibm64linux/lib/Makefile.tau-pgi-papi-pgi``
-- Add to your submission script the TAU variables that you want to use (or
-  uncomment the below). By default the TAU will apply profiling and not tracing.
+If there were no MPI headers, you should select the makefile
+``/sw/summit/tau/tau2//ibm64linux/lib/Makefile.tau-pgi-papi-pdt-pgi`` or if
+you don't want PDT support,
+``/sw/summit/tau/tau2//ibm64linux/lib/Makefile.tau-pgi-papi-pgi``
+Add to your submission script the TAU variables that you want to use (or
+uncomment them below). By default the TAU will apply profiling, and not apply tracing.
 
 .. code::
 
@@ -236,23 +236,23 @@ Instrumenting the serial version of MiniWeather
 	time jsrun -n 1 -r 1 -a 1 -c 1 -g 1  ./miniWeather_serial
 
 
-- When the execution finishes, there is one folder for each ``TAU_METRICS``
-  declaration with the format ``MULTI__``
+When the execution finishes, one directory is created for each ``TAU_METRICS``
+declaration with the format ``MULTI__``
 
-  - If you do not declare the ``TAU_METRICS`` variable, then ``TIME`` is used by
-    default, and the profiling files are not in a folder. When the execution
-    ends there will be one file per process called profile.X.Y.Z. In this
-    case there is just one file, called **profile.0.0.0**
+- If you do not declare the ``TAU_METRICS`` variable, then ``TIME`` is used by
+  default, and the profiling files are not in a directory. When the execution
+  ends there will be one file per process called ``profile.X.Y.Z``. In this
+  case there is just one file, called **profile.0.0.0**
 
-- We can export a text file with some information through the ``pprof`` tool or
-  visualize through ``paraprof``.
-- If an application has no MPI at all, use the argument ``--smpiargs="off"`` for
-  ``jsrun``, otherwise, TAU will fail as MPI is active by default and probably
-  the TAU makefile does not contain any declared MPI.
+We can export a text file with some information through the ``pprof`` tool or
+visualize it by using ``paraprof``.
+
+If an application has no MPI at all, use the argument ``--smpiargs="off"`` for
+``jsrun``. Otherwise, TAU will fail as MPI is active by default.
 
 .. code::
 
-	pprof profile.0.0.0
+	$ pprof profile.0.0.0
 	Reading Profile files in profile.*
 
 	NODE 0;CONTEXT 0;THREAD 0:
@@ -287,38 +287,39 @@ Instrumenting the serial version of MiniWeather
 	---------------------------------------------------------------------------------------
 
 
-- Explanation:
-    - One process was running as it is a serial application, even MPI calls
-      are executed from a single thread.
-    - The total execution time is 70.733 seconds and only 9 msec are
-      exclusive for the main routine and the rest are caused by subroutines
-    - The exclusive time is the time caused by the mentioned routine, and
-      the inclusive is with the execution time from the subroutines
-    - The #Subrs is the number of the called subroutines
-    - There is also information about the parallel I/O if any exists, the
-      bytes, and the bandwidth.
+Explanation:
+  - One process was running as it is a serial application, even MPI calls
+    are executed from a single thread.
+  - The total execution time is 70.733 seconds and only 9 msec are
+    exclusive for the main routine. The rest are caused by subroutines.
+  - The exclusive time is the time caused by the mentioned routine, and
+    the inclusive is with the execution time from the subroutines.
+  - The #Subrs is the number of the called subroutines.
+  - There is also information about the parallel I/O if any exists, the
+    bytes, and the bandwidth.
 
 
-We will present the ``paraprof`` tool for the MPI version of the MiniWeather.
+Next, we will look at using the ``paraprof`` tool for the MPI version of MiniWeather.
+
 
 Instrumenting the MPI version of MiniWeather
 --------------------------------------------
 
-- For the MPI version, we should use a makefile with MPI. The compilation could
-  fail if the makefile supports MPI+OpenMP, but the code doesn't include any
-  OpenMP calls. Moreover, with ``TAU_OPTIONS`` declared below, we add options to
-  the linker.
+For the MPI version, we should use a makefile with MPI. The compilation could
+fail if the makefile supports MPI+OpenMP, but the code doesn't include any
+OpenMP calls. Moreover, with ``TAU_OPTIONS`` declared below, we will add options to
+the linker.
 
 .. code::
 
-        module load tau
-        export TAU_MAKEFILE=/sw/summit/tau/tau2/ibm64linux/lib/Makefile.tau-pgi-papi-mpi-cupti-pdt-pgi
-        export TAU_OPTIONS='-optLinking=-lpnetcdf -optVerbose'
-        make mpi
+        $ module load tau
+        $ export TAU_MAKEFILE=/sw/summit/tau/tau2/ibm64linux/lib/Makefile.tau-pgi-papi-mpi-cupti-pdt-pgi
+        $ export TAU_OPTIONS='-optLinking=-lpnetcdf -optVerbose'
+        $ make mpi
 
-- Add to your submission script the TAU variables that you want to use (or
-  uncomment the below). By default, the TAU will apply profiling and not
-  tracing.
+Add to your submission script the TAU variables that you want to use (or
+uncomment them below). By default, the TAU will apply profiling, and not
+tracing.
 
 .. code::
 
@@ -349,14 +350,14 @@ execution command, and the declaration of the OpenMP threads.
 
 .. code::
 
-        module load tau
-        export TAU_MAKEFILE=/sw/summit/tau/tau2/ibm64linux/lib/Makefile.tau-pgi-papi-mpi-cupti-pdt-openmp-pgi
-        export TAU_OPTIONS='-optLinking=-lpnetcdf -optVerbose'
-        make openmp
+        $ module load tau
+        $ export TAU_MAKEFILE=/sw/summit/tau/tau2/ibm64linux/lib/Makefile.tau-pgi-papi-mpi-cupti-pdt-openmp-pgi
+        $ export TAU_OPTIONS='-optLinking=-lpnetcdf -optVerbose'
+        $ make openmp
 
-- Add to your submission script the TAU variables that you want to use (or
-  uncomment the below). By default, the TAU will apply profiling and not
-  tracing.
+Add to your submission script the TAU variables that you want to use (or
+uncomment them below). By default, the TAU will apply profiling, and not
+tracing.
 
 .. code::
 
@@ -382,10 +383,9 @@ Instrumenting the MPI+OpenACC version of MiniWeather
 ----------------------------------------------------
 
 - For the current TAU version, you should use the ``tau_exec`` and not the TAU
-  wrappers only for the compilation
-- Use the ``mpic++`` compiler in the Makefile, do not use TAU wrapper (at least
-  for this version)
-- Execute: ``make openacc``
+  wrappers only for the compilation.
+- Use the ``mpic++`` compiler in the Makefile, do not use TAU wrapper.
+- Build the MPI+OpenACC version by running ``make openacc``.
 - Add the following in your submission file:
 
 .. code::
@@ -396,20 +396,21 @@ Instrumenting the MPI+OpenACC version of MiniWeather
         export TAU_COMM_MATRIX=1
         jsrun -n 6 -r 6 --smpiargs="-gpu" -g 1  tau_exec -T mpi,pgi,pdt -openacc ./miniWeather_mpi_openacc
 
-- We declare to TAU to profile the MPI with PDT support through ``-T``
-  parameters as well as using the ``pgi`` tag for the TAU makefile and OpenACC
+- We declare to TAU to profile the MPI with PDT support through the ``-T``
+  parameters, as well as using the ``pgi`` tag for the TAU makefile and OpenACC.
 
-- CUPTI metrics for OpenACC are not supported yet for TAU
+- CUPTI metrics for OpenACC are not yet supported for TAU.
+
 
 Preparing profiling data
 ------------------------
 
 - When the execution of the instrumented application finishes, there is one
-  folder for each ``TAU_METRICS`` declaration with the format ``MULTI__``
+  directory for each ``TAU_METRICS`` declaration with the format ``MULTI__``
 
   - If you do not declare the ``TAU_METRICS`` variable, then by default ``TIME``
-    is used and the profiling files are not in a folder. When the execution
-    ends, there will be one file per process, called profile.X.Y.Z.
+    is used and the profiling files are not in a directory. When the execution
+    ends, there will be one file per process, called ``profile.X.Y.Z``.
 
 - In order to use paraprof to visualize the data, your ssh connection should
   support X11 forwarding.
@@ -418,15 +419,16 @@ Preparing profiling data
 
 .. code::
 
-        paraprof --pack name.ppk
-        paraprof name.ppk &
+        $ paraprof --pack name.ppk
+        $ paraprof name.ppk &
+
 
 Paraprof
---------
+========
 
 - The first window that opens when the ``paraprof name.ppk`` command is
   executed shows the experiment and the used metrics, for this case, ``TIME``,
-  ``PAPI_FP_OPS``, ``PAPI_TOT_INS``, ``PAPI_TOT_CYC``
+  ``PAPI_FP_OPS``, ``PAPI_TOT_INS``, ``PAPI_TOT_CYC``.
 
 .. image:: /images/tau_paraprof_manager.png
    :align: center
@@ -434,11 +436,9 @@ Paraprof
 - The user is responsible for understanding which PAPI metrics should be used
 
 - The second window that is automatically loaded shows the ``TIME`` metric for
-  each process (they are called nodes) where each color is a different call.
+  each process (they are called "nodes") where each color is a different call.
   Each horizontal line is a process or Std.Dev./mean/max/min. The length of each
   color is related to the metric, if it is ``TIME``, it is duration.
-
-
 
 .. image:: /images/tau_mpi_time.png
    :align: center
@@ -451,7 +451,7 @@ Paraprof
    :align: center
 
 - If you click on any color, then a new window opens with information about the
-  specific routine
+  specific routine.
 
 .. image:: /images/tau_mpi_click_color.png
    :align: center
@@ -462,23 +462,22 @@ Paraprof
 .. image:: /images/tau_mpi_sort_time.png
    :align: center
 
-
 - Right click on the label (node 0, node 1, max, etc.), and then select "Show
-  Context Event Window" (with callpath activated). Then we can see various calls
-  from where they were executed, how many times and various information
+  Context Event Window" (with callpath activated). We can then see various calls
+  from where they were executed, how many times, and other various information.
 
 .. image:: /images/tau_mpi_context_event.png
    :align: center
 
 - Select Options -> Show Derived Metric Panel, choose the metrics and then the
-  operator that you want and then click Apply. Then uncheck the Show Derived
-  Metric
+  operator that you want, then click Apply. Uncheck the Show Derived
+  Metric.
 
 .. image:: /images/tau_mpi_derived_metric.png
    :align: center
 
-- Click on the new metric, PAPI_TOT_INS/PAPI_TOT_CYC to see the instructions per
-  cycle (IPC) across the various routines
+- Click on the new metric, "PAPI_TOT_INS / PAPI_TOT_CYC" to see the instructions per
+  cycle (IPC) across the various routines.
 
 .. image:: /images/tau_mpi_ipc.png
    :align: center
@@ -488,31 +487,30 @@ Paraprof
 .. image:: /images/tau_mpi_mean_ipc.png
    :align: center
 
-- For the non-MPI routines/calls, the IPC that is lower than 1.5 means that
+- For the non-MPI routines/calls, an IPC that is lower than 1.5 means that
   there is a potential for performance improvement.
 
-- Menu Windows -> 3D Visualization (3D demands OpenGL), it will not work on
-  Summit, download the data on your laptop and install TAU locally.
+- Menu Windows -> 3D Visualization (3D demands OpenGL) will not work on
+  Summit, and you will need to download the data on your laptop and install 
+  TAU locally to use this feature.
 - You can see per MPI rank, per routine, the exclusive time and the floating
-  operations
-
+  operations.
 
 .. image:: /images/tau_mpi_3d_fp_ops.png
    :align: center
 
 - Change the PAPI_FP_OPS to (PAPI_TOT_INS/PAPI_TOT_CYC)
 - You can see per MPI rank, per routine, the exclusive time and the
-  corresponding IPC
+  corresponding IPC.
 
 .. image:: /images/tau_mpi_3d_tot_ins.png
    :align: center
 
-You can explore the various options
 
 Which loops consume most of the time?
 =====================================
 
-- Create a file called for example select.tau with the content:
+- Create a file called, for example, ``select.tau`` with the content:
 
 .. code::
 
@@ -520,31 +518,27 @@ Which loops consume most of the time?
 	loops routine="#"
 	END_INSTRUMENT_SECTION
 
-Then declare the options in your submission script
+Then declare the options in your submission script:
 
 .. code::
 
 	export TAU_OPTIONS="-optTauSelectFile=select.tau -optLinking=lpnetcdf -optVerbose"
 
-- The linking option is required for this application, not for all the
-  applications
-- Do not forget to unset ``TAU_OPTIONS`` when not necessary
-- Execute the application as previously
-
-
+- The linking option is required for this application, but may not be for all applications.
+- Do not forget to unset ``TAU_OPTIONS`` when it's not necessary.
+- Execute the application as previously shown.
 - Now you can see the duration of all the loops
 
 .. image:: /images/tau_mpi_loops1.png
    :align: center
-
 
 - Select Options -> Select Metric… -> Exclusive… -> PAPI_TOT_INS/PAPI_TOT_CYC
 
 .. image:: /images/tau_mpi_loops2.png
    :align: center
 
-The loops with less than 1.5 IPC have poor performance and probably they could
-be improved.
+The loops with less than 1.5 IPC have poor performance and could likely be improved.
+
 
 MPI+OpenMP
 ==========
