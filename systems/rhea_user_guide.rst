@@ -1292,14 +1292,14 @@ version 2.13.x is recommended.
 The first time you launch VisIt (after installing), you will be prompted
 for a remote host preference. Unfortunately, ORNL does not maintain this
 list and the ORNL entry is outdated. Click the “None” option instead.
-Restart VisIt, and go to Options->Host Profiles. Select “New Host”
+Restart VisIt, and go to Options→Host Profiles. Select “New Host”
 
 - For host nickname: Rhea (this is arbitrary)
 - Remote hostname: rhea.ccs.ornl.gov (required)
 - Host name aliases: rhea-login#g (required)
 - Maximum Nodes: unchecked (unless using the GPU partition on Rhea)
 - Maximum processors: unchecked (arbitrary but use fewer than cores available)
-- Path to VisIt Installation: /sw/rhea/visit (required)
+- Path to VisIt Installation: ``/sw/rhea/visit`` (required)
 - Username: Your OLCF Username (required)
 - Tunnel data connections through SSH: Checked (required)
 
@@ -1438,26 +1438,26 @@ presented a related talk, `GPU Rendering in Rhea and
 Titan <https://www.olcf.ornl.gov/wp-content/uploads/2016/01/GPURenderingRheaTitan-1.pdf>`__,
 during the 2016 OLCF User Meeting.
 
-step 1 (local system)
+Step 1 (local system)
 ^^^^^^^^^^^^^^^^^^^^^
 
 Install a vncviewer (turbovnc, tigervnc, etc.) on your local machine.  When
 running vncviewer for the first time, it will ask to set a password for this and
 future vnc sessions.
 
-step 2 (terminal 1)
+Step 2 (terminal 1)
 ^^^^^^^^^^^^^^^^^^^
 
 From a Rhea connection launch a batch job and execute the below matlab-vnc.sh
 script to start the vncserver and run matlab within:
 
-#. localsytem: ssh -X username@rhea.ccs.ornl.gov
-#. rhea: salloc -A abc123 -X11 -N 1 -t 1:00:00
-#. rhea: ./matlab-vnc.sh
+#. localsytem: ``ssh -X username@rhea.ccs.ornl.gov``
+#. rhea: ``salloc -A abc123 -X11 -N 1 -t 1:00:00``
+#. rhea: ``./matlab-vnc.sh``
 
 .. code::
 
-    ./matlab-vnc.sh
+    $ ./matlab-vnc.sh
     New 'rhea6:1 (userA)' desktop is rhea6:1
 
     Starting applications specified in /ccs/home/userA/.vnc/xstartup
@@ -1473,19 +1473,19 @@ script to start the vncserver and run matlab within:
 
     MATLAB is selecting SOFTWARE OPENGL rendering.
 
-step 3 (terminal 2)
+Step 3 (terminal 2)
 ^^^^^^^^^^^^^^^^^^^
 
 In a second terminal on your local system open a tunneling connection following
 the instructions given by the vnc start-up script:
 
--  localsystem: ssh username@rhea.ccs.ornl.gov -L 5901:rhea99:5901
+-  localsystem: ``ssh username@rhea.ccs.ornl.gov -L 5901:rhea99:5901``
 
-step 4 (local system)
+Step 4 (local system)
 ^^^^^^^^^^^^^^^^^^^^^
 
 Launch the vncviewer. When you launch the vncviewer that you downloaded you will
-need to specify ‘localhost:5901’. You will also set a password for the initial
+need to specify ``localhost:5901``. You will also set a password for the initial
 connection or enter the created password for subsequent connections.
 
 matlab-vnc.sh (non-GPU rendering)
@@ -1524,26 +1524,26 @@ matlab-vnc.sh (non-GPU rendering)
 Remote Visualization using VNC (GPU nodes)
 ------------------------------------------
 
-step 1 (local system)
+Step 1 (local system)
 ^^^^^^^^^^^^^^^^^^^^^
 
 Install a vncviewer (turbovnc, tigervnc, etc.) on your local machine.  When
 running vncviewer for the first time, it will ask to set a password for this and
 future vnc sessions.
 
-step 2 (terminal 1)
+Step 2 (terminal 1)
 ^^^^^^^^^^^^^^^^^^^
 
 From a Rhea connection launch a batch job and execute the below matlab-vnc.sh
 script to start the vncserver and run matlab within:
 
-#. localsytem: ssh -X username@rhea.ccs.ornl.gov
-#. rhea: salloc -A abc123 -X11 -N 1 -t 1:00:00 -p gpu
-#. rhea: ./matlab-vnc.sh
+#. localsytem: ``ssh -X username@rhea.ccs.ornl.gov``
+#. rhea: ``salloc -A abc123 -X11 -N 1 -t 1:00:00 -p gpu``
+#. rhea: ``./matlab-vnc.sh``
 
 .. code::
 
-    ./matlab-vnc.sh
+    $ ./matlab-vnc.sh
     New 'rhea6:1 (userA)' desktop is rhea6:1
 
     Starting applications specified in /ccs/home/userA/.vnc/xstartup
@@ -1559,7 +1559,7 @@ script to start the vncserver and run matlab within:
 
     MATLAB is selecting SOFTWARE OPENGL rendering.
 
-step 3 (terminal 2)
+Step 3 (terminal 2)
 ^^^^^^^^^^^^^^^^^^^
 
 In a second terminal on your local system open a tunneling connection following
@@ -1567,11 +1567,11 @@ the instructions given by the vnc start-up script:
 
 -  localsystem: ssh username@rhea.ccs.ornl.gov -L 5901:rhea99:5901
 
-step 4 (local system)
+Step 4 (local system)
 ^^^^^^^^^^^^^^^^^^^^^
 
 Launch the vncviewer. When you launch the vncviewer that you downloaded you will
-need to specify ‘localhost:5901’. You will also set a passoword for the initial
+need to specify ``localhost:5901``. You will also set a passoword for the initial
 connection or enter the created password for subsequent connections.
 
 vmd-vgl.sh (GPU rendering)
@@ -1613,7 +1613,7 @@ vmd-vgl.sh (GPU rendering)
 Remote Visualization using Nice DCV (GPU nodes only)
 ----------------------------------------------------
 
-step 1 (terminal 1)
+Step 1 (terminal 1)
 ^^^^^^^^^^^^^^^^^^^
 
 Launch an interactive job:
@@ -1626,12 +1626,12 @@ Run the following commands:
 
 .. code::
 
-    xinit &
-    export DISPLAY=:0
-    dcv create-session --gl-display :0 mySessionName
-    hostname  // will be used to open a tunneling connection with this node
+    $ xinit &
+    $ export DISPLAY=:0
+    $ dcv create-session --gl-display :0 mySessionName
+    $ hostname  // will be used to open a tunneling connection with this node
 
-step 1 (terminal 2)
+Step 1 (terminal 2)
 ^^^^^^^^^^^^^^^^^^^
 
 Open a tunneling connection with gpu node ``N``, given by hostname:
@@ -1646,6 +1646,6 @@ session in first terminal:
 
 .. code::
 
-    dcv close-session mySessionName
-    kill %1
+    $ dcv close-session mySessionName
+    $ kill %1
 
