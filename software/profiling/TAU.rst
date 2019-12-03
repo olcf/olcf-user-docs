@@ -36,8 +36,8 @@ The above command profiles MPI for the binary ``test``, which was not compiled
 with the TAU wrapper.
 
 
-TAU Environment Variables
-=========================
+Run-Time Environment Variables
+==============================
 
 The following TAU environment variables may be useful in job submission scripts.
 
@@ -75,7 +75,7 @@ The following TAU environment variables may be useful in job submission scripts.
 
 
 
-TAU Compile-Time Environment Variables
+Compile-Time Environment Variables
 ======================================
 
 Environment variables to be used during compilation through the environment variable ``TAU_OPTIONS``
@@ -115,8 +115,8 @@ Environment variables to be used during compilation through the environment vari
 +----------------------------+------------------------------------------------------------------------------+
 
 
-MiniWeather, an Example Application:
-====================================
+MiniWeather Example Application
+================================
 
 Getting the source code
 -----------------------
@@ -424,7 +424,7 @@ Preparing profiling data
 
 
 Paraprof
-========
+^^^^^^^^^
 
 - The first window that opens when the ``paraprof name.ppk`` command is
   executed shows the experiment and the used metrics, for this case, ``TIME``,
@@ -508,7 +508,7 @@ Paraprof
 
 
 Which loops consume most of the time?
-=====================================
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - Create a file called, for example, ``select.tau`` with the content:
 
@@ -541,7 +541,7 @@ The loops with less than 1.5 IPC have poor performance and could likely be impro
 
 
 MPI+OpenMP
-==========
+^^^^^^^^^^
 
 - Execute the MPI+OpenMP version
 - Now you can see the duration of parallelfor loops and decide when they should
@@ -552,7 +552,7 @@ MPI+OpenMP
 
 
 GPU
-===
+^^^
 
 - When we instrument the MPI with OpenACC, we can see the following through paraprof
 - We can observe the duration of the OpenACC calls
@@ -566,27 +566,27 @@ GPU
 .. image:: /images/tau_mpi_openacc_data.png
    :align: center
 
+
 CUDA Profiling Tools Interface
 ===============================
 
-The CUDA Profiling Tools Interface (CUPTI) is used by profiling and tracing
+The `CUDA Profiling Tools Interface (CUPTI) <https://docs.nvidia.com/cupti/Cupti/r_main.html#metrics-reference>`__ is used by profiling and tracing
 tools that target CUDA applications.
-
-- https://docs.nvidia.com/cupti/Cupti/r_main.html#metrics-reference
 
 .. image:: /images/cupti.png
    :align: center
 
-- Demonstration with a matrix multiplication example with MPI+OpenMP
+Matrix multiplication with MPI+OpenMP:
 
 .. code::
 
-	export TAU_METRICS=TIME,achieved_occupancy
-	jsrun -n 2 -r 2 -g 1  tau_exec -T mpi,pdt,papi,cupti,openmp -ompt -cupti  ./add
+	$ export TAU_METRICS=TIME,achieved_occupancy
+	$ jsrun -n 2 -r 2 -g 1  tau_exec -T mpi,pdt,papi,cupti,openmp -ompt -cupti  ./add
 
 
-- We selecte to use ``tau_exec`` with MPI, PDT, PAPI, CUPTI, and OpenMP
-- Output folders
+We choose to use ``tau_exec`` with MPI, PDT, PAPI, CUPTI, and OpenMP.
+
+Output directories:
 
 .. code::
 
@@ -595,15 +595,15 @@ tools that target CUDA applications.
 	MULTI__CUDA.Tesla_V100-SXM2-16GB.domain_d.active_cycles
 	MULTI__achieved_occupancy
 
-- There are many folders because the achieved occupancy is calculated with this
-  formula
+There are many directories because the achieved occupancy is calculated with this
+formula
 
-  - Achieved_occupancy=CUDA.Tesla_V100-SXM2-16GB.domain_d.active_warps/CUDA.Tesla_V100-SXM2-16GB.domain_d.active_cycles
+``Achieved_occupancy = CUDA.Tesla_V100-SXM2-16GB.domain_d.active_warps / CUDA.Tesla_V100-SXM2-16GB.domain_d.active_cycles``
 
-- You can see in the window with the profilinf data after you pack them and
-  execute paraprof, the profiling data are not across all the processes, it
-  depends if a routine (color) is executed across all of them or not based on
-  the type of the rourine CPU/GPU
+You can see in the window with the profiling data after you pack them and
+execute paraprof, the profiling data are not across all the processes, it
+depends if a routine (color) is executed across all of them or not based on
+the type of the rourine CPU/GPU.
 
 .. image:: /images/cupti_main.png
    :align: center
@@ -623,25 +623,22 @@ tools that target CUDA applications.
 .. image:: /images/cupti_occupancy_kernel.png
    :align: center
 
-
-- A similar approach for other metrics, not all of them can be used.
-- TAU provides a tool called tau_cupti_avail, where we can see the list of
-  available metrics, then we have to figure out which CUPTI metrics use these
-  ones.
+A similar approach for other metrics, not all of them can be used.
+TAU provides a tool called ``tau_cupti_avail``, where we can see the list of
+available metrics, then we have to figure out which CUPTI metrics use these ones.
 
 Tracing
 =======
 
-
-- Activate tracing and declare the data format to OTF2. OTF2 format is
-  supported only by MPI and OpenSHMEM applications.
+Activate tracing and declare the data format to OTF2. OTF2 format is supported
+only by MPI and OpenSHMEM applications.
 
 .. code::
 
-	export TAU_TRACE=1
-	export TAU_TRACE_FORMAT=otf2
+	$ export TAU_TRACE=1
+	$ export TAU_TRACE_FORMAT=otf2
 
-- Use Vampir for Visualization
+Use Vampir for visualization.
 
 
 Selective Instrumentation
@@ -657,18 +654,19 @@ For example, do not instrument routine ``sort*(int *)``
 	void sort_#(int *)
 	END_EXCLUDE_LIST
 
-- Declare the ``TAU_OPTIONS``
+- Declare the ``TAU_OPTIONS`` variable
 
 .. code::
 
 	export TAU_OPTIONS=“-optTauSelectFile=select.tau”
 
-- Now, the routine ``sort*(int *)`` is excluded from the instrumentation
+- Now, the routine ``sort*(int *)`` is excluded from the instrumentation.
+
 
 Dynamic Phase
 =============
 
-- Create a file called ``phase.tau``
+- Create a file called ``phase.tau``.
 
 .. code::
 
@@ -676,7 +674,7 @@ Dynamic Phase
 	dynamic phase name=“phase1” file=“miniWeather_mpi.cpp” line=300 to line=327
 	END_INSTRUMENT_SECTION
 
-- Declare the ``TAU_OPTIONS``
+- Declare the ``TAU_OPTIONS`` variable.
 
 .. code::
 
@@ -687,11 +685,11 @@ Dynamic Phase
   instrumented. This could create signiificant overhead, thus you should be
   careful when you use it.
 
+
 Static Phase
 ============
 
-
-- Create a file called ``phases.tau``
+- Create a file called ``phases.tau``.
 
 .. code::
 
@@ -700,7 +698,7 @@ Static Phase
 	static phase name="phase2" file="miniWeather_mpi.cpp" line=333 to line=346
         END_INSTRUMENT_SECTION
 
-- Declare the ``TAU_OPTIONS``
+- Declare the ``TAU_OPTIONS`` variable.
 
 .. code::
 
@@ -710,4 +708,3 @@ Static Phase
 
 .. image:: /images/tau_static_phases.png
    :align: center
-
