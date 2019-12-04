@@ -81,7 +81,7 @@ use.
 |             | users simultaneously.                                                            |
 +-------------+----------------------------------------------------------------------------------+
 | Launch      | When your batch script (or interactive batch job) starts                         |
-|             | running, it will execute on a Launch Node. (If you are/were a user of Titan,     |
+|             | running, it will execute on a Launch Node. (If you were a user of Titan,         |
 |             | these are similar in function to service nodes on that system). All commands     |
 |             | within your job script (or the commands you run in an interactive job) will run  |
 |             | on a launch node. Like login nodes, these are shared resources so you should not |
@@ -2502,8 +2502,8 @@ The basic steps to creating resource sets:
     Once you understand tasks, threads, and GPUs in a resource set, you
     simply need to decide the number of resource sets needed.
 
-As on Titan it is useful to keep the general layout of a node in mind
-when laying out resource sets.
+As on any system, it is useful to keep in mind the hardware underneath every
+execution. This is particularly true when laying out resource sets.
 
 Launching a Job with jsrun
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -2606,7 +2606,7 @@ memory.
 .. |image19| image:: /images/summit-node-1rs-1task-1gpu-example.png
    :class: normal aligncenter
 
-Because Summit's nodes are much larger than Titan's, 6 single-gpu
+Because Summit's nodes are much larger than Titan's were, 6 single-gpu
 resource sets can be created on a single Summit node. The following
 image shows how six single-gpu, single-task resource sets would be
 placed on a node by default. In the example, the command
