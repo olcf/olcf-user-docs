@@ -3197,11 +3197,11 @@ Some users have reported seeing their jobs transition from the normal
 queued state, into a running state, and then back again to queued.
 Sometimes this can happen multiple times. Eventually, internal limits in
 the LSF scheduler will be reached, at which point the job will no longer
-be eligible for running. The bhist command can be used to see if a job
+be eligible for running. The ``bhist`` command can be used to see if a job
 is cycling between running and eligible states. The pending reason given
-by bhist can also be useful to debug. This can happen due to
+by ``bhist`` can also be useful to debug. This can happen due to
 modifications that the user has made to their environment on the system,
-incorrect ssh key setup, attempting to load unavailable/broken modules.
+incorrect SSH key setup, attempting to load unavailable/broken modules.
 or system problems with individual nodes. When jobs are observed to
 flip-flop between running and queued, and/or become ineligible without
 explanation, then deeper investigation is required and the user should
@@ -3210,11 +3210,11 @@ write to help@olcf.ornl.gov.
 jsrun explicit resource file (ERF) output format error
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-jsrun's option to create an explicit resource file (--erf\_output) will
+jsrun's option to create an explicit resource file (``--erf_output``) will
 incorrectly create a file with one line per rank. When reading the file
-in with (--erf\_input) you will see warnings for overlapping resource
-sets. This issue has been reported. The work around is to manually
-update the created erf file to contain a single line per resource set
+in with (``--erf_input``) you will see warnings for overlapping resource
+sets. This issue has been reported. The workaround is to manually
+update the created ERF file to contain a single line per resource set
 with multiple ranks per line.
 
 jsrun explicit resource file (ERF) allocates incorrect resources
@@ -3267,9 +3267,9 @@ jsrun's latency priority (``-l``) flag can be given lowercase values
 
 **Recommendation**:
 
-    It is currently recommended to only use the lowercase values to (-l /
-    --latency\_priority). The system default is: gpu-cpu,cpu-mem,cpu-cpu.
-    Since this ordering is used implicitly when the -l flag is omitted, this
+    It is currently recommended to only use the lowercase values to (``-l`` /
+    ``--latency_priority``). The system default is: gpu-cpu,cpu-mem,cpu-cpu.
+    Since this ordering is used implicitly when the ``-l`` flag is omitted, this
     issue only impacts submissions which explicitly include a latency
     priority in the jsrun command.
 
