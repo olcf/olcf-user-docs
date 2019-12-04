@@ -3130,14 +3130,6 @@ Last Updated: 09 September 2019
 Open Issues
 -----------
 
-JSM Fault Tolerance causes jobs to fail to start
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Adding ``FAULT_TOLERANCE=1`` in your individual ``~/.jsm.conf`` file,
-will result in LSF jobs failing to successfully start. A bug has been
-filed with IBM to address this issue.
-
-
 Spindle is not currently supported
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -3312,6 +3304,13 @@ following option to your jsrun command line:
 
 Resolved Issues
 ---------------
+
+JSM Fault Tolerance causes jobs to fail to start
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Adding ``FAULT_TOLERANCE=1`` in your individual ``~/.jsm.conf`` file,
+will result in LSF jobs failing to successfully start.
+
 
 The following issues were resolved with the July 16, 2019 software upgrade:
 
