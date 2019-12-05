@@ -2888,7 +2888,24 @@ specify the number of resource sets needed.
 | 1               | 1           | 21        | 21               | 3      | jsrun -n1 -a1 -c21 -g3 -bpacked:21    |
 +-----------------+-------------+-----------+------------------+--------+---------------------------------------+
 
- 
+
+Explicit Resource Files (ERF)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+`Explicit Resource Files
+<https://www.ibm.com/support/knowledgecenter/en/SSWRJV_10.1.0/jsm/10.3/base/erf_format.html>`__
+provide even more fine-granied control over how processes are mapped onto
+compute nodes. ERFs can define job step options such as rank placement/binding,
+SMT/CPU/GPU resources, compute hosts, among many others. If you find that the
+most common jsrun options do not readily provide the resource layout you need,
+we recommend considering ERF files.
+
+A common source of confusion when using ERFs is how physical cores are
+enumerated. See the tutorial on `ERF CPU
+Indexing <https://github.com/olcf-tutorials/ERF-CPU-Indexing>`__ for a
+discussion of the ``cpu_index_using`` control and its interaction with various
+SMT modes.
+
 
 jsrun Tools
 ^^^^^^^^^^^
@@ -3224,32 +3241,6 @@ in with (--erf\_input) you will see warnings for overlapping resource
 sets. This issue has been reported. The work around is to manually
 update the created erf file to contain a single line per resource set
 with multiple ranks per line.
-
-jsrun explicit resource file (ERF) allocates incorrect resources
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-When using an ERF that requests cores on a compute node’s second socket
-(hardware threads 88-171), the set of cores allocated on the second
-socket are shifted upwards by (1) physical core.
-
-For example:
-
-The following ERF requests the first physical core on each socket:
-
-::
-
-    2 : {host: * ; cpu: {0-3},{88-91}}
-
-``jsrun`` currently shifts the second socket’s allocation by (1)
-physical core, allocating 92-95 instead of the specified 88-91.
-
-::
-
-    $ jsrun --erf_input ERF_filename js_task_info | sort
-
-    Task 0 ( 0/2, 0/2 ) is bound to cpu[s] 0-3 on host h36n03 with OMP_NUM_THREADS=1 and with OMP_PLACES={0:4}
-
-    Task 1 ( 1/2, 1/2 ) is bound to cpu[s] 92-95 on host h36n03 with OMP_NUM_THREADS=1 and with OMP_PLACES={92:4}
 
 
 jsrun latency priority capitalization allocates incorrect resources
