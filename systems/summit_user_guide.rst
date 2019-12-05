@@ -2888,7 +2888,24 @@ specify the number of resource sets needed.
 | 1               | 1           | 21        | 21               | 3      | jsrun -n1 -a1 -c21 -g3 -bpacked:21    |
 +-----------------+-------------+-----------+------------------+--------+---------------------------------------+
 
- 
+
+Explicit Resource Files (ERF)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+`Explicit Resource Files
+<https://www.ibm.com/support/knowledgecenter/en/SSWRJV_10.1.0/jsm/10.3/base/erf_format.html>`__
+provide even more fine-granied control over how processes are mapped onto
+compute nodes. ERFs can define job step options such as rank placement/binding,
+SMT/CPU/GPU resources, compute hosts, among many others. If you find that the
+most common jsrun options do not readily provide the resource layout you need,
+we recommend considering ERF files.
+
+A common source of confusion when using ERFs is how physical cores are
+enumerated. See the tutorial on `ERF CPU
+Indexing <https://github.com/olcf-tutorials/ERF-CPU-Indexing>`__ for a
+discussion of the ``cpu_index_using`` control and its interaction with various
+SMT modes.
+
 
 jsrun Tools
 ^^^^^^^^^^^
