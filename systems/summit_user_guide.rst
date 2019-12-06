@@ -1658,9 +1658,9 @@ to the sample batch script above, you would use the command:
 ``bsub -W 3:00 -nnodes 2048 -P ABC123 -Is /bin/bash``
 
 
-As pointed out in :ref:`login-launch-and-compute-nodes`, you will be placed
-on a batch node upon launching an interactive job and as usual need to use
-``jsrun`` to access the compute node(s):
+As pointed out in :ref:`login-launch-and-compute-nodes`, you will be placed on
+a launch (a.k.a. "batch") node upon launching an interactive job and as usual
+need to use ``jsrun`` to access the compute node(s):
 
 .. code::
 
