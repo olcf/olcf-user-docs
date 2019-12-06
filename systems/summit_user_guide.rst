@@ -3200,13 +3200,6 @@ been reported to IBM and they are investigating. It is generally
 recommended to use jsrun explicit resource files (ERF) with
 ``--erf_input`` and ``--erf_output`` instead of ``-U``.
 
--g flag causes internal compiler error with XL compiler
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Some users have reported an internal compiler error when compiling their
-code with XL with the \`-g\` flag. This has been reported to IBM and
-they are investigating.
-
 Jobs suspended due to retry limit / Queued job flip-flops between queued/running states
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -3355,6 +3348,16 @@ significant more amount of memory.
 
 The following issues were resolved
 with the May 21, 2019 upgrade:
+
+-g flag causes internal compiler error with XL compiler (Resolved: May 21, 2019)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Some users have reported an internal compiler error when compiling their
+code with XL with the \`-g\` flag. This has been reported to IBM and
+they are investigating.
+
+.. note::
+		This bug was fixed in xl/16.1.1-3
 
 Issue with CUDA Aware MPI with >1 resource set per node (Resolved: May 21, 2019)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
