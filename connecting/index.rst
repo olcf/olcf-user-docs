@@ -79,6 +79,11 @@ enter ``1234000987`` when prompted for a PASSCODE.
     change between attempts. Re-using a code can cause your account to be
     automatically locked.
 
+If you are an ORNL employee and are using an ORNL-distributed (not
+OLCF-distributed) SecurID fob, there is no need to follow the activation steps
+listed above. You may log into OLCF systems using your existing ORNL PIN +
+6-digit tokencode.
+
 
 ********************************
 PINs, Passcodes, and Tokencodes
