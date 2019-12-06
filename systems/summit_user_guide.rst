@@ -1525,6 +1525,8 @@ The following sections will provide more information regarding running
 jobs on Summit. Summit uses IBM Spectrum Load Sharing Facility (LSF) as
 the batch scheduling system.
 
+.. _login-launch-and-compute-nodes:
+
 Login, Launch, and Compute Nodes
 --------------------------------
 
@@ -1654,6 +1656,24 @@ job “interactive batch”: ``-Is`` followed by a shell name. For example,
 to request an interactive batch job (with bash as the shell) equivalent
 to the sample batch script above, you would use the command:
 ``bsub -W 3:00 -nnodes 2048 -P ABC123 -Is /bin/bash``
+
+
+As pointed out in :ref:`login-launch-and-compute-nodes`, you will be placed
+on a batch node upon launching an interactive job and as usual need to use
+``jsrun`` to access the compute node(s):
+
+.. code::
+
+    $ bsub -Is -W 0:10 -nnodes 1 -P STF007 $SHELL
+    Job <779469> is submitted to default queue <batch>.
+    <<Waiting for dispatch ...>>
+    <<Starting on batch2>>
+
+    $ hostname
+    batch2
+
+    $ jsrun -n1 hostname
+    a35n03
 
 Common bsub Options
 -------------------
