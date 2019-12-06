@@ -6,7 +6,7 @@ IBM Watson Machine Learning CE
 Getting Started
 ===============
 
-IBM Watson Machine Learning Community Edition 1.6.1 is provided on Summit
+IBM Watson Machine Learning Community Edition is provided on Summit
 through the module ``ibm-wml-ce``. This module includes a license for IBM
 Distributed Deep Learning (DDL) allowing execution across up to 954 nodes.
 
@@ -19,17 +19,24 @@ To access the IBM WML CE packages use the ``module load`` command:
 This will activate a conda environment which is pre-loaded with the following
 packages, and their dependencies:
 
-* `IBM DDL 1.4.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.1/navigation/wmlce_getstarted_ddl.html>`_
+.. table::
+    :widths: 20 40 40
 
-* `Tensorflow 1.14 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.1/navigation/wmlce_getstarted_tensorflow.html>`_
-
-* `Pytorch 1.1.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.1/navigation/wmlce_getstarted_pytorch.html>`_
-
-* `Caffe(IBM-enhanced) 1.0.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.1/navigation/wmlce_getstarted_caffe.html>`_
-
-* `Horovod (IBM-DDL Backend) <https://github.com/horovod/horovod>`_
-
-For a complete list of packages and their versions please see: `WMLC CE Software Packages <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.1/navigation/wmlce_software_pkgs.html>`_.
+    +--------------------+--------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------+
+    | IBM WML CE Version | ibm-wml-ce/1.6.1                                                                                                               | ibm-wml-ce/1.6.2                                                                                                               |
+    +--------------------+--------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------+
+    | Package            | `IBM DDL 1.4.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.1/navigation/wmlce_getstarted_ddl.html>`_               | `IBM DDL 1.5.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.2/navigation/wmlce_getstarted_ddl.html>`_               |
+    |                    +--------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------+
+    |                    | `Tensorflow 1.14 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.1/navigation/wmlce_getstarted_tensorflow.html>`_      | `Tensorflow 1.15 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.2/navigation/wmlce_getstarted_tensorflow.html>`_      |
+    |                    +--------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------+
+    |                    | `Pytorch 1.1.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.1/navigation/wmlce_getstarted_pytorch.html>`_           | `Pytorch 1.2.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.2/navigation/wmlce_getstarted_pytorch.html>`_           |
+    |                    +--------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------+
+    |                    | `Caffe(IBM-enhanced) 1.0.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.1/navigation/wmlce_getstarted_caffe.html>`_ | `Caffe(IBM-enhanced) 1.0.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.2/navigation/wmlce_getstarted_caffe.html>`_ |
+    |                    +--------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------+
+    |                    | `Horovod @9f87459 (IBM-DDL Backend) <https://github.com/horovod/horovod>`_                                                     | `Horovod v0.18.2 (IBM-DDL Backend) <https://github.com/horovod/horovod>`_                                                      |
+    +--------------------+--------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------+
+    | Complete List      | `1.6.1 Software Packages <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.1/navigation/wmlce_software_pkgs.html>`_      | `1.6.2 Software Packages <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.2/navigation/wmlce_software_pkgs.html>`_      |
+    +--------------------+--------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------+
 
 Running DDL Jobs
 ================
@@ -103,17 +110,17 @@ launching a distributed job.
 Setting up Custom Environments
 ==============================
 
-The ``IBM-WML-CE-1.6.1`` conda environment is read-only. Therefore, users
+The ``IBM-WML-CE`` conda environment is read-only. Therefore, users
 cannot install any additional packages that may be needed. If users need
-any additional conda or pip packages, they can clone the ``IBM-WML-CE-1.6.1``
+any additional conda or pip packages, they can clone the ``IBM-WML-CE``
 conda environment into their home directory and then add any packages they
 need.
 
 .. code-block:: console
 
     $ module load ibm-wml-ce
-    (ibm-wml-ce-1.6.1) $ conda create --name cloned_env --clone ibm-wml-ce-1.6.1
-    (ibm-wml-ce-1.6.1) $ conda activate cloned_env
+    (ibm-wml-ce-1.6.2) $ conda create --name cloned_env --clone ibm-wml-ce-1.6.2
+    (ibm-wml-ce-1.6.2) $ conda activate cloned_env
     (cloned_env) $
 
 By default this should create the cloned environment in
@@ -125,7 +132,7 @@ will ensure that all of the conda settings remain the same.
 .. code-block:: console
 
     $ module load ibm-wml-ce
-    (ibm-wml-ce-1.6.1) $ conda activate cloned_env
+    (ibm-wml-ce-1.6.2) $ conda activate cloned_env
     (cloned_env) $
 
 To use Horovod with the IBM DDL backend in a cloned environment, the user must
@@ -221,7 +228,7 @@ give good performance.
 
     ddlrun --nodes 18 --racks 4 --aisles 2 python script.py
 
-For more information on ``ddlrun``, please see: `DDLRUN <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.1/navigation/wmlce_ddlrun.html>`_.
+For more information on ``ddlrun``, please see: `DDLRUN <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.2/navigation/wmlce_ddlrun.html>`_.
 
 
 Example
