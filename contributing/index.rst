@@ -24,7 +24,7 @@ Setup authoring environment
 
 #. Fork the documentation repository on GitHub
 
-    Go to https://github.com/olcf/olcf-user-documentation, and click the "Fork"
+    Go to https://github.com/olcf/olcf-user-docs, and click the "Fork"
     button in the upper right corner.
 
     .. image:: /images/github_fork.png
@@ -34,21 +34,21 @@ Setup authoring environment
 
 #. Clone your fork of the documentation repository::
 
-    $ git clone https://github.com/<your-github-id>/olcf-user-documentation.git
+    $ git clone https://github.com/<your-github-id>/olcf-user-docs.git
 
 #. Point your master branch to track upstream::
 
-    $ git remote add olcf https://github.com/olcf/olcf-user-documentation.git
+    $ git remote add olcf https://github.com/olcf/olcf-user-docs.git
     $ git fetch olcf
     $ git branch --set-upstream-to=olcf/master
 
 #. Build the docs::
 
-    $ cd olcf-user-documentation && sphinx-build -E . _build
+    $ cd olcf-user-docs && sphinx-build -E . _build
 
 #. Locally preview the generated web pages
    start a webserver on something like ``localhost:8080`` that points at
-   your ``olcf-user-documentation/_build`` directory. For example, using busybox::
+   your ``olcf-user-docs/_build`` directory. For example, using busybox::
 
         $ busybox httpd -p 127.0.0.1:8080 -h /home/ubuntu/olcf-user-docs/_build
 
