@@ -241,6 +241,9 @@ each with an intended purpose:
 | Long-term project data for archival access that's shared with other project members                | *Project Archive*   | ``/proj/[projid]``         |
 +----------------------------------------------------------------------------------------------------+---------------------+----------------------------+
 
+For more information about using the data storage archiving
+systems, please refer to the pages on :ref:`data-storage-and-transfers`.
+
 User Home
 ^^^^^^^^^
 
@@ -249,7 +252,7 @@ are intended to store long-term, frequently-accessed user data. User
 Home areas are backed up on a daily basis. This file system does not
 generally provide the input/output (I/O) performance required by most
 compute jobs, and is not available to compute jobs on most systems. See
-the section “Data Retention, Purge, & Quota Summary” for more details on
+the section :ref:`retention-policy` for more details on
 applicable quotas, backups, purge, and retention timeframes.
 
 User Archive
@@ -258,7 +261,7 @@ User Archive
 The High Performance Storage System (HPSS) is the tape-archive storage
 system at the OLCF and is the storage technology that supports the User
 Archive areas. HPSS is intended for data that do not require day-to-day
-access. See the section “Data Retention, Purge, & Quota Summary” for
+access. See the section :ref:`retention-policy` for
 more details on applicable quotas, backups, purge, and retention
 timeframes.
 
@@ -270,8 +273,8 @@ are intended to store long-term, frequently-accessed data that is needed
 by all collaborating members of a project. Project Home areas are backed
 up on a daily basis. This file system does not generally provide the
 input/output (I/O) performance required by most compute jobs, and is not
-available to compute jobs on most systems. See the section “Data
-Retention, Purge, & Quota Summary” for more details on applicable
+available to compute jobs on most systems. See the section
+:ref:`retention-policy` for more details on applicable
 quotas, backups, purge, and retention timeframes.
 
 Member Work
@@ -279,7 +282,7 @@ Member Work
 
 Project members get an individual Member Work directory for each
 associated project; these reside in the center-wide, high-capacity
-Lustre\ :sup:`®` file system on large, fast disk areas intended for
+Spectrum Scale file system on large, fast disk areas intended for
 global (parallel) access to temporary/scratch storage. Member Work
 directories are provided commonly across all systems. Because of the
 scratch nature of the file system, it is not backed up and files are
@@ -288,36 +291,36 @@ this file system for long, but rather should be migrated to Project Home
 or Project Archive space as soon as the files are not actively being
 used. If a file system associated with your Member Work directory is
 nearing capacity, the OLCF may contact you to request that you reduce
-the size of your Member Work directory. See the section “Data Retention,
-Purge, & Quota Summary” for more details on applicable quotas, backups,
+the size of your Member Work directory. See the section :ref:`retention-policy`
+for more details on applicable quotas, backups,
 purge, and retention timeframes.
 
 Project Work
 ^^^^^^^^^^^^
 
 Individual Project Work directories reside in the center-wide,
-high-capacity Lustre file system on large, fast disk areas intended for
+high-capacity Spectrum Scale file system on large, fast disk areas intended for
 global (parallel) access to temporary/scratch storage. Project Work
 directories are provided commonly across most systems. Because of the
 scratch nature of the file system, it is not backed up. If a file system
 associated with Project Work storage is nearing capacity, the OLCF may
 contact the PI of the project to request that he or she reduce the size
-of the Project Work directory. See the section “Data Retention, Purge, &
-Quota Summary” for more details on applicable quotas, backups, purge,
+of the Project Work directory. See the section :ref:`retention-policy`
+for more details on applicable quotas, backups, purge,
 and retention timeframes.
 
 World Work
 ^^^^^^^^^^
 
 Each project has a World Work directory that resides in the center-wide,
-high-capacity Lustre file system on large, fast disk areas intended for
+high-capacity Spectrum Scale file system on large, fast disk areas intended for
 global (parallel) access to temporary/scratch storage. World Work
 directories are provided commonly across most systems. Because of the
 scratch nature of the file system, it is not backed up. If a file system
 associated with World Work storage is nearing capacity, the OLCF may
 contact the PI of the project to request that he or she reduce the size
-of the World Work directory. See the section “Data Retention, Purge, &
-Quota Summary” for more details on applicable quotas, backups, purge,
+of the World Work directory. See the section :ref:`retention-policy`
+for more details on applicable quotas, backups, purge,
 and retention timeframes.
 
 Project Archive
@@ -329,7 +332,7 @@ Archive areas. HPSS is intended for data that do not require day-to-day
 access. Project Archive areas are shared between all users of the
 project. Users should not store data unrelated to OLCF projects on HPSS.
 Project members should also periodically review files and remove
-unneeded ones. See the section “Data Retention, Purge, & Quota Summary”
+unneeded ones. See the section :ref:`retention-policy`
 for more details on applicable quotas, backups, purge, and retention
 timeframes.
 
@@ -345,6 +348,8 @@ up and files are automatically purged on a regular basis. Files should
 not be retained in this file system and should be migrated to archival
 storage as soon as the files are not actively being used. Quotas may be
 instituted on a machine-by-machine basis if deemed necessary.
+
+.. _retention-policy:
 
 Data Retention, Purge, & Quotas
 -------------------------------
@@ -363,24 +368,24 @@ available at the OLCF.
 +==============+=================+======+=================+============+=========+========+===========+
 | User Home    | ``$HOME``       | NFS  | User-controlled |  50 GB     | Yes     | No     | 90 days   |
 +--------------+-----------------+------+-----------------+------------+---------+--------+-----------+
-| User Archive | ``/home/user``  | HPSS | User-controlled |  2TB [#f1]_| No      | No     | 90 days   |
+| User Archive | ``/home/user``  | HPSS | User-controlled |  2TB       | No      | No     | 90 days   |
 +--------------+-----------------+------+-----------------+------------+---------+--------+-----------+
 
 **Project-Centric Storage Areas**
 
-+-----------------+---------------------------+--------+-----------------+---------------+---------+---------+-----------+
-| Area            | Path                      | Type   | Permissions     |  Quota        | Backups | Purged  | Retention |
-+=================+===========================+========+=================+===============+=========+=========+===========+
-| Project Home    | ``/ccs/proj/[projid]``    | NFS    | 770             |  50 GB        | Yes     | No      | 90 days   |
-+-----------------+---------------------------+--------+-----------------+---------------+---------+---------+-----------+
-| Member Work     | ``$MEMBERWORK/[projid]``  | Lustre | 700 [#f2]_      |  10TB         | No      | 14 days | [#f4]_    |
-+-----------------+---------------------------+--------+-----------------+---------------+---------+---------+-----------+
-| Project Work    | ``$PROJWORK/projid]``     | Lustre | 770             |  100TB        | No      | 90 days | [#f4]_    |
-+-----------------+---------------------------+--------+-----------------+---------------+---------+---------+-----------+
-| World Work      | ``$WORLDWORK/[projid]``   | Lustre | 775             |  10TB         | No      | 90 days | [#f4]_    |
-+-----------------+---------------------------+--------+-----------------+---------------+---------+---------+-----------+
-| Project Archive | ``/proj/[projid]``        | HPSS   | 770             |  100TB [#f3]_ | No      | No      | 90 days   |
-+-----------------+---------------------------+--------+-----------------+---------------+---------+---------+-----------+
++-----------------+---------------------------+---------------+-----------------+---------------+---------+---------+-----------+
+| Area            | Path                      | Type          | Permissions     |  Quota        | Backups | Purged  | Retention |
++=================+===========================+===============+=================+===============+=========+=========+===========+
+| Project Home    | ``/ccs/proj/[projid]``    | NFS           | 770             |  50 GB        | Yes     | No      | 90 days   |
++-----------------+---------------------------+---------------+-----------------+---------------+---------+---------+-----------+
+| Member Work     | ``$MEMBERWORK/[projid]``  | Spectrum Scale| 700 [#f1]_      |  50 TB        | No      | 90 days | [#f2]_    |
++-----------------+---------------------------+---------------+-----------------+---------------+---------+---------+-----------+
+| Project Work    | ``$PROJWORK/projid]``     | Spectrum Scale| 770             |  50 TB        | No      | 90 days | [#f2]_    |
++-----------------+---------------------------+---------------+-----------------+---------------+---------+---------+-----------+
+| World Work      | ``$WORLDWORK/[projid]``   | Spectrum Scale| 775             |  50 TB        | No      | 90 days | [#f2]_    |
++-----------------+---------------------------+---------------+-----------------+---------------+---------+---------+-----------+
+| Project Archive | ``/proj/[projid]``        | HPSS          | 770             | 100 TB        | No      | No      | 90 days   |
++-----------------+---------------------------+---------------+-----------------+---------------+---------+---------+-----------+
 
 | *Area -* The general name of storage area.
 | *Path -* The path (symlink) to the storage area's directory.
@@ -397,13 +402,9 @@ available at the OLCF.
 
 .. rubric:: Footnotes
 
-.. [#f1] In addition, there is a quota/limit of 2,000 files on this directory.
+.. [#f1] Permissions on Member Work directories can be controlled to an extent by project members. By default, only the project member has any accesses, but accesses can be granted to other project members by setting group permissions accordingly on the Member Work directory. The parent directory of the Member Work directory prevents accesses by "UNIX-others" and cannot be changed (security measures).
 
-.. [#f2] Permissions on Member Work directories can be controlled to an extent by project members. By default, only the project member has any accesses, but accesses can be granted to other project members by setting group permissions accordingly on the Member Work directory. The parent directory of the Member Work directory prevents accesses by "UNIX-others" and cannot be changed (security measures).
-
-.. [#f3] In addition, there is a quota/limit of 100,000 files on this directory.
-
-.. [#f4] Retention is not applicable as files will follow purge cycle.
+.. [#f2] Retention is not applicable as files will follow purge cycle.
 
 Data Retention Overview
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -424,7 +425,7 @@ OLCF projects concludes. By default, the OLCF will retain data in
 user-centric storage areas only for a designated amount of time after
 the user’s account is deactivated. During this time, a user can request
 a temporary user account extension for data access. See the section
-“Data Retention, Purge, & Quota Summary” for details on retention
+:ref:`retention-policy` for details on retention
 timeframes for each user-centric storage area.
 
 Project Data Retention
@@ -434,8 +435,8 @@ The project data retention policy exists to reclaim storage space after
 a project ends. By default, the OLCF will retain data in project-centric
 storage areas only for a designated amount of time after the project end
 date. During this time, a project member can request a temporary user
-account extension for data access. See the section “Data Retention,
-Purge, & Quota Summary” for details on purge and retention timeframes
+account extension for data access. See the section :ref:`retention-policy`
+for details on purge and retention timeframes
 for each project-centric storage area.
 
 Sensitive Project Data Retention
@@ -454,9 +455,8 @@ execution. Files in these scratch areas are automatically purged on a
 regular purge timeframe. If a file system with an active purge policy is
 nearing capacity, the OLCF may contact you to request that you reduce
 the size of a directory within that file system, even if the purge
-timeframe has not been exceeded. See the section “Data Retention, Purge,
-& Quota Summary” for details on purge timeframes for each storage area,
-if applicable.
+timeframe has not been exceeded. See the section :ref:`retention-policy`
+for details on purge timeframes for each storage area, if applicable.
 
 Storage Space Quotas
 ^^^^^^^^^^^^^^^^^^^^
@@ -467,8 +467,7 @@ soft (policy-enforceable) quota. Storage usage will be monitored
 continually. When a user or project exceeds a soft quota for a storage
 area, the user or project PI will be contacted and will be asked if at
 all possible to purge data from the offending area. See the section
-“Data Retention, Purge, & Quota Summary” for details on quotas for each
-storage area.
+:ref:`retention-policy` for details on quotas for each storage area.
 
 Data Prohibitions & Safeguards
 ------------------------------

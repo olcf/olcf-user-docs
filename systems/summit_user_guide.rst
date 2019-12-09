@@ -81,7 +81,7 @@ use.
 |             | users simultaneously.                                                            |
 +-------------+----------------------------------------------------------------------------------+
 | Launch      | When your batch script (or interactive batch job) starts                         |
-|             | running, it will execute on a Launch Node. (If you are/were a user of Titan,     |
+|             | running, it will execute on a Launch Node. (If you were a user of Titan,         |
 |             | these are similar in function to service nodes on that system). All commands     |
 |             | within your job script (or the commands you run in an interactive job) will run  |
 |             | on a launch node. Like login nodes, these are shared resources so you should not |
@@ -1525,6 +1525,8 @@ The following sections will provide more information regarding running
 jobs on Summit. Summit uses IBM Spectrum Load Sharing Facility (LSF) as
 the batch scheduling system.
 
+.. _login-launch-and-compute-nodes:
+
 Login, Launch, and Compute Nodes
 --------------------------------
 
@@ -1654,6 +1656,24 @@ job “interactive batch”: ``-Is`` followed by a shell name. For example,
 to request an interactive batch job (with bash as the shell) equivalent
 to the sample batch script above, you would use the command:
 ``bsub -W 3:00 -nnodes 2048 -P ABC123 -Is /bin/bash``
+
+
+As pointed out in :ref:`login-launch-and-compute-nodes`, you will be placed on
+a launch (a.k.a. "batch") node upon launching an interactive job and as usual
+need to use ``jsrun`` to access the compute node(s):
+
+.. code::
+
+    $ bsub -Is -W 0:10 -nnodes 1 -P STF007 $SHELL
+    Job <779469> is submitted to default queue <batch>.
+    <<Waiting for dispatch ...>>
+    <<Starting on batch2>>
+
+    $ hostname
+    batch2
+
+    $ jsrun -n1 hostname
+    a35n03
 
 Common bsub Options
 -------------------
@@ -1889,7 +1909,7 @@ time as ``job2``. The project associated with ``job1`` is over its
 allocation, while the project for ``job2`` is not. The batch system will
 consider ``job2`` to have been waiting for a longer time than ``job1``.
 Additionally, projects that are at 125% of their allocated time will be
-limited to only one running job at a time. The adjustment to the
+limited to only 3 running jobs at a time. The adjustment to the
 apparent submit time depends upon the percentage that the project is
 over its allocation, as shown in the table below:
 
@@ -2502,8 +2522,8 @@ The basic steps to creating resource sets:
     Once you understand tasks, threads, and GPUs in a resource set, you
     simply need to decide the number of resource sets needed.
 
-As on Titan it is useful to keep the general layout of a node in mind
-when laying out resource sets.
+As on any system, it is useful to keep in mind the hardware underneath every
+execution. This is particularly true when laying out resource sets.
 
 Launching a Job with jsrun
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -2606,7 +2626,7 @@ memory.
 .. |image19| image:: /images/summit-node-1rs-1task-1gpu-example.png
    :class: normal aligncenter
 
-Because Summit's nodes are much larger than Titan's, 6 single-gpu
+Because Summit's nodes are much larger than Titan's were, 6 single-gpu
 resource sets can be created on a single Summit node. The following
 image shows how six single-gpu, single-task resource sets would be
 placed on a node by default. In the example, the command
@@ -2888,7 +2908,24 @@ specify the number of resource sets needed.
 | 1               | 1           | 21        | 21               | 3      | jsrun -n1 -a1 -c21 -g3 -bpacked:21    |
 +-----------------+-------------+-----------+------------------+--------+---------------------------------------+
 
- 
+
+Explicit Resource Files (ERF)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+`Explicit Resource Files
+<https://www.ibm.com/support/knowledgecenter/en/SSWRJV_10.1.0/jsm/10.3/base/erf_format.html>`__
+provide even more fine-granied control over how processes are mapped onto
+compute nodes. ERFs can define job step options such as rank placement/binding,
+SMT/CPU/GPU resources, compute hosts, among many others. If you find that the
+most common jsrun options do not readily provide the resource layout you need,
+we recommend considering ERF files.
+
+A common source of confusion when using ERFs is how physical cores are
+enumerated. See the tutorial on `ERF CPU
+Indexing <https://github.com/olcf-tutorials/ERF-CPU-Indexing>`__ for a
+discussion of the ``cpu_index_using`` control and its interaction with various
+SMT modes.
+
 
 jsrun Tools
 ^^^^^^^^^^^
@@ -3125,18 +3162,10 @@ please see the `Vampir Software Page <https://www.olcf.ornl.gov/software_package
 Known Issues
 ============
 
-Last Updated: 09 September 2019
+Last Updated: 04 December 2019
 
 Open Issues
 -----------
-
-JSM Fault Tolerance causes jobs to fail to start
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Adding ``FAULT_TOLERANCE=1`` in your individual ``~/.jsm.conf`` file,
-will result in LSF jobs failing to successfully start. A bug has been
-filed with IBM to address this issue.
-
 
 Spindle is not currently supported
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -3191,13 +3220,6 @@ been reported to IBM and they are investigating. It is generally
 recommended to use jsrun explicit resource files (ERF) with
 ``--erf_input`` and ``--erf_output`` instead of ``-U``.
 
--g flag causes internal compiler error with XL compiler
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Some users have reported an internal compiler error when compiling their
-code with XL with the \`-g\` flag. This has been reported to IBM and
-they are investigating.
-
 Jobs suspended due to retry limit / Queued job flip-flops between queued/running states
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -3205,11 +3227,11 @@ Some users have reported seeing their jobs transition from the normal
 queued state, into a running state, and then back again to queued.
 Sometimes this can happen multiple times. Eventually, internal limits in
 the LSF scheduler will be reached, at which point the job will no longer
-be eligible for running. The bhist command can be used to see if a job
+be eligible for running. The ``bhist`` command can be used to see if a job
 is cycling between running and eligible states. The pending reason given
-by bhist can also be useful to debug. This can happen due to
+by ``bhist`` can also be useful to debug. This can happen due to
 modifications that the user has made to their environment on the system,
-incorrect ssh key setup, attempting to load unavailable/broken modules.
+incorrect SSH key setup, attempting to load unavailable/broken modules.
 or system problems with individual nodes. When jobs are observed to
 flip-flop between running and queued, and/or become ineligible without
 explanation, then deeper investigation is required and the user should
@@ -3218,38 +3240,12 @@ write to help@olcf.ornl.gov.
 jsrun explicit resource file (ERF) output format error
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-jsrun's option to create an explicit resource file (--erf\_output) will
+jsrun's option to create an explicit resource file (``--erf_output``) will
 incorrectly create a file with one line per rank. When reading the file
-in with (--erf\_input) you will see warnings for overlapping resource
-sets. This issue has been reported. The work around is to manually
-update the created erf file to contain a single line per resource set
+in with (``--erf_input``) you will see warnings for overlapping resource
+sets. This issue has been reported. The workaround is to manually
+update the created ERF file to contain a single line per resource set
 with multiple ranks per line.
-
-jsrun explicit resource file (ERF) allocates incorrect resources
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-When using an ERF that requests cores on a compute node’s second socket
-(hardware threads 88-171), the set of cores allocated on the second
-socket are shifted upwards by (1) physical core.
-
-For example:
-
-The following ERF requests the first physical core on each socket:
-
-::
-
-    2 : {host: * ; cpu: {0-3},{88-91}}
-
-``jsrun`` currently shifts the second socket’s allocation by (1)
-physical core, allocating 92-95 instead of the specified 88-91.
-
-::
-
-    $ jsrun --erf_input ERF_filename js_task_info | sort
-
-    Task 0 ( 0/2, 0/2 ) is bound to cpu[s] 0-3 on host h36n03 with OMP_NUM_THREADS=1 and with OMP_PLACES={0:4}
-
-    Task 1 ( 1/2, 1/2 ) is bound to cpu[s] 92-95 on host h36n03 with OMP_NUM_THREADS=1 and with OMP_PLACES={92:4}
 
 
 jsrun latency priority capitalization allocates incorrect resources
@@ -3275,9 +3271,9 @@ jsrun's latency priority (``-l``) flag can be given lowercase values
 
 **Recommendation**:
 
-    It is currently recommended to only use the lowercase values to (-l /
-    --latency\_priority). The system default is: gpu-cpu,cpu-mem,cpu-cpu.
-    Since this ordering is used implicitly when the -l flag is omitted, this
+    It is currently recommended to only use the lowercase values to (``-l`` /
+    ``--latency_priority``). The system default is: gpu-cpu,cpu-mem,cpu-cpu.
+    Since this ordering is used implicitly when the ``-l`` flag is omitted, this
     issue only impacts submissions which explicitly include a latency
     priority in the jsrun command.
 
@@ -3312,6 +3308,13 @@ following option to your jsrun command line:
 
 Resolved Issues
 ---------------
+
+JSM Fault Tolerance causes jobs to fail to start
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Adding ``FAULT_TOLERANCE=1`` in your individual ``~/.jsm.conf`` file,
+will result in LSF jobs failing to successfully start.
+
 
 The following issues were resolved with the July 16, 2019 software upgrade:
 
@@ -3365,6 +3368,16 @@ significant more amount of memory.
 
 The following issues were resolved
 with the May 21, 2019 upgrade:
+
+-g flag causes internal compiler error with XL compiler (Resolved: May 21, 2019)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Some users have reported an internal compiler error when compiling their
+code with XL with the \`-g\` flag. This has been reported to IBM and
+they are investigating.
+
+.. note::
+		This bug was fixed in xl/16.1.1-3
 
 Issue with CUDA Aware MPI with >1 resource set per node (Resolved: May 21, 2019)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -3770,6 +3783,13 @@ More useful resources, provided by AMD, can be found here:
 The OLCF is currently adding some simple HIP tutorials here as well:
 
 - OLCF Tutorials – `Simple HIP Examples <https://github.com/olcf-tutorials/simple_HIP_examples>`__
+
+Previous Frontier Training Events
+---------------------------------
+
+The links below point to event pages from previous Frontier training events. Under the "Presentations" tab on each event page, you will find the presentations given during the event.
+
+`Frontier Application Readiness Kick-Off Workshop (October 2019) <https://www.olcf.ornl.gov/frontier-application-readiness-kick-off-workshop/>`__
 
 Please check back to this section regularly as we will continue
 to add new content for our users.
