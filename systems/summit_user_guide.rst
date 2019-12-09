@@ -3167,6 +3167,47 @@ Last Updated: 04 December 2019
 Open Issues
 -----------
 
+CUDA hook error when program uses CUDA without first calling MPI_Init()
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Serial applications, that are not MPI enabled, often face the following
+issue when compiled with Spectrum MPI's wrappers and run with jsrun:
+
+::
+
+   CUDA Hook Library: Failed to find symbol mem_find_dreg_entries, ./a.out: undefined symbol: __PAMI_Invalidate_region
+
+The same issue can occur if CUDA API calls that interact with the GPU
+(e.g. allocating memory) are called before MPI_Init() in an MPI enabled
+application. Depending on context, this error can either be harmless or
+it can be fatal.
+
+The reason this occurs is that the PAMI messaging backend, used by Spectrum
+MPI by default, has a "CUDA hook" that records GPU memory allocations.
+This record is used later during CUDA-aware MPI calls to efficiently detect
+whether a given message is sent from the CPU or the GPU. This is done by
+design in the IBM implementation and is unlikely to be changed.
+
+There are two main ways to work around this problem. If CUDA-aware MPI is
+not a relevant factor for your work (which is naturally true for serial
+applications) then you can simply disable the CUDA hook with:
+
+::
+
+   --smpiargs="-disable_gpu_hooks"
+
+as an argument to jsrun. Note that this is not compatible with the ``-gpu``
+argument to ``--smpiargs``, since that is what enables CUDA-aware MPI and
+the CUDA-aware MPI functionality depends on the CUDA hook.
+
+If you do need CUDA-aware MPI functionality, then the only known working
+solution to this problem is to refactor your code so that no CUDA calls
+occur before MPI_Init(). (This includes any libraries or programming models
+such as OpenACC or OpenMP that would use CUDA behind the scenes.) While it
+is not explicitly codified in the standard, it is worth noting that the major
+MPI implementations all recommend doing as little as possible before MPI_Init(),
+and this recommendation is consistent with that.
+
 Spindle is not currently supported
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
