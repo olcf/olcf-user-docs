@@ -11,3 +11,4 @@ Software at the OLCF
 
    analytics/index
    python
+   profiling/index

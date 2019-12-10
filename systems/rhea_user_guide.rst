@@ -24,7 +24,7 @@ Rhea contains 521 compute nodes separated into two partitions:
 +-------------+-------------+---------+-------------------+-----------------------------------+
 | Partition   | Node Count  | Memory  | GPU               | CPU                               |
 +=============+=============+=========+===================+===================================+
-| rhea        | 512         | 128 GB  | -                 | [2x] Intel\ |R| Xeon\ |R| E5-2650 |
+| rhea        | 512         | 128 GB  | N/A               | [2x] Intel\ |R| Xeon\ |R| E5-2650 |
 | (default)   |             |         |                   | @2.0 GHz - 8 cores, 16 HT         |
 |             |             |         |                   | (total 16 cores, 32 HT *per node* |
 +-------------+-------------+---------+-------------------+-----------------------------------+
@@ -52,7 +52,7 @@ With Hyper-Threading enabled, these nodes have 56 logical cores that can execute
 56 hardware threads for increased parallelism.
 
 .. note::
-    To access the gpu partition, batch job submissions should request ``-lpartition=gpu``.
+    To access the gpu partition, batch job submissions should request ``-p gpu``.
 
 Please see the :ref:`batch-queues-on-rhea` section to learn about the queuing
 policies for these two partitions. Both compute partitions are accessible
@@ -239,7 +239,7 @@ examined with the commands summarized in the following table.
 .. note::
     In order to avoid conflicts between user-defined collections
     on multiple compute systems that share a home file system (e.g.
-    ``/ccs/home/[userid]``), lmod appends the hostname of each system to the
+    ``/ccs/home/[username]``), lmod appends the hostname of each system to the
     files saved in in your ``~/.lmod.d`` directory (using the environment
     variable ``lmod_system_name``). This ensures that only collections
     appended with the name of the current system are visible.
@@ -427,21 +427,21 @@ not run (10) simultaneous ``tar`` processes on a login node.
 Slurm
 -----
 
-The following section provides batch scheduler instructions for Slurm, the batch
-scheduler in use on Rhea and the DTNs.  Below is a comparison table to the
-schedulers used on other OLCF resources:
+Most OLCF resources now use the Slurm batch scheduler. Previously, most OLCF resources
+used the Moab scheduler. Summit and other IBM hardware use the LSF scheduler.
+Below is a comparison table of useful commands among the three schedulers.
 
-+--------------------------------------------+--------------+-----------------------+-------------------+
-| Task                                       | Moab         | LSF                   | Slurm             |
-+============================================+==============+=======================+===================+
-| View batch queue                           | ``showq``    | ``jobstat``           | ``squeue``        |
-+--------------------------------------------+--------------+-----------------------+-------------------+
-| Submit batch script                        | ``qsub``     | ``bsub``              | ``sbatch``        |
-+--------------------------------------------+--------------+-----------------------+-------------------+
-| Submit interactive batch job               | ``qsub -I``  | ``bsub -Is $SHELL``   | ``salloc``        |
-+--------------------------------------------+--------------+-----------------------+-------------------+
-| Run parallel code within batch job         | ``mpirun``   | ``jsrun``             | ``srun``          |
-+--------------------------------------------+--------------+-----------------------+-------------------+
++--------------------------------------------+-------------------+-----------------------+-------------------+
+| Task                                       | Moab (historical) | LSF (Summit)          | Slurm             |
++============================================+===================+=======================+===================+
+| View batch queue                           | ``showq``         | ``jobstat``           | ``squeue``        |
++--------------------------------------------+-------------------+-----------------------+-------------------+
+| Submit batch script                        | ``qsub``          | ``bsub``              | ``sbatch``        |
++--------------------------------------------+-------------------+-----------------------+-------------------+
+| Submit interactive batch job               | ``qsub -I``       | ``bsub -Is $SHELL``   | ``salloc``        |
++--------------------------------------------+-------------------+-----------------------+-------------------+
+| Run parallel code within batch job         | ``mpirun``        | ``jsrun``             | ``srun``          |
++--------------------------------------------+-------------------+-----------------------+-------------------+
 
 
 Writing Batch Scripts
@@ -542,7 +542,7 @@ from where the script was submitted.
 on the compute nodes allocated by the batch system.
 
 
-Batch scripts can be submitted for execution using the ``qsub`` command.
+Batch scripts can be submitted for execution using the ``sbatch`` command.
 For example, the following will submit the batch script named ``test.slurm``:
 
 
@@ -632,51 +632,53 @@ Common Batch Options to Slurm
 
 The following table summarizes frequently-used options to Slurm:
 
-+----------------+-------------------------------+-----------------------------------------------------------+
-| Option         | Use                           | Description                                               |
-+================+===============================+===========================================================+
-| -A             | #SBATCH -A <account>          | Causes the job time to be charged to ``<account>``.       |
-|                |                               | The account string, e.g. ``pjt000`` is typically composed |
-|                |                               | of three letters followed by three digits and optionally  |
-|                |                               | followed by a subproject identifier. The utility          |
-|                |                               | ``showproj`` can be used to list your valid assigned      |
-|                |                               | project ID(s). This option is required by all jobs.       |
-+----------------+-------------------------------+-----------------------------------------------------------+
-| -N             | #SBATCH -N <value>            | Number of compute nodes to allocate.                      |
-|                |                               | Jobs cannot request partial nodes.                        |
-+----------------+-------------------------------+-----------------------------------------------------------+
-|                | #SBATCH -t <time>             | Maximum wall-clock time. ``<time>`` is in the             |
-|                |                               | format HH:MM:SS.                                          |
-+----------------+-------------------------------+-----------------------------------------------------------+
-|                | #SBATCH -p <partition_name>   | Allocates resources on specified partition.               |
-+----------------+-------------------------------+-----------------------------------------------------------+
-| -o             | #SBATCH -o <filename>         | Writes standard output to ``<name>`` instead of           |
-|                |                               | ``<job_script>.o$SLURM_JOB_UID``. ``$SLURM_JOB_UID``      |
-|                |                               | is an environment variable created by Slurm that          |
-|                |                               | contains the batch job identifier.                        |
-+----------------+-------------------------------+-----------------------------------------------------------+
-| -e             | #SBATCH -e <filename>         | Writes standard error to ``<name>`` instead               |
-|                |                               | of ``<job_script>.e$SLURM_JOB_UID``.                      |
-+----------------+-------------------------------+-----------------------------------------------------------+
-| --mail-type    | #SBATCH --mail-type=FAIL      | Sends email to the submitter when the job fails.          |
-+----------------+-------------------------------+-----------------------------------------------------------+
-|                | #SBATCH --mail-type=BEGIN     | Sends email to the submitter when the job begins.         |
-+----------------+-------------------------------+-----------------------------------------------------------+
-|                | #SBATCH --mail-type=END       | Sends email to the submitter when the job ends.           |
-+----------------+-------------------------------+-----------------------------------------------------------+
-| --mail-user    | #SBATCH --mail-user=<address> | Specifies email address to use for                        |
-|                |                               | ``--mail-type`` options.                                  |
-+----------------+-------------------------------+-----------------------------------------------------------+
-| -J             | #SBATCH -J <name>             | Sets the job name to ``<name>`` instead of the            |
-|                |                               | name of the job script.                                   |
-+----------------+-------------------------------+-----------------------------------------------------------+
-| --get-user-env | #SBATCH --get-user-env        | Exports all environment variables from the                |
-|                |                               | submitting shell into the batch job shell.                |
-|                |                               | Since the login nodes differ from the service             |
-|                |                               | nodes, using the ``–get-user-env`` option is              |
-|                |                               | **not recommended**. Users should create the              |
-|                |                               | needed environment within the batch job.                  |
-+----------------+-------------------------------+-----------------------------------------------------------+
++------------------+-----------------------------------+-----------------------------------------------------------+
+| Option           | Use                               | Description                                               |
++==================+===================================+===========================================================+
+| -A               | #SBATCH -A <account>              | Causes the job time to be charged to ``<account>``.       |
+|                  |                                   | The account string, e.g. ``pjt000`` is typically composed |
+|                  |                                   | of three letters followed by three digits and optionally  |
+|                  |                                   | followed by a subproject identifier. The utility          |
+|                  |                                   | ``showproj`` can be used to list your valid assigned      |
+|                  |                                   | project ID(s). This option is required by all jobs.       |
++------------------+-----------------------------------+-----------------------------------------------------------+
+| -N               | #SBATCH -N <value>                | Number of compute nodes to allocate.                      |
+|                  |                                   | Jobs cannot request partial nodes.                        |
++------------------+-----------------------------------+-----------------------------------------------------------+
+|                  | #SBATCH -t <time>                 | Maximum wall-clock time. ``<time>`` is in the             |
+|                  |                                   | format HH:MM:SS.                                          |
++------------------+-----------------------------------+-----------------------------------------------------------+
+|                  | #SBATCH -p <partition_name>       | Allocates resources on specified partition.               |
++------------------+-----------------------------------+-----------------------------------------------------------+
+| -o               | #SBATCH -o <filename>             | Writes standard output to ``<name>`` instead of           |
+|                  |                                   | ``<job_script>.o$SLURM_JOB_UID``. ``$SLURM_JOB_UID``      |
+|                  |                                   | is an environment variable created by Slurm that          |
+|                  |                                   | contains the batch job identifier.                        |
++------------------+-----------------------------------+-----------------------------------------------------------+
+| -e               | #SBATCH -e <filename>             | Writes standard error to ``<name>`` instead               |
+|                  |                                   | of ``<job_script>.e$SLURM_JOB_UID``.                      |
++------------------+-----------------------------------+-----------------------------------------------------------+
+| \\-\\-mail-type  | #SBATCH \\-\\-mail-type=FAIL      | Sends email to the submitter when the job fails.          |
++------------------+-----------------------------------+-----------------------------------------------------------+
+|                  | #SBATCH \\-\\-mail-type=BEGIN     | Sends email to the submitter when the job begins.         |
++------------------+-----------------------------------+-----------------------------------------------------------+
+|                  | #SBATCH \\-\\-mail-type=END       | Sends email to the submitter when the job ends.           |
++------------------+-----------------------------------+-----------------------------------------------------------+
+| \\-\\-mail-user  | #SBATCH \\-\\-mail-user=<address> | Specifies email address to use for                        |
+|                  |                                   | ``--mail-type`` options.                                  |
++------------------+-----------------------------------+-----------------------------------------------------------+
+| -J               | #SBATCH -J <name>                 | Sets the job name to ``<name>`` instead of the            |
+|                  |                                   | name of the job script.                                   |
++------------------+-----------------------------------+-----------------------------------------------------------+
+|\\-\\-get-user-env| #SBATCH \\-\\-get-user-env        | Exports all environment variables from the                |
+|                  |                                   | submitting shell into the batch job shell.                |
+|                  |                                   | Since the login nodes differ from the service             |
+|                  |                                   | nodes, using the ``–get-user-env`` option is              |
+|                  |                                   | **not recommended**. Users should create the              |
+|                  |                                   | needed environment within the batch job.                  |
++------------------+-----------------------------------+-----------------------------------------------------------+
+| \\-\\-mem=0      | #SBATCH \\-\\-mem=0               | Declare to use all the available memory of the node       |
++------------------+-----------------------------------+-----------------------------------------------------------+
 
 
 .. note::
@@ -855,7 +857,7 @@ traffic through your ssh connection:
 
 .. code::
 
-    local-system> ssh -Y userid@rhea.ccs.ornl.gov
+    local-system> ssh -Y username@rhea.ccs.ornl.gov
     rhea-login> sview
 
 --------------
@@ -1290,14 +1292,14 @@ version 2.13.x is recommended.
 The first time you launch VisIt (after installing), you will be prompted
 for a remote host preference. Unfortunately, ORNL does not maintain this
 list and the ORNL entry is outdated. Click the “None” option instead.
-Restart VisIt, and go to Options->Host Profiles. Select “New Host”
+Restart VisIt, and go to Options→Host Profiles. Select “New Host”
 
 - For host nickname: Rhea (this is arbitrary)
 - Remote hostname: rhea.ccs.ornl.gov (required)
 - Host name aliases: rhea-login#g (required)
 - Maximum Nodes: unchecked (unless using the GPU partition on Rhea)
 - Maximum processors: unchecked (arbitrary but use fewer than cores available)
-- Path to VisIt Installation: /sw/rhea/visit (required)
+- Path to VisIt Installation: ``/sw/rhea/visit`` (required)
 - Username: Your OLCF Username (required)
 - Tunnel data connections through SSH: Checked (required)
 
@@ -1315,7 +1317,7 @@ Under the “Parallel” Tab:
 - Launch parallel engine: Checked (required)
 - Launch Tab:
     - Parallel launch method:
-      qsub/mpirun (required)
+      sbatch/srun (required)
     - Partition/Pool/Queue: batch (required)
     - Number of processors: 2 (arbitrary, but
       high number may lead to OOM errors)
@@ -1436,26 +1438,26 @@ presented a related talk, `GPU Rendering in Rhea and
 Titan <https://www.olcf.ornl.gov/wp-content/uploads/2016/01/GPURenderingRheaTitan-1.pdf>`__,
 during the 2016 OLCF User Meeting.
 
-step 1 (local system)
+Step 1 (local system)
 ^^^^^^^^^^^^^^^^^^^^^
 
 Install a vncviewer (turbovnc, tigervnc, etc.) on your local machine.  When
 running vncviewer for the first time, it will ask to set a password for this and
 future vnc sessions.
 
-step 2 (terminal 1)
+Step 2 (terminal 1)
 ^^^^^^^^^^^^^^^^^^^
 
 From a Rhea connection launch a batch job and execute the below matlab-vnc.sh
 script to start the vncserver and run matlab within:
 
-#. localsytem: ssh -X @rhea.ccs.ornl.gov
-#. rhea: qsub -I -A abc123 -X -l nodes=1,walltime=01:00:00
-#. rhea: ./matlab-vnc.sh
+#. localsytem: ``ssh -X username@rhea.ccs.ornl.gov``
+#. rhea: ``salloc -A abc123 -X11 -N 1 -t 1:00:00``
+#. rhea: ``./matlab-vnc.sh``
 
 .. code::
 
-    ./matlab-vnc.sh
+    $ ./matlab-vnc.sh
     New 'rhea6:1 (userA)' desktop is rhea6:1
 
     Starting applications specified in /ccs/home/userA/.vnc/xstartup
@@ -1466,24 +1468,24 @@ script to start the vncserver and run matlab within:
 
     In a new terminal, open a tunneling connection with rhea6 and port 5901
     example:
-             userid@rhea.ccs.ornl.gov -L 5901:rhea6:5901
+             username@rhea.ccs.ornl.gov -L 5901:rhea6:5901
      **************************************************************************
 
     MATLAB is selecting SOFTWARE OPENGL rendering.
 
-step 3 (terminal 2)
+Step 3 (terminal 2)
 ^^^^^^^^^^^^^^^^^^^
 
 In a second terminal on your local system open a tunneling connection following
 the instructions given by the vnc start-up script:
 
--  localsystem: ssh @rhea.ccs.ornl.gov -L 5901:rhea99:5901
+-  localsystem: ``ssh username@rhea.ccs.ornl.gov -L 5901:rhea99:5901``
 
-step 4 (local system)
+Step 4 (local system)
 ^^^^^^^^^^^^^^^^^^^^^
 
 Launch the vncviewer. When you launch the vncviewer that you downloaded you will
-need to specify ‘localhost:5901’. You will also set a password for the initial
+need to specify ``localhost:5901``. You will also set a password for the initial
 connection or enter the created password for subsequent connections.
 
 matlab-vnc.sh (non-GPU rendering)
@@ -1508,7 +1510,7 @@ matlab-vnc.sh (non-GPU rendering)
     echo
     echo "In a new terminal, open a tunneling connection with $(what) and port 5901"
     echo "example:"
-    echo  "         userid@rhea.ccs.ornl.gov -L 5901:$(what):5901 "
+    echo  "         username@rhea.ccs.ornl.gov -L 5901:$(what):5901 "
     echo
     echo "**************************************************************************"
     echo
@@ -1522,27 +1524,26 @@ matlab-vnc.sh (non-GPU rendering)
 Remote Visualization using VNC (GPU nodes)
 ------------------------------------------
 
-step 1 (local system)
+Step 1 (local system)
 ^^^^^^^^^^^^^^^^^^^^^
 
 Install a vncviewer (turbovnc, tigervnc, etc.) on your local machine.  When
 running vncviewer for the first time, it will ask to set a password for this and
 future vnc sessions.
 
-step 2 (terminal 1)
+Step 2 (terminal 1)
 ^^^^^^^^^^^^^^^^^^^
 
 From a Rhea connection launch a batch job and execute the below matlab-vnc.sh
 script to start the vncserver and run matlab within:
 
-#. localsytem: ssh -X @rhea.ccs.ornl.gov
-#. rhea: salloc -A abc123 -X -l nodes=1,walltime=01:00:00
-   -p gpu
-#. rhea: ./matlab-vnc.sh
+#. localsytem: ``ssh -X username@rhea.ccs.ornl.gov``
+#. rhea: ``salloc -A abc123 -X11 -N 1 -t 1:00:00 -p gpu``
+#. rhea: ``./matlab-vnc.sh``
 
 .. code::
 
-    ./matlab-vnc.sh
+    $ ./matlab-vnc.sh
     New 'rhea6:1 (userA)' desktop is rhea6:1
 
     Starting applications specified in /ccs/home/userA/.vnc/xstartup
@@ -1553,24 +1554,24 @@ script to start the vncserver and run matlab within:
 
     In a new terminal, open a tunneling connection with rhea6 and port 5901
     example:
-             userid@rhea.ccs.ornl.gov -L 5901:rhea6:5901
+             username@rhea.ccs.ornl.gov -L 5901:rhea6:5901
      **************************************************************************
 
     MATLAB is selecting SOFTWARE OPENGL rendering.
 
-step 3 (terminal 2)
+Step 3 (terminal 2)
 ^^^^^^^^^^^^^^^^^^^
 
 In a second terminal on your local system open a tunneling connection following
 the instructions given by the vnc start-up script:
 
--  localsystem: ssh @rhea.ccs.ornl.gov -L 5901:rhea99:5901
+-  localsystem: ssh username@rhea.ccs.ornl.gov -L 5901:rhea99:5901
 
-step 4 (local system)
+Step 4 (local system)
 ^^^^^^^^^^^^^^^^^^^^^
 
 Launch the vncviewer. When you launch the vncviewer that you downloaded you will
-need to specify ‘localhost:5901’. You will also set a passoword for the initial
+need to specify ``localhost:5901``. You will also set a passoword for the initial
 connection or enter the created password for subsequent connections.
 
 vmd-vgl.sh (GPU rendering)
@@ -1599,7 +1600,7 @@ vmd-vgl.sh (GPU rendering)
     echo
     echo "In a new terminal, open a tunneling connection with $(what) and port 5901"
     echo "example:"
-    echo  "         userid@rhea.ccs.ornl.gov -L 5901:$(what):5901 "
+    echo  "         username@rhea.ccs.ornl.gov -L 5901:$(what):5901 "
     echo
     echo "**************************************************************************"
     echo
@@ -1612,37 +1613,32 @@ vmd-vgl.sh (GPU rendering)
 Remote Visualization using Nice DCV (GPU nodes only)
 ----------------------------------------------------
 
-step 1 (terminal 1)
+Step 1 (terminal 1)
 ^^^^^^^^^^^^^^^^^^^
 
 Launch an interactive job:
 
 .. code::
 
-     qsub -I -A projectID   -l nodes=1 -l walltime=00:30:00 -l partition=gpu
-
-As of April 29, the dcv feature will be required:
-.. code::
-
-     qsub -I -A projectID   -l nodes=1 -l walltime=00:30:00 -l partition=gpu -l feature=dcv
+     salloc -A PROJECT_ID -p gpu -N 1 -t 60:00 -M rhea -C DCV
 
 Run the following commands:
 
 .. code::
 
-    xinit &
-    export DISPLAY=:0
-    dcv create-session --gl-display :0 mySessionName
-    hostname  // will be used to open a tunneling connection with this node
+    $ xinit &
+    $ export DISPLAY=:0
+    $ dcv create-session --gl-display :0 mySessionName
+    $ hostname  // will be used to open a tunneling connection with this node
 
-step 1 (terminal 2)
+Step 1 (terminal 2)
 ^^^^^^^^^^^^^^^^^^^
 
 Open a tunneling connection with gpu node ``N``, given by hostname:
 
 .. code::
 
-    ssh user@rhea.ccs.ornl.gov -L 8443:rhea-gpuN:8443
+    ssh username@rhea.ccs.ornl.gov -L 8443:rhea-gpuN:8443
 
 Open your web browser using the following link and use your credentials to
 access OLCF systems: ``https://localhost:8443`` When finished, kill the dcv
@@ -1650,6 +1646,6 @@ session in first terminal:
 
 .. code::
 
-    dcv close-session mySessionName
-    kill %1
+    $ dcv close-session mySessionName
+    $ kill %1
 
