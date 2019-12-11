@@ -254,5 +254,128 @@ If there were no MPI headers, you should edit the Makefile with:
 
 ``scorep --mpp=none g++``
 
+However, as there are MPI headers, we need to declare 
+
+``scorep --mpp=mpi mpic++``
+
 If you want to add PDT, then use the option ``--pdt``
+
+Add to your submission script the Score-P variables that you want to use (or
+uncomment them below). By default the TAU will apply profiling, and not apply tracing.
+
+.. code::
+
+        #PAPI metrics
+	export SCOREP_METRIC_PAPI=PAPI_TOT_INS,PAPI_TOT_CYC,PAPI_FP_OPS
+
+	export SCOREP_MPI_ENABLE_GROUPS=ALL
+	export SCOREP_TOTAL_MEMORY=20MB
+
+        time jsrun -n 1 -r 1 -a 1 -c 1 -g 1  ./miniWeather_serial
+
+
+- When the execution finishes, one directory is created named ``scorep-<date>_<time>_<runid>``
+
+- For example we can see the contents of the created directory:
+
+.. code::
+
+	ls scorep-20191210_1435_1862594527919600
+	MANIFEST.md
+	profile.cubex
+	scorep.cfg
+
+- Check the performance data
+
+.. code::
+
+	cd scorep-20191210_1435_1862594527919600
+	scorep-score -r profile.cubex > profile.txt
+	less profile.txt
+
+	Estimated aggregate size of event trace:                   1057kB
+	Estimated requirements for largest trace buffer (max_buf): 1057kB
+	Estimated memory requirements (SCOREP_TOTAL_MEMORY):       4097kB
+	(hint: When tracing set SCOREP_TOTAL_MEMORY=4097kB to avoid intermediate flushes
+	 or reduce requirements using USR regions filters.)
+
+	flt     type max_buf[B] visits time[s] time[%] time/visit[us]  region
+        	ALL  1,081,567 35,754   70.08   100.0        1959.93  ALL
+         	MPI    964,448 31,250    0.98     1.4          31.36  MPI
+         	USR    117,026  4,501   68.79    98.2       15283.49  USR
+         	COM         52      2    0.30     0.4      152111.97  COM
+      	      SCOREP        41      1    0.00     0.0          65.14  SCOREP
+
+         MPI    655,200 25,200    0.05     0.1           1.83  MPI_Get_address
+         USR    117,026  4,501   68.79    98.2       15283.49  perform_timestep(double*, double*, double*, double*, double)
+         MPI     60,400    604    0.45     0.6         739.90  MPI_File_write_at_all
+         MPI     51,340    755    0.00     0.0           3.49  MPI_Allreduce
+         MPI     45,400    454    0.01     0.0          13.39  MPI_File_write_at
+
+
+- We can see that 98.2% of the execution time is spent on user functions and only 1.4% on MPI.
+
+
+Explanation
+~~~~~~~~~~~
+
++-------------------------+----------------------------------------------------+
+| Score-P Region Type Key |  Description	   			       |
++=========================+====================================================+
+| COM                     | user functions found on callstack to other regions |
++-------------------------+----------------------------------------------------+
+| CUDA                    | CUDA API & kernels     			       |
++-------------------------+----------------------------------------------------+
+| MEMORY                  | Memory alloc/dealloc     			       |
++-------------------------+----------------------------------------------------+
+| MPI                     | All MPI functions                                  |
++-------------------------+----------------------------------------------------+
+| OMP                     | OpenMP constructs      			       |
++-------------------------+----------------------------------------------------+
+| OPENACC                 | OpenACC API & kernels  			       |
++-------------------------+----------------------------------------------------+
+| PTHREAD                 | all pthread functions     			       |
++-------------------------+----------------------------------------------------+
+| SCOREP                  | Score-P instrumentation 			       |
++-------------------------+----------------------------------------------------+
+| SHMEM                   | All SHMEM functions     			       |
++-------------------------+----------------------------------------------------+
+| USR                    | User fucntions not found in COM   		       |
++-------------------------+----------------------------------------------------+
+
+
+We can observe the percentage of each type consumes during the execution of the serial version of MiniWeather
+
+
+- Repeat the previous procedure but activate PDT, instead of  ``scorep --mpp=mpi mpic++``, declare ``scorep --mpp=mpi --pdt mpic++``
+
+- The the output of the profiling data are:
+
+.. code::
+
+	Estimated aggregate size of event trace:                   13MB
+	Estimated requirements for largest trace buffer (max_buf): 13MB
+	Estimated memory requirements (SCOREP_TOTAL_MEMORY):       15MB
+	(hint: When tracing set SCOREP_TOTAL_MEMORY=15MB to avoid intermediate flushes
+	 or reduce requirements using USR regions filters.)
+
+	flt     type max_buf[B]  visits time[s] time[%] time/visit[us]  region
+        	 ALL 13,197,645 501,757   71.84   100.0         143.19  ALL
+         	 USR 12,229,152 470,352   70.12    97.6         149.08  USR
+         	 MPI    964,448  31,250    1.03     1.4          32.86  MPI
+        	 COM      4,004     154    0.70     1.0        4535.33  COM
+     	      SCOREP         41       1    0.00     0.0          81.92  SCOREP
+
+         USR  4,975,282 191,357    0.38     0.5           2.00  void hydro_const_theta(double, double &, double &)
+         USR  4,975,282 191,357    0.75     1.0           3.92  void injection(double, double, double &, double &, double &, double &, double &, double &)
+         USR    702,156  27,006    1.34     1.9          49.50  void semi_discrete_step(double *, double *, double *, double, int, double *, double *)
+         MPI    655,200  25,200    0.05     0.1           1.84  MPI_Get_address
+         USR    351,078  13,503   33.22    46.2        2460.04  void compute_tendencies_x(double *, double *, double *) 
+         USR    351,078  13,503    0.05     0.1           3.74  void set_halo_values_x(double *)
+         USR    351,078  13,503    0.04     0.1           3.26  void set_halo_values_z(double *)
+         USR    351,078  13,503   34.23    47.6        2535.23  void compute_tendencies_z(double *, double *, double *)
+         USR    117,026   4,501    0.10     0.1          22.31  void perform_timestep(double *, double *, double *, double *, double)
+
+- We can see more insight details for each routine of the code.
+
 
