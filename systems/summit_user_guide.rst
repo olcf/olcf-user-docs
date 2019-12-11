@@ -1101,6 +1101,8 @@ If you would like to have your default shell changed, please contact the
 `OLCF User Assistance Center <https://www.olcf.ornl.gov/for-users/user-assistance/>`__ at
 help@nccs.gov.
 
+.. _lmod:
+
 Environment Management with Lmod
 --------------------------------
 
