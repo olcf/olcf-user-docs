@@ -313,7 +313,7 @@ uncomment them below). By default the TAU will apply profiling, and not apply tr
          MPI     45,400    454    0.01     0.0          13.39  MPI_File_write_at
 
 
-- We can see that 98.2% of the execution time is spent on user functions and only 1.4% on MPI.
+- We can see that 98.2% of the execution time is spent on user functions and only 1.4% on MPI as there is no real MPI calls on serial code, just some calls are not excluded.
 
 
 Explanation
@@ -379,3 +379,82 @@ We can observe the percentage of each type consumes during the execution of the 
 - We can see more insight details for each routine of the code.
 
 
+Instrumenting the MPI version of MiniWeather
+--------------------------------------------
+
+Profiling
+~~~~~~~~~
+
+For the MPI version, we should use a makefile with MPI. 
+Edit the Makefile and declare the compiler for CC.
+
+``scorep --mpp=mpi --pdt mpic++``
+
+.. code::
+
+        $ module load pgi
+        $ module load parallel-netcdf
+        $ module load scorep/6.0_r14595
+        $ make mpi
+
+Add to your submission script the Score-P variables that you want to use (or
+uncomment them below). By default, the Score-P will apply profiling, and not
+tracing.
+
+.. code::
+
+        module load scorep/6.0_r14595
+        #PAPI metrics
+
+	export SCOREP_METRIC_PAPI=PAPI_TOT_INS,PAPI_TOT_CYC,PAPI_FP_OPS
+	export SCOREP_MPI_ENABLE_GROUPS=ALL
+	export SCOREP_TOTAL_MEMORY=20MB
+
+        jsrun -n 64 -r 8 -a 1 -c 1 ./miniWeather_mpi
+
+- A new folder is created and we check the results
+
+.. code::
+
+	cd scorep-20191211_1647_1910918433289249
+	scorep-score -r profile.cubex > profile.txt
+        less profile.txt
+
+	Estimated aggregate size of event trace:                   1071MB
+	Estimated requirements for largest trace buffer (max_buf): 17MB
+	Estimated memory requirements (SCOREP_TOTAL_MEMORY):       19MB
+	(hint: When tracing set SCOREP_TOTAL_MEMORY=19MB to avoid intermediate flushes
+ 	or reduce requirements using USR regions filters.)
+
+	flt     type max_buf[B]     visits time[s] time[%] time/visit[us]  region
+        	 ALL 17,631,831 26,151,351 2624.21   100.0         100.35  ALL
+        	 MPI 12,130,086 12,559,329 1908.82    72.7         151.98  MPI
+        	 USR  3,249,298  7,822,166  618.97    23.6          79.13  USR
+        	 COM  2,343,978  5,769,792   96.41     3.7          16.71  COM
+     	      SCOREP         41         64    0.01     0.0          92.71  SCOREP
+
+        	 MPI  4,806,000  3,456,000   13.67     0.5           3.95  MPI_Isend
+        	 MPI  4,806,000  3,456,000   11.84     0.5           3.43  MPI_Irecv
+        	 MPI  1,404,000  3,456,000  109.38     4.2          31.65  MPI_Waitall
+        	 COM  1,404,000  3,456,000   45.78     1.7          13.25  void semi_discrete_step(double *, double *, double *, double, int, double *, double *)
+        	 USR    702,000  1,728,000  317.84    12.1         183.94  void compute_tendencies_x(double *, double *, double *)
+        	 COM    702,000  1,728,000   31.13     1.2          18.01  void set_halo_values_x(double *)
+        	 USR    702,000  1,728,000    3.57     0.1           2.07  void set_halo_values_z(double *)
+        	 USR    702,000  1,728,000  289.24    11.0         167.39  void compute_tendencies_z(double *, double *, double *)
+
+- Now that we use MPI, we can observe that 72.7% of the total execution time was MPI calls, there were almost 3.5 million MPI_Isend/MPI_Irecv calls
+- Moreover in the first line we are informed that if we activate tracing, the size will be close to 1GB and the miinimum requirement for the memory (SCOREP_TOTAL_MEMORY) that we use already.
+- The profile.cubex file can be opened with the cube tool but will present this later
+
+
+Tracing
+~~~~~~~
+
+- You need to activate the tracing variable in tour submission script
+
+.. code::
+
+	export SCOREP_ENABLE_TRACING=true
+
+- Now the new scorep directory includes a file called ``traces.otf2`` and a sub-directory with traces. You can use Vampir to open the otf2 file. 
+- For detailed information about using Vampir on Summit and the builds available, please see the `Vampir Software Page <https://www.olcf.ornl.gov/software_package/vampir/>`__.
