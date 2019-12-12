@@ -4,6 +4,10 @@
 Training
 #########
 
+.. toctree::
+   :maxdepth: 2
+
+   training_archive
 
 * `Tutorials <https://github.com/olcf-tutorials>`_
 * `Archive <https://www.olcf.ornl.gov/for-users/training/training-archive/>`_
