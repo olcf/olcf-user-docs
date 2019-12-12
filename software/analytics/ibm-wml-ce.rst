@@ -117,10 +117,14 @@ The IBM-WML-CE conda environment is read-only. Therefore, users
 cannot install any additional packages that may be needed. If users need
 any additional conda or pip packages, they can clone the IBM-WML-CE
 conda environment into their home directory and then add any packages they
-need. Note: The conda environment includes a module revision number, the X
-in ``ibm-wml-ce-1.6.2-X``. The name of the active environment can be found
-in the prompt string, or ``conda env list`` can be used to see what conda
-environments are available.
+need.
+
+.. note::
+
+    The conda environment includes a module revision number, the 'X' in
+    ``ibm-wml-ce-1.6.2-X``. The name of the active environment can be found in
+    the prompt string, or ``conda env list`` can be used to see what conda
+    environments are available.
 
 .. code-block:: console
 
