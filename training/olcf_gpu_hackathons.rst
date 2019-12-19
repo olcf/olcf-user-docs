@@ -41,7 +41,7 @@ What is a GPU hackathon?
 
 A GPU hackathon is a 5-day coding event in which teams of developers port their
 own applications to run on GPUs, or optimize their applications that already
-run on GPUs. Each team consists of 3 or more developers who are intimitely
+run on GPUs. Each team consists of 3 or more developers who are intimately
 familiar with (some part of) their application, and they work alongside 1 or
 more mentors with GPU programming expertise. Our mentors come from
 universities, national laboratories, supercomputing centers, and industry
