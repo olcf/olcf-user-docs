@@ -712,7 +712,7 @@ Using Vampir
 
 - This shows for all the processes the Flop operations
 
-- If we sexecute right click "Set Metric" ->  " Message Data Rate"
+- If we execute right click "Set Metric" ->  " Message Data Rate"
 
 .. image:: /images/vampir_performance_radar_menu.png
    :align: center
@@ -721,3 +721,67 @@ Using Vampir
 
 .. image:: /images/vampir_performance_radar_data_rate.png
    :align: center
+
+- Select "Add IO Timeline" (see arrow below)
+
+.. image:: /images/vampir_io_timeline.png
+   :align: center
+
+- We can see per file all the IO operations, open, write, etc.
+
+
+- Select "Add Message Summary" (see arrow below) 
+
+.. image:: /images/vampir_message_summary.png
+   :align: center
+
+- Down on the right, there is a new chart which shows the number of the messages per message size (12.5	KiB)
+- We can change the metric as seen below with right click of the mouse on the corresponding chart area
+
+.. image:: /images/vampir_message_summary_menu.png
+   :align: center
+
+
+- Select "Add Process Summary" (see arrow below)
+
+.. image:: /images/vampir_process_summary.png
+   :align: center
+
+- The process summary is usefull to observe the load balance between the processes with a glimpse 
+
+- As we see that process 0 performs different operations, we create 2 clusters with the following procedure
+
+.. image:: /images/vampir_process_summary_menu.png
+   :align: center
+.. image:: /images/vampir_set_cluster.png
+   :align: center
+.. image:: /images/vampir_prrocess_sumamry_2_clusters.png
+   :align: center
+
+- We can clearly observe the differences between the two groups 
+
+
+- Select "Add Communication Matrix View" (see arrow below)
+
+.. image:: /images/vampir_communication_matrix.png
+   :align: center 
+
+- We can observe the number of the messages exchanged between the threads and their properties as sender/receiver
+
+- By selecting the following menu we can see the maximum message size
+
+.. image:: /images/vampir_communicaiton_matrix_max_message.png
+   :align: center
+
+- This is usefull to know how the MPI communication performs based on the eager/rendezvous modes
+
+- By selecting the following menu we can see the maximum transfer time to see which threads perform slower
+
+.. image:: /images/vampir_communicaiton_matrix_max_time.png
+   :align: center
+
+- By selecting the following menu we can see the minimum data rate for the communication
+
+.. image:: /images/vampir_communicaiton_matrix_min_data_rate.png
+   :align: center
+
