@@ -458,3 +458,229 @@ Tracing
 
 - Now the new scorep directory includes a file called ``traces.otf2`` and a sub-directory with traces. You can use Vampir to open the otf2 file. 
 - For detailed information about using Vampir on Summit and the builds available, please see the `Vampir Software Page <https://www.olcf.ornl.gov/software_package/vampir/>`__.
+
+
+Instrumenting the MPI+OpenMP version of MiniWeather
+----------------------------------------------------
+
+
+ - Execute the MPI+OpenMP version
+
+Edit the Makefile and declare the compiler for CC.
+
+ ``scorep --mpp=mpi --thread=omp --pdt mpic++``
+
+ .. code::
+
+         $ module load pgi
+         $ module load parallel-netcdf
+         $ module load scorep/6.0_r14595
+         $ make openmp
+
+ Add to your submission script the Score-P variables that you want to use (or
+ uncomment them below). By default, the Score-P will apply profiling, and not
+ tracing.
+
+ .. code::
+
+         module load scorep/6.0_r14595
+
+         #PAPI metrics
+         export SCOREP_METRIC_PAPI=PAPI_TOT_INS,PAPI_TOT_CYC,PAPI_FP_OPS
+
+         export SCOREP_MPI_ENABLE_GROUPS=ALL
+         export SCOREP_TOTAL_MEMORY=20MB
+	 export OMP_NUM_THREADS=8
+
+	 jsrun -n 64 -r 8 -a 1 -c 8 "-b packed:8" ./miniWeather_mpi_openmp
+
+
+- A new folder is created and we check the results
+
+ .. code::
+
+         cd scorep-20191212_1359_1949859062811255
+         scorep-score -r profile.cubex > profile.txt
+         less profile.txt
+
+	Estimated aggregate size of event trace:                   5GB
+	Estimated requirements for largest trace buffer (max_buf): 306MB
+	Estimated memory requirements (SCOREP_TOTAL_MEMORY):       322MB
+	(hint: When tracing set SCOREP_TOTAL_MEMORY=322MB to avoid intermediate flushes
+	 or reduce requirements using USR regions filters.)
+
+ 	 flt    type  max_buf[B]      visits time[s] time[%] time/visit[us]  region
+          	 ALL 319,855,935 101,660,439 1533.97   100.0          15.09  ALL
+        	 OMP 300,410,136  94,018,752 1033.35    67.4          10.99  OMP
+        	 MPI  12,130,086   3,141,969  446.00    29.1         141.95  MPI
+        	 COM   4,449,978   2,738,448   48.89     3.2          17.85  COM
+        	 USR   2,865,694   1,761,254    5.73     0.4           3.25  USR
+     	      SCOREP          41          16    0.00     0.0          94.38  SCOREP
+
+        	 OMP  37,584,000   6,912,000   29.55     1.9           4.28  !$omp parallel @miniWeather_mpi_openmp.cpp:213
+         	 OMP  18,792,000   3,456,000   15.06     1.0           4.36  !$omp parallel @miniWeather_mpi_openmp.cpp:291
+        	 OMP  18,792,000   3,456,000   14.71     1.0           4.26  !$omp parallel @miniWeather_mpi_openmp.cpp:322
+        	 OMP  18,792,000   3,456,000   15.10     1.0           4.37  !$omp parallel @miniWeather_mpi_openmp.cpp:236
+        	 OMP  18,792,000   3,456,000   14.72     1.0           4.26  !$omp parallel @miniWeather_mpi_openmp.cpp:267
+        	 OMP  18,792,000   3,456,000   15.00     1.0           4.34  !$omp parallel @miniWeather_mpi_openmp.cpp:369
+		 ...
+     	         OMP   5,616,000   3,456,000  278.62    18.2          80.62  !$omp for @miniWeather_mpi_openmp.cpp:236		
+
+- We can observe that OpenMP consumes the 67.4% of the execution tiime and which OMP pragma occupies more time and which line.
+- Moreover, the traces now would be 5GB and the memory reuquirements are 322MB per process.
+
+Instrumenting the MPI+OpenACC version of MiniWeather
+----------------------------------------------------
+
+
+ - Edit the Makefile and declare the compiler for CC.
+
+  ``scorep --mpp=mpi --cuda --openacc --pdt mpic++``
+
+  .. code::
+
+          $ module load pgi
+          $ module load parallel-netcdf
+          $ module load scorep/6.0_r14595
+          $ make openacc
+
+  Add to your submission script the Score-P variables that you want to use (or
+  uncomment them below). By default, the Score-P will apply profiling, and not
+  tracing.
+
+
+  .. code::
+
+           module load scorep/6.0_r14595
+
+           #PAPI metrics
+           export SCOREP_METRIC_PAPI=PAPI_TOT_INS,PAPI_TOT_CYC,PAPI_FP_OPS
+
+           export SCOREP_MPI_ENABLE_GROUPS=ALL
+           export SCOREP_TOTAL_MEMORY=20MB
+	   export SCOREP_OPENACC_ENABLE=default
+
+           jsrun -n 6 -r 3 --smpiargs="-gpu" -g 1 ./miniWeather_mpi_openacc
+
+
+- A new folder is created and we check the results
+
+  .. code::
+
+	  cd scorep-20191217_1015_2906378202661
+          scorep-score -r profile.cubex > profile.txt
+          less profile.txt
+
+	  Estimated aggregate size of event trace:                   350MB
+	  Estimated requirements for largest trace buffer (max_buf): 62MB
+	  Estimated memory requirements (SCOREP_TOTAL_MEMORY):       64MB
+          (hint: When tracing set SCOREP_TOTAL_MEMORY=64MB to avoid intermediate flushes
+          or reduce requirements using USR regions filters.)
+
+	 flt     type max_buf[B]     visits time[s] time[%] time/visit[us]  region
+          	  ALL 64,183,583 12,509,267  269.54   100.0          21.55  ALL
+     	      OPENACC 40,727,960  8,723,760   64.95    24.1           7.45  OPENACC
+                  MPI 12,130,086  1,180,019  170.57    63.3         144.55  MPI
+                  USR  6,875,518  1,578,564    5.19     1.9           3.29  USR
+                  COM  4,449,978  1,026,918   28.83    10.7          28.07  COM
+               SCOREP         41          6    0.00     0.0          93.51  SCOREP
+
+         	  MPI  4,806,000    324,000    1.65     0.6           5.10  MPI_Isend
+         	  MPI  4,806,000    324,000    1.29     0.5           3.98  MPI_Irecv
+         	  USR  3,410,394    783,342    1.74     0.6           2.22  void hydro_const_theta(double, double &, double &)
+         	  USR  3,410,394    783,342    3.41     1.3           4.36  void injection(double, double, double &, double &, double &, double &, double &, double &)
+         	  MPI  1,404,000    324,000   11.63     4.3          35.91  MPI_Waitall
+         	  COM  1,404,000    324,000    5.22     1.9          16.10  void semi_discrete_step(double *, double *, double *, double, int, double *, double *)
+     	      OPENACC  1,404,000    324,000    2.56     0.9           7.90  acc_download@miniWeather_mpi_openacc.cpp:370
+     	      OPENACC  1,404,000    324,000    2.72     1.0           8.41  acc_upload@miniWeather_mpi_openacc.cpp:380
+     	      OPENACC  1,404,000    324,000    2.32     0.9           7.16  acc_wait@miniWeather_mpi_openacc.cpp:380
+     	      OPENACC  1,404,000    324,000    1.60     0.6           4.94  acc_data_enter@miniWeather_mpi_openacc.cpp:220
+     	      OPENACC  1,404,000    324,000    2.85     1.1           8.79  acc_compute@miniWeather_mpi_openacc.cpp:220
+     	      OPENACC  1,404,000    324,000    2.71     1.0           8.36  acc_launch_kernel@miniWeather_mpi_openacc.cpp:220
+
+
+- The OpenACC consumes 24.1% of the total execution time 
+- We are going to trace the MPI+OpenACC version and we'll adjust the buffer size
+- The new submission scriptn will be like the following:
+
+  .. code::
+
+            module load scorep/6.0_r14595
+
+            #PAPI metrics
+            export SCOREP_METRIC_PAPI=PAPI_TOT_INS,PAPI_TOT_CYC,PAPI_FP_OPS
+
+            export SCOREP_MPI_ENABLE_GROUPS=ALL
+            export SCOREP_TOTAL_MEMORY=70MB
+            export SCOREP_OPENACC_ENABLE=default
+	    export SCOREP_ENABLE_TRACING=true
+
+            jsrun -n 6 -r 3 --smpiargs="-gpu" -g 1 ./miniWeather_mpi_openacc
+
+- We always declare the SCOREP_TOTAL_MEMORY few MBs over the recommended value just to be sure
+
+Using Vampir
+------------
+
+- Conenct to a new terminal with X11 forwarding (-X or -Y)
+- Load the vampir module and execute it
+
+.. code::
+
+	module load vampir
+	vampir &
+
+- Select "Open Other..." if your trace is not already in the list, then "Local File", go to the folder that the files traces.otf2 is located, select it and click "Open"
+- This is the main view
+
+.. image:: /images/vampir_main_view.png
+   :align: center
+
+- The red area is the Charts bar and the buttons open various Charts 
+- The blue area is the Zoom bar and the colors represent different functionalities that we'll see later
+- The orange area is the Timeline Chart and the view can change with the addition of other charts
+- The yellow area includes different windows about Function Summary, Contect View, and Function Legend. From the Function Summary we can understand in what commands the colors of the Timeline Chart correspond.
+
+- We can zoom either by selecting an area with the mouse from the Zoom bar or the Timeline chart. This way we observe better if there is something wrong with our code.
+
+.. image:: /images/vampir_zoom.png
+   :align: center
+
+
+- By selecting the Chart of Process Timeline (see arrow) we have the following Chart added 
+
+.. image:: /images/vampir_process_timeline.png
+   :align: center
+
+- In this case we can see process 0 and the call stack (7 levels) and if we navigate over the colors with the mouse you can get more information under the Contect View.
+- The black circles mean burst messages from MPI.
+- The yellow trriangles are related to IO operations
+
+
+- If we execute right click on the chart area and then "Set Mode" -> "Exclusive", we can see the exclusive time spent on each layer 
+
+.. image:: /images/vampir_process_timeline_exclusive.png
+   :align: center
+
+- This way we know in which layer to check for any performance issue.
+- Moreover, from the options we can check which process is analyzed.
+
+
+- Add Summary Timeline by clicking the option that the arrow below indicates
+
+.. image:: /images/vampir_process_summary_timeline.png
+   :align: center
+
+- In the new chart we can observe the exclusive time per function group for all the processes. It is clear that in some parts MPI consumes the most of the time and in other parts, OpenACC and CUDA calls.
+- We can see various options by right click the mouse cursor on the chart area.
+
+
+- Add Counter Data Timeline by clicking the option that the arrow below indicates
+
+.. image:: /images/vampir_counter_data_timeline.png
+   :align: center
+
+- The new chart will show the first PAPI metric that we declared in the variable **SCOREP_METRIC_PAPI** and we can zoom to see more details
+- Moreover, depednign on the architecture some emtrics can indicate more details about the computational efficiency across the timeline
+- In this case we see the Flops and with mextri number of operations per second.
+
