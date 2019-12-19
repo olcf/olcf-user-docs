@@ -786,3 +786,22 @@ Using Vampir
    :align: center
 
 
+- Select "Add I/O Summary" (see arrow below)
+
+.. image:: /images/vampir_io_summary.png
+   :align: center
+
+- We can see the I/O operations per each file
+
+- We select from the menu the operations type to see also the numbers per operation type
+
+.. image:: /images/vampir_io_summary_operations.png
+   :align: center
+
+- Select "Add Call Tree" (see arrow below)
+
+.. image:: /images/vampir_call_tree.png
+   :align: center
+
+- Now we can see the call tree and the duration for each call
+
