@@ -770,18 +770,19 @@ Using Vampir
 
 - By selecting the following menu we can see the maximum message size
 
-.. image:: /images/vampir_communicaiton_matrix_max_message.png
+.. image:: /images/vampir_communication_matrix_max_message.png
    :align: center
 
 - This is usefull to know how the MPI communication performs based on the eager/rendezvous modes
 
 - By selecting the following menu we can see the maximum transfer time to see which threads perform slower
 
-.. image:: /images/vampir_communicaiton_matrix_max_time.png
+.. image:: /images/vampir_communication_matrix_max_time.png
    :align: center
 
 - By selecting the following menu we can see the minimum data rate for the communication
 
-.. image:: /images/vampir_communicaiton_matrix_min_data_rate.png
+.. image:: /images/vampir_communication_matrix_min_data_rate.png
    :align: center
+
 
