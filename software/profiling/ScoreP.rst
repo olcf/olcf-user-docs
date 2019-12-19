@@ -684,3 +684,40 @@ Using Vampir
 - Moreover, depednign on the architecture some emtrics can indicate more details about the computational efficiency across the timeline
 - In this case we see the Flops and with mextri number of operations per second.
 
+
+- If we execute right click and "Select Metric" then we have the following options
+
+.. image:: /images/vampir_counter_select_metric.png
+   :align: center
+
+- By selecting "MPI Latencies" we have the following, which represents the duration of individual MPI calls
+
+.. image:: /images/vampir_counter_mpi_latencies.png
+   :align: center
+
+- We can observe if some MPI calls take significant time more than other ones to identify bottlenecks.
+
+- By selecting "Message Data Rate" we have the following, which represents the bytes per second exchanged
+
+.. image:: /images/vampir_counter_message_data_rates.png
+   :align: center
+
+- We can close a chart be mocing a mouse over the uper right corner (see arrow) in case we want to add another chart 
+
+
+- By selecting "Add Performance Radar" (see arrow below) we have the following
+
+.. image:: /images/vampir_performance_radar.png
+   :align: center
+
+- This shows for all the processes the Flop operations
+
+- If we sexecute right click "Set Metric" ->  " Message Data Rate"
+
+.. image:: /images/vampir_performance_radar_menu.png
+   :align: center
+
+- We get this chart where with a glimpse of the view we can observe which processes outperform or not compared to other ones. Of course, in some cases this could be considered as expected, depending on the implementation.
+
+.. image:: /images/vampir_performance_radar_data_rate.png
+   :align: center
