@@ -152,11 +152,20 @@ will ensure that all of the conda settings remain the same.
     (cloned_env) $
 
 To use Horovod with the IBM DDL backend in a cloned environment, the user must
-``pip`` install Horovod using the following command:
+``pip`` install Horovod using the following commands:
 
-.. code-block:: bash
+.. code-block:: console
 
-    HOROVOD_CUDA_HOME="${CONDA_PREFIX}" HOROVOD_GPU_ALLREDUCE=DDL pip install --no-cache-dir git+https://github.com/horovod/horovod.git@9f87459ead9ebb7331e1cd9cf8e9a5543ecfb784
+    (cloned_env) $ conda install gxx_linux-ppc64le=7.3.0
+    (cloned_env) $ HOROVOD_CUDA_HOME="${CONDA_PREFIX}" HOROVOD_GPU_ALLREDUCE=DDL pip install --no-cache-dir git+https://github.com/horovod/horovod.git@bbf09d79c257d6629d7366e0d33cf761914bc7f0
+    (cloned_env) $ conda remove gxx_linux-ppc64le
+
+.. note::
+
+    The cloned environment may have Horovod included after the clone. Due
+    to the way that conda handles cloning pip packages, the installed version
+    may not be correct. Horovod should always be manually installed after
+    cloning.
 
 Best DDL Performance
 ====================
