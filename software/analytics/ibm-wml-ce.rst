@@ -41,6 +41,12 @@ packages, and their dependencies:
     | Complete List      | `1.6.1 Software Packages <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.1/navigation/wmlce_software_pkgs.html>`_      | `1.6.2 Software Packages <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.2/navigation/wmlce_software_pkgs.html>`_       |
     +--------------------+--------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------+
 
+.. note::
+
+    WML-CE was the topic of the October 2019 User Conference Call, presented by
+    Bryant Nelson and Brad Nemanich of IBM.
+    (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/10/DDLonSummit.pdf>`__ | `recording <https://vimeo.com/377551223>`__)
+
 Running DDL Jobs
 ================
 
