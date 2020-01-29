@@ -3169,6 +3169,41 @@ Last Updated: 04 December 2019
 Open Issues
 -----------
 
+Nsight Compute cannot be used with MPI programs
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+When profiling an MPI application using NVIDIA Nsight Compute, like the following,
+you may see an error message in Spectrum MPI that aborts the program:
+
+::
+
+   jsrun -n 1 -a 1 -g 1 nv-nsight-cu-cli ./a.out
+   
+   Error: common_pami.c:1049 - ompi_common_pami_init() Unable to create PAMI client (rc=1)
+   --------------------------------------------------------------------------
+   No components were able to be opened in the pml framework.
+
+   This typically means that either no components of this type were
+   installed, or none of the installed components can be loaded.
+   Sometimes this means that shared libraries required by these
+   components are unable to be found/loaded.
+
+   Host:      <host>
+   Framework: pml
+   --------------------------------------------------------------------------
+   PML pami cannot be selected
+
+This is due to an incompatibility in the 2019.x versions of Nsight Compute with
+Spectrum MPI. As a workaround, you can disable CUDA hooks in Spectrum MPI using
+
+::
+   
+   jsrun -n 1 -a 1 -g 1 --smpiargs="-disable_gpu_hooks" nv-nsight-cu-cli ./a.out
+
+Unfortunately, this is incompatible with using CUDA-aware MPI in your application.
+
+This will be resolved in a future release of CUDA.
+
 CUDA hook error when program uses CUDA without first calling MPI_Init()
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
