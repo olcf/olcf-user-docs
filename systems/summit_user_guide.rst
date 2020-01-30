@@ -1101,6 +1101,8 @@ If you would like to have your default shell changed, please contact the
 `OLCF User Assistance Center <https://www.olcf.ornl.gov/for-users/user-assistance/>`__ at
 help@nccs.gov.
 
+.. _environment-management-with-lmod:
+
 Environment Management with Lmod
 --------------------------------
 
@@ -2571,81 +2573,6 @@ It's recommended to explicitly specify ``jsrun`` options. This most
 often includes ``--nrs``,\ ``--cpu_per_rs``, ``--gpu_per_rs``,
 ``--tasks_per_rs``, ``--bind``, and ``--launch_distribution``.
 
-Aprun to jsrun
-""""""""""""""
-
-Mapping aprun commands used on Titan to Summit's jsrun is only possible
-in simple single GPU cases. The following table shows some basic single
-GPU examples that could be executed on Titan or Summit. In the single
-node examples, each resource set will resemble a Titan node containing a
-single GPU and one or more cores. Although not required in each case,
-common jsrun flags (resource set count, GPUs per resource set, tasks per
-resource set, cores per resource set, binding) are included in each
-example for reference. The jsrun ``-n`` flag can be used to increase the
-number of resource sets needed. Multiple resource sets can be created on
-a single node. If each MPI task requires a single GPU, up to 6 resource
-sets could be created on a single node.
-
-+-------------------------+-------------+--------------------+-----------------+-------------------------------------+
-| GPUs per Resource Set   | MPI Tasks   | Threads per Task   | aprun           | jsrun                               |
-+=========================+=============+====================+=================+=====================================+
-| 1                       | 1           | 0                  | aprun -n1       | jsrun -n1 -g1 -a1 -c1               |
-+-------------------------+-------------+--------------------+-----------------+-------------------------------------+
-| 1                       | 2           | 0                  | aprun -n2       | jsrun -n1 -g1 -a2 -c1               |
-+-------------------------+-------------+--------------------+-----------------+-------------------------------------+
-| 1                       | 1           | 4                  | aprun -n1 -d4   | jsrun -n1 -g1 -a1 -c4 -bpacked:4    |
-+-------------------------+-------------+--------------------+-----------------+-------------------------------------+
-| 1                       | 2           | 8                  | aprun -n2 -d8   | jsrun -n1 -g1 -a2 -c16 -bpacked:8   |
-+-------------------------+-------------+--------------------+-----------------+-------------------------------------+
-
-The jsrun ``-n`` flag can be used to increase the number of resource
-sets needed. Multiple resource sets can be created on a single node. If
-each MPI task requires a single GPU, up to 6 resource sets could be
-created on a single node.
-
-For cases when the number of tasks per resource set (i.e. the ``-a``
-flag) is greater than one, the job must use ``-alloc_flags "gpumps"``.
-This allows multiple tasks to share the same GPU.
-
-The following example images show how a single-gpu/single-task job
-would be placed on a single Titan and Summit node. On Summit, the red
-box represents a resource set created by jsrun. The resource set looks
-similar to a Titan node, containing a single GPU, a single core, and
-memory.
-
-+--------------+-------------------------+
-| Titan Node   | Summit Node             |
-+==============+=========================+
-| aprun -n1    | jsrun -n1 -g1 -a1 -c1   |
-+--------------+-------------------------+
-| |image18|    | |image19|               |
-+--------------+-------------------------+
-
-.. |image18| image:: /images/titan-node-1task-1gpu.png
-   :class: normal aligncenter
-.. |image19| image:: /images/summit-node-1rs-1task-1gpu-example.png
-   :class: normal aligncenter
-
-Because Summit's nodes are much larger than Titan's were, 6 single-gpu
-resource sets can be created on a single Summit node. The following
-image shows how six single-gpu, single-task resource sets would be
-placed on a node by default. In the example, the command
-``jsrun -n6 -g1 -a1 -c1`` is used to create six single-gpu resource sets
-on the node. Each resource set is indicated by differing colors. Notice,
-the ``-n`` flag is all that changed between the above single resource
-set example. The ``-n`` flag tells jsrun to create six resource sets.
-
-.. figure:: https://www.olcf.ornl.gov/wp-content/uploads/2018/03/summit-2node-1taskpergpu.png
-   :align: center
- 
-   ``jsrun -n 6 -g 1 -a 1 -c 1`` starts 6 resource sets, each indicated by
-   differing colors.  Each resource contains 1 GPU, 1 Core, and memory.  The
-   red resource set contains GPU 0 and Core 0.  The purple resource set
-   contains GPU 3 and Core 84.  ``-n 6`` tells jsrun how many resource sets to
-   create.  In this example, each resource set is similar to a single Titan
-   node.
-
-
 jsrun Examples
 ^^^^^^^^^^^^^^
 
@@ -3166,6 +3093,47 @@ Last Updated: 04 December 2019
 
 Open Issues
 -----------
+
+CUDA hook error when program uses CUDA without first calling MPI_Init()
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Serial applications, that are not MPI enabled, often face the following
+issue when compiled with Spectrum MPI's wrappers and run with jsrun:
+
+::
+
+   CUDA Hook Library: Failed to find symbol mem_find_dreg_entries, ./a.out: undefined symbol: __PAMI_Invalidate_region
+
+The same issue can occur if CUDA API calls that interact with the GPU
+(e.g. allocating memory) are called before MPI_Init() in an MPI enabled
+application. Depending on context, this error can either be harmless or
+it can be fatal.
+
+The reason this occurs is that the PAMI messaging backend, used by Spectrum
+MPI by default, has a "CUDA hook" that records GPU memory allocations.
+This record is used later during CUDA-aware MPI calls to efficiently detect
+whether a given message is sent from the CPU or the GPU. This is done by
+design in the IBM implementation and is unlikely to be changed.
+
+There are two main ways to work around this problem. If CUDA-aware MPI is
+not a relevant factor for your work (which is naturally true for serial
+applications) then you can simply disable the CUDA hook with:
+
+::
+
+   --smpiargs="-disable_gpu_hooks"
+
+as an argument to jsrun. Note that this is not compatible with the ``-gpu``
+argument to ``--smpiargs``, since that is what enables CUDA-aware MPI and
+the CUDA-aware MPI functionality depends on the CUDA hook.
+
+If you do need CUDA-aware MPI functionality, then the only known working
+solution to this problem is to refactor your code so that no CUDA calls
+occur before MPI_Init(). (This includes any libraries or programming models
+such as OpenACC or OpenMP that would use CUDA behind the scenes.) While it
+is not explicitly codified in the standard, it is worth noting that the major
+MPI implementations all recommend doing as little as possible before MPI_Init(),
+and this recommendation is consistent with that.
 
 Spindle is not currently supported
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
