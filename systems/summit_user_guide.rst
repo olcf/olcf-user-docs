@@ -2892,12 +2892,9 @@ _____
 4.) Visit the provided URL
     * https://jobstepviewer.olcf.ornl.gov/summit/871957-1
 
-Mac user tip:
-..............
-
-To open a link in the terminal on:
-..................................
-    * Mac Terminal: hold Command (⌘) and double-click on the URL
+To open a link in the MacOS terminal with -
+...........................................
+    * Default terminal: hold Command (⌘) and double-click on the URL
     * iTerm2: hold Command (⌘) and single-click on the URL
 
 Warnings
