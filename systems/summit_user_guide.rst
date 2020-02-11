@@ -2896,8 +2896,9 @@ Mac user tip:
 ..............
 
 To open a link in the terminal on:
-    Mac Terminal: hold Command (⌘) and double-click on the URL
-    iTerm2: hold Command (⌘) and single-click on the URL
+..................................
+    * Mac Terminal: hold Command (⌘) and double-click on the URL
+    * iTerm2: hold Command (⌘) and single-click on the URL
 
 Warnings
 ________
@@ -2918,7 +2919,7 @@ ______________
 * (currently) Only available on Summit
 * (currently) Compiled with XL toolchain only
 * Does not support MPMD-mode vie ERF
-* OpneMP only supported when OMP_NUM_THREADS set via environment variable
+* OpenMP only supported when OMP_NUM_THREADS set via environment variable
 
 jsrunVisualizer
 """""""""""""""
