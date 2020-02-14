@@ -708,3 +708,15 @@ Static Phase
 
 .. image:: /images/tau_static_phases.png
    :align: center
+
+OpenMP Offload
+==============
+
+- Initially compile your application without TAU and create a dynamic binary
+- Use all the compiler options requiried for OpenMP offload
+
+- Then execute, for example with XL compiler, 1 resource set, 1 MPI process with 2 OpenMP threads, and 2 GPUs:
+
+.. code::
+
+	jsrun --smpiargs="-gpu" -n 1 -a 2 -c 2 -r 1 -g 2 -b packed:2 tau_exec -T cupti,papi,openmp,xl -cupti ./a.out
