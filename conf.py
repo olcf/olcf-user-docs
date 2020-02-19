@@ -74,6 +74,8 @@ html_js_files = [
     'js/custom.js',
 ]
 
+html_favicon = 'images/favicon.ico'
+
 html_context = {
     'vcs_pageview_mode': 'edit',
     'display_github': True,
