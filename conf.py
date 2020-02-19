@@ -46,6 +46,10 @@ templates_path = ['_templates']
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
+# To avoid errors with older versions of Sphinx and Sphinx RTD theme, explicitly
+# specify the master document.
+master_doc = 'index'
+
 
 # -- Options for HTML output -------------------------------------------------
 

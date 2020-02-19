@@ -16,6 +16,6 @@
    }
 
    .wy-table-responsive {
-      overflow: visible !important;
+      overflow: auto !important;
    }
 }

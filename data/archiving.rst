@@ -217,7 +217,9 @@ Maximum Number of Files per Archive 1 million
 For example, when attempting to HTAR a directory with one member file larger
 that 64GB, the following error message will appear:
 
-   ``htar -cvf hpss_test.tar hpss_test/``
+.. code::
+
+   $ htar -cvf hpss_test.tar hpss_test/
 
    INFO: File too large for htar to handle: hpss_test/75GB.dat (75161927680 bytes)
    ERROR: 1 oversize member files found - please correct and retry
