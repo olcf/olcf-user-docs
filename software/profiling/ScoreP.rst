@@ -190,7 +190,7 @@ MiniWeather Example Application
 ================================
 
 Getting the source code
------------------------
+~~~~~~~~~~~~~~~~~~~~~~~
 
 - Connect to Summit and navigate to your project space
 - For the following examples, we'll use the MiniWeather application:
@@ -204,7 +204,7 @@ Getting the source code
 
 
 Compile the application
-------------------------
+~~~~~~~~~~~~~~~~~~~~~~~
 
 - We'll use the PGI compiler; this application supports serial, MPI, MPI+OpenMP,
   and MPI+OpenACC
@@ -231,8 +231,6 @@ Modifications
 -------------
 
 - Edit the makefile and replace ``mpic++`` with ``scorep --mpp=mpi mpic++``. 
-- TAU works with special TAU makefiles to declare what programming models are
-  expected from the application:
 
 
 Instrumenting the serial version of MiniWeather
@@ -247,7 +245,7 @@ serial version, we should declare a Makefile with MPI.
 
 .. code::
 
-	$ module load scorep/6.0_r14595
+	$ module load scorep/6.0
 	$ make serial
 
 If there were no MPI headers, you should edit the Makefile with:
@@ -394,7 +392,7 @@ Edit the Makefile and declare the compiler for CC.
 
         $ module load pgi
         $ module load parallel-netcdf
-        $ module load scorep/6.0_r14595
+        $ module load scorep/6.0
         $ make mpi
 
 Add to your submission script the Score-P variables that you want to use (or
@@ -403,7 +401,7 @@ tracing.
 
 .. code::
 
-        module load scorep/6.0_r14595
+        module load scorep/6.0
         #PAPI metrics
 
 	export SCOREP_METRIC_PAPI=PAPI_TOT_INS,PAPI_TOT_CYC,PAPI_FP_OPS
@@ -474,7 +472,7 @@ Edit the Makefile and declare the compiler for CC.
 
          $ module load pgi
          $ module load parallel-netcdf
-         $ module load scorep/6.0_r14595
+         $ module load scorep/6.0
          $ make openmp
 
  Add to your submission script the Score-P variables that you want to use (or
@@ -483,7 +481,7 @@ Edit the Makefile and declare the compiler for CC.
 
  .. code::
 
-         module load scorep/6.0_r14595
+         module load scorep/6.0
 
          #PAPI metrics
          export SCOREP_METRIC_PAPI=PAPI_TOT_INS,PAPI_TOT_CYC,PAPI_FP_OPS
@@ -541,7 +539,7 @@ Instrumenting the MPI+OpenACC version of MiniWeather
 
           $ module load pgi
           $ module load parallel-netcdf
-          $ module load scorep/6.0_r14595
+          $ module load scorep/6.0
           $ make openacc
 
   Add to your submission script the Score-P variables that you want to use (or
@@ -551,7 +549,7 @@ Instrumenting the MPI+OpenACC version of MiniWeather
 
   .. code::
 
-           module load scorep/6.0_r14595
+           module load scorep/6.0
 
            #PAPI metrics
            export SCOREP_METRIC_PAPI=PAPI_TOT_INS,PAPI_TOT_CYC,PAPI_FP_OPS
@@ -601,11 +599,11 @@ Instrumenting the MPI+OpenACC version of MiniWeather
 
 - The OpenACC consumes 24.1% of the total execution time 
 - We are going to trace the MPI+OpenACC version and we'll adjust the buffer size
-- The new submission scriptn will be like the following:
+- The new submission script will be like the following:
 
   .. code::
 
-            module load scorep/6.0_r14595
+            module load scorep/6.0
 
             #PAPI metrics
             export SCOREP_METRIC_PAPI=PAPI_TOT_INS,PAPI_TOT_CYC,PAPI_FP_OPS
@@ -614,6 +612,7 @@ Instrumenting the MPI+OpenACC version of MiniWeather
             export SCOREP_TOTAL_MEMORY=70MB
             export SCOREP_OPENACC_ENABLE=default
 	    export SCOREP_ENABLE_TRACING=true
+            export SCOREP_ENABLE_PROFILING=false
 
             jsrun -n 6 -r 3 --smpiargs="-gpu" -g 1 ./miniWeather_mpi_openacc
 
