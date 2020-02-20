@@ -259,7 +259,7 @@ However, as there are MPI headers, we need to declare
 If you want to add PDT, then use the option ``--pdt``
 
 Add to your submission script the Score-P variables that you want to use (or
-uncomment them below). By default the TAU will apply profiling, and not apply tracing.
+uncomment them below). By default the Score-P will apply profiling, and not apply tracing.
 
 .. code::
 
