@@ -102,6 +102,10 @@ See the manual pages for more information:
 	* By default, ``rsync`` checks if the transfer of the data was successful.
 
 
+.. note::
+    Standard file transfer protocol (FTP) and remote copy (RCP) should not be used to transfer files to the NCCS high-performance computing (HPC) systems due to security concerns.
+
+
 Using Globus from your local machine
 =====================================
 
