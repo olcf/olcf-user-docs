@@ -835,3 +835,6 @@ The OpenMP atomic call will be executed, but it will not be instrumented, thus i
 
 Fix compilation issue
 ~~~~~~~~~~~~~~~~~~~~~
+
+Filtering
+~~~~~~~~~
