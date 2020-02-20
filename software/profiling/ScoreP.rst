@@ -618,8 +618,8 @@ Instrumenting the MPI+OpenACC version of MiniWeather
 
 - We always declare the SCOREP_TOTAL_MEMORY few MBs over the recommended value just to be sure
 
-Using Vampir
-------------
+Vampir
+======
 
 - Conenct to a new terminal with X11 forwarding (-X or -Y)
 - Load the vampir module and execute it
@@ -804,3 +804,34 @@ Using Vampir
 
 - Now we can see the call tree and the duration for each call
 
+Advanced Topics
+===============
+
+Disable instrumentation of OpenMP group
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If the instrumentation overhead is coming from one OpenMP call, which is not related to performance analysis, such as OpenMP atomic call, we can compile 
+the application thus to disable the instrumentation of specific OpenMP group calls. Score-P is using Opari2 to instrument OpenMP and hybrid codes. The pattern is
+
+.. code::
+
+  --opari=<parameter-list>
+
+To disable OpenMP directive, group, etc:
+
+.. code::
+  
+  --opari=--disable=omp[:directive|group,...]
+
+Thus we compile an MPI+OpenMP application as follows:
+
+.. code::
+
+   make PREP="scorep --mpp=mpi --thread=omp --opari="--disable=omp:atomic" "
+
+where ``$PREP`` is declared in the Makefile 
+
+The OpenMP atomic call will be executed, but it will not be instrumented, thus if this call causes the overhead, it will be decreased.
+
+Fix compilation issue
+~~~~~~~~~~~~~~~~~~~~~
