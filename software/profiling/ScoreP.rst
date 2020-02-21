@@ -849,3 +849,30 @@ compile again manually this file and continue with the rest of the compilation.
 
 Filtering
 ~~~~~~~~~
+
+It is common when a user profiles an application and analyze the file ``profile.cubex`` observes that the execution time is 
+significantly higher but also the trace file size when tracing is activated is quite big to be analyzed efficiently.
+
+For example, we have the following output:
+
+
+.. image:: /images/scorep_filtering.png
+
+
+We can see that when tracing is activated, the size fo the trace files will be 193 GB. Moreover, the user regions are 
+``USR``occupies more than 3 billion bytes for the trace buffer. As this region area doesn't include any communication, 
+it could be excluded from the instrumentation. We select the functions with caption USR and where their ``time[%]`` is 
+more than half percent including the ones with many visits. In this example, we choose many USR functions. 
+We create a file called for example, ``exclude.filt`` with content:
+
+.. image:: /images/scorep_filter_functions.png
+   :scale: 50 %
+
+We declare the ``SCOREP_REGION_NAMES_BEGIN`` to declare that below are the regions. The option ``EXCLUDE`` means exclude them, and
+the ``SCOREP_REGION_NAMES_END`` defines when the list finishes. 
+
+Then define the environment variable ``SCOREP_FILTERING_FILE`` to the ``exclude.filt``
+
+.. image:: /images/scorep_filtering_results.png
+
+Now the prediction for the trace file size is 7 GB, almost 28 times smaller; also, the overhead from 49% went down to 7%.
