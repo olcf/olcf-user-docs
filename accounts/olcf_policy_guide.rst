@@ -202,7 +202,7 @@ Data Management Policy
     -  Principal Investigators (Industry)
     -  All Users
 
-    **Title:** Data Management Policy **Version:** 14.01
+    **Title:** Data Management Policy **Version:** 20.02
 
 Introduction
 ------------
@@ -223,23 +223,27 @@ categories: those intended for user data and those intended for project
 data. Within each of the two categories, we provide different sub-areas,
 each with an intended purpose:
 
-+----------------------------------------------------------------------------------------------------+---------------------+----------------------------+
-| Purpose                                                                                            | Storage Area        | Path                       |
-+====================================================================================================+=====================+============================+
-| Long-term data for routine access that is unrelated to a project                                   | *User Home*         | ``$HOME``                  |
-+----------------------------------------------------------------------------------------------------+---------------------+----------------------------+
-| Long-term data for archival access that is unrelated to a project                                  | *User Archive*      | ``/home/$USER``            |
-+----------------------------------------------------------------------------------------------------+---------------------+----------------------------+
-| Long-term project data for routine access that's shared with other project members                 | *Project Home*      | ``/ccs/proj/[projid]``     |
-+----------------------------------------------------------------------------------------------------+---------------------+----------------------------+
-| Short-term project data for fast, batch-job access that you don't want to share                    | *Member Work*       | ``$MEMBERWORK/[projid]``   |
-+----------------------------------------------------------------------------------------------------+---------------------+----------------------------+
-| Short-term project data for fast, batch-job access that's shared with other project members        | *Project Work*      | ``$PROJWORK/[projid]``     |
-+----------------------------------------------------------------------------------------------------+---------------------+----------------------------+
-| Short-term project data for fast, batch-job access that's shared with those outside your project   | *World Work*        | ``$WORLDWORK/[projid]``    |
-+----------------------------------------------------------------------------------------------------+---------------------+----------------------------+
-| Long-term project data for archival access that's shared with other project members                | *Project Archive*   | ``/proj/[projid]``         |
-+----------------------------------------------------------------------------------------------------+---------------------+----------------------------+
++--------------------------------------------------------------------------------------------------+-------------------+--------------------------------------------+
+| Purpose                                                                                          | Storage Area      | Path                                       |
++==================================================================================================+===================+============================================+
+| Long-term data for routine access that is unrelated to a project                                 | *User Home*       | ``/ccs/home/[userid]``                     |
++--------------------------------------------------------------------------------------------------+-------------------+--------------------------------------------+
+| Long-term data for archival access that is unrelated to a project                                | *User Archive*    | ``/home/[userid]``                         |
++--------------------------------------------------------------------------------------------------+-------------------+--------------------------------------------+
+| Long-term project data for routine access that's shared with other project members               | *Project Home*    | ``/ccs/proj/[projid]``                     |
++--------------------------------------------------------------------------------------------------+-------------------+--------------------------------------------+
+| Short-term project data for fast, batch job access that you don't want to share                  | *Member Work*     | ``/gpfs/alpine/[projid]/scratch/[userid]`` |
++--------------------------------------------------------------------------------------------------+-------------------+--------------------------------------------+
+| Short-term project data for fast, batch job access that's shared with other project members      | *Project Work*    | ``/gpfs/alpine/[projid]/proj-shared``      |
++--------------------------------------------------------------------------------------------------+-------------------+--------------------------------------------+
+| Short-term project data for fast, batch job access that's shared with those outside your project | *World Work*      | ``/gpfs/alpine/[projid]/world-shared``     |
++--------------------------------------------------------------------------------------------------+-------------------+--------------------------------------------+
+| Long-term project data for archival access that you don't want to share                          | *Member Archive*  | ``/hpss/prod/[projid]/users/$USER``        |
++--------------------------------------------------------------------------------------------------+-------------------+--------------------------------------------+
+| Long-term project data for archival access that's shared with other project members              | *Project Archive* | ``/hpss/prod/[projid]/proj-shared``        |
++--------------------------------------------------------------------------------------------------+-------------------+--------------------------------------------+
+| Long-term project data for archival access that's shared with those outside your project         | *World Archive*   | ``/hpss/prod/[projid]/world-shared``       |
++--------------------------------------------------------------------------------------------------+-------------------+--------------------------------------------+
 
 For more information about using the data storage archiving
 systems, please refer to the pages on :ref:`data-storage-and-transfers`.
@@ -261,9 +265,15 @@ User Archive
 The High Performance Storage System (HPSS) is the tape-archive storage
 system at the OLCF and is the storage technology that supports the User
 Archive areas. HPSS is intended for data that do not require day-to-day
-access. See the section :ref:`retention-policy` for
-more details on applicable quotas, backups, purge, and retention
-timeframes.
+access. 
+
+.. note::
+    Use of this directory for data storage is deprecated in favor of storing
+    data in the User, Project, and World Archive directories. For new users,
+    this directory is a "link farm" with symlinks to that user's /hpss/prod 
+    directories. Data for existing users remains in this directory but should
+    be moved into a User/Project/World Archive directory, at which time this 
+    directory will automatically convert to a link farm.
 
 Project Home
 ^^^^^^^^^^^^
@@ -280,74 +290,97 @@ quotas, backups, purge, and retention timeframes.
 Member Work
 ^^^^^^^^^^^
 
-Project members get an individual Member Work directory for each
-associated project; these reside in the center-wide, high-capacity
-Spectrum Scale file system on large, fast disk areas intended for
-global (parallel) access to temporary/scratch storage. Member Work
-directories are provided commonly across all systems. Because of the
-scratch nature of the file system, it is not backed up and files are
-automatically purged on a regular basis. Files should not be retained in
-this file system for long, but rather should be migrated to Project Home
-or Project Archive space as soon as the files are not actively being
-used. If a file system associated with your Member Work directory is
-nearing capacity, the OLCF may contact you to request that you reduce
-the size of your Member Work directory. See the section :ref:`retention-policy`
-for more details on applicable quotas, backups,
-purge, and retention timeframes.
+Project members get an individual Member Work directory for each associated
+project; these reside in the center-wide, high-capacity Spectrum Scale file
+system on large, fast disk areas intended for global (parallel) access to
+temporary/scratch storage. Member Work areas are not shared with other
+users of the system and are intended for project data that the user does
+not want to make available to other users. Member Work directories are
+provided commonly across all systems. Because of the scratch nature of the
+file system, it is not backed up and files are automatically purged on a
+regular basis. Files should not be retained in this file system for long,
+but rather should be migrated to Project Home or Project Archive space as
+soon as the files are not actively being used. If a file system associated
+with your Member Work directory is nearing capacity, the OLCF may contact
+you to request that you reduce the size of your Member Work directory. See
+the section :ref:`retention-policy` for more details on applicable quotas,
+backups, purge, and retention timeframes.
 
 Project Work
 ^^^^^^^^^^^^
 
-Individual Project Work directories reside in the center-wide,
-high-capacity Spectrum Scale file system on large, fast disk areas intended for
-global (parallel) access to temporary/scratch storage. Project Work
-directories are provided commonly across most systems. Because of the
-scratch nature of the file system, it is not backed up. If a file system
-associated with Project Work storage is nearing capacity, the OLCF may
-contact the PI of the project to request that he or she reduce the size
-of the Project Work directory. See the section :ref:`retention-policy`
-for more details on applicable quotas, backups, purge,
-and retention timeframes.
+Each project is granted a Project Work directory; these reside in the
+center-wide, high-capacity Spectrum Scale file system on large, fast disk
+areas intended for global (parallel) access to temporary/scratch storage.
+Project Work directories can be accessed by all members of a project and
+are intended for sharing data within a project. Project Work directories
+are provided commonly across most systems. Because of the scratch nature of
+the file system, it is not backed up and files are automatically purged on
+a regular bases. Files should not be retained in this file system for long,
+but rather should be migrated to Project Home or Project Archive space as
+soon as the files are not actively being used. If a file system associated
+with Project Work storage is nearing capacity, the OLCF may contact the PI
+of the project to request that he or she reduce the size of the Project
+Work directory. See the section :ref:`retention-policy` for more details on
+applicable quotas, backups, purge, and retention timeframes.
 
 World Work
 ^^^^^^^^^^
 
 Each project has a World Work directory that resides in the center-wide,
-high-capacity Spectrum Scale file system on large, fast disk areas intended for
-global (parallel) access to temporary/scratch storage. World Work
-directories are provided commonly across most systems. Because of the
-scratch nature of the file system, it is not backed up. If a file system
-associated with World Work storage is nearing capacity, the OLCF may
-contact the PI of the project to request that he or she reduce the size
-of the World Work directory. See the section :ref:`retention-policy`
-for more details on applicable quotas, backups, purge,
-and retention timeframes.
+high-capacity Spectrum Scale file system on large, fast disk areas intended
+for global (parallel) access to temporary/scratch storage. World Work areas
+can be accessed by all users of the system and are intended for sharing of
+data between projects. World Work directories are provided commonly across
+most systems. Because of the scratch nature of the file system, it is not
+backed up and files are automatically purged on a regular bases. Files
+should not be retained in this file system for long, but rather should be
+migrated to Project Home or Project Archive space as soon as the files are
+not actively being used. If a file system associated with World Work
+storage is nearing capacity, the OLCF may contact the PI of the project to
+request that he or she reduce the size of the World Work directory. See the
+section :ref:`retention-policy` for more details on applicable quotas,
+backups, purge, and retention timeframes.
+
+Member Archive
+^^^^^^^^^^^^^^
+
+Project members get an individual Member Archive directory for each
+associated project; these reside on the High Performance Storage System
+(HPSS), OLCF's tape-archive storage system. Member Archive areas are not
+shared with other users of the system and are intended for project data
+that the user does not want to make available to other users.  HPSS is
+intended for data that do not require day-to-day access. Users should not
+store data unrelated to OLCF projects on HPSS. Users should periodically
+review files and remove unneeded ones. See the section
+:ref:`retention-policy` for more details on applicable quotas, backups,
+purge, and retention timeframes.
 
 Project Archive
 ^^^^^^^^^^^^^^^
 
-The High Performance Storage System (HPSS) is the tape-archive storage
-system at the OLCF and is the storage technology that supports the User
-Archive areas. HPSS is intended for data that do not require day-to-day
-access. Project Archive areas are shared between all users of the
-project. Users should not store data unrelated to OLCF projects on HPSS.
-Project members should also periodically review files and remove
-unneeded ones. See the section :ref:`retention-policy`
-for more details on applicable quotas, backups, purge, and retention
-timeframes.
+Each project is granted a Project Archive directory; these reside on the
+High Performance Storage System (HPSS), OLCF's tape-archive storage system.
+Project Archive directories are shared among all members of a project and
+are intended for sharing data within a project.  HPSS is intended for data
+that do not require day-to-day access. Users should not store data
+unrelated to OLCF projects on HPSS. Project members should also
+periodically review files and remove unneeded ones. See the section
+:ref:`retention-policy` for more details on applicable quotas, backups,
+purge, and retention timeframes.
 
-Local Scratch Storage
-^^^^^^^^^^^^^^^^^^^^^
+World Archive
+^^^^^^^^^^^^^
 
-A large, fast disk area intended for parallel access to temporary
-storage in the form of scratch directories may be provided on a limited
-number of systems. This area is local to a specific system. This
-directory is, for example, intended to hold output generated by a user's
-job. Because of the scratch nature of the file system, it is not backed
-up and files are automatically purged on a regular basis. Files should
-not be retained in this file system and should be migrated to archival
-storage as soon as the files are not actively being used. Quotas may be
-instituted on a machine-by-machine basis if deemed necessary.
+Each project is granted a World Archive directory; these reside on the High
+Performance Storage System (HPSS), OLCF's tape-archive storage system.
+World Archive areas are shared among all users of the system and are
+intended for sharing data between projects. HPSS is intended for data that
+do not require day-to-day access. Users should not store data unrelated to
+OLCF projects on HPSS. Users should periodically review files and remove
+unneeded ones. See the section :ref:`retention-policy` for more details on
+applicable quotas, backups, purge, and retention timeframes.
+
 
 .. _retention-policy:
 
@@ -363,29 +396,35 @@ available at the OLCF.
 
 **User-Centric Storage Areas**
 
-+--------------+-----------------+------+-----------------+------------+---------+--------+-----------+
-| Area         | Path            | Type | Permissions     |  Quota     | Backups | Purged | Retention |
-+==============+=================+======+=================+============+=========+========+===========+
-| User Home    | ``$HOME``       | NFS  | User-controlled |  50 GB     | Yes     | No     | 90 days   |
-+--------------+-----------------+------+-----------------+------------+---------+--------+-----------+
-| User Archive | ``/home/user``  | HPSS | User-controlled |  2TB       | No      | No     | 90 days   |
-+--------------+-----------------+------+-----------------+------------+---------+--------+-----------+
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
+| Area                | Path                                        | Type           | Permissions |  Quota | Backups | Purged  | Retention  | On Compute Nodes |
++=====================+=============================================+================+=============+========+=========+=========+============+==================+
+| User Home           | ``/ccs/home/[userid]``                      | NFS            | User set    |  50 GB | Yes     | No      | 90 days    | Read-only        |
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
+| User Archive [#f1]_ | ``/home/[userid]``                          | HPSS           | User set    |  2TB   | No      | No      | 90 days    | No               |
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
+| User Archive [#f2]_ | ``/home/[userid]``                          | HPSS           | 700         |  N/A   | N/A     | N/A     | N/A        | No               |
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
 
 **Project-Centric Storage Areas**
 
-+-----------------+---------------------------+---------------+-----------------+---------------+---------+---------+-----------+
-| Area            | Path                      | Type          | Permissions     |  Quota        | Backups | Purged  | Retention |
-+=================+===========================+===============+=================+===============+=========+=========+===========+
-| Project Home    | ``/ccs/proj/[projid]``    | NFS           | 770             |  50 GB        | Yes     | No      | 90 days   |
-+-----------------+---------------------------+---------------+-----------------+---------------+---------+---------+-----------+
-| Member Work     | ``$MEMBERWORK/[projid]``  | Spectrum Scale| 700 [#f1]_      |  50 TB        | No      | 90 days | [#f2]_    |
-+-----------------+---------------------------+---------------+-----------------+---------------+---------+---------+-----------+
-| Project Work    | ``$PROJWORK/projid]``     | Spectrum Scale| 770             |  50 TB        | No      | 90 days | [#f2]_    |
-+-----------------+---------------------------+---------------+-----------------+---------------+---------+---------+-----------+
-| World Work      | ``$WORLDWORK/[projid]``   | Spectrum Scale| 775             |  50 TB        | No      | 90 days | [#f2]_    |
-+-----------------+---------------------------+---------------+-----------------+---------------+---------+---------+-----------+
-| Project Archive | ``/proj/[projid]``        | HPSS          | 770             | 100 TB        | No      | No      | 90 days   |
-+-----------------+---------------------------+---------------+-----------------+---------------+---------+---------+-----------+
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
+| Area                | Path                                        | Type           | Permissions |  Quota | Backups | Purged  | Retention  | On Compute Nodes |
++=====================+=============================================+================+=============+========+=========+=========+============+==================+
+| Project Home        | ``/ccs/proj/[projid]``                      | NFS            | 770         |  50 GB | Yes     | No      | 90 days    | Read-only        |
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
+| Member Work         | ``/gpfs/alpine/[projid]/scratch/[userid]``  | Spectrum Scale | 700 [#f3]_  |  50 TB | No      | 90 days | N/A [#f4]_ | Yes              |
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
+| Project Work        | ``/gpfs/alpine/[projid]/proj-shared``       | Spectrum Scale | 770         |  50 TB | No      | 90 days | N/A [#f4]_ | Yes              |
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
+| World Work          | ``/gpfs/alpine/[projid]/world-shared``      | Spectrum Scale | 775         |  50 TB | No      | 90 days | N/A [#f4]_ | Yes              |
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
+| Member Archive      | ``/hpss/prod/[projid]/users/$USER``         | HPSS           | 700         | 100 TB | No      | No      | 90 days    | No               |
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
+| Project Archive     | ``/hpss/prod/[projid]/proj-shared``         | HPSS           | 770         | 100 TB | No      | No      | 90 days    | No               |
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
+| World Archive       | ``/hpss/prod/[projid]/world-shared``        | HPSS           | 775         | 100 TB | No      | No      | 90 days    | No               |
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
 
 | *Area -* The general name of storage area.
 | *Path -* The path (symlink) to the storage area's directory.
@@ -402,9 +441,21 @@ available at the OLCF.
 
 .. rubric:: Footnotes
 
-.. [#f1] Permissions on Member Work directories can be controlled to an extent by project members. By default, only the project member has any accesses, but accesses can be granted to other project members by setting group permissions accordingly on the Member Work directory. The parent directory of the Member Work directory prevents accesses by "UNIX-others" and cannot be changed (security measures).
+.. [#f1] This entry is for legacy User Archive directories which contained user data on January 14, 2020. There is also a quota/limit of 2,000 files on this directory.
 
-.. [#f2] Retention is not applicable as files will follow purge cycle.
+.. [#f2] User Archive directories that were created (or had no user data) after January 14, 2020. Settings other than permissions are not applicable because directories are root-owned and contain no user files.
+
+.. [#f3] Permissions on Member Work directories can be controlled to an extent by project members. By default, only the project member has any accesses, but accesses can be granted to other project members by setting group permissions accordingly on the Member Work directory. The parent directory of the Member Work directory prevents accesses by "UNIX-others" and cannot be changed (security measures).
+
+.. [#f4] Retention is not applicable as files will follow purge cycle.
+
+On Summit, Rhea and the DTNs, additional paths to the various project-centric work areas are available
+via the following symbolic links and/or environment variables:
+
+- Member Work Directory:  ``/gpfs/alpine/scratch/[userid]/[projid]`` or ``$MEMBERWORK/[projid]``
+- Project Work Directory: ``/gpfs/alpine/proj-shared/[projid]`` or ``$PROJWORK/[projid]``
+- World Work Directory: ``/gpfs/alpine/world-shared/[projid]`` or ``$WORLDWORK/[projid]``
+
 
 Data Retention Overview
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -445,6 +496,14 @@ Sensitive Project Data Retention
 For sensitive projects only, all data related to the project must be
 purged from all OLCF computing resources within 30 days of the project’s
 end or termination date.
+
+Transfer of Member Work and Member Archive Data
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Although the Member Work and Member Archive directories are for storage
+of data a user does not want to make available to other users on the 
+system, files in these directories are still considered project data
+and can be reassigned to another user at the PI's request.
 
 Data Purges
 ^^^^^^^^^^^

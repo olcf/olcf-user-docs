@@ -101,17 +101,11 @@ HPSS, you might use:
 and ``hsi mput`` can be used to retrieve multiple files. To send a file to HPSS,
 you might use:
 
-     ``hsi put a.out``
-
-To put a file in a pre-existing directory on hpss:
-
-
-     ``hsi “cd MyHpssDir; put a.out”``
+     ``hsi put a.out : /hpss/prod/[projid]/users/[userid]/a.out``
 
 To retrieve one, you might use:
 
-
-     ``hsi get /proj/projectid/a.out``
+     ``hsi get /hpss/prod/[projid]/proj-shared/a.out``
 
 Here is a list of commonly used hsi commands.
 
@@ -159,24 +153,24 @@ As with the standard Unix ``tar`` utility the ``-c``, ``-x``, and ``-t``
 options, respectively, function to create, extract, and list tar archive files.
 The ``-K`` option verifies an existing tarfile in HPSS and the ``-X`` option can
 be used to re-create the index file for an existing archive. For example, to
-store all files in the directory ``dir1`` to a file named ``allfiles.tar`` on
-HPSS, use the command:
+store all files in the directory ``dir1`` to a file named
+`` /hpss/prod/[projid]/users/[userid]/allfiles.tar`` on HPSS, use the command:
 
-     ``htar -cvf allfiles.tar dir1/*``
+     ``htar -cvf /hpss/prod/[projid]/users/[userid]/allfiles.tar dir1/*``
 
 To retrieve these files:
 
-     ``htar -xvf allfiles.tar``
+     ``htar -xvf  /hpss/prod/[projid]/users/[userid]/allfiles.tar``
 
 ``htar`` will overwrite files of the same name in the target directory.  **When
 possible, extract only the files you need from large archives.** To display the
 names of the files in the ``project1.tar`` archive file within the HPSS home
 directory:
 
-     ``htar -vtf project1.tar``
+     ``htar -vtf  /hpss/prod/[projid]/users/[userid]/project1.tar``
 
 To extract only one file, ``executable.out``, from the ``project1`` directory in
-the Archive file called ``project1.tar``:
+the Archive file called `` /hpss/prod/[projid]/users/[userid]/project1.tar``:
 
      ``htar -xm -f project1.tar project1/ executable.out``
 
@@ -184,7 +178,7 @@ To extract all files from the ``project1/src`` directory in the archive file
 called ``project1.tar``, and use the time of extraction as the modification
 time, use the following command:
 
-     ``htar -xm -f project1.tar project1/src``
+     ``htar -xm -f  /hpss/prod/[projid]/users/[userid]/project1.tar project1/src``
 
 HTAR Limitations
 -----------------
@@ -219,7 +213,7 @@ that 64GB, the following error message will appear:
 
 .. code::
 
-   $ htar -cvf hpss_test.tar hpss_test/
+   $ htar -cvf  /hpss/prod/[projid]/users/[userid]/hpss_test.tar hpss_test/
 
    INFO: File too large for htar to handle: hpss_test/75GB.dat (75161927680 bytes)
    ERROR: 1 oversize member files found - please correct and retry
