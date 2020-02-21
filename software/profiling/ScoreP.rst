@@ -875,4 +875,4 @@ Then define the environment variable ``SCOREP_FILTERING_FILE`` to the ``exclude.
 
 .. image:: /images/scorep_filtering_results.png
 
-Now the prediction for the event trace buffer would be 7 GB, almost 28 times smaller; also, the overhead from 49% went down to 7%.
+Now the prediction for the event trace buffer would be 7 GB, almost 28 times smaller; also, the execution time overhead from 49% went down to 7%.
