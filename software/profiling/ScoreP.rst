@@ -836,5 +836,16 @@ The OpenMP atomic call will be executed, but it will not be instrumented, thus i
 Fix compilation issue
 ~~~~~~~~~~~~~~~~~~~~~
 
+- In some cases compiling a hybrid application with Score-P fails with errors as observed below
+
+.. image:: /images/scorep_error.png
+
+In this case there is a problem with the file ``main.opari.cu``
+
+Execute manually the command that failed in order to extract the file ``main.opari.cu`` in this case.
+
+If we compare the files ``main.cu`` and ``main.opari.cu`` there is no such line ``#include <omp.h>``, when you add this line, 
+compile again manually this file and continue with the rest of the compilation.
+
 Filtering
 ~~~~~~~~~
