@@ -859,7 +859,7 @@ For example, we have the following output:
 .. image:: /images/scorep_filtering.png
 
 
-We can see that when tracing is activated, the size fo the trace files will be 193 GB. Moreover, the user regions are 
+We can see that when tracing is activated, the total event trace buffer would be 193 GB. Moreover, the user regions are 
 ``USR``occupies more than 3 billion bytes for the trace buffer. As this region area doesn't include any communication, 
 it could be excluded from the instrumentation. We select the functions with caption USR and where their ``time[%]`` is 
 more than half percent including the ones with many visits. In this example, we choose many USR functions. 
@@ -875,4 +875,4 @@ Then define the environment variable ``SCOREP_FILTERING_FILE`` to the ``exclude.
 
 .. image:: /images/scorep_filtering_results.png
 
-Now the prediction for the trace file size is 7 GB, almost 28 times smaller; also, the overhead from 49% went down to 7%.
+Now the prediction for the event trace buffer would be 7 GB, almost 28 times smaller; also, the overhead from 49% went down to 7%.
