@@ -2869,54 +2869,42 @@ mapped to the hardware. https://code.ornl.gov/t4p/Hello_jsrun A
 screencast showing how to use Hello\_jsrun is also available:
 https://vimeo.com/261038849
 
-JobstepViewer
-"""""""""""""
+Job Step Viewer
+"""""""""""""""
 
-The logical succesor to jsrunVisualizer, JobstepViewer is a graphical web-application
-that allows users to view how system resources are allocated for a particular
-jobstep. JobstepViewer provides similiar functionality as jsrunVisualizer except
-now the data feeding the application is coming directly from a user-ran job on Summit.
-This allows users to preview various layouts before running their executables.
-Visit https://jobstepviewer.olcf.ornl.gov to get started or read on for example jobs
-and layouts. For bug reports or suggestions, please email help@olcf.ornl.gov
+`Job Step Viewer <https://jobstepviewer.olcf.ornl.gov/>`__ provides a graphical view of an application's runtime layout on Summit.
+It allows users to preview and quickly iterate with multiple ``jsrun`` options to 
+understand and optimize job launch.
+
+For bug reports or suggestions, please email help@olcf.ornl.gov.
 
 Usage
 _____
 
-1.) Request a Summit allocation
-    * bsub -W 10 -nnodes 2 -P $OLCF_PROJECT_ID -Is $SHELL
-2.) Load the job-step-viewer module
-    * module load job-step-viewer
-3.) Test out a jsrun line by itself, or provide an executable as normal
-    * jsrun -n12 -r6 -c7 -g1 -a1 EOMP_NUM_THREADS=7 -brs
-4.) Visit the provided URL
+1. Request a Summit allocation
+    * ``bsub -W 10 -nnodes 2 -P $OLCF_PROJECT_ID -Is $SHELL``
+2. Load the ``job-step-viewer`` module
+    * ``module load job-step-viewer``
+3. Test out a ``jsrun`` line by itself, or provide an executable as normal
+    * ``jsrun -n12 -r6 -c7 -g1 -a1 EOMP_NUM_THREADS=7 -brs``
+4. Visit the provided URL
     * https://jobstepviewer.olcf.ornl.gov/summit/871957-1
 
-To open a link in the MacOS terminal with -
-...........................................
-    * Default terminal: hold Command (⌘) and double-click on the URL
+.. note::
+    Most Terminal applications have built-in shortcuts to directly open
+    web addresses in the default browser.
+
+    * MacOS Terminal.app: hold Command (⌘) and double-click on the URL
     * iTerm2: hold Command (⌘) and single-click on the URL
 
-Warnings
-________
-
-JobstepViewer currently provides three resource usage warnings to users:
-
-1.) Unused Compute Nodes: This job step does not use all allocated nodes.
-    If not launching other concurrent job steps, consider using `jsrun -r`
-    to distribute resource sets across nodes.
-2.) No GPUs: This job step is not using NVIDIA Volta V100 GPUs.
-    Consider using them for increased performance.
-3.) Oversubscribed Hardware Threads: Hardware Thread oversubscription
-    may lead to decreased performance. Check task and thread binding.
-
 Limitations
-______________
+___________
 
 * (currently) Only available on Summit
 * (currently) Compiled with XL toolchain only
-* Does not support MPMD-mode vie ERF
-* OpenMP only supported when OMP_NUM_THREADS set via environment variable
+* Does not support MPMD-mode via ERF
+* OpenMP only supported with use of the ``OMP_NUM_THREADS`` environment variable.
+
 
 jsrunVisualizer
 """""""""""""""
