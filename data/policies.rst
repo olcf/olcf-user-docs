@@ -9,32 +9,62 @@ Policy
 A brief description of each area and basic guidelines to follow are provided in
 the table below:
 
-+-------------------+---------------------------------------------+---------------------------+-------------+---------+---------+-------+--------------------------+
-| *Name*            |   Path                                      |     Type                  | Permissions | Backups |  Purged | Quota | Mounted on Compute nodes |
-+===================+=============================================+===========================+=============+=========+=========+=======+==========================+
-| *User Home*       |   ``$HOME``                                 |     NFS                   |   User Set  |    yes  |    no   | 50GB  |   Read-only              |
-+-------------------+---------------------------------------------+---------------------------+-------------+---------+---------+-------+--------------------------+
-| *Project Home*    | ``/ccs/proj/[projid]``                      |     NFS                   |      770    |    yes  |    no   |  50GB |  Read-only               |
-+-------------------+---------------------------------------------+---------------------------+-------------+---------+---------+-------+--------------------------+
-| *User Archive*    | ``/home/$USER``                             |     HPSS                  |   User Set  |    no   |    no   |  2TB  |    No                    |
-+-------------------+---------------------------------------------+---------------------------+-------------+---------+---------+-------+--------------------------+
-| *Project Archive* | ``/proj/[projid]``                          |     HPSS                  |      770    |    no   |    no   | 100TB |     No                   |
-+-------------------+---------------------------------------------+---------------------------+-------------+---------+---------+-------+--------------------------+
-| *Member Work*     | ``/gpfs/alpine/scratch/[userid]/[projid]/`` | Spectrum Scale (ex. GPFS) |      700    |    no   | 90 days |  50TB |  Yes                     |
-+-------------------+---------------------------------------------+---------------------------+-------------+---------+---------+-------+--------------------------+
-| *Project Work*    | ``/gpfs/alpine/proj-shared/[projid]``       | Spectrum Scale (ex. GPFS) |      770    |    no   | 90 days |  50TB |  Yes                     |
-+-------------------+---------------------------------------------+---------------------------+-------------+---------+---------+-------+--------------------------+
-| *World Work*      | ``/gpfs/alpine/world-shared/[projid]``      | Spectrum Scale (ex. GPFS) |      775    |    no   | 90 days |  50TB |  Yes                     |
-+-------------------+---------------------------------------------+---------------------------+-------------+---------+---------+-------+--------------------------+
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
+| Area                | Path                                        | Type           | Permissions |  Quota | Backups | Purged  | Retention  | On Compute Nodes |
++=====================+=============================================+================+=============+========+=========+=========+============+==================+
+| User Home           | ``/ccs/home/[userid]``                      | NFS            | User set    |  50 GB | Yes     | No      | 90 days    | Read-only        |
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
+| User Archive [#f1]_ | ``/home/[userid]``                          | HPSS           | User set    |  2TB   | No      | No      | 90 days    | No               |
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
+| User Archive [#f2]_ | ``/home/[userid]``                          | HPSS           | 700         |  N/A   | N/A     | N/A     | N/A        | No               |
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
+| Project Home        | ``/ccs/proj/[projid]``                      | NFS            | 770         |  50 GB | Yes     | No      | 90 days    | Read-only        |
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
+| Member Work         | ``/gpfs/alpine/[projid]/scratch/[userid]``  | Spectrum Scale | 700 [#f3]_  |  50 TB | No      | 90 days | N/A [#f4]_ | Yes              |
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
+| Project Work        | ``/gpfs/alpine/[projid]/proj-shared``       | Spectrum Scale | 770         |  50 TB | No      | 90 days | N/A [#f4]_ | Yes              |
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
+| World Work          | ``/gpfs/alpine/[projid]/world-shared``      | Spectrum Scale | 775         |  50 TB | No      | 90 days | N/A [#f4]_ | Yes              |
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
+| Member Archive      | ``/hpss/prod/[projid]/users/$USER``         | HPSS           | 700         | 100 TB | No      | No      | 90 days    | No               |
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
+| Project Archive     | ``/hpss/prod/[projid]/proj-shared``         | HPSS           | 770         | 100 TB | No      | No      | 90 days    | No               |
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
+| World Archive       | ``/hpss/prod/[projid]/world-shared``        | HPSS           | 775         | 100 TB | No      | No      | 90 days    | No               |
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
+
+| *Area -* The general name of storage area.
+| *Path -* The path (symlink) to the storage area's directory.
+| *Type -* The underlying software technology supporting the storage area.
+| *Permissions -* UNIX Permissions enforced on the storage area's top-level directory.
+| *Quota -* The limits placed on total number of bytes and/or files in the storage area.
+| *Backups -* States if the data is automatically duplicated for disaster recovery purposes.
+| *Purged -* Period of time, post-file-access, after which a file will be marked as eligible for permanent deletion.
+| *Retention -* Period of time, post-account-deactivation or post-project-end, after which data will be marked as eligible for permanent deletion.
+| *On Compute Nodes -* Is this filesystem available on compute nodes (yes, no, or available but read-only)
+
+    **Important!** Files within "Work" directories (i.e., Member Work,
+    Project Work, World Work) are *not* backed up and are *purged* on a
+    regular basis according to the timeframes listed above.
+
+.. rubric:: Footnotes
+
+.. [#f1] This entry is for legacy User Archive directories which contained user data on January 14, 2020.
+
+.. [#f2] User Archive directories that were created (or had no user data) after January 14, 2020. Settings other than permissions are not applicable because directories are root-owned and contain no user files.
+
+.. [#f3] Permissions on Member Work directories can be controlled to an extent by project members. By default, only the project member has any accesses, but accesses can be granted to other project members by setting group permissions accordingly on the Member Work directory. The parent directory of the Member Work directory prevents accesses by "UNIX-others" and cannot be changed (security measures).
+
+.. [#f4] Retention is not applicable as files will follow purge cycle.
 
 
-On Summit paths to the various project-centric work storage areas are simplified
-by the use of environment variables that point to the proper directory on a
-per-user basis:
 
-- Member Work Directory:  ``$MEMBERWORK/[projid]``
-- Project Work Directory: ``$PROJWORK/[projid]``
-- World Work Directory: ``$WORLDWORK/[projid]``
+On Summit, Rhea and the DTNs, additional paths to the various project-centric work areas are available
+via the following symbolic links and/or environment variables:
+
+- Member Work Directory:  ``/gpfs/alpine/scratch/[userid]/[projid]`` or ``$MEMBERWORK/[projid]``
+- Project Work Directory: ``/gpfs/alpine/proj-shared/[projid]`` or ``$PROJWORK/[projid]``
+- World Work Directory: ``/gpfs/alpine/world-shared/[projid]`` or ``$WORLDWORK/[projid]``
 
 Information
 ============
