@@ -144,9 +144,10 @@ to serve as a location to store backup copies of project-related files.
 
 As with the three project work areas, the difference between these three areas
 lies in the accessibility of data to project members and to researchers outside
-of the project. Member Archive ories are accessible only by an individual project 
-member by default, Project Archive directories are accessible by all project 
-members, and World Archive directories are readable by any user on the system.
+of the project. Member Archive directories are accessible only by an individual
+project member by default, Project Archive directories are accessible by all
+project members, and World Archive directories are readable by any user on the
+system.
 
 Permissions
 ^^^^^^^^^^^
