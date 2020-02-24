@@ -2869,6 +2869,43 @@ mapped to the hardware. https://code.ornl.gov/t4p/Hello_jsrun A
 screencast showing how to use Hello\_jsrun is also available:
 https://vimeo.com/261038849
 
+Job Step Viewer
+"""""""""""""""
+
+`Job Step Viewer <https://jobstepviewer.olcf.ornl.gov/>`__ provides a graphical view of an application's runtime layout on Summit.
+It allows users to preview and quickly iterate with multiple ``jsrun`` options to 
+understand and optimize job launch.
+
+For bug reports or suggestions, please email help@olcf.ornl.gov.
+
+Usage
+_____
+
+1. Request a Summit allocation
+    * ``bsub -W 10 -nnodes 2 -P $OLCF_PROJECT_ID -Is $SHELL``
+2. Load the ``job-step-viewer`` module
+    * ``module load job-step-viewer``
+3. Test out a ``jsrun`` line by itself, or provide an executable as normal
+    * ``jsrun -n12 -r6 -c7 -g1 -a1 EOMP_NUM_THREADS=7 -brs``
+4. Visit the provided URL
+    * https://jobstepviewer.olcf.ornl.gov/summit/871957-1
+
+.. note::
+    Most Terminal applications have built-in shortcuts to directly open
+    web addresses in the default browser.
+
+    * MacOS Terminal.app: hold Command (⌘) and double-click on the URL
+    * iTerm2: hold Command (⌘) and single-click on the URL
+
+Limitations
+___________
+
+* (currently) Only available on Summit
+* (currently) Compiled with XL toolchain only
+* Does not support MPMD-mode via ERF
+* OpenMP only supported with use of the ``OMP_NUM_THREADS`` environment variable.
+
+
 jsrunVisualizer
 """""""""""""""
 
