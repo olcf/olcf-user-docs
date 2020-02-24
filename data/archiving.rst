@@ -154,7 +154,7 @@ options, respectively, function to create, extract, and list tar archive files.
 The ``-K`` option verifies an existing tarfile in HPSS and the ``-X`` option can
 be used to re-create the index file for an existing archive. For example, to
 store all files in the directory ``dir1`` to a file named
-`` /hpss/prod/[projid]/users/[userid]/allfiles.tar`` on HPSS, use the command:
+``/hpss/prod/[projid]/users/[userid]/allfiles.tar`` on HPSS, use the command:
 
      ``htar -cvf /hpss/prod/[projid]/users/[userid]/allfiles.tar dir1/*``
 
