@@ -17,4 +17,13 @@ $( document ).ready(function() {
   aside.appendChild(separator);
   aside.appendChild(olcf_link);
 
+// Insert Project Name "OLCF User Documentation" below html_logo in sidebar navigation
+  var project_name_link = document.createElement("a");
+  var project_name_text = document.createTextNode(" OLCF User Documentation");
+  project_name_link.appendChild(project_name_text);
+  project_name_link.setAttribute("href", "https://docs.olcf.ornl.gov");
+  project_name_link.classList.add("icon");
+  project_name_link.classList.add("icon-home");
+  wysidenavsearch = document.querySelector("body > div > nav > div > div.wy-side-nav-search > a");
+  wysidenavsearch.appendChild(project_name_link);
 });

@@ -74,6 +74,8 @@ html_js_files = [
     'js/custom.js',
 ]
 
+html_logo = 'images/olcf_logo.png'
+
 html_favicon = 'images/favicon.ico'
 
 html_context = {
@@ -92,6 +94,8 @@ html_theme_options = {
     'sticky_navigation': True,
     'navigation_depth': 4,
     'style_external_links': True,
+    'style_nav_header_background': '#efefef',
+    'logo_only': True,
 }
 
 
