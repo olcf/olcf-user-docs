@@ -2,130 +2,107 @@
 Training Archive
 ****************
 
-In the sections below, you will find links to the slides and recordings of presentations given at previous OLCF training events. See the "Past Training Events" section of the `OLCF Training Calendar <https://www.olcf.ornl.gov/for-users/training/training-calendar/>`__ for the sources of these materials and the "Upcoming Training Events" section for future events.
+The table below lists presentations given at previous OLCF training events. For a list of upcoming training events, please visit the `OLCF Training Calendar <https://www.olcf.ornl.gov/for-users/training/training-calendar/>`__
 
-Batch Schedulers & Job Launchers
-================================
+.. I used a csv-table here because the normal table format was difficult to use with such long entries
 
-* Summit Resource Scheduler and Job Launcher: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/02/STW_Feb_Summit-Job-Launch-Intro-Feb11-2019.pdf>`__ | `recording <https://vimeo.com/346452041>`__)
-* Intro to Slurm - Rhea: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/08/OLCF-Slurm-Transition-08282019.pdf>`__ | `recording <https://vimeo.com/360822772>`__)
+.. csv-table::
+   :header: "Date", "Title", "Speaker", "Event", "Presentation"
 
-Debugging & Profiling
-=====================
-
-* Arm Forge Tools - DDT and MAP: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/09/Arm_Workshop.pdf>`__ | recordings `part 1 <https://vimeo.com/292364328>`__, `part 2 <https://vimeo.com/292365233>`__, `part 3 <https://vimeo.com/292365571>`__)
-* Profiling Tools Introduction: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/08/2_profiling_introduction.pdf>`__)
-* Intro to Tau: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/08/3_tau_day_1.pdf>`__)
-* Intro to Score-P: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/08/ScorepIntro.pdf>`__)
-* Intro to Scalasca: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/08/5_scalasca_day_1.pdf>`__)
-* Intro to Extrae/Paraver: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/08/extrae_day_1.pdf>`__)
-* NVIDIA Profilers: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_Profilers.pdf>`__ | `recording <https://vimeo.com/306437439>`__)
-* Introduction to NVIDIA Profilers on Summit: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/04/Intro_to_NVIDIA_profilers.pdf>`__)
-
-File Systems & Data Transfers
-=============================
-
-* Storage Areas & Data Transfers: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/storage_areas_summit_links.pdf>`__ | `recording <https://vimeo.com/306433952>`__)
-* Spectrum Scale - GPFS: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/spectrum_scale_summit_workshop.pdf>`__ | `recording <https://vimeo.com/306890694>`__)
-* NVMe / Burst Buffers: (slides `part 1 <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_BB_markomanolis.pdf>`__, `part 2 <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_BB_zimmer.pdf>`__ | recording `part 1 <https://vimeo.com/306890779>`__, `part 2 <https://vimeo.com/306891012>`__)
-
-Machine Learning / Deep Learning
-================================
-
-* ML/DL Frameworks on Summit: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_training_mldl.pdf>`__ | `recording <https://vimeo.com/307071617>`__)
-* Distributed Deep Learning on Summit: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/10/DDLonSummit.pdf>`__ | `recording <https://vimeo.com/377551223>`__)
-
-Networks
-========
-
-* SHARP & Adaptive Routing: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/05/Intro_Summit_Sharp-AR-Webinar.pdf>`__ | `recording <https://vimeo.com/277704649>`__)
-* Network Features & MPI Tuning: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_zimmer_network.pdf>`__ | `recording <https://vimeo.com/306891057>`__)
-
-OLCF Systems
-============
-
-* Summit System Overview: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/02/STW_Feb_Summit-Overview_20190211.pdf>`__ | `recording <https://vimeo.com/346452584>`__)
-* NVIDIA V100: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_Volta-Architecture.pdf>`__ | `recording <https://vimeo.com/306004462>`__)
-* IBM P9: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_thompto.pdf>`__ | `recording <https://vimeo.com/306003413>`__)
-* IBM P9 SMT Deep Dive: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_thompto_smt.pdf>`__ | `recording <https://vimeo.com/306890804>`__)
-
-Practical Tips
-==============
-
-* Practical Tips for Running on Summit: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/02/STW_Feb_GettingStartedExamples_169ratio.pdf>`__ | `recording <https://vimeo.com/346452176>`__)
-* OLCF Best Practices: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/06/Best-Practices-20190619.pdf>`__ | `recording <https://vimeo.com/343636411>`__)
-
-Programming
-===========
-
-Basic Programming
------------------
-
-* Intro to C: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/06/intro_to_c.pdf>`__ | `recording <https://vimeo.com/279284053>`__)
-* Intro to FORTRAN: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/06/Intro_to_HPC_fotranbasicsBM.pdf>`__ | `recording <https://vimeo.com/279286109>`__)
-
-Parallel Programming
---------------------
-
-* Intro to Parallel Computing: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/06/Intro_to_HPC_parallel_computing.pdf>`__ | `recording <https://vimeo.com/279288481>`__)
-* Intro to OpenMP: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/06/intro_to_HPC_OpenMP.pdf>`__ | recording `part 1 <https://vimeo.com/279300607>`__, `part 2 <https://vimeo.com/279301009>`__)
-* Intro to MPI: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/06/intro_to_HPC_intro_to_mpi.pdf>`__ | `recording <https://vimeo.com/279313080>`__)
-
-GPU Programming
----------------
-
-* Intro to GPU Computing: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/06/intro_to_HPC_gpu_computing.pdf>`__ | `recording <https://vimeo.com/279319729>`__)
-* Intro to CUDA: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/06/intro_to_HPC_cuda.pdf>`__ | `recording <https://vimeo.com/279313842>`__)
-* Intro to CUDA C/C++: (`slides <https://www.olcf.ornl.gov/calendar/introduction-to-cuda-cc/>`__)
-* Intro to OpenACC: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/06/IntroToOpenACC_Titan.pdf>`__ | `recording <https://vimeo.com/279329112>`__)
-* Programming Methods for Summit's Multi-GPU Nodes: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/11/multi-gpu-workshop.pdf>`__ | recording `part 1 <https://vimeo.com/308290719>`__, `part 2 <https://vimeo.com/308290811>`__)
-* Programming Methods for Targeting Summit's Multi-GPU Nodes: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/11/multi-gpu-workshop.pdf>`__)
-* Targeting Summit's Multi-GPU Nodes: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_MultiGPU-nodes.pdf>`__ | `recording <https://vimeo.com/306436688>`__)
-* CUDA Unified Memory: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/02/STF_Feb_UVM_feb.pdf>`__ | `recording <https://vimeo.com/346452488>`__)
-* GPU Direct, RDMA, CUDA-Aware MPI: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_CUDA-Aware-MPI.pdf>`__ | `recording <https://vimeo.com/306436248>`__)
-* GPU Accelerated Libraries: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_Libraries.pdf>`__ | `recording <https://vimeo.com/306437127>`__)
-* Using V100 Tensor Cores: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_Tensor-Cores.pdf>`__ | `recording <https://vimeo.com/306437682>`__)
-* Mixing OpenMP and OpenACC: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_mixingOpenMPOpenACC.pdf>`__ | `recording <https://vimeo.com/307071416>`__)
-* Intro to AMD GPU Programming with HIP: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/09/AMD_GPU_HIP_training_20190906.pdf>`__ | `recording <https://vimeo.com/359154970>`__)
-
-Programming Environment
-=======================
-
-* Summit Programming Environment: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/02/SMT_Feb_programming_environment.pdf>`__ | `recording <https://vimeo.com/346452383>`__)
-* Python on Summit: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/02/STW_Feb_20190211_summit_workshop_python.pdf>`__ | `recording <https://vimeo.com/346452419>`__)
-* Python Environments: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_20181206_python.pdf>`__ | `recording <https://vimeo.com/307070906>`__)
-
-Summit Porting Experiences
-==========================
-
-* CAAR Porting Experience - LS-DALTON: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/02/STW_Feb_LSDALTON.pdf>`__)
-* CAAR Porting Experience - RAPTOR: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/02/STW_Feb_RAPTOR.pdf>`__ | `recording <https://vimeo.com/346452450>`__)
-* CAAR Porting Experience - FLASH: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/02/STW_Feb_FLASH_Harris.pdf>`__ | `recording <https://vimeo.com/346452020>`__)
-* CAAR Porting Experience - QMCPACK: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_Tillack.pdf>`__ | `recording <https://vimeo.com/307071565>`__)
-* Directive-Based GPU Programming: (`recording <https://vimeo.com/306440151>`__)
-* E3SM Application Readiness Experiences on Summit: (`recording <http://vimeo.com/307071495>`__)
-* Experiences Using the Volta Tensor Cores on Summit: (`recording <http://vimeo.com/306890517>`__)
-* Experiences Porting/Optimizing Codes for Acceptance Testing: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_walkup.pdf>`__ | recording `part 1 <https://vimeo.com/306890861>`__, `part 2 <https://vimeo.com/306890949>`__)
-* Experiences Porting XGC to Summit: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_XGC_Ed.pdf>`__ | `recording <https://vimeo.com/307071032>`__)
-* Summit Node Performance: (`recording <http://vimeo.com/306890606>`__)
-* Targeting GPUs Using GPU Directives on Summit with GenASiS: A Simple and Effective Fortran Experience: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_budiardja.pdf>`__ | `recording <https://vimeo.com/306890448>`__)
-
-Text Editors
-============
-
-* Intro to vim: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/06/Intro_to_HPC_Vim.pdf>`__ | `recording <https://vimeo.com/279277260>`__)
-
-UNIX
-====
-
-* Intro to UNIX: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/07/Intro_to_Unix_2018.pdf>`__ | `recording <https://vimeo.com/279273125>`__)
-* Advanced UNIX & Shell Scripting: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/07/Intro_to_Unix_2018.pdf>`__ | `recording <https://vimeo.com/279313457>`__)
-* Linux Command Line Productivity Tools: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/12/LPT_OLCF.pdf>`__)
-
-Version Control
-===============
-
-* Intro to git: (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/06/Intro_to_HPC_Git.pdf>`__ | `recording <https://vimeo.com/279287047>`__)
-
-
+   "2020-02-19", "CUDA Shared Memory", "Bob Crovella (NVIDIA)", `CUDA Shared Memory <https://www.olcf.ornl.gov/calendar/cuda-shared-memory/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/12/02-CUDA-Shared-Memory.pdf>`__ | `recording <https://vimeo.com/393552516>`__)
+   "2020-02-18", "Explicit Resource Files (ERFs)", "Tom Papatheodore (OLCF)", `jsrun Tutorial <https://www.olcf.ornl.gov/calendar/jsrun-tutorial/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/12/ERF.pdf>`__ | `recording <https://vimeo.com/393782415>`__)
+   "2020-02-18", "Multiple jsrun Commands", "Chris Fuson (OLCF)", `jsrun Tutorial <https://www.olcf.ornl.gov/calendar/jsrun-tutorial/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/12/Jsrun-Multi.pdf>`__ | `recording <https://vimeo.com/393782415>`__)
+   "2020-02-18", "jsrun Basics", "Jack Morrison (OLCF)", `jsrun Tutorial <https://www.olcf.ornl.gov/calendar/jsrun-tutorial/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/12/jsrun_basics.pdf>`__ | `recording <https://vimeo.com/393782415>`__)
+   "2020-02-10", "Scaling Up Deep Learning Applications on Summit", "Junqi Yin (OLCF)", `Scaling Up Deep Learning Applications on Summit <https://www.olcf.ornl.gov/calendar/scaling-up-deep-learning-applications-on-summit/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/12/Scaling-DL-on-Summit.pdf>`__ | `recording <https://vimeo.com/391520479>`__)
+   "2020-02-10", "NCCL on Summit", "Sylvain Jeaugey (NVIDIA)", `Scaling Up Deep Learning Applications on Summit <https://www.olcf.ornl.gov/calendar/scaling-up-deep-learning-applications-on-summit/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/12/Summit-NCCL.pdf>`__ | `recording <https://vimeo.com/391520479>`__)
+   "2020-02-10", "Introduction to Watson Machine Learning CE", "Brad Nemanich & Bryant Nelson (IBM)", `Scaling Up Deep Learning Applications on Summit <https://www.olcf.ornl.gov/calendar/scaling-up-deep-learning-applications-on-summit/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/12/ORNL-Scaling-20200210.pdf>`__ | `recording <https://vimeo.com/391520479>`__) 
+   "2020-01-15", "Introduction to CUDA C++", "Bob Crovella (NVIDIA)", `Introduction to CUDA C++ <https://www.olcf.ornl.gov/calendar/introduction-to-cuda-c/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/12/01-CUDA-C-Basics.pdf>`__ | `recording <https://vimeo.com/386244979>`__)
+   "2019-10-30", "Distributed Deep Learning on Summit", "Brad Nemanich & Bryant Nelson (IBM)", `October 2019 OLCF User Conference Call - Distributed Deep Learning on Summit <https://www.olcf.ornl.gov/calendar/userconcall-oct2019/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/10/DDLonSummit.pdf>`__ | `recording <https://vimeo.com/377551223>`__)
+   "2019-09-06", "Intro to AMD GPU Programming with HIP", "Damon McDougall, Chip Freitag, Joe Greathouse, Nicholas Malaya, Noah Wolfe, Noel Chalmers, Scott Moe, Rene van Oostrum, Nick Curtis (AMD)", `Intro to AMD GPU Programming with HIP <https://www.olcf.ornl.gov/calendar/intro-to-amd-gpu-programming-with-hip/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/09/AMD_GPU_HIP_training_20190906.pdf>`__ | `recording <https://vimeo.com/359154970>`__)
+   "2019-08-28", "Intro to Slurm", "Chris Fuson (OLCF)", `August 2019 OLCF User Conference Call - Intro to Slurm <https://www.olcf.ornl.gov/calendar/userconcall-aug2019/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/08/OLCF-Slurm-Transition-08282019.pdf>`__ | `recording <https://vimeo.com/360822772>`__)
+   "2019-08-09", "Profiling Tools Training Workshop: Issues and Lessons Learned", "George Markomanolis & Mike Brim (OLCF)", `Profiling Tools Workshop <https://www.olcf.ornl.gov/calendar/profiling-tools-workshop/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/08/profiling_tools_lessons.pdf>`__) 
+   "2019-08-08", "Optimizing Dynamical Cluster Approximation on the Summit Supercomputer", "Ronnie Chatterjee (OLCF)", `Profiling Tools Workshop <https://www.olcf.ornl.gov/calendar/profiling-tools-workshop/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/08/optimizingDCA_profilingWorkshop.pdf>`__)
+   "2019-08-08", "Advanced Score-P", "Mike Brim (OLCF)", `Profiling Tools Workshop <https://www.olcf.ornl.gov/calendar/profiling-tools-workshop/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/08/ScorepAdvanced.pdf>`__)
+   "2019-08-08", "Performance Analysis with Scalasca", "George Makomanolis (OLCF)", `Profiling Tools Workshop <https://www.olcf.ornl.gov/calendar/profiling-tools-workshop/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/08/profiling_tools_scalasca_2.pdf>`__)
+   "2019-08-08", "Performance Analysis with Tau", "George Makomanolis (OLCF)", `Profiling Tools Workshop <https://www.olcf.ornl.gov/calendar/profiling-tools-workshop/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/08/profiling_tools_tau_day_2.pdf>`__)
+   "2019-08-07", "Introduction to Extrae/Paraver", "George Makomanolis (OLCF)", `Profiling Tools Workshop <https://www.olcf.ornl.gov/calendar/profiling-tools-workshop/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/08/extrae_day_1.pdf>`__)
+   "2019-08-07", "NVIDIA Profilers", "Jeff Larkin (NVIDIA)", `Profiling Tools Workshop <https://www.olcf.ornl.gov/calendar/profiling-tools-workshop/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/08/NVIDIA-Profilers.pdf>`__)
+   "2019-08-07", "Intro to Scalasca", "George Makomanolis (OLCF)", `Profiling Tools Workshop <https://www.olcf.ornl.gov/calendar/profiling-tools-workshop/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/08/5_scalasca_day_1.pdf>`__)
+   "2019-08-07", "Intro to Score-P", "George Makomanolis (OLCF)", `Profiling Tools Workshop <https://www.olcf.ornl.gov/calendar/profiling-tools-workshop/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/08/ScorepIntro.pdf>`__)
+   "2019-08-07", "Intro to Tau", "George Makomanolis (OLCF)", `Profiling Tools Workshop <https://www.olcf.ornl.gov/calendar/profiling-tools-workshop/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/08/3_tau_day_1.pdf>`__)
+   "2019-08-07", "Introduction to Performance Analysis Concepts", "George Makomanolis (OLCF)", `Profiling Tools Workshop <https://www.olcf.ornl.gov/calendar/profiling-tools-workshop/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/08/2_profiling_introduction.pdf>`__) 
+   "2019-06-19", "OLCF Best Practices", "Bill Renaud (OLCF)", `June 2019 OLCF User Conference Call - OLCF Best Practices <https://www.olcf.ornl.gov/calendar/userconcall-jun2019/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/06/Best-Practices-20190619.pdf>`__ | `recording <https://vimeo.com/343636411>`__)
+   "2019-06-11", "Linux Command Line Productivity Tools", "Ketan Maheshwari (OLCF)", `Linux Command Line Productivity Tools <https://www.olcf.ornl.gov/calendar/linux-command-line-productivity-tools/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/12/LPT_OLCF.pdf>`__) 
+   "2019-06-07", "Introduction to AMD GPU Programming with HIP", "Damon McDougall, Chip Freitag, Joe Greathouse, Nicholas Malaya, Noah Wolfe, Noel Chalmers, Scott Moe, Rene van Oostrum, Nick Curtis (AMD)", `Introduction to AMD GPU Programming with HIP <https://www.olcf.ornl.gov/calendar/introduction-to-amd-gpu-programming-with-hip/>`__, (`slides <https://exascaleproject.org/wp-content/uploads/2017/05/ORNL_HIP_webinar_20190606_final.pdf>`__ | `recording <https://www.youtube.com/watch?v=3ZXbRJVvgJs&feature=youtu.be>`__) 
+   "2019-05-20", "Job Scheduler/Launcher", "Chris Fuson (OLCF)", `Introduction to Summit <https://www.olcf.ornl.gov/calendar/introduction-to-summit-workshop/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/05/Summit-Job-Launch-Intro-May20-2019.pdf>`__)
+   "2019-05-20", "Programming Environment", "Matt Belhorn (OLCF)", `Introduction to Summit <https://www.olcf.ornl.gov/calendar/introduction-to-summit-workshop/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/05/20190520_summit_workshop_programming_environment.pdf>`__)
+   "2019-05-20", "File Systems & Data Transfers", "George Markomanolis (OLCF)", `Introduction to Summit <https://www.olcf.ornl.gov/calendar/introduction-to-summit-workshop/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/05/file_systems_summit_may_2019.pdf>`__)
+   "2019-05-20", "Summit System Overview", "Tom Papatheodore (OLCF)", `Introduction to Summit <https://www.olcf.ornl.gov/calendar/introduction-to-summit-workshop/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/05/Summit_System_Overview_20190520.pdf>`__) 
+   "2019-04-11", "Introduction to NVIDIA Profilers on Summit", "Tom Papatheodore (OLCF) & Jeff Larkin (NVIDIA)", `Introduction to NVIDIA Profilers on Summit <https://www.olcf.ornl.gov/calendar/introduction-to-nvidia-profilers-on-summit/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/04/Intro_to_NVIDIA_profilers.pdf>`__ | `recording 1 <https://vimeo.com/393747416>`__ `recording 2 <https://vimeo.com/393776567>`__)
+   "2019-02-13", "CAAR Porting Experience: RAPTOR", "Ramanan Sankaran (OLCF)", `Summit Training Workshop (February 2019) <https://www.olcf.ornl.gov/calendar/summit-training-workshop-february-2019/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/02/STW_Feb_RAPTOR.pdf>`__ | `recording <https://vimeo.com/346452450>`__) 
+   "2019-02-13", "CAAR Porting Experience: LS-DALTON", "Ashleigh Barnes (OLCF)", `Summit Training Workshop (February 2019) <https://www.olcf.ornl.gov/calendar/summit-training-workshop-february-2019/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/02/STW_Feb_LSDALTON.pdf>`__) 
+   "2019-02-13", "CAAR Porting Experience: FLASH", "Austin Harris (OLCF)", `Summit Training Workshop (February 2019) <https://www.olcf.ornl.gov/calendar/summit-training-workshop-february-2019/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/02/STW_Feb_FLASH_Harris.pdf>`__ | `recording <https://vimeo.com/346452020>`__) 
+   "2019-02-13", "Network Features & MPI Tuning", "Christopher Zimmer (OLCF)", `Summit Training Workshop (February 2019) <https://www.olcf.ornl.gov/calendar/summit-training-workshop-february-2019/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/02/STW_Feb_Network_Training.pdf>`__ | `recording <https://vimeo.com/346452117>`__) 
+   "2019-02-13", "Burst Buffers / NVMe / SSDs", "Christopher Zimmer (OLCF)", `Summit Training Workshop (February 2019) <https://www.olcf.ornl.gov/calendar/summit-training-workshop-february-2019/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/02/STW_Feb_Burst_Buffer.pdf>`__ | `recording <https://vimeo.com/346452105>`__) 
+   "2019-02-13", "Burst Buffers / NVMe / SSDs", "George Markomanolis (OLCF)", `Summit Training Workshop (February 2019) <https://www.olcf.ornl.gov/calendar/summit-training-workshop-february-2019/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/02/STW_Feb_Burst_Buffer_summit.pdf>`__ | `recording <https://vimeo.com/346452253>`__) 
+   "2019-02-13", "GPFS / Spectrum Scale", "George Markomanolis (OLCF)", `Summit Training Workshop (February 2019) <https://www.olcf.ornl.gov/calendar/summit-training-workshop-february-2019/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/02/STW_Feb_spectrum_scale.pdf>`__) 
+   "2019-02-13", "Arm Tools", "Nick Forrington (ARM)", `Summit Training Workshop (February 2019) <https://www.olcf.ornl.gov/calendar/summit-training-workshop-february-2019/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/02/STW_Feb_Arm_Tools_reduced.pdf>`__) 
+   "2019-02-12", "Summit Node Performance", "Wayne Joubert (OLCF)", `Summit Training Workshop (February 2019) <https://www.olcf.ornl.gov/calendar/summit-training-workshop-february-2019/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/02/STW_Feb_2019-02-SummitNodePerformance-WJ.pdf>`__ | `recording <https://vimeo.com/346452621>`__) 
+   "2019-02-12", "Using V100 Tensor Cores", "Jeff Larkin (NVIDIA)", `Summit Training Workshop (February 2019) <https://www.olcf.ornl.gov/calendar/summit-training-workshop-february-2019/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_Tensor-Cores.pdf>`__ | `recording <https://vimeo.com/346452359>`__)
+   "2019-02-12", "NVIDIA Profilers", "Jeff Larkin (NVIDIA)", `Summit Training Workshop (February 2019) <https://www.olcf.ornl.gov/calendar/summit-training-workshop-february-2019/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_Libraries.pdf>`__ | `recording <https://vimeo.com/346452291>`__) 
+   "2019-02-12", "GPU-Accelerated Libraries", "Jeff Larkin (NVIDIA)", `Summit Training Workshop (February 2019) <https://www.olcf.ornl.gov/calendar/summit-training-workshop-february-2019/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_Libraries.pdf>`__ | `recording <https://vimeo.com/346452291>`__) 
+   "2019-02-12", "CUDA-Aware MPI & GPUDirect", "Steve Abbott (NVIDIA)", `Summit Training Workshop (February 2019) <https://www.olcf.ornl.gov/calendar/summit-training-workshop-february-2019/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/02/STW_Feb_CUDA-Aware-MP_febI.pdf>`__ | `recording <https://vimeo.com/346452547>`__) 
+   "2019-02-12", "Programming Methods for Summit's Multi-GPU Nodes", "Steve Abbott (NVIDIA)", `Summit Training Workshop (February 2019) <https://www.olcf.ornl.gov/calendar/summit-training-workshop-february-2019/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/02/STW_Feb_MultiGPU-nodes_feb.pdf>`__) 
+   "2019-02-12", "CUDA Unified Memory", "Steve Abbott (NVIDIA)", `Summit Training Workshop (February 2019) <https://www.olcf.ornl.gov/calendar/summit-training-workshop-february-2019/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/02/STF_Feb_UVM_feb.pdf>`__ | `recording <https://vimeo.com/346452488>`__) 
+   "2019-02-11", "Summit System Overview", "Scott Atchley (OLCF)", `Summit Training Workshop (February 2019) <https://www.olcf.ornl.gov/calendar/summit-training-workshop-february-2019/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/02/STW_Feb_Summit-Overview_20190211.pdf>`__ | `recording <https://vimeo.com/346452584>`__)
+   "2019-02-11", "Storage Areas & Data Transfers", "George Markomanolis (OLCF)", `Summit Training Workshop (February 2019) <https://www.olcf.ornl.gov/calendar/summit-training-workshop-february-2019/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/02/STW_Feb_storage_areas_summit_videos_feb_19_links.pdf>`__ | `recording <https://vimeo.com/346452224>`__) 
+   "2019-02-11", "Programming Environment", "Matt Belhorn (OLCF)", `Summit Training Workshop (February 2019) <https://www.olcf.ornl.gov/calendar/summit-training-workshop-february-2019/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/02/SMT_Feb_programming_environment.pdf>`__ | `recording <https://vimeo.com/346452383>`__)
+   "2019-02-11", "Resource Scheduler & Job Launcher", "Chris Fuson (OLCF)", `Summit Training Workshop (February 2019) <https://www.olcf.ornl.gov/calendar/summit-training-workshop-february-2019/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/02/STW_Feb_Summit-Job-Launch-Intro-Feb11-2019.pdf>`__ | `recording <https://vimeo.com/346452041>`__)
+   "2019-02-11", "Python on Summit", "Matt Belhorn (OLCF)", `Summit Training Workshop (February 2019) <https://www.olcf.ornl.gov/calendar/summit-training-workshop-february-2019/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/02/STW_Feb_20190211_summit_workshop_python.pdf>`__ | `recording <https://vimeo.com/346452419>`__)
+   "2019-02-11", "Practical Tips for Running on Summit", "David Appelhans (IBM)", `Summit Training Workshop (February 2019) <https://www.olcf.ornl.gov/calendar/summit-training-workshop-february-2019/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/02/STW_Feb_GettingStartedExamples_169ratio.pdf>`__ | `recording <https://vimeo.com/346452176>`__) 
+   "2018-12-06", "ML/DL Frameworks on Summit", "Junqi Yin (OLCF)", `Summit Training Workshop <https://www.olcf.ornl.gov/calendar/summit-training-workshop/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_training_mldl.pdf>`__ | `recording <https://vimeo.com/307071617>`__) 
+   "2018-12-06", "Experiences Porting XGC to Summit", "Ed Dazevedo (OLCF)", `Summit Training Workshop <https://www.olcf.ornl.gov/calendar/summit-training-workshop/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_XGC_Ed.pdf>`__ | `recording <https://vimeo.com/307071032>`__) 
+   "2018-12-06", "E3SM Application Readiness Experiences on Summit", "Matt Norman (OLCF)", `Summit Training Workshop <https://www.olcf.ornl.gov/calendar/summit-training-workshop/>`__, (`recording <http://vimeo.com/307071495>`__) 
+   "2018-12-06", "CAAR Porting Experience: QMCPACK", "Andreas Tillack (OLCF)", `Summit Training Workshop <https://www.olcf.ornl.gov/calendar/summit-training-workshop/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_Tillack.pdf>`__ | `recording <https://vimeo.com/307071565>`__)
+   "2018-12-06", "Python Environments", "Matt Belhorn (OLCF)", `Summit Training Workshop <https://www.olcf.ornl.gov/calendar/summit-training-workshop/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_20181206_python.pdf>`__ | `recording <https://vimeo.com/307070906>`__) 
+   "2018-12-06", "Mixing OpenMP & OpenACC", "Lixiang Eric Luo (IBM)", `Summit Training Workshop <https://www.olcf.ornl.gov/calendar/summit-training-workshop/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_mixingOpenMPOpenACC.pdf>`__ | `recording <https://vimeo.com/307071416>`__) 
+   "2018-12-06", "ARM MAP/Performance Reports", "Nick Forrington (ARM)", `Summit Training Workshop <https://www.olcf.ornl.gov/calendar/summit-training-workshop/>`__, (`recording <https://vimeo.com/307071262>`__) 
+   "2018-12-06", "Debugging: ARM DDT", "Nick Forrington (ARM)", `Summit Training Workshop <https://www.olcf.ornl.gov/calendar/summit-training-workshop/>`__, (`recording <https://vimeo.com/307071124>`__) 
+   "2018-12-05", "Summit Node Performance", "Wayne Joubert (OLCF)", `Summit Training Workshop <https://www.olcf.ornl.gov/calendar/summit-training-workshop/>`__, (`recording <http://vimeo.com/306890606>`__) 
+   "2018-12-05", "Targeting GPUs Using GPU Directives on Summit with GenASiS: A Simple and Effective Fortran Experience", "Reuben Budiardja (OLCF)", `Summit Training Workshop <https://www.olcf.ornl.gov/calendar/summit-training-workshop/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_budiardja.pdf>`__ | `recording <https://vimeo.com/306890448>`__)
+   "2018-12-05", "Experiences Using the Volta Tensor Cores", "Wayne Joubert (OLCF)", `Summit Training Workshop <https://www.olcf.ornl.gov/calendar/summit-training-workshop/>`__, (`recording <http://vimeo.com/306890517>`__) 
+   "2018-12-05", "IBM Power9 SMT Deep Dive", "Brian Thompto (IBM)", `Summit Training Workshop <https://www.olcf.ornl.gov/calendar/summit-training-workshop/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_thompto_smt.pdf>`__ | `recording <https://vimeo.com/306890804>`__) 
+   "2018-12-05", "Network Features & MPI Tuning", "Christopher Zimmer (OLCF)", `Summit Training Workshop <https://www.olcf.ornl.gov/calendar/summit-training-workshop/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_zimmer_network.pdf>`__ | `recording <https://vimeo.com/306891057>`__) 
+   "2018-12-05", "NVMe / Burst Buffers", "Christopher Zimmer (OLCF)", `Summit Training Workshop <https://www.olcf.ornl.gov/calendar/summit-training-workshop/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_BB_zimmer.pdf>`__ | `recording <https://vimeo.com/306891012>`__)
+   "2018-12-05", "NVMe / Burst Buffers", "George Markomanolis (OLCF)", `Summit Training Workshop <https://www.olcf.ornl.gov/calendar/summit-training-workshop/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_BB_markomanolis.pdf>`__ | `recording <https://vimeo.com/306890779>`__)
+   "2018-12-05", "Spectrum Scale - GPFS", "George Markomanolis (OLCF)", `Summit Training Workshop <https://www.olcf.ornl.gov/calendar/summit-training-workshop/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/spectrum_scale_summit_workshop.pdf>`__ | `recording <https://vimeo.com/306890694>`__) 
+   "2018-12-04", "Directive-Based GPU Programming", "Oscar Hernandez (OLCF)", `Summit Training Workshop <https://www.olcf.ornl.gov/calendar/summit-training-workshop/>`__, (`recording <https://vimeo.com/306440151>`__) 
+   "2018-12-04", "Using V100 Tensor Cores", "Jeff Larkin (NVIDIA)", `Summit Training Workshop <https://www.olcf.ornl.gov/calendar/summit-training-workshop/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_Tensor-Cores.pdf>`__ | `recording <https://vimeo.com/306437682>`__) 
+   "2018-12-04", "NVIDIA Profilers", "Jeff Larkin (NVIDIA)", `Summit Training Workshop <https://www.olcf.ornl.gov/calendar/summit-training-workshop/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_Profilers.pdf>`__ | `recording <https://vimeo.com/306437439>`__)
+   "2018-12-04", "GPU-Accelerated Libraries", "Jeff Larkin (NVIDIA)", `Summit Training Workshop <https://www.olcf.ornl.gov/calendar/summit-training-workshop/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_Libraries.pdf>`__ | `recording <https://vimeo.com/306437127>`__) 
+   "2018-12-04", "Targeting Summit's Multi-GPU Nodes", "Steve Abbott (NVIDIA)", `Summit Training Workshop <https://www.olcf.ornl.gov/calendar/summit-training-workshop/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_MultiGPU-nodes.pdf>`__ | `recording <https://vimeo.com/306436688>`__)
+   "2018-12-04", "GPU Direct, RDMA, CUDA-Aware MPI", "Steve Abbott (NVIDIA)", `Summit Training Workshop <https://www.olcf.ornl.gov/calendar/summit-training-workshop/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_CUDA-Aware-MPI.pdf>`__ | `recording <https://vimeo.com/306436248>`__) 
+   "2018-12-04", "CUDA Unified Memory", "Jeff Larkin (NVIDIA)", `Summit Training Workshop <https://www.olcf.ornl.gov/calendar/summit-training-workshop/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_UVM.pdf>`__ | `recording <https://vimeo.com/306435487>`__)
+   "2018-12-03", "Experiences Porting/Optimizing Codes for Acceptance Testing", "Bob Walkup (IBM)", `Summit Training Workshop <https://www.olcf.ornl.gov/calendar/summit-training-workshop/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_walkup.pdf>`__ | `recording 1 <https://vimeo.com/306890861>`__ `recording 2 <https://vimeo.com/306890949>`__)
+   "2018-12-03", "Practical Tips for Running on Summit", "David Appelhans (IBM)", `Summit Training Workshop <https://www.olcf.ornl.gov/calendar/summit-training-workshop/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_appelhans.pdf>`__ | `recording <https://vimeo.com/306434784>`__)
+   "2018-12-03", "Summit Scheduler & Job Launcher", "Chris Fuson (OLCF)", `Summit Training Workshop <https://www.olcf.ornl.gov/calendar/summit-training-workshop/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_fuson.pdf>`__ | `recording <https://vimeo.com/306434362>`__) 
+   "2018-12-03", "Storage Areas & Data Transfers", "George Markomanolis (OLCF)", `Summit Training Workshop <https://www.olcf.ornl.gov/calendar/summit-training-workshop/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/storage_areas_summit_links.pdf>`__ | `recording <https://vimeo.com/306433952>`__) 
+   "2018-12-03", "Summit Programming Environment", "Matt Belhorn (OLCF)", `Summit Training Workshop <https://www.olcf.ornl.gov/calendar/summit-training-workshop/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_20181203_programming_environment.pdf>`__ | `recording <https://vimeo.com/306433318>`__)
+   "2018-12-03", "IBM Power9", "Brian Thompto (IBM)", `Summit Training Workshop <https://www.olcf.ornl.gov/calendar/summit-training-workshop/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_thompto.pdf>`__ | `recording <https://vimeo.com/306003413>`__)
+   "2018-12-03", "NVIDIA V100", "Jeff Larkin (NVIDIA)", `Summit Training Workshop <https://www.olcf.ornl.gov/calendar/summit-training-workshop/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_Volta-Architecture.pdf>`__ | `recording <https://vimeo.com/306004462>`__) 
+   "2018-12-03", "Summit System Overview", "Scott Atchley (OLCF)", `Summit Training Workshop <https://www.olcf.ornl.gov/calendar/summit-training-workshop/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_atchley.pdf>`__ | `recording <https://vimeo.com/306002085>`__) 
+   "2018-11-05", "Programming Methods for Summit's Multi-GPU Nodes", "Jeff Larkin & Steve Abbott (NVIDIA)", `Programming Methods for Summit's Multi-GPU Nodes <https://www.olcf.ornl.gov/calendar/programming-methods-for-summits-multi-gpu-nodes/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/11/multi-gpu-workshop.pdf>`__ | `recording 1 <https://vimeo.com/308290719>`__ `recording 2 <https://vimeo.com/308290811>`__) 
+   "2018-06-28", "Intro to OpenACC", "Steve Abbott (NVIDIA)", `Introduction to HPC <https://www.olcf.ornl.gov/calendar/introduction-to-hpc/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/06/IntroToOpenACC_Titan.pdf>`__ | `recording <https://vimeo.com/279329112>`__)
+   "2018-06-28", "Intro to CUDA", "Jeff Larkin (NVIDIA)", `Introduction to HPC <https://www.olcf.ornl.gov/calendar/introduction-to-hpc/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/06/intro_to_HPC_cuda.pdf>`__ | `recording <https://vimeo.com/279313842>`__) 
+   "2018-06-28", "Intro to GPU Computing", "Jeff Larkin (NVIDIA)", `Introduction to HPC <https://www.olcf.ornl.gov/calendar/introduction-to-hpc/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/06/intro_to_HPC_gpu_computing.pdf>`__ | `recording <https://vimeo.com/279319729>`__) 
+   "2018-06-27", "Advanced UNIX & Shell Scripting", "Bill Renaud (OLCF)", `Introduction to HPC <https://www.olcf.ornl.gov/calendar/introduction-to-hpc/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/07/Intro_to_Unix_2018.pdf>`__ | `recording <https://vimeo.com/279313457>`__)
+   "2018-06-27", "Intro to MPI", "Brian Smith (OLCF)", `Introduction to HPC <https://www.olcf.ornl.gov/calendar/introduction-to-hpc/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/06/intro_to_HPC_intro_to_mpi.pdf>`__ | `recording <https://vimeo.com/279313080>`__) 
+   "2018-06-27", "Intro to OpenMP", "Dmitry Liakh & Markus Eisenbach (OLCF)", `Introduction to HPC <https://www.olcf.ornl.gov/calendar/introduction-to-hpc/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/06/intro_to_HPC_OpenMP.pdf>`__ | `recording 1 <https://vimeo.com/279300607>`__ `recording 2 <https://vimeo.com/279301009>`__) 
+   "2018-06-27", "Intro to Parallel Computing", "John Levesque (Cray)", `Introduction to HPC <https://www.olcf.ornl.gov/calendar/introduction-to-hpc/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/06/Intro_to_HPC_parallel_computing.pdf>`__ | `recording <https://vimeo.com/279288481>`__)
+   "2018-06-27", "Intro to git", "Jack Morrison & James Wynne (OLCF)", `Introduction to HPC <https://www.olcf.ornl.gov/calendar/introduction-to-hpc/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/06/Intro_to_HPC_Git.pdf>`__ | `recording <https://vimeo.com/279287047>`__) 
+   "2018-06-26", "Intro to UNIX", "Bill Renaud (OLCF)", `Introduction to HPC <https://www.olcf.ornl.gov/calendar/introduction-to-hpc/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/07/Intro_to_Unix_2018.pdf>`__ | `recording <https://vimeo.com/279273125>`__)
+   "2018-06-26", "Intro to vim", "Jack Morrison (OLCF)", `Introduction to HPC <https://www.olcf.ornl.gov/calendar/introduction-to-hpc/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/06/Intro_to_HPC_Vim.pdf>`__ | `recording <https://vimeo.com/279277260>`__)
+   "2018-06-26", "Intro to C", "Tom Papatheodore (OLCF)", `Introduction to HPC <https://www.olcf.ornl.gov/calendar/introduction-to-hpc/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/06/intro_to_c.pdf>`__ | `recording <https://vimeo.com/279284053>`__)
+   "2018-06-26", "Intro to Fortran", "Bronson Messer (OLCF)", `Introduction to HPC <https://www.olcf.ornl.gov/calendar/introduction-to-hpc/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/06/Intro_to_HPC_fotranbasicsBM.pdf>`__ | `recording <https://vimeo.com/279286109>`__) 
+   "2017-06-19", "Intro to CUDA C/C++", "Tom Papatheodore (OLCF)", `Introduction to CUDA C/C++ <https://www.olcf.ornl.gov/calendar/introduction-to-cuda-cc/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2018/03/Intro_to_CUDA.pdf>`__)
 
