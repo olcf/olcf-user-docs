@@ -754,6 +754,7 @@ Vampir
    :align: center
 .. image:: /images/vampir_set_cluster.png
    :align: center
+   :scale: 50%
 .. image:: /images/vampir_prrocess_sumamry_2_clusters.png
    :align: center
 
