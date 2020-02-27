@@ -7,14 +7,27 @@ Getting Started
 ===============
 
 IBM Watson Machine Learning Community Edition is provided on Summit
-through the module ``ibm-wml-ce``. This module includes a license for IBM
-Distributed Deep Learning (DDL) allowing execution across up to 954 nodes.
+through the module ``ibm-wml-ce``.
 
 To access the IBM WML CE packages use the ``module load`` command:
 
 .. code-block:: bash
 
     module load ibm-wml-ce
+
+Loading a specific version of the module is recommended to future-proof
+scripts against software updates. The following commands can be used to
+find and load specific module versions:
+
+.. code-block:: bash
+
+    [user@login2.summit ~]$ module avail ibm-wml-ce
+
+    ------------------------- /sw/summit/modulefiles/core --------------------------
+    ibm-wml-ce/1.6.1-1    ibm-wml-ce/1.6.1-3    ibm-wml-ce/1.6.2-1
+    ibm-wml-ce/1.6.1-2    ibm-wml-ce/1.6.2-0    ibm-wml-ce/1.6.2-2 (D)
+    ...
+    [user@login2.summit ~]$ module load ibm-wml-ce/1.6.1-3
 
 For more information on loading modules, including loading specific verions,
 see: :ref:`environment-management-with-lmod`
@@ -23,23 +36,23 @@ This will activate a conda environment which is pre-loaded with the following
 packages, and their dependencies:
 
 .. table::
-    :widths: 20 40 40
+    :widths: 20 40 40 35
 
-    +--------------------+--------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------+
-    | IBM WML CE Version | ibm-wml-ce/1.6.1                                                                                                               | ibm-wml-ce/1.6.2                                                                                                                |
-    +--------------------+--------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------+
-    | Package            | `IBM DDL 1.4.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.1/navigation/wmlce_getstarted_ddl.html>`_               | `IBM DDL 1.5.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.2/navigation/wmlce_getstarted_ddl.html>`_                |
-    |                    +--------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------+
-    |                    | `Tensorflow 1.14 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.1/navigation/wmlce_getstarted_tensorflow.html>`_      | `Tensorflow 1.15 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.2/navigation/wmlce_getstarted_tensorflow.html>`_       |
-    |                    +--------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------+
-    |                    | `Pytorch 1.1.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.1/navigation/wmlce_getstarted_pytorch.html>`_           | `Pytorch 1.2.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.2/navigation/wmlce_getstarted_pytorch.html>`_            |
-    |                    +--------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------+
-    |                    | `Caffe(IBM-enhanced) 1.0.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.1/navigation/wmlce_getstarted_caffe.html>`_ | `Caffe (IBM-enhanced) 1.0.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.2/navigation/wmlce_getstarted_caffe.html>`_ |
-    |                    +--------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------+
-    |                    | `Horovod @9f87459 (IBM-DDL Backend) <https://github.com/horovod/horovod>`_                                                     | `Horovod v0.18.2 (IBM-DDL Backend) <https://github.com/horovod/horovod>`_                                                       |
-    +--------------------+--------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------+
-    | Complete List      | `1.6.1 Software Packages <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.1/navigation/wmlce_software_pkgs.html>`_      | `1.6.2 Software Packages <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.2/navigation/wmlce_software_pkgs.html>`_       |
-    +--------------------+--------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------+
+    +--------------------+--------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------+
+    | IBM WML CE Version | ibm-wml-ce/1.6.1                                                                                                               | ibm-wml-ce/1.6.2                                                                                                                | ibm-wml-ce/1.7.0                                                                                                                    +
+    +--------------------+--------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------+
+    | Package            | `IBM DDL 1.4.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.1/navigation/wmlce_getstarted_ddl.html>`_               | `IBM DDL 1.5.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.2/navigation/wmlce_getstarted_ddl.html>`_                | `IBM DDL 1.5.1 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.7.0/navigation/wmlce_getstarted_ddl.html>`_                    +
+    |                    +--------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------+
+    |                    | `Tensorflow 1.14 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.1/navigation/wmlce_getstarted_tensorflow.html>`_      | `Tensorflow 1.15 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.2/navigation/wmlce_getstarted_tensorflow.html>`_       | `Tensorflow 2.1 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.7.0/navigation/wmlce_getstarted_tensorflow.html>`_            +
+    |                    +--------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------+
+    |                    | `Pytorch 1.1.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.1/navigation/wmlce_getstarted_pytorch.html>`_           | `Pytorch 1.2.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.2/navigation/wmlce_getstarted_pytorch.html>`_            | `Pytorch 1.3.1 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.7.0/navigation/wmlce_getstarted_pytorch.html>`_                +
+    |                    +--------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------+
+    |                    | `Caffe(IBM-enhanced) 1.0.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.1/navigation/wmlce_getstarted_caffe.html>`_ | `Caffe (IBM-enhanced) 1.0.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.2/navigation/wmlce_getstarted_caffe.html>`_ | `Caffe (IBM-enhanced) 1.0.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.7.0/navigation/wmlce_getstarted_caffe.html>`_     +
+    |                    +--------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------+
+    |                    | `Horovod @9f87459 (IBM-DDL Backend) <https://github.com/horovod/horovod>`_                                                     | `Horovod v0.18.2 (IBM-DDL Backend) <https://github.com/horovod/horovod>`_                                                       | `Horovod v0.19 (NCCL Backend) <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.7.0/navigation/wmlce_getstarted_horovod.html>`_ |
+    +--------------------+--------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------+
+    | Complete List      | `1.6.1 Software Packages <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.1/navigation/wmlce_software_pkgs.html>`_      | `1.6.2 Software Packages <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.2/navigation/wmlce_software_pkgs.html>`_       | `1.7.0 Software Packages <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.7.0/navigation/wmlce_software_pkgs.html>`_           |
+    +--------------------+--------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------+
 
 .. note::
 
@@ -59,8 +72,8 @@ for performance.
 Basic DDL BSUB Script
 ---------------------
 
-The following bsub script will run a distributed Tensorflow resnet50 training job
-across 2 nodes.
+The following bsub script will run a distributed Tensorflow resnet50
+training job across 2 nodes.
 
 .. code-block:: bash
     :caption: script.bash
@@ -75,7 +88,7 @@ across 2 nodes.
 
     module load ibm-wml-ce
 
-    ddlrun python $CONDA_PREFIX/tf_cnn_benchmarks/tf_cnn_benchmarks.py --variable_update=ddl --model=resnet50
+    ddlrun python $CONDA_PREFIX/horovod/examples/tensorflow2_synthetic_benchmark.py
 
 ``bsub`` is used to launch the script as follows:
 
@@ -151,21 +164,16 @@ will ensure that all of the conda settings remain the same.
     (ibm-wml-ce-1.6.2-X) $ conda activate cloned_env
     (cloned_env) $
 
-To use Horovod with the IBM DDL backend in a cloned environment, the user must
-``pip`` install Horovod using the following commands:
+As of 1.7.0 IBM WML CE provides Horovod as a conda package and it is not
+necessary to manually install Horovod after cloning. To use Horovod with
+the IBM DDL backend in a cloned environment of 1.6.2, the user
+must ``pip`` install Horovod using the following commands:
 
 .. code-block:: console
 
     (cloned_env) $ conda install gxx_linux-ppc64le=7.3.0
     (cloned_env) $ HOROVOD_CUDA_HOME="${CONDA_PREFIX}" HOROVOD_GPU_ALLREDUCE=DDL pip install --no-cache-dir git+https://github.com/horovod/horovod.git@bbf09d79c257d6629d7366e0d33cf761914bc7f0
     (cloned_env) $ conda remove gxx_linux-ppc64le
-
-.. note::
-
-    The cloned environment may have Horovod included after the clone. Due
-    to the way that conda handles cloning pip packages, the installed version
-    may not be correct. Horovod should always be manually installed after
-    cloning.
 
 Best DDL Performance
 ====================
@@ -178,9 +186,8 @@ techniques.
 Reserving Whole Racks
 ---------------------
 
-When making node reservations for DDL jobs, it is best to reserve nodes in a
-rack-contiguous manner. IBM DDL optimizes communication with knowledge of the
-node layout.
+When making node reservations for DDL jobs, it can sometimes improve
+performance to reserve nodes in a rack-contiguous manner.
 
 In order to instruct BSUB to reserve nodes in the same rack, expert mode must
 be used (``-csm y``), and the user needs to explicitly specify the reservation
@@ -218,44 +225,6 @@ We can break the reservation string down to understand each piece.
 
     * The ``maxcus=1`` specifies that the nodes can come from at most 1 rack.
 
-Best DDL Arguments
-------------------
-
-Summit is comprised of 256 racks of 18 nodes with 6 GPUs each. For more
-information about the hardware of Summit please see: :ref:`system-overview`.
-
-DDL works best with topological knowledge of the cluster.
-``GPUs per Node X Nodes per Rack X Racks Per Aisle X Aisles`` Some of this
-information can be acquired automatically, but some has to be specified
-by the user.
-
-To get the best performance reservations should be made in multiples of 18,
-and the user should pass topology arguments to ``DDLRUN``.
-
-* ``--nodes 18`` informs DDL that there are 18 nodes per rack. Specifying 18
-  nodes per rack gave the best performance in preliminary testing, but it may
-  be that logically splitting racks in half (``--nodes 9``) or logically
-  grouping racks (``--nodes 36``) could lead to better performance on other
-  workloads.
-
-* ``--racks 4`` informs DDL that there are 4 racks per aisle. Summit is a
-  fat tree, but preliminary testing showed that grouping racks into logical
-  aisles of 4 racks gave the best performance.
-
-* ``--aisles 2`` informs DDL that there are 2 total aisles.
-  ``Nodes X Racks X Aisles`` must equal the total number of nodes in the LSF
-  reservation.
-
-If running on 144 nodes, the following ``ddlrun`` command should
-give good performance.
-
-.. code-block:: bash
-
-    ddlrun --nodes 18 --racks 4 --aisles 2 python script.py
-
-For more information on ``ddlrun``, please see: `DDLRUN <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.2/navigation/wmlce_ddlrun.html>`_.
-
-
 Example
 ===================
 
@@ -282,7 +251,7 @@ The following LSF script can be used to reproduce the results for 144 nodes:
     #BSUB -o /ccs/home/user/job%J.out
     #BSUB -e /ccs/home/user/job%J.out
 
-    module load ibm-wml-ce
+    module load ibm-wml-ce/1.6.2-2
 
     ddlrun --nodes 18 --racks 4 --aisles 2 python $CONDA_PREFIX/tf_cnn_benchmarks/tf_cnn_benchmarks.py \
         --variable_update=horovod\
