@@ -3452,8 +3452,7 @@ Simultaneous backgrounded jsruns (Resolved: May 21, 2019)
 
 We have seen occasional errors from batch jobs with multiple
 simultaneous backgrounded jsrun commands. Jobs may see pmix errors
-during the noted failures. <!–– Since the issue is occasional, multiple
-resubmits can be a workaround at this point. -->
+during the noted failures. 
 
 --------------
 
