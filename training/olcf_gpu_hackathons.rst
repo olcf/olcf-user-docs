@@ -1,3 +1,5 @@
+.. I used html for the section headings to avoid individual entries in the associated menu (TP)
+
 .. figure:: /images/gpu_hackathons.jpg
    :align: center
    :width: 100%
@@ -33,8 +35,9 @@ scheduled for 2020.
 .. note::
 	 The OLCF-supported events are a subset of a larger number of GPU hackathons organized within the community. For the full list, please visit `gpuhackathons.org <https://gpuhackathons.org>`__
 
-What is a GPU hackathon?
-------------------------
+.. raw:: html
+
+   <p style="font-size:20px"><b>What is a GPU hackathon?</b></p>
 
 A GPU hackathon is a 5-day coding event in which teams of developers port their
 own applications to run on GPUs, or optimize their applications that already
@@ -47,8 +50,9 @@ partners.
 .. note::
    There are a variety of programming models available to program GPUs (e.g. CUDA, OpenACC, OpenMP offloading, etc.) and your are welcome to use any of them at these events.
 
-Why participate?
-----------------
+.. raw:: html
+
+   <p style="font-size:20px"><b>Why Participate?</b></p>
 
 If you want/need to get your code running (or optimized) on a GPU-accelerated
 system, these hackathons offer a unique opportunity to set aside 5 days,
@@ -56,8 +60,9 @@ surrounds yourself with experts in the field, and push toward your development
 goals. By the end of the event, each team should have their code running (or
 more optimized) on GPUs, or at least have a clear roadmap of how to get there.
 
-Target audience
----------------
+.. raw:: html
+
+   <p style="font-size:20px"><b>Target audience</b></p>
 
 We are looking for teams of 3-6 developers with a scalable** application to
 port (or optimize on) GPUs. Collectively, the team should know the application
@@ -70,8 +75,9 @@ codes on a single node during the events is encouraged whenever possible.]
 .. note::
    Please keep in mind that we are looking for teams with plans to develop GPU code - not to simply run their code on GPUs.
 
-Ok, so how can I attend?
-------------------------
+.. raw:: html
+
+   <p style="font-size:20px"><b>Ok, so how do I attend?</b></p>
 
 First, you must decide which event you'd like to attend (see table of events
 above for locations and proposal deadlines), and then submit a short proposal
@@ -83,21 +89,24 @@ To submit a proposal, please visit `gpuhackathons.org/events
 <https://gpuhackathons.org/events>`__, click on the event you'd like to attend,
 and submit the form.
 
-Costs
------
+.. raw:: html
+
+   <p style="font-size:20px"><b>Costs?</b></p>
 
 Events are free for the selected participants. The organizers will provide a
 meeting room, lunches, mentors, and access to compute resources. 
 
-Want to be a mentor?
---------------------
+.. raw:: html
+
+   <p style="font-size:20px"><b>Want to be a mentor?</b></p>
 
 If you would like more information about how you can volunteer to mentor a team
 at an upcoming GPU hackathon, please visit our `Become a Mentor
 <https://gpuhackathons.org/become-mentor>`__ page.
 
-Who can I contact with questions?
----------------------------------
+.. raw:: html
+
+   <p style="font-size:20px"><b>Who can I contact with question??</b></p>
 
 If you have any questions about the OLCF GPU Hackathon Series, please contact
 Tom Papatheodore (`papatheodore@ornl.gov <mailto:papatheodore@ornl.gov>`__).
