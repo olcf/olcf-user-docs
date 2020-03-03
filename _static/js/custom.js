@@ -29,28 +29,21 @@ $( document ).ready(function() {
   wysidenavsearch.appendChild(project_name_link);
 
 
+  // For any external links in the main navigation, append the FontAwesome external link icon.
   function iconize_external_links(nav_level){
-    child_list_items = nav_level.getElementsByTagName("LI");
-    var i, j;
-    for (i = 0; i < child_list_items.length; ++i){
-      a_elements = child_list_items[i].getElementsByTagName("A");
-      for (j = 0; j < a_elements.length; ++j){
-        a_element = a_elements[j];
-        if (a_element.getAttribute("href").includes("http")){
-          var icon = document.createElement("i");
-          icon.classList.add("fa");
-          icon.classList.add("fa-external-link");
-
-          var spacer = document.createTextNode(" ");
-          a_element.appendChild(spacer);
-          a_element.appendChild(icon);
-        }
+    a_elements = nav_level.getElementsByTagName("A");
+    for (var i = 0; i < a_elements.length; ++i){
+      if (a_elements[i].getAttribute("href").includes("http")){
+         var icon = document.createElement("i");
+         icon.classList.add("fa");
+         icon.classList.add("fa-external-link");
+         var spacer = document.createTextNode(" ");
+         a_elements[i].appendChild(spacer);
+         a_elements[i].appendChild(icon);
       }
     }
   }
 
-  main_nav = document.querySelector("body > div > nav > div > div.wy-menu.wy-menu-vertical");
-  training_nav = document.querySelector("body > div > nav > div > div.wy-menu.wy-menu-vertical > ul:nth-child(6) > li");
-  iconize_external_links(training_nav)
+  iconize_external_links(document.querySelector("body > div > nav > div > div.wy-menu.wy-menu-vertical"))
 
 });
