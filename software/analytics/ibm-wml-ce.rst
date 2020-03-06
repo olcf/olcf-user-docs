@@ -24,10 +24,11 @@ find and load specific module versions:
     [user@login2.summit ~]$ module avail ibm-wml-ce
 
     ------------------------- /sw/summit/modulefiles/core --------------------------
-    ibm-wml-ce/1.6.1-1    ibm-wml-ce/1.6.1-3    ibm-wml-ce/1.6.2-1
-    ibm-wml-ce/1.6.1-2    ibm-wml-ce/1.6.2-0    ibm-wml-ce/1.6.2-2 (D)
+    ibm-wml-ce/1.6.1-1    ibm-wml-ce/1.6.2-0    ibm-wml-ce/1.6.2-3
+    ibm-wml-ce/1.6.1-2    ibm-wml-ce/1.6.2-1    ibm-wml-ce/1.7.0-1 (D)
+    ibm-wml-ce/1.6.1-3    ibm-wml-ce/1.6.2-2
     ...
-    [user@login2.summit ~]$ module load ibm-wml-ce/1.6.1-3
+    [user@login2.summit ~]$ module load ibm-wml-ce/1.6.2-3
 
 For more information on loading modules, including loading specific verions,
 see: :ref:`environment-management-with-lmod`
@@ -141,15 +142,15 @@ need.
 .. note::
 
     The conda environment includes a module revision number, the 'X' in
-    ``ibm-wml-ce-1.6.2-X``. The name of the active environment can be found in
+    ``ibm-wml-ce-1.7.0-X``. The name of the active environment can be found in
     the prompt string, or ``conda env list`` can be used to see what conda
     environments are available.
 
 .. code-block:: console
 
     $ module load ibm-wml-ce
-    (ibm-wml-ce-1.6.2-X) $ conda create --name cloned_env --clone ibm-wml-ce-1.6.2-X
-    (ibm-wml-ce-1.6.2-X) $ conda activate cloned_env
+    (ibm-wml-ce-1.7.0-X) $ conda create --name cloned_env --clone ibm-wml-ce-1.7.0-X
+    (ibm-wml-ce-1.7.0-X) $ conda activate cloned_env
     (cloned_env) $
 
 By default this should create the cloned environment in
@@ -161,19 +162,8 @@ will ensure that all of the conda settings remain the same.
 .. code-block:: console
 
     $ module load ibm-wml-ce
-    (ibm-wml-ce-1.6.2-X) $ conda activate cloned_env
+    (ibm-wml-ce-1.7.0-X) $ conda activate cloned_env
     (cloned_env) $
-
-As of 1.7.0 IBM WML CE provides Horovod as a conda package and it is not
-necessary to manually install Horovod after cloning. To use Horovod with
-the IBM DDL backend in a cloned environment of 1.6.2, the user
-must ``pip`` install Horovod using the following commands:
-
-.. code-block:: console
-
-    (cloned_env) $ conda install gxx_linux-ppc64le=7.3.0
-    (cloned_env) $ HOROVOD_CUDA_HOME="${CONDA_PREFIX}" HOROVOD_GPU_ALLREDUCE=DDL pip install --no-cache-dir git+https://github.com/horovod/horovod.git@bbf09d79c257d6629d7366e0d33cf761914bc7f0
-    (cloned_env) $ conda remove gxx_linux-ppc64le
 
 Best DDL Performance
 ====================
