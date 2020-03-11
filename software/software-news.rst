@@ -17,7 +17,7 @@ versions have been deprecated.
 .. csv-table::
     :header: "Package", "Current Default", "New Default"
 
-    "cuda", "10.1.168", "10.2.243"
+    "cuda", "10.1.168", "10.1.243"
     "spectrum-mpi", "10.3.0.1-20190611", "10.3.1.2-20200121"
     "hdf5", "1.10.3", "1.10.4"
     "pgi", "19.4", "19.9"
