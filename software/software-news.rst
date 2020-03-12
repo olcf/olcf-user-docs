@@ -27,7 +27,7 @@ versions have been deprecated.
 In addition, the following new packages have been installed and are available for use:
 
 .. csv-table::
-    :header: "Package", "Default Version"
+    :header: "Package", "New Version"
 
     "pgi", "20.1"
     "xl", "16.1.1-6"
