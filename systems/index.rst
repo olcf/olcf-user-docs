@@ -14,3 +14,4 @@ Systems
    dtn_user_guide
    hpss_user_guide
    ascent_user_guide
+   andes_user_guide
