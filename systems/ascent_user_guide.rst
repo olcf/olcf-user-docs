@@ -14,3 +14,5 @@ houses systems such as Summit. This means that participants in training events c
 As the Ascent user environment is almost identical to Summit, additional
 information can be found in the :ref:`training-system-ascent` section of the
 :ref:`summit-user-guide`.
+
+This is a test for mirrored version control.
