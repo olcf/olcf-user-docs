@@ -4,11 +4,15 @@ Training Archive
 
 The table below lists presentations given at previous OLCF training events. For a list of upcoming training events, please visit the `OLCF Training Calendar <https://www.olcf.ornl.gov/for-users/training/training-calendar/>`__
 
-.. I used a csv-table here because the normal table format was difficult to use with such long entries
+.. I used a csv-table here because the normal table format was difficult to use with such long entries. To add a new entry, copy and paste the following template, replacing the "REPLACE_*" placeholders and adding urls:
+.. "REPLACE_DATE", "REPLACE_TITLE", "REPLACE_PRESENTER", `REPLACE_EVENT <>`__, (`slides <>`__ | `recording <>`__)
 
 .. csv-table::
    :header: "Date", "Title", "Speaker", "Event", "Presentation"
 
+   "2020-03-18", "CUDA Optimizations (Part 1)", "Bob Crovella (NVIDIA)", `Fundamental CUDA Optimization (Part 1) <https://www.olcf.ornl.gov/calendar/fundamental-cuda-optimization-part1/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/12/03-CUDA-Fundamental-Optimization-Part-1.pdf>`__ | `recording <https://vimeo.com/398824746>`__)
+   "2020-03-10", "Nsight Compute", "Felix Schmitt (NVIDIA)", `NVIDIA Profiling Tools - Nsight Compute <https://www.olcf.ornl.gov/calendar/nvidia-profiling-tools-nsight-compute/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2020/02/OLCF-Webinar-Nsight-Compute.pdf>`__ | `recording <https://vimeo.com/398929189>`__) 
+   "2020-03-09", "Nsight Systems", "Holly Wilper (NVIDIA)", `NVIDIA Profiling Tools - Nsight Systems <https://www.olcf.ornl.gov/calendar/nvidia-profiling-tools-nsight-systems/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2020/02/Summit-Nsight-Systems-Introduction.pdf>`__ | `recording <https://vimeo.com/398838139>`__) 
    "2020-02-19", "CUDA Shared Memory", "Bob Crovella (NVIDIA)", `CUDA Shared Memory <https://www.olcf.ornl.gov/calendar/cuda-shared-memory/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/12/02-CUDA-Shared-Memory.pdf>`__ | `recording <https://vimeo.com/393552516>`__)
    "2020-02-18", "Explicit Resource Files (ERFs)", "Tom Papatheodore (OLCF)", `jsrun Tutorial <https://www.olcf.ornl.gov/calendar/jsrun-tutorial/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/12/ERF.pdf>`__ | `recording <https://vimeo.com/393782415>`__)
    "2020-02-18", "Multiple jsrun Commands", "Chris Fuson (OLCF)", `jsrun Tutorial <https://www.olcf.ornl.gov/calendar/jsrun-tutorial/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/12/Jsrun-Multi.pdf>`__ | `recording <https://vimeo.com/393782415>`__)
