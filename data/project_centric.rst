@@ -51,7 +51,7 @@ Project Home Backups
 If you accidentally delete files from your project home directory, you may be
 able to retrieve them. Online backups are performed at regular intervals.
 Hourly backups for the past 24 hours, daily backups for the last 7 days, and
-once weekly backups are available. It is possible that the deleted files are
+once-weekly backups are available. It is possible that the deleted files are
 available in one of those backups. The backup directories are named
 ``hourly.*``, ``daily.*``, and ``weekly.*`` where ``*`` is the date/time stamp
 of backup creation. For example, ``hourly.2020-01-01-0905`` is an hourly backup
