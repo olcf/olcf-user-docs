@@ -10,7 +10,7 @@ The table below lists presentations given at previous OLCF training events. For 
 .. csv-table::
    :header: "Date", "Title", "Speaker", "Event", "Presentation"
 
-   "2020-03-25", "Job Step Visualizer", "Jack Morrison (OLCF)", `March 2020 OLCF User Conference Call <https://www.olcf.ornl.gov/calendar/userconcall-mar2020/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2020/01/OLCF_March_Con_Call_Job_Step_Viewerpdf.pdf>`__)
+   "2020-03-25", "Job Step Viewer", "Jack Morrison (OLCF)", `March 2020 OLCF User Conference Call <https://www.olcf.ornl.gov/calendar/userconcall-mar2020/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2020/01/OLCF_March_Con_Call_Job_Step_Viewerpdf.pdf>`__)
    "2020-03-18", "CUDA Optimizations (Part 1)", "Bob Crovella (NVIDIA)", `Fundamental CUDA Optimization (Part 1) <https://www.olcf.ornl.gov/calendar/fundamental-cuda-optimization-part1/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/12/03-CUDA-Fundamental-Optimization-Part-1.pdf>`__ | `recording <https://vimeo.com/398824746>`__)
    "2020-03-10", "Nsight Compute", "Felix Schmitt (NVIDIA)", `NVIDIA Profiling Tools - Nsight Compute <https://www.olcf.ornl.gov/calendar/nvidia-profiling-tools-nsight-compute/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2020/02/OLCF-Webinar-Nsight-Compute.pdf>`__ | `recording <https://vimeo.com/398929189>`__) 
    "2020-03-09", "Nsight Systems", "Holly Wilper (NVIDIA)", `NVIDIA Profiling Tools - Nsight Systems <https://www.olcf.ornl.gov/calendar/nvidia-profiling-tools-nsight-systems/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2020/02/Summit-Nsight-Systems-Introduction.pdf>`__ | `recording <https://vimeo.com/398838139>`__) 
