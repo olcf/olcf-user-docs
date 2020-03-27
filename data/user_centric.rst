@@ -66,6 +66,28 @@ permissions on their home directories, although it is recommended that
 permissions be set to as restrictive as possible (without interfering with your
 work).
 
+User Home Backups
+-----------------
+
+If you accidentally delete files from your home directory
+(``/ccs/home/$USER``), you may be able to retrieve them. Online backups are
+performed at regular intervals. Hourly backups for the past 24 hours, daily
+backups for the last 7 days, and once-weekly backups are available. It is
+possible that the deleted files are available in one of those backups. The
+backup directories are named ``hourly.*``, ``daily.*``, and ``weekly.*`` where
+``*`` is the date/time stamp of backup creation. For example,
+``hourly.2020-01-01-0905`` is an hourly backup made on January 1st, 2020 at
+9:05 AM.
+
+The backups are accessed via the ``.snapshot`` subdirectory. Note that ``ls``
+alone (or even ``ls -a``) will not show the ``.snapshot`` subdirectory exists,
+though ``ls .snapshot`` will show its contents. The ``.snapshot`` feature is
+available in any subdirectory of your home directory and will show the online
+backups available for that subdirectory. 
+
+To retrieve a backup, simply copy it into your desired destination with the
+``cp`` command.
+
 User Website Directory
 ----------------------
 
