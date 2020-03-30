@@ -46,6 +46,10 @@ templates_path = ['_templates']
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
+# To avoid errors with older versions of Sphinx and Sphinx RTD theme, explicitly
+# specify the master document.
+master_doc = 'index'
+
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -70,6 +74,10 @@ html_js_files = [
     'js/custom.js',
 ]
 
+html_logo = 'images/olcf_logo.png'
+
+html_favicon = 'images/favicon.ico'
+
 html_context = {
     'vcs_pageview_mode': 'edit',
     'display_github': True,
@@ -86,6 +94,8 @@ html_theme_options = {
     'sticky_navigation': True,
     'navigation_depth': 4,
     'style_external_links': True,
+    'style_nav_header_background': '#efefef',
+    'logo_only': True,
 }
 
 

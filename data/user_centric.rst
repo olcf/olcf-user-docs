@@ -9,17 +9,22 @@ resources and lists relevant polices.
 
 **User-Centric Storage Areas**
 
-+--------------+-----------------+------+-----------------+-------------+---------+--------+-----------+
-| Area         | Path            | Type | Permissions     | Quota       | Backups | Purged | Retention |
-+==============+=================+======+=================+=============+=========+========+===========+
-| User Home    | ``$HOME``       | NFS  | User-controlled | 50 GB       | Yes     | No     | 90 days   |
-+--------------+-----------------+------+-----------------+-------------+---------+--------+-----------+
-| User Archive | ``/home/$USER`` | HPSS | User-controlled | 2 TB [#f1]_ | **No**  | No     | 90 days   |
-+--------------+-----------------+------+-----------------+-------------+---------+--------+-----------+
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
+| Area                | Path                                        | Type           | Permissions |  Quota | Backups | Purged  | Retention  | On Compute Nodes |
++=====================+=============================================+================+=============+========+=========+=========+============+==================+
+| User Home           | ``/ccs/home/[userid]``                      | NFS            | User set    |  50 GB | Yes     | No      | 90 days    | Read-only        |
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
+| User Archive [#f1]_ | ``/home/[userid]``                          | HPSS           | User set    |  2TB   | No      | No      | 90 days    | No               |   
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
+| User Archive [#f2]_ | ``/home/[userid]``                          | HPSS           | 700         |  N/A   | N/A     | N/A     | N/A        | No               |   
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
 
 .. rubric:: footnotes
 
-.. [#f1] In addition, there is a quota/limit of 2,000 files on this directory.
+
+.. [#f1] This entry is for legacy User Archive directories which contained user data on January 14, 2020. There is also a quota/limit of 2,000 files on this directory.
+
+.. [#f2] User Archive directories that were created (or had no user data) after January 14, 2020. Settings other than permissions are not applicable because directories are root-owned and contain no user files.
 
 
 .. _user-home-directories-nfs:
@@ -61,6 +66,28 @@ permissions on their home directories, although it is recommended that
 permissions be set to as restrictive as possible (without interfering with your
 work).
 
+User Home Backups
+-----------------
+
+If you accidentally delete files from your home directory
+(``/ccs/home/$USER``), you may be able to retrieve them. Online backups are
+performed at regular intervals. Hourly backups for the past 24 hours, daily
+backups for the last 7 days, and once-weekly backups are available. It is
+possible that the deleted files are available in one of those backups. The
+backup directories are named ``hourly.*``, ``daily.*``, and ``weekly.*`` where
+``*`` is the date/time stamp of backup creation. For example,
+``hourly.2020-01-01-0905`` is an hourly backup made on January 1st, 2020 at
+9:05 AM.
+
+The backups are accessed via the ``.snapshot`` subdirectory. Note that ``ls``
+alone (or even ``ls -a``) will not show the ``.snapshot`` subdirectory exists,
+though ``ls .snapshot`` will show its contents. The ``.snapshot`` feature is
+available in any subdirectory of your home directory and will show the online
+backups available for that subdirectory. 
+
+To retrieve a backup, simply copy it into your desired destination with the
+``cp`` command.
+
 User Website Directory
 ----------------------
 
@@ -73,6 +100,17 @@ Assistance Center at help@olcf.ornl.gov.
 
 User Archive Directories (HPSS)
 ================================
+
+.. note::
+    Use of User Archive areas for data storage is deprecated as of January 14, 2020.
+    The user archive area for any user account created after that date (or for any
+    user archive directory that is empty of user files after that date) will contain
+    only symlinks to the top-level directories for each of the user's projects on
+    HPSS. Users with existing data in a User Archive directory are encouraged to
+    move that data to an appropriate project-based directory as soon as possible.
+    
+    The information below is simply for reference for those users with existing 
+    data in User Archive directories.
 
 The High Performance Storage System (HPSS) at the OLCF provides longer-term
 storage for the large amounts of data created on the OLCF compute systems. The

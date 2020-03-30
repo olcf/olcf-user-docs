@@ -1,13 +1,20 @@
 .. _training:
 
+.. figure:: ../images/training.jpeg
+   :align: center
+   :width: 100%
+
 #########
 Training
 #########
 
+The OLCF provides training to our users in a variety of ways. By following the links below, you can find upcoming training events, self-guided tutorials, slides and recordings from past training events, information on upcoming GPU hackathons, and the OLCF Vimeo channel.
 
-* `Tutorials <https://github.com/olcf-tutorials>`_
-* `Archive <https://www.olcf.ornl.gov/for-users/training/training-archive/>`_
-* `Calendar <https://www.olcf.ornl.gov/for-users/training/training-calendar/>`_
-* `Hackathons <https://www.olcf.ornl.gov/for-users/training/gpu-hackathons/>`_
-* `OLCF Training Channel <https://vimeo.com/channels/olcftraining>`_
+.. toctree::
+   :maxdepth: 1
 
+   OLCF Training Calendar <https://www.olcf.ornl.gov/for-users/training/training-calendar>
+   Tutorials <https://github.com/olcf-tutorials>
+   training_archive
+   olcf_gpu_hackathons
+   OLCF Vimeo Channel <https://vimeo.com/channels/olcftraining>

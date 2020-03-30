@@ -6,6 +6,15 @@
 OLCF User Documentation
 =======================
 
+.. note::
+    The `OLCF User Assistance Center
+    <https://www.olcf.ornl.gov/for-users/user-assistance/>`_ remains open and
+    available for support.  Users should follow normal support procedures when
+    reporting issues or requesting help.
+
+    * `Submit a Support Ticket <https://www.olcf.ornl.gov/for-users/getting-started/submit-ticket/>`_
+    * Email us at help@olcf.ornl.gov
+
 This technical documentation is a reference for the user community to
 efficiently use OLCF compute and storage resources.
 
