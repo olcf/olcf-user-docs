@@ -229,35 +229,37 @@ The following Score-P environment variables may be useful in job submission scri
 | SCOREP_MEMORY_RECORDING               |  FALSE                           | Memory (de)allocations are recorded via libc/C++ API                                                        |
 +---------------------------------------+----------------------------------+-------------------------------------------------------------------------------------------------------------+
 
-MiniWeather Example Application
+Example Application: MiniWeather
 ================================
 
-Getting the source code
-~~~~~~~~~~~~~~~~~~~~~~~
+We'll use the open-source `MiniWeather
+<https://github.com/mrnorman/miniWeather>`_ application to demonstrate the
+capabilities of Score-P.
 
-- Connect to Summit and navigate to your project space
-- For the following examples, we'll use the MiniWeather application:
-  https://github.com/mrnorman/miniWeather
+Get the Source Code 
+~~~~~~~~~~~~~~~~~~~
 
 .. code::
 
     $ git clone https://github.com/mrnorman/miniWeather.git
-    $ cd miniWeather/c/
-    $ cp Makefile.summit Makefile
+    $ cd miniWeather/c/build
 
-
-Compile the application
+Compile the Application
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-- We'll use the PGI compiler; this application supports serial, MPI, MPI+OpenMP,
-  and MPI+OpenACC
+MiniWeather supports several build modes:  serial, MPI, MPI+OpenMP, and
+MPI+OpenACC. In order to compile the application, we'll be using the PGI
+toolchain, and bring into our environment both ``cmake`` and a parallel
+installation of ``NetCDF``. 
 
 .. code::
 
-    $ module load pgi
-    $ module load parallel-netcdf
+    $ module load pgi parallel-netcdf cmake
+    $ ./cmake_summit_pgi.sh
 
-- Different compilations for Serial, MPI, MPI+OpenMP, and MPI+OpenACC:
+
+To compile for Serial, MPI, MPI+OpenMP, or MPI+OpenACC, invoke the appropriate
+target from the list below:
 
 .. code::
 
@@ -276,7 +278,7 @@ Modifications
 - Edit the makefile and replace ``mpic++`` with ``scorep --mpp=mpi mpic++``. 
 
 
-Instrumenting the serial version of MiniWeather
+Instrumenting the Serial Version of MiniWeather
 -----------------------------------------------
 
 For a serial application, we should not use a Makefile with a programming
@@ -361,27 +363,27 @@ Explanation
 ~~~~~~~~~~~
 
 +-------------------------+----------------------------------------------------+
-| Score-P Region Type Key |  Description                       |
+| Score-P Region Type Key |  Description                                       |
 +=========================+====================================================+
-| COM                     | user functions found on callstack to other regions |
+| COM                     | User functions found on callstack to other regions |
 +-------------------------+----------------------------------------------------+
-| CUDA                    | CUDA API & kernels                     |
+| CUDA                    | CUDA API and kernels                               |
 +-------------------------+----------------------------------------------------+
-| MEMORY                  | Memory alloc/dealloc                       |
+| MEMORY                  | Memory alloc/dealloc                               |
 +-------------------------+----------------------------------------------------+
 | MPI                     | All MPI functions                                  |
 +-------------------------+----------------------------------------------------+
-| OMP                     | OpenMP constructs                      |
+| OMP                     | OpenMP constructs                                  |
 +-------------------------+----------------------------------------------------+
-| OPENACC                 | OpenACC API & kernels                  |
+| OPENACC                 | OpenACC API & kernels                              |
 +-------------------------+----------------------------------------------------+
-| PTHREAD                 | all pthread functions                      |
+| PTHREAD                 | all pthread functions                              |
 +-------------------------+----------------------------------------------------+
-| SCOREP                  | Score-P instrumentation                    |
+| SCOREP                  | Score-P instrumentation                            |
 +-------------------------+----------------------------------------------------+
-| SHMEM                   | All SHMEM functions                        |
+| SHMEM                   | All SHMEM functions                                |
 +-------------------------+----------------------------------------------------+
-| USR                    | User fucntions not found in COM                 |
+| USR                     | User fucntions not found in COM                    |
 +-------------------------+----------------------------------------------------+
 
 
