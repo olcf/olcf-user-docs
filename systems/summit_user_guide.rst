@@ -3030,15 +3030,171 @@ Page <https://www.olcf.ornl.gov/software_package/valgrind/>`__.
 Optimizing and Profiling
 ========================
 
-Profiling CUDA Code with NVPROF
--------------------------------
+Profiling GPU Code with NVIDIA Developer Tools
+-----------------------------------------------------
 
-NVIDIA's command-line profiler, ``nvprof``, provides profiling for CUDA
-codes. No extra compiling steps are required to use ``nvprof``. The
-profiler includes tracing capability as well as the ability to gather
-many performance metrics, including FLOPS. The profiler data output can
-be saved and imported into the NVIDIA Visual Profiler for additional
-graphical analysis.
+NVIDIA provides developer tools for profiling any code that runs on NVIDIA
+GPUs. These are the `Nsight suite of developer tools
+<https://developer.nvidia.com/tools-overview>`__: NVIDIA Nsight Systems for
+collecting a timeline of your application, and NVIDIA Nsight Compute for
+collecting detailed performance information about specific GPU kernels.
+
+NVIDIA Nsight Systems
+^^^^^^^^^^^^^^^^^^^^^
+
+The first step to GPU profiling is collecting a timeline of your application.
+(This operation is also sometimes called "tracing," that is, finding
+the start and stop timestamps of all activities that occurred on the GPU
+or involved the GPU, such as copying data back and forth.) To do this, we
+can collect a timeline using the command-line interface, ``nsys``. To use
+this tool, load the ``nsight-systems`` module.
+
+::
+
+    summit> module load nsight-systems
+
+For example, we can profile the ``vectorAdd`` CUDA sample (the CUDA samples
+can be found in ``$OLCF_CUDA_ROOT/samples`` if the ``cuda`` module is loaded.)
+
+::
+
+    summit> jsrun -n1 -a1 -g1 nsys profile -o vectorAdd --stats=true ./vectorAdd
+
+(Note that even if you do not ask for Nsight Systems to create an output file,
+but just ask it to print summary statistics with ``--stats=true``, it will create
+a temporary file for storing the profiling data, so you will need to work on a
+file system that can be written to from a compute node such as GPFS.)
+
+The profiler will print several sections including information about the
+CUDA API calls made by the application, as well as any GPU kernels that were
+launched. Nsight Systems can be used for CUDA C++, CUDA Fortran, OpenACC,
+OpenMP offload, and other programming models that target NVIDIA GPUs, because
+under the hood they all ultimately take the same path for generating the binary
+code that runs on the GPU.
+
+If you add the ``-o`` option, as above, the report will be saved to file
+with the extension ``.qdrep``. That report file can later be analyzed in
+the Nsight Systems UI by selecting File > Open and locating the ``vectorAdd.qdrep``
+file on your filesystem. Nsight Systems does not currently have a Power9
+version of the UI, so you will need to `download the UI for your local system
+<https://developer.nvidia.com/nsight-systems>`__, which is supported on
+Windows, Mac, and Linux (x86). Then use ``scp`` or some other file transfer
+utility for copying the report file from Summit to your local machine.
+
+Nsight Systems can be used for MPI runs with multiple ranks, but it is
+not a parallel profiler and cannot combine output from multiple ranks.
+Instead, each rank must be profiled and analyzed independently. The file
+name should be unique for every rank. Nsight Systems knows how to parse
+environment variables with the syntax ``%q{ENV_VAR}``, and since Spectrum
+MPI provides an environment variable for every process with its MPI rank,
+you can do
+
+::
+
+    summit> jsrun -n6 -a1 -g1 nsys profile -o vectorAdd_%q{OMPI_COMM_WORLD_RANK} ./vectorAdd
+
+Then you will have ``vectorAdd_0.qdrep`` through ``vectorAdd_5.qdrep``.
+(Of course, in this case each rank does the same thing as this is not
+an MPI application, but it works the same way for an MPI code.)
+
+For more details about Nsight Systems, consult the `product page
+<https://developer.nvidia.com/nsight-systems>`__ and the `documentation
+<https://docs.nvidia.com/nsight-systems/index.html>`__. If you previously
+used ``nvprof`` and would like to start using the Nsight Developer Tools,
+check out `this transition guide
+<https://devblogs.nvidia.com/migrating-nvidia-nsight-tools-nvvp-nvprof/>`__.
+Also, in March 2020 NVIDIA presented a webinar on Nsight Systems which you
+can `watch on demand <https://www.olcf.ornl.gov/calendar/nvidia-profiling-tools-nsight-systems/>`__.
+
+NVIDIA Nsight Compute
+^^^^^^^^^^^^^^^^^^^^^
+
+Individual GPU kernels (the discrete chunks of work that are launched by
+programming languages such as CUDA and OpenACC) can be profiled in detail
+with NVIDIA Nsight Compute. The typical workflow is to profile your code
+with Nsight Systems and identify the major performance bottleneck in your
+application. If that performance bottleneck is on the CPU, it means more
+code should be ported to the GPU; or, if that bottleneck is in memory
+management, such as copying data back and forth between the CPU and GPU,
+you should look for opportunities to reduce that data motion. But if that
+bottleneck is a GPU kernel, then Nsight Compute can be used to collect
+performance counters to understand whether the kernel is running efficiently
+and if there's anything you can do to improve.
+
+The Nsight Compute command-line interface, ``nv-nsight-cu-cli``, can be
+prefixed to your application to collect a report.
+
+::
+
+    summit> module load nsight-compute
+
+::
+
+    summit> jsrun -n1 -a1 -g1 nv-nsight-cu-cli ./vectorAdd
+
+The most important output to look at is the "GPU Speed of Light" section,
+which tells you what fraction of peak memory throughput and what fraction
+of peak compute throughput you achieved. Typically if you have achieved
+higher than 60% of the peak of either subsystem, your kernel would be
+considered memory-bound or compute-bound (respectively), and if you have
+not achieved 60% of either this is often a latency-bound kernel. (A common
+cause of latency issues is not exposing enough parallelism to saturate
+the GPU's compute capacity -- peak GPU performance can only be achieved
+when there is enough work to hide the relatively long latency of memory
+accesses on the GPU).
+
+By default, Nsight Compute will collect this performance data for every
+kernel in your application. This will take a long time in a real application.
+It is recommended that you identify a specific kernel to profile and then
+use the ``-k`` argument to just profile that kernel. (If you don't know the
+name of your kernel, use ``nsys`` to obtain that. The flag will pattern match
+on any substring of the kernel name.) You can also use the ``-s`` option to
+skip some number of kernel calls and the ``-c`` option to specify how many
+invocations of that kernel you want to profile.
+
+If you want to collect information on just a specific performance measurement,
+for example the number of bytes written to DRAM, you can do so with the
+``--metrics`` option:
+
+::
+
+    summit> jsrun -n1 -a1 -g1 nv-nsight-cu-cli -k vectorAdd --metrics dram__bytes_write.sum ./vectorAdd
+
+The list of available metrics can be obtained with ``nv-nsight-cu-cli --query-metrics``.
+
+As with Nsight Systems, there is a graphical user interface you can load
+a report file into. Use the ``-o`` flag to create a file (the added report
+extension will be ``.nsight-cuprof-report``), copy it to your local system,
+and use the File > Open File menu item. If you are using multiple MPI ranks,
+make sure you name each one independently. Nsight Compute does not yet support
+the ``%q`` syntax (this will come in a future release), so your job script will
+have to do the naming manually; for example, you can create a simple shell script:
+
+::
+
+    $ cat run.sh
+    #!/bin/bash
+
+    nv-nsight-cu-cli -o vectorAdd_$OMPI_COMM_WORLD_RANK ./vectorAdd
+
+For more details on Nsight Compute, check out the `product page
+<https://developer.nvidia.com/nsight-compute>`__ and the `documentation
+<https://docs.nvidia.com/nsight-compute/index.html>`__. If you previously used
+``nvprof`` and would like to start using Nsight Compute, check out `this transition
+guide <https://docs.nvidia.com/nsight-compute/NsightComputeCli/index.html#nvprof-guide>`__.
+Also, in March 2020 NVIDIA presented a webinar on Nsight Compute which you can `watch on
+demand <https://www.olcf.ornl.gov/calendar/nvidia-profiling-tools-nsight-compute/>`__.
+
+nvprof and nvvp
+^^^^^^^^^^^^^^^
+
+Prior to Nsight Systems and Nsight Compute, the NVIDIA command line profiling
+tool was ``nvprof``, which provides both tracing and kernel profiling
+capabilities. Like with Nsight Systems and Nsight Compute, the profiler data
+output can be saved and imported into the NVIDIA Visual Profiler for additional
+graphical analysis. ``nvprof`` is in maintenance mode now: it still works on
+Summit and significant bugs will be fixed, but no new feature development is
+occurring on this tool.
 
 To use ``nvprof``, the ``cuda`` module must be loaded.
 
