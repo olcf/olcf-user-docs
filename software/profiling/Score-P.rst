@@ -27,6 +27,9 @@ Automatic Source Code Instrumentation
 
 Prefix method
 ~~~~~~~~~~~~~
+
+In this approach we have to edit the Makefile and add the corresponding commands declarations.
+
 .. code::
 
     CC  = scorep <options> gcc
@@ -43,6 +46,8 @@ Prefix method
 
 Wrapper method
 ~~~~~~~~~~~~~~
+
+In this approach we do not need to edit the Makefile. Some times only one of the methods works.
 
 .. code::
 
