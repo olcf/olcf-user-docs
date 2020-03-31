@@ -263,16 +263,7 @@ installation of ``NetCDF``.
     $ ./cmake_summit_pgi.sh
 
 
-To compile for Serial, MPI, MPI+OpenMP, or MPI+OpenACC, invoke the appropriate
-target from the list below:
-
-.. code::
-
-    $ make serial
-    $ make mpi
-    $ make openmp
-    $ make openacc
-
+After the compilation ends, there will be the executables called `serial`, `openacc`, `mpi`, `openmp`
 
 Below, we'll look at using Score-P to profile each case.
 
