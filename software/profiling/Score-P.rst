@@ -47,7 +47,7 @@ In this approach we have to edit the Makefile and add the corresponding commands
 Wrapper method
 ~~~~~~~~~~~~~~
 
-In this approach we do not need to edit the Makefile. Some times only one of the methods works.
+In this approach we do not need to edit any file as we use CMake. Some times only one of the methods works.
 
 .. code::
 
