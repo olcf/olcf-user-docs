@@ -153,7 +153,7 @@ OLCF System Hostnames
 *****************************
 
 +---------------------+----------------------------+------------------------------------------------------------------+
-| *System Name*       | Full Hostname              | Hostkey Fingerprints                                             |
+| System Name         | Full Hostname              | Hostkey Fingerprints                                             |
 +=====================+============================+==================================================================+
 | Home (machine)      | ``home.ccs.ornl.gov``      | - RSA MD5: ``ba:12:46:8d:23:e7:4d:37:92:39:94:82:91:ea:3d:e9``   |
 |                     |                            | - RSA SHA256: ``FjDs4sRAX8hglzA7TVkK22NzRKsjhDTTTdfeEAHwPEA``    |
