@@ -3161,11 +3161,14 @@ you into your interactive shell. In both cases, JSM log files (e.g.,
 
 Segfault when running executables on login nodes
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Executing a parallel binary on the login node or a batch node without using the job step launcher ``jsrun`` will result in a segfault. 
+Executing a parallel binary on the login node or a batch node without using the
+job step launcher ``jsrun`` will result in a segfault. 
 
-This also can be encountered when importing parallel Python libraries like ``mpi4py`` and ``h5py`` directly on these nodes.
+This also can be encountered when importing parallel Python libraries like
+``mpi4py`` and ``h5py`` directly on these nodes.
 
-The issue has been reported to IBM. The current workaround is to run the binary inside an interactive or batch job via ``jsrun``.
+The issue has been reported to IBM. The current workaround is to run the binary
+inside an interactive or batch job via ``jsrun``.
 
 Nsight Compute cannot be used with MPI programs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
