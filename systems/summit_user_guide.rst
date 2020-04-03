@@ -3131,6 +3131,34 @@ Last Updated: 20 March 2020
 Open Issues
 -----------
 
+Setting ``TMPDIR`` causes JSM (``jsrun``) errors / job state flip-flop
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Setting the ``TMPDIR`` environment variable causes jobs to fail with JSM
+(``jsrun``) errors and can also cause jobs to bounce back and forth between
+eligible and running states until a retry limit has been reached and the job is
+placed in a blocked state (NOTE: This "bouncing" of job state can be caused for
+multiple reasons. Please see the known issue titled "Queued job flip-flops
+between queued/running states" if you are not setting ``TMPDIR``). A bug has
+been filed with IBM to address this issue.
+
+When ``TMPDIR`` is set within a running job (i.e., in an interactive session or
+within a batch script), any attempt to call ``jsrun`` will lead to a job
+failure with the following error message:
+
+::
+
+	Error: Remote JSM server is not responding on host batch503-25-2020 15:29:45:920 90012 main: Error initializing RM connection. Exiting.
+
+When ``TMPDIR`` is set before submitting a job (i.e., in the shell/environment
+where a job is submitted from), the job will bounce back and forth between a
+running and eligible state until its retry limit has been reached and the job
+will end up in a blocked state. This is true for both interactive jobs and jobs
+submitted with a batch script, but interactive jobs will hang without dropping
+you into your interactive shell. In both cases, JSM log files (e.g.,
+``jsm-lsf-wait.username.1004985.log``) will be created in the location set for
+``TMPDIR`` containing the same error message as shown above. 
+
 Segfault when running executables on login nodes
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Executing a parallel binary on the login node or a batch node without using the job step launcher ``jsrun`` will result in a segfault. 
