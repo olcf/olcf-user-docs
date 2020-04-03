@@ -3126,7 +3126,7 @@ please see the `Vampir Software Page <https://www.olcf.ornl.gov/software_package
 Known Issues
 ============
 
-Last Updated: 20 March 2020
+Last Updated: 03 April 2020
 
 Open Issues
 -----------
