@@ -3138,9 +3138,9 @@ Setting the ``TMPDIR`` environment variable causes jobs to fail with JSM
 (``jsrun``) errors and can also cause jobs to bounce back and forth between
 eligible and running states until a retry limit has been reached and the job is
 placed in a blocked state (NOTE: This "bouncing" of job state can be caused for
-multiple reasons. Please see the known issue titled "Queued job flip-flops
-between queued/running states" if you are not setting ``TMPDIR``). A bug has
-been filed with IBM to address this issue.
+multiple reasons. Please see the known issue `Jobs suspended due to retry limit
+/ Queued job flip-flops between queued/running states`_ if you are not setting
+``TMPDIR``). A bug has been filed with IBM to address this issue.
 
 When ``TMPDIR`` is set within a running job (i.e., in an interactive session or
 within a batch script), any attempt to call ``jsrun`` will lead to a job
@@ -3298,6 +3298,7 @@ the ``-a`` flag (number of tasks per resource set) is ignored. This has
 been reported to IBM and they are investigating. It is generally
 recommended to use jsrun explicit resource files (ERF) with
 ``--erf_input`` and ``--erf_output`` instead of ``-U``.
+
 
 Jobs suspended due to retry limit / Queued job flip-flops between queued/running states
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
