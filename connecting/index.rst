@@ -58,7 +58,7 @@ Activating a new SecurID fob
     When you first recieve your OLCF RSA SecurID fob, it will be deactivated
     and unusable. In order to have your RSA SecurID fob activated, you must
     return a notarized copy of the `Notary Token Verification Form
-    <https://www.olcf.ornl.gov/wp-content/accounts/Notary_Token_Verification_Form.pdf>`_,
+    <https://www.olcf.ornl.gov/wp-content/accounts/Notary_Token_Verification_Form.pdf>`_
     or otherwise have your identity verified by the OLCF (See `Notary
     Instructions
     <https://www.olcf.ornl.gov/wp-content/accounts/Notary_Instructions.pdf>`_).
