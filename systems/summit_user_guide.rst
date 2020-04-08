@@ -2901,7 +2901,7 @@ Limitations
 ___________
 
 * (currently) Only available on Summit
-* (currently) Compiled with XL toolchain only
+* (currently) Compiled with GCC toolchain only
 * Does not support MPMD-mode via ERF
 * OpenMP only supported with use of the ``OMP_NUM_THREADS`` environment variable.
 
