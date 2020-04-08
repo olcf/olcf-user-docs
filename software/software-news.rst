@@ -17,7 +17,8 @@ The following modules were installed as default on April 8, 2020.
 
     "ibm-wml-ce", "1.7.0-1", "1.7.0-2"
 
-The new IBM Watson Machine Learning (WML) Community Edition (CE) install adds improvements to DDL including support for jsrun.
+The new IBM Watson Machine Learning (WML) Community Edition (CE) install adds
+improvements to DDL including support for ``jsrun``.
 
 ----
 
