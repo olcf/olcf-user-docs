@@ -48,6 +48,10 @@ systems allocated to your project(s). All OLCF resources (except the Ascent
 training system) require two-factor authentication. This means you will need an
 OLCF-provided RSA SecurID fob to log into any of the systems.
 
+For Windows clients, `PuTTY <https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html>`_ and `MobaXterm <https://mobaxterm.mobatek.net/>`_ can also be used to provide ssh capability. 
+Recent updates to Windows 10 have added built-in support for ssh. 
+If it is not installed on your version of Windows, please refer to Microsoft’s documentation on OpenSSH. 
+
 *****************************
 Activating a new SecurID fob
 *****************************
@@ -148,6 +152,8 @@ connection to the real X server will be made from the local machine.
     forwarding; a non-encrypted channel may be used in this case.
 
 .. _systems-available-to-all-projects:
+
+On Windows, `PuTTY <https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html>`_ with `xming <https://sourceforge.net/projects/xming/>`_ support can be used to provide X11 forwarding.
 
 **********************************
 Systems Available to All Projects
