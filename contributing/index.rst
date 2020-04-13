@@ -47,7 +47,7 @@ Setup authoring environment
 
     $ cd olcf-user-docs && sphinx-build -E . _build
 
-#. Locally preview the generated web pages::
+#. Locally preview the generated web pages
 
    Start a webserver on something like ``localhost:8080`` that points at
    your ``olcf-user-docs/_build`` directory. For example, using busybox::
@@ -57,6 +57,7 @@ Setup authoring environment
    or a python webserver (from inside the document root)::
 
         $ python3 -m http.server 8080
+
    Open a broswer and type ``localhost:8080`` into the address bar to view the web pages.
 
 Edit the docs
@@ -73,7 +74,7 @@ local environment to make multiple changes.
 #. Make your edits in a new git branch::
 
       $ git checkout -b my-edits-branch
-      (Please edit *.rst files, and commit them to your branch.)
+      ## (Please edit *.rst files, and commit them to your branch.)
 
 #. Preview your edits
 #. Push your edits to your GitHub fork::
