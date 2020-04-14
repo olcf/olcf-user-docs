@@ -347,9 +347,9 @@ uncomment them below). By default the Score-P will apply profiling, and not appl
 
 .. code::
 
-    cd scorep-20191210_1435_1862594527919600
-    scorep-score -r profile.cubex > profile.txt
-    less profile.txt
+      cd scorep-20191210_1435_1862594527919600
+      scorep-score -r profile.cubex > profile.txt
+      less profile.txt
 
 
       Estimated aggregate size of event trace:                   7kB
@@ -488,9 +488,9 @@ tracing.
 
 .. code::
 
-    cd scorep-20191211_1647_1910918433289249
-    scorep-score -r profile.cubex > profile.txt
-        less profile.txt
+       cd scorep-20191211_1647_1910918433289249
+       scorep-score -r profile.cubex > profile.txt
+       less profile.txt
 
 
        Estimated aggregate size of event trace:                   12MB
@@ -539,7 +539,7 @@ Instrumenting the MPI+OpenMP version of MiniWeather
 ----------------------------------------------------
 
 
- - Execute the MPI+OpenMP version
+- Prepare the MPI+OpenMP version
 
 
 - Edit the `cmake_summit_pgi.sh` and replace
@@ -555,7 +555,7 @@ with
         SCOREP_WRAPPER=off cmake -DCMAKE_CXX_COMPILER=scorep-mpicxx
 
 
- - Compile the code
+- Compile the code
 
  .. code::
 
@@ -586,9 +586,9 @@ with
 
  .. code::
 
-         cd scorep-20191212_1359_1949859062811255
-         scorep-score -r profile.cubex > profile.txt
-         less profile.txt
+    cd scorep-20191212_1359_1949859062811255
+    scorep-score -r profile.cubex > profile.txt
+    less profile.txt
 
     Estimated aggregate size of event trace:                   147MB
     Estimated requirements for largest trace buffer (max_buf): 5MB
@@ -632,21 +632,23 @@ with
 
         SCOREP_WRAPPER=off cmake -DCMAKE_CXX_COMPILER=scorep-mpicxx
 
+- Compile the application
 
-
-  .. code::
+.. code::
 
           $ module load pgi
           $ module load parallel-netcdf
           $ module load scorep/6.0
           $ make openacc SCOREP_WRAPPER_INSTRUMENTER_FLAGS="--mpp=mpi --cuda --openacc"
 
-  Add to your submission script the Score-P variables that you want to use (or
-  uncomment them below). By default, the Score-P will apply profiling, and not
-  tracing.
 
+Add to your submission script the Score-P variables that you want to use (or
+uncomment them below). By default, the Score-P will apply profiling, and not
+tracing.
 
-  .. code::
+- Part of the submission script
+
+.. code::
 
            module load scorep/6.0
 
@@ -664,9 +666,9 @@ with
 
   .. code::
 
-      cd scorep-20191217_1015_2906378202661
-          scorep-score -r profile.cubex > profile.txt
-          less profile.txt
+       cd scorep-20191217_1015_2906378202661
+       scorep-score -r profile.cubex > profile.txt
+       less profile.txt
 
 
        Estimated aggregate size of event trace:                   6MB
