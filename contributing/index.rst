@@ -48,7 +48,8 @@ Setup authoring environment
     $ cd olcf-user-docs && sphinx-build -E . _build
 
 #. Locally preview the generated web pages
-   start a webserver on something like ``localhost:8080`` that points at
+
+   Start a webserver on something like ``localhost:8080`` that points at
    your ``olcf-user-docs/_build`` directory. For example, using busybox::
 
         $ busybox httpd -p 127.0.0.1:8080 -h /home/ubuntu/olcf-user-docs/_build
@@ -56,6 +57,8 @@ Setup authoring environment
    or a python webserver (from inside the document root)::
 
         $ python3 -m http.server 8080
+
+   Open a broswer and type ``localhost:8080`` into the address bar to view the web pages.
 
 Edit the docs
 -------------------------
@@ -71,7 +74,7 @@ local environment to make multiple changes.
 #. Make your edits in a new git branch::
 
       $ git checkout -b my-edits-branch
-      (edit some files, commit them to your branch)
+      ## (Please edit *.rst files, and commit them to your branch.)
 
 #. Preview your edits
 #. Push your edits to your GitHub fork::
@@ -108,5 +111,3 @@ Here are some guidelines and common practices that we use in this project.
   suggest them as reviewers on the PR.
 - You do not need to assign labels to your PR, but you may do so if you have
   suggestions. However, be aware that the labels might get changed.
-- If an issue or PR requires discussion with the OLCF's User Support Group,
-  use the GitHub Team tag ``@olcf/ua-support``.
