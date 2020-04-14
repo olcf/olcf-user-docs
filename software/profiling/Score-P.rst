@@ -282,22 +282,41 @@ model such as MPI or OpenMP. However, as the source code for this **specific**
 case includes MPI headers that are not excluded during the compilation of the
 serial version, we should declare a Makefile with MPI. 
 
-- Edit the makefile and replace ``mpic++`` with ``scorep --mpp=mpi mpic++``
+- Edit the `cmake_summit_pgi.sh` and replace
 
 .. code::
 
+	cmake -DCMAKE_CXX_COMPILER=mpicxx
+
+with
+
+.. code::
+
+	SCOREP_WRAPPER=off cmake -DCMAKE_CXX_COMPILER=scorep-mpicxx
+
+
+and execute
+
+.. code::
+
+    $ module load pgi
+    $ module load parallel-netcdf
     $ module load scorep/6.0
-    $ make serial
+    $ make serial SCOREP_WRAPPER_INSTRUMENTER_FLAGS="--mpp=mpi
 
-If there were no MPI headers, you should edit the Makefile with:
+If there were no MPI headers, you should edit the `cmake_summit_pgi.sh` with:
 
-``scorep --mpp=none g++``
+.. code::
 
-However, as there are MPI headers, we need to declare 
+	cmake -DCMAKE_CXX_COMPILER=scorep-pgc++
 
-``scorep --mpp=mpi mpic++``
+and execute:
 
-If you want to add PDT, then use the option ``--pdt``
+.. code::
+
+	make serial
+
+If you want to add PDT, then use the option ``--pdt`` in the variable ``SCOREP_WRAPPER_INSTRUMENTER_FLAGS``
 
 Add to your submission script the Score-P variables that you want to use (or
 uncomment them below). By default the Score-P will apply profiling, and not apply tracing.
@@ -305,12 +324,12 @@ uncomment them below). By default the Score-P will apply profiling, and not appl
 .. code::
 
         #PAPI metrics
-    export SCOREP_METRIC_PAPI=PAPI_TOT_INS,PAPI_TOT_CYC,PAPI_FP_OPS
+    	export SCOREP_METRIC_PAPI=PAPI_TOT_INS,PAPI_TOT_CYC,PAPI_FP_OPS
 
-    export SCOREP_MPI_ENABLE_GROUPS=ALL
-    export SCOREP_TOTAL_MEMORY=20MB
+    	export SCOREP_MPI_ENABLE_GROUPS=ALL
+    	export SCOREP_TOTAL_MEMORY=20MB
 
-        time jsrun -n 1 -r 1 -a 1 -c 1 -g 1  ./miniWeather_serial
+        time jsrun -n 1 -r 1 -a 1 -c 1  ./serial
 
 
 - When the execution finishes, one directory is created named ``scorep-<date>_<time>_<runid>``
@@ -332,27 +351,30 @@ uncomment them below). By default the Score-P will apply profiling, and not appl
     scorep-score -r profile.cubex > profile.txt
     less profile.txt
 
-    Estimated aggregate size of event trace:                   1057kB
-    Estimated requirements for largest trace buffer (max_buf): 1057kB
-    Estimated memory requirements (SCOREP_TOTAL_MEMORY):       4097kB
-    (hint: When tracing set SCOREP_TOTAL_MEMORY=4097kB to avoid intermediate flushes
-     or reduce requirements using USR regions filters.)
 
-    flt     type max_buf[B] visits time[s] time[%] time/visit[us]  region
-            ALL  1,081,567 35,754   70.08   100.0        1959.93  ALL
-            MPI    964,448 31,250    0.98     1.4          31.36  MPI
-            USR    117,026  4,501   68.79    98.2       15283.49  USR
-            COM         52      2    0.30     0.4      152111.97  COM
-              SCOREP        41      1    0.00     0.0          65.14  SCOREP
+      Estimated aggregate size of event trace:                   7kB
+      Estimated requirements for largest trace buffer (max_buf): 7kB
+      Estimated memory requirements (SCOREP_TOTAL_MEMORY):       4097kB
+           (hint: When tracing set SCOREP_TOTAL_MEMORY=4097kB to avoid intermediate flushes
+           or reduce requirements using USR regions filters.)
 
-         MPI    655,200 25,200    0.05     0.1           1.83  MPI_Get_address
-         USR    117,026  4,501   68.79    98.2       15283.49  perform_timestep(double*, double*, double*, double*, double)
-         MPI     60,400    604    0.45     0.6         739.90  MPI_File_write_at_all
-         MPI     51,340    755    0.00     0.0           3.49  MPI_Allreduce
-         MPI     45,400    454    0.01     0.0          13.39  MPI_File_write_at
+     flt     type max_buf[B] visits time[s] time[%]   time/visit[us]  region
+              ALL      6,529    207  236.20   100.0       1141082.26  ALL
+              USR      3,952    152  232.24    98.3       1527889.57  USR
+              MPI      2,484     52    0.36     0.2          6946.01  MPI
+              COM         52      2    3.60     1.5       1801772.87  COM
+           SCOREP         41      1    0.00     0.0            74.15  SCOREP
+
+              USR      3,926    151  232.24    98.3       1538006.62  perform_timestep(double*, double*, double*, double*, double)
+              MPI        476      7    0.00     0.0            17.75  MPI_Allreduce
+              MPI        400      4    0.00     0.0           163.35  MPI_File_write_at
+              MPI        400      4    0.07     0.0         16440.27  MPI_File_write_at_all
+              MPI        234      9    0.00     0.0             2.34  MPI_Comm_rank
+              MPI        138      2    0.07     0.0         33626.38  MPI_File_open
+              MPI        136      2    0.00     0.0             6.75  MPI_Bcast
 
 
-- We can see that 98.2% of the execution time is spent on user functions and only 1.4% on MPI as there is no real MPI calls on serial code, just some calls are not excluded.
+- We can see that 98.3% of the execution time is spent on user functions and only 1.4% on MPI as there is no real MPI calls on serial code, just some calls are not excluded.
 
 
 Explanation
@@ -386,7 +408,7 @@ Explanation
 We can observe the percentage of each type consumes during the execution of the serial version of MiniWeather
 
 
-- Repeat the previous procedure but activate PDT, instead of  ``scorep --mpp=mpi mpic++``, declare ``scorep --mpp=mpi --pdt mpic++``
+- Repeat the previous procedure but activate PDT, instead of  ``--mpp=mpi``, declare ``--mpp=mpi --pdt``
 
 - The the output of the profiling data are:
 
@@ -424,17 +446,29 @@ Instrumenting the MPI version of MiniWeather
 Profiling
 ~~~~~~~~~
 
-For the MPI version, we should use a makefile with MPI. 
-Edit the Makefile and declare the compiler for CC.
 
-``scorep --mpp=mpi --pdt mpic++``
+- Edit the `cmake_summit_pgi.sh` and replace
+
+.. code::
+
+        cmake -DCMAKE_CXX_COMPILER=mpicxx
+
+with
+
+.. code::
+
+        SCOREP_WRAPPER=off cmake -DCMAKE_CXX_COMPILER=scorep-mpicxx
+
+
+and execute
+
 
 .. code::
 
         $ module load pgi
         $ module load parallel-netcdf
         $ module load scorep/6.0
-        $ make mpi
+        $ make mpi SCOREP_WRAPPER_INSTRUMENTER_FLAGS="--mpp=mpi"
 
 Add to your submission script the Score-P variables that you want to use (or
 uncomment them below). By default, the Score-P will apply profiling, and not
@@ -442,14 +476,13 @@ tracing.
 
 .. code::
 
-        module load scorep/6.0
-        #PAPI metrics
+    #PAPI metrics
 
     export SCOREP_METRIC_PAPI=PAPI_TOT_INS,PAPI_TOT_CYC,PAPI_FP_OPS
     export SCOREP_MPI_ENABLE_GROUPS=ALL
     export SCOREP_TOTAL_MEMORY=20MB
 
-        jsrun -n 64 -r 8 -a 1 -c 1 ./miniWeather_mpi
+    jsrun -n 64 -r 8 -a 1 -c 1 ./mpi
 
 - A new folder is created and we check the results
 
@@ -459,30 +492,33 @@ tracing.
     scorep-score -r profile.cubex > profile.txt
         less profile.txt
 
-    Estimated aggregate size of event trace:                   1071MB
-    Estimated requirements for largest trace buffer (max_buf): 17MB
-    Estimated memory requirements (SCOREP_TOTAL_MEMORY):       19MB
-    (hint: When tracing set SCOREP_TOTAL_MEMORY=19MB to avoid intermediate flushes
-    or reduce requirements using USR regions filters.)
 
-    flt     type max_buf[B]     visits time[s] time[%] time/visit[us]  region
-             ALL 17,631,831 26,151,351 2624.21   100.0         100.35  ALL
-             MPI 12,130,086 12,559,329 1908.82    72.7         151.98  MPI
-             USR  3,249,298  7,822,166  618.97    23.6          79.13  USR
-             COM  2,343,978  5,769,792   96.41     3.7          16.71  COM
-              SCOREP         41         64    0.01     0.0          92.71  SCOREP
+       Estimated aggregate size of event trace:                   12MB
+       Estimated requirements for largest trace buffer (max_buf): 188kB
+       Estimated memory requirements (SCOREP_TOTAL_MEMORY):       4097kB
+            (hint: When tracing set SCOREP_TOTAL_MEMORY=4097kB to avoid intermediate flushes
+            or reduce requirements using USR regions filters.)
 
-             MPI  4,806,000  3,456,000   13.67     0.5           3.95  MPI_Isend
-             MPI  4,806,000  3,456,000   11.84     0.5           3.43  MPI_Irecv
-             MPI  1,404,000  3,456,000  109.38     4.2          31.65  MPI_Waitall
-             COM  1,404,000  3,456,000   45.78     1.7          13.25  void semi_discrete_step(double *, double *, double *, double, int, double *, double *)
-             USR    702,000  1,728,000  317.84    12.1         183.94  void compute_tendencies_x(double *, double *, double *)
-             COM    702,000  1,728,000   31.13     1.2          18.01  void set_halo_values_x(double *)
-             USR    702,000  1,728,000    3.57     0.1           2.07  void set_halo_values_z(double *)
-             USR    702,000  1,728,000  289.24    11.0         167.39  void compute_tendencies_z(double *, double *, double *)
+       flt     type max_buf[B]  visits time[s] time[%] time/visit[us]  region
+                ALL    192,445 188,754  338.19   100.0        1791.71  ALL
+                MPI    188,400 178,834   96.73    28.6         540.87  MPI
+                COM      3,978   9,792  241.45    71.4       24657.66  COM
+             SCOREP         41      64    0.00     0.0          75.47  SCOREP
+                USR         26      64    0.01     0.0         205.46  USR
 
-- Now that we use MPI, we can observe that 72.7% of the total execution time was MPI calls, there were almost 3.5 million MPI_Isend/MPI_Irecv calls
-- Moreover in the first line we are informed that if we activate tracing, the size will be close to 1GB and the miinimum requirement for the memory (SCOREP_TOTAL_MEMORY) that we use already.
+                MPI     80,634  57,984    0.25     0.1           4.38  MPI_Irecv
+                MPI     80,634  57,984    0.32     0.1           5.55  MPI_Isend
+                MPI     23,556  57,984    5.57     1.6          96.01  MPI_Waitall
+                COM      3,926   9,664  237.29    70.2       24554.25  perform_timestep(double*, double*, double*, double*, double)
+                MPI        476     448   15.71     4.6       35071.16  MPI_Allreduce
+                MPI        400       4    0.00     0.0         753.39  MPI_File_write_at
+                MPI        400     256    1.31     0.4        5113.83  MPI_File_write_at_all
+
+
+
+
+- Now that we use MPI, we can observe that 28.6% of the total execution time was MPI calls, there were almost 160 thousand MPI_Isend/MPI_Irecv calls
+- Moreover in the first line we are informed that if we activate tracing, the size will be close to 12 MB and the minimum requirement for the memory (SCOREP_TOTAL_MEMORY) that we use already.
 - The profile.cubex file can be opened with the cube tool but will present this later
 
 
@@ -505,16 +541,28 @@ Instrumenting the MPI+OpenMP version of MiniWeather
 
  - Execute the MPI+OpenMP version
 
-Edit the Makefile and declare the compiler for CC.
 
- ``scorep --mpp=mpi --thread=omp --pdt mpic++``
+- Edit the `cmake_summit_pgi.sh` and replace
+
+.. code::
+
+        cmake -DCMAKE_CXX_COMPILER=mpicxx
+
+with
+
+.. code::
+
+        SCOREP_WRAPPER=off cmake -DCMAKE_CXX_COMPILER=scorep-mpicxx
+
+
+ - Compile the code
 
  .. code::
 
          $ module load pgi
          $ module load parallel-netcdf
          $ module load scorep/6.0
-         $ make openmp
+         $ make openmp SCOREP_WRAPPER_INSTRUMENTER_FLAGS="--mpp=mpi --thread=omp"
 
  Add to your submission script the Score-P variables that you want to use (or
  uncomment them below). By default, the Score-P will apply profiling, and not
@@ -529,9 +577,9 @@ Edit the Makefile and declare the compiler for CC.
 
          export SCOREP_MPI_ENABLE_GROUPS=ALL
          export SCOREP_TOTAL_MEMORY=20MB
-     export OMP_NUM_THREADS=8
+         export OMP_NUM_THREADS=8
 
-     jsrun -n 64 -r 8 -a 1 -c 8 "-b packed:8" ./miniWeather_mpi_openmp
+         jsrun -n 32 -r 4 -a 1 -c 8 -b packed:8 ./openmp
 
 
 - A new folder is created and we check the results
@@ -542,46 +590,56 @@ Edit the Makefile and declare the compiler for CC.
          scorep-score -r profile.cubex > profile.txt
          less profile.txt
 
-    Estimated aggregate size of event trace:                   5GB
-    Estimated requirements for largest trace buffer (max_buf): 306MB
-    Estimated memory requirements (SCOREP_TOTAL_MEMORY):       322MB
+    Estimated aggregate size of event trace:                   147MB
+    Estimated requirements for largest trace buffer (max_buf): 5MB
+    Estimated memory requirements (SCOREP_TOTAL_MEMORY):       21MB
     (hint: When tracing set SCOREP_TOTAL_MEMORY=322MB to avoid intermediate flushes
      or reduce requirements using USR regions filters.)
 
      flt    type  max_buf[B]      visits time[s] time[%] time/visit[us]  region
-             ALL 319,855,935 101,660,439 1533.97   100.0          15.09  ALL
-             OMP 300,410,136  94,018,752 1033.35    67.4          10.99  OMP
-             MPI  12,130,086   3,141,969  446.00    29.1         141.95  MPI
-             COM   4,449,978   2,738,448   48.89     3.2          17.85  COM
-             USR   2,865,694   1,761,254    5.73     0.4           3.25  USR
-              SCOREP          41          16    0.00     0.0          94.38  SCOREP
+             ALL  4,799,561    3,312,370  314.15   100.0          94.84  ALL
+             OMP  4,540,296    3,135,744  279.71    89.0          89.20  OMP
+             MPI    188,400       89,426   32.50    10.3         363.39  MPI
+             COM     70,798       87,136    1.93     0.6          22.16  COM
+          SCOREP         41           32    0.00     0.0          91.94  SCOREP
+             USR         26           32    0.01     0.0         241.39  USR
 
-             OMP  37,584,000   6,912,000   29.55     1.9           4.28  !$omp parallel @miniWeather_mpi_openmp.cpp:213
-             OMP  18,792,000   3,456,000   15.06     1.0           4.36  !$omp parallel @miniWeather_mpi_openmp.cpp:291
-             OMP  18,792,000   3,456,000   14.71     1.0           4.26  !$omp parallel @miniWeather_mpi_openmp.cpp:322
-             OMP  18,792,000   3,456,000   15.10     1.0           4.37  !$omp parallel @miniWeather_mpi_openmp.cpp:236
-             OMP  18,792,000   3,456,000   14.72     1.0           4.26  !$omp parallel @miniWeather_mpi_openmp.cpp:267
-             OMP  18,792,000   3,456,000   15.00     1.0           4.34  !$omp parallel @miniWeather_mpi_openmp.cpp:369
+             OMP    630,576      231,936    1.04     0.3           4.47  !$omp parallel @miniWeather_mpi_openmp.cpp:232
+             OMP    315,288      115,968    0.52     0.2           4.49  !$omp parallel @miniWeather_mpi_openmp.cpp:310
+             OMP    315,288      115,968    0.52     0.2           4.48  !$omp parallel @miniWeather_mpi_openmp.cpp:346
+             OMP    315,288      115,968    0.52     0.2           4.52  !$omp parallel @miniWeather_mpi_openmp.cpp:255
+             OMP    315,288      115,968    0.52     0.2           4.47  !$omp parallel @miniWeather_mpi_openmp.cpp:286
+             OMP    315,288      115,968    0.52     0.2           4.51  !$omp parallel @miniWeather_mpi_openmp.cpp:375
+
          ...
-                 OMP   5,616,000   3,456,000  278.62    18.2          80.62  !$omp for @miniWeather_mpi_openmp.cpp:236      
 
-- We can observe that OpenMP consumes the 67.4% of the execution tiime and which OMP pragma occupies more time and which line.
-- Moreover, the traces now would be 5GB and the memory reuquirements are 322MB per process.
+- We can observe that OpenMP consumes the 89% of the execution tiime and which OMP pragma occupies more time and which line.
+- Moreover, the traces now would be 147 MB and the memory reuquirements are 21 MB per process.
 
 Instrumenting the MPI+OpenACC version of MiniWeather
 ----------------------------------------------------
 
 
- - Edit the Makefile and declare the compiler for CC.
+- Edit the `cmake_summit_pgi.sh` and replace
 
-  ``scorep --mpp=mpi --cuda --openacc --pdt mpic++``
+.. code::
+
+        cmake -DCMAKE_CXX_COMPILER=mpicxx
+
+with
+
+.. code::
+
+        SCOREP_WRAPPER=off cmake -DCMAKE_CXX_COMPILER=scorep-mpicxx
+
+
 
   .. code::
 
           $ module load pgi
           $ module load parallel-netcdf
           $ module load scorep/6.0
-          $ make openacc
+          $ make openacc SCOREP_WRAPPER_INSTRUMENTER_FLAGS="--mpp=mpi --cuda --openacc"
 
   Add to your submission script the Score-P variables that you want to use (or
   uncomment them below). By default, the Score-P will apply profiling, and not
@@ -597,9 +655,9 @@ Instrumenting the MPI+OpenACC version of MiniWeather
 
            export SCOREP_MPI_ENABLE_GROUPS=ALL
            export SCOREP_TOTAL_MEMORY=20MB
-       export SCOREP_OPENACC_ENABLE=default
+           export SCOREP_OPENACC_ENABLE=default
 
-           jsrun -n 6 -r 3 --smpiargs="-gpu" -g 1 ./miniWeather_mpi_openacc
+           jsrun -n 6 -r 3 --smpiargs="-gpu" -g 1 ./openacc
 
 
 - A new folder is created and we check the results
@@ -610,35 +668,34 @@ Instrumenting the MPI+OpenACC version of MiniWeather
           scorep-score -r profile.cubex > profile.txt
           less profile.txt
 
-      Estimated aggregate size of event trace:                   350MB
-      Estimated requirements for largest trace buffer (max_buf): 62MB
-      Estimated memory requirements (SCOREP_TOTAL_MEMORY):       64MB
-          (hint: When tracing set SCOREP_TOTAL_MEMORY=64MB to avoid intermediate flushes
-          or reduce requirements using USR regions filters.)
 
-     flt     type max_buf[B]     visits time[s] time[%] time/visit[us]  region
-              ALL 64,183,583 12,509,267  269.54   100.0          21.55  ALL
-              OPENACC 40,727,960  8,723,760   64.95    24.1           7.45  OPENACC
-                  MPI 12,130,086  1,180,019  170.57    63.3         144.55  MPI
-                  USR  6,875,518  1,578,564    5.19     1.9           3.29  USR
-                  COM  4,449,978  1,026,918   28.83    10.7          28.07  COM
-               SCOREP         41          6    0.00     0.0          93.51  SCOREP
+       Estimated aggregate size of event trace:                   6MB
+       Estimated requirements for largest trace buffer (max_buf): 864kB
+       Estimated memory requirements (SCOREP_TOTAL_MEMORY):       4097kB
+            (hint: When tracing set SCOREP_TOTAL_MEMORY=4097kB to avoid intermediate flushes
+            or reduce requirements using USR regions filters.)
 
-              MPI  4,806,000    324,000    1.65     0.6           5.10  MPI_Isend
-              MPI  4,806,000    324,000    1.29     0.5           3.98  MPI_Irecv
-              USR  3,410,394    783,342    1.74     0.6           2.22  void hydro_const_theta(double, double &, double &)
-              USR  3,410,394    783,342    3.41     1.3           4.36  void injection(double, double, double &, double &, double &, double &, double &, double &)
-              MPI  1,404,000    324,000   11.63     4.3          35.91  MPI_Waitall
-              COM  1,404,000    324,000    5.22     1.9          16.10  void semi_discrete_step(double *, double *, double *, double, int, double *, double *)
-              OPENACC  1,404,000    324,000    2.56     0.9           7.90  acc_download@miniWeather_mpi_openacc.cpp:370
-              OPENACC  1,404,000    324,000    2.72     1.0           8.41  acc_upload@miniWeather_mpi_openacc.cpp:380
-              OPENACC  1,404,000    324,000    2.32     0.9           7.16  acc_wait@miniWeather_mpi_openacc.cpp:380
-              OPENACC  1,404,000    324,000    1.60     0.6           4.94  acc_data_enter@miniWeather_mpi_openacc.cpp:220
-              OPENACC  1,404,000    324,000    2.85     1.1           8.79  acc_compute@miniWeather_mpi_openacc.cpp:220
-              OPENACC  1,404,000    324,000    2.71     1.0           8.36  acc_launch_kernel@miniWeather_mpi_openacc.cpp:220
+       flt     type max_buf[B]  visits time[s] time[%] time/visit[us]  region
+                ALL    884,435 177,402   12.52   100.0          70.60  ALL
+            OPENACC    625,196 144,276    1.97    15.7          13.64  OPENACC
+                MPI    188,400  16,782    3.67    29.3         218.60  MPI
+                COM     70,772  16,332    6.89    55.0         421.72  COM
+             SCOREP         41       6    0.00     0.0          82.79  SCOREP
+                USR         26       6    0.00     0.0          16.78  USR
+
+                MPI     80,634   5,436    0.02     0.2           4.06  MPI_Irecv
+                MPI     80,634   5,436    0.03     0.3           6.10  MPI_Isend
+                MPI     23,556   5,436    0.15     1.2          27.79  MPI_Waitall
+                COM     23,556   5,436    0.09     0.7          15.82  semi_discrete_step(double*, double*, double*, double, int, double*, double*)
+            OPENACC     23,556   5,436    0.06     0.5          11.56  acc_download@miniWeather_mpi_openacc.cpp:395
+            OPENACC     23,556   5,436    0.05     0.4           9.02  acc_upload@miniWeather_mpi_openacc.cpp:405
+            OPENACC     23,556   5,436    0.04     0.3           7.44  acc_wait@miniWeather_mpi_openacc.cpp:405
+            OPENACC     23,556   5,436    0.03     0.2           4.88  acc_data_enter@miniWeather_mpi_openacc.cpp:240
 
 
-- The OpenACC consumes 24.1% of the total execution time 
+
+
+- The OpenACC consumes 15.7% of the total execution time 
 - We are going to trace the MPI+OpenACC version and we'll adjust the buffer size
 - The new submission script will be like the following:
 
@@ -650,9 +707,9 @@ Instrumenting the MPI+OpenACC version of MiniWeather
             export SCOREP_METRIC_PAPI=PAPI_TOT_INS,PAPI_TOT_CYC,PAPI_FP_OPS
 
             export SCOREP_MPI_ENABLE_GROUPS=ALL
-            export SCOREP_TOTAL_MEMORY=70MB
+            export SCOREP_TOTAL_MEMORY=5MB
             export SCOREP_OPENACC_ENABLE=default
-        export SCOREP_ENABLE_TRACING=true
+            export SCOREP_ENABLE_TRACING=true
             export SCOREP_ENABLE_PROFILING=false
 
             jsrun -n 6 -r 3 --smpiargs="-gpu" -g 1 ./miniWeather_mpi_openacc
