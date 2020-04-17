@@ -2443,13 +2443,6 @@ sockets within a node, consideration should be given to the cost of
 cross-socket communication. By creating resource sets only within
 sockets, costly communication between sockets can be prevented.
 
-One or more resource sets can be created on a single node and can span
-sockets. But, a resource set can not span nodes.
-
-While a resource set can span sockets within a node, consideration
-should be given to the cost of cross-socket communication. Creating
-resource sets within sockets will prevent cross-socket communication.
-
 Subdividing a Node with Resource Sets
 """""""""""""""""""""""""""""""""""""
 
