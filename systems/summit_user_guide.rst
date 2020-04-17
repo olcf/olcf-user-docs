@@ -3171,13 +3171,14 @@ the full names for a collection of metrics, use ``--query-metrics-mode suffix
 --metrics <metrics list>``.
 
 
-As with Nsight Systems, there is a graphical user interface you can load
-a report file into. Use the ``-o`` flag to create a file (the added report
-extension will be ``.nsight-cuprof-report``), copy it to your local system,
-and use the File > Open File menu item. If you are using multiple MPI ranks,
-make sure you name each one independently. Nsight Compute does not yet support
-the ``%q`` syntax (this will come in a future release), so your job script will
-have to do the naming manually; for example, you can create a simple shell script:
+As with Nsight Systems, there is a graphical user interface you can load a
+report file into (The GUI is only available for Windows, x86_64 Linux and Mac).
+Use the ``-o`` flag to create a file (the added report extension will be
+``.nsight-cuprof-report``), copy it to your local system, and use the File >
+Open File menu item. If you are using multiple MPI ranks, make sure you name
+each one independently. Nsight Compute does not yet support the ``%q`` syntax
+(this will come in a future release), so your job script will have to do the
+naming manually; for example, you can create a simple shell script:
 
 ::
 
