@@ -3132,6 +3132,9 @@ prefixed to your application to collect a report.
 
     summit> jsrun -n1 -a1 -g1 nv-nsight-cu-cli ./vectorAdd
 
+Similar to Nsight Systems, Nsight Compute will create a temporary report file,
+even when ``-o`` is not specified.
+
 The most important output to look at is the "GPU Speed of Light" section,
 which tells you what fraction of peak memory throughput and what fraction
 of peak compute throughput you achieved. Typically if you have achieved
