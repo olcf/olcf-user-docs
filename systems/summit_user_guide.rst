@@ -3139,9 +3139,10 @@ higher than 60% of the peak of either subsystem, your kernel would be
 considered memory-bound or compute-bound (respectively), and if you have
 not achieved 60% of either this is often a latency-bound kernel. (A common
 cause of latency issues is not exposing enough parallelism to saturate
-the GPU's compute capacity -- peak GPU performance can only be achieved
-when there is enough work to hide the relatively long latency of memory
-accesses on the GPU).
+the GPU's compute capacity -- peak GPU performance can only be achieved when
+there is enough work to hide the latency of memory access and to keep all
+compute pipelines busy.)
+
 
 By default, Nsight Compute will collect this performance data for every
 kernel in your application. This will take a long time in a real application.
