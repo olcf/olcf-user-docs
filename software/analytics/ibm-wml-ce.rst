@@ -254,7 +254,7 @@ is doing. The following is the first line of the output from the above script:
     ...
 
 Problems Distributing Pytorch with Multiple Data Loader Workers
----------------------
+---------------------------------------------------------------
 
 Problem
 ^^^^^^^
