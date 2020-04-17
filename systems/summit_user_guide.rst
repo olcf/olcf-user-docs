@@ -3144,14 +3144,14 @@ there is enough work to hide the latency of memory access and to keep all
 compute pipelines busy.)
 
 
-By default, Nsight Compute will collect this performance data for every
-kernel in your application. This will take a long time in a real application.
-It is recommended that you identify a specific kernel to profile and then
-use the ``-k`` argument to just profile that kernel. (If you don't know the
-name of your kernel, use ``nsys`` to obtain that. The flag will pattern match
-on any substring of the kernel name.) You can also use the ``-s`` option to
-skip some number of kernel calls and the ``-c`` option to specify how many
-invocations of that kernel you want to profile.
+By default, Nsight Compute will collect this performance data for every kernel
+in your application. This will take a long time in a real-world application.
+It is recommended that you identify a specific kernel to profile and then use
+the ``-k`` argument to just profile that kernel. (If you don't know the name of
+your kernel, use ``nsys`` to obtain that. The flag will pattern match on any
+substring of the kernel name.) You can also use the ``-s`` option to skip some
+number of kernel calls and the ``-c`` option to specify how many invocations of
+that kernel you want to profile.
 
 If you want to collect information on just a specific performance measurement,
 for example the number of bytes written to DRAM, you can do so with the
