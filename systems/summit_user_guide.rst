@@ -3161,7 +3161,12 @@ for example the number of bytes written to DRAM, you can do so with the
 
     summit> jsrun -n1 -a1 -g1 nv-nsight-cu-cli -k vectorAdd --metrics dram__bytes_write.sum ./vectorAdd
 
-The list of available metrics can be obtained with ``nv-nsight-cu-cli --query-metrics``.
+The list of available metrics can be obtained with ``nv-nsight-cu-cli
+--query-metrics``. Most metrics have both a base name and suffix. Together
+these  make up the full metric name to pass to ``nv-nsight-cu-cli``. To list
+the full names for a collection of metrics, use ``--query-metrics-mode suffix
+--metrics <metrics list>``.
+
 
 As with Nsight Systems, there is a graphical user interface you can load
 a report file into. Use the ``-o`` flag to create a file (the added report
