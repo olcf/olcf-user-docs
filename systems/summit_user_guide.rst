@@ -2606,16 +2606,16 @@ per node (``-r6``). Each resource set will contain 1 MPI task (``-a1``),
     Rank:    0; NumRanks: 12; RankCore:   0; Hostname: h41n04; GPU: 0
     Rank:    1; NumRanks: 12; RankCore:   4; Hostname: h41n04; GPU: 1
     Rank:    2; NumRanks: 12; RankCore:   8; Hostname: h41n04; GPU: 2
-    Rank:    3; NumRanks: 12; RankCore:  84; Hostname: h41n04; GPU: 3
-    Rank:    4; NumRanks: 12; RankCore:  89; Hostname: h41n04; GPU: 4
-    Rank:    5; NumRanks: 12; RankCore:  92; Hostname: h41n04; GPU: 5
+    Rank:    3; NumRanks: 12; RankCore:  88; Hostname: h41n04; GPU: 3
+    Rank:    4; NumRanks: 12; RankCore:  92; Hostname: h41n04; GPU: 4
+    Rank:    5; NumRanks: 12; RankCore:  96; Hostname: h41n04; GPU: 5
 
     Rank:    6; NumRanks: 12; RankCore:   0; Hostname: h41n03; GPU: 0
     Rank:    7; NumRanks: 12; RankCore:   4; Hostname: h41n03; GPU: 1
     Rank:    8; NumRanks: 12; RankCore:   8; Hostname: h41n03; GPU: 2
-    Rank:    9; NumRanks: 12; RankCore:  84; Hostname: h41n03; GPU: 3
-    Rank:   10; NumRanks: 12; RankCore:  89; Hostname: h41n03; GPU: 4
-    Rank:   11; NumRanks: 12; RankCore:  92; Hostname: h41n03; GPU: 5
+    Rank:    9; NumRanks: 12; RankCore:  88; Hostname: h41n03; GPU: 3
+    Rank:   10; NumRanks: 12; RankCore:  92; Hostname: h41n03; GPU: 4
+    Rank:   11; NumRanks: 12; RankCore:  96; Hostname: h41n03; GPU: 5
 
 Multiple tasks, single GPU per RS
 """""""""""""""""""""""""""""""""
