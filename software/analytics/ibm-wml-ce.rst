@@ -159,7 +159,7 @@ The ibm-wml-ce module contains the nvprof profiling tool. It can be used to
 profile work that is running on GPUs. It will give information about when
 different CUDA kernels are being launched and how long they take to complete.
 For more information on using the NVIDA profiling tools on Summit, please see
-these `slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/08/NVIDIA-Profilers.pdf>`.
+these `slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/08/NVIDIA-Profilers.pdf>`_.
 
 Horovod Timeline
 ^^^^^^^^^^^^^^^^
@@ -168,7 +168,7 @@ Horovod comes with a tool called Timeline which can help analyze the performance
 of Horovod. This is particularly useful when trying to scale a deep learning job
 to many nodes. The Timeline tool can help pick various options that can improve
 the performance of distributed deep learning jobs that are using Horovod. For
-more information, please see Horovod's `documentation <https://github.com/horovod/horovod#horovod-timeline>`.
+more information, please see Horovod's `documentation <https://github.com/horovod/horovod#horovod-timeline>`_.
 
 PyTorch’s Autograd Profiler
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -176,7 +176,7 @@ PyTorch’s Autograd Profiler
 PyTorch provides a builtin profiler that can be used to find bottlenecks
 within a training job. It is most useful for profiling the performance of a job
 running on a single GPU. For more information on using PyTorch's profiler, see
-PyTorch's `documentation <https://pytorch.org/docs/stable/bottleneck.html#torch-utils-bottleneck>`.
+PyTorch's `documentation <https://pytorch.org/docs/stable/bottleneck.html#torch-utils-bottleneck>`_.
 
 
 Reserving Whole Racks
