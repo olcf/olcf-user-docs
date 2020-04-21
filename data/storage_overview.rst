@@ -39,9 +39,9 @@ function:
   shared with other project members.
 
 - **World Work:** Short-term project data for fast, batch-job access that's
-  you don't want to share
+  shared with users outside your project.
 
-- **Member Archive:** Long-term project data for archival access that's shared
+- **Member Archive:** Long-term project data for archival access that is not shared
   with other project members.
 
 - **Project Archive:** Long-term project data for archival access that's shared
