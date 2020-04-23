@@ -2900,17 +2900,6 @@ ___________
 * OpenMP only supported with use of the ``OMP_NUM_THREADS`` environment variable.
 
 
-jsrunVisualizer
-"""""""""""""""
-
-jsrunVisualizer is a web-application that mimics basic jsrun behavior
-locally in your browser. It's an easy way to get familiar with jsrun
-options for Summit, understand how multiple flags interact, and share
-your layout ideas with others. Once you've crafted your per-node
-resource sets, you can take the job script it generates and run the same
-layout on Summit itself! https://jsrunvisualizer.olcf.ornl.gov/
-https://vimeo.com/299079999
-
 More Information
 ^^^^^^^^^^^^^^^^
 
