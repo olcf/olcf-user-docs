@@ -1553,10 +1553,11 @@ of memory**, and **1 GPU**.  Please note that limits are set per user and not
 individual login sessions. All user processes on a node are contained within a
 single cgroup and share the cgroup's limits.
 
-If a process from any of a user’s login sessions reaches 4-hours of CPU-time,
-all login sessions will be limited to **.5 hardware-thread**.  To reset the
-cgroup limits on a node to default once the 4-hour CPU-time reduction has been
-reached, kill the offending process and start a new login session to the node.
+If a process from any of a user’s login sessions reaches 4 hours of CPU-time,
+all login sessions will be limited to **.5 hardware-thread**. After 8 hours of
+CPU-time, the process is automatically killed. To reset the cgroup limits on a
+node to default once the 4 hour CPU-time reduction has been reached, kill the
+offending process and start a new login session to the node.
 
     .. note:: Login node limits are set per user and not per individual login
         session.  All user processes on a node are contained within a single cgroup
