@@ -1,0 +1,37 @@
+*****************************
+Overview
+*****************************
+
+*Slate* is the high-level service name referring to two user
+facing OpenShift clusters.
+
+| OpenShift is a container orchestration system built on top of Kubernetes and supported by Red Hat. 
+  Kubernetes provides a rich API and workload primitives that allows users to manage the application 
+  deployments of long running services such as web servers and databases.
+
+| OpenShift is a Kubernetes Certified Platform. This means that all of the functionality that is
+  in Kubernetes is also implemented in OpenShift. OpenShift has extra functionality built on 
+  top though, such as the container builder and integrated registry services.
+
+| **There is one OpenShift cluster in each OLCF 
+  enclave, Open and Moderate, listed below:**.
+
+| - **Marble** (Moderate Enclave)
+| - **Onyx** (Open Enclave)
+
+| Moderate is the enclave in which Summit, and it's supporting resources, is accessible.
+|
+| Open is the enclave in which Ascent, and it's suppporting resources, is accessible.
+
+What is Docker
+--------------
+Docker is a container runtime and is used by Kubernetes to actually run the containers on a node.
+
+What is Kubernetes
+------------------
+Kubernetes is an open-source system for automating deployment, scaling, and management of containerized applications.
+
+What is OpenShift
+-----------------
+OpenShift is a platform as a service (PaaS) offering from Red Hat that brings together Docker and Kubernetes, providing an API to manage these services.
+OpenShift allows you to create and manage containers.
