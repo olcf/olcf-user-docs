@@ -235,7 +235,7 @@ uncomment them below). By default the TAU will apply profiling, and not apply tr
 	#Activate tracing
 	#export TAU_TRACE=1
 
-	time jsrun -n 1 -r 1 -a 1 -c 1 -g 1  ./miniWeather_serial
+	jsrun -n 1 -r 1 -a 1 -c 1 -g 1  ./miniWeather_serial
 
 
 When the execution finishes, one directory is created for each ``TAU_METRICS``
