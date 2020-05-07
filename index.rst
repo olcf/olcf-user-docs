@@ -47,13 +47,13 @@ Systems
 
    systems/index
 
-Services
----------------
+Services and Applications
+-------------------------
 
 .. toctree::
    :maxdepth: 2
 
-   services/index
+   services_and_applications/index
 
 Data
 ------

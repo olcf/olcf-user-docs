@@ -1,5 +1,5 @@
 *******************
-Slate
+Slate Services
 *******************
 
 
@@ -8,4 +8,5 @@ Slate
 
    overview
    getting_started
-   applications
+   olcf_provided_applications/index.rst
+   building_your_own_application/index.rst

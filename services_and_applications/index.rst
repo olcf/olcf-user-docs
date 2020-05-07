@@ -1,8 +1,10 @@
 .. _slate:
 
 ############################
-Services
+Services and Applications
 ############################
+
+Some text about Slate Services and Applications/
 
 .. toctree::
    :maxdepth: 2
