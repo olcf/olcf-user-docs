@@ -26,6 +26,10 @@ It is a single binary that can be downloaded from a number of places (the choice
 
 - `Homebrew <https://brew.sh/>`_ on MacOS (need Homebrew setup first): 
 
+ .. note::
+
+     The Homebrew package is not always kept up to date with the latest version of OpenShift so some client features may not be available
+
  .. code-block:: bash
 
      brew install openshift-cli 
