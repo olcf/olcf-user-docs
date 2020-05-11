@@ -18,6 +18,12 @@ The OC tool provides CLI access to the OpenShift cluster. It needs to be install
 
 It is a single binary that can be downloaded from a number of places (the choice is yours):
 
+* Direct from the cluster (preferred):
+
+  * Marble `Command Line Tools <https://console-openshift-console.apps.marble.ccs.ornl.gov/command-line-tools>`_
+
+  * Onyx `Command Line Tools <https://console-openshift-console.apps.onyx.ccs.ornl.gov/command-line-tools>`_
+
 - `Homebrew <https://brew.sh/>`_ on MacOS (need Homebrew setup first): 
 
  .. code-block:: bash
@@ -89,4 +95,3 @@ Like oc, helm is a single binary executable.
 .. code-block:: bash
 
    helm ls
-
