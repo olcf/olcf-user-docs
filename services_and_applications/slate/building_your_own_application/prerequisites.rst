@@ -20,9 +20,9 @@ It is a single binary that can be downloaded from a number of places (the choice
 
 * Direct from the cluster (preferred):
 
-  * Marble `Command Line Tools <https://console-openshift-console.apps.marble.ccs.ornl.gov/command-line-tools>`_
+  * `Marble Command Line Tools <https://console-openshift-console.apps.marble.ccs.ornl.gov/command-line-tools>`_
 
-  * Onyx `Command Line Tools <https://console-openshift-console.apps.onyx.ccs.ornl.gov/command-line-tools>`_
+  * `Onyx Command Line Tools <https://console-openshift-console.apps.onyx.ccs.ornl.gov/command-line-tools>`_
 
 - `Homebrew <https://brew.sh/>`_ on MacOS (need Homebrew setup first): 
 
