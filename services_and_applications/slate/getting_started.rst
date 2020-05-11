@@ -12,7 +12,7 @@ to both the Onyx and Marble OLCF OpenShift clusters.
 Requesting A Slate Project Allocation
 -------------------------------------
 
-Please fill out this form in order to create a project space in Slate: **<Form coming soon>**
+Please fill out this form in order to create a project space in Slate: **<Form coming soon>** `Slate Request <https://www.olcf.ornl.gov/for-users/documents-forms/slate-request/>`_
 
 If you have any question please contact `User Assitance <https://www.olcf.ornl.gov/for-users/>`_, via a **Help Ticket Submission**, by emailing **help@olcf.ornl.gov**.
 
@@ -20,6 +20,7 @@ If you have any question please contact `User Assitance <https://www.olcf.ornl.g
 | - Existing OLCF Project ID
 | - Project PI
 | - Enclave (i.e. Open or Moderate Enclave - Onyx or Marble respectively)
+|   **NOTE:** Summit is in Moderate
 | - Description (i.e. How you will use Slate)
 | - Resource Request (i.e. CPU/Memory/Storage requirements - Default is 8CPU/16GB/50GB respectively)
 
