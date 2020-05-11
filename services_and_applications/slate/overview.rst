@@ -2,8 +2,7 @@
 Overview
 *****************************
 
-*Slate* is the high-level service name referring to two user
-facing OpenShift clusters.
+*Slate* provides container orchestration services that support a user project's existing Summit and Alpine allocations. The Slate service today consists two user facing OpenShift clusters which each provide capabilities unique to the security enclave that they are in.
 
 | OpenShift is a container orchestration system built on top of Kubernetes and supported by Red Hat. 
   Kubernetes provides a rich API and workload primitives that allows users to manage the application 
