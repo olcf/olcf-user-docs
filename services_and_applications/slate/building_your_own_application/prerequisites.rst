@@ -80,7 +80,7 @@ You can view/select/switch between projects/namespaces like this:
 Install Helm
 -------------
 
-Helm enables application deployment via "charts". High level Helm v3 architecture docs are availble at `Helm3 <https://helm.sh/docs/topics/architecture/>`_.
+Helm enables application deployment via `Helm Charts <https://helm.sh/docs/topics/charts/>`_. The high level `Helm Architecture <https://helm.sh/docs/topics/architecture/>`_ docs are also a great refernce for understanding Helm.
 
 Like oc, helm is a single binary executable. 
 

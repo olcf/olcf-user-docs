@@ -2,6 +2,11 @@
 Overview
 *****************************
 
+Overview of what Slate is and how Docker, Kubernetes, and OpenShift come together.
+
+What is Slate
+-------------
+
 *Slate* provides container orchestration services that support a user project's existing Summit and Alpine allocations. The Slate service today consists two user facing OpenShift clusters which each provide capabilities unique to the security enclave that they are in.
 
 | **There is one OpenShift cluster in each OLCF 
@@ -10,9 +15,9 @@ Overview
 | - **Marble** (Moderate Enclave)
 | - **Onyx** (Open Enclave)
 
-| Moderate is the enclave in which Summit, and it's supporting resources, is accessible.
+| Moderate is the enclave in which Summit (:ref:`summit-user-guide`) is accessible.
 |
-| Open is the enclave in which Ascent, and it's suppporting resources, is accessible.
+| Open is the enclave in which :ref:`ascent-user-guide` is accessible.
 
 What is Docker
 --------------
