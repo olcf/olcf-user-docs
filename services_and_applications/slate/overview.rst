@@ -1,5 +1,7 @@
+.. _slate_overview:
+
 *****************************
-Overview
+Slate Overview
 *****************************
 
 Overview of what Slate is and how Docker, Kubernetes, and OpenShift come together.

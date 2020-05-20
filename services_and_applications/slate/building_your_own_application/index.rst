@@ -7,3 +7,4 @@ Building Your Own Application on Slate
    :maxdepth: 2
 
    prerequisites
+   examples/index.rst
