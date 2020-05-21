@@ -4,7 +4,7 @@
 Getting Started
 *****************************
 
-This section will descsribes the project allocation process for Slate. This is applicable
+This section will descsribe the project allocation process for Slate. This is applicable
 to both the Onyx and Marble OLCF OpenShift clusters.
 
 | In addtion, we will go over the process to log into Onyx and Marble and how namespaces work within the OpenShift context.
@@ -12,7 +12,7 @@ to both the Onyx and Marble OLCF OpenShift clusters.
 Requesting A Slate Project Allocation
 -------------------------------------
 
-Please fill out this form in order to create a project space in Slate: **<Form coming soon>** `Slate Request <https://www.olcf.ornl.gov/for-users/documents-forms/slate-request/>`_
+Please fill out the `Slate Request Form <https://www.olcf.ornl.gov/for-users/documents-forms/slate-request/>`_ in order to use Slate resources. This must be done, in order to proceed.
 
 If you have any question please contact `User Assitance <https://www.olcf.ornl.gov/for-users/>`_, via a **Help Ticket Submission**, by emailing **help@olcf.ornl.gov**.
 

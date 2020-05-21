@@ -22,7 +22,7 @@ This is not meant to be a production deployment, but a away for users to gain fa
 Getting Started
 ---------------
 
-It is assumed you have already established the :ref:`prerequisites`. Please do that before attempting to deploy anything on Slate's clusters.
+It is assumed you have already gone through :ref:`slate_getting_started` and established the :ref:`prerequisites`. Please do that before attempting to deploy anything on Slate's clusters.
 
 This example uses Helm version 3 to deploy a MinIO standalone Helm chart on Slate's `Marble <https://console-openshift-console.apps.marble.ccs.ornl.gov/>`_ Cluster. This is the cluster in OLCF's Moderate enclave, the same enclave as Summit.
 
