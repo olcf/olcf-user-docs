@@ -4,55 +4,83 @@
 MinIO Object Store (On an NCCS Filesystem)
 ******************************************
 
-`MinIO <https://min.io/>`_ is a high performance software-defined object storage suite that enables the ability to easily deploy cloud-native data infrastructure, for various data workloads. In this example we are deploying a simple, standalone, implementation of MinIO on our cloud-native platform, Slate (:ref:`slate_overview`).
+`MinIO <https://min.io/>`_ is a high-performance software-defined object
+storage suite that enables the ability to easily deploy cloud-native data
+infrastructure for various data workloads. In this example we are deploying a
+simple, standalone implementation of MinIO on our cloud-native platform, Slate
+(:ref:`slate_overview`).
 
-We hope this provides a starting point for more robust implementations of MinIO, if your workload/project benefits from that. In addition, it gives insight into some of the core building blocks for establishing your own, different, applications on Slate.
+We hope this provides a starting point for more robust implementations of
+MinIO, if your workload/project benefits from that. In addition, it gives
+insight into some of the core building blocks for establishing your own,
+different, applications on Slate.
 
-This example deployment of MinIO enables to possible configurations (which we configure in the following sections):
+This example deployment of MinIO enables two possible configurations (which we
+configure in the following sections):
 
- - MinIO running on NCCS filesystem (GPFS or NFS - exposing filesystem project space through the MinIO GUI).
- - MinIO running on a dedicated volume, allocated automatically from the NetApp storage server, isolated to the MinIO server.
+ - MinIO running on a NCCS filesystem (GPFS or NFS - exposing filesystem project
+   space through the MinIO GUI).
+ - MinIO running on a dedicated volume, allocated automatically from the NetApp
+   storage server, isolated to the MinIO server.
 
-It is important to note that we are also launching MinIO in standalone mode, which is a single MinIO servers instance. MinIO also supports distributed mode, for more robust implementations, but we are not setting that up in this example.
+It is important to note that we are also launching MinIO in standalone mode,
+which is a single MinIO server instance. MinIO also supports distributed mode
+for more robust implementations, but we are not setting that up in this
+example.
 
-For this exampe to work, it is **required to have a project "automation user"** setup for the NCCS fileystem integration. Please contact `User Assistance <https://www.olcf.ornl.gov/for-users/>`_, by submitting a help ticket, if you are unsure about the automation user setup for your project.
+For this example to work, it is **required to have a project "automation user"**
+setup for the NCCS filesystem integration. Please contact `User Assistance
+<https://www.olcf.ornl.gov/for-users/>`_ by submitting a help ticket if you
+are unsure about the automation user setup for your project.
 
-This is not meant to be a production deployment, but a away for users to gain familiarity with building an application targeting Slate.
+This is not meant to be a production deployment, but a way for users to gain
+familiarity with building an application targeting Slate.
 
 Getting Started
 ---------------
 
-It is assumed you have already gone through :ref:`slate_getting_started` and established the :ref:`prerequisites`. Please do that before attempting to deploy anything on Slate's clusters.
+It is assumed you have already gone through :ref:`slate_getting_started` and
+established the :ref:`prerequisites`. Please do that before attempting to
+deploy anything on Slate's clusters.
 
-This example uses Helm version 3 to deploy a MinIO standalone Helm chart on Slate's `Marble <https://console-openshift-console.apps.marble.ccs.ornl.gov/>`_ Cluster. This is the cluster in OLCF's Moderate enclave, the same enclave as Summit.
+This example uses Helm version 3 to deploy a MinIO standalone Helm chart on
+Slate's `Marble <https://console-openshift-console.apps.marble.ccs.ornl.gov/>`_
+Cluster. This is the cluster in OLCF's Moderate enclave, the same enclave as
+Summit.
 
-To start, clone the `slate helm examples repository <https://code.ornl.gov/ryu/slate_helm_examples>`_ , containing the MinIO standalone Helm chart, and 'cd' into the charts directory:
+To start, clone the `slate helm examples repository
+<https://code.ornl.gov/ryu/slate_helm_examples>`_ , containing the MinIO
+standalone Helm chart, and navigate into the ``charts`` directory:
 
 .. code-block:: bash
 
-    git clone https://code.ornl.gov/ryu/slate_helm_examples.git && cd slate_helm_examples/charts
+    $ git clone https://code.ornl.gov/ryu/slate_helm_examples.git && cd slate_helm_examples/charts
 
-If you are interested in the details of this Helm chart, please look at the minio-standalone chart's `README <https://code.ornl.gov/ryu/slate_helm_examples/-/blob/master/charts/minio-standalone/README.md>`_.
+If you are interested in the details of this Helm chart, please look at the
+minio-standalone chart's `README
+<https://code.ornl.gov/ryu/slate_helm_examples/-/blob/master/charts/minio-standalone/README.md>`_.
 
-Next, log into Marble with the OC CLI tool by running this command on your local machine:
+Next, log into Marble with the OC CLI tool by running this command on your
+local machine:
 
 .. code-block:: bash
 
-   oc login https://api.marble.ccs.ornl.gov
+   $ oc login https://api.marble.ccs.ornl.gov
 
-You should see output confirming your login. It will also name your available project spaces on Marble.
+You should see output confirming your login. It will also name your available
+project spaces on Marble.
 
 To list your available project spaces run this command:
 
 .. code-block:: bash
 
-   oc projects
+   $ oc projects
 
-Finally, confirm Helm works (assuming the use of Helm version 3) by running this command on your local machine:
+Finally, confirm Helm works by running this command on your local machine:
 
 .. code-block:: bash
 
-   helm ls
+   $ helm ls
 
 You should get some output similar to this (although, you may not have any applications listed, if you have not deployed any):
 
@@ -65,9 +93,14 @@ You should get some output similar to this (although, you may not have any appli
 Configure Your Deployment
 -------------------------
 
-Where you cloned the `slate_helm_examples <https://code.ornl.gov/ryu/slate_helm_examples>`_ repository, in the 'slate_helm_examples/charts/minio-standalone` directory, you will see a `values.yaml` file. This file containes variables for the Helm chart deployment. 
+Where you cloned the `slate_helm_examples
+<https://code.ornl.gov/ryu/slate_helm_examples>`_ repository, in the
+'slate_helm_examples/charts/minio-standalone` directory, you will see a
+`values.yaml` file. This file containes variables for the Helm chart
+deployment. 
 
-This is how we configure your instance of the MinIO application. All of these changes will be to your local copy of `values.yaml`.
+This is how we configure your instance of the MinIO application. All of these
+changes will be to your local copy of `values.yaml`.
 
 Here is what it looks like:
 
@@ -96,29 +129,37 @@ Here is what it looks like:
 
 What do you need to consider?
 
-- What should I name my host value (This will be the URL in which you access your MinIO instance)?
-- What should I name my application (This is the 'name' value and should be unique to you or your project)?
-- Do I want MinIO to run on an OLCF filesytem (It can run on NFS or GPFS project spaces - if you do not run it on an OLCF filesystem it uses an isolated volume dedicated to the MinIO server)?
+- What should I name my ``host`` value? (This will be the URL in which you access
+  your MinIO instance)
+- What should I name my application? (This is the ``name`` value and should be
+  unique to you or your project)
+- Do I want MinIO to run on an OLCF filesytem? (It can run on NFS or GPFS
+  project spaces. If you do not run it on an OLCF filesystem it uses an
+  isolated volume dedicated to the MinIO server)
 
 What do you need to configure?
 
-- host (Set the URL of your application)
-- name (Set the name of your application)
-- use_olcf_fs (Controls if NCCS filesystems are used or not - 'enabled' or 'disabled')
-- olcf_mount (Set the mount path to your project directory (i.e /ccs/proj/<projectID>/minio/))
-- pvc_storage (Set the quota for your dedicated storage if 'use_olcf_fs' is 'disabled')
+- ``host`` (Set the URL of your application)
+- ``name`` (Set the name of your application)
+- ``use_olcf_fs`` (Controls if NCCS filesystems are used or not - ``enabled`` or ``disabled``)
+- ``olcf_mount`` (Set the mount path to your project directory (i.e ``/ccs/proj/<projectID>/minio/``))
+- ``pvc_storage`` (Set the quota for your dedicated storage if ``use_olcf_fs`` is ``disabled``)
 
 
 Create the MinIO Application's Secret Tokens
 --------------------------------------------
 
-The below is not provided in the above configuration, but it must be done for the MinIO application to start properly.
+The below is not provided in the above configuration, but it must be done for
+the MinIO application to start properly.
 
-These are the root credentials referenced `here <https://docs.min.io/docs/minio-server-configuration-guide.html>`_.
+These are the root credentials referenced `here
+<https://docs.min.io/docs/minio-server-configuration-guide.html>`_.
 
-To establish these credentials in our Marble project, allowing our MinIO deployment to use them, we need to create a secret-token.yaml file and apply it to our project.
+To establish these credentials in our Marble project, allowing our MinIO
+deployment to use them, we need to create a ``secret-token.yaml`` file and
+apply it to our project.
 
-Create this example secret-tokens.yaml file locally:
+Create this example ``secret-tokens.yaml`` file locally:
 
 .. code-block:: bash
 
@@ -142,15 +183,19 @@ Create this example secret-tokens.yaml file locally:
       stringData:
         SECRET_TOKEN: <your_choice>
 
-Replace <name-of-your-app> with the 'name' value you put in your 'values.yaml' file.
+Replace ``<name-of-your-app>`` with the ``name`` value you put in your
+``values.yaml`` file.
 
-Replace <your-choice> with strings of your choice (the access-key length should be at least 3, and the secret-key must be at least 8 characters). These will be the SECRET_TOKEN values.
+Replace ``<your-choice>`` with strings of your choice (the access-key length
+should be at least 3, and the secret-key must be at least 8 characters). These
+will be the ``SECRET_TOKEN`` values.
 
-Once your 'secret-token.yaml' file is set, you can apply it to your Marble project/namespace with this command (assumes you are logged into Marble's CLI):
+Once your ``secret-token.yaml`` file is set, you can apply it to your Marble
+project/namespace with this command (assumes you are logged into Marble's CLI):
 
 .. code-block:: bash
 
-  oc apply -f secret-token.yaml
+  $ oc apply -f secret-token.yaml
 
 You should get output similar to this:
 
@@ -159,39 +204,44 @@ You should get output similar to this:
   secret "rprout-test-minio-access-key" created
   secret "rprout-test-minio-secret-key" created
 
-These values are picked up as environment variables from the 'templates/minio-standalone-deployment.yaml' file.
+These values are picked up as environment variables from the
+``templates/minio-standalone-deployment.yaml`` file.
 
-It is recommended to keep the 'secret-token.yaml' file safe, locally, and not in a repository if unencrypted. 
+It is recommended to keep the ``secret-token.yaml`` file safe, locally, and not
+in a repository if unencrypted. 
 
 Installing the MinIO Standalone Application
 -------------------------------------------
 
-At this point we are ready to install our minio-standalone chart in our Marble project namespace.
+At this point we are ready to install our minio-standalone chart in our Marble
+project namespace.
 
 To list your available project spaces run this command:
 
 .. code-block:: bash
 
-   oc projects
+   $ oc projects
 
 Check list:
 
 - You have the OC CLI Tool
 - You have Helm version 3
 - You are logged into Marble, with the OC CLI Tool, and in the correct Marble project.
-- You have configured your 'values.yaml' file.
+- You have configured your ``values.yaml`` file.
 - You have created your MinIO Application's Secret Tokens and applied them to the Marble project you are logged into.
-- You are in the 'slate_helm_examples/charts' directory, within your local copy of the `slate helm examples repository <https://code.ornl.gov/ryu/slate_helm_examples>`_.
+- You are in the ``slate_helm_examples/charts`` directory, within your local copy of the `slate helm examples repository <https://code.ornl.gov/ryu/slate_helm_examples>`_.
 
 If you checked the above off, you can install the MinIO chart, into your Marble project, with this command:
 
 .. code-block:: bash
 
-  helm install <your application name> minio-standalone/ --namespace <your marble project namespace>
+  $ helm install <your application name> minio-standalone/ --namespace <your marble project namespace>
 
-Replace <your application name> with the 'name' value in your 'values.yaml' file.
+Replace ``<your application name>`` with the ``name`` value in your
+``values.yaml`` file.
 
-Replace <your marble project> with your proper Marble project space. This is from the output of the 'oc projects' command.
+Replace ``<your marble project>`` with your proper Marble project space. This
+is from the output of the ``oc projects`` command.
 
 The output, if successful, should be something similar to this:
 
@@ -204,7 +254,9 @@ The output, if successful, should be something similar to this:
   REVISION: 1
   TEST SUITE: None
 
-This is also a good time to log into the `Marble GUI <https://console-openshift-console.apps.marble.ccs.ornl.gov/>`_. You can see the Pod/Deployment/Route/Service/Secrets we created with the chart.
+This is also a good time to log into the `Marble GUI
+<https://console-openshift-console.apps.marble.ccs.ornl.gov/>`_. You can see
+the Pod/Deployment/Route/Service/Secrets we created with the chart.
 
 Paths to each in the GUI panel:
 
@@ -213,44 +265,55 @@ Paths to each in the GUI panel:
 - Workloads->Secrets
 - Networking->Services
 - Networking->Routes
-- Storage->Persistent Volume Claims (only applicable if you disabled 'use_olcf_fs' in `values.yaml`)
+- Storage->Persistent Volume Claims (only applicable if you disabled
+  ``use_olcf_fs`` in ``values.yaml``)
 
 Use the MinIO Standalone Application
 ------------------------------------
 
 After a few minutes, the URL to your MinIO server will become available. 
 
-You can reach it by going to the URL you put for the 'host' value in your `values.yaml` file.
+You can reach it by going to the URL you put for the ``host`` value in your
+``values.yaml`` file.
 
-You can also go to it by logging into the `Marble GUI <https://console-openshift-console.apps.marble.ccs.ornl.gov/>`_. Once logged in, go to Networking->Routes and click the URL in the "Location" column of your MinIO applications row.
+You can also go to it by logging into the `Marble GUI
+<https://console-openshift-console.apps.marble.ccs.ornl.gov/>`_. Once logged
+in, go to Networking->Routes and click the URL in the "Location" column of your
+MinIO applications row.
 
-You will be greeted with the NCCS SSO page, continue through that with your normal NCCS log in information. 
+You will be greeted with the NCCS SSO page. Continue through that with your
+normal NCCS login credentials. 
 
-After passing through that, you will be greeted with MinIO's log in page. Here, you will enter the access-key and secret-key you created with the `secret-tokens.yaml` file.
+After the NCCS login, you will be greeted with MinIO's login page. Here you
+will enter the access-key and secret-key you created with the
+``secret-tokens.yaml`` file.
 
 At this point, you should be inside the MinIO Browser.
 
-Depending on you how configured your deployment, this could be your NFS or GPFS project space or an isolated volume dedicated/isolated to this MinIO server.
+Depending on you how configured your deployment, this could be your NFS or GPFS
+project space or an isolated volume dedicated/isolated to this MinIO server.
 
-Within the GUI you can create buckets and upload/download data. If you are running this on NFS or GPFS the bucket will map to a directory.
+Within the GUI you can create buckets and upload/download data. If you are
+running this on NFS or GPFS the bucket will map to a directory.
 
-**NOTE:** This application runs as the **automation user** ID, setup for your project. Anyone who logs into the MinIO app, runs as that user. If you are integrated with an NCCS filesystem, any file uploaded, through MinIO, will be owned by that user. If you plan to run something like this for your OLCF project, it would be recommended to create a directory in the "proj-shared" space.
+**NOTE:** This application runs as the **automation user** ID, setup for your
+project. Anyone who logs into the MinIO app, runs as that user. If you are
+integrated with an NCCS filesystem, any file uploaded through MinIO will be
+owned by that user. If you plan to run something like this for your OLCF
+project, it is recommended to create a directory in the ``$PROJWORK``
+space.
 
 Deleting the MinIO Standalone Application
 -----------------------------------------
 
-To delete this installation, just run this helm command:
+To delete this installation, just run this Helm command:
 
 .. code-block:: bash
 
-  helm delete <your-application-name>
+  $ helm delete <your-application-name>
 
-You can get your deployed applications with this command:
+You can get your deployed applications with this Helm command:
 
 .. code-block:: bash
 
-  helm ls
-
-
-
-
+  $ helm ls
