@@ -1,8 +1,8 @@
 .. _minio_example:
 
-***********************************
-Building an object store with MinIO
-***********************************
+******************************************
+MinIO Object Store (On an NCCS Filesystem)
+******************************************
 
 `MinIO <https://min.io/>`_ is a high performance software-defined object storage suite that enables the ability to easily deploy cloud-native data infrastructure, for various data workloads. In this example we are deploying a simple, standalone, implementation of MinIO on our cloud-native platform, Slate (:ref:`slate_overview`).
 
@@ -13,9 +13,11 @@ This example deployment of MinIO enables to possible configurations (which we co
  - MinIO running on NCCS filesystem (GPFS or NFS - exposing filesystem project space through the MinIO GUI).
  - MinIO running on a dedicated volume, allocated automatically from the NetApp storage server, isolated to the MinIO server.
 
- It is important to note that we are also launching MinIO in standalone mode, which is a single MinIO servers instance. MinIO also supports distributed mode, for more robust implementations, but we are not setting that up in this example.
+It is important to note that we are also launching MinIO in standalone mode, which is a single MinIO servers instance. MinIO also supports distributed mode, for more robust implementations, but we are not setting that up in this example.
 
-It is required to have a project "automation user" setup for the NCCS fileystem integration. Please contact `User Assistance <https://www.olcf.ornl.gov/for-users/>`_, by submitting a help ticket, if you are unsure about the automation user setup for your project.
+For this exampe to work, it is **required to have a project "automation user"** setup for the NCCS fileystem integration. Please contact `User Assistance <https://www.olcf.ornl.gov/for-users/>`_, by submitting a help ticket, if you are unsure about the automation user setup for your project.
+
+This is not meant to be a production deployment, but a away for users to gain familiarity with building an application targeting Slate.
 
 Getting Started
 ---------------
@@ -103,7 +105,7 @@ What do you need to configure?
 - host (Set the URL of your application)
 - name (Set the name of your application)
 - use_olcf_fs (Controls if NCCS filesystems are used or not - 'enabled' or 'disabled')
-- olcf_mount (Set the mount path to your project directory)
+- olcf_mount (Set the mount path to your project directory (i.e /ccs/proj/<projectID>/minio/))
 - pvc_storage (Set the quota for your dedicated storage if 'use_olcf_fs' is 'disabled')
 
 
@@ -231,6 +233,8 @@ At this point, you should be inside the MinIO Browser.
 Depending on you how configured your deployment, this could be your NFS or GPFS project space or an isolated volume dedicated/isolated to this MinIO server.
 
 Within the GUI you can create buckets and upload/download data. If you are running this on NFS or GPFS the bucket will map to a directory.
+
+**NOTE:** This application runs as the **automation user** ID, setup for your project. Anyone who logs into the MinIO app, runs as that user. If you are integrated with an NCCS filesystem, any file uploaded, through MinIO, will be owned by that user. If you plan to run something like this for your OLCF project, it would be recommended to create a directory in the "proj-shared" space.
 
 Deleting the MinIO Standalone Application
 -----------------------------------------

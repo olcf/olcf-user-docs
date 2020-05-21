@@ -78,7 +78,9 @@ You can view/select/switch between projects/namespaces like this:
     oc project <project-name>
 
 Install Helm
--------------
+------------
+
+It is recommended to use Helm version 3, that is what we use in our examples. It is possible to have Helm version 2 and 3 installed on the same systemm, if necessary - just name the Helm version 3 binary 'helm3'.
 
 Helm enables application deployment via `Helm Charts <https://helm.sh/docs/topics/charts/>`_. The high level `Helm Architecture <https://helm.sh/docs/topics/architecture/>`_ docs are also a great refernce for understanding Helm.
 
