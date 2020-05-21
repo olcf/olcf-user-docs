@@ -10,6 +10,13 @@ infrastructure for various data workloads. In this example we are deploying a
 simple, standalone implementation of MinIO on our cloud-native platform, Slate
 (:ref:`slate_overview`).
 
+This service will only be accessible from inside of ORNL's network.
+
+If your project requires an externally facing service available to the
+Internet, please contact `User Assistance
+<https://www.olcf.ornl.gov/for-users/>`_ by submitting a help ticket. There is
+a process to get such approval.
+
 We hope this provides a starting point for more robust implementations of
 MinIO, if your workload/project benefits from that. In addition, it gives
 insight into some of the core building blocks for establishing your own,
