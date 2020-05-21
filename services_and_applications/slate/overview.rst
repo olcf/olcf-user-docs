@@ -17,13 +17,12 @@ security enclave that they are in.
 
 | **There is one OpenShift cluster in each OLCF 
   enclave, Open and Moderate, listed below:**.
-
 | - **Marble** (Moderate Enclave)
 | - **Onyx** (Open Enclave)
 
-| Moderate is the enclave in which Summit (:ref:`summit-user-guide`) is
-| accessible.
-| Open is the enclave in which :ref:`ascent-user-guide` is accessible.
+Moderate is the enclave in which Summit (:ref:`summit-user-guide`) is
+accessible.  Open is the enclave in which :ref:`ascent-user-guide` is
+accessible.
 
 What is Docker?
 ---------------
