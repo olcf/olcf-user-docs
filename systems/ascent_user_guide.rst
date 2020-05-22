@@ -1,3 +1,5 @@
+.. _ascent-user-guide:
+
 ******
 Ascent
 ******
