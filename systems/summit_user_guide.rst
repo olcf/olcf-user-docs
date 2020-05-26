@@ -1897,6 +1897,32 @@ To submit a job to the ``killable`` queue, add the ``-q killable`` option to you
 To prevent a preempted job from being automatically requeued, the ``BSUB -rn``
 flag can be used at submit time.
 
+
+``debug`` Queue Policy
+""""""""""""""""""""""""""
+
+The ``debug`` queue can be used to access Summit's compute resources for short 
+non-production debug tasks.  The queue provides a higher priority compared
+to jobs of the same job size bin in production queues.  Production work and 
+job chaining in the debug queue is prohibited.  Each user is limited to one 
+job in any state in the debug queue at any one point. Attempts to submit multiple
+jobs to the debug queue will be rejected upon job submission.
+
+**debug job limits:**
+
++-------------+--------------+------------------------+---------------------------------+--------------------+
+| Min Nodes   | Max Nodes    | Max Walltime (Hours)   | Max queued any state (per user) | Aging Boost (Days) |
++=============+==============+========================+=================================+====================+
+| 1           | unlimited    | 2.0                    | 1                               | 2                  |
++-------------+--------------+------------------------+---------------------------------+--------------------+
+
+To submit a job to the ``debug`` queue, add the ``-q debug`` option to your
+``bsub`` command or ``#BSUB -q debug`` to your job script.
+
+
+.. note::
+    Production work and job chaining in the ``debug`` queue is prohibited.
+
 Allocation Overuse Policy
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
