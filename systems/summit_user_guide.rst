@@ -2912,6 +2912,13 @@ If JSM or PMIX errors occur as the result of backgrounding many job steps, using
     jsrun <options> --immediate ./a.out 
     jsrun <options> --immediate ./a.out
 
+
+.. note::
+    By default, ``jsrun --immediate`` does not produce ``stdout`` or
+    ``stderr``. To capture ``stdout`` and/or ``stderr`` when using this option,
+    additionally include ``--stdio_stdout``/``-o`` and/or
+    ``--stdio_stderr``/``-k``.
+
 Explicit Resource Files (ERF)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
