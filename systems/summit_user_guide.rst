@@ -2856,6 +2856,62 @@ specify the number of resource sets needed.
 +-----------------+-------------+-----------+------------------+--------+---------------------------------------+
 
 
+Concurrent Job Steps
+""""""""""""""""""""
+
+By default, multiple invocations of ``jsrun`` in a job script will execute
+serially. To execute multiple job steps concurrently, standard UNIX process
+backgrounding can be used by adding a ``&`` at the end of the command. This
+will return control to the job script and execute the next command immediately.
+A ``wait`` command must follow all backgrounded processes to prevent the job
+from appearing completed and exiting prematurely.
+
+The following example executes three backgrounded job steps and waits for them
+to finish before the job ends.
+
+::
+
+    #!/bin/bash
+    #BSUB -P ABC123
+    #BSUB -W 3:00
+    #BSUB -nnodes 1
+    #BSUB -J RunSim123
+    #BSUB -o RunSim123.%J
+    #BSUB -e RunSim123.%J
+    
+    cd $MEMBERWORK/abc123
+    jsrun <options> ./a.out &
+    jsrun <options> ./a.out &
+    jsrun <options> ./a.out &
+    wait
+
+
+As submission scripts (and interactive sessions) are executed on batch nodes,
+the number of concurrent job steps is limited by the per-user process limit on
+a batch node, where a single user is only permitted 4096 simultaneous
+processes. This limit is per user on each batch node, not per batch job.
+
+Each job step will create 3 processes, and JSM management may create up to ~23
+processes. This creates an upper-limit of ~1350 simultaneous job steps. 
+
+If JSM or PMIX errors occur as the result of backgrounding many job steps, using the
+``--immediate`` option to ``jsrun`` may help, as shown in the following example.
+
+::
+
+    #!/bin/bash
+    #BSUB -P ABC123
+    #BSUB -W 3:00
+    #BSUB -nnodes 1
+    #BSUB -J RunSim123
+    #BSUB -o RunSim123.%J
+    #BSUB -e RunSim123.%J
+    
+    cd $MEMBERWORK/abc123
+    jsrun <options> --immediate ./a.out
+    jsrun <options> --immediate ./a.out 
+    jsrun <options> --immediate ./a.out
+
 Explicit Resource Files (ERF)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
