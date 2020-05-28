@@ -33,5 +33,38 @@ For both of these options please email `accounts@ccs.ornl.gov <accounts@ccs.ornl
 		- Initial users
 
 
-What Accounds Do I Need
------------------------
+What Accounds Do I Need?
+------------------------
+
+Accessing Ascent and working in the NCC Open enclave requires an ORNL Resource Account. Users can register for an account at this `User Portal <https://user.ornl.gov/>`_. 
+
+This is different from your NCCS Account/User ID.
+
+**NOTE:** ORNL Staff do not need to create an account and can use their standard ORNL User ID.
+
+Applying For Project Access
+---------------------------
+
+To gain access to a project, fill out the `Account Request Form <https://www.olcf.ornl.gov/support/getting-started/olcf-account-application>`_.
+
+**Please be sure to have this necessary information:**
+
+	- Your ORNL Resource Account User ID
+	- The Project ID
+	- The Project PI
+
+Accessing the CI Infrastructure
+-------------------------------
+
+Currently, ECP CI at OLCF is limited to the `code.ornl.gov <https://code.ornl.gov/>`_ Gitlab Server. It is specifically limited to the "ecpcitest" `group <https://code.ornl.gov/ecpcitest>`_, within that Gitlab Server.
+
+Your NCCS Open project needs to have a Gitlab project setup, within the "ecpcitest" group, on `code.ornl.gov <https://code.ornl.gov/>`_.
+
+Once you have your NCCS Open Project setup, please submit a ticket to `help@olcf.ornl.gov <help@olcf.ornl.gov>`_ requesting the Gitlab project be setup.
+
+In the end, you should be able to log into these systems:
+
+	- `code.ornl.gov <https://code.ornl.gov/>`_
+	-  ssh <Your_UID>@login1.ascent.olcf.ornl.gov 
+
+**NOTE:** Both of these systems require you to use your ORNL Resource Account User ID. This is different than your NCCS User ID.
