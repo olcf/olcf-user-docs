@@ -1733,6 +1733,69 @@ about other LSF options, see the ``bsub`` man page.
 |                    |                                        | use smt2. The default level is smt4.                                             |
 +--------------------+----------------------------------------+----------------------------------------------------------------------------------+
 
+Allocation-wide Options
+^^^^^^^^^^^^^^^^^^^^^^^
+
+The ``-alloc_flags`` option to ``bsub`` is used to set allocation-wide options.
+These settings are applied to every compute node in a job. Only one instance of
+the flag is accepted, and multiple ``alloc_flags`` values should be enclosed in
+quotes and space-separated. For example, ``-alloc_flags "gpumps smt1``.
+
+The most common values (``smt{1,2,4}``, ``gpumps``, ``gpudefault``) are detailed in
+the following sections. 
+
+This option can also be used to provide additional resources to GPFS service
+processes, described in the `GPFS System Service Isolation
+<#gpfs-system-service-isolation>`__ section.
+
+Hardware Threads
+""""""""""""""""
+
+Hardware threads are a feature of the POWER9 processor through which
+individual physical cores can support multiple execution streams,
+essentially looking like one or more virtual cores (similar to
+hyperthreading on some Intel\ |R| microprocessors). This feature is often
+called Simultaneous Multithreading or SMT. The POWER9 processor on
+Summit supports SMT levels of 1, 2, or 4, meaning (respectively) each
+physical core looks like 1, 2, or 4 virtual cores. The SMT level is
+controlled by the ``-alloc_flags`` option to ``bsub``. For example, to
+set the SMT level to 2, add the line ``#BSUB –alloc_flags smt2`` to your
+batch script or add the option ``-alloc_flags smt2`` to you ``bsub``
+command line.
+
+The default SMT level is 4.
+
+MPS
+"""
+
+The Multi-Process Service (MPS) enables multiple processes (e.g. MPI
+ranks) to concurrently share the resources on a single GPU. This is
+accomplished by starting an MPS server process, which funnels the work
+from multiple CUDA contexts (e.g. from multiple MPI ranks) into a single
+CUDA context. In some cases, this can increase performance due to better
+utilization of the resources. As mentioned in the `Common bsub Options <#common-bsub-options>`__
+section above, MPS can be enabled with the ``-alloc_flags "gpumps"`` option to
+``bsub``. The following screencast shows an example of how to start an MPS
+server process for a job: https://vimeo.com/292016149
+
+GPU Compute Modes
+"""""""""""""""""
+
+Summit's V100 GPUs are configured to have a default compute mode of
+``EXCLUSIVE_PROCESS``. In this mode, the GPU is assigned to only a single
+process at a time, and can accept work from multiple process threads
+concurrently.
+
+
+It may be desirable to change the GPU's compute mode to ``DEFAULT``, which
+enables multiple processes and their threads to share and submit work to it
+simultaneously. To change the compute mode to ``DEFAULT``, use the
+``-alloc_flags gpudefault`` option.
+
+NVIDIA recommends using the ``EXCLUSIVE_PROCESS`` compute mode (the default on
+Summit) when using the Multi-Process Service, but both MPS and the compute mode
+can be changed by providing both values: ``-alloc_flags "gpumps gpudefault"``. 
+
 Batch Environment Variables
 ---------------------------
 
@@ -2322,22 +2385,6 @@ of) specific nodes, you will need to use expert mode. To use expert
 mode, add ``#BSUB -csm y`` to your batch script (or ``-csm y`` to
 your ``bsub`` command line).
 
-Hardware Threads
-----------------
-
-Hardware threads are a feature of the POWER9 processor through which
-individual physical cores can support multiple execution streams,
-essentially looking like one or more virtual cores (similar to
-hyperthreading on some Intel\ |R| microprocessors). This feature is often
-called Simultaneous Multithreading or SMT. The POWER9 processor on
-Summit supports SMT levels of 1, 2, or 4, meaning (respectively) each
-physical core looks like 1, 2, or 4 virtual cores. The SMT level is
-controlled by the ``-alloc_flags`` option to ``bsub``. For example, to
-set the SMT level to 2, add the line ``#BSUB –alloc_flags smt2`` to your
-batch script or add the option ``-alloc_flags smt2`` to you ``bsub``
-command line.
-
-The default SMT level is 4.
 
 System Service Core Isolation
 -----------------------------
@@ -2366,19 +2413,6 @@ The maximizegpfs flag will allow GPFS tasks to utilize any core on the
 compute node. This may be beneficial because it provides more resources
 for GPFS service tasks, but it may also cause resource contention for
 the jsrun compute job.
-
-MPS
----
-
-The Multi-Process Service (MPS) enables multiple processes (e.g. MPI
-ranks) to concurrently share the resources on a single GPU. This is
-accomplished by starting an MPS server process, which funnels the work
-from multiple CUDA contexts (e.g. from multiple MPI ranks) into a single
-CUDA context. In some cases, this can increase performance due to better
-utilization of the resources. As mentioned in the `Common bsub Options <#common-bsub-options>`__
-section above, MPS can be enabled with the ``-alloc_flags "gpumps"``
-option to bsub. The screencast below shows an example of how to start an
-MPS server process for a job. https://vimeo.com/292016149
 
 Resource Accounting
 -------------------
