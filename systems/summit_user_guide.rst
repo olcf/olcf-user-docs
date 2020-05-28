@@ -1737,9 +1737,9 @@ Allocation-wide Options
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 The ``-alloc_flags`` option to ``bsub`` is used to set allocation-wide options.
-These settings are applied to every compute node in a CSM allocation. Only one
-instance of the flag is accepted, and multiple ``alloc_flags`` values should be
-enclosed in quotes and space-separated.
+These settings are applied to every compute node in a job. Only one instance of
+the flag is accepted, and multiple ``alloc_flags`` values should be enclosed in
+quotes and space-separated. For example, ``-alloc_flags "gpumps smt1``.
 
 The most common values (``smt{1,2,4}``, ``gpumps``, ``gpudefault``) are detailed in
 the following sections. 
