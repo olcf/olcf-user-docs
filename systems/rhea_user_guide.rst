@@ -1257,7 +1257,7 @@ dialog and click the “Connect” button.
 A dialog box follows, in which you must enter in your username and project
 allocation, the number of nodes to reserve and a duration to reserve them for.
 
-.. image:: /images/paraview_step2b.png
+.. image:: /images/Paraview_5.6.1_Rhea.png
    :align: center
 
 When you click OK, a windows command prompt or ``xterm`` pops up. In this
