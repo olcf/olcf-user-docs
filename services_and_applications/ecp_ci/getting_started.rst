@@ -7,7 +7,7 @@ It is important to note that ECP CI capabilities are currently limited to the :r
 Getting Your Project Setup for ECP CI at OLCF
 ---------------------------------------------
 
-An important realization is that NCCS has two separate enclaves, Open and Moderate, with different resources. The ECP CI capability is only enabled in the Open enclave at this time, running on the :ref:`ascent-user-guide` system, not the Moderate enclave (Summit).
+An important realization is that NCCS has two separate security enclaves, Open and Moderate, with different resources. The ECP CI capability is only enabled in the Open enclave at this time, running on the :ref:`ascent-user-guide` system, not the Moderate enclave (Summit).
 
 This is important because you may already have a project setup within NCCS, for accessing Summit. If so, this project needs to be mirrored to the Open enclave for working with ECP CI on Ascent (assuming that is the project code you want to setup to use the ECP CI framework).
 
@@ -33,14 +33,14 @@ For both of these options please email `accounts@ccs.ornl.gov <accounts@ccs.ornl
 		- Initial users
 
 
-What Accounds Do I Need?
+What Accounts Do I Need?
 ------------------------
 
-Accessing Ascent and working in the NCC Open enclave requires an ORNL Resource Account. Users can register for an account at this `User Portal <https://user.ornl.gov/>`_. 
+Accessing Ascent and working in the NCCS Open enclave requires an ORNL Resource Account (i.e., XCAMS or UCAMS). Users can register for an account at this `User Portal <https://user.ornl.gov/>`_. 
 
-This is different from your NCCS Account/User ID.
+This is different from your NCCS Account/User ID (i.e., the one you use to log into Summit).
 
-**NOTE:** ORNL Staff do not need to create an account and can use their standard ORNL User ID.
+**NOTE:** ORNL Staff do not need to create an account and can use their standard ORNL User ID (UCAMS).
 
 Applying For Project Access
 ---------------------------
