@@ -306,3 +306,57 @@ a non-default gcc compiler version:
     -  Do not swap moab, torque, or mysql modules after loading a
        programming environment modulefile.
 
+--------------
+
+Compiler wrappers
+-----------------
+
+Commodity clusters at the olcf can be accessed via the following wrapper
+programs:
+
+-  ``mpicc`` to invoke the c compiler
+-  ``mpicc``, ``mpicxx``, or ``mpic++`` to invoke the c++ compiler
+-  ``mpif77`` or ``mpif90`` to invoke appropriate versions of the
+   fortran compiler
+
+These wrapper programs are cognizant of your currently loaded modules, and will
+ensure that your code links against our openmpi installation.  more information
+about using openmpi at our center can be found in our `software documentation
+<https://www.olcf.ornl.gov/software_package/openmpi/>`__.
+
+Compiling threaded codes
+------------------------
+
+When building threaded codes, compiler-specific flags must be included to ensure
+a proper build.
+
+Openmp
+^^^^^^
+
+For pgi, add "-mp" to the build line.
+
+.. code::
+
+    $ mpicc -mp test.c -o test.x
+    $ export omp_num_threads=2
+
+For gnu, add "-fopenmp" to the build line.
+
+.. code::
+
+    $ mpicc -fopenmp test.c -o test.x
+    $ export omp_num_threads=2
+
+For intel, add "-qopenmp" to the build line.
+
+.. code::
+
+    $ mpicc -qopenmp test.c -o test.x
+    $ export omp_num_threads=2
+
+For information on *running threaded codes*, please see the :ref:`andes-thread-layout`
+subsection of the :ref:`andes-running-jobs` section in this user guide.
+
+.. _andes-running-jobs:
+
+
