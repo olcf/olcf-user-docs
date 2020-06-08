@@ -359,4 +359,485 @@ subsection of the :ref:`andes-running-jobs` section in this user guide.
 
 .. _andes-running-jobs:
 
+Running Jobs
+============
+
+In High Performance Computing (HPC), computational work is performed by *jobs*.
+Individual jobs produce data that lend relevant insight into grand challenges in
+science and engineering. As such, the timely, efficient execution of jobs is the
+primary concern in the operation of any HPC system.
+
+A job on a commodity cluster typically comprises a few different components:
+
+-  A batch submission script.
+-  A binary executable.
+-  A set of input files for the executable.
+-  A set of output files created by the executable.
+
+And the process for running a job, in general, is to:
+
+#. Prepare executables and input files.
+#. Write a batch script.
+#. Submit the batch script to the batch scheduler.
+#. Optionally monitor the job before and during execution.
+
+The following sections describe in detail how to create, submit, and manage jobs
+for execution on commodity clusters.
+
+--------------
+
+Login vs Compute Nodes on Commodity Clusters
+--------------------------------------------
+
+Login Nodes
+^^^^^^^^^^^
+
+When you log into an OLCF cluster, you are placed on a *login* node.  Login node
+resources are shared by all users of the system. Because of this, users should
+be mindful when performing tasks on a login node.
+
+Login nodes should be used for basic tasks such as file editing, code
+compilation, data backup, and job submission. Login nodes should *not* be used
+for memory- or compute-intensive tasks. Users should also limit the number of
+simultaneous tasks performed on the login resources. For example, a user should
+not run (10) simultaneous ``tar`` processes on a login node.
+
+.. warning::
+    Compute-intensive, memory-intensive, or otherwise disruptive processes
+    running on login nodes may be killed without warning.
+
+
+
+Slurm
+-----
+
+Most OLCF resources now use the Slurm batch scheduler. Previously, most OLCF resources
+used the Moab scheduler. Summit and other IBM hardware use the LSF scheduler.
+Below is a comparison table of useful commands among the three schedulers.
+
++--------------------------------------------+-------------------+-----------------------+-------------------+
+| Task                                       | Moab (historical) | LSF (Summit)          | Slurm             |
++============================================+===================+=======================+===================+
+| View batch queue                           | ``showq``         | ``jobstat``           | ``squeue``        |
++--------------------------------------------+-------------------+-----------------------+-------------------+
+| Submit batch script                        | ``qsub``          | ``bsub``              | ``sbatch``        |
++--------------------------------------------+-------------------+-----------------------+-------------------+
+| Submit interactive batch job               | ``qsub -I``       | ``bsub -Is $SHELL``   | ``salloc``        |
++--------------------------------------------+-------------------+-----------------------+-------------------+
+| Run parallel code within batch job         | ``mpirun``        | ``jsrun``             | ``srun``          |
++--------------------------------------------+-------------------+-----------------------+-------------------+
+
+
+Writing Batch Scripts
+^^^^^^^^^^^^^^^^^^^^^
+
+Batch scripts, or job submission scripts, are the mechanism by which a user
+configures and submits a job for execution. A batch script is simply a shell
+script that also includes commands to be interpreted by the batch scheduling
+software (e.g. Slurm).
+
+Batch scripts are submitted to the batch scheduler, where they are then parsed
+for the scheduling configuration options. The batch scheduler then places the
+script in the appropriate queue, where it is designated as a batch job. Once the
+batch jobs makes its way through the queue, the script will be executed on the
+primary compute node of the allocated resources.
+
+Components of a Batch Script
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Batch scripts are parsed into the following (3) sections:
+
+Interpreter Line
+""""""""""""""""
+
+The first line of a script can be used to specify the script’s interpreter; this
+line is optional. If not used, the submitter’s default shell will be used. The
+line uses the *hash-bang* syntax, i.e., ``#!/path/to/shell``.
+
+Slurm Submission Options
+""""""""""""""""""""""""
+
+The Slurm submission options are preceded by the string ``#SBATCH``, making them
+appear as comments to a shell. Slurm will look for ``#SBATCH`` options in a
+batch script from the script’s first line through the first non-comment line. A
+comment line begins with ``#``. ``#SBATCH`` options entered after the first
+non-comment line will not be read by Slurm.
+
+Shell Commands
+""""""""""""""
+
+The shell commands follow the last ``#SBATCH`` option and represent the
+executable content of the batch job. If any ``#SBATCH`` lines follow executable
+statements, they will be treated as comments only.
+
+The execution section of a script will be interpreted by a shell and can contain
+multiple lines of executables, shell commands, and comments.  when the job's
+queue wait time is finished, commands within this section will be executed on
+the primary compute node of the job's allocated resources. Under normal
+circumstances, the batch job will exit the queue after the last line of the
+script is executed.
+
+Example Batch Script
+^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: bash
+   :linenos:
+
+   #!/bin/bash
+   #SBATCH -A XXXYYY
+   #SBATCH -J test
+   #SBATCH -N 2
+   #SBATCH -t 1:00:00
+
+   cd $SLURM_SUBMIT_DIR
+   date
+   srun -n 8 ./a.out
+
+This batch script shows examples of the three sections outlined above:
+
+Interpreter Line
+""""""""""""""""
+
+1: This line is optional and can be used to specify a shell to interpret the
+script. In this example, the bash shell will be used.
+
+Slurm Options
+"""""""""""""
+
+2: The job will be charged to the “XXXYYY” project.
+
+3: The job will be named test.
+
+4: The job will request (2) nodes.
+
+5: The job will request (1) hour walltime.
+
+Shell Commands
+""""""""""""""
+
+6: This line is left blank, so it will be ignored.
+
+7: This command will change the current directory to the directory
+from where the script was submitted.
+
+8: This command will run the date command.
+
+9: This command will run (8) MPI instances of the executable a.out
+on the compute nodes allocated by the batch system.
+
+
+Batch scripts can be submitted for execution using the ``sbatch`` command.
+For example, the following will submit the batch script named ``test.slurm``:
+
+.. code::
+
+      sbatch test.slurm
+
+If successfully submitted, a Slurm job ID will be returned. This ID can be used
+to track the job. It is also helpful in troubleshooting a failed job; make a
+note of the job ID for each of your jobs in case you must contact the `OLCF User
+Assistance Center for support
+<https://www.olcf.ornl.gov/for-users/user-assistance/>`__.
+
+
+
+--------------
+
+Interactive Batch Jobs on Commodity Clusters
+--------------------------------------------
+
+Batch scripts are useful when one has a pre-determined group of commands to
+execute, the results of which can be viewed at a later time. However, it is
+often necessary to run tasks on compute resources interactively.
+
+Users are not allowed to access cluster compute nodes directly from a login
+node. Instead, users must use an *interactive batch job* to allocate and gain
+access to compute resources. This is done by using the Slurm ``salloc`` command.
+Other Slurm options are passed to ``salloc`` on the command line as well:
+
+.. code::
+
+      $ salloc -A abc123 -p gpu -N 4 -t 1:00:00
+
+This request will:
+
++----------------------------+----------------------------------------------------------------+
+| ``salloc``                 | Start an interactive session                                   |
++----------------------------+----------------------------------------------------------------+
+| ``-A``                     | Charge to the ``abc123`` project                               |
++----------------------------+----------------------------------------------------------------+
+| ``-p gpu``                 | Run in the ``gpu`` partition                                   |
++----------------------------+----------------------------------------------------------------+
+| ``-N 4``                   | request (4) nodes...                                           |
++----------------------------+----------------------------------------------------------------+
+| ``-t 1:00:00``             | ...for (1) hour                                                |
++----------------------------+----------------------------------------------------------------+
+
+After running this command, the job will wait until enough compute nodes are
+available, just as any other batch job must. However, once the job starts, the
+user will be given an interactive prompt on the primary compute node within the
+allocated resource pool. Commands may then be executed directly (instead of
+through a batch script).
+
+Debugging
+^^^^^^^^^
+
+A common use of interactive batch is to aid in debugging efforts.  interactive
+access to compute resources allows the ability to run a process to the point of
+failure; however, unlike a batch job, the process can be restarted after brief
+changes are made without losing the compute resource pool; thus speeding up the
+debugging effort.
+
+Choosing a Job Size
+^^^^^^^^^^^^^^^^^^^
+
+Because interactive jobs must sit in the queue until enough resources become
+available to allocate, it is useful to know when a job can start.
+
+Use the ``sbatch --test-only`` command to see when a job of a specific size
+could be scheduled. For example, the snapshot below shows that a (2) node job
+would start at 10:54.
+
+.. code::
+
+    $ sbatch --test-only -N2 -t1:00:00 batch-script.slurm
+
+      sbatch: Job 1375 to start at 2019-08-06T10:54:01 using 64 processors on nodes andes[499-500] in partition batch
+
+.. note::
+    The queue is fluid, the given time is an estimate made from the current queue state and load. Future job submissions and job
+    completions will alter the estimate.
+
+--------------
+
+Common Batch Options to Slurm
+-----------------------------
+
+The following table summarizes frequently-used options to Slurm:
+
++------------------+-----------------------------------+-----------------------------------------------------------+
+| Option           | Use                               | Description                                               |
++==================+===================================+===========================================================+
+| -A               | #SBATCH -A <account>              | Causes the job time to be charged to ``<account>``.       |
+|                  |                                   | The account string, e.g. ``pjt000`` is typically composed |
+|                  |                                   | of three letters followed by three digits and optionally  |
+|                  |                                   | followed by a subproject identifier. The utility          |
+|                  |                                   | ``showproj`` can be used to list your valid assigned      |
+|                  |                                   | project ID(s). This option is required by all jobs.       |
++------------------+-----------------------------------+-----------------------------------------------------------+
+| -N               | #SBATCH -N <value>                | Number of compute nodes to allocate.                      |
+|                  |                                   | Jobs cannot request partial nodes.                        |
++------------------+-----------------------------------+-----------------------------------------------------------+
+|                  | #SBATCH -t <time>                 | Maximum wall-clock time. ``<time>`` is in the             |
+|                  |                                   | format HH:MM:SS.                                          |
++------------------+-----------------------------------+-----------------------------------------------------------+
+|                  | #SBATCH -p <partition_name>       | Allocates resources on specified partition.               |
++------------------+-----------------------------------+-----------------------------------------------------------+
+| -o               | #SBATCH -o <filename>             | Writes standard output to ``<name>`` instead of           |
+|                  |                                   | ``<job_script>.o$SLURM_JOB_UID``. ``$SLURM_JOB_UID``      |
+|                  |                                   | is an environment variable created by Slurm that          |
+|                  |                                   | contains the batch job identifier.                        |
++------------------+-----------------------------------+-----------------------------------------------------------+
+| -e               | #SBATCH -e <filename>             | Writes standard error to ``<name>`` instead               |
+|                  |                                   | of ``<job_script>.e$SLURM_JOB_UID``.                      |
++------------------+-----------------------------------+-----------------------------------------------------------+
+| \\-\\-mail-type  | #SBATCH \\-\\-mail-type=FAIL      | Sends email to the submitter when the job fails.          |
++------------------+-----------------------------------+-----------------------------------------------------------+
+|                  | #SBATCH \\-\\-mail-type=BEGIN     | Sends email to the submitter when the job begins.         |
++------------------+-----------------------------------+-----------------------------------------------------------+
+|                  | #SBATCH \\-\\-mail-type=END       | Sends email to the submitter when the job ends.           |
++------------------+-----------------------------------+-----------------------------------------------------------+
+| \\-\\-mail-user  | #SBATCH \\-\\-mail-user=<address> | Specifies email address to use for                        |
+|                  |                                   | ``--mail-type`` options.                                  |
++------------------+-----------------------------------+-----------------------------------------------------------+
+| -J               | #SBATCH -J <name>                 | Sets the job name to ``<name>`` instead of the            |
+|                  |                                   | name of the job script.                                   |
++------------------+-----------------------------------+-----------------------------------------------------------+
+|\\-\\-get-user-env| #SBATCH \\-\\-get-user-env        | Exports all environment variables from the                |
+|                  |                                   | submitting shell into the batch job shell.                |
+|                  |                                   | Since the login nodes differ from the service             |
+|                  |                                   | nodes, using the ``–get-user-env`` option is              |
+|                  |                                   | **not recommended**. Users should create the              |
+|                  |                                   | needed environment within the batch job.                  |
++------------------+-----------------------------------+-----------------------------------------------------------+
+| \\-\\-mem=0      | #SBATCH \\-\\-mem=0               | Declare to use all the available memory of the node       |
++------------------+-----------------------------------+-----------------------------------------------------------+
+
+.. note::
+    Because the login nodes differ from the service nodes, using
+    the ``–get-user-env`` option is not recommended. Users should create the
+    needed environment within the batch job.
+
+Further details and other Slurm options may be found through the ``sbatch`` man
+page.
+
+--------------
+
+Batch Environment Variables
+---------------------------
+
+Slurm sets multiple environment variables at submission time. The following
+Slurm variables are useful within batch scripts:
+
++--------------------------+-------------------------------------------------------+
+| Variable                 | Description                                           |
++==========================+=======================================================+
+|                          | The directory from which the batch job was submitted. |
+|                          | By default, a new job starts in your home directory.  |
+| ``$SLURM_SUBMIT_DIR``    | You can get back to the directory of job submission   |
+|                          | with ``cd $SLURM_SUBMIT_DIR``. Note that this is not  |
+|                          | necessarily the same directory in which the batch     |
+|                          | script resides.                                       |
++--------------------------+-------------------------------------------------------+
+|                          | The job’s full identifier. A common use for           |
+| ``$SLURM_JOBID``         | ``SLURM_JOBID`` is to append the job’s ID to          |
+|                          | the standard output and error files.                  |
++--------------------------+-------------------------------------------------------+
+| ``$SLURM_JOB_NUM_NODES`` | The number of nodes requested.                        |
++--------------------------+-------------------------------------------------------+
+| ``$SLURM_JOB_NAME``      | The job name supplied by the user.                    |
++--------------------------+-------------------------------------------------------+
+| ``$SLURM_NODELIST``      | The list of nodes assigned to the job.                |
++--------------------------+-------------------------------------------------------+
+
+--------------
+
+Modifying Batch Jobs
+--------------------
+
+The batch scheduler provides a number of utility commands for managing
+submitted jobs. See each utilities' man page for more information.
+
+Removing and Holding Jobs
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+``scancel``
+
+
+Jobs in the queue in any state can be stopped and removed from the queue
+using the command ``scancel``.
+
+.. code::
+
+    $ scancel 1234
+
+``scontrol hold``
+
+
+Jobs in the queue in a non-running state may be placed on hold using the
+``scontrol hold`` command. Jobs placed on hold will not be removed from the
+queue, but they will not be eligible for execution.
+
+.. code::
+
+    $ scontrol hold 1234
+
+``scontrol release``
+
+
+Once on hold the job will not be eligible to run until it is released to
+return to a queued state. The ``scontrol release`` command can be used to
+remove a job from the held state.
+
+.. code::
+
+    $ scontrol release 1234
+
+--------------
+
+Monitoring Batch Jobs
+---------------------
+
+Slurm provides multiple tools to view queue, system, and job status. Below are
+the most common and useful of these tools.
+
+Job Monitoring Commands
+^^^^^^^^^^^^^^^^^^^^^^^
+
+``squeue``
+""""""""""
+
+The Slurm utility ``squeue`` can be used to view the batch queue.
+
+To see all jobs currently in the queue:
+
+.. code::
+
+    $ squeue -l
+
+To see all of your queued jobs:
+
+.. code::
+
+    $ squeue -l -u $USER
+
+``sacct``
+"""""""""
+
+The Slurm utility ``sacct`` can be used to view jobs currently in the queue and
+those completed within the last few days. The utility can also be used to see
+job steps in each batch job.
+
+
+To see all jobs currently in the queue:
+
+.. code::
+
+    $ sacct -a -X
+
+
+To see all jobs including steps owned by userA currently in the queue:
+
+.. code::
+
+    $ sacct -u userA
+
+To see all steps submitted to job 123:
+
+.. code::
+
+    $ sacct -j 123
+
+To see all of your jobs that completed on 2019-06-10:
+
+.. code::
+
+    $ sacct -S 2019-06-10T00:00:00 -E 2019-06-10T23:59:59 -o"jobid,user,account%16,cluster,AllocNodes,Submit,Start,End,TimeLimit" -X -P
+
+
+``jobstat``
+"""""""""""
+
+Similar to Summit, the local tool ``jobstat`` can be used to view the queue.
+
+
+
+.. code::
+
+    $ jobstat
+    Running    jobs------------------------
+    ST  JOBID USER  ACCOUNT NODES PARTITION  NAME TIME_LIMIT     START_TIME           TIME_LEFT
+    R   1671  usrB  abc123  10    batch      jobA 10:00:00       2019-08-13T10:22:18  3:7:40
+
+    Pending    jobs------------------------
+    ST  JOBID USER  ACCOUNT  NODES PARTITION  NAME TIME_LIMIT  SUBMIT_TIME       PRIORITY START_TIME        REASON
+    PD  1677  usrA  abc123   10    batch      jobB 10:00       2019-08-13T13:43  10101    2019-08-13T17:45  Resources
+
+
+``scontrol show job jobid``
+"""""""""""""""""""""""""""
+
+Provides additional details of given job.
+
+``sview``
+""""""""""
+
+The ``sview`` tool provide a graphical queue monitoring tool. To use, you will
+need an X server running on your local system. You will also need to tunnel X
+traffic through your ssh connection:
+
+.. code::
+
+    local-system> ssh -Y username@andes.ccs.ornl.gov
+    andes-login> sview
 
