@@ -14,7 +14,7 @@ documentation, instruction, and tutorials that could be useful for
 Summit users.
 
 The `OLCF Training
-Archive <https://www.olcf.ornl.gov/for-users/training/training-archive/>`__
+Archive <https://docs.olcf.ornl.gov/training/training_archive.html/>`__
 provides a list of previous training events, including multi-day Summit
 Workshops. Some examples of topics addressed during these workshops
 include using Summit's NVME burst buffers, CUDA-aware MPI, advanced
