@@ -1,3 +1,5 @@
+.. _training-archive:
+
 ****************
 Training Archive
 ****************
