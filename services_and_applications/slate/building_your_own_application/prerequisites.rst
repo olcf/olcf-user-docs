@@ -45,13 +45,6 @@ choice is yours):
 
      $ yum install origin-clients
 
-- Download the TAR file for your system `<https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/>`_
-    
-     Extract the binary with ``tar -xvf <your.tar.gz>``.
-
-     You can copy the extracted binary to ``/usr/local/bin`` to add it to your
-     ``$PATH``. This allows you to call the binary from anywhere in your
-     terminal, instead of specifying the full path.
 
 Test login with OC Tool
 -----------------------
