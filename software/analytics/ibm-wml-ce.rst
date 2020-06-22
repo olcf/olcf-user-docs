@@ -39,21 +39,21 @@ packages, and their dependencies:
 .. table::
     :widths: 20 40 40 35
 
-    +--------------------+--------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------+
-    | IBM WML CE Version | ibm-wml-ce/1.6.1                                                                                                               | ibm-wml-ce/1.6.2                                                                                                                | ibm-wml-ce/1.7.0                                                                                                                    +
-    +--------------------+--------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------+
-    | Package            | `IBM DDL 1.4.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.1/navigation/wmlce_getstarted_ddl.html>`_               | `IBM DDL 1.5.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.2/navigation/wmlce_getstarted_ddl.html>`_                | `IBM DDL 1.5.1 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.7.0/navigation/wmlce_getstarted_ddl.html>`_                    +
-    |                    +--------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------+
-    |                    | `Tensorflow 1.14 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.1/navigation/wmlce_getstarted_tensorflow.html>`_      | `Tensorflow 1.15 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.2/navigation/wmlce_getstarted_tensorflow.html>`_       | `Tensorflow 2.1 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.7.0/navigation/wmlce_getstarted_tensorflow.html>`_            +
-    |                    +--------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------+
-    |                    | `Pytorch 1.1.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.1/navigation/wmlce_getstarted_pytorch.html>`_           | `Pytorch 1.2.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.2/navigation/wmlce_getstarted_pytorch.html>`_            | `Pytorch 1.3.1 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.7.0/navigation/wmlce_getstarted_pytorch.html>`_                +
-    |                    +--------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------+
-    |                    | `Caffe(IBM-enhanced) 1.0.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.1/navigation/wmlce_getstarted_caffe.html>`_ | `Caffe (IBM-enhanced) 1.0.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.2/navigation/wmlce_getstarted_caffe.html>`_ | `Caffe (IBM-enhanced) 1.0.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.7.0/navigation/wmlce_getstarted_caffe.html>`_     +
-    |                    +--------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------+
-    |                    | `Horovod @9f87459 (IBM-DDL Backend) <https://github.com/horovod/horovod>`_                                                     | `Horovod v0.18.2 (IBM-DDL Backend) <https://github.com/horovod/horovod>`_                                                       | `Horovod v0.19 (NCCL Backend) <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.7.0/navigation/wmlce_getstarted_horovod.html>`_ |
-    +--------------------+--------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------+
-    | Complete List      | `1.6.1 Software Packages <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.1/navigation/wmlce_software_pkgs.html>`_      | `1.6.2 Software Packages <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.2/navigation/wmlce_software_pkgs.html>`_       | `1.7.0 Software Packages <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.7.0/navigation/wmlce_software_pkgs.html>`_           |
-    +--------------------+--------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------+
+    +--------------------+--------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------+
+    | IBM WML CE Version | ibm-wml-ce/1.6.1                                                                                                               | ibm-wml-ce/1.6.2                                                                                                                 | ibm-wml-ce/1.7.0                                                                                                                     |
+    +--------------------+--------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------+
+    | Package            | `IBM DDL 1.4.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.1/navigation/wmlce_getstarted_ddl.html>`_               | `IBM DDL 1.5.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.2/navigation/wmlce_getstarted_ddl.html>`_                 | `IBM DDL 1.5.1 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.7.0/navigation/wmlce_getstarted_ddl.html>`_                     |
+    |                    +--------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------+
+    |                    | `Tensorflow 1.14 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.1/navigation/wmlce_getstarted_tensorflow.html>`_      | `Tensorflow 1.15 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.2/navigation/wmlce_getstarted_tensorflow.html>`_        | `Tensorflow 2.1 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.7.0/navigation/wmlce_getstarted_tensorflow.html>`_             |
+    |                    +--------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------+
+    |                    | `Pytorch 1.1.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.1/navigation/wmlce_getstarted_pytorch.html>`_           | `Pytorch 1.2.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.2/navigation/wmlce_getstarted_pytorch.html>`_             | `Pytorch 1.3.1 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.7.0/navigation/wmlce_getstarted_pytorch.html>`_                 |
+    |                    +--------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------+
+    |                    | `Caffe(IBM-enhanced) 1.0.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.1/navigation/wmlce_getstarted_caffe.html>`_ | `Caffe (IBM-enhanced) 1.0.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.2/navigation/wmlce_getstarted_caffe.html>`__ | `Caffe (IBM-enhanced) 1.0.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.7.0/navigation/wmlce_getstarted_caffe.html>`__     |
+    |                    +--------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------+
+    |                    | `Horovod @9f87459 (IBM-DDL Backend) <https://github.com/horovod/horovod>`_                                                     | `Horovod v0.18.2 (IBM-DDL Backend) <https://github.com/horovod/horovod>`_                                                        | `Horovod v0.19 (NCCL Backend) <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.7.0/navigation/wmlce_getstarted_horovod.html>`_  |
+    +--------------------+--------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------+
+    | Complete List      | `1.6.1 Software Packages <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.1/navigation/wmlce_software_pkgs.html>`_      | `1.6.2 Software Packages <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.2/navigation/wmlce_software_pkgs.html>`_        | `1.7.0 Software Packages <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.7.0/navigation/wmlce_software_pkgs.html>`_            |
+    +--------------------+--------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------+
 
 .. note::
 
@@ -61,16 +61,33 @@ packages, and their dependencies:
     Bryant Nelson and Brad Nemanich of IBM.
     (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/10/DDLonSummit.pdf>`__ | `recording <https://vimeo.com/377551223>`__)
 
-Running DDL Jobs
+Running Distributed Deep Learning Jobs
 ================
 
-IBM DDL provides a tool called ``ddlrun`` which facilitates the launching of
-DDL jobs on Summit. When called inside of a ``bsub`` script, ``ddlrun`` will
-automatically distribute the training job across all the compute hosts in the
-reservation. ``ddlrun`` automatically selects default arguments optimized
-for performance.
+The IBM ``ddlrun`` tool has been deprecated. The recommended tool for
+launching distributed deep learning jobs on Summit is ``jsrun``. When
+launching distributed deep learning jobs the primary concern for most
+distribution methods is that each process needs to have access to
+all GPUs on the node it's running on. The following command should
+correctly launch most DDL scripts:
 
-Basic DDL BSUB Script
+``jsrun -r1 -g6 -a6 -c42 -bpacked:7  <SCRIPT>``
+
++----------------+------------------------------------------------------+
+| Flags          |  Description                                         |
++================+======================================================+
+| ``-r1``        | 1 resource set per host                              |
++----------------+------------------------------------------------------+
+| ``-g6``        | 6 GPUs per resource set                              |
++----------------+------------------------------------------------------+
+| ``-a6``        | 6 MPI tasks per resource set                         |
++----------------+------------------------------------------------------+
+| ``-c42``       | 42 CPU cores per resource set                        |
++----------------+------------------------------------------------------+
+| ``-bpacked:7`` | Binds each task to 7 contiguous CPU cores            |
++----------------+------------------------------------------------------+
+
+Basic Distributed Deep Learning BSUB Script
 ---------------------
 
 The following bsub script will run a distributed Tensorflow resnet50
@@ -89,7 +106,7 @@ training job across 2 nodes.
 
     module load ibm-wml-ce
 
-    ddlrun python $CONDA_PREFIX/horovod/examples/tensorflow2_synthetic_benchmark.py
+    jsrun -bpacked:7 -g6 -a6 -c42 -r1 python $CONDA_PREFIX/horovod/examples/tensorflow2_synthetic_benchmark.py
 
 ``bsub`` is used to launch the script as follows:
 
@@ -100,12 +117,8 @@ training job across 2 nodes.
 For more information on ``bsub`` and job submission
 please see: :ref:`running-jobs`.
 
-Verbose mode
-^^^^^^^^^^^^
-
-Using the verbose flag (``-v``) with ``ddlrun`` displays much more debugging
-information. This should be the first step to troubleshoot errors when
-launching a distributed job.
+For more information on ``jsrun`` please see:
+:ref:`job-launcher-jsrun`.
 
 Setting up Custom Environments
 ==============================
@@ -168,7 +181,7 @@ Horovod comes with a tool called Timeline which can help analyze the performance
 of Horovod. This is particularly useful when trying to scale a deep learning job
 to many nodes. The Timeline tool can help pick various options that can improve
 the performance of distributed deep learning jobs that are using Horovod. For
-more information, please see Horovod's `documentation <https://github.com/horovod/horovod#horovod-timeline>`_.
+more information, please see `Horovod's documentation <https://github.com/horovod/horovod#horovod-timeline>`_.
 
 PyTorch’s Autograd Profiler
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -176,7 +189,7 @@ PyTorch’s Autograd Profiler
 PyTorch provides a builtin profiler that can be used to find bottlenecks
 within a training job. It is most useful for profiling the performance of a job
 running on a single GPU. For more information on using PyTorch's profiler, see
-PyTorch's `documentation <https://pytorch.org/docs/stable/bottleneck.html#torch-utils-bottleneck>`_.
+`PyTorch's documentation <https://pytorch.org/docs/stable/bottleneck.html#torch-utils-bottleneck>`_.
 
 
 Reserving Whole Racks
