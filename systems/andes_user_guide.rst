@@ -49,8 +49,12 @@ execute 56 hardware threads for increased parallelism.
 .. note::
     To access the gpu partition, batch job submissions should request ``-p gpu``.
 
-Both compute partitions are accessible through the same batch queue from Andes' login nodes.
+Please see the :ref:`batch-queues-on-andes` section to learn about the queuing
+policies for these two partitions. Both compute partitions are accessible
+through the same batch queue from Andes’s :ref:`andes-login-nodes`.
 
+Andes features a S8500 Series HDR Infiniband interconnect, with a maximum theoretical
+transfer rate of 200 Gb/s.
 
 .. _andes-login-nodes:
 
@@ -64,6 +68,11 @@ system through these same login nodes, and as such, any CPU- or
 memory-intensive tasks on these nodes could interrupt service to other users.
 As a courtesy, we ask that you refrain from doing any analysis or visualization
 tasks on the login nodes.
+
+To connect to Andes, ssh to andes.ccs.ornl.gov 
+::
+
+        ssh username@andes.ccs.ornl.gov
 
 For more information on connecting to OLCF resources, see :ref:`connecting-to-olcf`.
 
