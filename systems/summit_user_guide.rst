@@ -41,11 +41,13 @@ Each of the approximately 4,600 compute nodes on Summit contains two IBM
 POWER9 processors and six `NVIDIA Volta V100`_ accelerators and provides
 a theoretical double-precision capability of
 approximately 40 TF. Each POWER9 processor is connected via dual NVLINK
-bricks, each capable of a 25GB/s transfer rate in each direction. Nodes
-contain 512 GB of DDR4 memory for use by the POWER9 processors and 96 GB
-of High Bandwidth Memory (HBM2) for use by the accelerators.
-Additionally, each node has 1.6TB of non-volatile memory that can be
-used as a burst buffer.
+bricks, each capable of a 25GB/s transfer rate in each direction.
+
+Most Summit nodes contain 512 GB of DDR4 memory for use by the POWER9
+processors, 96 GB of High Bandwidth Memory (HBM2) for use by the accelerators,
+and 1.6TB of non-volatile memory that can be used as a burst buffer. A small
+number of nodes (54) are configured as "high memory" nodes. These nodes contain 2TB of 
+DDR4 memory, 192GB of HBM2, and 6.4TB of non-volatile memory.
 
 The POWER9 processor is built around IBM’s SIMD
 Multi-Core (SMC). The processor provides 22 SMCs with separate 32kB L1
@@ -153,12 +155,12 @@ NVIDIA V100 GPUs
 The NVIDIA Tesla V100 accelerator has a peak performance of 7.8 TFLOP/s
 (double-precision) and contributes to a majority of the computational
 work performed on Summit. Each V100 contains 80 streaming
-multiprocessors (SMs), 16 GB of high-bandwidth memory (HBM2), and a 6 MB
-L2 cache that is available to the SMs. The GigaThread Engine is
-responsible for distributing work among the SMs and (8) 512-bit memory
-controllers control access to the 16 GB of HBM2 memory. The V100 uses
-NVIDIA's NVLink interconnect to pass data between GPUs as well as from
-CPU-to-GPU.
+multiprocessors (SMs), 16 GB (32 GB on high-memory nodes) of high-bandwidth
+memory (HBM2), and a 6 MB L2 cache that is available to the SMs. The
+GigaThread Engine is responsible for distributing work among the SMs and
+(8) 512-bit memory controllers control access to the 16 GB (32 GB on
+high-memory nodes) of HBM2 memory. The V100 uses NVIDIA's NVLink interconnect
+to pass data between GPUs as well as from CPU-to-GPU.
 
 .. image:: /images/GV100_FullChip_Diagram_FINAL2_a.png
    :align: center
@@ -178,10 +180,11 @@ texture units which use the (configured size of the) L1 cache.
 HBM2
 ----
 
-Each V100 has access to 16 GB of high-bandwidth memory (HBM2), which can
-be accessed at speeds of up to 900 GB/s. Access to this memory is
-controlled by (8) 512-bit memory controllers, and all accesses to the
-high-bandwidth memory go through the 6 MB L2 cache.
+Each V100 has access to 16 GB (32GB for high-memory nodes) of
+high-bandwidth memory (HBM2), which can be accessed at speeds of 
+up to 900 GB/s. Access to this memory is controlled by (8) 512-bit
+memory controllers, and all accesses to the high-bandwidth memory
+go through the 6 MB L2 cache.
 
 NVIDIA NVLink
 -------------
@@ -730,7 +733,7 @@ Tesla V100 Specifications
 +----------------------------------------------------+----------------------------+
 | Memory Bandwidth                                   | 900 GB/s                   |
 +----------------------------------------------------+----------------------------+
-| Memory size (HBM2)                                 | 16 GB                      |
+| Memory size (HBM2)                                 | 16 or 32 GB                |
 +----------------------------------------------------+----------------------------+
 | L2 cache                                           | 6 MB                       |
 +----------------------------------------------------+----------------------------+
@@ -802,12 +805,12 @@ NVMe (XFS)
 ----------
 
 Each compute node on Summit has a 1.6TB \ **N**\ on-\ **V**\ olatile **Me**\
-mory (NVMe) storage device, colloquially known as a "Burst Buffer" with
+mory (NVMe) storage device (high-memory nodes have a 6.4TB NVMe storage device), colloquially known as a "Burst Buffer" with
 theoretical performance peak of 2.1 GB/s for writing and 5.5 GB/s for reading.
 100GB of each NVMe is reserved for NFS cache to help speed access to common
 libraries. When calculating maximum usable storage size, this cache and
 formatting overhead should be considered; We recommend a maximum storage of
-1.4TB. The NVMes could be used to reduce the time that applications wait for
+1.4TB (6TB for high-memory nodes). The NVMes could be used to reduce the time that applications wait for
 I/O. Using an SSD drive per compute node, the burst buffer will be used to
 transfer data to or from the drive before the application reads a file or
 after it writes a file.  The result will be that the application benefits from
@@ -1923,6 +1926,30 @@ following policies:
     The *eligible-to-run* state is not the *running* state.
     Eligible-to-run jobs have not started and are waiting for resources.
     Running jobs are actually executing.
+
+``batch-hm`` Queue Policy
+"""""""""""""""""""""""""
+
+The ``batch-hm`` queue is used to access Summit's high-memory nodes.
+Jobs may use all 54 nodes. It enforces the following policies:
+
+-  Limit of (4) *eligible-to-run* jobs per user.
+-  Jobs in excess of the per user limit above will be placed into a
+   *held* state, but will change to eligible-to-run at the appropriate
+   time.
+-  Users may have only (100) jobs queued at any state at any time.
+   Additional jobs will be rejected at submit time.
+
+**batch-hm job limits:**
+
++-------------+-------------+------------------------+
+| Min Nodes   | Max Nodes   | Max Walltime (Hours)   |
++=============+=============+========================+
+| 1           | 54          | 6.0                    |
++-------------+-------------+------------------------+
+
+To submit a job to the ``batch-hm`` queue, add the ``-q batch-hm`` option to your
+``bsub`` command or ``#BSUB -q batch-hm`` to your job script.
 
 ``killable`` Queue Policy
 """"""""""""""""""""""""""
