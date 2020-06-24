@@ -46,7 +46,7 @@ bricks, each capable of a 25GB/s transfer rate in each direction.
 Most Summit nodes contain 512 GB of DDR4 memory for use by the POWER9
 processors, 96 GB of High Bandwidth Memory (HBM2) for use by the accelerators,
 and 1.6TB of non-volatile memory that can be used as a burst buffer. A small
-number (56) are configured as "high memory" nodes. These nodes contain 2TB of 
+number of nodes (54) are configured as "high memory" nodes. These nodes contain 2TB of 
 DDR4 memory, 192GB of HBM2, and 6.4TB of non-volatile memory.
 
 The POWER9 processor is built around IBM’s SIMD
@@ -1942,13 +1942,11 @@ Jobs may use all 54 nodes. It enforces the following policies:
 
 **batch-hm job limits:**
 
-+-------+-------------+-------------+------------------------+
-| Bin   | Min Nodes   | Max Nodes   | Max Walltime (Hours)   |
-+=======+=============+=============+========================+
-| 4     | 46          | 54          | 6.0                    |
-+-------+-------------+-------------+------------------------+
-| 5     | 1           | 45          | 6.0                    |
-+-------+-------------+-------------+------------------------+
++-------------+-------------+------------------------+
+| Min Nodes   | Max Nodes   | Max Walltime (Hours)   |
++=============+=============+========================+
+| 1           | 54          | 6.0                    |
++-------------+-------------+------------------------+
 
 To submit a job to the ``batch-hm`` queue, add the ``-q batch-hm`` option to your
 ``bsub`` command or ``#BSUB -q batch-hm`` to your job script.
