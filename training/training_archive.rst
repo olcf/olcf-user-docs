@@ -1,8 +1,8 @@
 .. _training-archive:
 
-****************
+*********************
 OLCF Training Archive
-****************
+*********************
 
 The table below lists presentations given at previous OLCF training events. For a list of upcoming training events, please visit the `OLCF Training Calendar <https://www.olcf.ornl.gov/for-users/training/training-calendar/>`__
 
@@ -12,6 +12,8 @@ The table below lists presentations given at previous OLCF training events. For 
 .. csv-table::
    :header: "Date", "Title", "Speaker", "Event", "Presentation"
 
+   "2020-06-23", "Loop Optimizations with OpenACC", "Robbie Searles (NVIDIA)", `Loop Optimizations with OpenACC <https://www.olcf.ornl.gov/calendar/loop-optimizations-with-openacc/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2020/06/OpenACC_Course_2020_Module_3_updated.pdf>`__ | `recording <https://vimeo.com/431954101>`__)
+   "2020-06-18", "CUDA Managed Memory", "Bob Crovella (NVIDIA)", `CUDA Managed Memory <https://www.olcf.ornl.gov/calendar/cuda-managed-memory/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/06/06_Managed_Memory.pdf>`__ | `recording <https://vimeo.com/431616420>`__)
    "2020-06-03", "Summit Tips & Tricks", "Tom Papatheodore (OLCF)", `2020 OLCF User Meeting (Summit New User Training) <https://www.olcf.ornl.gov/calendar/2020-olcf-user-meeting/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2020/02/Summit_Tips_and_Tricks_2020-06-03.pdf>`__ | `recording <https://vimeo.com/427798547>`__)
    "2020-06-03", "MLDL on Summit", "Junqi Yin (OLCF)", `2020 OLCF User Meeting (Summit New User Training) <https://www.olcf.ornl.gov/calendar/2020-olcf-user-meeting/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2020/02/MLDL-on-Summit-June2020.pdf>`__ | `recording <https://vimeo.com/427791205>`__)
    "2020-06-03", "Python Best Practices", "Matt Belhorn (OLCF)", `2020 OLCF User Meeting (Summit New User Training) <https://www.olcf.ornl.gov/calendar/2020-olcf-user-meeting/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2020/06/20200603_summit_workshop_python.pdf>`__ | `recording <https://vimeo.com/427794043>`__)
