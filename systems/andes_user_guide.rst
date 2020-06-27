@@ -347,21 +347,21 @@ For pgi, add "-mp" to the build line.
 .. code::
 
     $ mpicc -mp test.c -o test.x
-    $ export omp_num_threads=2
+    $ export OMP_NUM_THREADS=2
 
 For gnu, add "-fopenmp" to the build line.
 
 .. code::
 
     $ mpicc -fopenmp test.c -o test.x
-    $ export omp_num_threads=2
+    $ export OMP_NUM_THREADS=2
 
 For intel, add "-qopenmp" to the build line.
 
 .. code::
 
     $ mpicc -qopenmp test.c -o test.x
-    $ export omp_num_threads=2
+    $ export OMP_NUM_THREADS=2
 
 For information on *running threaded codes*, please see the :ref:`andes-thread-layout`
 subsection of the :ref:`andes-running-jobs` section in this user guide.
@@ -424,17 +424,17 @@ Most OLCF resources now use the Slurm batch scheduler. Previously, most OLCF res
 used the Moab scheduler. Summit and other IBM hardware use the LSF scheduler.
 Below is a comparison table of useful commands among the three schedulers.
 
-+--------------------------------------------+-------------------+-----------------------+-------------------+
-| Task                                       | Moab (historical) | LSF (Summit)          | Slurm             |
-+============================================+===================+=======================+===================+
-| View batch queue                           | ``showq``         | ``jobstat``           | ``squeue``        |
-+--------------------------------------------+-------------------+-----------------------+-------------------+
-| Submit batch script                        | ``qsub``          | ``bsub``              | ``sbatch``        |
-+--------------------------------------------+-------------------+-----------------------+-------------------+
-| Submit interactive batch job               | ``qsub -I``       | ``bsub -Is $SHELL``   | ``salloc``        |
-+--------------------------------------------+-------------------+-----------------------+-------------------+
-| Run parallel code within batch job         | ``mpirun``        | ``jsrun``             | ``srun``          |
-+--------------------------------------------+-------------------+-----------------------+-------------------+
++--------------------------------------------+-----------------------+-------------------+
+| Task                                       | LSF (Summit)          | Slurm             |
++============================================+=======================+===================+
+| View batch queue                           | ``jobstat``           | ``squeue``        |
++--------------------------------------------+-----------------------+-------------------+
+| Submit batch script                        | ``bsub``              | ``sbatch``        |
++--------------------------------------------+-----------------------+-------------------+
+| Submit interactive batch job               | ``bsub -Is $SHELL``   | ``salloc``        |
++--------------------------------------------+-----------------------+-------------------+
+| Run parallel code within batch job         | ``jsrun``             | ``srun``          |
++--------------------------------------------+-----------------------+-------------------+
 
 
 Writing Batch Scripts
@@ -814,26 +814,7 @@ To see all of your jobs that completed on 2019-06-10:
     $ sacct -S 2019-06-10T00:00:00 -E 2019-06-10T23:59:59 -o"jobid,user,account%16,cluster,AllocNodes,Submit,Start,End,TimeLimit" -X -P
 
 
-``jobstat``
-"""""""""""
-
-Similar to Summit, the local tool ``jobstat`` can be used to view the queue.
-
-
-
-.. code::
-
-    $ jobstat
-    Running    jobs------------------------
-    ST  JOBID USER  ACCOUNT NODES PARTITION  NAME TIME_LIMIT     START_TIME           TIME_LEFT
-    R   1671  usrB  abc123  10    batch      jobA 10:00:00       2019-08-13T10:22:18  3:7:40
-
-    Pending    jobs------------------------
-    ST  JOBID USER  ACCOUNT  NODES PARTITION  NAME TIME_LIMIT  SUBMIT_TIME       PRIORITY START_TIME        REASON
-    PD  1677  usrA  abc123   10    batch      jobB 10:00       2019-08-13T13:43  10101    2019-08-13T17:45  Resources
-
-
-``scontrol show job jobid``
+``scontrol show job <jobid>``
 """""""""""""""""""""""""""
 
 Provides additional details of given job.
