@@ -20,11 +20,11 @@ scheduled for 2020.
    +-------------------------------------------------+-------------------+-------------------------+
    | Location (virtual)                              | Proposal Deadline | Event Dates             |
    +=================================================+===================+=========================+
-   | San Diego Supercomputing Center - San Diego, CA | March 11          | June 27, May 11 - 13    | 
+   | San Diego Supercomputing Center - San Diego, CA | March 11          | April 27, May 11 - 13   | 
    +-------------------------------------------------+-------------------+-------------------------+
    | Princeton University - Princeton, NJ            | March 2           | June 1, 8 - 10          |
    +-------------------------------------------------+-------------------+-------------------------+ 
-   | NERSC - Oakland, CA                             | March 11          | July 7, 13 - 15         |
+   | NERSC - Oakland, CA                             | May 13            | July 7, 13 - 15         |
    +-------------------------------------------------+-------------------+-------------------------+ 
    | Brookhaven National Laboratory - Upton, NY      | June 28           | August 10, 17 - 19      |
    +-------------------------------------------------+-------------------+-------------------------+
@@ -56,7 +56,7 @@ partners.
 
 If you want/need to get your code running (or optimized) on a GPU-accelerated
 system, these hackathons offer a unique opportunity to set aside the time,
-surrounds yourself with experts in the field, and push toward your development
+surround yourself with experts in the field, and push toward your development
 goals. By the end of the event, each team should have part of their code running 
 (or more optimized) on GPUs, or at least have a clear roadmap of how to get there.
 
