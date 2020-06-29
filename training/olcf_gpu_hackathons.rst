@@ -55,7 +55,7 @@ partners.
    <p style="font-size:20px"><b>Why participate?</b></p>
 
 If you want/need to get your code running (or optimized) on a GPU-accelerated
-system, these hackathons offer a unique opportunity to set aside 5 days,
+system, these hackathons offer a unique opportunity to set aside the time,
 surrounds yourself with experts in the field, and push toward your development
 goals. By the end of the event, each team should have part of their code running 
 (or more optimized) on GPUs, or at least have a clear roadmap of how to get there.
@@ -106,13 +106,6 @@ they believe are best suited for the event.
 To submit a proposal, please visit `gpuhackathons.org/events
 <https://gpuhackathons.org/events>`__, click on the event you'd like to attend,
 and submit the form.
-
-.. raw:: html
-
-   <p style="font-size:20px"><b>Costs?</b></p>
-
-Events are free for the selected participants. The organizers will provide a
-meeting room, lunches, mentors, and access to compute resources. 
 
 .. raw:: html
 
