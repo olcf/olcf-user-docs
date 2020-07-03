@@ -831,3 +831,134 @@ traffic through your ssh connection:
     local-system> ssh -Y username@andes.ccs.ornl.gov
     andes-login> sview
 
+--------------
+
+Job Execution
+-------------
+
+Once resources have been allocated through the batch system, users have the
+option of running commands on the allocated resources' primary compute node (a
+serial job) and/or running an MPI/OpenMP executable across all the resources in
+the allocated resource pool simultaneously (a parallel job).
+
+Serial Job Execution
+^^^^^^^^^^^^^^^^^^^^
+
+The executable portion of batch scripts is interpreted by the shell specified on
+the first line of the script. If a shell is not specified, the submitting user’s
+default shell will be used.
+
+The serial portion of the batch script may contain comments, shell commands,
+executable scripts, and compiled executables. These can be used in combination
+to, for example, navigate file systems, set up job execution, run serial
+executables, and even submit other batch jobs.
+
+Andes Compute Node Description
+"""""""""""""""""""""""""""""
+
+The following image represents a high level compute node that will be used below
+to display layout options.
+
+.. image:: /images/Andes-Node-Description.jpg
+   :align: center
+
+.. note::
+    0 and 32 are on the same physical core.
+
+Using ``srun``
+""""""""""""""
+
+By default, commands will be executed on the job’s primary compute node,
+sometimes referred to as the job’s head node. The ``srun`` command is used to
+execute an MPI binary on one or more compute nodes in parallel.
+
+``srun`` accepts the following common options:
+
++----------------------+---------------------------------------+
+| ``-N``               | Minimum number of nodes               |
++----------------------+---------------------------------------+
+| ``-n``               | Total number of MPI tasks             |
++----------------------+---------------------------------------+
+| ``--cpu-bind=no``    | Allow code to control thread affinity |
++----------------------+---------------------------------------+
+| ``-c``               | Cores per MPI task                    |
++----------------------+---------------------------------------+
+| ``--cpu-bind=cores`` | Bind to cores                         |
++----------------------+---------------------------------------+
+
+.. note::
+    If you do not specify the number of MPI tasks to ``srun``
+    via ``-n``, the system will default to using only one task per node.
+
+
+MPI Task Layout
+"""""""""""""""""
+
+Each compute node on Rhea contains two sockets each with 8 cores.  Depending on
+your job, it may be useful to control task layout within and across nodes.
+
+Physical Core Binding
+"""""""""""""""""""""
+
+The following will run four copies of a.out, one per CPU, two per node with
+physical core binding
+
+.. image:: /images/Andes-layout-physical-core-1-per-CPU.jpg
+   :align: center
+
+Hyper Thread Binding
+""""""""""""""""""""
+The following will run four copies of a.out, one per hyper-thread, two per node
+using a round robin task layout between nodes:
+
+.. image:: /images/Andes-layout-1-per-hyper-thread-cyclic.jpg
+   :align: center
+
+.. _andes-thread-layout:
+
+Thread Layout
+"""""""""""""
+**Thread per Hyper-Thread**
+
+The following will run four copies of a.out. Each task will launch two threads.
+The ``-c`` flag will provide room for the threads.
+
+.. image:: /images/Andes-layout-thread-per-hyperthread.jpg
+   :align: center
+
+.. warning::
+    Not adding enough resources using the ``-c`` flag,
+    threads may be placed on the same resource.
+
+Multiple Simultaneous Jobsteps
+""""""""""""""""""""""""""""""
+
+Multiple simultaneous sruns can be executed within a batch job by placing each
+``srun`` in the background.
+
+.. code-block:: bash
+   :linenos:
+
+   #!/bin/bash
+   #SBATCH -N 2
+   #SBATCH -t 1:00:00
+   #SBATCH -A prj123
+   #SBATCH -J simultaneous-jobsteps
+
+   srun -n16 -N2 -c1 --cpu-bind=cores --exclusive ./a.out &
+   srun -n8 -N2 -c1 --cpu-bind=cores --exclusive ./b.out &
+   srun -n4 -N1 -c1 --cpu-bind=threads --exclusive ./c.out &
+   wait
+
+.. note::
+    The ``wait`` command must be used in a batch script
+    to prevent the shell from exiting before all backgrounded
+    sruns have completed.
+
+.. warning::
+    The ``--exclusive`` flag must be used to prevent
+    resource sharing. Without the flag each backgrounded srun
+    will likely be placed on the same resources.
+
+.. _batch-queues-on-andes:
+
