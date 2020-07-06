@@ -894,7 +894,7 @@ execute an MPI binary on one or more compute nodes in parallel.
 MPI Task Layout
 """""""""""""""""
 
-Each compute node on Rhea contains two sockets each with 8 cores.  Depending on
+Each compute node on Andes contains two sockets each with 8 cores.  Depending on
 your job, it may be useful to control task layout within and across nodes.
 
 Physical Core Binding
@@ -961,4 +961,170 @@ Multiple simultaneous sruns can be executed within a batch job by placing each
     will likely be placed on the same resources.
 
 .. _batch-queues-on-andes:
+
+Batch Queues on Andes
+--------------------
+
+The compute nodes on Andes are separated into two partitions the "Andes partition"
+and the "GPU partition" as described in the :ref:`andes-compute-nodes` section, and
+they are available through a single batch queue: ``batch``. The scheduling
+policies for the individual partitions are as follows:
+
+Andes Partition Policy (default)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Jobs that do not specify a partition will run in the 704 node Andes partition:
+
+
++-----+----------------+------------+-------------------------------------------+
+| Bin | Node Count     | Duration   | Policy                                    |
++=====+================+============+===========================================+
+| A   | 1 - 16 Nodes   | 0 - 48 hr  |                                           |
++-----+----------------+------------+  max 4 jobs running and 4 jobs eligible   |
+| B   | 17 - 64 Nodes  | 0 - 36 hr  |  **per user**                             |
++-----+----------------+------------+  in bins A, B, and C                      |
+| C   | 65 - 384 Nodes | 0 - 3 hr   |                                           |
++-----+----------------+------------+-------------------------------------------+
+
+GPU Partition Policy
+^^^^^^^^^^^^^^^^^^^^
+
+To access the 9 node GPU Partition batch job submissions should request ``-p
+gpu``
+
++------------+-------------+-------------------------------------------+
+| Node Count |  Duration   |  Policy                                   |
++============+=============+===========================================+
+| 1-2 Nodes  |  0 - 48 hrs |     max 1 job running **per user**        |
++------------+-------------+-------------------------------------------+
+
+.. note::
+    The queue structure was designed based on user feedback and
+    analysis of batch jobs over the recent years. However, we understand that
+    the structure may not meet the needs of all users. **If this structure
+    limits your use of the system, please let us know.** We want Andes to be a
+    useful OLCF resource and will work with you providing exceptions or even
+    changing the queue structure if necessary.
+
+Users wishing to submit jobs that fall outside the queue structure are
+encouraged to request a reservation via the `Special Request
+Form <https://www.olcf.ornl.gov/for-users/getting-started/special-request-form/>`__.
+
+Allocation Overuse Policy
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Projects that overrun their allocation are still allowed to run on OLCF systems,
+although at a reduced priority. Like the adjustment for the number of processors
+requested above, this is an adjustment to the apparent submit time of the job.
+However, this adjustment has the effect of making jobs appear much younger than
+jobs submitted under projects that have not exceeded their allocation. In
+addition to the priority change, these jobs are also limited in the amount of
+wall time that can be used.
+
+For example, consider that ``job1`` is submitted at the same time as ``job2``.
+The project associated with ``job1`` is over its allocation, while the project
+for ``job2`` is not. The batch system will consider ``job2`` to have been
+waiting for a longer time than ``job1``. In addition, projects that are at 125%
+of their allocated time will be limited to only one running job at a time. The
+adjustment to the apparent submit time depends upon the percentage that the
+project is over its allocation, as shown in the table below:
+
++------------------------+----------------------+--------------------------+------------------+
+| % Of Allocation Used   | Priority Reduction   | number eligible-to-run   | number running   |
++========================+======================+==========================+==================+
+| < 100%                 | 0 days               | 4 jobs                   | unlimited jobs   |
++------------------------+----------------------+--------------------------+------------------+
+| 100% to 125%           | 30 days              | 4 jobs                   | unlimited jobs   |
++------------------------+----------------------+--------------------------+------------------+
+| > 125%                 | 365 days             | 4 jobs                   | 1 job            |
++------------------------+----------------------+--------------------------+------------------+
+
+--------------
+
+Job Accounting on Andes
+----------------------
+
+Jobs on Andes are scheduled in full node increments; a node's cores cannot be
+allocated to multiple jobs. Because the OLCF charges based on what a job makes
+*unavailable* to other users, a job is charged for an entire node even if it
+uses only one core on a node. To simplify the process, users are given a
+multiples of entire nodes through Slurm.
+
+Viewing Allocation Utilization
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Projects are allocated time on Andes in units of *node-hours*. This is separate
+from a project's Summit allocation, and usage of Andes does not count against
+that allocation. This page describes how such units are calculated, and how
+users can access more detailed information on their relevant allocations.
+
+Node-Hour Calculation
+^^^^^^^^^^^^^^^^^^^^^
+
+The *node-hour* charge for each batch job will be calculated as follows:
+
+.. code::
+
+    node-hours = nodes requested * ( batch job endtime - batch job starttime )
+
+Where *batch job starttime* is the time the job moves into a running state, and
+*batch job endtime* is the time the job exits a running state.
+
+A batch job's usage is calculated solely on requested nodes and the batch job's
+start and end time. The number of cores actually used within any particular node
+within the batch job is not used in the calculation. For example, if a job
+requests (6) nodes through the batch script, runs for (1) hour, uses only (2)
+CPU cores per node, the job will still be charged for 6 nodes \* 1 hour = *6
+node-hours*.
+
+Viewing Usage
+^^^^^^^^^^^^^
+
+Utilization is calculated daily using batch jobs which complete between 00:00
+and 23:59 of the previous day. For example, if a job moves into a run state on
+Tuesday and completes Wednesday, the job's utilization will be recorded
+Thursday. Only batch jobs which write an end record are used to calculate
+utilization. Batch jobs which do not write end records due to system failure or
+other reasons are not used when calculating utilization. Jobs which fail because
+of run-time errors (e.g. the user's application causes a segmentation fault) are
+counted against the allocation.
+
+Each user may view usage for projects on which they are members from the command
+line tool ``showusage`` and the `My OLCF site <https://users.nccs.gov>`__.
+
+On the Command Line via ``showusage``
+"""""""""""""""""""""""""""""""""""""
+
+The ``showusage`` utility can be used to view your usage from January 01
+through midnight of the previous day. For example:
+
+.. code::
+
+      $ showusage
+        Usage:
+                                 Project Totals
+        Project             Allocation      Usage      Remaining     Usage
+        _________________|______________|___________|____________|______________
+        abc123           |  20000       |   126.3   |  19873.7   |   1560.80
+
+The ``-h`` option will list more usage details.
+
+On the Web via My OLCF
+""""""""""""""""""""""
+
+More detailed metrics may be found on each project's usage section of the `My
+OLCF site <https://users.nccs.gov>`__. The following information is available
+for each project:
+
+-  YTD usage by system, subproject, and project member
+-  Monthly usage by system, subproject, and project member
+-  YTD usage by job size groupings for each system, subproject, and
+   project member
+-  Weekly usage by job size groupings for each system, and subproject
+-  Batch system priorities by project and subproject
+-  Project members
+
+The My OLCF site is provided to aid in the utilization and management of OLCF
+allocations. If you have any questions or have a request for additional data,
+please contact the OLCF User Assistance Center.
 
