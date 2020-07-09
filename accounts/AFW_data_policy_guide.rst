@@ -8,8 +8,9 @@ Data Use
 Prohibited Data
 ^^^^^^^^^^^^^^^
 
-The NCCS computer systems are operated in support of USAF and only
-contain data related to scientific research and do not contain
+The National Center for Computational Science (NCCS) computer systems 
+are operated in support of United States Air Force (USAF) 557th Weather Wing 
+and only contain data related to scientific research and do not contain
 personally identifiable information (data that falls under the Privacy
 Act of 1974 5U.S.C. 552a). Use of NCCS resources to store, manipulate,
 or remotely access classified information, unclassified controlled nuclear
@@ -114,8 +115,8 @@ Monitoring and Privacy
 
 Users are advised that there is no expectation of privacy of your
 activities on any system that is owned by, leased or operated by
-UT-Battelle on behalf of the U.S. Department of Energy (DOE). The
-Company retains the right to monitor all activities on these systems, to
+UT-Battelle on behalf of the U.S. Department of Energy (DOE). 
+UT-Battelle retains the right to monitor all activities on these systems, to
 access any computer files or electronic mail messages, and to disclose
 all or part of information gained to authorized individuals or
 investigative agencies, all without prior notice to, or consent from,
@@ -245,7 +246,7 @@ Project Work
 ^^^^^^^^^^^^
 
 Each project is granted a Project Work directory; these reside in the
-center-wide, high-performance parallel file system on large, fast disk
+high-performance parallel file system on large, fast disk
 areas intended for global (parallel) access to temporary/scratch storage.
 Project Work directories can be accessed by all members of a project and
 are intended for sharing data within a project. Project Work directories
@@ -259,7 +260,7 @@ applicable quotas, backups, purge, and retention timeframes.
 World Work
 ^^^^^^^^^^
 
-Each project has a World Work directory that resides in the center-wide,
+Each project has a World Work directory that resides in the 
 high-capacity parallel file system on large, fast disk areas intended
 for global (parallel) access to temporary/scratch storage. World Work areas
 can be accessed by all users of the system and are intended for sharing of
@@ -319,8 +320,9 @@ Data Purges
 Data purge mechanisms are enabled on some NCCS file system directories
 in order to maintain sufficient disk space availability for job execution.
 By default, these purge mechanisms are disabled on Air Force partnership
-file systems. Should the file system exceed critical capacity thresholds;
-the NCCS reserves the right to purge files to regain file system stability.
+file systems. Should the file system exceed critical capacity thresholds,
+the NCCS reserves the right to purge files to regain file system stability. NCCS
+will discuss this with Air Force administration before purging data.
 
 Storage Space Quotas
 ^^^^^^^^^^^^^^^^^^^^
