@@ -34,14 +34,14 @@ Logging in
 ----------
 
 The web UI for OpenShift is available from all of ORNL (you should be
-able to reach it from your laptop on ORNL WIFI as well as the VPN).
+able to reach it from your laptop on ORNL WiFi as well as the VPN).
 
 +-----------------------------------------------------------------------------+-------------------------------------------------------------------------------------+
 | Cluster                                                                     | URL                                                                                 |
 +=============================================================================+=====================================================================================+
 |  Marble (Moderate Production cluster with access to Summit/Alpine)          | `Marble Web Console <https://console-openshift-console.apps.marble.ccs.ornl.gov/>`_ |
 +-----------------------------------------------------------------------------+-------------------------------------------------------------------------------------+
-|  Onyx   (Open Production Cluster with access to Wolf)                       | `Onyx Web Console <https://onyx.ccs.ornl.gov/>`_                                    |
+|  Onyx   (Open Production Cluster with access to Wolf)                       | `Onyx Web Console <https://console-openshift-console.apps.onyx.ccs.ornl.gov/>`_     |
 +-----------------------------------------------------------------------------+-------------------------------------------------------------------------------------+
 
 Slate Namespaces
@@ -49,10 +49,12 @@ Slate Namespaces
 
 Slate Namespaces map directly to OLCF Project ID's. 
 
-Once your Slate Project Allocation Request is approved, you will see your
-project's namespace on the appropriate OpenShift Cluster upon login. The terms
-"namespace" and "project" may get used interchangebly when referring to your
-project's useable space within the requested resource boundaries
+Once your Slate Project Allocation Request is approved,
+you can create your own namespaces and move your allocation
+around those namespaces via the quota dashboard located at `<https://quota.marble.ccs.ornl.gov>`_
+and `<https://quota.onyx.ccs.ornl.gov>`_. The terms
+"namespace" and "project" may get used interchangeably when referring to your
+project's usable space within the requested resource boundaries
 (CPU/Memory/Storage).
 
 Install the OC tool
@@ -87,6 +89,10 @@ choice is yours):
 
      $ yum install origin-clients
 
+- From Source
+
+`<https://github.com/openshift/oc>`_
+
 
 Test login with OC Tool
 -----------------------
@@ -96,7 +102,7 @@ Test login with OC Tool
 +=============================================================================+======================================+
 |  Marble (Moderate Production cluster with access to Summit/Alpine)          | `<https://api.marble.ccs.ornl.gov>`_ |
 +-----------------------------------------------------------------------------+--------------------------------------+
-|  Onyx   (Open Production Cluster with access to Wolf)                       | `<https://onyx.ccs.ornl.gov/>`_      |
+|  Onyx   (Open Production Cluster with access to Wolf)                       | `<https://api.onyx.ccs.ornl.gov>`_   |
 +-----------------------------------------------------------------------------+--------------------------------------+
 
  Replace ``<URL>`` with the appropriate cluster link above (Onyx or Marble).
