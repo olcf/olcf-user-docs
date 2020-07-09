@@ -8,14 +8,12 @@ The NCCS computer systems are operated in support of USAF and only
 contain data related to scientific research and do not contain
 personally identifiable information (data that falls under the Privacy
 Act of 1974 5U.S.C. 552a). Use of NCCS resources to store, manipulate,
-or remotely access any national security information is strictly
-prohibited. This includes, but is not limited to: classified
-information, unclassified controlled nuclear information (UCNI), naval
-nuclear propulsion information (NNPI), the design or development of
-nuclear, biological, or chemical weapons or any weapons of mass
-destruction. Authors/generators/owners of information are responsible
-for its correct categorization as sensitive or non-sensitive. Owners of
-sensitive information are responsible for its secure handling,
+or remotely access classified information, unclassified controlled nuclear
+information (UCNI), naval nuclear propulsion information (NNPI), the design
+or development of nuclear, biological, or chemical weapons or any weapons
+of mass destruction is prohibited. Authors/generators/owners of information
+are responsible for its correct categorization as sensitive or non-sensitive.
+Owners of sensitive information are responsible for its secure handling,
 transmission, processing, storage, and disposal on NCCS systems.
 Principal investigators, users, or project delegates that use NCCS
 resources, or are responsible for overseeing projects that use NCCS
@@ -49,9 +47,7 @@ data with any unauthorized entities nor grant access to data files to
 any person other than the UNIX “owner” of the data file, except in the
 following situations:
 
--  When the owner of the data requests a change of ownership for any
-   reason, e.g., the owner is leaving the project and grants the PI
-   ownership of the data.
+-  When the owner of the data requests a change of ownership.
 -  In situations of suspected abuse/misuse computational resources,
    criminal activity, or cyber-security violations.
 
