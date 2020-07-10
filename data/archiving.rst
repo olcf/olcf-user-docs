@@ -223,8 +223,4 @@ that 64GB, the following error message will appear:
 Additional HTAR Documentation
 ------------------------------
 
-The HTAR user's guide can be found at the Gleicher Enterprises website `Gleicher
-Enterprises website <http://pal.mgleicher.us/HSI/htar/htar_user_guide.html>`__,
-including `the HTAR man page
-<http://pal.mgleicher.us/HSI/htar/htar_man_page.html>`__.
-
+For more information about ``htar``, execute ``man htar``. 

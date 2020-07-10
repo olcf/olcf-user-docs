@@ -8,7 +8,7 @@ Connecting
 Connecting for the first time
 *****************************
 
-All connections to OLCF resources are done via Secure Shell (ssh). SSH encrypts
+All connections to OLCF resources are done via Secure Shell (SSH). SSH encrypts
 the entire session between the user connecting and the OLCF systems and avoids
 risks associated with using plain-text communication.
 
@@ -48,11 +48,27 @@ systems allocated to your project(s). All OLCF resources (except the Ascent
 training system) require two-factor authentication. This means you will need an
 OLCF-provided RSA SecurID fob to log into any of the systems.
 
+For Windows clients, `PuTTY
+<https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html>`_ and
+`MobaXterm <https://mobaxterm.mobatek.net/>`_ can also be used to provide SSH
+capability.  Recent updates to Windows 10 have added built-in support for SSH.
+If it is not installed on your version of Windows, please refer to Microsoft’s
+documentation on OpenSSH. 
+
 *****************************
 Activating a new SecurID fob
 *****************************
 .. image:: /images/rsa_securid_fob.gif
    :align: center
+
+.. warning::
+    When you first recieve your OLCF RSA SecurID fob, it will be deactivated
+    and unusable. In order to have your RSA SecurID fob activated, you must
+    return a notarized copy of the `Notary Token Verification Form
+    <https://www.olcf.ornl.gov/wp-content/accounts/Notary_Token_Verification_Form.pdf>`_
+    or otherwise have your identity verified by the OLCF (See `Notary
+    Instructions
+    <https://www.olcf.ornl.gov/wp-content/accounts/Notary_Instructions.pdf>`_).
 
 #. Initiate a SSH connection to ``username@home.ccs.ornl.gov``.
 #. When prompted for a PASSCODE, enter the 6-digit code shown on the
@@ -140,6 +156,11 @@ connection to the real X server will be made from the local machine.
 
 .. _systems-available-to-all-projects:
 
+On Windows, `PuTTY
+<https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html>`_ with `xming
+<https://sourceforge.net/projects/xming/>`_ support can be used to provide X11
+forwarding.
+
 **********************************
 Systems Available to All Projects
 **********************************
@@ -153,7 +174,7 @@ OLCF System Hostnames
 *****************************
 
 +---------------------+----------------------------+------------------------------------------------------------------+
-| *System Name*       | Full Hostname              | Hostkey Fingerprints                                             |
+| System Name         | Full Hostname              | Hostkey Fingerprints                                             |
 +=====================+============================+==================================================================+
 | Home (machine)      | ``home.ccs.ornl.gov``      | - RSA MD5: ``ba:12:46:8d:23:e7:4d:37:92:39:94:82:91:ea:3d:e9``   |
 |                     |                            | - RSA SHA256: ``FjDs4sRAX8hglzA7TVkK22NzRKsjhDTTTdfeEAHwPEA``    |

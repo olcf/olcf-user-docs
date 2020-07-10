@@ -100,29 +100,6 @@ training job across 2 nodes.
 For more information on ``bsub`` and job submission
 please see: :ref:`running-jobs`.
 
-Troubleshooting Tips
---------------------
-
-Full command
-^^^^^^^^^^^^
-
-The output from ``ddlrun`` includes the exact command used to launch the
-distributed job. This is useful if a user wants to see exactly what ``ddlrun``
-is doing. The following is the first line of the output from the above script:
-
-.. code-block:: console
-
-    $ module load ibm-wml-ce
-    (ibm-wml-ce-1.6.1-1) $ ddlrun python $CONDA_PREFIX/tf_cnn_benchmarks/tf_cnn_benchmarks.py --variable_update=ddl --model=resnet50
-    + /autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20180914/linux-rhel7-ppc64le/xl-16.1.1-3/spectrum-mpi-10.3.0.1-20190611-aqjt3jo53mogrrhcrd2iufr435azcaha/bin/mpirun \
-      -x LSB_JOBID -x PATH -x PYTHONPATH -x LD_LIBRARY_PATH -x LSB_MCPU_HOSTS -x NCCL_LL_THRESHOLD=0 -x NCCL_TREE_THRESHOLD=0 \
-      -disable_gdr -gpu --rankfile /tmp/DDLRUN/DDLRUN.xoObgjtixZfp/RANKFILE -x "DDL_OPTIONS=-mode p:6x2x1x1 " -n 12 \
-      -mca plm_rsh_num_concurrent 12 -x DDL_HOST_PORT=2200 -x "DDL_HOST_LIST=g28n14:0,2,4,6,8,10;g28n15:1,3,5,7,9,11" bash \
-      -c 'source /sw/summit/ibm-wml-ce/anaconda-base/etc/profile.d/conda.sh && conda activate /sw/summit/ibm-wml-ce/anaconda-base/envs/ibm-wml-ce-1.6.1-1 \
-      > /dev/null 2>&1 && python /sw/summit/ibm-wml-ce/anaconda-base/envs/ibm-wml-ce-1.6.1-1/ddl-tensorflow/examples/mnist/mnist-env.py'
-    ...
-
-
 Verbose mode
 ^^^^^^^^^^^^
 
@@ -165,16 +142,50 @@ will ensure that all of the conda settings remain the same.
     (ibm-wml-ce-1.7.0-X) $ conda activate cloned_env
     (cloned_env) $
 
-Best DDL Performance
-====================
+Best Distributed Deep Learning Performance
+==========================================
+
+Performance Profiling
+---------------------
+
+There are several tools that can be used to profile the performance of a
+deep learning job. Below are links to several tools that are available
+as part of the ibm-wml-ce module.
+
+NVIDIA Profiling Tools
+^^^^^^^^^^^^^^^^^^^^^^
+
+The ibm-wml-ce module contains the nvprof profiling tool. It can be used to
+profile work that is running on GPUs. It will give information about when
+different CUDA kernels are being launched and how long they take to complete.
+For more information on using the NVIDA profiling tools on Summit, please see
+these `slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/08/NVIDIA-Profilers.pdf>`_.
+
+Horovod Timeline
+^^^^^^^^^^^^^^^^
+
+Horovod comes with a tool called Timeline which can help analyze the performance
+of Horovod. This is particularly useful when trying to scale a deep learning job
+to many nodes. The Timeline tool can help pick various options that can improve
+the performance of distributed deep learning jobs that are using Horovod. For
+more information, please see Horovod's `documentation <https://github.com/horovod/horovod#horovod-timeline>`_.
+
+PyTorch’s Autograd Profiler
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+PyTorch provides a builtin profiler that can be used to find bottlenecks
+within a training job. It is most useful for profiling the performance of a job
+running on a single GPU. For more information on using PyTorch's profiler, see
+PyTorch's `documentation <https://pytorch.org/docs/stable/bottleneck.html#torch-utils-bottleneck>`_.
+
+
+Reserving Whole Racks
+---------------------
 
 Most users will get good performance using LSF basic job submission, and
 specifying the node count with ``-nnodes N``. However, users trying
 to squeeze out the final few percent of performance can use the following
-techniques.
-
-Reserving Whole Racks
----------------------
+technique.
 
 When making node reservations for DDL jobs, it can sometimes improve
 performance to reserve nodes in a rack-contiguous manner.
@@ -253,3 +264,74 @@ The following LSF script can be used to reproduce the results for 144 nodes:
         --data_name=imagenet \
         --allow_growth=True \
         --use_fp16
+
+Troubleshooting Tips
+--------------------
+
+Full command
+^^^^^^^^^^^^
+
+The output from ``ddlrun`` includes the exact command used to launch the
+distributed job. This is useful if a user wants to see exactly what ``ddlrun``
+is doing. The following is the first line of the output from the above script:
+
+.. code-block:: console
+
+    $ module load ibm-wml-ce
+    (ibm-wml-ce-1.6.1-1) $ ddlrun python $CONDA_PREFIX/tf_cnn_benchmarks/tf_cnn_benchmarks.py --variable_update=ddl --model=resnet50
+    + /autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20180914/linux-rhel7-ppc64le/xl-16.1.1-3/spectrum-mpi-10.3.0.1-20190611-aqjt3jo53mogrrhcrd2iufr435azcaha/bin/mpirun \
+      -x LSB_JOBID -x PATH -x PYTHONPATH -x LD_LIBRARY_PATH -x LSB_MCPU_HOSTS -x NCCL_LL_THRESHOLD=0 -x NCCL_TREE_THRESHOLD=0 \
+      -disable_gdr -gpu --rankfile /tmp/DDLRUN/DDLRUN.xoObgjtixZfp/RANKFILE -x "DDL_OPTIONS=-mode p:6x2x1x1 " -n 12 \
+      -mca plm_rsh_num_concurrent 12 -x DDL_HOST_PORT=2200 -x "DDL_HOST_LIST=g28n14:0,2,4,6,8,10;g28n15:1,3,5,7,9,11" bash \
+      -c 'source /sw/summit/ibm-wml-ce/anaconda-base/etc/profile.d/conda.sh && conda activate /sw/summit/ibm-wml-ce/anaconda-base/envs/ibm-wml-ce-1.6.1-1 \
+      > /dev/null 2>&1 && python /sw/summit/ibm-wml-ce/anaconda-base/envs/ibm-wml-ce-1.6.1-1/ddl-tensorflow/examples/mnist/mnist-env.py'
+    ...
+
+Problems Distributing Pytorch with Multiple Data Loader Workers
+---------------------------------------------------------------
+
+Problem
+^^^^^^^
+
+It is common to encounter segmenation faults or deadlocks when running distributed
+PyTorch scripts that make use of a DataLoader with multiple workers. A typical
+segfault may look something like the following:
+
+.. code-block:: python
+
+    ERROR: Unexpected segmentation fault encountered in worker.
+    Traceback (most recent call last):
+    File "/gpfs/anaconda3/envs/powerai/lib/python3.7/site-packages/torch/utils/data/dataloader.py", line 724, in _try_get_data
+        data = self._data_queue.get(timeout=timeout)
+    File "/gpfs/anaconda3/envs/powerai/lib/python3.7/queue.py", line 179, in get
+        self.not_empty.wait(remaining)
+    File "/gpfs/anaconda3/envs/powerai/lib/python3.7/threading.py", line 300, in wait
+        gotit = waiter.acquire(True, timeout)
+    File "/gpfs/anaconda3/envs/powerai/lib/python3.7/site-packages/torch/utils/data/_utils/signal_handling.py", line 66, in handler
+        _error_if_any_worker_fails()
+    RuntimeError: DataLoader worker (pid 150462) is killed by signal: Segmentation fault.
+
+    During handling of the above exception, another exception occurred:
+
+    Traceback (most recent call last):
+    File "pytorch_imagenet_resnet50.py", line 277, in <module>
+        train(epoch)
+    File "pytorch_imagenet_resnet50.py", line 169, in train
+        for batch_idx, (data, target) in enumerate(train_loader):
+    File "/gpfs/anaconda3/envs/powerai/lib/python3.7/site-packages/torch/utils/data/dataloader.py", line 804, in __next__
+        idx, data = self._get_data()
+    File "/gpfs/anaconda3/envs/powerai/lib/python3.7/site-packages/torch/utils/data/dataloader.py", line 761, in _get_data
+        success, data = self._try_get_data()
+    File "/gpfs/anaconda3/envs/powerai/lib/python3.7/site-packages/torch/utils/data/dataloader.py", line 737, in _try_get_data
+        raise RuntimeError('DataLoader worker (pid(s) {}) exited unexpectedly'.format(pids_str))
+    RuntimeError: DataLoader worker (pid(s) 150462) exited unexpectedly
+
+Solution
+^^^^^^^^
+
+The solution is to change the multiprocessing start method to ``forkserver`` (Python 3 only) or
+``spawn``. The ``forkserver`` method tends to give better performance. This `Horovod PR <https://github.com/horovod/horovod/pull/1824/files#diff-0647b0c2f82c66d4fb00785c12161f57>`_
+has examples of changing scripts to use the ``forkserver`` method.
+
+See the `PyTorch documentation <https://pytorch.org/docs/stable/notes/multiprocessing.html#cuda-in-multiprocessing>`_
+for more information.

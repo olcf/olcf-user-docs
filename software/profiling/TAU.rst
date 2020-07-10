@@ -128,8 +128,6 @@ Getting the source code
 .. code::
 
 	$ git clone https://github.com/mrnorman/miniWeather.git
-	$ cd miniWeather/c/
-	$ cp Makefile.summit Makefile
 
 
 Compile the application
@@ -147,6 +145,9 @@ Compile the application
 
 .. code::
 
+	$ module load cmake
+	$ cd miniWeather/c/build
+        $ ./cmake_summit_pgi.sh
 	$ make serial
 	$ make mpi
 	$ make openmp
@@ -159,7 +160,7 @@ Below, we'll look at using TAU to profile each case.
 Modifications
 -------------
 
-- Edit the makefile and replace ``mpic++`` with ``tau_cxx.sh``. This applies
+- Edit the cmake_summit_pgi.sh and replace ``mpic++`` with ``tau_cxx.sh``. This applies
   only for the non-GPU versions.
 - TAU works with special TAU makefiles to declare what programming models are
   expected from the application:
@@ -212,6 +213,7 @@ PNetCDF.
 	$ module load tau
 	$ export TAU_MAKEFILE=/sw/summit/tau/tau2/ibm64linux/lib/Makefile.tau-pgi-papi-mpi-cupti-pdt-pgi
 	$ export TAU_OPTIONS='-optLinking=-lpnetcdf -optVerbose'
+        $ ./cmake_summit_pgi.sh
 	$ make serial
 
 If there were no MPI headers, you should select the makefile
@@ -233,7 +235,7 @@ uncomment them below). By default the TAU will apply profiling, and not apply tr
 	#Activate tracing
 	#export TAU_TRACE=1
 
-	time jsrun -n 1 -r 1 -a 1 -c 1 -g 1  ./miniWeather_serial
+	jsrun -n 1 -r 1 -a 1 -c 1 -g 1  ./miniWeather_serial
 
 
 When the execution finishes, one directory is created for each ``TAU_METRICS``

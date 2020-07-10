@@ -13,9 +13,7 @@ In addition to this Summit User Guide, there are other sources of
 documentation, instruction, and tutorials that could be useful for
 Summit users.
 
-The `OLCF Training
-Archive <https://www.olcf.ornl.gov/for-users/training/training-archive/>`__
-provides a list of previous training events, including multi-day Summit
+The :ref:`OLCF Training Archive<training-archive>` provides a list of previous training events, including multi-day Summit
 Workshops. Some examples of topics addressed during these workshops
 include using Summit's NVME burst buffers, CUDA-aware MPI, advanced
 networking and MPI, and multiple ways of programming multiple GPUs per
@@ -43,11 +41,13 @@ Each of the approximately 4,600 compute nodes on Summit contains two IBM
 POWER9 processors and six `NVIDIA Volta V100`_ accelerators and provides
 a theoretical double-precision capability of
 approximately 40 TF. Each POWER9 processor is connected via dual NVLINK
-bricks, each capable of a 25GB/s transfer rate in each direction. Nodes
-contain 512 GB of DDR4 memory for use by the POWER9 processors and 96 GB
-of High Bandwidth Memory (HBM2) for use by the accelerators.
-Additionally, each node has 1.6TB of non-volatile memory that can be
-used as a burst buffer.
+bricks, each capable of a 25GB/s transfer rate in each direction.
+
+Most Summit nodes contain 512 GB of DDR4 memory for use by the POWER9
+processors, 96 GB of High Bandwidth Memory (HBM2) for use by the accelerators,
+and 1.6TB of non-volatile memory that can be used as a burst buffer. A small
+number of nodes (54) are configured as "high memory" nodes. These nodes contain 2TB of 
+DDR4 memory, 192GB of HBM2, and 6.4TB of non-volatile memory.
 
 The POWER9 processor is built around IBM’s SIMD
 Multi-Core (SMC). The processor provides 22 SMCs with separate 32kB L1
@@ -155,12 +155,12 @@ NVIDIA V100 GPUs
 The NVIDIA Tesla V100 accelerator has a peak performance of 7.8 TFLOP/s
 (double-precision) and contributes to a majority of the computational
 work performed on Summit. Each V100 contains 80 streaming
-multiprocessors (SMs), 16 GB of high-bandwidth memory (HBM2), and a 6 MB
-L2 cache that is available to the SMs. The GigaThread Engine is
-responsible for distributing work among the SMs and (8) 512-bit memory
-controllers control access to the 16 GB of HBM2 memory. The V100 uses
-NVIDIA's NVLink interconnect to pass data between GPUs as well as from
-CPU-to-GPU.
+multiprocessors (SMs), 16 GB (32 GB on high-memory nodes) of high-bandwidth
+memory (HBM2), and a 6 MB L2 cache that is available to the SMs. The
+GigaThread Engine is responsible for distributing work among the SMs and
+(8) 512-bit memory controllers control access to the 16 GB (32 GB on
+high-memory nodes) of HBM2 memory. The V100 uses NVIDIA's NVLink interconnect
+to pass data between GPUs as well as from CPU-to-GPU.
 
 .. image:: /images/GV100_FullChip_Diagram_FINAL2_a.png
    :align: center
@@ -180,10 +180,11 @@ texture units which use the (configured size of the) L1 cache.
 HBM2
 ----
 
-Each V100 has access to 16 GB of high-bandwidth memory (HBM2), which can
-be accessed at speeds of up to 900 GB/s. Access to this memory is
-controlled by (8) 512-bit memory controllers, and all accesses to the
-high-bandwidth memory go through the 6 MB L2 cache.
+Each V100 has access to 16 GB (32GB for high-memory nodes) of
+high-bandwidth memory (HBM2), which can be accessed at speeds of 
+up to 900 GB/s. Access to this memory is controlled by (8) 512-bit
+memory controllers, and all accesses to the high-bandwidth memory
+go through the 6 MB L2 cache.
 
 NVIDIA NVLink
 -------------
@@ -732,7 +733,7 @@ Tesla V100 Specifications
 +----------------------------------------------------+----------------------------+
 | Memory Bandwidth                                   | 900 GB/s                   |
 +----------------------------------------------------+----------------------------+
-| Memory size (HBM2)                                 | 16 GB                      |
+| Memory size (HBM2)                                 | 16 or 32 GB                |
 +----------------------------------------------------+----------------------------+
 | L2 cache                                           | 6 MB                       |
 +----------------------------------------------------+----------------------------+
@@ -804,12 +805,12 @@ NVMe (XFS)
 ----------
 
 Each compute node on Summit has a 1.6TB \ **N**\ on-\ **V**\ olatile **Me**\
-mory (NVMe) storage device, colloquially known as a "Burst Buffer" with
+mory (NVMe) storage device (high-memory nodes have a 6.4TB NVMe storage device), colloquially known as a "Burst Buffer" with
 theoretical performance peak of 2.1 GB/s for writing and 5.5 GB/s for reading.
 100GB of each NVMe is reserved for NFS cache to help speed access to common
 libraries. When calculating maximum usable storage size, this cache and
 formatting overhead should be considered; We recommend a maximum storage of
-1.4TB. The NVMes could be used to reduce the time that applications wait for
+1.4TB (6TB for high-memory nodes). The NVMes could be used to reduce the time that applications wait for
 I/O. Using an SSD drive per compute node, the burst buffer will be used to
 transfer data to or from the drive before the application reads a file or
 after it writes a file.  The result will be that the application benefits from
@@ -1037,11 +1038,11 @@ all the NVMes devices.
 +----------------------------------------+------------------------------------------------+------------------------------------------------+
 | 				         |                                                | ``module load spectral``                       |
 +----------------------------------------+------------------------------------------------+------------------------------------------------+
+| 				         | ``export BBPATH=/mnt/bb/$USER``                | ``export BBPATH=/mnt/bb/$USER``                |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
 | 				         |                                                | ``export PERSIST_DIR=${BBPATH}``               |
 +----------------------------------------+------------------------------------------------+------------------------------------------------+
 | 				         |                                                | ``export PFS_DIR=$PWD/spect/``                 |
-+----------------------------------------+------------------------------------------------+------------------------------------------------+
-| 				         | ``export BBPATH=/mnt/bb/$USER/``               | ``export BBPATH=/mnt/bb/$USER/``               |
 +----------------------------------------+------------------------------------------------+------------------------------------------------+
 | 				         | ``jsrun -n 1 cp btio ${BBPATH}``               | ``jsrun -n 1 cp btio ${BBPATH}``               |
 +----------------------------------------+------------------------------------------------+------------------------------------------------+
@@ -1553,10 +1554,11 @@ of memory**, and **1 GPU**.  Please note that limits are set per user and not
 individual login sessions. All user processes on a node are contained within a
 single cgroup and share the cgroup's limits.
 
-If a process from any of a user’s login sessions reaches 4-hours of CPU-time,
-all login sessions will be limited to **.5 hardware-thread**.  To reset the
-cgroup limits on a node to default once the 4-hour CPU-time reduction has been
-reached, kill the offending process and start a new login session to the node.
+If a process from any of a user’s login sessions reaches 4 hours of CPU-time,
+all login sessions will be limited to **.5 hardware-thread**. After 8 hours of
+CPU-time, the process is automatically killed. To reset the cgroup limits on a
+node to default once the 4 hour CPU-time reduction has been reached, kill the
+offending process and start a new login session to the node.
 
     .. note:: Login node limits are set per user and not per individual login
         session.  All user processes on a node are contained within a single cgroup
@@ -1732,6 +1734,69 @@ about other LSF options, see the ``bsub`` man page.
 |                    |                                        | use smt2. The default level is smt4.                                             |
 +--------------------+----------------------------------------+----------------------------------------------------------------------------------+
 
+Allocation-wide Options
+^^^^^^^^^^^^^^^^^^^^^^^
+
+The ``-alloc_flags`` option to ``bsub`` is used to set allocation-wide options.
+These settings are applied to every compute node in a job. Only one instance of
+the flag is accepted, and multiple ``alloc_flags`` values should be enclosed in
+quotes and space-separated. For example, ``-alloc_flags "gpumps smt1``.
+
+The most common values (``smt{1,2,4}``, ``gpumps``, ``gpudefault``) are detailed in
+the following sections. 
+
+This option can also be used to provide additional resources to GPFS service
+processes, described in the `GPFS System Service Isolation
+<#gpfs-system-service-isolation>`__ section.
+
+Hardware Threads
+""""""""""""""""
+
+Hardware threads are a feature of the POWER9 processor through which
+individual physical cores can support multiple execution streams,
+essentially looking like one or more virtual cores (similar to
+hyperthreading on some Intel\ |R| microprocessors). This feature is often
+called Simultaneous Multithreading or SMT. The POWER9 processor on
+Summit supports SMT levels of 1, 2, or 4, meaning (respectively) each
+physical core looks like 1, 2, or 4 virtual cores. The SMT level is
+controlled by the ``-alloc_flags`` option to ``bsub``. For example, to
+set the SMT level to 2, add the line ``#BSUB –alloc_flags smt2`` to your
+batch script or add the option ``-alloc_flags smt2`` to you ``bsub``
+command line.
+
+The default SMT level is 4.
+
+MPS
+"""
+
+The Multi-Process Service (MPS) enables multiple processes (e.g. MPI
+ranks) to concurrently share the resources on a single GPU. This is
+accomplished by starting an MPS server process, which funnels the work
+from multiple CUDA contexts (e.g. from multiple MPI ranks) into a single
+CUDA context. In some cases, this can increase performance due to better
+utilization of the resources. As mentioned in the `Common bsub Options <#common-bsub-options>`__
+section above, MPS can be enabled with the ``-alloc_flags "gpumps"`` option to
+``bsub``. The following screencast shows an example of how to start an MPS
+server process for a job: https://vimeo.com/292016149
+
+GPU Compute Modes
+"""""""""""""""""
+
+Summit's V100 GPUs are configured to have a default compute mode of
+``EXCLUSIVE_PROCESS``. In this mode, the GPU is assigned to only a single
+process at a time, and can accept work from multiple process threads
+concurrently.
+
+
+It may be desirable to change the GPU's compute mode to ``DEFAULT``, which
+enables multiple processes and their threads to share and submit work to it
+simultaneously. To change the compute mode to ``DEFAULT``, use the
+``-alloc_flags gpudefault`` option.
+
+NVIDIA recommends using the ``EXCLUSIVE_PROCESS`` compute mode (the default on
+Summit) when using the Multi-Process Service, but both MPS and the compute mode
+can be changed by providing both values: ``-alloc_flags "gpumps gpudefault"``. 
+
 Batch Environment Variables
 ---------------------------
 
@@ -1862,6 +1927,30 @@ following policies:
     Eligible-to-run jobs have not started and are waiting for resources.
     Running jobs are actually executing.
 
+``batch-hm`` Queue Policy
+"""""""""""""""""""""""""
+
+The ``batch-hm`` queue is used to access Summit's high-memory nodes.
+Jobs may use all 54 nodes. It enforces the following policies:
+
+-  Limit of (4) *eligible-to-run* jobs per user.
+-  Jobs in excess of the per user limit above will be placed into a
+   *held* state, but will change to eligible-to-run at the appropriate
+   time.
+-  Users may have only (100) jobs queued at any state at any time.
+   Additional jobs will be rejected at submit time.
+
+**batch-hm job limits:**
+
++-------------+-------------+------------------------+
+| Min Nodes   | Max Nodes   | Max Walltime (Hours)   |
++=============+=============+========================+
+| 1           | 54          | 6.0                    |
++-------------+-------------+------------------------+
+
+To submit a job to the ``batch-hm`` queue, add the ``-q batch-hm`` option to your
+``bsub`` command or ``#BSUB -q batch-hm`` to your job script.
+
 ``killable`` Queue Policy
 """"""""""""""""""""""""""
 
@@ -1895,6 +1984,32 @@ To submit a job to the ``killable`` queue, add the ``-q killable`` option to you
 
 To prevent a preempted job from being automatically requeued, the ``BSUB -rn``
 flag can be used at submit time.
+
+
+``debug`` Queue Policy
+""""""""""""""""""""""""""
+
+The ``debug`` queue can be used to access Summit's compute resources for short 
+non-production debug tasks.  The queue provides a higher priority compared
+to jobs of the same job size bin in production queues.  Production work and 
+job chaining in the debug queue is prohibited.  Each user is limited to one 
+job in any state in the debug queue at any one point. Attempts to submit multiple
+jobs to the debug queue will be rejected upon job submission.
+
+**debug job limits:**
+
++-------------+--------------+------------------------+---------------------------------+--------------------+
+| Min Nodes   | Max Nodes    | Max Walltime (Hours)   | Max queued any state (per user) | Aging Boost (Days) |
++=============+==============+========================+=================================+====================+
+| 1           | unlimited    | 2.0                    | 1                               | 2                  |
++-------------+--------------+------------------------+---------------------------------+--------------------+
+
+To submit a job to the ``debug`` queue, add the ``-q debug`` option to your
+``bsub`` command or ``#BSUB -q debug`` to your job script.
+
+
+.. note::
+    Production work and job chaining in the ``debug`` queue is prohibited.
 
 Allocation Overuse Policy
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -2295,22 +2410,6 @@ of) specific nodes, you will need to use expert mode. To use expert
 mode, add ``#BSUB -csm y`` to your batch script (or ``-csm y`` to
 your ``bsub`` command line).
 
-Hardware Threads
-----------------
-
-Hardware threads are a feature of the POWER9 processor through which
-individual physical cores can support multiple execution streams,
-essentially looking like one or more virtual cores (similar to
-hyperthreading on some Intel\ |R| microprocessors). This feature is often
-called Simultaneous Multithreading or SMT. The POWER9 processor on
-Summit supports SMT levels of 1, 2, or 4, meaning (respectively) each
-physical core looks like 1, 2, or 4 virtual cores. The SMT level is
-controlled by the ``-alloc_flags`` option to ``bsub``. For example, to
-set the SMT level to 2, add the line ``#BSUB –alloc_flags smt2`` to your
-batch script or add the option ``-alloc_flags smt2`` to you ``bsub``
-command line.
-
-The default SMT level is 4.
 
 System Service Core Isolation
 -----------------------------
@@ -2339,19 +2438,6 @@ The maximizegpfs flag will allow GPFS tasks to utilize any core on the
 compute node. This may be beneficial because it provides more resources
 for GPFS service tasks, but it may also cause resource contention for
 the jsrun compute job.
-
-MPS
----
-
-The Multi-Process Service (MPS) enables multiple processes (e.g. MPI
-ranks) to concurrently share the resources on a single GPU. This is
-accomplished by starting an MPS server process, which funnels the work
-from multiple CUDA contexts (e.g. from multiple MPI ranks) into a single
-CUDA context. In some cases, this can increase performance due to better
-utilization of the resources. As mentioned in the `Common bsub Options <#common-bsub-options>`__
-section above, MPS can be enabled with the ``-alloc_flags "gpumps"``
-option to bsub. The screencast below shows an example of how to start an
-MPS server process for a job. https://vimeo.com/292016149
 
 Resource Accounting
 -------------------
@@ -2442,13 +2528,6 @@ span sockets, but it may not span a node. While a resource set can span
 sockets within a node, consideration should be given to the cost of
 cross-socket communication. By creating resource sets only within
 sockets, costly communication between sockets can be prevented.
-
-One or more resource sets can be created on a single node and can span
-sockets. But, a resource set can not span nodes.
-
-While a resource set can span sockets within a node, consideration
-should be given to the cost of cross-socket communication. Creating
-resource sets within sockets will prevent cross-socket communication.
 
 Subdividing a Node with Resource Sets
 """""""""""""""""""""""""""""""""""""
@@ -2606,16 +2685,16 @@ per node (``-r6``). Each resource set will contain 1 MPI task (``-a1``),
     Rank:    0; NumRanks: 12; RankCore:   0; Hostname: h41n04; GPU: 0
     Rank:    1; NumRanks: 12; RankCore:   4; Hostname: h41n04; GPU: 1
     Rank:    2; NumRanks: 12; RankCore:   8; Hostname: h41n04; GPU: 2
-    Rank:    3; NumRanks: 12; RankCore:  84; Hostname: h41n04; GPU: 3
-    Rank:    4; NumRanks: 12; RankCore:  89; Hostname: h41n04; GPU: 4
-    Rank:    5; NumRanks: 12; RankCore:  92; Hostname: h41n04; GPU: 5
+    Rank:    3; NumRanks: 12; RankCore:  88; Hostname: h41n04; GPU: 3
+    Rank:    4; NumRanks: 12; RankCore:  92; Hostname: h41n04; GPU: 4
+    Rank:    5; NumRanks: 12; RankCore:  96; Hostname: h41n04; GPU: 5
 
     Rank:    6; NumRanks: 12; RankCore:   0; Hostname: h41n03; GPU: 0
     Rank:    7; NumRanks: 12; RankCore:   4; Hostname: h41n03; GPU: 1
     Rank:    8; NumRanks: 12; RankCore:   8; Hostname: h41n03; GPU: 2
-    Rank:    9; NumRanks: 12; RankCore:  84; Hostname: h41n03; GPU: 3
-    Rank:   10; NumRanks: 12; RankCore:  89; Hostname: h41n03; GPU: 4
-    Rank:   11; NumRanks: 12; RankCore:  92; Hostname: h41n03; GPU: 5
+    Rank:    9; NumRanks: 12; RankCore:  88; Hostname: h41n03; GPU: 3
+    Rank:   10; NumRanks: 12; RankCore:  92; Hostname: h41n03; GPU: 4
+    Rank:   11; NumRanks: 12; RankCore:  96; Hostname: h41n03; GPU: 5
 
 Multiple tasks, single GPU per RS
 """""""""""""""""""""""""""""""""
@@ -2836,6 +2915,69 @@ specify the number of resource sets needed.
 +-----------------+-------------+-----------+------------------+--------+---------------------------------------+
 
 
+Concurrent Job Steps
+""""""""""""""""""""
+
+By default, multiple invocations of ``jsrun`` in a job script will execute
+serially. To execute multiple job steps concurrently, standard UNIX process
+backgrounding can be used by adding a ``&`` at the end of the command. This
+will return control to the job script and execute the next command immediately.
+A ``wait`` command must follow all backgrounded processes to prevent the job
+from appearing completed and exiting prematurely.
+
+The following example executes three backgrounded job steps and waits for them
+to finish before the job ends.
+
+::
+
+    #!/bin/bash
+    #BSUB -P ABC123
+    #BSUB -W 3:00
+    #BSUB -nnodes 1
+    #BSUB -J RunSim123
+    #BSUB -o RunSim123.%J
+    #BSUB -e RunSim123.%J
+    
+    cd $MEMBERWORK/abc123
+    jsrun <options> ./a.out &
+    jsrun <options> ./a.out &
+    jsrun <options> ./a.out &
+    wait
+
+
+As submission scripts (and interactive sessions) are executed on batch nodes,
+the number of concurrent job steps is limited by the per-user process limit on
+a batch node, where a single user is only permitted 4096 simultaneous
+processes. This limit is per user on each batch node, not per batch job.
+
+Each job step will create 3 processes, and JSM management may create up to ~23
+processes. This creates an upper-limit of ~1350 simultaneous job steps. 
+
+If JSM or PMIX errors occur as the result of backgrounding many job steps, using the
+``--immediate`` option to ``jsrun`` may help, as shown in the following example.
+
+::
+
+    #!/bin/bash
+    #BSUB -P ABC123
+    #BSUB -W 3:00
+    #BSUB -nnodes 1
+    #BSUB -J RunSim123
+    #BSUB -o RunSim123.%J
+    #BSUB -e RunSim123.%J
+    
+    cd $MEMBERWORK/abc123
+    jsrun <options> --immediate ./a.out
+    jsrun <options> --immediate ./a.out 
+    jsrun <options> --immediate ./a.out
+
+
+.. note::
+    By default, ``jsrun --immediate`` does not produce ``stdout`` or
+    ``stderr``. To capture ``stdout`` and/or ``stderr`` when using this option,
+    additionally include ``--stdio_stdout``/``-o`` and/or
+    ``--stdio_stderr``/``-k``.
+
 Explicit Resource Files (ERF)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -2900,22 +3042,10 @@ _____
 Limitations
 ___________
 
-* (currently) Only available on Summit
-* (currently) Compiled with XL toolchain only
+* (currently) Compiled with GCC toolchain only
 * Does not support MPMD-mode via ERF
 * OpenMP only supported with use of the ``OMP_NUM_THREADS`` environment variable.
 
-
-jsrunVisualizer
-"""""""""""""""
-
-jsrunVisualizer is a web-application that mimics basic jsrun behavior
-locally in your browser. It's an easy way to get familiar with jsrun
-options for Summit, understand how multiple flags interact, and share
-your layout ideas with others. Once you've crafted your per-node
-resource sets, you can take the job script it generates and run the same
-layout on Summit itself! https://jsrunvisualizer.olcf.ornl.gov/
-https://vimeo.com/299079999
 
 More Information
 ^^^^^^^^^^^^^^^^
@@ -3030,15 +3160,181 @@ Page <https://www.olcf.ornl.gov/software_package/valgrind/>`__.
 Optimizing and Profiling
 ========================
 
-Profiling CUDA Code with NVPROF
--------------------------------
+Profiling GPU Code with NVIDIA Developer Tools
+-----------------------------------------------------
 
-NVIDIA's command-line profiler, ``nvprof``, provides profiling for CUDA
-codes. No extra compiling steps are required to use ``nvprof``. The
-profiler includes tracing capability as well as the ability to gather
-many performance metrics, including FLOPS. The profiler data output can
-be saved and imported into the NVIDIA Visual Profiler for additional
-graphical analysis.
+NVIDIA provides developer tools for profiling any code that runs on NVIDIA
+GPUs. These are the `Nsight suite of developer tools
+<https://developer.nvidia.com/tools-overview>`__: NVIDIA Nsight Systems for
+collecting a timeline of your application, and NVIDIA Nsight Compute for
+collecting detailed performance information about specific GPU kernels.
+
+NVIDIA Nsight Systems
+^^^^^^^^^^^^^^^^^^^^^
+
+The first step to GPU profiling is collecting a timeline of your application.
+(This operation is also sometimes called "tracing," that is, finding
+the start and stop timestamps of all activities that occurred on the GPU
+or involved the GPU, such as copying data back and forth.) To do this, we
+can collect a timeline using the command-line interface, ``nsys``. To use
+this tool, load the ``nsight-systems`` module.
+
+::
+
+    summit> module load nsight-systems
+
+For example, we can profile the ``vectorAdd`` CUDA sample (the CUDA samples
+can be found in ``$OLCF_CUDA_ROOT/samples`` if the ``cuda`` module is loaded.)
+
+::
+
+    summit> jsrun -n1 -a1 -g1 nsys profile -o vectorAdd --stats=true ./vectorAdd
+
+(Note that even if you do not ask for Nsight Systems to create an output file,
+but just ask it to print summary statistics with ``--stats=true``, it will create
+a temporary file for storing the profiling data, so you will need to work on a
+file system that can be written to from a compute node such as GPFS.)
+
+The profiler will print several sections including information about the
+CUDA API calls made by the application, as well as any GPU kernels that were
+launched. Nsight Systems can be used for CUDA C++, CUDA Fortran, OpenACC,
+OpenMP offload, and other programming models that target NVIDIA GPUs, because
+under the hood they all ultimately take the same path for generating the binary
+code that runs on the GPU.
+
+If you add the ``-o`` option, as above, the report will be saved to file
+with the extension ``.qdrep``. That report file can later be analyzed in
+the Nsight Systems UI by selecting File > Open and locating the ``vectorAdd.qdrep``
+file on your filesystem. Nsight Systems does not currently have a Power9
+version of the UI, so you will need to `download the UI for your local system
+<https://developer.nvidia.com/nsight-systems>`__, which is supported on
+Windows, Mac, and Linux (x86). Then use ``scp`` or some other file transfer
+utility for copying the report file from Summit to your local machine.
+
+Nsight Systems can be used for MPI runs with multiple ranks, but it is
+not a parallel profiler and cannot combine output from multiple ranks.
+Instead, each rank must be profiled and analyzed independently. The file
+name should be unique for every rank. Nsight Systems knows how to parse
+environment variables with the syntax ``%q{ENV_VAR}``, and since Spectrum
+MPI provides an environment variable for every process with its MPI rank,
+you can do
+
+::
+
+    summit> jsrun -n6 -a1 -g1 nsys profile -o vectorAdd_%q{OMPI_COMM_WORLD_RANK} ./vectorAdd
+
+Then you will have ``vectorAdd_0.qdrep`` through ``vectorAdd_5.qdrep``.
+(Of course, in this case each rank does the same thing as this is not
+an MPI application, but it works the same way for an MPI code.)
+
+For more details about Nsight Systems, consult the `product page
+<https://developer.nvidia.com/nsight-systems>`__ and the `documentation
+<https://docs.nvidia.com/nsight-systems/index.html>`__. If you previously
+used ``nvprof`` and would like to start using the Nsight Developer Tools,
+check out `this transition guide
+<https://devblogs.nvidia.com/migrating-nvidia-nsight-tools-nvvp-nvprof/>`__.
+Also, in March 2020 NVIDIA presented a webinar on Nsight Systems which you
+can `watch on demand <https://www.olcf.ornl.gov/calendar/nvidia-profiling-tools-nsight-systems/>`__.
+
+NVIDIA Nsight Compute
+^^^^^^^^^^^^^^^^^^^^^
+
+Individual GPU kernels (the discrete chunks of work that are launched by
+programming languages such as CUDA and OpenACC) can be profiled in detail
+with NVIDIA Nsight Compute. The typical workflow is to profile your code
+with Nsight Systems and identify the major performance bottleneck in your
+application. If that performance bottleneck is on the CPU, it means more
+code should be ported to the GPU; or, if that bottleneck is in memory
+management, such as copying data back and forth between the CPU and GPU,
+you should look for opportunities to reduce that data motion. But if that
+bottleneck is a GPU kernel, then Nsight Compute can be used to collect
+performance counters to understand whether the kernel is running efficiently
+and if there's anything you can do to improve.
+
+The Nsight Compute command-line interface, ``nv-nsight-cu-cli``, can be
+prefixed to your application to collect a report.
+
+::
+
+    summit> module load nsight-compute
+
+::
+
+    summit> jsrun -n1 -a1 -g1 nv-nsight-cu-cli ./vectorAdd
+
+Similar to Nsight Systems, Nsight Compute will create a temporary report file,
+even when ``-o`` is not specified.
+
+The most important output to look at is the "GPU Speed of Light" section,
+which tells you what fraction of peak memory throughput and what fraction
+of peak compute throughput you achieved. Typically if you have achieved
+higher than 60% of the peak of either subsystem, your kernel would be
+considered memory-bound or compute-bound (respectively), and if you have
+not achieved 60% of either this is often a latency-bound kernel. (A common
+cause of latency issues is not exposing enough parallelism to saturate
+the GPU's compute capacity -- peak GPU performance can only be achieved when
+there is enough work to hide the latency of memory accesses and to keep all
+compute pipelines busy.)
+
+
+By default, Nsight Compute will collect this performance data for every kernel
+in your application. This will take a long time in a real-world application.
+It is recommended that you identify a specific kernel to profile and then use
+the ``-k`` argument to just profile that kernel. (If you don't know the name of
+your kernel, use ``nsys`` to obtain that. The flag will pattern match on any
+substring of the kernel name.) You can also use the ``-s`` option to skip some
+number of kernel calls and the ``-c`` option to specify how many invocations of
+that kernel you want to profile.
+
+If you want to collect information on just a specific performance measurement,
+for example the number of bytes written to DRAM, you can do so with the
+``--metrics`` option:
+
+::
+
+    summit> jsrun -n1 -a1 -g1 nv-nsight-cu-cli -k vectorAdd --metrics dram__bytes_write.sum ./vectorAdd
+
+The list of available metrics can be obtained with ``nv-nsight-cu-cli
+--query-metrics``. Most metrics have both a base name and suffix. Together
+these  make up the full metric name to pass to ``nv-nsight-cu-cli``. To list
+the full names for a collection of metrics, use ``--query-metrics-mode suffix
+--metrics <metrics list>``.
+
+
+As with Nsight Systems, there is a graphical user interface you can load a
+report file into (The GUI is only available for Windows, x86_64 Linux and Mac).
+Use the ``-o`` flag to create a file (the added report extension will be
+``.nsight-cuprof-report``), copy it to your local system, and use the File >
+Open File menu item. If you are using multiple MPI ranks, make sure you name
+each one independently. Nsight Compute does not yet support the ``%q`` syntax
+(this will come in a future release), so your job script will have to do the
+naming manually; for example, you can create a simple shell script:
+
+::
+
+    $ cat run.sh
+    #!/bin/bash
+
+    nv-nsight-cu-cli -o vectorAdd_$OMPI_COMM_WORLD_RANK ./vectorAdd
+
+For more details on Nsight Compute, check out the `product page
+<https://developer.nvidia.com/nsight-compute>`__ and the `documentation
+<https://docs.nvidia.com/nsight-compute/index.html>`__. If you previously used
+``nvprof`` and would like to start using Nsight Compute, check out `this transition
+guide <https://docs.nvidia.com/nsight-compute/NsightComputeCli/index.html#nvprof-guide>`__.
+Also, in March 2020 NVIDIA presented a webinar on Nsight Compute which you can `watch on
+demand <https://www.olcf.ornl.gov/calendar/nvidia-profiling-tools-nsight-compute/>`__.
+
+nvprof and nvvp
+^^^^^^^^^^^^^^^
+
+Prior to Nsight Systems and Nsight Compute, the NVIDIA command line profiling
+tool was ``nvprof``, which provides both tracing and kernel profiling
+capabilities. Like with Nsight Systems and Nsight Compute, the profiler data
+output can be saved and imported into the NVIDIA Visual Profiler for additional
+graphical analysis. ``nvprof`` is in maintenance mode now: it still works on
+Summit and significant bugs will be fixed, but no new feature development is
+occurring on this tool.
 
 To use ``nvprof``, the ``cuda`` module must be loaded.
 
@@ -3126,18 +3422,49 @@ please see the `Vampir Software Page <https://www.olcf.ornl.gov/software_package
 Known Issues
 ============
 
-Last Updated: 20 March 2020
+Last Updated: 03 April 2020
 
 Open Issues
 -----------
 
+Setting ``TMPDIR`` causes JSM (``jsrun``) errors / job state flip-flop
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Setting the ``TMPDIR`` environment variable causes jobs to fail with JSM
+(``jsrun``) errors and can also cause jobs to bounce back and forth between
+eligible and running states until a retry limit has been reached and the job is
+placed in a blocked state (NOTE: This "bouncing" of job state can be caused for
+multiple reasons. Please see the known issue `Jobs suspended due to retry limit
+/ Queued job flip-flops between queued/running states`_ if you are not setting
+``TMPDIR``). A bug has been filed with IBM to address this issue.
+
+When ``TMPDIR`` is set within a running job (i.e., in an interactive session or
+within a batch script), any attempt to call ``jsrun`` will lead to a job
+failure with the following error message:
+
+::
+
+	Error: Remote JSM server is not responding on host batch503-25-2020 15:29:45:920 90012 main: Error initializing RM connection. Exiting.
+
+When ``TMPDIR`` is set before submitting a job (i.e., in the shell/environment
+where a job is submitted from), the job will bounce back and forth between a
+running and eligible state until its retry limit has been reached and the job
+will end up in a blocked state. This is true for both interactive jobs and jobs
+submitted with a batch script, but interactive jobs will hang without dropping
+you into your interactive shell. In both cases, JSM log files (e.g.,
+``jsm-lsf-wait.username.1004985.log``) will be created in the location set for
+``TMPDIR`` containing the same error message as shown above. 
+
 Segfault when running executables on login nodes
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Executing a parallel binary on the login node or a batch node without using the job step launcher ``jsrun`` will result in a segfault. 
+Executing a parallel binary on the login node or a batch node without using the
+job step launcher ``jsrun`` will result in a segfault. 
 
-This also can be encountered when importing parallel Python libraries like ``mpi4py`` and ``h5py`` directly on these nodes.
+This also can be encountered when importing parallel Python libraries like
+``mpi4py`` and ``h5py`` directly on these nodes.
 
-The issue has been reported to IBM. The current workaround is to run the binary inside an interactive or batch job via ``jsrun``.
+The issue has been reported to IBM. The current workaround is to run the binary
+inside an interactive or batch job via ``jsrun``.
 
 Nsight Compute cannot be used with MPI programs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -3267,6 +3594,7 @@ the ``-a`` flag (number of tasks per resource set) is ignored. This has
 been reported to IBM and they are investigating. It is generally
 recommended to use jsrun explicit resource files (ERF) with
 ``--erf_input`` and ``--erf_output`` instead of ``-U``.
+
 
 Jobs suspended due to retry limit / Queued job flip-flops between queued/running states
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
