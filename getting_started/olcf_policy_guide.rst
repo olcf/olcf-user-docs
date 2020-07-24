@@ -658,7 +658,7 @@ apply to sensitive data:
 Data Transfer
 -------------
 
-The OLCF offers two dedicated data transfer nodes to users. The nodes have been
+The OLCF offers a number of dedicated data transfer nodes to users. The nodes have been
 tuned specifically for wide area data transfers, and also perform well on the
 local area. There are also several utilities that the OLCF recommends for data
 transfer. Please refer to our :ref:`system-user-guides` for information about
