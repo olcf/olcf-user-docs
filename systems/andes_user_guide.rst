@@ -21,7 +21,7 @@ Andes contains 704 compute nodes and 9 GPU nodes. Andes has two partitions:
 +-------------+-------------+---------+-------------------+------------------------------------+
 | Partition   | Node Count  | Memory  | GPU               | CPU                                |
 +=============+=============+=========+===================+====================================+
-| andes       | 704         | 256 GB  | N/A               | [2x] AMD EPYC 7302 16Core Processor|
+| batch.      | 704         | 256 GB  | N/A               | [2x] AMD EPYC 7302 16Core Processor|
 | (default)   |             |         |                   | 3.0 GHz                            |   
 |             |             |         |                   | (total 32 cores *per node*)        |
 +-------------+-------------+---------+-------------------+------------------------------------+
@@ -30,9 +30,9 @@ Andes contains 704 compute nodes and 9 GPU nodes. Andes has two partitions:
 |             |             |         | K80               | (total 28 cores, 56 HT *per node*) |
 +-------------+-------------+---------+-------------------+------------------------------------+
 
-**Andes Partition**
+**batch Partition**
 
-The first 704 nodes make up the *andes* partition, where each node contains two
+The first 704 nodes make up the *batch* partition, where each node contains two
 16-core 3.0 GHz AMD EPYC 7302 processors and 256GB of main memory.  Each CPU in
 this partition features 16 physical cores, for a total of 32 physical cores per
 node.
@@ -69,10 +69,10 @@ memory-intensive tasks on these nodes could interrupt service to other users.
 As a courtesy, we ask that you refrain from doing any analysis or visualization
 tasks on the login nodes.
 
-To connect to Andes, ssh to andes.ccs.ornl.gov 
+To connect to Andes, ssh to andes.olcf.ornl.gov 
 ::
 
-        ssh username@andes.ccs.ornl.gov
+        ssh username@andes.olcf.ornl.gov
 
 For more information on connecting to OLCF resources, see :ref:`connecting-to-olcf`.
 
