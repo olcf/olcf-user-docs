@@ -815,7 +815,7 @@ To see all of your jobs that completed on 2019-06-10:
 
 
 ``scontrol show job <jobid>``
-"""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""
 
 Provides additional details of given job.
 
@@ -854,7 +854,7 @@ to, for example, navigate file systems, set up job execution, run serial
 executables, and even submit other batch jobs.
 
 Andes Compute Node Description
-"""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""
 
 The following image represents a high level compute node that will be used below
 to display layout options.
@@ -963,7 +963,7 @@ Multiple simultaneous sruns can be executed within a batch job by placing each
 .. _batch-queues-on-andes:
 
 Batch Queues on Andes
---------------------
+---------------------
 
 The compute nodes on Andes are separated into two partitions the "Andes partition"
 and the "GPU partition" as described in the :ref:`andes-compute-nodes` section, and
@@ -971,7 +971,7 @@ they are available through a single batch queue: ``batch``. The scheduling
 policies for the individual partitions are as follows:
 
 Andes Partition Policy (default)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Jobs that do not specify a partition will run in the 704 node Andes partition:
 
@@ -1042,7 +1042,7 @@ project is over its allocation, as shown in the table below:
 --------------
 
 Job Accounting on Andes
-----------------------
+-----------------------
 
 Jobs on Andes are scheduled in full node increments; a node's cores cannot be
 allocated to multiple jobs. Because the OLCF charges based on what a job makes
