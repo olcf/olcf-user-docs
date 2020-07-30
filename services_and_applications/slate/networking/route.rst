@@ -157,37 +157,28 @@ The outputted YAML will look like this example:
    provide your own keys if you like.
 
 HTTP
-~~~
+~~~~
 
 OpenShift supports unsecured routes over HTTP, but it is not recommended for use. Use edge encryption if you are unsure.
 
-
-***************************
 Web Interface Configuration
-***************************
+---------------------------
 
-Routes can also be created from the web interface. On the hamburger menu, click ``Applications``\ , then ``Routes``.
+Routes can also be created from the web interface. On the hamburger menu, click ``Networking``\ , then ``Routes``.
 
 
-.. image:: /images/slate/hamburger.png
-   :target: /images/slate/hamburger.png
-   :alt: Hamburger Menu
-
+.. image:: /images/slate/routeMenu.png
+   :target: /images/slate/routeMenu.png
+   :alt: Route in Hamburger Menu
 
 If no routes have been created for a project, you will be presented with a ``Create Route`` button.
 
-
-.. image:: /images/slate/noroutes.png
-   :target: /images/slate/noroutes.png
-   :alt: No routes on project
+.. image:: /images/slate/createRoute.png
+   :target: /images/slate/createRoute.png
+   :alt: Create Route
 
 
 On the ``Create Route`` screen, fill out the form, select your service in the ``service`` dropdown.
-
-
-.. image:: /images/slate/route.png
-   :target: /images/slate/route.png
-   :alt: Example Route Screen
 
 
 Be sure to check the ``Secure Route`` checkbox. See the CLI sections to determine which encryption type is best
@@ -195,15 +186,8 @@ for you. If you don't know, it's probably edge encryption. You can leave the cer
 encryption on a wildcard ``*.apps.<cluster>.ccs.ornl.gov``
 
 
-.. image:: /images/slate/route-secure.png
-   :target: /images/slate/route-secure.png
-   :alt: TLS Termination Dropdown
-
-
-
-*******************************
 Routes with NCCS Authentication
-*******************************
+-------------------------------
 
 In order for us to maintain our existing security posture, only users who are on a project will be able
 to access to services that the project runs. This means that when a user accesses a route they will first be
@@ -216,7 +200,7 @@ prompted to log in to OpenShift and once they are authenticated they will be abl
 
 
 Requirements
-------------
+^^^^^^^^^^^^
 
 
 * All routes require authentication
@@ -225,7 +209,7 @@ Requirements
 * The authenticated user must be on the project in order to use the application running in OpenShift
 
 Optional Application Authentication
------------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The authentication will be handled by the cluster load balancers so that nothing is required by a user
 application. If a user application needs to authenticate a user we set the ``X-Remote-User`` header which
@@ -244,18 +228,17 @@ An example list of headers that are set by the loadbalancer:
    X-Forwarded-For: 160.91.195.36
 
 How
----
+^^^
 
 Routes are secured by adding the annotation ``ccs.ornl.gov/requireAuth = "true"`` to the route.
 
 Exemptions
-----------
+^^^^^^^^^^
 
 If you have an application that should not require authentication reach out to NCCS Support.
 
-************************
 Internet-facing Services
-************************
+------------------------
 
 By default, a route will only expose your :ref:`slate_services`
 to NCCS networks. If you need your service exposed to the world outside ORNL, you will first need to get your project
@@ -265,83 +248,49 @@ and a brief reasoning for why exposing externally is needed.
 We will let you know once your project is able to set up external routes.
 
 Labelling Routes
-----------------
+^^^^^^^^^^^^^^^^
 
 Once your project has been approved, you only need to give your route a *label* to tell the OpenShift router to expose
 this service externally. You can do this in the CLI or in the web interface.
 
 CLI
-^^^
+~~~
 
 On the CLI, run ``oc label route {ROUTE_NAME} ccs.ornl.gov/externalRoute=true``.
 
 GUI
-^^^
+~~~
 
 In the web interface, from the side menu, select ``Applications``\ , then ``Routes``.
 
 
-.. image:: /images/slate/RouteMenu.png
-   :target: /images/slate/RouteMenu.png
+.. image:: /images/slate/routeMenu.png
+   :target: /images/slate/routeMenu.png
    :alt: Routes Menu
 
 
-This will show a list of your routes. Click the route you want to expose.
-
-
-.. image:: /images/slate/RouteScreen.png
-   :target: /images/slate/RouteScreen.png
-   :alt: Routes
-
-
-This will show information about your route. Note that it is exposed on ``router``. 
-
-
-.. image:: /images/slate/SingleRoute.png
-   :target: /images/slate/SingleRoute.png
-   :alt: Single Route Screen
-
-
-From here, click the ``Actions`` drop down in the upper right-hand corner and select ``Edit YAML``.
-
-
-.. image:: /images/slate/RouteEditYAML.png
-   :target: /images/slate/RouteEditYAML.png
-   :alt: Edit YAML
-
-
-This will show the object definition for your route.
-
-
-.. image:: /images/slate/RouteYAMLBefore.png
-   :target: /images/slate/RouteYAMLBefore.png
-   :alt: Route Before
-
+This will show a list of your routes. Click the route you want to expose, and click the ``YAML`` tab.
 
 Under metadata, add a label for ``ccs.ornl.gov/externalRoute: 'true'`` as shown below and click the ``Save`` button at the bottom of the page.
 
 
 .. image:: /images/slate/RouteYAMLAfter.png
    :target: /images/slate/RouteYAMLAfter.png
-   :alt: Route Before
+   :alt: Route After
 
-
-
-After saving, your route will be exposed on two routers, ``router`` and ``external-router``. This means your service is now
+After saving, your route will be exposed on two routers, ``default`` and ``external``. This means your service is now
 accessible from outside ORNL. Note that if your project has not yet been approved for external routing, this second
-router will not show up.
-
+router will not expose your route.
 
 .. image:: /images/slate/RouteExternallyExposed.png
    :target: /images/slate/RouteExternallyExposed.png
    :alt: Route Exposed
 
-***************
 Advanced Routes
-***************
+---------------
 
 Multiple Services
------------------
+^^^^^^^^^^^^^^^^^
 
 While a route usually points to one service through the ``to`` parameter in the configuration, it is
 possible to have as many as four services to load balance between. This is used with A/B deployments.

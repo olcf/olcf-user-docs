@@ -82,15 +82,15 @@ Running a Container in a Pod with the Web Console
 
 To create a single pod using the web console we will create from YAML
 
-First go to Add to Project -> Import YAML / JSON
-
+First, in the upper right-hand corner, click the ``+`` symbol. This can be used to add any YAML object from the web UI.
 
 .. image:: /images/slate/add-to-project.png
    :target: /images/slate/add-to-project.png
    :alt: Add to Project
 
 
-Then paste this YAML into the box and click Create
+Make sure the project in the upper left-hand dropdown is set to the project in which you wish to deploy.
+Then paste this YAML into the box.
 
 .. code-block:: yaml
 
@@ -116,27 +116,14 @@ Then paste this YAML into the box and click Create
    :target: /images/slate/beginnersguide-import-yaml.png
    :alt: Import YAML
 
-
-On the Overview page there should be Other Resources and it should list our ``hello-world-pod`` pod.
-
-
-.. image:: /images/slate/overview-other-resources.png
-   :target: /images/slate/overview-other-resources.png
-   :alt: Other Resources
-
-
-Clicking the title will give us more information about the pod such as it's current status, the node it is
-running on, and the container information like resource utilization as well as options to view the log and get
-a terminal in the container.
-
+Click "Create" at the bottom of the screen, and you will be redirected to the pod object page.
+Wait for this to say "Running" on the right side of the screen in the ``Status`` field.
 
 .. image:: /images/slate/beginnersguide-hello-world-pod-describe.png
    :target: /images/slate/beginnersguide-hello-world-pod-describe.png
    :alt: Hello World Pod
 
-
-Finally we can delete the pod by clicking Actions -> Delete
-
+Finally we can delete the pod by clicking Actions -> Delete Pod
 
 .. image:: /images/slate/actions-delete-pod.png
    :target: /images/slate/actions-delete-pod.png
@@ -146,6 +133,4 @@ Finally we can delete the pod by clicking Actions -> Delete
 More Information
 ^^^^^^^^^^^^^^^^
 
-
 * `Kubernetes Pod Overview <https://kubernetes.io/docs/concepts/workloads/pods/pod-overview/>`_
-* `OpenShift Pod Overview <https://docs.openshift.org/latest/architecture/core_concepts/pods_and_services.html>`_

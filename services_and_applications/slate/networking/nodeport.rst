@@ -11,7 +11,7 @@ to a service, which points to the pods that match the service's label selector.
 NodePorts are given in the 30000-32767 range. These are ports you can use from
 outside the cluster to access resources inside of OpenShift.
 
-For the Openshift clusters you will additionally need to `create a network policy <../networkpolicy>`_ file to allow external traffic into your namespace. 
+For the Openshift clusters you will additionally need to create a :ref:`network policy <slate_network_policies>` file to allow external traffic into your namespace. 
 
 .. image:: /images/slate/NodePort.png
    :target: /images/slate/NodePort.png
@@ -85,6 +85,6 @@ Then, you can run ``oc describe service mongodb`` again to see if your change ha
 
 Note that a ``NodePort`` value will automatically be given by the service controller.
 
-Your service can then be accessed by the scheme ``{project}.{cluster}.ccs.ornl.gov:{nodePort}``.
+Your service can then be accessed by the scheme ``apps.{cluster}.ccs.ornl.gov:{nodePort}``.
 
-In this example, if the service was running on marble, I could access it with ``my-project.marble.ccs.ornl.gov:32399``
+In this example, if the service was running on marble, I could access it with ``apps.marble.ccs.ornl.gov:32399``

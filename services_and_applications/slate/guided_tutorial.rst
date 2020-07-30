@@ -6,7 +6,7 @@ Guided Tutorial
 
 This tutorial is meant to be followed step by step so you can get a basic understanding of Openshift and Openshift objects. This will only cover a very surface level knowledge of all the things you can accomplish with Openshift but will hopefully get you familiar with the foundational concepts. 
 
-If you have not already done so, you will need to get an allocation on either our Granite or Marble cluster. To do this contact help@olcf.ornl.gov.
+If you have not already done so, you will need to get an allocation on either our Marble or Onyx cluster. To do this contact help@olcf.ornl.gov.
 
 Before we dive in there are some terms that need to be understood. This will be a basic set of terms and a copy and paste from our :ref:`slate_glossary`, so we recommend reading that document and even keeping it handy until you are familiar with all of the definitions there. On that note, another good piece of reference documentation the :ref:`slate_examples` document. There you can find basic YAML definitions for the most common objects in Kubernetes.
 
@@ -18,9 +18,9 @@ Terms to be familiar with for this tutorial
 
 **Slate:** An encompassing term to describe the Openshift resources provided by the Platforms team in the HPC Data and Operations group.
 
-**Cluster:** One of the Kubernetes cluster (Granite or Marble) that the Platform team in the HPC Data and Operations group supports. 
+**Cluster:** One of the Kubernetes cluster (Marble or Onyx) that the Platform team in the HPC Data and Operations group supports. 
 
-**Object:** Object is *something* in a Kubernetes Cluster. This something can be a Pod, Route, Deployment, Stateful Set or any one of the other things you define in YAML and create in the cluster. Objects are added to the cluster through the Kubernetes API. You will almost certainly only ever interact with the Kubernetes API through the ``oc`` client or through the web GUI at: ``https://console-openshift-console.apps.<CLUSTER_NAME>.ccs.ornl.gov``
+**Object:** Object is *something* in a Kubernetes Cluster. This something can be a Pod, Route, Deployment, Stateful Set or any one of the other things you define in YAML and create in the cluster. Objects are added to the cluster through the Kubernetes API. You will almost certainly only ever interact with the Kubernetes API through the ``oc`` client or through the web GUI at: ``https://console-openshift-console.apps.<cluster>.ccs.ornl.gov``
 
 **Host/Node:** The machine or VM that is a member of the Kubernetes cluster. A Node is where Kubernetes objects execute.
 
@@ -39,21 +39,21 @@ These are just the specific terms that you will need to know to make use of this
 Creating your project
 ---------------------
 
-Before you can do anything you need a **project** to do your things in. Fortunately, when you get an allocation on one of our clusters a **project** is automatically created for you with the same name as the allocation. By using our own distinct **project** we are ensuring that we will not interfere with anyone elses work.
+Before you can do anything you need a **project** to do your things in. Fortunately, when you get an allocation on one of our clusters a **project** is automatically created for you with the same name as the allocation. By using our own distinct **project** we are ensuring that we will not interfere with anyone else's work.
 
-NOTE: Everywhere that you see `<CLUSTER_NAME>` replace that with the cluster that you will be running on (marble or onyx).
+NOTE: Everywhere that you see `<cluster>` replace that with the cluster that you will be running on (marble or onyx).
 
 Now that you have a project you can create objects inside that project. We will be doing this with the Openshift Web GUI and the ``oc`` CLI client so you can use whichever interface you are more comfortable with in this tutorial. If you are more comfortable using the command line than you are using a GUI you can now `jump to the oc portion of this document. <#guided-oc-tutorial>`_. Otherwise, if you are more comfortable with the GUI `skip to the GUI portion of the tutorial <#guided-web-gui-tutorial>`_.
 
 Guided Web GUI Tutorial
 -----------------------
 
-Go to ``https://console-openshift-console.apps.<CLUSTER_NAME>.ccs.ornl.gov/k8s/cluster/projects``
+Go to ``https://console-openshift-console.apps.<cluster>.ccs.ornl.gov/k8s/cluster/projects``
 
 Adding a Pod to your Project
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Once you have navigated to ``https://console-openshift-console.apps.<CLUSTER_NAME>.ccs.ornl.gov/k8s/cluster/projects`` you should see a list of **projects** or projects, that you have access to. Scroll down or use the filter box in the upper right to select your project; your project will have the same name as your allocation in RATS. Once there your screen should look similar to the picture below:
+Once you have navigated to ``https://console-openshift-console.apps.<cluster>.ccs.ornl.gov/k8s/cluster/projects`` you should see a list of **projects** or projects, that you have access to. Scroll down or use the filter box in the upper right to select your project; your project will have the same name as your allocation in RATS. Once there your screen should look similar to the picture below:
 
 
 .. image:: /images/slate/project-view.png

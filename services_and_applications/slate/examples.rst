@@ -1,9 +1,9 @@
 
 .. _slate_examples:
 
-########
-Examples
-########
+###########################
+YAML Object Quick Reference
+###########################
 
 Examples of basic Kubernetes objects meant to be used as a reference for those familiar with Kubernetes.
 

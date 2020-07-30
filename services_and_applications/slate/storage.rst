@@ -60,16 +60,17 @@ Using the web GUI
 ^^^^^^^^^^^^^^^^^
 
 #. 
-   From the main screen of a project go to the **Storage** option in the hamburger menu on the left hand side of the screen.
+   From the main screen of a project go to the **Storage** option in the hamburger menu on the left hand side of the screen, 
+   then click ``Persistent Volume Claims``
 
 
    .. image:: /images/slate/storage-highlighted.png
       :target: /images/slate/storage-highlighted.png
-      :alt: Hamburger Menu
+      :alt: Persistent Volume Claim Menu
 
 
 #. 
-   In the upper right click the **Create Storage** button.
+   In the upper right click the **Create Persistent Volume Claim** button.
 
 
    .. image:: /images/slate/create-storage.png
@@ -79,7 +80,7 @@ Using the web GUI
 
 #. 
    This will take you to a screen that allows you to select what you need for your PVC. Give your claim a name and
-   request an amount of storage and click **Create**.
+   request an amount of storage and click **Create**. You can also click ``Edit YAML`` to edit the PVC object directly.
 
 
    .. image:: /images/slate/pv-settings.png
@@ -88,7 +89,7 @@ Using the web GUI
 
 
 #. 
-   This will take you back to the screen you were at in step 2. You should see the claim that you created and that claims status.
+   This will redirect you to the status page of your new PVC. You should see ``Bound`` in the ``Status`` field.
 
 
    .. image:: /images/slate/pv-status.png
@@ -154,7 +155,7 @@ Adding PVC To Pod Using Web GUI
 
 
 #. 
-   To add the PVC to a pod using the web GUI first select **application** and then **deployments** in the hamburger menu on the left had side.
+   To add the PVC to a pod using the web GUI first select **Workloads** and then **Deployments** in the hamburger menu on the left had side.
 
 
    .. image:: /images/slate/application-deployments.png
@@ -164,11 +165,6 @@ Adding PVC To Pod Using Web GUI
 
 #. 
    Next, select the deployment that contains the pod you wish to add the storage to.
-
-
-   .. image:: /images/slate/deployment-screen-highlighted.png
-      :target: /images/slate/deployment-screen-highlighted.png
-      :alt: Deployment Screen Highlighted
 
 
 #. 
