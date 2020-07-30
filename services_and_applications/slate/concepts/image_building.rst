@@ -56,17 +56,23 @@ Creating a BuildConfig from the CLI
 The first step to creating the the build is to create a build config. This is done in one of three ways depending on
 how your code is structured. If you have a git repository already configured and it is public then the command
 
-``$ oc new-build .``
+.. code-block::
+
+   oc new-build .
 
 will create your build config from that repository. 
 
 If you have a public git repository that isn't already configured then you can create the build config by running
 
-``$ oc new-build <URL TO YOUR GIT REPOSITORY>``
+.. code-block::
+
+   oc new-build <URL TO YOUR GIT REPOSITORY>
 
 If you have a private git repository then your build config will be created by running the command:
 
-``$ oc new-build <URL TO YOUR GIT REPOSITORY> --source-secret=yoursecret``
+.. code-block::
+   
+   $ oc new-build <URL TO YOUR GIT REPOSITORY> --source-secret=yoursecret
 
 Follows is an example of creating a build for a public git repository:
 
@@ -106,11 +112,15 @@ Now, since everything has been configured, you can click the **Start Build** but
 Web GUI anytime that you need to make another build. You can also start a another build from the command line with
 either:
 
-``$ oc start-build <buildconfig_name>``
+.. code-block:: 
+
+   oc start-build <buildconfig_name>
 
 Or, if you would like to receive logs from the build:
 
-``$ oc start-build <buildconfig_name> --follow``
+.. code-block:: 
+
+   oc start-build <buildconfig_name> --follow
 
 .. note::
   It is perfectly normal for a build to take a few minutes to complete.
@@ -166,12 +176,16 @@ image to your project by adding it to the Docker registry of the cluster that yo
 
 First, copy your login token. We will need this for the next step.
 
-``$ oc login https://api.<cluster>.ccs.ornl.gov --token=<COPY THIS TOKEN>``
+.. code-block:: 
+
+   oc login https://api.<cluster>.ccs.ornl.gov --token=<COPY THIS TOKEN>
 
 Next, log into the Docker registry. Use your copied token when prompted for your password. Upon succesful login, a message 
 saying so will appear.
 
-``$ docker login -u <NCCS USERNAME> registry.apps.<cluster>.ccs.ornl.gov``
+.. code-block:: 
+
+   docker login -u <NCCS USERNAME> registry.apps.<cluster>.ccs.ornl.gov
 
 Now, find the repository and tag information of the local image you want to add to the registry and tag it accordingly.
 
@@ -182,10 +196,16 @@ Now, find the repository and tag information of the local image you want to add 
    example:5000/streams                      v3.1.4              fd7673fdbe30        3 weeks ago         1.95GB
 
 The command to tag your image is:
-``$ docker tag example:5000/streams:v3.1.4 registry.apps.<cluster>.ccs.ornl.gov/<namespace>/<image>:<tag>``
+
+.. code-block:: 
+
+   docker tag example:5000/streams:v3.1.4 registry.apps.<cluster>.ccs.ornl.gov/<namespace>/<image>:<tag>
 
 Lastly, the image needs to be pushed to the registry.
-``$ docker push registry.apps.<cluster>.ccs.ornl.gov/<namespace>/<image>:<tag>``
+
+.. code-block:: 
+
+   docker push registry.apps.<cluster>.ccs.ornl.gov/<namespace>/<image>:<tag>
 
 OpenShift has an integrated container registry that can be accessed from outside the cluster to
 push and pull images as well as run containers.
@@ -235,9 +255,9 @@ Then you can push and pull from the integrated registry. In the following exampl
   When tagging an image, you must use the format ``registry.apps.<cluster>.ccs.ornl.gov/<namespace>/<image>`` where:
 
 
-* **cluster** is the name of the OpenShift cluster
-* **namespace** is the name of the Kubernetes namespace you are using (Use ``oc status`` to see what
+* :term:`Cluster` is the name of the OpenShift cluster
+* :term:`Namespace` is the name of the Kubernetes namespace you are using (Use ``oc status`` to see what
   OpenShift Project/Kubernetes Namespace you are currently in)
-* **image** is the name of the image you want to push
+* :term:`Image` is the name of the image you want to push
 
 Once you push the image into the registry, a OpenShift ImageStream will be automatically created
