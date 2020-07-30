@@ -1,16 +1,13 @@
+.. _helm_examle:
 
------------------------------------
-Install External Packages with Helm
------------------------------------
+*************************
+Deploy Packages with Helm
+*************************
 
 `Helm <https://helm.sh>`_ is the OLCF preferred package manager for Kubernetes. There are a variety of upstream
 applications that can be installed with helm, such as databases, web frontends, and monitoring tools. Helm has "packages" called "charts", which can essentially be thought of as kubernetes object templates. You can pass in values which helm uses to fill in these templates, and create the objects (pods, deployments, services, etc)
 
-Installing Helm
-^^^^^^^^^^^^^^^
-
-Like ``oc``\ , helm is a single binary executable. This can be installed on macOS/homebrew with ``brew install helm``\ , or
-can be pulled from the `helm releases page <https://github.com/helm/helm/releases>`_. If downloading from the github page, you can just copy this executable into ``/usr/local/bin`` to add it to PATH. 
+Follow :ref:`helm_prerequisite` for installing Helm.
 
 One nice feature of helm is that it uses the underlying authentication credentials to kubernetes, so once you login with
 ``oc login``\ , the helm client will authenticate automatically.
@@ -23,8 +20,8 @@ By default, helm doesn't have any chart repositories, so let's add the upstream 
 
 Now you can install helm charts with ``helm install stable/<package_name>``. You can think of this command as a parallel to running ``yum install`` on a RHEL/CentOS-based system, or ``apt install`` on a debian-based system.
 
-Example using mysql
-^^^^^^^^^^^^^^^^^^^
+Install MySQL with Helm
+^^^^^^^^^^^^^^^^^^^^^^^
 
 For an example, let's install a basic mysql database, with a release named ``mysql``.
 

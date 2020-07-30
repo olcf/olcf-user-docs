@@ -1,16 +1,13 @@
-#################
-Example Use Cases
-#################
+###############################
+Application Deployment Examples
+###############################
 
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    simple_website
    mongodb_service
    nginx_hello_world
-   helm
-
-    
-
-     
+   helm_example
+   minio

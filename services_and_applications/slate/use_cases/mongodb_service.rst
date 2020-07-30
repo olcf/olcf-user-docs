@@ -1,7 +1,7 @@
 
--------
-MongoDB
--------
+**************
+Deploy MongoDB
+**************
 
 MongoDB is a common "NoSQL" database. We will be creating a Deployment to run the MongoDB service
 and expose it external to the cluster after setting up authentication. We will also be deploying a

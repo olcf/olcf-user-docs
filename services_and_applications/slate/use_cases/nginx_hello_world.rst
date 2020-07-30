@@ -1,8 +1,8 @@
 
 
------------------
-NGINX Hello World
------------------
+*****************************
+Deploy NGINX with Hello World
+*****************************
 
 One of the simplest use cases for Kubernetes is running a web server. We will walk through the
 steps needed to set up an NGINX web server on OpenShift that serves a static html file. This
