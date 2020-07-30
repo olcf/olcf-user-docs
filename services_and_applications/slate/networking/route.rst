@@ -4,14 +4,9 @@
 Routes
 ******
 
-In OpenShift, a *route* exposes a :ref:`slate_services` with a host name, such as ``https://my-project.apps.<cluster>.ccs.ornl.gov``.
+In OpenShift, a :term:`Route` exposes :ref:`slate_services` with a host name, such as ``https://my-project.apps.<cluster>.ccs.ornl.gov``.
 
-Services can be exposed with routes over HTTP (insecure), HTTPS (secure), and TLS with SNI (also secure).
-
-
-.. image:: /images/slate/RouteHTTPS.png
-   :target: /images/slate/RouteHTTPS.png
-   :alt: Exposing a Service with Routes
+A :term:`Service` can be exposed with routes over HTTP (insecure), HTTPS (secure), and TLS with SNI (also secure).
 
 
 Why Routes

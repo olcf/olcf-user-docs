@@ -4,7 +4,7 @@
 Services
 ********
 
-In Kubernetes, a *service* is an internal load balancer which identifies a set of pods and can proxy traffic to them.
+In Kubernetes, a :term:`Service` is an internal load balancer which identifies a set of pods and can proxy traffic to them.
 This set of pods is determined by a label selector.
 
 A service is a **stable** way of accessing a set of pods, which are ephemeral. 

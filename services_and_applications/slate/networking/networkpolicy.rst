@@ -35,7 +35,6 @@ This will place you in an editor with some boiler plate YAML. From here you can 
    apiVersion: networking.k8s.io/v1
    metadata:
      name: web-allow-external
-     namespace: stf002platform-team
    spec:
      podSelector:
        matchLabels:
@@ -46,13 +45,20 @@ This will place you in an editor with some boiler plate YAML. From here you can 
        - Ingress
 
 A blank field matches all. The above example matches on all from/port combinations. Similarly, a blank pod selector would match on all pods in the namespace. 
-**NOTE** The key value pair, or label, under spec.podSelector.matchLabels will need to match exactly to the pod in your namespace that the policy is for. Eg
 
-.. code-block:: yaml
+.. note::
 
-   metadata:
-     labels:
-       key: value
+  The key value pair, or label, under **spec.podSelector.matchLabels** will need to match exactly to the pod in your namespace that 
+  the policy is for example the above NetworkPolicy would match pods with these labels set:
+
+  .. code-block:: yaml
+
+    apiVersion: v1
+    Kind: Pod
+    metadata:
+      labels:
+        key: value
+    ...
 
 Using the CLI
 ^^^^^^^^^^^^^

@@ -13,10 +13,6 @@ outside the cluster to access resources inside of OpenShift.
 
 For the Openshift clusters you will additionally need to create a :ref:`network policy <slate_network_policies>` file to allow external traffic into your namespace. 
 
-.. image:: /images/slate/NodePort.png
-   :target: /images/slate/NodePort.png
-   :alt: Exposing service with NodePorts
-
 
 Configuring a Service NodePort
 ------------------------------
