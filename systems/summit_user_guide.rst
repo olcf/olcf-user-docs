@@ -874,27 +874,27 @@ NVMe Usage Example
 -------------------
 
 The following example illustrates how to use the burst buffers (NVMes) by
-default on Summit. This example uses a hello_world bash script, called
-test_nvme.sh, and its submission script, check_nvme.lsf. It is assumed that the
-files are saved in the user's GPFS scratch area,
+default on Summit. This example uses a submission script, check_nvme.lsf. It is
+assumed that the files are saved in the user's GPFS scratch area,
 /gpfs/alpine/scratch/$USER/projid, and that the user is operating from there as
 well. Do not forget that for all the commands on NVMe, it is required to use
-jsrun. **Job submssion script: check_nvme.lsf.** This will submit a job to run
-on one node.
+jsrun. This will submit a job to run on one node.
+
+**Job submssion script: check_nvme.lsf.** 
 
 .. code::
 
-    #!/bin/bash
-    #BSUB -P project123
-    #BSUB -J name_test
-    #BSUB -o nvme_test.o%J
-    #BSUB -W 2
-    #BSUB -nnodes 1
-    #BSUB -alloc_flags NVME
+   #!/bin/bash
+   #BSUB -P project123
+   #BSUB -J name_test
+   #BSUB -o nvme_test.o%J
+   #BSUB -W 2
+   #BSUB -nnodes 1
+   #BSUB -alloc_flags NVME
 
-    #Declare your project in the variable
-    projid=xxxxx
-    cd /gpfs/alpine/scratch/$USER/$projid
+   #Declare your project in the variable
+   projid=xxxxx
+   cd /gpfs/alpine/scratch/$USER/$projid
 
    #Save the hostname of the compute node in a file
    jsrun -n 1 echo $HOSTNAME > test_file
@@ -921,18 +921,18 @@ on one node.
    ls -l test_file
 
 To run this example: ``bsub ./check_nvme.lsf``.   We could include all the
-commands in a script and call this file as jsrun argument in order to avoid
-changing numbers of processes for all the jsrun calls. You can see in the table
-below the differences of a submission script for executing an application on
-GPFS and NVMe. In this case we copy the binary and the input file on NVMe, but
+commands in a script and call this file as a jsrun argument in an interactive
+job, in order to avoid changing numbers of processes for all the jsrun
+calls. You can see in the table below an example of the differences in a
+submission script for executing an application on GPFS and NVMe. In the example,
+a binary ``./btio`` reads input from an input file and generates output files.
+In this particular case we copy the binary and the input file onto the NVMe, but
 this depends on the application as it is not always necessary, we can execute
 the binary on the GPFS and write/read the data from NVMe if it is supported by
 the application.
 
 .. role:: raw-html(raw)
     :format: html
-
-
 
 +----------------------------------------+------------------------------------------------+
 | *Using GPFS*          		 | *Using NVMe*         			  |
@@ -966,10 +966,10 @@ the application.
 |					 | ``jsrun -n 1 cp ${BBPATH}/* .``		  |
 +----------------------------------------+------------------------------------------------+
 
-When a user occupies more than one compute node, then is using more NVMe and the
-I/O can scale linear. For example in the following plot you can observe the
-scalability of the IOR benchmark on 2048 compute nodes on Summit where the write
-performance achieves 4TB/s and the read 11,3 TB/s
+When a user occupies more than one compute node, then they are using more NVMes
+and the I/O can scale linearly. For example in the following plot you can observe
+the scalability of the IOR benchmark on 2048 compute nodes on Summit where the
+write performance achieves 4TB/s and the read 11.3 TB/s
 
 
 .. image:: /images/nvme_ior_summit.png
@@ -977,15 +977,14 @@ performance achieves 4TB/s and the read 11,3 TB/s
 
 Remember that by default NVMe support one file per MPI process up to one file
 per compute node. If users desire a single file as output from data staged on
-the NMVe they will need to construct it.  Tools to save automatically checkpoint
+the NVMe they will need to construct it.  Tools to save automatically checkpoint
 files from NVMe to GPFS as also methods that allow automatic n to 1 file writing
 with NVMe staging are under development.   Tutorials about NVME:   Burst Buffer
 on Summit (`slides
 <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_BB_markomanolis.pdf>`__,
 `video <https://vimeo.com/306890779>`__) Summit Burst Buffer Libraries (`slides
 <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_BB_zimmer.pdf>`__,
-`video <https://vimeo.com/306891012>`__). Below is presented the Spectral
-library.
+`video <https://vimeo.com/306891012>`__). 
 
 .. _spectral-library:
 
@@ -1011,11 +1010,9 @@ steps in the submission script:
 The following table shows the differences of executing an application on GPFS,
 NVMe, and NVMe with Spectral. This example is using one compute node. We copy
 the executable and input file for the NVMe cases but this is not always
-necessary, it depends on the application, you could execute the binary from the
-GPFS and save the output files on NVMe, In the table is the execution command of
-the binary and take the data back in case that the Spectral library is not used.
-Adjust your parameters to copy, if necessary, the executable and input files on
-all the NVMes devices.
+necessary. Depending on the application, you could execute the binary from the
+GPFS and save the output files on NVMe. Adjust your parameters to copy, if
+necessary, the executable and input files onto all the NVMe devices.
 
 +----------------------------------------+------------------------------------------------+------------------------------------------------+
 | *Using GPFS* 			         | *Using NVMe*                                   | *Using NVME with Spectral library*             |
@@ -1056,10 +1053,11 @@ all the NVMes devices.
 +----------------------------------------+------------------------------------------------+------------------------------------------------+
 
 
-You could observe that with Spectral library there is no reason to explicitly
-ask for the data to be copied to GPFS as it is done automatically through the
-spectral_wait.py script. Also a a log file called spectral.log will be created
-with information on the files that were copied.
+When the Spectral library is not used, any output data produced has to be copied
+back from NVMe.  You can observe that with the Spectral library there is no reason
+to explicitly ask for the data to be copied to GPFS as it is done automatically
+through the spectral_wait.py script. Also a log file called spectral.log will be
+created with information on the files that were copied.
 
 
 .. _software:
