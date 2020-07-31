@@ -47,7 +47,7 @@ Getting Started
 ---------------
 
 It is assumed you have already gone through :ref:`slate_getting_started` and
-established the :ref:`prerequisites`. Please do that before attempting to
+established the :ref:`helm_prerequisite`. Please do that before attempting to
 deploy anything on Slate's clusters.
 
 This example uses Helm version 3 to deploy a MinIO standalone Helm chart on

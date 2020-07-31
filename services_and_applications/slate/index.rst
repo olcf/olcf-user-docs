@@ -8,6 +8,15 @@ Slate
 
    overview
    getting_started
+   guided_tutorial
+   guided_tutorial_cli
+   image_building
+   workloads/index.rst
+   networking/index.rst
+   storage
+   use_cases/index.rst
    access_olcf_resources/index.rst
    olcf_provided_applications/index.rst
-   building_your_own_application/index.rst
+   troubleshooting/index.rst
+   examples
+   glossary

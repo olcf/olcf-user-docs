@@ -1,8 +1,8 @@
-.. _prerequisites:
+.. _helm_prerequisite:
 
-*************
-Prerequisites
-*************
+******************
+Helm Prerequisites
+******************
  
 The following items need to be established before deploying applications on
 Slate systems (Marble or Onyx OpenShift clusters).
