@@ -12,11 +12,13 @@ Pods have a lifecycle: they are defined, scheduled onto a node, and then they ru
 containers exit or the pod is removed from the node for some reason. Pods are immutable and changes
 to a pod are not persisted between restarts.
 
-A pod does **not**
+.. caution::
 
-* have state (store state in persistent volumes)
-* move nodes once scheduled onto a node
-* reschedule itself (we will use higher level controllers to manage pods)
+   A pod does **not**:
+
+   * have state (data should be stored in persistent volumes)
+   * move nodes once scheduled onto a node
+   * reschedule itself (we will use higher level controllers to manage pods)
 
 Running a Container in a Pod with the CLI
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

@@ -1,10 +1,10 @@
 .. _slate_image_building:
 
-*****************
-Images and Builds
-*****************
+**************
+Image Building
+**************
 
-Building something in Openshift is the act of transferring a set of input parameters into an object. That object is 
+Building an image in Openshift is the act of transferring a set of input parameters into an object. That object is 
 typically an image. Openshift contains all of the necessary components to build a Docker image or a piece of source
 code an image that will run in a container.
 
@@ -214,7 +214,7 @@ Logging into the registry externally
 ------------------------------------
 
 .. note::
-  This documentation assumes that you have Docker installed locally.
+  This assumes that you have Docker installed locally. Installing Docker is outside of the scope of this documentation.
 
 First you have to log into OpenShift
 

@@ -9,7 +9,9 @@ Slate
    overview
    getting_started
    guided_tutorial
-   concepts/index.rst
+   guided_tutorial_cli
+   image_building
+   workloads/index.rst
    networking/index.rst
    storage
    use_cases/index.rst

@@ -1,6 +1,6 @@
-########
-Concepts
-########
+#########
+Workloads
+#########
 
 
 .. toctree::
@@ -8,4 +8,3 @@ Concepts
 
    pod
    deployment
-   image_building

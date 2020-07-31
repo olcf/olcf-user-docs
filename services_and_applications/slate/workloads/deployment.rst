@@ -4,14 +4,15 @@
 Deployments
 -----------
 
-On top of Kubernetes ReplicationControllers, OpenShift gives us even more support for software
-lifecycle with *Deployments*. A Deployment creates a ReplicationController and has the added
+On top of Kubernetes ReplicaSets, OpenShift gives us even more support for software
+lifecycle with *Deployments*. A Deployment creates a ReplicaSet and has the added
 benefit of controlling how new deployments get triggered and deployed.
 
-*Deployments* comprise 3 objects:
-* A *Deployment*
-* One or more *ReplicationControllers*
-* One or more pods
+.. important::
+
+  Deployments are sufficient for deploying a production service
+
+Deployments manages ReplicaSets which in turn manages a set of Pods
 
 Creating a Deployment
 ^^^^^^^^^^^^^^^^^^^^^
@@ -39,10 +40,10 @@ Let's look at the individual parts of this definition, under ``spec``.
 
 
 * 
-  ``replicas`` - the number of replicas to be passed down to the ReplicationController
+  ``replicas`` - the number of replicas to be passed down to the ReplicaSet
 
 * 
-  ``selector`` - the selector to determine which pods are managed by the ReplicationController.
+  ``selector`` - the selector to determine which pods are managed by the ReplicaSet.
 
 * 
   ``template`` - a pod definition. Note that this pod template must have the selector from above in its ``metadata.labels``.
@@ -51,7 +52,7 @@ Let's look at the individual parts of this definition, under ``spec``.
   ``strategy`` - see :ref:`slate_deployment_strategies`
 
 * 
-  ``revisionHistoryLimit`` - the number of old revisions of ReplicationControllers to keep around.
+  ``revisionHistoryLimit`` - the number of old revisions of ReplicaSets to keep around.
   This can be used to have a rollback plan in case of a bad deployment.
 
 * 
@@ -243,8 +244,8 @@ moving traffic from the old production version (the green version) to the new pr
 blue version). You could use a Rolling Deployment Strategy for this, but for the
 sake of showing how route-based deployments work, we'll use a route.
 
-.. note::
-  ⚠️ WARNING: Blue-green deployment requires that your application can handle both old and new versions
+.. warning::
+  Blue-green deployment requires that your application can handle both old and new versions
   running at the same time. Be sure to think about your application and if it can handle this. For example, if the
   new version of the software changes how a certain field in a database is read and written, then the old
   version of the software won't be able to read the database changes, and your production instance could
@@ -343,4 +344,4 @@ To set up an A/B environment:
 More information
 ~~~~~~~~~~~~~~~~
 
-For more information, checkout the `upstream kubernetes doc on Deployments <https://kubernetes.io/docs/concepts/workloads/controllers/deployment/>`
+For more information, checkout the `upstream kubernetes doc on Deployments <https://kubernetes.io/docs/concepts/workloads/controllers/deployment/>`_.

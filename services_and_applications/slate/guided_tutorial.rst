@@ -6,6 +6,10 @@ Guided Tutorial
 
 This tutorial is meant to be followed step by step so you can get a basic understanding of Openshift and Openshift objects. This will only cover a very surface level knowledge of all the things you can accomplish with Openshift but will hopefully get you familiar with the foundational concepts. 
 
+.. caution::
+
+   You will be creating a single Pod in this tutorial which is not sufficient for a production service
+
 If you have not already done so, you will need to get an allocation on either our Marble or Onyx  :term:`Cluster`. To do this contact help@olcf.ornl.gov.
 
 Before we dive in there are some terms that need to be understood. This will be a basic set of terms and a copy and paste from our :ref:`slate_glossary`, so we recommend reading that document and even keeping it handy until you are familiar with all of the definitions there. On that note, another good piece of reference documentation the :ref:`slate_examples` document. There you can find basic YAML definitions for the most common objects in Kubernetes.
@@ -29,16 +33,15 @@ Adding a Pod to your Project
 
 Once you have navigated to ``https://console-openshift-console.apps.<cluster>.ccs.ornl.gov/k8s/cluster/projects`` you should see a list of :term:`Projects` or :term:`Namespaces`, that you have access to. Scroll down or use the filter box in the upper right to select your project; your project will have the same name as your allocation in RATS. Once there your screen should look similar to the picture below:
 
-
 .. image:: /images/slate/project-view.png
    :target: /images/slate/project-view.png
    :alt: 
 
+.. note::
 
-**NOTE:** The name of the pictured project is of the form ``RATS_ALLOCATION-CUSTOM_NAME``. Your project will be only ``RATS_ALLOCATION``.
+   The name of the pictured project is of the form ``RATS_ALLOCATION-CUSTOM_NAME``. Your project will be only ``RATS_ALLOCATION``.
 
 From here, in the left hand hamburger menu click on the 'Workloads' tab and then the 'pods' tab:
-
 
 .. image:: /images/slate/pod-view.png
    :target: /images/slate/pod-view.png
@@ -80,98 +83,3 @@ Click on the 'Logs' tab to get the logs from your pod. This will display "Hello 
 The 'Events' tab is for the events that took place to create your pod. This is for things that happen outside of the code that is running inside your pod such as pulling the pod image, scheduling the pod onto a node etc.
 
 The 'Terminal' tab will give you a tty inside your pod. Here you can run most commands as you normally would on a RedHat machine.
-
-Guided oc Tutorial
-------------------
-
-Adding a Pod to your Project
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Before using the CLI it would be wise to read our `Getting Started on the CLI <../getting_started_cli>`_ doc.
-
-Once the **oc** client has been installed and is logged into the cluster you need to switch to your :term:`Project`. Switching to a :term:`Project` allows the **oc** client to assume that the commands it is running should be executed inside of the  :term:`Project` that you switch to. You could alternatively not switch to a project and append the ``-n`` flag to each command you run followed by the name of the project you wish to run your command in. That being said, switch to your project:
-
-.. code-block:: bash
-
-   oc project <PROJECT_NAME>
-
-Where `<PROJECT_NAME>` above is the name of your :term:`Project` which will be the name of your RATS allocation. If you need to double check your :term:`Project` name you can run:
-
-.. code-block:: bash
-
-   oc get projects
-
-to get a list of projects that you have access to.
-
-Now, to get a list of pods that exist in the project run:
-
-.. code-block:: bash
-
-   oc get pods
-
-This should not return any :term:`Pods` because there will not be any pods in the project yet.
-
-To remedy this problem we will create a pod. Below is a basic definition of a pod in YAML. Copy this and save it to a file named pod.yaml.
-
-.. code-block:: yaml
-
-    apiVersion: v1
-    kind: Pod
-    metadata:
-      # Pod name
-      name: test-pod
-    spec:
-      containers:
-        # Container name
-        - name: test-container
-          # Using the base image
-          image: "image-registry.openshift-image-registry.svc:5000/openshift/ccs-rhel7-base-amd64"
-          # Starting a shell
-          command: ["/bin/sh","-c"]
-          # Echoing a Hello World followed by an infinitely waiting cat
-          args: ["echo 'Hello World!'; cat"]
-          # Need a tty if we are to SSH. Need stdin for tty
-          tty: true
-          stdin: true
-
-With the above YAML saved in a pod.yaml file we can now create the pod with the following command:
-
-.. code-block:: bash
-
-   oc create -f pod.yaml
-
-Now if we run the command:
-
-.. code-block:: bash
-
-   oc get pods
-
-We should see our pod along with some status information about the pod.
-
-To get useful metrics about the pod we can run:
-
-.. code-block:: bash
-
-   oc describe pod <POD_NAME>
-
-where `<POD_NAME>` will be the name of the pod. In our case test-pod.
-
-To get logs from the pod we can run the command:
-
-.. code-block:: bash
-
-   oc logs -f <POD_NAME>
-
-*NOTE* the ``-f`` flag will follow the logs. You can run the logs command without the ``-f`` flag to get a snapshot of the logs. Additionally, this will be empty for the pod we created above because there will be no logs from the 'cat' command.
-
-.. code-block:: bash
-
-   oc get <POD_NAME> -o yaml
-
-Will allow you to view the YAML representation that exists in Openshift that defines your pod. You may notice that the YAML contains many more key/value pairs than the YAML that we have in our pod.yaml file. This is correct and is because extra YAML is added during the pod creation process.
-
-Finally, to get a shell in the pod we run the ``oc exec`` command. What this command does is execute a command inside the pod; for us the command will be ``/bin/bash``.
-
-.. code-block:: bash
-
-   oc exec -it <POD_NAME> /bin/bash
