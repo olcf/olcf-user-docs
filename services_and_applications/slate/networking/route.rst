@@ -163,13 +163,11 @@ Routes can also be created from the web interface. On the hamburger menu, click 
 
 
 .. image:: /images/slate/routeMenu.png
-   :target: /images/slate/routeMenu.png
    :alt: Route in Hamburger Menu
 
 If no routes have been created for a project, you will be presented with a ``Create Route`` button.
 
 .. image:: /images/slate/createRoute.png
-   :target: /images/slate/createRoute.png
    :alt: Create Route
 
 
@@ -190,7 +188,6 @@ prompted to log in to OpenShift and once they are authenticated they will be abl
 
 
 .. image:: /images/slate/loginprompt.png
-   :target: /images/slate/loginprompt.png
    :alt: login prompt
 
 
@@ -260,7 +257,6 @@ In the web interface, from the side menu, select ``Applications``\ , then ``Rout
 
 
 .. image:: /images/slate/routeMenu.png
-   :target: /images/slate/routeMenu.png
    :alt: Routes Menu
 
 
@@ -270,7 +266,6 @@ Under metadata, add a label for ``ccs.ornl.gov/externalRoute: 'true'`` as shown 
 
 
 .. image:: /images/slate/RouteYAMLAfter.png
-   :target: /images/slate/RouteYAMLAfter.png
    :alt: Route After
 
 After saving, your route will be exposed on two routers, ``default`` and ``external``. This means your service is now
@@ -278,7 +273,6 @@ accessible from outside ORNL. Note that if your project has not yet been approve
 router will not expose your route.
 
 .. image:: /images/slate/RouteExternallyExposed.png
-   :target: /images/slate/RouteExternallyExposed.png
    :alt: Route Exposed
 
 Advanced Routes

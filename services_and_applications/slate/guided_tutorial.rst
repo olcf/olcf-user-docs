@@ -34,8 +34,6 @@ Adding a Pod to your Project
 Once you have navigated to ``https://console-openshift-console.apps.<cluster>.ccs.ornl.gov/k8s/cluster/projects`` you should see a list of :term:`Projects` or :term:`Namespaces`, that you have access to. Scroll down or use the filter box in the upper right to select your project; your project will have the same name as your allocation in RATS. Once there your screen should look similar to the picture below:
 
 .. image:: /images/slate/project-view.png
-   :target: /images/slate/project-view.png
-   :alt: 
 
 .. note::
 
@@ -44,9 +42,6 @@ Once you have navigated to ``https://console-openshift-console.apps.<cluster>.cc
 From here, in the left hand hamburger menu click on the 'Workloads' tab and then the 'pods' tab:
 
 .. image:: /images/slate/pod-view.png
-   :target: /images/slate/pod-view.png
-   :alt: 
-
 
 Here you will be able to view all of the :term:`Pods` in your :term:`Project`. Since this is a new :term:`Project` there will be no :term:`Pods` in it. To create a  :term:`Pod` click the 'Create Pod' button.
 
@@ -70,9 +65,6 @@ Your page should now look as follows:
 
 
 .. image:: /images/slate/ccs-base-pod-yaml.png
-   :target: /images/slate/ccs-base-pod-yaml.png
-   :alt: 
-
 
 You can now click the 'Create' button in the lower left which will take you to the screen where the   :term:`Pod` is created.
 

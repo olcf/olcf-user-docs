@@ -65,7 +65,6 @@ Using the web GUI
 
 
    .. image:: /images/slate/storage-highlighted.png
-      :target: /images/slate/storage-highlighted.png
       :alt: Persistent Volume Claim Menu
 
 
@@ -74,7 +73,6 @@ Using the web GUI
 
 
    .. image:: /images/slate/create-storage.png
-      :target: /images/slate/create-storage.png
       :alt: Create Storage
 
 
@@ -84,7 +82,6 @@ Using the web GUI
 
 
    .. image:: /images/slate/pv-settings.png
-      :target: /images/slate/pv-settings.png
       :alt: PV Settings
 
 
@@ -93,7 +90,6 @@ Using the web GUI
 
 
    .. image:: /images/slate/pv-status.png
-      :target: /images/slate/pv-status.png
       :alt: PV Status
 
 
@@ -159,7 +155,6 @@ Adding PVC To Pod Using Web GUI
 
 
    .. image:: /images/slate/application-deployments.png
-      :target: /images/slate/application-deployments.png
       :alt: Application Deployments
 
 
@@ -172,7 +167,6 @@ Adding PVC To Pod Using Web GUI
 
 
    .. image:: /images/slate/add-storage.png
-      :target: /images/slate/add-storage.png
       :alt: Edit YAML
 
 
@@ -181,7 +175,6 @@ Adding PVC To Pod Using Web GUI
 
 
    .. image:: /images/slate/add-storage-menu.png
-      :target: /images/slate/add-storage-menu.png
       :alt: Add Storage Menu
 
 

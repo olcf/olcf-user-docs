@@ -1,8 +1,8 @@
 .. _slate_overview:
 
-**************
-Slate Overview
-**************
+********
+Overview
+********
 
 Overview of what Slate is and how Kubernetes and OpenShift come
 together.

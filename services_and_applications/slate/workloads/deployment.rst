@@ -131,7 +131,6 @@ sidebar, go to ``Applications``\ , then ``Deployments``.
 
 
 .. image:: /images/slate/DeploymentMenu.png
-   :target: /images/slate/DeploymentMenu.png
    :alt: Deployment Menu
 
 You can get info on any deployment by clicking on it. 
@@ -141,7 +140,6 @@ you'd rather edit the YAML directly.
 
 
 .. image:: /images/slate/editDeploy.png
-   :target: /images/slate/editDeploy.png
    :alt: Edit Deployment Config
 
 

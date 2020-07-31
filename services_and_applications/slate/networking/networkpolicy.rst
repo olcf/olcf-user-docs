@@ -23,7 +23,6 @@ To create a Network policy using the GUI click the **Networking** tab followed b
 
 
 .. image:: /images/slate/NetworkPolicy.png
-   :target: /images/slate/NetworkPolicy.png
    :alt: Creating Network Policies
 
 

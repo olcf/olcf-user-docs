@@ -87,7 +87,6 @@ To create a single pod using the web console we will create from YAML
 First, in the upper right-hand corner, click the ``+`` symbol. This can be used to add any YAML object from the web UI.
 
 .. image:: /images/slate/add-to-project.png
-   :target: /images/slate/add-to-project.png
    :alt: Add to Project
 
 
@@ -115,20 +114,17 @@ Then paste this YAML into the box.
 
 
 .. image:: /images/slate/beginnersguide-import-yaml.png
-   :target: /images/slate/beginnersguide-import-yaml.png
    :alt: Import YAML
 
 Click "Create" at the bottom of the screen, and you will be redirected to the pod object page.
 Wait for this to say "Running" on the right side of the screen in the ``Status`` field.
 
 .. image:: /images/slate/beginnersguide-hello-world-pod-describe.png
-   :target: /images/slate/beginnersguide-hello-world-pod-describe.png
    :alt: Hello World Pod
 
 Finally we can delete the pod by clicking Actions -> Delete Pod
 
 .. image:: /images/slate/actions-delete-pod.png
-   :target: /images/slate/actions-delete-pod.png
    :alt: Pod Actions
 
 
