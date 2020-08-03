@@ -22,8 +22,8 @@ Andes contains 704 compute nodes and 9 GPU nodes. Andes has two partitions:
 | Partition   | Node Count  | Memory  | GPU               | CPU                                |
 +=============+=============+=========+===================+====================================+
 | andes       | 704         | 256 GB  | N/A               | [2x] AMD EPYC 7302 16Core Processor|
-| (default)   |             |         |                   | 3.0 GHz                            |   
-|             |             |         |                   | (total 32 cores *per node*)        |
+| (default)   |             |         |                   | 3.0 GHz, 32 SMT                    |   
+|             |             |         |                   | (total 32 cores, 64 SMT *per node*)|
 +-------------+-------------+---------+-------------------+------------------------------------+
 | gpu         | 9           | 1 TB    | [2x]              | [2x] Intel\ |R| Xeon\ |R| E5-2695  |
 |             |             |         | NVIDIA\ |R|       | @2.3 GHz - 14 cores, 28 HT         |
@@ -33,9 +33,9 @@ Andes contains 704 compute nodes and 9 GPU nodes. Andes has two partitions:
 **Andes Partition**
 
 The first 704 nodes make up the *andes* partition, where each node contains two
-16-core 3.0 GHz AMD EPYC 7302 processors and 256GB of main memory.  Each CPU in
-this partition features 16 physical cores, for a total of 32 physical cores per
-node.
+16-core 3.0 GHz AMD EPYC 7302 processors with AMD's Simultaneous Multithreading
+(SMT) Technology and 256GB of main memory.  Each CPU in this partition features 16 physical 
+cores, for a total of 32 physical cores per node.
 
 **GPU Partition**
 
@@ -859,7 +859,7 @@ Andes Compute Node Description
 The following image represents a high level compute node that will be used below
 to display layout options.
 
-.. image:: /images/Andes-Node-Description.jpg
+.. image:: /images/Andes-Node-Description-SMT.jpg
    :align: center
 
 .. note::
@@ -906,19 +906,20 @@ physical core binding
 .. image:: /images/Andes-layout-physical-core-1-per-CPU.jpg
    :align: center
 
-Hyper Thread Binding
+
+Simultaneous Multithreading Binding
 """"""""""""""""""""
-The following will run four copies of a.out, one per hyper-thread, two per node
+The following will run four copies of a.out, one per SMT, two per node
 using a round robin task layout between nodes:
 
-.. image:: /images/Andes-layout-1-per-hyper-thread-cyclic.jpg
+.. image:: /images/Andes-layout-1-per-SMT-cyclic.jpg
    :align: center
 
 .. _andes-thread-layout:
 
 Thread Layout
 """""""""""""
-**Thread per Hyper-Thread**
+**Thread per SMT**
 
 The following will run four copies of a.out. Each task will launch two threads.
 The ``-c`` flag will provide room for the threads.
