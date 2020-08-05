@@ -135,10 +135,8 @@ There is interactive documentation on the ``hsi`` command available by running:
 
      ``hsi help``
 
-Additionally, documentation can be found at the Gleicher Enterprises website,
-including an `HSI Reference Manual
-<http://pal.mgleicher.us/HSI/hsi/hsi_reference_manual_2/>`__ and man pages for
-`HSI <http://pal.mgleicher.us/HSI/hsi/hsi_man_page.html>`__.
+Additional documentation can be found on the `HPSS Collaboration website <http://www.hpss-collaboration.org/user_doc.shtml>`__.
+
 
 Using HTAR
 ===========
