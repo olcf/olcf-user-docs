@@ -11,6 +11,27 @@ conduit for large-scale scientific discovery via pre/post processing and
 analysis of simulation data generated on Summit.  Users with accounts on Summit
 will automatically be given access to Andes.
 
+Andes will be available to users soon. All users with current accounts on Rhea will receive account on Andes.
+Allocations will start fresh on Andes, but will be the same as Rhea allocations in most cases and usage will not be combined. 
+Lots of software are updated on Andes with newer verions. We recommend users to recompile their applications before launching jobs on Andes.
+
+The following table is a list of the differences between Andes and Rhea.
+
+
++--------------+--------------------------------+-------------------------------------+
+|              | Rhea                           | Andes                               | 
++==============+================================+=====================================+
+| Processor    | Intel\ |R| Xeon\ |R| E5-2650   | AMD EPYC 7302                       |
++--------------+--------------------------------+-------------------------------------+
+| Node Count   | 512 compute nodes              | 704 compute nodes                   |
++--------------+--------------------------------+-------------------------------------+
+| Core per node| 16 cores per node              | 32 cores per node                   |
++--------------+--------------------------------+-------------------------------------+
+| node memory  | 128 GB                         | 1 TB                                |
++--------------+--------------------------------+-------------------------------------+
+
+
+
 .. _andes-compute-nodes:
 
 Compute nodes
