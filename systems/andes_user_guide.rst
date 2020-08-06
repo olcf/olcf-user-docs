@@ -5,30 +5,33 @@ Andes
 System Overview
 ===============
 
-Andes is a replacement for the Rhea system. Andes has 8 login nodes, 704
-compute nodes and 9 GPU nodes. The primary purpose of Andes is to provide a
+Andes is a replacement for the Rhea system. All users with current accounts on Rhea will receive account on Andes.
+Andes has 8 login nodes, 704 compute nodes and 9 GPU nodes. The primary purpose of Andes is to provide a
 conduit for large-scale scientific discovery via pre/post processing and
 analysis of simulation data generated on Summit.  Users with accounts on Summit
 will automatically be given access to Andes.
 
-Andes will be available to users soon. All users with current accounts on Rhea will receive account on Andes.
-Allocations will start fresh on Andes, but will be the same as Rhea allocations in most cases and usage will not be combined. 
-Lots of software are updated on Andes with newer verions. We recommend users to recompile their applications before launching jobs on Andes.
+.. note::
+    Andes will be available to users soon.
 
-The following table is a list of the differences between Andes and Rhea.
+    -  Allocations will start fresh on Andes, but will be the same as Rhea allocations in most cases and usage will not be combined. 
+    -  A large number of software packages will be updated to new versions. We recommend users to recompile their applications before launching jobs on Andes.
+    -  GPU nodes will stay same. 5 GPU nodes will be available once Andes is open. 4 GPU will remain on Rhea for approximately 1 week after opening Andes to all users.
+
+    The following table lists the differences between Andes and Rhea.
 
 
-+--------------+--------------------------------+-------------------------------------+
-|              | Rhea                           | Andes                               | 
-+==============+================================+=====================================+
-| Processor    | Intel\ |R| Xeon\ |R| E5-2650   | AMD EPYC 7302                       |
-+--------------+--------------------------------+-------------------------------------+
-| Node Count   | 512 compute nodes              | 704 compute nodes                   |
-+--------------+--------------------------------+-------------------------------------+
-| Core per node| 16 cores per node              | 32 cores per node                   |
-+--------------+--------------------------------+-------------------------------------+
-| node memory  | 128 GB                         | 256 GB                              |
-+--------------+--------------------------------+-------------------------------------+
+        +--------------+--------------------------------+-------------------------------------+
+        |              | Rhea                           | Andes                               | 
+        +==============+================================+=====================================+
+        | Processor    | Intel\ |R| Xeon\ |R| E5-2650   | AMD EPYC 7302                       |
+        +--------------+--------------------------------+-------------------------------------+
+        | Node Count   | 512 compute nodes              | 704 compute nodes                   |
+        +--------------+--------------------------------+-------------------------------------+
+        | Core per node| 16 cores per node              | 32 cores per node                   |
+        +--------------+--------------------------------+-------------------------------------+
+        | node memory  | 128 GB                         | 256 GB                              |
+        +--------------+--------------------------------+-------------------------------------+
 
 
 
@@ -929,7 +932,7 @@ physical core binding
 
 
 Simultaneous Multithreading Binding
-""""""""""""""""""""
+"""""""""""""""""""""""""""""""""""
 The following will run four copies of a.out, one per SMT, two per node
 using a round robin task layout between nodes:
 
