@@ -45,7 +45,7 @@ Andes contains 704 compute nodes and 9 GPU nodes. Andes has two partitions:
 +-------------+-------------+---------+-------------------+------------------------------------+
 | Partition   | Node Count  | Memory  | GPU               | CPU                                |
 +=============+=============+=========+===================+====================================+
-| andes       | 704         | 256 GB  | N/A               | [2x] AMD EPYC 7302 16Core Processor|
+| batch       | 704         | 256 GB  | N/A               | [2x] AMD EPYC 7302 16Core Processor|
 | (default)   |             |         |                   | 3.0 GHz, 32 SMT                    |   
 |             |             |         |                   | (total 32 cores, 64 SMT *per node*)|
 +-------------+-------------+---------+-------------------+------------------------------------+
@@ -54,9 +54,9 @@ Andes contains 704 compute nodes and 9 GPU nodes. Andes has two partitions:
 |             |             |         | K80               | (total 28 cores, 56 HT *per node*) |
 +-------------+-------------+---------+-------------------+------------------------------------+
 
-**Andes Partition**
+**Batch Partition**
 
-The first 704 nodes make up the *andes* partition, where each node contains two
+The first 704 nodes make up the *batch* partition, where each node contains two
 16-core 3.0 GHz AMD EPYC 7302 processors with AMD's Simultaneous Multithreading
 (SMT) Technology and 256GB of main memory.  Each CPU in this partition features 16 physical 
 cores, for a total of 32 physical cores per node.
@@ -85,7 +85,7 @@ transfer rate of 200 Gb/s.
 Login nodes
 -----------
 
-Andes features 8 login nodes which are identical to the *andes* partition
+Andes features 8 login nodes which are identical to the *batch* partition
 compute nodes.  The login nodes provide an environment for editing, compiling,
 and launching codes onto the compute nodes. All Andes users will access the
 system through these same login nodes, and as such, any CPU- or
@@ -93,10 +93,10 @@ memory-intensive tasks on these nodes could interrupt service to other users.
 As a courtesy, we ask that you refrain from doing any analysis or visualization
 tasks on the login nodes.
 
-To connect to Andes, ssh to andes.ccs.ornl.gov 
+To connect to Andes, ssh to andes.olcf.ornl.gov 
 ::
 
-        ssh username@andes.ccs.ornl.gov
+        ssh username@andes.olcf.ornl.gov
 
 For more information on connecting to OLCF resources, see :ref:`connecting-to-olcf`.
 
@@ -990,15 +990,14 @@ Multiple simultaneous sruns can be executed within a batch job by placing each
 Batch Queues on Andes
 ---------------------
 
-The compute nodes on Andes are separated into two partitions the "Andes partition"
-and the "GPU partition" as described in the :ref:`andes-compute-nodes` section, and
-they are available through a single batch queue: ``batch``. The scheduling
+The compute nodes on Andes are separated into two partitions the "batch partition"
+and the "GPU partition" as described in the :ref:`andes-compute-nodes` section. The scheduling
 policies for the individual partitions are as follows:
 
-Andes Partition Policy (default)
+Batch Partition Policy (default)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Jobs that do not specify a partition will run in the 704 node Andes partition:
+Jobs that do not specify a partition will run in the 704 node batch partition:
 
 
 +-----+----------------+------------+-------------------------------------------+
