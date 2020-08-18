@@ -2,23 +2,17 @@
 Andes
 ******
 
-System Overview
-===============
-
-Andes is a replacement for the Rhea system. All users with current accounts on Rhea will receive account on Andes.
-Andes has 8 login nodes, 704 compute nodes and 9 GPU nodes. The primary purpose of Andes is to provide a
-conduit for large-scale scientific discovery via pre/post processing and
-analysis of simulation data generated on Summit.  Users with accounts on Summit
-will automatically be given access to Andes.
-
 .. note::
-    Andes will be available to users soon.
-
-    -  Allocations will start fresh on Andes, but will be the same as Rhea allocations in most cases and usage will not be combined. 
-    -  A large number of software packages will be updated to new versions. We recommend users to recompile their applications before launching jobs on Andes.
-    -  GPU nodes will stay same. 5 GPU nodes will be available once Andes is open. 4 GPU will remain on Rhea for approximately 1 week after opening Andes to all users.
-
-    The following table lists the differences between Andes and Rhea.
+    We are pleased to announce a new pre/post processing and data analysis cluster, ``Andes``.  Andes will soon be available for access and will replace Rhea in September, 2020.  Please note the following:
+    
+    -  **Access and Allocations:** Projects with allocations on Rhea will automatically be given access to Andes.  Allocations will start fresh on Andes and in most cases will be the same node-hour allocation awarded on Rhea. 
+    -  **Timeline:** Access to Andes and Rhea will overlap for approximately one month to allow a transition period.  During this overlap, all current Rhea users will have access to both systems.
+    -  **High Memory GPU nodes:** Rhea’s high memory GPU nodes will be moved from Rhea to Andes.  This will be accomplished by moving half of the nodes (5) onto Andes initially.  The remaining GPU nodes (4) will then be move onto Andes during the second week of the transition period.
+    -  **Filesystems:** Andes will mount the same center-wide GPFS and NFS filesystems as Rhea.
+    -  **Batch System:** Andes will use the Slurm as is used on Rhea.  Batch scripts in use on Rhea should also run on Andes.  Batch policies will also remain the same.
+    -  **Recompile:** Due to the changes in hardware, OS, and software, rebuilds prior to running on Andes is strongly suggested.
+    -  **Default Version Changes:** All software provided in /sw has been rebuilt.  In many cases, default versions have been updated.  
+    -  **Hardware:** The following table lists several notable hardware differences between Andes and Rhea.
 
 
         +--------------+--------------------------------+-------------------------------------+
@@ -33,6 +27,13 @@ will automatically be given access to Andes.
         | node memory  | 128 GB                         | 256 GB                              |
         +--------------+--------------------------------+-------------------------------------+
 
+
+System Overview
+===============
+
+Andes is a 704-compute node commodity-type linux cluster. The primary purpose of Andes is to provide a
+conduit for large-scale scientific discovery via pre/post processing and
+analysis of simulation data generated on Summit.  
 
 
 .. _andes-compute-nodes:
