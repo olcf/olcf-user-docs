@@ -2617,8 +2617,9 @@ jsrun Format
 Common jsrun Options
 """"""""""""""""""""
 
-Below are common jsrun options. More flags and details can be found in
-the jsrun man page.
+Below are common jsrun options. More flags and details can be found in the jsrun
+man page. The defaults listed in the table below are the OLCF defaults and take
+precedence over those mentioned in the man page.
 
 
 +---------------------------+--------+------------------------------------------------------+------------------------------+
@@ -2646,9 +2647,9 @@ the jsrun man page.
 | ``--launch_distribution`` | ``-d`` | How tasks are started on resource sets               | packed                       |
 +---------------------------+--------+------------------------------------------------------+------------------------------+
 
-It's recommended to explicitly specify ``jsrun`` options. This most
-often includes ``--nrs``,\ ``--cpu_per_rs``, ``--gpu_per_rs``,
-``--tasks_per_rs``, ``--bind``, and ``--launch_distribution``.
+It's recommended to explicitly specify ``jsrun`` options and not rely on the
+default values. This most often includes ``--nrs``,\ ``--cpu_per_rs``,
+``--gpu_per_rs``, ``--tasks_per_rs``, ``--bind``, and ``--launch_distribution``.
 
 jsrun Examples
 ^^^^^^^^^^^^^^
