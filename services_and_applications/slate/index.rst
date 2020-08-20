@@ -16,6 +16,7 @@ Slate
    storage
    use_cases/index.rst
    access_olcf_resources/index.rst
+   other_resources.rst
    olcf_provided_applications/index.rst
    troubleshooting/index.rst
    examples
