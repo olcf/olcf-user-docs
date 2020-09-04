@@ -12,6 +12,7 @@ The table below lists presentations given at previous OLCF training events. For 
 .. csv-table::
    :header: "Date", "Title", "Speaker", "Event", "Presentation"
 
+   "2020-08-18", "GPU Performance Analysis", "Bob Crovella (NVIDIA)", `GPU Performance Analysis <https://www.olcf.ornl.gov/calendar/gpu-performance-analysis/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2020/04/08_GPU_Performance_Analysis.pdf>`__ | `recording <https://vimeo.com/454873041>`__)
    "2020-07-28", "TAU Performance Analysis", "Sameer Shende", `TAU Performance Analysis <https://www.olcf.ornl.gov/calendar/tau-performance-analysis-training/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2020/02/tau_ornl20.pdf>`__ | `recording <https://vimeo.com/442482720>`__)
    "2020-07-21", "CUDA Concurrency", "Bob Crovella (NVIDIA)", `CUDA Concurrency <https://www.olcf.ornl.gov/calendar/cuda-concurrency/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2020/07/07_Concurrency.pdf>`__ | `recording <https://vimeo.com/442361242>`__)
    "2020-06-23", "Loop Optimizations with OpenACC", "Robbie Searles (NVIDIA)", `Loop Optimizations with OpenACC <https://www.olcf.ornl.gov/calendar/loop-optimizations-with-openacc/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2020/06/OpenACC_Course_2020_Module_3_updated.pdf>`__ | `recording <https://vimeo.com/431954101>`__)
