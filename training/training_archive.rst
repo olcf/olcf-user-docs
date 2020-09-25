@@ -12,6 +12,7 @@ The table below lists presentations given at previous OLCF training events. For 
 .. csv-table::
    :header: "Date", "Title", "Speaker", "Event", "Presentation"
 
+   "2020-09-17", "CUDA Cooperative Groups", "Bob Crovella (NVIDIA)", `CUDA Cooperative Groups <https://www.olcf.ornl.gov/calendar/cuda-cooperative-groups/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2020/06/09_Cooperative_Groups.pdf>`__ | `recording <https://vimeo.com/461821629>`__)
    "2020-08-18", "GPU Performance Analysis", "Bob Crovella (NVIDIA)", `GPU Performance Analysis <https://www.olcf.ornl.gov/calendar/gpu-performance-analysis/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2020/04/08_GPU_Performance_Analysis.pdf>`__ | `recording <https://vimeo.com/454873041>`__)
    "2020-07-28", "TAU Performance Analysis", "Sameer Shende", `TAU Performance Analysis <https://www.olcf.ornl.gov/calendar/tau-performance-analysis-training/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2020/02/tau_ornl20.pdf>`__ | `recording <https://vimeo.com/442482720>`__)
    "2020-07-21", "CUDA Concurrency", "Bob Crovella (NVIDIA)", `CUDA Concurrency <https://www.olcf.ornl.gov/calendar/cuda-concurrency/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2020/07/07_Concurrency.pdf>`__ | `recording <https://vimeo.com/442361242>`__)
