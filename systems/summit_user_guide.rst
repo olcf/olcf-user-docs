@@ -1943,7 +1943,7 @@ Jobs may use all 54 nodes. It enforces the following policies:
 +-------------+-------------+------------------------+
 | Min Nodes   | Max Nodes   | Max Walltime (Hours)   |
 +=============+=============+========================+
-| 1           | 54          | 6.0                    |
+| 1           | 54          | 24.0                    |
 +-------------+-------------+------------------------+
 
 To submit a job to the ``batch-hm`` queue, add the ``-q batch-hm`` option to your
