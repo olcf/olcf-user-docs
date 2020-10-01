@@ -8,7 +8,6 @@ Systems
    :maxdepth: 2
 
    summit_user_guide
-   summitdev_user_guide
    rhea_user_guide
    home_user_guide
    dtn_user_guide
