@@ -821,7 +821,7 @@ filesystem.
 .. figure:: /images/nvme_arch.jpg
    :align: center
 
-   The NVMes on Summitdev are local to each node.
+   The NVMes on Summit are local to each node.
 
 Current NVMe Usage
 -------------------
