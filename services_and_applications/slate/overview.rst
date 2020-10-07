@@ -10,19 +10,27 @@ together.
 What is Slate?
 --------------
 
-*Slate* provides container orchestration services that support a user project's
-existing Summit and Alpine allocations. The Slate service today consists two
-user facing OpenShift clusters which each provide capabilities unique to the
-security enclave that they are in.
+Built on Kubernetes and OpenShift, *Slate* provides a container orchestration service for running user-managed
+persistent application services that do not fit into a batch job. It supports all containerized services with
+Kubernetes. The *Slate* service today consists two user facing OpenShift clusters in different security enclaves.
 
-| **There is one OpenShift cluster in each OLCF 
-  enclave, Moderate and Open, listed below:**.
-| - **Marble** (Moderate Enclave)
-| - **Onyx** (Open Enclave)
+Marble Cluster
+==============
 
-Moderate is the enclave in which Summit (:ref:`summit-user-guide`) is
-accessible.  Open is the enclave in which :ref:`ascent-user-guide` is
-accessible.
+Marble is in the Moderate security enclave and has access to Summit (:ref:`summit-user-guide`) and Alpine (GPFS)
+
+Marble is a heterogeneus cluster of 30 nodes with 10 Gigabit ethernet connectivity. Marble
+has a node pool of GPU nodes with 3x NVIDIA V100 each, a node pool with Infiniband connectivity
+to Summit and GPFS access, and a node pool of standard compute nodes.
+
+Onyx Cluster
+============
+
+Onyx is in the Open security enclave and has access to Ascent (:ref:`ascent-user-guide`) and Wolf (GPFS)
+
+Onyx is a heterogeneus cluster of 15 nodes with 10 Gigabit ethernet connectivity. Onyx has a
+node pool of ppc64le nodes and a node pool of standard compute nodes.
+
 
 What is Kubernetes?
 -------------------
@@ -31,8 +39,8 @@ management of containerized applications. It provides a rich API and workload
 primitives that allows users to manage the application deployments of long
 running services such as web servers and databases.
 
-
 `<https://kubernetes.io/>`_
+
 
 What is OpenShift?
 ------------------
