@@ -2520,7 +2520,7 @@ resource set is a cgroup.
 At a high level, a resource set allows users to configure what a node
 look like to their job.
 
-Jsrun will create one or more resource sets within a node. Each resource
+jsrun will create one or more resource sets within a node. Each resource
 set will contain 1 or more cores and 0 or more GPUs. A resource set can
 span sockets, but it may not span a node. While a resource set can span
 sockets within a node, consideration should be given to the cost of
