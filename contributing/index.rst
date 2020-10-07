@@ -37,7 +37,7 @@ Setup authoring environment
     $ git clone https://github.com/<your-github-id>/olcf-user-docs.git
 
 #. Point your master branch to track upstream::
-    
+
     $ cd olcf-user-docs
     $ git remote add olcf https://github.com/olcf/olcf-user-docs.git
     $ git fetch olcf
@@ -45,7 +45,7 @@ Setup authoring environment
 
 #. Build the docs::
 
-    $ cd olcf-user-docs && sphinx-build -E . _build
+    $ sphinx-build -E . _build
 
 #. Locally preview the generated web pages
 
@@ -54,7 +54,7 @@ Setup authoring environment
 
         $ busybox httpd -p 127.0.0.1:8080 -h /home/ubuntu/olcf-user-docs/_build
 
-   or a python webserver (from inside the document root)::
+   or a python webserver (from inside the document root, i.e., ``_build`` directory)::
 
         $ python3 -m http.server 8080
 
