@@ -1538,7 +1538,7 @@ When your :ref:`batch-scripts` or :ref:`interactive-jobs` run,
 the resulting shell will run on a launch node. Compute nodes are accessed
 via the ``jsrun`` command. The ``jsrun`` command should only be issued
 from within an LSF job (either batch or interactive) on a launch node.
-Othewise, you will not have any compute nodes allocated and your parallel
+Otherwise, you will not have any compute nodes allocated and your parallel
 job will run on the login node. If this happens, your job will interfere with
 (and be interfered with by) other users' login node tasks.
 
