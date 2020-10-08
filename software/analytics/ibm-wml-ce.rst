@@ -1,19 +1,21 @@
 
 *************************************************************************************
-IBM Watson Machine Learning CE
+IBM Watson Machine Learning CE -> Open CE 
 *************************************************************************************
 
 Getting Started
 ===============
 
 IBM Watson Machine Learning Community Edition is provided on Summit
-through the module ``ibm-wml-ce``.
+through the module ``ibm-wml-ce``, and after version ``1.7.0`` the 
+module is renamed to ``open-ce``, which is built based on the 
+`Open Cognitive Environment <https://github.com/open-ce/open-ce>`_.  
 
-To access the IBM WML CE packages use the ``module load`` command:
+To access latest analytics packages use the ``module load`` command:
 
 .. code-block:: bash
 
-    module load ibm-wml-ce
+    module load open-ce
 
 Loading a specific version of the module is recommended to future-proof
 scripts against software updates. The following commands can be used to
@@ -24,11 +26,18 @@ find and load specific module versions:
     [user@login2.summit ~]$ module avail ibm-wml-ce
 
     ------------------------- /sw/summit/modulefiles/core --------------------------
-    ibm-wml-ce/1.6.1-1    ibm-wml-ce/1.6.2-0    ibm-wml-ce/1.6.2-3
-    ibm-wml-ce/1.6.1-2    ibm-wml-ce/1.6.2-1    ibm-wml-ce/1.7.0-1 (D)
-    ibm-wml-ce/1.6.1-3    ibm-wml-ce/1.6.2-2
+    ibm-wml-ce/1.6.1-1    ibm-wml-ce/1.6.2-1    ibm-wml-ce/1.6.2-5    ibm-wml-ce/1.7.1.a0-0
+    ibm-wml-ce/1.6.1-2    ibm-wml-ce/1.6.2-2    ibm-wml-ce/1.7.0-1
+    ibm-wml-ce/1.6.1-3    ibm-wml-ce/1.6.2-3    ibm-wml-ce/1.7.0-2
+    ibm-wml-ce/1.6.2-0    ibm-wml-ce/1.6.2-4    ibm-wml-ce/1.7.0-3 (D)
     ...
-    [user@login2.summit ~]$ module load ibm-wml-ce/1.6.2-3
+    [user@login2.summit ~]$ module load ibm-wml-ce/1.7.0-3
+
+    [user@login2.summit ~]$ module avail open-ce
+    ------------------------- /sw/summit/modulefiles/core --------------------------
+    open-ce/0.1-0
+
+    [user@login2.summit ~]$ module load open-ce/0.1-0
 
 For more information on loading modules, including loading specific verions,
 see: :ref:`environment-management-with-lmod`
@@ -40,26 +49,28 @@ packages, and their dependencies:
     :widths: 20 40 40 35
 
     +--------------------+--------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------+
-    | IBM WML CE Version | ibm-wml-ce/1.6.1                                                                                                               | ibm-wml-ce/1.6.2                                                                                                                 | ibm-wml-ce/1.7.0                                                                                                                     |
+    | Environment        | ibm-wml-ce/1.6.1                                                                                                               | ibm-wml-ce/1.7.0                                                                                                                 | open-ce/0.1                                                                                                                          |
     +--------------------+--------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------+
-    | Package            | `IBM DDL 1.4.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.1/navigation/wmlce_getstarted_ddl.html>`_               | `IBM DDL 1.5.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.2/navigation/wmlce_getstarted_ddl.html>`_                 | `IBM DDL 1.5.1 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.7.0/navigation/wmlce_getstarted_ddl.html>`_                     |
+    | Package            | `IBM DDL 1.5.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.2/navigation/wmlce_getstarted_ddl.html>`_               | `IBM DDL 1.5.1 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.7.0/navigation/wmlce_getstarted_ddl.html>`_                 |                                                                                                                                      |
     |                    +--------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------+
-    |                    | `Tensorflow 1.14 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.1/navigation/wmlce_getstarted_tensorflow.html>`_      | `Tensorflow 1.15 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.2/navigation/wmlce_getstarted_tensorflow.html>`_        | `Tensorflow 2.1 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.7.0/navigation/wmlce_getstarted_tensorflow.html>`_             |
+    |                    | `Tensorflow 1.15 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.2/navigation/wmlce_getstarted_tensorflow.html>`_      | `Tensorflow 2.1  <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.7.0/navigation/wmlce_getstarted_tensorflow.html>`_        | `Tensorflow 2.3 <https://github.com/open-ce/tensorflow-feedstock>`_                                                                  |
     |                    +--------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------+
-    |                    | `Pytorch 1.1.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.1/navigation/wmlce_getstarted_pytorch.html>`_           | `Pytorch 1.2.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.2/navigation/wmlce_getstarted_pytorch.html>`_             | `Pytorch 1.3.1 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.7.0/navigation/wmlce_getstarted_pytorch.html>`_                 |
+    |                    | `Pytorch 1.2.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.2/navigation/wmlce_getstarted_pytorch.html>`_           | `Pytorch 1.3.1 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.7.0/navigation/wmlce_getstarted_pytorch.html>`_             | `Pytorch 1.6.0 <https://github.com/open-ce/pytorch-feedstock>`_                                                                      |
     |                    +--------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------+
-    |                    | `Caffe(IBM-enhanced) 1.0.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.1/navigation/wmlce_getstarted_caffe.html>`_ | `Caffe (IBM-enhanced) 1.0.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.2/navigation/wmlce_getstarted_caffe.html>`__ | `Caffe (IBM-enhanced) 1.0.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.7.0/navigation/wmlce_getstarted_caffe.html>`__     |
+    |                    | `Caffe(IBM-enhanced) 1.0.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.1/navigation/wmlce_getstarted_caffe.html>`_ | `Caffe (IBM-enhanced) 1.0.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.2/navigation/wmlce_getstarted_caffe.html>`__ |                                                                                                                                      |
     |                    +--------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------+
-    |                    | `Horovod @9f87459 (IBM-DDL Backend) <https://github.com/horovod/horovod>`_                                                     | `Horovod v0.18.2 (IBM-DDL Backend) <https://github.com/horovod/horovod>`_                                                        | `Horovod v0.19 (NCCL Backend) <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.7.0/navigation/wmlce_getstarted_horovod.html>`_  |
+    |                    | `Horovod v0.18.2 (IBM-DDL Backend)  <https://github.com/horovod/horovod>`_                                                     | `Horovod v0.19 (NCCL Backend) <https://github.com/horovod/horovod>`_                                                             | `Horovod v0.19.5 (NCCL Backend) <https://github.com/horovod/horovod>`_                                                               |
     +--------------------+--------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------+
-    | Complete List      | `1.6.1 Software Packages <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.1/navigation/wmlce_software_pkgs.html>`_      | `1.6.2 Software Packages <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.2/navigation/wmlce_software_pkgs.html>`_        | `1.7.0 Software Packages <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.7.0/navigation/wmlce_software_pkgs.html>`_            |
-    +--------------------+--------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------+
+    | Complete List      | `1.6.2 Software Packages <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.2/navigation/wmlce_software_pkgs.html>`_      | `1.7.0 Software Packages <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.7.0/navigation/wmlce_software_pkgs.html>`_        | `Open-CE Software Packages <https://github.com/open-ce>`_                                                                            |
+    +--------------------+--------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------+ 
+
+Comparing to IBM WML CE, `Open-CE <https://github.com/open-ce/open-ce>`_ no longer has ``IBM DDL``, ``Caffe(IBM-enhanced)``, ``IBM SnapML``, ``Nvidia Rapids`` packages, and TensorFlow and PyTorch are not compiled with IBM Large Model Support (LMS). For standalone Keras users, please ``pip install keras`` after ``module load open-ce``.     
 
 .. note::
 
-    WML-CE was the topic of the October 2019 User Conference Call, presented by
-    Bryant Nelson and Brad Nemanich of IBM.
-    (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/10/DDLonSummit.pdf>`__ | `recording <https://vimeo.com/377551223>`__)
+    | WML-CE on Summit (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/10/DDLonSummit.pdf>`__ | `recording <https://vimeo.com/377551223>`__) 
+    | Scaling up deep learning application on Summit (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/12/Scaling-DL-on-Summit.pdf>`__ | `recording <https://vimeo.com/391520479>`__) 
+    | ML/DL on Summit (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2020/02/MLDL-on-Summit-June2020.pdf>`__ | `recording <https://vimeo.com/427791205>`__)
 
 Running Distributed Deep Learning Jobs
 ================
@@ -100,11 +111,11 @@ training job across 2 nodes.
     #BSUB -W 0:10
     #BSUB -nnodes 2
     #BSUB -q batch
-    #BSUB -J ddl_test_job
+    #BSUB -J mldl_test_job
     #BSUB -o /ccs/home/<user>/job%J.out
     #BSUB -e /ccs/home/<user>/job%J.out
 
-    module load ibm-wml-ce
+    module load open-ce
 
     jsrun -bpacked:7 -g6 -a6 -c42 -r1 python $CONDA_PREFIX/horovod/examples/tensorflow2_synthetic_benchmark.py
 
@@ -123,9 +134,9 @@ For more information on ``jsrun`` please see:
 Setting up Custom Environments
 ==============================
 
-The IBM-WML-CE conda environment is read-only. Therefore, users
+The IBM-WML-CE and Open-CE conda environment are read-only. Therefore, users
 cannot install any additional packages that may be needed. If users need
-any additional conda or pip packages, they can clone the IBM-WML-CE
+any additional conda or pip packages, they can clone the IBM-WML-CE or Open-CE
 conda environment into their home directory and then add any packages they
 need.
 
@@ -163,12 +174,12 @@ Performance Profiling
 
 There are several tools that can be used to profile the performance of a
 deep learning job. Below are links to several tools that are available
-as part of the ibm-wml-ce module.
+as part of the ibm-wml-ce and open-ce module.
 
 NVIDIA Profiling Tools
 ^^^^^^^^^^^^^^^^^^^^^^
 
-The ibm-wml-ce module contains the nvprof profiling tool. It can be used to
+The ibm-wml-ce and open-ce module contains the nvprof profiling tool. It can be used to
 profile work that is running on GPUs. It will give information about when
 different CUDA kernels are being launched and how long they take to complete.
 For more information on using the NVIDA profiling tools on Summit, please see
