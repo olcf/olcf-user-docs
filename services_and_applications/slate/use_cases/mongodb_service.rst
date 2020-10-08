@@ -40,7 +40,7 @@ service in order to provide well-known DNS identifiers.
      selector:
        app: mongo
    ---
-   apiVersion: apps/v1beta1
+   apiVersion: apps/v1
    kind: StatefulSet
    metadata:
      name: mongo
@@ -78,6 +78,9 @@ service in order to provide well-known DNS identifiers.
          resources:
            requests:
              storage: 1Gi
+
+.. note::
+   You should replace the value under ``MONGO_INITDB_ROOT_PASSWORD`` with something other than ``password``, such as with a randomly generated password for this purpose (just be sure to save this file and the password). While the service will not be accessible outside NCCS, it is good practice to secure your data with a secure password.
 
 Create a file with the above contents and instantiate the objects in Kubernetes
 
@@ -161,15 +164,38 @@ that it creates a NodePort that we can access from outside of the cluster.
 
 In this example, the NodePort that was automatically assigned was 32093 which is routing traffic to 27017 on the Service.
 
+We will also need to add a network rule to allow ingress traffic.
+
+.. code-block:: yaml
+
+   kind: NetworkPolicy
+   apiVersion: networking.k8s.io/v1
+   metadata:
+     name: mongo-allow-external
+   spec:
+     podSelector:
+       matchLabels:
+         app: mongo
+     ingress:
+       - {}
+     policyTypes:
+       - Ingress
+
+Create a file with the above contents and apply the network policy:
+
+.. code-block:: text
+
+   oc apply -f networkpolicy.yaml
+
 We can now connect to the db from another host inside of NCCS:
 
 .. code-block:: text
 
-   mongo -u admin -p password <project>.<cluster>.ccs.ornl.gov:32093
+   mongo -u admin -p password apps.<cluster>.ccs.ornl.gov:32093
 
-
-* **project** is the name of the project (e.g. stf001)
-* **cluster** is the Slate cluster
+* **cluster** is the Slate cluster (marble, onyx)
+* The port number should be the one listed from the ``service`` command listed above. It may differ from the example, so be sure to update accordingly.
+* Change the password to the randomly generated one you created during set up.
 
 Teardown
 ^^^^^^^^
