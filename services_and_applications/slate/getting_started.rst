@@ -39,9 +39,9 @@ able to reach it from your laptop on ORNL WiFi as well as the VPN).
 +-----------------------------------------------------------------------------+-------------------------------------------------------------------------------------+
 | Cluster                                                                     | URL                                                                                 |
 +=============================================================================+=====================================================================================+
-|  Marble (Moderate Production cluster with access to Summit/Alpine)          | `Marble Web Console <https://console-openshift-console.apps.marble.ccs.ornl.gov/>`_ |
+|  Marble (Moderate Production cluster with access to Summit/Alpine)          | `Marble Web Console - https://marble.ccs.ornl.gov <https://marble.ccs.ornl.gov/>`_  |
 +-----------------------------------------------------------------------------+-------------------------------------------------------------------------------------+
-|  Onyx   (Open Production Cluster with access to Wolf)                       | `Onyx Web Console <https://console-openshift-console.apps.onyx.ccs.ornl.gov/>`_     |
+|  Onyx   (Open Production Cluster with access to Wolf)                       | `Onyx Web Console - https://onyx.ccs.ornl.gov <https://onyx.ccs.ornl.gov/>`_        |
 +-----------------------------------------------------------------------------+-------------------------------------------------------------------------------------+
 
 Slate Namespaces
