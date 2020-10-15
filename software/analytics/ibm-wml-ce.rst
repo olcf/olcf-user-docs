@@ -7,11 +7,11 @@ Getting Started
 ===============
 
 IBM Watson Machine Learning Community Edition is provided on Summit
-through the module ``ibm-wml-ce``, and after version ``1.7.0`` the 
-module is renamed to ``open-ce``, which is built based on the 
+through the module ``ibm-wml-ce``, and after version ``1.7.0``, the 
+module has been renamed to ``open-ce``, which is built based on the 
 `Open Cognitive Environment <https://github.com/open-ce/open-ce>`_.  
 
-To access latest analytics packages use the ``module load`` command:
+To access the latest analytics packages use the ``module load`` command:
 
 .. code-block:: bash
 
@@ -64,7 +64,7 @@ packages, and their dependencies:
     | Complete List      | `1.6.2 Software Packages <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.2/navigation/wmlce_software_pkgs.html>`_      | `1.7.0 Software Packages <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.7.0/navigation/wmlce_software_pkgs.html>`_        | `Open-CE Software Packages <https://github.com/open-ce>`_                                                                            |
     +--------------------+--------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------+ 
 
-Comparing to IBM WML CE, `Open-CE <https://github.com/open-ce/open-ce>`_ no longer has ``IBM DDL``, ``Caffe(IBM-enhanced)``, ``IBM SnapML``, ``Nvidia Rapids`` packages, and TensorFlow and PyTorch are not compiled with IBM Large Model Support (LMS). For standalone Keras users, please ``pip install keras`` after ``module load open-ce``.     
+Comparing to IBM WML CE, `Open-CE <https://github.com/open-ce/open-ce>`_ no longer has ``IBM DDL``, ``Caffe(IBM-enhanced)``, ``IBM SnapML``, ``Nvidia Rapids, Apex`` packages, and TensorFlow and PyTorch are not compiled with IBM Large Model Support (LMS). For standalone Keras users, please ``pip install keras`` after ``module load open-ce``.     
 
 .. note::
 
@@ -134,7 +134,7 @@ For more information on ``jsrun`` please see:
 Setting up Custom Environments
 ==============================
 
-The IBM-WML-CE and Open-CE conda environment are read-only. Therefore, users
+The IBM-WML-CE and Open-CE conda environments are read-only. Therefore, users
 cannot install any additional packages that may be needed. If users need
 any additional conda or pip packages, they can clone the IBM-WML-CE or Open-CE
 conda environment into their home directory and then add any packages they
@@ -174,12 +174,12 @@ Performance Profiling
 
 There are several tools that can be used to profile the performance of a
 deep learning job. Below are links to several tools that are available
-as part of the ibm-wml-ce and open-ce module.
+as part of the ibm-wml-ce and open-ce modules.
 
 NVIDIA Profiling Tools
 ^^^^^^^^^^^^^^^^^^^^^^
 
-The ibm-wml-ce and open-ce module contains the nvprof profiling tool. It can be used to
+The ibm-wml-ce and open-ce modules contain the nvprof profiling tool. It can be used to
 profile work that is running on GPUs. It will give information about when
 different CUDA kernels are being launched and how long they take to complete.
 For more information on using the NVIDA profiling tools on Summit, please see
