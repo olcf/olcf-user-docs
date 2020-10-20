@@ -39,7 +39,7 @@ Summit Nodes
 
 The basic building block of Summit is the IBM Power System AC922 node.
 Each of the approximately 4,600 compute nodes on Summit contains two IBM
-POWER9 processors and six `NVIDIA Volta V100`_ accelerators and provides
+POWER9 processors and six `NVIDIA Tesla V100`_ accelerators and provides
 a theoretical double-precision capability of
 approximately 40 TF. Each POWER9 processor is connected via dual NVLINK
 bricks, each capable of a 25GB/s transfer rate in each direction.
@@ -147,636 +147,26 @@ assigned to the physical core. Regardless of the SMT mode used, the four
 slices share the physical core’s L1 instruction & data caches.
 https://vimeo.com/283756938
 
-.. _nvidia-v100-gpus:
-.. _NVIDIA Volta V100:
 
-NVIDIA V100 GPUs
-================
+.. _gpus:
 
-The NVIDIA Tesla V100 accelerator has a peak performance of 7.8 TFLOP/s
-(double-precision) and contributes to a majority of the computational
-work performed on Summit. Each V100 contains 80 streaming
-multiprocessors (SMs), 16 GB (32 GB on high-memory nodes) of high-bandwidth
-memory (HBM2), and a 6 MB L2 cache that is available to the SMs. The
-GigaThread Engine is responsible for distributing work among the SMs and
-(8) 512-bit memory controllers control access to the 16 GB (32 GB on
-high-memory nodes) of HBM2 memory. The V100 uses NVIDIA's NVLink interconnect
-to pass data between GPUs as well as from CPU-to-GPU.
-
-.. image:: /images/GV100_FullChip_Diagram_FINAL2_a.png
-   :align: center
-
-NVIDIA V100 SM
---------------
-
-Each SM on the V100 contains 32 FP64 (double-precision) cores, 64 FP32
-(single-precision) cores, 64 INT32 cores, and 8 tensor cores. A 128-KB
-combined memory block for shared memory and L1 cache can be configured
-to allow up to 96 KB of shared memory. In addition, each SM has 4
-texture units which use the (configured size of the) L1 cache.
-
-.. image:: /images/GV100_SM_Diagram-FINAL2.png
-   :align: center
-
-HBM2
+GPUs
 ----
 
-Each V100 has access to 16 GB (32GB for high-memory nodes) of
-high-bandwidth memory (HBM2), which can be accessed at speeds of 
-up to 900 GB/s. Access to this memory is controlled by (8) 512-bit
-memory controllers, and all accesses to the high-bandwidth memory
-go through the 6 MB L2 cache.
+Each Summit Compute node has 6 NVIDIA V100 GPUs.  The NVIDIA Tesla V100
+accelerator has a peak performance of 7.8 TFLOP/s (double-precision) and
+contributes to a majority of the computational work performed on Summit. Each
+V100 contains 80 streaming multiprocessors (SMs), 16 GB (32 GB on high-memory
+nodes) of high-bandwidth memory (HBM2), and a 6 MB L2 cache that is available to
+the SMs. The GigaThread Engine is responsible for distributing work among the
+SMs and (8) 512-bit memory controllers control access to the 16 GB (32 GB on
+high-memory nodes) of HBM2 memory. The V100 uses NVIDIA's NVLink interconnect
+to pass data between GPUs as well as from CPU-to-GPU. We provide a more in-depth
+look into the `NVIDIA Tesla V100`_ later in the Summit Guide.
 
-NVIDIA NVLink
--------------
 
-The processors within a node are connected by NVIDIA's NVLink
-interconnect. Each link has a peak bandwidth of 25 GB/s (in each
-direction), and since there are 2 links between processors, data can be
-transferred from GPU-to-GPU and CPU-to-GPU at a peak rate of 50 GB/s.
 
-.. note::
-    The 50-GB/s peak bandwidth stated above is for data transfers
-    in a single direction. However, this bandwidth can be achieved in both
-    directions simultaneously, giving a peak "bi-directional" bandwidth of
-    100 GB/s between processors.
 
-The figure below shows a schematic of the NVLink connections between the
-CPU and GPUs on a single socket of a Summit node.
-
-.. image:: /images/NVLink2.png
-   :align: center
-
-Volta Multi-Process Service
----------------------------
-
-When a CUDA program begins, each MPI rank creates a separate CUDA
-context on the GPU, but the scheduler on the GPU only allows one CUDA
-context (and so one MPI rank) at a time to launch on the GPU. This means
-that multiple MPI ranks can share access to the same GPU, but each rank
-gets exclusive access while the other ranks wait (time-slicing). This
-can cause the GPU to become underutilized if a rank (that has exclusive
-access) does not perform enough work to saturate the resources of the
-GPU. The following figure depicts such time-sliced access to a pre-Volta
-GPU.
-
-.. image:: /images/nv_mps_1.png
-   :align: center
-
-The Multi-Process Service (MPS) enables multiple processes (e.g. MPI ranks) to
-*concurrently* share the resources on a single GPU. This is accomplished by
-starting an MPS server process, which funnels the work from multiple CUDA
-contexts (e.g. from multiple MPI ranks) into a single CUDA context. In some
-cases, this can increase performance due to better utilization of the resources.
-The figure below illustrates MPS on a pre-Volta GPU.
-
-.. image:: /images/nv_mps_2.png
-   :width: 65.0%
-   :align: center
-
-Volta GPUs improve MPS with new capabilities. For instance, each Volta
-MPS client (MPI rank) is assigned a "subcontext" that has its own GPU
-address space, instead of sharing the address space with other clients.
-This isolation helps protect MPI ranks from out-of-range reads/writes
-performed by other ranks within CUDA kernels. Because each subcontext
-manages its own GPU resources, it can submit work directly to the GPU
-without the need to first pass through the MPS server. In addition,
-Volta GPUs support up to 48 MPS clients (up from 16 MPS clients on
-Pascal).
-
-.. image:: /images/nv_mps_3.png
-   :width: 65.0%
-   :align: center
-
-For more information, please see the following document from NVIDIA:
-https://docs.nvidia.com/deploy/pdf/CUDA_Multi_Process_Service_Overview.pdf
-
-Unified Memory
---------------
-
-Unified memory is a single virtual address space that is accessible to
-any processor in a system (within a node). This means that programmers
-only need to allocate a single unified-memory pointer (e.g. using
-cudaMallocManaged) that can be accessed by both the CPU and GPU, instead
-of requiring separate allocations for each processor. This "managed
-memory" is automatically migrated to the accessing processor, which
-eliminates the need for explicit data transfers.
-
-.. image:: /images/nv_um_1.png
-   :width: 60.0%
-   :align: center
-
-On Pascal-generation GPUs and later, this automatic migration is
-enhanced with hardware support. A page migration engine enables GPU page
-faulting, which allows the desired pages to be migrated to the GPU "on
-demand" instead of the entire "managed" allocation. In addition, 49-bit
-virtual addressing allows programs using unified memory to access the
-full system memory size. The combination of GPU page faulting and larger
-virtual addressing allows programs to oversubscribe the system memory,
-so very large data sets can be processed. In addition, new CUDA API
-functions introduced in CUDA8 allow users to fine tune the use of
-unified memory.
-
-Unified memory is further improved on Volta GPUs through
-the use of access counters that can be used to automatically tune
-unified memory by determining where a page is most often accessed.
-
-For more information, please see the following section of NVIDIA's
-CUDA Programming Guide:
-http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#um-unified-memory-programming-hd
-
-Independent Thread Scheduling
------------------------------
-
-The V100 supports independent thread scheduling, which allows threads to
-synchronize and cooperate at sub-warp scales. Pre-Volta GPUs implemented
-warps (groups of 32 threads which execute instructions in
-single-instruction, multiple thread - SIMT - mode) with a single call
-stack and program counter for a warp as a whole.
-
-.. image:: /images/nv_ind_threads_1.png
-   :align: center
-
-Within a warp, a mask is used to specify which threads are currently
-active when divergent branches of code are encountered. The (active)
-threads within each branch execute their statements serially before
-threads in the next branch execute theirs. This means that programs on
-pre-Volta GPUs should avoid sub-warp synchronization; a sync point in
-the branches could cause a deadlock if all threads in a warp do not
-reach the synchronization point.
-
-.. image:: /images/nv_ind_threads_2.png
-   :align: center
-
-The Volta V100 introduces warp-level synchronization by implementing warps with
-a program counter and call stack for each individual thread (i.e.  independent
-thread scheduling).
-
-.. image:: /images/nv_ind_threads_3.png
-   :align: center
-
-This implementation allows threads to diverge and synchronize at the sub-warp
-level using the \_\_syncwarp() function. The independent thread scheduling
-enables the thread scheduler to stall execution of any thread, allowing other
-threads in the warp to execute different statements. This means that threads in
-one branch can stall at a sync point and wait for the threads in the other
-branch to reach their sync point.
-
-.. image:: /images/nv_ind_threads_4.png
-   :align: center
-
-For more information, please see the following section of NVIDIA's CUDA
-Programming Guide:
-http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#independent-thread-scheduling-7-x
-
-Tensor Cores
-------------
-
-The Tesla V100 contains 640 tensor cores (8 per SM) intended to enable
-faster training of large neural networks. Each tensor core performs a
-``D = AB + C`` operation on 4x4 matrices. A and B are FP16 matrices,
-while C and D can be either FP16 or FP32:
-
-.. image:: /images/nv_tensor_core_1.png
-   :width: 85.0%
-   :align: center
-
-Each of the 16 elements that result from the AB matrix multiplication
-come from 4 floating-point fused-multiply-add (FMA) operations
-(basically a dot product between a row of A and a column of B). Each
-FP16 multiply yields a full-precision product which is accumulated in a
-FP32 result:
-
-.. image:: /images/nv_tc_1.png
-   :width: 85.0%
-   :align: center
-
-Each tensor core performs 64 of these FMA operations per clock. The 4x4
-matrix operations outlined here can be combined to perform matrix
-operations on larger (and higher dimensional) matrices.
-
-Using the Tensor Cores on Summit
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-The NVIDIA Tesla V100 GPUs in Summit are capable of over 7TF/s of
-double-precision and 15 TF/s of single-precision floating point performance.
-Additionally, the V100 is capable of over 120 TF/s of half-precision floating
-point performance when using its Tensor Core feature. The Tensor Cores are
-purpose-built accelerators for half-precision matrix multiplication operations.
-While they were designed especially to accelerate machine learning workflows,
-they are exposed through several other APIs that are useful to other HPC
-applications. This section provides information for using the V100 Tensor
-Cores.
-
-The V100 Tensor Cores perform a warp-synchronous multiply and accumulate of
-16-bit matrices in the form of D = A * B + C. The operands of this matrix
-multiplication are 16-bit A and B matrices, while the C and D accumulation
-matrices may be 16 or 32-bit matrices with comparable performance for either
-precision.
-
-.. image:: /images/nv_tc_2.png
-   :width: 85.0%
-   :align: center
-
-Half precision floating point representation has a dramatically lower range of
-numbers than Double or Single precision. Half precision representation consists
-of 1 sign bit, a 5-bit exponent, and a 10-bit mantissa. This results in a
-dynamic range of 5.96e-8 to 65,504
-
-Tensor Core Programming Models
-""""""""""""""""""""""""""""""
-
-This section details a variety of high and low-level Tensor Core programming
-models. Which programming model is appropriate to a given application is highly
-situational, so this document will present multiple programming models to allow
-the reader to evaluate each for their merits within the needs of the
-application.
-
-cuBLAS Library
-______________
-
-cuBLAS is NVIDIA’s implementation of the Basic Linear Algebra Subroutines
-library for GPUs. It contains not only the Level 1, 2, and 3 BLAS routines, but
-several extensions to these routines that add important capabilities to the
-library, such as the ability to batch operations and work with varying
-precisions.
-
-The cuBLAS libraries provides access to the TensorCores using 3 different
-routines, depending on the application needs. The `cublasHgemm
-<https://docs.nvidia.com/cuda/cublas/index.html#cublas-lt-t-gt-gemm>`_ routine
-performs a general matrix multiplication of half-precision matrices. The
-numerical operands to this routine must be of type half and math mode must be
-set to CUBLAS_TENSOR_OP_MATH to enable Tensor Core use. Additionally, if the
-`cublasSgemm
-<https://docs.nvidia.com/cuda/cublas/index.html#cublas-lt-t-gt-gemm>`_ routine
-will down-convert from single precision to half precision when the math mode is
-set to CUBLAS_TENSOR_OP_MATH, enabling simple conversion from SGEMM to HGEMM
-using Tensor Cores. For either of these two methods the `cublasSetMathMode
-<https://docs.nvidia.com/cuda/cublas/index.html#cublassetmathmode>`_ function
-must be used to change from CUBLAS_DEFAULT_MATH to CUBLAS_TENSOR_OP_MATH mode.
-
-cuBLAS provides a non-standard extension of GEMM with the `cublasGemmEx
-<https://docs.nvidia.com/cuda/cublas/index.html#cublas-GemmEx>`_ routine, which
-provides additional flexibility about the data types of the operands. In
-particular, the A, B, and C matrices can be of arbitrary and different types,
-with the types of each declared using the Atype, Btype, and Ctype parameters.
-The algo parameter works similar to the math mode above. If the math mode is
-set to CUBLAS_TESNOR_OP_MATH and the algo parameter is set to
-CUBLAS_GEMM_DEFAULT, then the Tensor Cores will be used. If algo is
-CUBLAS_GEMM_DEFAULT_TENSOR_OP or CUBLAS_GEMM_ALGO{0-15}_TENSOR_OP, then the
-Tensor Cores will be used regardless of the math setting. The table below
-outlines the rules stated in the past two paragraphs.
-
-+----------------------------------------------------------+------------------------------------+--------------------------------------+
-|                                                          | ``mathMode = CUBLAS_DEFAULT_MATH`` | ``mathMode = CUBLAS_TENSOR_OP_MATH`` |
-+==========================================================+====================================+======================================+
-| ``cublasHgemm, cublasSgemm, cublasGemmEx(algo=DEFAULT)`` | Disallowed                         | Allowed                              |
-+----------------------------------------------------------+------------------------------------+--------------------------------------+
-| ``cublasGemmEx(algo=*_TENSOR_OP)``                       | Allowed                            | Allowed                              |
-+----------------------------------------------------------+------------------------------------+--------------------------------------+
-
-
-When using any of these methods to access the Tensor Cores, the M, N, K, LDA,
-LDB, LDC, and A, B, and C pointers must all be aligned to 8 bytes due to the
-high bandwidth necessary to utilize the Tensor Cores effective.
-
-Many of the routines listed above are also available in batched form, see the
-`cuBLAS documentation <https://docs.nvidia.com/cuda/cublas/index.html>`_ for
-more information. Advanced users wishing to have increased control over the
-specifics of data layout, type, and underlying algorithms may wish to use the
-more advanced `cuBLAS-Lt interface
-<https://docs.nvidia.com/cuda/cublas/index.html#using-the-cublasLt-api>`_. This
-interface uses the same underlying GPU kernels, but provides developers with a
-higher degree of control.
-
-Iterative Refinement of Linear Solvers
-______________________________________
-
-Iterative Refinement is a technique for performing linear algebra solvers in a
-reduced precision, then iterating to improve the results and return them to
-full precision. This technique has been used for several years to use 32-bit
-math operations and achieve 64-bit results, which often results in a speed-up
-due to single precision math often have a 2X performance advantage on modern
-CPUs and many GPUs. NVIDIA and the University of Tennessee have been working to
-extend this technique to perform operations in half-precision and obtain higher
-precision results. One such place where this technique has been applied is in
-calculating an LU factorization of the linear system Ax = B. This operation is
-dominated by a matrix multiplication operation, which is illustrated in green
-in the image below. It is possible to perform the GEMM operations at a reduced
-precision, while leaving the panel and trailing matrices in a higher precision.
-This technique allows for the majority of the math operations to be done at the
-higher FP16 throughput. The matrix used in the GEMM is generally not square,
-which is often the best performing GEMM operation, but is referred to as rank-k
-and generally still very fast when using matrix multiplication libraries.
-
-.. image:: /images/nv_tc_3.png
-   :width: 85.0%
-   :align: center
-
-A summary of the algorithm used for calculating in mixed precision is in the
-following image.
-
-.. image:: /images/nv_tc_4.png
-   :width: 85.0%
-   :align: center
-
-We see in the graph below that it is possible to achieved a 3-4X performance
-improvement over the double-precision solver, while achieving the same level of
-accuracy. It has also been observed that the use of Tensor Cores makes the
-problem more likely to converge than strict half-precision GEMMs due to the
-ability to accumulate into 32-bit results.
-
-.. image:: /images/nv_tc_5.png
-   :width: 85.0%
-   :align: center
-
-NVIDIA will be shipping official support for IR solvers in their cuSOLVER
-library in the latter half of 2019. The image below provides estimated release
-dates, which are subject to change.
-
-.. image:: /images/nv_tc_6.png
-   :width: 85.0%
-   :align: center
-
-Automatic Mixed Precision (AMP) in Machine Learning Frameworks
-______________________________________________________________
-
-NVIDIA has a Training With Mixed Precision guide available for developers
-wishing to explicitly use mixed precision and Tensor Cores in their training of
-neural networks. This is a good place to start when investigating Tensor Cores
-for machine learning applications. Developers should specifically read the
-Optimizing For Tensor Cores section.
-
-NVIDIA has also integrated a technology called Automatic Mixed Precision (AMP)
-into several common frameworks, TensorFlow, PyTorch, and MXNet at time of
-writing. In most cases AMP can be enabled via a small code change or via
-setting and environment variable. AMP does not strictly replace all matrix
-multiplication operations with half precision, but uses graph optimization
-techniques to determine whether a given layer is best run in full or half
-precision.
-
-Examples are provided for using AMP, but the following sections summarize the
-usage in the three supported frameworks.
-
-TensorFlow
-..........
-
-With TensorFlow AMP can be enabled using one of the following techniques.
-
-::
-
-  os.environ['TF_ENABLE_AUTO_MIXED_PRECISION'] = '1'
-
-OR
-
-::
-
-  export TF_ENABLE_AUTO_MIXED_PRECISION=1
-
-Explicit optimizer wrapper available in NVIDIA Container 19.07+, TF 1.14+, TF
-2.0:
-
-::
-
-  opt = tf.train.experimental.enable_mixed_precision_graph_rewrite(opt)
-
-
-PyTorch
-.......
-
-Adding the following to a PyTorch model will enable AMP:
-
-::
-
-  model, optimizer = amp.initialize(model, optimizer, opt_level="O1")
-  with amp.scale_loss(loss, optimizer) as scaled_loss:
-    scaled_loss.backward()
-
-MXNet
-.....
-
-The code below will enable AMP for MXNet:
-
-::
-
-  amp.init()
-  amp.init_trainer(trainer)
-  with amp.scale_loss(loss, trainer) as scaled_loss:
-    autograd.backward(scaled_loss)
-
-
-WMMA
-____
-
-The Warp Matrix Multiply and Accumulate (WMMA) API was introduced in CUDA 9
-explicitly for programming the Tesla V100 Tensor Cores. This is a low-level API
-that supports loading matrix data into fragments within the threads of a warp,
-applying a Tensor Core multiplication on that data, and then restoring it to
-the main GPU memory. This API is called within CUDA kernels and all WMMA
-operations are warp-synchronous, meaning the threads in a warp will leave the
-operation synchronously. Examples are available for using the WMMA instructions
-in C++ and CUDA Fortran. The image below demonstrates the general pattern for
-WMMA usage.
-
-.. image:: /images/nv_tc_7.png
-   :width: 85.0%
-   :align: center
-
-The example above performs a 16-bit accumulate operation, but 32-bit is also
-supported. Please see the provided samples and the `WMMA documentation
-<https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#wmma>`_ for
-more details.
-
-CUDA 10 introduced a lower-level alternative to WMMA with the mma.sync()
-instruction. This is a very low-level instruction that requires the programmer
-handle the data movement provided by WMMA explicitly, but is capable of higher
-performance. Details of `mma.sync
-<https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#warp-level-matrix-instructions-wmma-mma>`_
-can be found in the PTX documentation and examples for using this feature via
-CUTLASS cane be found in the second half of this `GTC presentation
-<https://on-demand-gtc.gputechconf.com/gtcnew/sessionview.php?sessionName=s9593-cutensor%3a+high-performance+tensor+operations+in+cuda>`_.
-
-CUTLASS
-_______
-
-`CUTLASS <https://github.com/nvidia/cutlass/>`_ is an open-source library
-provided by NVIDIA for building matrix multiplication operations using C++
-templates. The goal is to provide performance that is nearly as good as the
-hand-tuned cuBLAS library, but in a more expressive, composible manner.
-
-The CUTLASS library provides a variety of primitives that are optimized for
-proper data layout and movement to achieve the maximum possible performance of
-a matrix multiplation on an NVIDIA GPU. These include iterators for blocking,
-loading, and storing matrix tiles, plus optimized classes for transforming the
-data and performing the actual multiplication. CUTLASS provides `extensive
-documentation <https://github.com/NVIDIA/cutlass/blob/master/CUTLASS.md>`_ of
-these features and examples have been provided. Interested developers are also
-encouraged to watch the `CUTLASS introduction video
-<https://on-demand-gtc.gputechconf.com/gtcnew/sessionview.php?sessionName=s8854-cutlass%3a+software+primitives+for+dense+linear+algebra+at+all+levels+and+scales+within+cuda>`_
-from GTC2018.
-
-Measuring Tensor Core Utilization
-"""""""""""""""""""""""""""""""""
-
-When attempting to use Tensor Cores it is useful to measure and confirm that
-the Tensor Cores are being used within your code. For implicit use via a
-library like cuBLAS, the Tensor Cores will only be used above a certain
-threshold, so Tensor Core use should not be assumed. The NVIDIA Tools provide a
-performance metric to measure Tensor Core utilization on a scale from 0 (Idle)
-to 10 (Max) utilization.
-
-When using NVIDIA’s nvprof profiler, one should add the `-m
-tensor_precision_fu_utilization` option to measure Tensor Core utilization.
-Below is the output from measuring this metric on one of the example programs.
-
-::
-
-  $ nvprof -m tensor_precision_fu_utilization ./simpleCUBLAS
-  ==43727== NVPROF is profiling process 43727, command: ./simpleCUBLAS
-  GPU Device 0: "Tesla V100-SXM2-16GB" with compute capability 7.0
-
-  simpleCUBLAS test running..
-  simpleCUBLAS test passed.
-  ==43727== Profiling application: ./simpleCUBLAS
-  ==43727== Profiling result:
-  ==43727== Metric result:
-  Invocations                               Metric Name                           Metric Description         Min         Max         Avg
-  Device "Tesla V100-SXM2-16GB (0)"
-      Kernel: volta_h884gemm_128x64_ldg8_nn
-            1           tensor_precision_fu_utilization   Tensor-Precision Function Unit Utilization     Low (3)     Low (3)     Low (3)
-
-
-NVIDIA’s Nsight Compute may also be used to measure tensor core utilization via
-the sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_active metric, as
-follows:
-
-::
-
-  $ nv-nsight-cu-cli --metrics sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_active ./cudaTensorCoreGemm
-
-  [  compute_gemm, 2019-Aug-08 12:48:39, Context 1, Stream 7
-        Section: Command line profiler metrics
-        ---------------------------------------------------------------------- 
-        sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_active                    %                       43.44
-        ----------------------------------------------------------------------
-
-
-When to Try Tensor Cores
-""""""""""""""""""""""""
-
-Tensor Cores provide the potential for an enormous performance boost over
-full-precision operations, but when their use is appropriate is highly
-application and even problem independent. Iterative Refinement techniques can
-suffer from slow or possible a complete lack of convergence if the condition
-number of the matrix is very large. By using Tensor Cores, which support 32-bit
-accumulation, rather than strict 16-bit math operations, iterative refinement
-becomes a viable option in a much larger number of cases, so it should be
-attempted when an application is already using a supported solver.
-
-Even if iterative techniques are not available for an application, direct use
-of Tensor Cores may be beneficial if at least the A and B matrices can be
-constructed from the input data without significant loss of precision. Since
-the C and D matrices may be 32-bit, the output may have a higher degree of
-precision than the input. It may be possible to try these operations
-automatically by setting the math mode in cuBLAS, as detailed above, to
-determine whether the loss of precision is an acceptable trade-off for
-increased performance in a given application. If it is, the cublasGemmEx API
-allows the programmer to control when the conversion to 16-bit occurs, which
-may result in higher throughput than allowing the cuBLAS library to do the
-conversion at call time.
-
-Some non-traditional uses of Tensor Cores can come from places where integers
-that fall within the FP16 range are used in an application. For instance, in
-“Attacking the Opioid Epidemic: Determining the Epistatic and Pleiotropic
-Genetic Architectures for Chronic Pain and Opioid Addiction,” a 2018 Gordon
-Bell Prize-winning paper, the authors used Tensor Cores in place of small
-integers, allowing them very high performance over performing the same
-calculation in integer space. This technique is certainly not applicable to all
-applications, but does show that Tensor Cores may be used in algorithms that
-might not have been represented by a floating point matrix multiplication
-otherwise.
-
-Lastly, when performing the training step of a deep learning application it is
-often beneficial to do at least some of the layer calculations in reduced
-precision. The AMP technique described above can be tried with little to know
-code changes, making it highly advisable to attempt in any machine learning
-application.
-
-Tensor Core Examples and Other Materials
-""""""""""""""""""""""""""""""""""""""""
-
-NVIDIA has provided several example codes for using Tensor Cores from a variety
-of the APIs listed above. These examples can be found on `GitHub
-<https://github.com/olcf/NVIDIA-tensor-core-examples>`_.
-
-NVIDIA Tensor Core Workshop (August 2018): `slides
-<https://www.olcf.ornl.gov/wp-content/uploads/2019/11/ORNL_Tensor_Core_Training_Aug2019.pdf>`_,
-recording (coming soon)
-
-
-Tesla V100 Specifications
--------------------------
-
-+----------------------------------------------------+----------------------------+
-| Compute Capability                                 | 7.0                        |
-+----------------------------------------------------+----------------------------+
-| Peak double precision floating point performance   | 7.8 TFLOP/s                |
-+----------------------------------------------------+----------------------------+
-| Peak single precision floating point performance   | 15.7 TFLOP/s               |
-+----------------------------------------------------+----------------------------+
-| Single precision CUDA cores                        | 5120                       |
-+----------------------------------------------------+----------------------------+
-| Double precision CUDA cores                        | 2560                       |
-+----------------------------------------------------+----------------------------+
-| Tensor cores                                       | 640                        |
-+----------------------------------------------------+----------------------------+
-| Clock frequency                                    | 1530 MHz                   |
-+----------------------------------------------------+----------------------------+
-| Memory Bandwidth                                   | 900 GB/s                   |
-+----------------------------------------------------+----------------------------+
-| Memory size (HBM2)                                 | 16 or 32 GB                |
-+----------------------------------------------------+----------------------------+
-| L2 cache                                           | 6 MB                       |
-+----------------------------------------------------+----------------------------+
-| Shared memory size / SM                            | Configurable up to 96 KB   |
-+----------------------------------------------------+----------------------------+
-| Constant memory                                    | 64 KB                      |
-+----------------------------------------------------+----------------------------+
-| Register File Size                                 | 256 KB (per SM)            |
-+----------------------------------------------------+----------------------------+
-| 32-bit Registers                                   | 65536 (per SM)             |
-+----------------------------------------------------+----------------------------+
-| Max registers per thread                           | 255                        |
-+----------------------------------------------------+----------------------------+
-| Number of multiprocessors (SMs)                    | 80                         |
-+----------------------------------------------------+----------------------------+
-| Warp size                                          | 32 threads                 |
-+----------------------------------------------------+----------------------------+
-| Maximum resident warps per SM                      | 64                         |
-+----------------------------------------------------+----------------------------+
-| Maximum resident blocks per SM                     | 32                         |
-+----------------------------------------------------+----------------------------+
-| Maximum resident threads per SM                    | 2048                       |
-+----------------------------------------------------+----------------------------+
-| Maximum threads per block                          | 1024                       |
-+----------------------------------------------------+----------------------------+
-| Maximum block dimensions                           | 1024, 1024, 64             |
-+----------------------------------------------------+----------------------------+
-| Maximum grid dimensions                            | 2147483647, 65535, 65535   |
-+----------------------------------------------------+----------------------------+
-| Maximum number of MPS clients                      | 48                         |
-+----------------------------------------------------+----------------------------+
-
- 
-
-Further Reading
----------------
-
-For more information on the NVIDIA Volta architecture, please visit the
-following (outside) links.
-
-* `NVIDIA Volta Architecture White Paper <http://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf>`_
-* `NVIDIA PARALLEL FORALL blog article <https://devblogs.nvidia.com/parallelforall/inside-volta/>`_
 
 .. _connecting:
 
@@ -797,268 +187,12 @@ Data and Storage
 For more information about center-wide file systems and data archiving available
 on Summit, please refer to the pages on :ref:`data-storage-and-transfers`.
 
-.. _burst-buffer:
-
-Burst Buffer
-=============
-
-NVMe (XFS)
-----------
-
 Each compute node on Summit has a 1.6TB \ **N**\ on-\ **V**\ olatile **Me**\
 mory (NVMe) storage device (high-memory nodes have a 6.4TB NVMe storage device), colloquially known as a "Burst Buffer" with
 theoretical performance peak of 2.1 GB/s for writing and 5.5 GB/s for reading.
-100GB of each NVMe is reserved for NFS cache to help speed access to common
-libraries. When calculating maximum usable storage size, this cache and
-formatting overhead should be considered; We recommend a maximum storage of
-1.4TB (6TB for high-memory nodes). The NVMes could be used to reduce the time that applications wait for
-I/O. Using an SSD drive per compute node, the burst buffer will be used to
-transfer data to or from the drive before the application reads a file or
-after it writes a file.  The result will be that the application benefits from
-native SSD performance for a portion of its I/O requests. Users are not
-required to use the NVMes.  Data can also be written directly to the parallel
-filesystem.
+The NVMes could be used to reduce the time that applications wait for
+I/O.  More information can be found later in the `Burst Buffer`_ section.
 
-.. figure:: /images/nvme_arch.jpg
-   :align: center
-
-   The NVMes on Summit are local to each node.
-
-Current NVMe Usage
--------------------
-
-Tools for using the burst buffers are still under development.  Currently, the
-user will have access to a writeable directory on each node's NVMe and then
-explicitly move data to and from the NVMes with posix commands during a job.
-This mode of usage only supports writing file-per-process or file-per-node.
-It does not support automatic "n to 1" file writing, writing from multiple nodes
-to a single file.  After a job completes the NVMes are trimmed, a process
-that irreversibly deletes data from the devices, so all desired data from the
-NVMes will need to be copied back to the parallel filesystem before the job
-ends. This largely manual mode of usage will not be the recommended way to use
-the burst buffer for most applications because tools are actively being
-developed to automate and improve the NVMe transfer and data management process.
-Here are the basic steps for using the BurstBuffers in their current limited
-mode of usage:
-
-
-#. Modify your application to write to /mnt/bb/$USER, a directory that will be
-   created on each NVMe.
-
-#. Modify either your application or your job submission script to copy the
-   desired data from /mnt/bb/$USER back to the parallel filesystem before the
-   job ends.
-
-#. Modify your job submission script to include the ``-alloc_flags NVME``  bsub
-   option. Then on each reserved Burst Buffer node will be available a directory
-   called /mnt/bb/$USER.
-
-#. Submit your bash script or run the application.
-
-#. Assemble the resulting data as needed.
-
-Interactive Jobs Using the NVMe
---------------------------------
-
-The NVMe can be setup for test usage within an interactive job as follows:
-
-.. code::
-
-    bsub -W 30 -nnodes 1 -alloc_flags "NVME" -P project123 -Is bash
-
-The ``-alloc_flags NVME`` option will create a directory called /mnt/bb/$USER on
-each requested node's NVMe. The ``/mnt/bb/$USER`` directories will be writeable
-and readable until the interactive job ends. Outside of a job ``/mnt/bb/`` will
-be empty and you will not be able to write to it.
-
-NVMe Usage Example
--------------------
-
-The following example illustrates how to use the burst buffers (NVMes) by
-default on Summit. This example uses a submission script, check_nvme.lsf. It is
-assumed that the files are saved in the user's GPFS scratch area,
-/gpfs/alpine/scratch/$USER/projid, and that the user is operating from there as
-well. Do not forget that for all the commands on NVMe, it is required to use
-jsrun. This will submit a job to run on one node.
-
-**Job submssion script: check_nvme.lsf.** 
-
-.. code::
-
-   #!/bin/bash
-   #BSUB -P project123
-   #BSUB -J name_test
-   #BSUB -o nvme_test.o%J
-   #BSUB -W 2
-   #BSUB -nnodes 1
-   #BSUB -alloc_flags NVME
-
-   #Declare your project in the variable
-   projid=xxxxx
-   cd /gpfs/alpine/scratch/$USER/$projid
-
-   #Save the hostname of the compute node in a file
-   jsrun -n 1 echo $HOSTNAME > test_file
-
-   #Check what files are saved on the NVMe, always use jsrun to access the NVMe devices
-   jsrun -n 1 ls -l /mnt/bb/$USER/
-
-   #Copy the test_file in your NVMe
-   jsrun -n 1 cp test_file /mnt/bb/$USER/
-
-   #Delete the test_file from your local space
-   rm test_file
-
-   #Check again what the NVMe folder contains
-   jsrun -n 1 ls -l /mnt/bb/$USER/
-
-   #Output of the test_file contents
-   jsrun -n 1 cat /mnt/bb/$USER/test_file
-
-   #Copy the file from the NVMe to your local space
-   jsrun -n 1 cp /mnt/bb/$USER/test_file .
-
-   #Check the file locally
-   ls -l test_file
-
-To run this example: ``bsub ./check_nvme.lsf``.   We could include all the
-commands in a script and call this file as a jsrun argument in an interactive
-job, in order to avoid changing numbers of processes for all the jsrun
-calls. You can see in the table below an example of the differences in a
-submission script for executing an application on GPFS and NVMe. In the example,
-a binary ``./btio`` reads input from an input file and generates output files.
-In this particular case we copy the binary and the input file onto the NVMe, but
-this depends on the application as it is not always necessary, we can execute
-the binary on the GPFS and write/read the data from NVMe if it is supported by
-the application.
-
-.. role:: raw-html(raw)
-    :format: html
-
-+----------------------------------------+------------------------------------------------+
-| *Using GPFS*          		 | *Using NVMe*         			  |
-+----------------------------------------+------------------------------------------------+
-|               	``#!/bin/bash``  | ``#!/bin/bash`` 	     			  |
-+----------------------------------------+------------------------------------------------+
-| 	 	       ``#BSUB -P xxx``  | ``#BSUB -P xxx``  		   	          |
-+----------------------------------------+------------------------------------------------+
-|	  	  ``#BSUB -J NAS-BTIO``  | ``#BSUB -J NAS-BTIO``  			  |
-+----------------------------------------+--------------+---------------------------------+
-|   	       ``#BSUB -o nasbtio.o%J``  | ``#BSUB -o nasbtio.o%J`` 	                  |
-+----------------------------------------+---------------+--------------------------------+
-|              ``#BSUB -e nasbtio.e%J``  | ``#BSUB -e nasbtio.e%J``   			  |
-+----------------------------------------+------------------------------------------------+
-|			``#BSUB -W 10``  | ``#BSUB -W 10``    		 	          |
-+----------------------------------------+------------------------------------------------+
-|	     ``#BSUB -nnodes 1``         | ``#BSUB -nnodes 1``  	 		  |
-+----------------------------------------+------------------------------------------------+
-| 		    			 | ``#BSUB -alloc_flags nvme`` 			  |
-|					 +------------------------------------------------+
-| 	            			 | ``export BBPATH=/mnt/bb/$USER/``		  |
-|					 +------------------------------------------------+
-| 		    			 | ``jsrun -n 1 cp btio ${BBPATH}``		  |
-|					 +------------------------------------------------+
-| 		    			 | ``jsrun -n 1 cp input* ${BBPATH}``		  |
-|					 +------------------------------------------------+
-| ``jsrun -n 1 -a 16 -c 16 -r 1 ./btio`` | ``jsrun -n 1 -a 16 -c 16 -r 1 ${BBPATH}/btio`` |
-|					 +------------------------------------------------+
-| ``ls -l``		`		 | ``jsrun -n 1 ls -l ${BBPATH}/``		  |
-|					 +------------------------------------------------+
-|					 | ``jsrun -n 1 cp ${BBPATH}/* .``		  |
-+----------------------------------------+------------------------------------------------+
-
-When a user occupies more than one compute node, then they are using more NVMes
-and the I/O can scale linearly. For example in the following plot you can observe
-the scalability of the IOR benchmark on 2048 compute nodes on Summit where the
-write performance achieves 4TB/s and the read 11.3 TB/s
-
-
-.. image:: /images/nvme_ior_summit.png
-   :align: center
-
-Remember that by default NVMe support one file per MPI process up to one file
-per compute node. If users desire a single file as output from data staged on
-the NVMe they will need to construct it.  Tools to save automatically checkpoint
-files from NVMe to GPFS as also methods that allow automatic n to 1 file writing
-with NVMe staging are under development.   Tutorials about NVME:   Burst Buffer
-on Summit (`slides
-<https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_BB_markomanolis.pdf>`__,
-`video <https://vimeo.com/306890779>`__) Summit Burst Buffer Libraries (`slides
-<https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_BB_zimmer.pdf>`__,
-`video <https://vimeo.com/306891012>`__). 
-
-.. _spectral-library:
-
-Spectral Library
-----------------
-
-Spectral is a portable and transparent middleware library to enable use of the
-node-local burst buffers for accelerated application output on Summit. It is
-used to transfer files from node-local NVMe back to the parallel GPFS file
-system without the need of the user to interact during the job execution.
-Spectral runs on the isolated core of each reserved node, so it does not occupy
-resources and based on some parameters the user could define which folder to be
-copied to the GPFS. In order to use Spectral, the user has to do the following
-steps in the submission script:
-
-#. Request Spectral resources instead of NVMe
-#. Declare the path where the files will be saved in the node-local NVMe
-   (PERSIST_DIR)
-#. Declare the path on GPFS where the files will be copied (PFS_DIR)
-#. Execute the script spectral_wait.py when the application is finished in order
-   to copy the files from NVMe to GPFS
-
-The following table shows the differences of executing an application on GPFS,
-NVMe, and NVMe with Spectral. This example is using one compute node. We copy
-the executable and input file for the NVMe cases but this is not always
-necessary. Depending on the application, you could execute the binary from the
-GPFS and save the output files on NVMe. Adjust your parameters to copy, if
-necessary, the executable and input files onto all the NVMe devices.
-
-+----------------------------------------+------------------------------------------------+------------------------------------------------+
-| *Using GPFS* 			         | *Using NVMe*                                   | *Using NVME with Spectral library*             |
-+----------------------------------------+------------------------------------------------+------------------------------------------------+
-| ``#!/bin/bash``		         | ``#!/bin/bash``                                | ``#!/bin/bash``                                |
-+----------------------------------------+------------------------------------------------+------------------------------------------------+
-| ``#BSUB -P xxx``		         | ``#BSUB -P xxx``                               | ``#BSUB -P xxx``                               |
-+----------------------------------------+------------------------------------------------+------------------------------------------------+
-| ``#BSUB -J NAS-BTIO``		         | ``#BSUB -J NAS-BTIO``                          | ``#BSUB -J NAS-BTIO``                          |
-+----------------------------------------+------------------------------------------------+------------------------------------------------+
-| ``#BSUB -o nasbtio.o%J``	         | ``#BSUB -o nasbtio.o%J``                       | ``#BSUB -o nasbtio.o%J``                       |
-+----------------------------------------+------------------------------------------------+------------------------------------------------+
-| ``#BSUB -e nasbtio.e%J``	         | ``#BSUB -e nasbtio.e%J``                       | ``#BSUB -e nasbtio.e%J``                       |
-+----------------------------------------+------------------------------------------------+------------------------------------------------+
-| ``#BSUB -W 10``		         | ``#BSUB -W 10``                                | ``#BSUB -W 10``                                |
-+----------------------------------------+------------------------------------------------+------------------------------------------------+
-| ``#BSUB -nnodes 1``		         | ``#BSUB -nnodes 1``                            | ``#BSUB -nnodes 1``                            |
-+----------------------------------------+------------------------------------------------+------------------------------------------------+
-| 				         | ``#BSUB -alloc_flags nvme``                    | ``#BSUB -alloc_flags spectral``                |
-+----------------------------------------+------------------------------------------------+------------------------------------------------+
-| 				         |                                                | ``module load spectral``                       |
-+----------------------------------------+------------------------------------------------+------------------------------------------------+
-| 				         | ``export BBPATH=/mnt/bb/$USER``                | ``export BBPATH=/mnt/bb/$USER``                |
-+----------------------------------------+------------------------------------------------+------------------------------------------------+
-| 				         |                                                | ``export PERSIST_DIR=${BBPATH}``               |
-+----------------------------------------+------------------------------------------------+------------------------------------------------+
-| 				         |                                                | ``export PFS_DIR=$PWD/spect/``                 |
-+----------------------------------------+------------------------------------------------+------------------------------------------------+
-| 				         | ``jsrun -n 1 cp btio ${BBPATH}``               | ``jsrun -n 1 cp btio ${BBPATH}``               |
-+----------------------------------------+------------------------------------------------+------------------------------------------------+
-| 				         | ``jsrun -n 1 cp input* ${BBPATH}``             | ``jsrun -n 1 cp input* ${BBPATH}``             |
-+----------------------------------------+------------------------------------------------+------------------------------------------------+
-| ``jsrun -n 1 -a 16 -c 16 -r 1 ./btio`` | ``jsrun -n 1 -a 16 -c 16 -r 1 ${BBPATH}/btio`` | ``jsrun -n 1 -a 16 -c 16 -r 1 ${BBPATH}/btio`` |
-+----------------------------------------+------------------------------------------------+------------------------------------------------+
-| ``ls -l``			         | ``jsrun -n 1 ls -l ${BBPATH}/``	          | ``jsrun -n 1 ls -l ${BBPATH}/``	           |
-+----------------------------------------+------------------------------------------------+------------------------------------------------+
-| 				         | ``jsrun -n 1 cp ${BBPATH}/* .``                | ``spectral_wait.py``                           |
-+----------------------------------------+------------------------------------------------+------------------------------------------------+
-
-
-When the Spectral library is not used, any output data produced has to be copied
-back from NVMe.  You can observe that with the Spectral library there is no reason
-to explicitly ask for the data to be copied to GPFS as it is done automatically
-through the spectral_wait.py script. Also a log file called spectral.log will be
-created with information on the files that were copied.
 
 
 .. _software:
@@ -1541,7 +675,8 @@ via the ``jsrun`` command. The ``jsrun`` command should only be issued
 from within an LSF job (either batch or interactive) on a launch node.
 Otherwise, you will not have any compute nodes allocated and your parallel
 job will run on the login node. If this happens, your job will interfere with
-(and be interfered with by) other users' login node tasks.
+(and be interfered with by) other users' login node tasks. ``jsrun`` is covered
+in-depth in the `Job Launcher (jsrun)`_ section.
 
 Per-User Login Node Resource Limits
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -2095,384 +1230,7 @@ Dependency expressions can be combined with logical operators. For
 example, if you want a job held until job 12345 is DONE and job 12346
 has started, you can use ``#BSUB -w "done(12345) && started(12346)"``
 
-Monitoring Jobs
----------------
 
-LSF provides several utilities with which you can monitor jobs. These
-include monitoring the queue, getting details about a particular job,
-viewing STDOUT/STDERR of running jobs, and more.
-
-The most straightforward monitoring is with the ``bjobs`` command. This
-command will show the current queue, including both pending and running
-jobs. Running ``bjobs -l`` will provide much more detail about a job (or
-group of jobs). For detailed output of a single job, specify the job id
-after the ``-l``. For example, for detailed output of job 12345, you can
-run ``bjobs -l 12345`` . Other options to ``bjobs`` are shown below. In
-general, if the command is specified with ``-u all`` it will show
-information for all users/all jobs. Without that option, it only shows
-your jobs. Note that this is not an exhaustive list. See ``man bjobs``
-for more information.
-
-+-----------------------+--------------------------------------------------------------------------------+
-| Command               | Description                                                                    |
-+=======================+================================================================================+
-| ``bjobs``             | Show your current jobs in the queue                                            |
-+-----------------------+--------------------------------------------------------------------------------+
-| ``bjobs -u all``      | Show currently queued jobs for all users                                       |
-+-----------------------+--------------------------------------------------------------------------------+
-| ``bjobs -P ABC123``   | Shows currently-queued jobs for project ABC123                                 |
-+-----------------------+--------------------------------------------------------------------------------+
-| ``bjobs -UF``         | Don't format output (might be useful if you're using the output in a script)   |
-+-----------------------+--------------------------------------------------------------------------------+
-| ``bjobs -a``          | Show jobs in all states, including recently finished jobs                      |
-+-----------------------+--------------------------------------------------------------------------------+
-| ``bjobs -l``          | Show long/detailed output                                                      |
-+-----------------------+--------------------------------------------------------------------------------+
-| ``bjobs -l 12345``    | Show long/detailed output for jobs 12345                                       |
-+-----------------------+--------------------------------------------------------------------------------+
-| ``bjobs -d``          | Show details for recently completed jobs                                       |
-+-----------------------+--------------------------------------------------------------------------------+
-| ``bjobs -s``          | Show suspended jobs, including the reason(s) they're suspended                 |
-+-----------------------+--------------------------------------------------------------------------------+
-| ``bjobs -r``          | Show running jobs                                                              |
-+-----------------------+--------------------------------------------------------------------------------+
-| ``bjobs -p``          | Show pending jobs                                                              |
-+-----------------------+--------------------------------------------------------------------------------+
-| ``bjobs -w``          | Use "wide" formatting for output                                               |
-+-----------------------+--------------------------------------------------------------------------------+
-
-If you want to check the STDOUT/STDERR of a currently running job, you
-can do so with the ``bpeek`` command. The command supports several
-options:
-
-+------------------------+---------------------------------------------------------------------------------------------+
-| Command                | Description                                                                                 |
-+========================+=============================================================================================+
-| ``bpeek -J jobname``   | Show STDOUT/STDERR for the job you've most recently submitted with the name jobname         |
-+------------------------+---------------------------------------------------------------------------------------------+
-| ``bpeek 12345``        | Show STDOUT/STDERR for job 12345                                                            |
-+------------------------+---------------------------------------------------------------------------------------------+
-| ``bpeek -f ...``       | Used with other options. Makes ``bpeek`` use ``tail -f`` and exit once the job completes.   |
-+------------------------+---------------------------------------------------------------------------------------------+
-
-The OLCF also provides ``jobstat``, which adds dividers in the queue to
-identify jobs as running, eligible, or blocked. Run without arguments,
-``jobstat`` provides a snapshot of the entire batch queue. Additional
-information, including the number of jobs in each state, total nodes
-available, and relative job priority are also included.
-
-``jobstat -u <username>`` restricts output to only the jobs of a
-specific user. See the ``jobstat`` man page for a full list of
-formatting arguments.
-
-::
-
-    $ jobstat -u <user>
-    --------------------------- Running Jobs: 2 (4544 of 4604 nodes, 98.70%) ---------------------------
-    JobId    Username   Project          Nodes Remain     StartTime       JobName
-    331590   user     project           2     57:06      04/09 10:06:23  Not_Specified
-    331707   user     project           40    39:47      04/09 11:04:04  runA
-    ----------------------------------------- Eligible Jobs: 3 -----------------------------------------
-    JobId    Username   Project          Nodes Walltime   QueueTime       Priority JobName
-    331712   user     project           80    45:00      04/09 11:06:23  501.00   runB
-    331713   user     project           90    45:00      04/09 11:07:19  501.00   runC
-    331714   user     project           100   45:00      04/09 11:07:49  501.00   runD
-    ----------------------------------------- Blocked Jobs: 1 ------------------------------------------
-    JobId    Username   Project          Nodes Walltime   BlockReason
-    331715   user        project           12    2:00:00    Job dependency condition not satisfied
-
-Inspecting Backfill
-^^^^^^^^^^^^^^^^^^^
-
-``bjobs`` and ``jobstat`` help to identify what’s currently running and
-scheduled to run, but sometimes it’s beneficial to know how much of the
-system is *not* currently in use or scheduled for use.
-
-The ``bslots`` command can be used to inspect backfill windows and answer
-the question “How many nodes are currently available, and for how long
-will they remain available?” This can be thought of as identifying gaps in
-the system’s current job schedule. By intentionally requesting resources
-within the parameters of a backfill window, one can potentially shorten
-their queued time and improve overall system utilization.
-
-LSF uses “slots” to describe allocatable resources. Summit compute nodes have 1
-slot per CPU core, for a total of 42 per node ([2x] Power9 CPUs, each
-with 21 cores). Since Summit nodes are scheduled in whole-node
-allocations, the output from ``bslots`` can be divided by 42 to see how
-many nodes are currently available.
-
-By default, ``bslots`` output includes launch node slots, which can
-cause unwanted and inflated fractional node values. The output can
-be adjusted to reflect only available compute node slots with the
-flag  ``-R”select[CN]”``. For example,
-
-::
-
-    $ bslots -R"select[CN]"
-    SLOTS          RUNTIME
-    42             25 hours 42 minutes 51 seconds
-    27384          1 hours 11 minutes 50 seconds
-
-27384 compute node slots / 42 slots per node = 652 compute nodes are
-available for 1 hour, 11 minutes, 50 seconds.
-
-A more specific ``bslots`` query could check for a backfill window with
-space to fit a 1000 node job for 10 minutes:
-
-::
-
-    $ bslots -R"select[CN]" -n $((1000*42)) -W10
-    SLOTS          RUNTIME
-    127764         22 minutes 55 seconds
-
-There is no guarantee that the slots reported by ``bslots`` will still
-be available at time of new job submission.
-
-Interacting With Jobs
----------------------
-
-Sometimes it’s necessary to interact with a batch job after it has been
-submitted. LSF provides several commands for interacting with
-already-submitted jobs.
-
-Many of these commands can operate on either one job or a group of jobs.
-In general, they only operate on the most recently submitted job that
-matches other criteria provided unless “0” is specified as the job id.
-
-Suspending and Resuming Jobs
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-LSF supports user-level suspension and resumption of jobs. Jobs are
-suspended with the ``bstop`` command and resumed with the ``bresume``
-command. The simplest way to invoke these commands is to list the job id
-to be suspended/resumed:
-
-.. code::
-
-    bstop 12345
-    bresume 12345
-
-Instead of specifying a job id, you can specify other criteria that will
-allow you to suspend some/all jobs that meet other criteria such as a
-job name, a queue name, etc. These are described in the manpages for
-``bstop`` and ``bresume``.
-
-Signaling Jobs
-^^^^^^^^^^^^^^
-
-You can send signals to jobs with the ``bkill`` command. While the
-command name suggests its only purpose is to terminate jobs, this is not
-the case. Similar to the ``kill`` command found in Unix-like operating
-systems, this command can be used to send various signals (not just
-``SIGTERM`` and ``SIGKILL``) to jobs. The command can accept both
-numbers and names for signals. For a list of accepted signal names, run
-``bkill -l``. Common ways to invoke the command include:
-
-+---------------------------+----------------------------------------------------------------------------------+
-| Command                   | Description                                                                      |
-+===========================+==================================================================================+
-| ``bkill 12345``           | Force a job to stop by sending ``SIGINT``,                                       |
-|                           | ``SIGTERM``, and ``SIGKILL``. These signals are sent in that order, so users     |
-|                           | can write applications such that they will trap ``SIGINT`` and/or ``SIGTERM``    |
-|                           | and exit in a controlled manner.                                                 |
-+---------------------------+----------------------------------------------------------------------------------+
-| ``bkill -s USR1 12345``   | Send ``SIGUSR1`` to job 12345 NOTE: When                                         |
-|                           | specifying a signal by name, omit SIG from the name. Thus, you specify ``USR1``  |
-|                           | and not ``SIGUSR1`` on the ``bkill`` command line.                               |
-+---------------------------+----------------------------------------------------------------------------------+
-| ``bkill -s 9 12345``      | Send signal 9 to job 12345                                                       |
-+---------------------------+----------------------------------------------------------------------------------+
-
-Like ``bstop`` and ``bresume``, ``bkill`` command also supports
-identifying the job(s) to be signaled by criteria other than the job id.
-These include some/all jobs with a given name, in a particular queue,
-etc. See ``man bkill`` for more information.
-
-Checkpointing Jobs
-^^^^^^^^^^^^^^^^^^
-
-LSF documentation mentions the ``bchkpnt`` and ``brestart`` commands for
-checkpointing and restarting jobs, as well as the ``-k`` option to
-``bsub`` for configuring checkpointing. Since checkpointing is very
-application specific and a wide range of applications run on OLCF
-resources, this type of checkpointing is not configured on Summit. If
-you wish to use checkpointing (which is highly encouraged), you’ll need
-to configure it within your application.
-
-If you wish to implement some form of on-demand checkpointing, keep in mind
-the ``bkill`` command is really a signaling command and you can have your
-job script/application checkpoint as a response to certain signals (such
-as ``SIGUSR1``).
-
-Other LSF Commands
-------------------
-
-The table below summarizes some additional LSF commands that might be
-useful.
-
-+------------------+---------------------------------------------------------------------------+
-| Command          | Description                                                               |
-+==================+===========================================================================+
-| ``bparams -a``   | Show current parameters for LSF. The behavior/available                   |
-|                  | options for some LSF commands depend on settings in various configuration |
-|                  | files. This command shows those settings without having to search for the |
-|                  | actual files.                                                             |
-+------------------+---------------------------------------------------------------------------+
-| ``bjdepinfo``    | Show job dependency information (could be useful in                       |
-|                  | determining what job is keeping another job in a pending state)           |
-+------------------+---------------------------------------------------------------------------+
-
-PBS/Torque/MOAB-to-LSF Translation
-----------------------------------
-
-More details about these commands are given elsewhere in this section;
-the table below is simply for your convenience in looking up various LSF
-commands.
-
-Users of other OLCF resources are likely familiar with
-PBS-like commands which are used by the Torque/Moab instances on other
-systems. The table below summarizes the equivalent LSF command for
-various PBS/Torque/Moab commands.
-
-+--------------------------+----------------------------------+----------------------------------------------------+
-| LSF Command              | PBS/Torque/Moab Command          | Description                                        |
-+==========================+==================================+====================================================+
-| ``bsub job.sh``          | ``qsub job.sh``                  | Submit the job script job.sh to the batch system   |
-+--------------------------+----------------------------------+----------------------------------------------------+
-| ``bsub -Is /bin/bash``   | ``qsub -I``                      | Submit an interactive batch job                    |
-+--------------------------+----------------------------------+----------------------------------------------------+
-| ``bjobs -u all``         | ``qstat showq``                  | Show jobs currently in the queue NOTE: without the |
-|                          |                                  | -u all argument, bjobs will only show your jobs    |
-+--------------------------+----------------------------------+----------------------------------------------------+
-| ``bjobs -l``             | ``checkjob``                     | Get information about a specific job               |
-+--------------------------+----------------------------------+----------------------------------------------------+
-| ``bjobs -d``             | ``showq -c``                     | Get information about completed jobs               |
-+--------------------------+----------------------------------+----------------------------------------------------+
-| ``bjobs -p``             | ``showq -i``                     | Get information about pending jobs                 |
-|                          | ``showq -b``                     |                                                    |
-|                          | ``checkjob``                     |                                                    |
-+--------------------------+----------------------------------+----------------------------------------------------+
-| ``bjobs -r``             | ``showq -r``                     | Get information about running jobs                 |
-+--------------------------+----------------------------------+----------------------------------------------------+
-| ``bkill``                | ``qsig``                         | Send a signal to a job                             |
-+--------------------------+----------------------------------+----------------------------------------------------+
-| ``bkill``                | ``qdel``                         | Terminate/Kill a job                               |
-+--------------------------+----------------------------------+----------------------------------------------------+
-| ``bstop``                | ``qhold``                        | Hold a job/stop a job from running                 |
-+--------------------------+----------------------------------+----------------------------------------------------+
-| ``bresume``              | ``qrls``                         | Release a held job                                 |
-+--------------------------+----------------------------------+----------------------------------------------------+
-| ``bqueues``              | ``qstat -q``                     | Get information about queues                       |
-+--------------------------+----------------------------------+----------------------------------------------------+
-| ``bjdepinfo``            | ``checkjob``                     | Get information about job dependencies             |
-+--------------------------+----------------------------------+----------------------------------------------------+
-
-The table below shows shows LSF (bsub) command-line/batch script options
-and the PBS/Torque/Moab (qsub) options that provide similar
-functionality.
-
-+---------------------------------+------------------------------------------------+------------------------------------------------------------+
-| LSF Option                      | PBS/Torque/Moab Option                         | Description                                                |
-+=================================+================================================+============================================================+
-| ``#BSUB -W 60``                 | ``#PBS -l walltime=1:00:00``                   | Request a walltime of 1 hour                               |
-+---------------------------------+------------------------------------------------+------------------------------------------------------------+
-| ``#BSUB -nnodes 1024``          | ``#PBS -l nodes=1024``                         | Request 1024 nodes                                         |
-+---------------------------------+------------------------------------------------+------------------------------------------------------------+
-| ``#BSUB -P ABC123``             | ``#PBS -A ABC123``                             | Charge the job to project ABC123                           |
-+---------------------------------+------------------------------------------------+------------------------------------------------------------+
-| ``#BSUB -alloc_flags gpumps``   | No equivalent (set via environment variable)   | Enable multiple MPI tasks to simultaneously access a GPU   |
-+---------------------------------+------------------------------------------------+------------------------------------------------------------+
-
-.. _easy_mode_v_expert_mode:
-
-Easy Mode vs. Expert Mode
--------------------------
-
-The Cluster System Management (CSM) component of the job launch
-environment supports two methods of job submission, termed “easy” mode
-and “expert” mode. The difference in the modes is where the
-responsibility for creating the LSF resource string is placed.
-
-In easy mode, the system software converts options such as -nnodes in
-a batch script into the resource string needed by the scheduling system.
-In expert mode, the user is responsible for creating this string and
-options such as -nnodes cannot be used. In easy mode, you will not be
-able to use ``bsub -R`` to create resource strings. The system will
-automatically create the resource string based on your other ``bsub``
-options. In expert mode, you will be able to use ``-R``, but you will
-not be able to use the following options to ``bsub``: ``-ln_slots``,
-``-ln_mem``, ``-cn_cu``, or ``-nnodes``.
-
-Most users will want to use easy mode. However, if you need precise
-control over your job’s resources, such as placement on (or avoidance
-of) specific nodes, you will need to use expert mode. To use expert
-mode, add ``#BSUB -csm y`` to your batch script (or ``-csm y`` to
-your ``bsub`` command line).
-
-
-System Service Core Isolation
------------------------------
-
-One core per socket is set aside for system service tasks. The cores are
-not available to jsrun. When listing available resources through jsrun,
-you will not see cores with hyperthreads 84-87 and 172-175. Isolating a
-socket's system services to a single core helps to reduce jitter and
-improve performance of tasks performed on the socket's remaining cores.
-
-The isolated core always operates at SMT4 regardless of the batch job's
-SMT level.
-
-GPFS System Service Isolation
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-By default, GPFS system service tasks are forced onto only the isolated
-cores. This can be overridden at the batch job level using the
-``maximizegpfs`` argument to LSF's ``alloc_flags``. For example:
-
-::
-
-     #BSUB -alloc_flags maximizegpfs
-
-The maximizegpfs flag will allow GPFS tasks to utilize any core on the
-compute node. This may be beneficial because it provides more resources
-for GPFS service tasks, but it may also cause resource contention for
-the jsrun compute job.
-
-Resource Accounting
--------------------
-
-While logged into Summit, users can show their YTD usage and allocation
-by project using the ``showusage`` command. System specific details can
-be obtained with the ``-s`` flag. For example,
-
-.. code::
-
-    $ showusage -s summit
-
-    summit usage for the project's current allocation period:
-                                      Project Totals          [USERID]
-     Project      Allocation        Usage    Remaining          Usage
-    __________________________|____________________________|_____________
-     [PROJID1]        50000   |      15728        34272    |         65
-     [PROJID2]        20000   |       1234        18766    |          0
-
-For additional details, please see the help message printed when using
-the ``-h`` flag:
-
-.. code::
-
-     $ showusage -h
-
-Other Notes
------------
-
-Compute nodes are only allocated to one job at a time; they are not
-shared. This is why users request nodes (instead of some other resource
-such as cores or GPUs) in batch jobs and is why projects are charged
-based on the number of nodes allocated multiplied by the amount of time
-for which they were allocated. Thus, a job using only 1 core on each of
-its nodes is charged the same as a job using every core and every GPU on
-each of its nodes.
 
 .. _job-launcher-jsrun:
 
@@ -3083,6 +1841,388 @@ CUDA-Aware MPI in a job, use the following argument to ``jsrun``:
 
     jsrun --smpiargs="-gpu" ...
 
+
+Monitoring Jobs
+---------------
+
+LSF provides several utilities with which you can monitor jobs. These
+include monitoring the queue, getting details about a particular job,
+viewing STDOUT/STDERR of running jobs, and more.
+
+The most straightforward monitoring is with the ``bjobs`` command. This
+command will show the current queue, including both pending and running
+jobs. Running ``bjobs -l`` will provide much more detail about a job (or
+group of jobs). For detailed output of a single job, specify the job id
+after the ``-l``. For example, for detailed output of job 12345, you can
+run ``bjobs -l 12345`` . Other options to ``bjobs`` are shown below. In
+general, if the command is specified with ``-u all`` it will show
+information for all users/all jobs. Without that option, it only shows
+your jobs. Note that this is not an exhaustive list. See ``man bjobs``
+for more information.
+
++-----------------------+--------------------------------------------------------------------------------+
+| Command               | Description                                                                    |
++=======================+================================================================================+
+| ``bjobs``             | Show your current jobs in the queue                                            |
++-----------------------+--------------------------------------------------------------------------------+
+| ``bjobs -u all``      | Show currently queued jobs for all users                                       |
++-----------------------+--------------------------------------------------------------------------------+
+| ``bjobs -P ABC123``   | Shows currently-queued jobs for project ABC123                                 |
++-----------------------+--------------------------------------------------------------------------------+
+| ``bjobs -UF``         | Don't format output (might be useful if you're using the output in a script)   |
++-----------------------+--------------------------------------------------------------------------------+
+| ``bjobs -a``          | Show jobs in all states, including recently finished jobs                      |
++-----------------------+--------------------------------------------------------------------------------+
+| ``bjobs -l``          | Show long/detailed output                                                      |
++-----------------------+--------------------------------------------------------------------------------+
+| ``bjobs -l 12345``    | Show long/detailed output for jobs 12345                                       |
++-----------------------+--------------------------------------------------------------------------------+
+| ``bjobs -d``          | Show details for recently completed jobs                                       |
++-----------------------+--------------------------------------------------------------------------------+
+| ``bjobs -s``          | Show suspended jobs, including the reason(s) they're suspended                 |
++-----------------------+--------------------------------------------------------------------------------+
+| ``bjobs -r``          | Show running jobs                                                              |
++-----------------------+--------------------------------------------------------------------------------+
+| ``bjobs -p``          | Show pending jobs                                                              |
++-----------------------+--------------------------------------------------------------------------------+
+| ``bjobs -w``          | Use "wide" formatting for output                                               |
++-----------------------+--------------------------------------------------------------------------------+
+
+If you want to check the STDOUT/STDERR of a currently running job, you
+can do so with the ``bpeek`` command. The command supports several
+options:
+
++------------------------+---------------------------------------------------------------------------------------------+
+| Command                | Description                                                                                 |
++========================+=============================================================================================+
+| ``bpeek -J jobname``   | Show STDOUT/STDERR for the job you've most recently submitted with the name jobname         |
++------------------------+---------------------------------------------------------------------------------------------+
+| ``bpeek 12345``        | Show STDOUT/STDERR for job 12345                                                            |
++------------------------+---------------------------------------------------------------------------------------------+
+| ``bpeek -f ...``       | Used with other options. Makes ``bpeek`` use ``tail -f`` and exit once the job completes.   |
++------------------------+---------------------------------------------------------------------------------------------+
+
+The OLCF also provides ``jobstat``, which adds dividers in the queue to
+identify jobs as running, eligible, or blocked. Run without arguments,
+``jobstat`` provides a snapshot of the entire batch queue. Additional
+information, including the number of jobs in each state, total nodes
+available, and relative job priority are also included.
+
+``jobstat -u <username>`` restricts output to only the jobs of a
+specific user. See the ``jobstat`` man page for a full list of
+formatting arguments.
+
+::
+
+    $ jobstat -u <user>
+    --------------------------- Running Jobs: 2 (4544 of 4604 nodes, 98.70%) ---------------------------
+    JobId    Username   Project          Nodes Remain     StartTime       JobName
+    331590   user     project           2     57:06      04/09 10:06:23  Not_Specified
+    331707   user     project           40    39:47      04/09 11:04:04  runA
+    ----------------------------------------- Eligible Jobs: 3 -----------------------------------------
+    JobId    Username   Project          Nodes Walltime   QueueTime       Priority JobName
+    331712   user     project           80    45:00      04/09 11:06:23  501.00   runB
+    331713   user     project           90    45:00      04/09 11:07:19  501.00   runC
+    331714   user     project           100   45:00      04/09 11:07:49  501.00   runD
+    ----------------------------------------- Blocked Jobs: 1 ------------------------------------------
+    JobId    Username   Project          Nodes Walltime   BlockReason
+    331715   user        project           12    2:00:00    Job dependency condition not satisfied
+
+Inspecting Backfill
+^^^^^^^^^^^^^^^^^^^
+
+``bjobs`` and ``jobstat`` help to identify what’s currently running and
+scheduled to run, but sometimes it’s beneficial to know how much of the
+system is *not* currently in use or scheduled for use.
+
+The ``bslots`` command can be used to inspect backfill windows and answer
+the question “How many nodes are currently available, and for how long
+will they remain available?” This can be thought of as identifying gaps in
+the system’s current job schedule. By intentionally requesting resources
+within the parameters of a backfill window, one can potentially shorten
+their queued time and improve overall system utilization.
+
+LSF uses “slots” to describe allocatable resources. Summit compute nodes have 1
+slot per CPU core, for a total of 42 per node ([2x] Power9 CPUs, each
+with 21 cores). Since Summit nodes are scheduled in whole-node
+allocations, the output from ``bslots`` can be divided by 42 to see how
+many nodes are currently available.
+
+By default, ``bslots`` output includes launch node slots, which can
+cause unwanted and inflated fractional node values. The output can
+be adjusted to reflect only available compute node slots with the
+flag  ``-R”select[CN]”``. For example,
+
+::
+
+    $ bslots -R"select[CN]"
+    SLOTS          RUNTIME
+    42             25 hours 42 minutes 51 seconds
+    27384          1 hours 11 minutes 50 seconds
+
+27384 compute node slots / 42 slots per node = 652 compute nodes are
+available for 1 hour, 11 minutes, 50 seconds.
+
+A more specific ``bslots`` query could check for a backfill window with
+space to fit a 1000 node job for 10 minutes:
+
+::
+
+    $ bslots -R"select[CN]" -n $((1000*42)) -W10
+    SLOTS          RUNTIME
+    127764         22 minutes 55 seconds
+
+There is no guarantee that the slots reported by ``bslots`` will still
+be available at time of new job submission.
+
+Interacting With Jobs
+---------------------
+
+Sometimes it’s necessary to interact with a batch job after it has been
+submitted. LSF provides several commands for interacting with
+already-submitted jobs.
+
+Many of these commands can operate on either one job or a group of jobs.
+In general, they only operate on the most recently submitted job that
+matches other criteria provided unless “0” is specified as the job id.
+
+Suspending and Resuming Jobs
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+LSF supports user-level suspension and resumption of jobs. Jobs are
+suspended with the ``bstop`` command and resumed with the ``bresume``
+command. The simplest way to invoke these commands is to list the job id
+to be suspended/resumed:
+
+.. code::
+
+    bstop 12345
+    bresume 12345
+
+Instead of specifying a job id, you can specify other criteria that will
+allow you to suspend some/all jobs that meet other criteria such as a
+job name, a queue name, etc. These are described in the manpages for
+``bstop`` and ``bresume``.
+
+Signaling Jobs
+^^^^^^^^^^^^^^
+
+You can send signals to jobs with the ``bkill`` command. While the
+command name suggests its only purpose is to terminate jobs, this is not
+the case. Similar to the ``kill`` command found in Unix-like operating
+systems, this command can be used to send various signals (not just
+``SIGTERM`` and ``SIGKILL``) to jobs. The command can accept both
+numbers and names for signals. For a list of accepted signal names, run
+``bkill -l``. Common ways to invoke the command include:
+
++---------------------------+----------------------------------------------------------------------------------+
+| Command                   | Description                                                                      |
++===========================+==================================================================================+
+| ``bkill 12345``           | Force a job to stop by sending ``SIGINT``,                                       |
+|                           | ``SIGTERM``, and ``SIGKILL``. These signals are sent in that order, so users     |
+|                           | can write applications such that they will trap ``SIGINT`` and/or ``SIGTERM``    |
+|                           | and exit in a controlled manner.                                                 |
++---------------------------+----------------------------------------------------------------------------------+
+| ``bkill -s USR1 12345``   | Send ``SIGUSR1`` to job 12345 NOTE: When                                         |
+|                           | specifying a signal by name, omit SIG from the name. Thus, you specify ``USR1``  |
+|                           | and not ``SIGUSR1`` on the ``bkill`` command line.                               |
++---------------------------+----------------------------------------------------------------------------------+
+| ``bkill -s 9 12345``      | Send signal 9 to job 12345                                                       |
++---------------------------+----------------------------------------------------------------------------------+
+
+Like ``bstop`` and ``bresume``, ``bkill`` command also supports
+identifying the job(s) to be signaled by criteria other than the job id.
+These include some/all jobs with a given name, in a particular queue,
+etc. See ``man bkill`` for more information.
+
+Checkpointing Jobs
+^^^^^^^^^^^^^^^^^^
+
+LSF documentation mentions the ``bchkpnt`` and ``brestart`` commands for
+checkpointing and restarting jobs, as well as the ``-k`` option to
+``bsub`` for configuring checkpointing. Since checkpointing is very
+application specific and a wide range of applications run on OLCF
+resources, this type of checkpointing is not configured on Summit. If
+you wish to use checkpointing (which is highly encouraged), you’ll need
+to configure it within your application.
+
+If you wish to implement some form of on-demand checkpointing, keep in mind
+the ``bkill`` command is really a signaling command and you can have your
+job script/application checkpoint as a response to certain signals (such
+as ``SIGUSR1``).
+
+Other LSF Commands
+------------------
+
+The table below summarizes some additional LSF commands that might be
+useful.
+
++------------------+---------------------------------------------------------------------------+
+| Command          | Description                                                               |
++==================+===========================================================================+
+| ``bparams -a``   | Show current parameters for LSF. The behavior/available                   |
+|                  | options for some LSF commands depend on settings in various configuration |
+|                  | files. This command shows those settings without having to search for the |
+|                  | actual files.                                                             |
++------------------+---------------------------------------------------------------------------+
+| ``bjdepinfo``    | Show job dependency information (could be useful in                       |
+|                  | determining what job is keeping another job in a pending state)           |
++------------------+---------------------------------------------------------------------------+
+
+PBS/Torque/MOAB-to-LSF Translation
+----------------------------------
+
+More details about these commands are given elsewhere in this section;
+the table below is simply for your convenience in looking up various LSF
+commands.
+
+Users of other OLCF resources are likely familiar with
+PBS-like commands which are used by the Torque/Moab instances on other
+systems. The table below summarizes the equivalent LSF command for
+various PBS/Torque/Moab commands.
+
++--------------------------+----------------------------------+----------------------------------------------------+
+| LSF Command              | PBS/Torque/Moab Command          | Description                                        |
++==========================+==================================+====================================================+
+| ``bsub job.sh``          | ``qsub job.sh``                  | Submit the job script job.sh to the batch system   |
++--------------------------+----------------------------------+----------------------------------------------------+
+| ``bsub -Is /bin/bash``   | ``qsub -I``                      | Submit an interactive batch job                    |
++--------------------------+----------------------------------+----------------------------------------------------+
+| ``bjobs -u all``         | ``qstat showq``                  | Show jobs currently in the queue NOTE: without the |
+|                          |                                  | -u all argument, bjobs will only show your jobs    |
++--------------------------+----------------------------------+----------------------------------------------------+
+| ``bjobs -l``             | ``checkjob``                     | Get information about a specific job               |
++--------------------------+----------------------------------+----------------------------------------------------+
+| ``bjobs -d``             | ``showq -c``                     | Get information about completed jobs               |
++--------------------------+----------------------------------+----------------------------------------------------+
+| ``bjobs -p``             | ``showq -i``                     | Get information about pending jobs                 |
+|                          | ``showq -b``                     |                                                    |
+|                          | ``checkjob``                     |                                                    |
++--------------------------+----------------------------------+----------------------------------------------------+
+| ``bjobs -r``             | ``showq -r``                     | Get information about running jobs                 |
++--------------------------+----------------------------------+----------------------------------------------------+
+| ``bkill``                | ``qsig``                         | Send a signal to a job                             |
++--------------------------+----------------------------------+----------------------------------------------------+
+| ``bkill``                | ``qdel``                         | Terminate/Kill a job                               |
++--------------------------+----------------------------------+----------------------------------------------------+
+| ``bstop``                | ``qhold``                        | Hold a job/stop a job from running                 |
++--------------------------+----------------------------------+----------------------------------------------------+
+| ``bresume``              | ``qrls``                         | Release a held job                                 |
++--------------------------+----------------------------------+----------------------------------------------------+
+| ``bqueues``              | ``qstat -q``                     | Get information about queues                       |
++--------------------------+----------------------------------+----------------------------------------------------+
+| ``bjdepinfo``            | ``checkjob``                     | Get information about job dependencies             |
++--------------------------+----------------------------------+----------------------------------------------------+
+
+The table below shows shows LSF (bsub) command-line/batch script options
+and the PBS/Torque/Moab (qsub) options that provide similar
+functionality.
+
++---------------------------------+------------------------------------------------+------------------------------------------------------------+
+| LSF Option                      | PBS/Torque/Moab Option                         | Description                                                |
++=================================+================================================+============================================================+
+| ``#BSUB -W 60``                 | ``#PBS -l walltime=1:00:00``                   | Request a walltime of 1 hour                               |
++---------------------------------+------------------------------------------------+------------------------------------------------------------+
+| ``#BSUB -nnodes 1024``          | ``#PBS -l nodes=1024``                         | Request 1024 nodes                                         |
++---------------------------------+------------------------------------------------+------------------------------------------------------------+
+| ``#BSUB -P ABC123``             | ``#PBS -A ABC123``                             | Charge the job to project ABC123                           |
++---------------------------------+------------------------------------------------+------------------------------------------------------------+
+| ``#BSUB -alloc_flags gpumps``   | No equivalent (set via environment variable)   | Enable multiple MPI tasks to simultaneously access a GPU   |
++---------------------------------+------------------------------------------------+------------------------------------------------------------+
+
+.. _easy_mode_v_expert_mode:
+
+Easy Mode vs. Expert Mode
+-------------------------
+
+The Cluster System Management (CSM) component of the job launch
+environment supports two methods of job submission, termed “easy” mode
+and “expert” mode. The difference in the modes is where the
+responsibility for creating the LSF resource string is placed.
+
+In easy mode, the system software converts options such as -nnodes in
+a batch script into the resource string needed by the scheduling system.
+In expert mode, the user is responsible for creating this string and
+options such as -nnodes cannot be used. In easy mode, you will not be
+able to use ``bsub -R`` to create resource strings. The system will
+automatically create the resource string based on your other ``bsub``
+options. In expert mode, you will be able to use ``-R``, but you will
+not be able to use the following options to ``bsub``: ``-ln_slots``,
+``-ln_mem``, ``-cn_cu``, or ``-nnodes``.
+
+Most users will want to use easy mode. However, if you need precise
+control over your job’s resources, such as placement on (or avoidance
+of) specific nodes, you will need to use expert mode. To use expert
+mode, add ``#BSUB -csm y`` to your batch script (or ``-csm y`` to
+your ``bsub`` command line).
+
+
+System Service Core Isolation
+-----------------------------
+
+One core per socket is set aside for system service tasks. The cores are
+not available to jsrun. When listing available resources through jsrun,
+you will not see cores with hyperthreads 84-87 and 172-175. Isolating a
+socket's system services to a single core helps to reduce jitter and
+improve performance of tasks performed on the socket's remaining cores.
+
+The isolated core always operates at SMT4 regardless of the batch job's
+SMT level.
+
+GPFS System Service Isolation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+By default, GPFS system service tasks are forced onto only the isolated
+cores. This can be overridden at the batch job level using the
+``maximizegpfs`` argument to LSF's ``alloc_flags``. For example:
+
+::
+
+     #BSUB -alloc_flags maximizegpfs
+
+The maximizegpfs flag will allow GPFS tasks to utilize any core on the
+compute node. This may be beneficial because it provides more resources
+for GPFS service tasks, but it may also cause resource contention for
+the jsrun compute job.
+
+Resource Accounting
+-------------------
+
+While logged into Summit, users can show their YTD usage and allocation
+by project using the ``showusage`` command. System specific details can
+be obtained with the ``-s`` flag. For example,
+
+.. code::
+
+    $ showusage -s summit
+
+    summit usage for the project's current allocation period:
+                                      Project Totals          [USERID]
+     Project      Allocation        Usage    Remaining          Usage
+    __________________________|____________________________|_____________
+     [PROJID1]        50000   |      15728        34272    |         65
+     [PROJID2]        20000   |       1234        18766    |          0
+
+For additional details, please see the help message printed when using
+the ``-h`` flag:
+
+.. code::
+
+     $ showusage -h
+
+Other Notes
+-----------
+
+Compute nodes are only allocated to one job at a time; they are not
+shared. This is why users request nodes (instead of some other resource
+such as cores or GPUs) in batch jobs and is why projects are charged
+based on the number of nodes allocated multiplied by the amount of time
+for which they were allocated. Thus, a job using only 1 core on each of
+its nodes is charged the same as a job using every core and every GPU on
+each of its nodes.
+
+
+
 .. _debugging:
 
 Debugging
@@ -3416,6 +2556,902 @@ trace files for Vampir to visualize.
 
 For detailed information about using Vampir on Summit and the builds available,
 please see the `Vampir Software Page <https://www.olcf.ornl.gov/software_package/vampir/>`__.
+
+
+.. _nvidia-v100-gpus:
+.. _NVIDIA Tesla V100:
+
+NVIDIA V100 GPUs
+================
+
+The NVIDIA Tesla V100 accelerator has a peak performance of 7.8 TFLOP/s
+(double-precision) and contributes to a majority of the computational
+work performed on Summit. Each V100 contains 80 streaming
+multiprocessors (SMs), 16 GB (32 GB on high-memory nodes) of high-bandwidth
+memory (HBM2), and a 6 MB L2 cache that is available to the SMs. The
+GigaThread Engine is responsible for distributing work among the SMs and
+(8) 512-bit memory controllers control access to the 16 GB (32 GB on
+high-memory nodes) of HBM2 memory. The V100 uses NVIDIA's NVLink interconnect
+to pass data between GPUs as well as from CPU-to-GPU.
+
+.. image:: /images/GV100_FullChip_Diagram_FINAL2_a.png
+   :align: center
+
+NVIDIA V100 SM
+--------------
+
+Each SM on the V100 contains 32 FP64 (double-precision) cores, 64 FP32
+(single-precision) cores, 64 INT32 cores, and 8 tensor cores. A 128-KB
+combined memory block for shared memory and L1 cache can be configured
+to allow up to 96 KB of shared memory. In addition, each SM has 4
+texture units which use the (configured size of the) L1 cache.
+
+.. image:: /images/GV100_SM_Diagram-FINAL2.png
+   :align: center
+
+HBM2
+----
+
+Each V100 has access to 16 GB (32GB for high-memory nodes) of
+high-bandwidth memory (HBM2), which can be accessed at speeds of 
+up to 900 GB/s. Access to this memory is controlled by (8) 512-bit
+memory controllers, and all accesses to the high-bandwidth memory
+go through the 6 MB L2 cache.
+
+NVIDIA NVLink
+-------------
+
+The processors within a node are connected by NVIDIA's NVLink
+interconnect. Each link has a peak bandwidth of 25 GB/s (in each
+direction), and since there are 2 links between processors, data can be
+transferred from GPU-to-GPU and CPU-to-GPU at a peak rate of 50 GB/s.
+
+.. note::
+    The 50-GB/s peak bandwidth stated above is for data transfers
+    in a single direction. However, this bandwidth can be achieved in both
+    directions simultaneously, giving a peak "bi-directional" bandwidth of
+    100 GB/s between processors.
+
+The figure below shows a schematic of the NVLink connections between the
+CPU and GPUs on a single socket of a Summit node.
+
+.. image:: /images/NVLink2.png
+   :align: center
+
+Volta Multi-Process Service
+---------------------------
+
+When a CUDA program begins, each MPI rank creates a separate CUDA
+context on the GPU, but the scheduler on the GPU only allows one CUDA
+context (and so one MPI rank) at a time to launch on the GPU. This means
+that multiple MPI ranks can share access to the same GPU, but each rank
+gets exclusive access while the other ranks wait (time-slicing). This
+can cause the GPU to become underutilized if a rank (that has exclusive
+access) does not perform enough work to saturate the resources of the
+GPU. The following figure depicts such time-sliced access to a pre-Volta
+GPU.
+
+.. image:: /images/nv_mps_1.png
+   :align: center
+
+The Multi-Process Service (MPS) enables multiple processes (e.g. MPI ranks) to
+*concurrently* share the resources on a single GPU. This is accomplished by
+starting an MPS server process, which funnels the work from multiple CUDA
+contexts (e.g. from multiple MPI ranks) into a single CUDA context. In some
+cases, this can increase performance due to better utilization of the resources.
+The figure below illustrates MPS on a pre-Volta GPU.
+
+.. image:: /images/nv_mps_2.png
+   :width: 65.0%
+   :align: center
+
+Volta GPUs improve MPS with new capabilities. For instance, each Volta
+MPS client (MPI rank) is assigned a "subcontext" that has its own GPU
+address space, instead of sharing the address space with other clients.
+This isolation helps protect MPI ranks from out-of-range reads/writes
+performed by other ranks within CUDA kernels. Because each subcontext
+manages its own GPU resources, it can submit work directly to the GPU
+without the need to first pass through the MPS server. In addition,
+Volta GPUs support up to 48 MPS clients (up from 16 MPS clients on
+Pascal).
+
+.. image:: /images/nv_mps_3.png
+   :width: 65.0%
+   :align: center
+
+For more information, please see the following document from NVIDIA:
+https://docs.nvidia.com/deploy/pdf/CUDA_Multi_Process_Service_Overview.pdf
+
+Unified Memory
+--------------
+
+Unified memory is a single virtual address space that is accessible to
+any processor in a system (within a node). This means that programmers
+only need to allocate a single unified-memory pointer (e.g. using
+cudaMallocManaged) that can be accessed by both the CPU and GPU, instead
+of requiring separate allocations for each processor. This "managed
+memory" is automatically migrated to the accessing processor, which
+eliminates the need for explicit data transfers.
+
+.. image:: /images/nv_um_1.png
+   :width: 60.0%
+   :align: center
+
+On Pascal-generation GPUs and later, this automatic migration is
+enhanced with hardware support. A page migration engine enables GPU page
+faulting, which allows the desired pages to be migrated to the GPU "on
+demand" instead of the entire "managed" allocation. In addition, 49-bit
+virtual addressing allows programs using unified memory to access the
+full system memory size. The combination of GPU page faulting and larger
+virtual addressing allows programs to oversubscribe the system memory,
+so very large data sets can be processed. In addition, new CUDA API
+functions introduced in CUDA8 allow users to fine tune the use of
+unified memory.
+
+Unified memory is further improved on Volta GPUs through
+the use of access counters that can be used to automatically tune
+unified memory by determining where a page is most often accessed.
+
+For more information, please see the following section of NVIDIA's
+CUDA Programming Guide:
+http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#um-unified-memory-programming-hd
+
+Independent Thread Scheduling
+-----------------------------
+
+The V100 supports independent thread scheduling, which allows threads to
+synchronize and cooperate at sub-warp scales. Pre-Volta GPUs implemented
+warps (groups of 32 threads which execute instructions in
+single-instruction, multiple thread - SIMT - mode) with a single call
+stack and program counter for a warp as a whole.
+
+.. image:: /images/nv_ind_threads_1.png
+   :align: center
+
+Within a warp, a mask is used to specify which threads are currently
+active when divergent branches of code are encountered. The (active)
+threads within each branch execute their statements serially before
+threads in the next branch execute theirs. This means that programs on
+pre-Volta GPUs should avoid sub-warp synchronization; a sync point in
+the branches could cause a deadlock if all threads in a warp do not
+reach the synchronization point.
+
+.. image:: /images/nv_ind_threads_2.png
+   :align: center
+
+The Tesla V100 introduces warp-level synchronization by implementing warps with
+a program counter and call stack for each individual thread (i.e.  independent
+thread scheduling).
+
+.. image:: /images/nv_ind_threads_3.png
+   :align: center
+
+This implementation allows threads to diverge and synchronize at the sub-warp
+level using the \_\_syncwarp() function. The independent thread scheduling
+enables the thread scheduler to stall execution of any thread, allowing other
+threads in the warp to execute different statements. This means that threads in
+one branch can stall at a sync point and wait for the threads in the other
+branch to reach their sync point.
+
+.. image:: /images/nv_ind_threads_4.png
+   :align: center
+
+For more information, please see the following section of NVIDIA's CUDA
+Programming Guide:
+http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#independent-thread-scheduling-7-x
+
+Tensor Cores
+------------
+
+The Tesla V100 contains 640 tensor cores (8 per SM) intended to enable
+faster training of large neural networks. Each tensor core performs a
+``D = AB + C`` operation on 4x4 matrices. A and B are FP16 matrices,
+while C and D can be either FP16 or FP32:
+
+.. image:: /images/nv_tensor_core_1.png
+   :width: 85.0%
+   :align: center
+
+Each of the 16 elements that result from the AB matrix multiplication
+come from 4 floating-point fused-multiply-add (FMA) operations
+(basically a dot product between a row of A and a column of B). Each
+FP16 multiply yields a full-precision product which is accumulated in a
+FP32 result:
+
+.. image:: /images/nv_tc_1.png
+   :width: 85.0%
+   :align: center
+
+Each tensor core performs 64 of these FMA operations per clock. The 4x4
+matrix operations outlined here can be combined to perform matrix
+operations on larger (and higher dimensional) matrices.
+
+Using the Tensor Cores on Summit
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The NVIDIA Tesla V100 GPUs in Summit are capable of over 7TF/s of
+double-precision and 15 TF/s of single-precision floating point performance.
+Additionally, the V100 is capable of over 120 TF/s of half-precision floating
+point performance when using its Tensor Core feature. The Tensor Cores are
+purpose-built accelerators for half-precision matrix multiplication operations.
+While they were designed especially to accelerate machine learning workflows,
+they are exposed through several other APIs that are useful to other HPC
+applications. This section provides information for using the V100 Tensor
+Cores.
+
+The V100 Tensor Cores perform a warp-synchronous multiply and accumulate of
+16-bit matrices in the form of D = A * B + C. The operands of this matrix
+multiplication are 16-bit A and B matrices, while the C and D accumulation
+matrices may be 16 or 32-bit matrices with comparable performance for either
+precision.
+
+.. image:: /images/nv_tc_2.png
+   :width: 85.0%
+   :align: center
+
+Half precision floating point representation has a dramatically lower range of
+numbers than Double or Single precision. Half precision representation consists
+of 1 sign bit, a 5-bit exponent, and a 10-bit mantissa. This results in a
+dynamic range of 5.96e-8 to 65,504
+
+Tensor Core Programming Models
+""""""""""""""""""""""""""""""
+
+This section details a variety of high and low-level Tensor Core programming
+models. Which programming model is appropriate to a given application is highly
+situational, so this document will present multiple programming models to allow
+the reader to evaluate each for their merits within the needs of the
+application.
+
+cuBLAS Library
+______________
+
+cuBLAS is NVIDIA’s implementation of the Basic Linear Algebra Subroutines
+library for GPUs. It contains not only the Level 1, 2, and 3 BLAS routines, but
+several extensions to these routines that add important capabilities to the
+library, such as the ability to batch operations and work with varying
+precisions.
+
+The cuBLAS libraries provides access to the TensorCores using 3 different
+routines, depending on the application needs. The `cublasHgemm
+<https://docs.nvidia.com/cuda/cublas/index.html#cublas-lt-t-gt-gemm>`_ routine
+performs a general matrix multiplication of half-precision matrices. The
+numerical operands to this routine must be of type half and math mode must be
+set to CUBLAS_TENSOR_OP_MATH to enable Tensor Core use. Additionally, if the
+`cublasSgemm
+<https://docs.nvidia.com/cuda/cublas/index.html#cublas-lt-t-gt-gemm>`_ routine
+will down-convert from single precision to half precision when the math mode is
+set to CUBLAS_TENSOR_OP_MATH, enabling simple conversion from SGEMM to HGEMM
+using Tensor Cores. For either of these two methods the `cublasSetMathMode
+<https://docs.nvidia.com/cuda/cublas/index.html#cublassetmathmode>`_ function
+must be used to change from CUBLAS_DEFAULT_MATH to CUBLAS_TENSOR_OP_MATH mode.
+
+cuBLAS provides a non-standard extension of GEMM with the `cublasGemmEx
+<https://docs.nvidia.com/cuda/cublas/index.html#cublas-GemmEx>`_ routine, which
+provides additional flexibility about the data types of the operands. In
+particular, the A, B, and C matrices can be of arbitrary and different types,
+with the types of each declared using the Atype, Btype, and Ctype parameters.
+The algo parameter works similar to the math mode above. If the math mode is
+set to CUBLAS_TESNOR_OP_MATH and the algo parameter is set to
+CUBLAS_GEMM_DEFAULT, then the Tensor Cores will be used. If algo is
+CUBLAS_GEMM_DEFAULT_TENSOR_OP or CUBLAS_GEMM_ALGO{0-15}_TENSOR_OP, then the
+Tensor Cores will be used regardless of the math setting. The table below
+outlines the rules stated in the past two paragraphs.
+
++----------------------------------------------------------+------------------------------------+--------------------------------------+
+|                                                          | ``mathMode = CUBLAS_DEFAULT_MATH`` | ``mathMode = CUBLAS_TENSOR_OP_MATH`` |
++==========================================================+====================================+======================================+
+| ``cublasHgemm, cublasSgemm, cublasGemmEx(algo=DEFAULT)`` | Disallowed                         | Allowed                              |
++----------------------------------------------------------+------------------------------------+--------------------------------------+
+| ``cublasGemmEx(algo=*_TENSOR_OP)``                       | Allowed                            | Allowed                              |
++----------------------------------------------------------+------------------------------------+--------------------------------------+
+
+
+When using any of these methods to access the Tensor Cores, the M, N, K, LDA,
+LDB, LDC, and A, B, and C pointers must all be aligned to 8 bytes due to the
+high bandwidth necessary to utilize the Tensor Cores effective.
+
+Many of the routines listed above are also available in batched form, see the
+`cuBLAS documentation <https://docs.nvidia.com/cuda/cublas/index.html>`_ for
+more information. Advanced users wishing to have increased control over the
+specifics of data layout, type, and underlying algorithms may wish to use the
+more advanced `cuBLAS-Lt interface
+<https://docs.nvidia.com/cuda/cublas/index.html#using-the-cublasLt-api>`_. This
+interface uses the same underlying GPU kernels, but provides developers with a
+higher degree of control.
+
+Iterative Refinement of Linear Solvers
+______________________________________
+
+Iterative Refinement is a technique for performing linear algebra solvers in a
+reduced precision, then iterating to improve the results and return them to
+full precision. This technique has been used for several years to use 32-bit
+math operations and achieve 64-bit results, which often results in a speed-up
+due to single precision math often have a 2X performance advantage on modern
+CPUs and many GPUs. NVIDIA and the University of Tennessee have been working to
+extend this technique to perform operations in half-precision and obtain higher
+precision results. One such place where this technique has been applied is in
+calculating an LU factorization of the linear system Ax = B. This operation is
+dominated by a matrix multiplication operation, which is illustrated in green
+in the image below. It is possible to perform the GEMM operations at a reduced
+precision, while leaving the panel and trailing matrices in a higher precision.
+This technique allows for the majority of the math operations to be done at the
+higher FP16 throughput. The matrix used in the GEMM is generally not square,
+which is often the best performing GEMM operation, but is referred to as rank-k
+and generally still very fast when using matrix multiplication libraries.
+
+.. image:: /images/nv_tc_3.png
+   :width: 85.0%
+   :align: center
+
+A summary of the algorithm used for calculating in mixed precision is in the
+following image.
+
+.. image:: /images/nv_tc_4.png
+   :width: 85.0%
+   :align: center
+
+We see in the graph below that it is possible to achieved a 3-4X performance
+improvement over the double-precision solver, while achieving the same level of
+accuracy. It has also been observed that the use of Tensor Cores makes the
+problem more likely to converge than strict half-precision GEMMs due to the
+ability to accumulate into 32-bit results.
+
+.. image:: /images/nv_tc_5.png
+   :width: 85.0%
+   :align: center
+
+NVIDIA will be shipping official support for IR solvers in their cuSOLVER
+library in the latter half of 2019. The image below provides estimated release
+dates, which are subject to change.
+
+.. image:: /images/nv_tc_6.png
+   :width: 85.0%
+   :align: center
+
+Automatic Mixed Precision (AMP) in Machine Learning Frameworks
+______________________________________________________________
+
+NVIDIA has a Training With Mixed Precision guide available for developers
+wishing to explicitly use mixed precision and Tensor Cores in their training of
+neural networks. This is a good place to start when investigating Tensor Cores
+for machine learning applications. Developers should specifically read the
+Optimizing For Tensor Cores section.
+
+NVIDIA has also integrated a technology called Automatic Mixed Precision (AMP)
+into several common frameworks, TensorFlow, PyTorch, and MXNet at time of
+writing. In most cases AMP can be enabled via a small code change or via
+setting and environment variable. AMP does not strictly replace all matrix
+multiplication operations with half precision, but uses graph optimization
+techniques to determine whether a given layer is best run in full or half
+precision.
+
+Examples are provided for using AMP, but the following sections summarize the
+usage in the three supported frameworks.
+
+TensorFlow
+..........
+
+With TensorFlow AMP can be enabled using one of the following techniques.
+
+::
+
+  os.environ['TF_ENABLE_AUTO_MIXED_PRECISION'] = '1'
+
+OR
+
+::
+
+  export TF_ENABLE_AUTO_MIXED_PRECISION=1
+
+Explicit optimizer wrapper available in NVIDIA Container 19.07+, TF 1.14+, TF
+2.0:
+
+::
+
+  opt = tf.train.experimental.enable_mixed_precision_graph_rewrite(opt)
+
+
+PyTorch
+.......
+
+Adding the following to a PyTorch model will enable AMP:
+
+::
+
+  model, optimizer = amp.initialize(model, optimizer, opt_level="O1")
+  with amp.scale_loss(loss, optimizer) as scaled_loss:
+    scaled_loss.backward()
+
+MXNet
+.....
+
+The code below will enable AMP for MXNet:
+
+::
+
+  amp.init()
+  amp.init_trainer(trainer)
+  with amp.scale_loss(loss, trainer) as scaled_loss:
+    autograd.backward(scaled_loss)
+
+
+WMMA
+____
+
+The Warp Matrix Multiply and Accumulate (WMMA) API was introduced in CUDA 9
+explicitly for programming the Tesla V100 Tensor Cores. This is a low-level API
+that supports loading matrix data into fragments within the threads of a warp,
+applying a Tensor Core multiplication on that data, and then restoring it to
+the main GPU memory. This API is called within CUDA kernels and all WMMA
+operations are warp-synchronous, meaning the threads in a warp will leave the
+operation synchronously. Examples are available for using the WMMA instructions
+in C++ and CUDA Fortran. The image below demonstrates the general pattern for
+WMMA usage.
+
+.. image:: /images/nv_tc_7.png
+   :width: 85.0%
+   :align: center
+
+The example above performs a 16-bit accumulate operation, but 32-bit is also
+supported. Please see the provided samples and the `WMMA documentation
+<https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#wmma>`_ for
+more details.
+
+CUDA 10 introduced a lower-level alternative to WMMA with the mma.sync()
+instruction. This is a very low-level instruction that requires the programmer
+handle the data movement provided by WMMA explicitly, but is capable of higher
+performance. Details of `mma.sync
+<https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#warp-level-matrix-instructions-wmma-mma>`_
+can be found in the PTX documentation and examples for using this feature via
+CUTLASS cane be found in the second half of this `GTC presentation
+<https://on-demand-gtc.gputechconf.com/gtcnew/sessionview.php?sessionName=s9593-cutensor%3a+high-performance+tensor+operations+in+cuda>`_.
+
+CUTLASS
+_______
+
+`CUTLASS <https://github.com/nvidia/cutlass/>`_ is an open-source library
+provided by NVIDIA for building matrix multiplication operations using C++
+templates. The goal is to provide performance that is nearly as good as the
+hand-tuned cuBLAS library, but in a more expressive, composible manner.
+
+The CUTLASS library provides a variety of primitives that are optimized for
+proper data layout and movement to achieve the maximum possible performance of
+a matrix multiplation on an NVIDIA GPU. These include iterators for blocking,
+loading, and storing matrix tiles, plus optimized classes for transforming the
+data and performing the actual multiplication. CUTLASS provides `extensive
+documentation <https://github.com/NVIDIA/cutlass/blob/master/CUTLASS.md>`_ of
+these features and examples have been provided. Interested developers are also
+encouraged to watch the `CUTLASS introduction video
+<https://on-demand-gtc.gputechconf.com/gtcnew/sessionview.php?sessionName=s8854-cutlass%3a+software+primitives+for+dense+linear+algebra+at+all+levels+and+scales+within+cuda>`_
+from GTC2018.
+
+Measuring Tensor Core Utilization
+"""""""""""""""""""""""""""""""""
+
+When attempting to use Tensor Cores it is useful to measure and confirm that
+the Tensor Cores are being used within your code. For implicit use via a
+library like cuBLAS, the Tensor Cores will only be used above a certain
+threshold, so Tensor Core use should not be assumed. The NVIDIA Tools provide a
+performance metric to measure Tensor Core utilization on a scale from 0 (Idle)
+to 10 (Max) utilization.
+
+When using NVIDIA’s nvprof profiler, one should add the `-m
+tensor_precision_fu_utilization` option to measure Tensor Core utilization.
+Below is the output from measuring this metric on one of the example programs.
+
+::
+
+  $ nvprof -m tensor_precision_fu_utilization ./simpleCUBLAS
+  ==43727== NVPROF is profiling process 43727, command: ./simpleCUBLAS
+  GPU Device 0: "Tesla V100-SXM2-16GB" with compute capability 7.0
+
+  simpleCUBLAS test running..
+  simpleCUBLAS test passed.
+  ==43727== Profiling application: ./simpleCUBLAS
+  ==43727== Profiling result:
+  ==43727== Metric result:
+  Invocations                               Metric Name                           Metric Description         Min         Max         Avg
+  Device "Tesla V100-SXM2-16GB (0)"
+      Kernel: volta_h884gemm_128x64_ldg8_nn
+            1           tensor_precision_fu_utilization   Tensor-Precision Function Unit Utilization     Low (3)     Low (3)     Low (3)
+
+
+NVIDIA’s Nsight Compute may also be used to measure tensor core utilization via
+the sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_active metric, as
+follows:
+
+::
+
+  $ nv-nsight-cu-cli --metrics sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_active ./cudaTensorCoreGemm
+
+  [  compute_gemm, 2019-Aug-08 12:48:39, Context 1, Stream 7
+        Section: Command line profiler metrics
+        ---------------------------------------------------------------------- 
+        sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_active                    %                       43.44
+        ----------------------------------------------------------------------
+
+
+When to Try Tensor Cores
+""""""""""""""""""""""""
+
+Tensor Cores provide the potential for an enormous performance boost over
+full-precision operations, but when their use is appropriate is highly
+application and even problem independent. Iterative Refinement techniques can
+suffer from slow or possible a complete lack of convergence if the condition
+number of the matrix is very large. By using Tensor Cores, which support 32-bit
+accumulation, rather than strict 16-bit math operations, iterative refinement
+becomes a viable option in a much larger number of cases, so it should be
+attempted when an application is already using a supported solver.
+
+Even if iterative techniques are not available for an application, direct use
+of Tensor Cores may be beneficial if at least the A and B matrices can be
+constructed from the input data without significant loss of precision. Since
+the C and D matrices may be 32-bit, the output may have a higher degree of
+precision than the input. It may be possible to try these operations
+automatically by setting the math mode in cuBLAS, as detailed above, to
+determine whether the loss of precision is an acceptable trade-off for
+increased performance in a given application. If it is, the cublasGemmEx API
+allows the programmer to control when the conversion to 16-bit occurs, which
+may result in higher throughput than allowing the cuBLAS library to do the
+conversion at call time.
+
+Some non-traditional uses of Tensor Cores can come from places where integers
+that fall within the FP16 range are used in an application. For instance, in
+“Attacking the Opioid Epidemic: Determining the Epistatic and Pleiotropic
+Genetic Architectures for Chronic Pain and Opioid Addiction,” a 2018 Gordon
+Bell Prize-winning paper, the authors used Tensor Cores in place of small
+integers, allowing them very high performance over performing the same
+calculation in integer space. This technique is certainly not applicable to all
+applications, but does show that Tensor Cores may be used in algorithms that
+might not have been represented by a floating point matrix multiplication
+otherwise.
+
+Lastly, when performing the training step of a deep learning application it is
+often beneficial to do at least some of the layer calculations in reduced
+precision. The AMP technique described above can be tried with little to know
+code changes, making it highly advisable to attempt in any machine learning
+application.
+
+Tensor Core Examples and Other Materials
+""""""""""""""""""""""""""""""""""""""""
+
+NVIDIA has provided several example codes for using Tensor Cores from a variety
+of the APIs listed above. These examples can be found on `GitHub
+<https://github.com/olcf/NVIDIA-tensor-core-examples>`_.
+
+NVIDIA Tensor Core Workshop (August 2018): `slides
+<https://www.olcf.ornl.gov/wp-content/uploads/2019/11/ORNL_Tensor_Core_Training_Aug2019.pdf>`_,
+recording (coming soon)
+
+
+Tesla V100 Specifications
+-------------------------
+
++----------------------------------------------------+----------------------------+
+| Compute Capability                                 | 7.0                        |
++----------------------------------------------------+----------------------------+
+| Peak double precision floating point performance   | 7.8 TFLOP/s                |
++----------------------------------------------------+----------------------------+
+| Peak single precision floating point performance   | 15.7 TFLOP/s               |
++----------------------------------------------------+----------------------------+
+| Single precision CUDA cores                        | 5120                       |
++----------------------------------------------------+----------------------------+
+| Double precision CUDA cores                        | 2560                       |
++----------------------------------------------------+----------------------------+
+| Tensor cores                                       | 640                        |
++----------------------------------------------------+----------------------------+
+| Clock frequency                                    | 1530 MHz                   |
++----------------------------------------------------+----------------------------+
+| Memory Bandwidth                                   | 900 GB/s                   |
++----------------------------------------------------+----------------------------+
+| Memory size (HBM2)                                 | 16 or 32 GB                |
++----------------------------------------------------+----------------------------+
+| L2 cache                                           | 6 MB                       |
++----------------------------------------------------+----------------------------+
+| Shared memory size / SM                            | Configurable up to 96 KB   |
++----------------------------------------------------+----------------------------+
+| Constant memory                                    | 64 KB                      |
++----------------------------------------------------+----------------------------+
+| Register File Size                                 | 256 KB (per SM)            |
++----------------------------------------------------+----------------------------+
+| 32-bit Registers                                   | 65536 (per SM)             |
++----------------------------------------------------+----------------------------+
+| Max registers per thread                           | 255                        |
++----------------------------------------------------+----------------------------+
+| Number of multiprocessors (SMs)                    | 80                         |
++----------------------------------------------------+----------------------------+
+| Warp size                                          | 32 threads                 |
++----------------------------------------------------+----------------------------+
+| Maximum resident warps per SM                      | 64                         |
++----------------------------------------------------+----------------------------+
+| Maximum resident blocks per SM                     | 32                         |
++----------------------------------------------------+----------------------------+
+| Maximum resident threads per SM                    | 2048                       |
++----------------------------------------------------+----------------------------+
+| Maximum threads per block                          | 1024                       |
++----------------------------------------------------+----------------------------+
+| Maximum block dimensions                           | 1024, 1024, 64             |
++----------------------------------------------------+----------------------------+
+| Maximum grid dimensions                            | 2147483647, 65535, 65535   |
++----------------------------------------------------+----------------------------+
+| Maximum number of MPS clients                      | 48                         |
++----------------------------------------------------+----------------------------+
+
+ 
+
+Further Reading
+---------------
+
+For more information on the NVIDIA Volta architecture, please visit the
+following (outside) links.
+
+* `NVIDIA Volta Architecture White Paper <http://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf>`_
+* `NVIDIA PARALLEL FORALL blog article <https://devblogs.nvidia.com/parallelforall/inside-volta/>`_
+
+
+.. _burst-buffer:
+
+Burst Buffer
+=============
+
+NVMe (XFS)
+----------
+
+Each compute node on Summit has a 1.6TB \ **N**\ on-\ **V**\ olatile **Me**\
+mory (NVMe) storage device (high-memory nodes have a 6.4TB NVMe storage device), colloquially known as a "Burst Buffer" with
+theoretical performance peak of 2.1 GB/s for writing and 5.5 GB/s for reading.
+100GB of each NVMe is reserved for NFS cache to help speed access to common
+libraries. When calculating maximum usable storage size, this cache and
+formatting overhead should be considered; We recommend a maximum storage of
+1.4TB (6TB for high-memory nodes). The NVMes could be used to reduce the time that applications wait for
+I/O. Using an SSD drive per compute node, the burst buffer will be used to
+transfer data to or from the drive before the application reads a file or
+after it writes a file.  The result will be that the application benefits from
+native SSD performance for a portion of its I/O requests. Users are not
+required to use the NVMes.  Data can also be written directly to the parallel
+filesystem.
+
+.. figure:: /images/nvme_arch.jpg
+   :align: center
+
+   The NVMes on Summit are local to each node.
+
+Current NVMe Usage
+-------------------
+
+Tools for using the burst buffers are still under development.  Currently, the
+user will have access to a writeable directory on each node's NVMe and then
+explicitly move data to and from the NVMes with posix commands during a job.
+This mode of usage only supports writing file-per-process or file-per-node.
+It does not support automatic "n to 1" file writing, writing from multiple nodes
+to a single file.  After a job completes the NVMes are trimmed, a process
+that irreversibly deletes data from the devices, so all desired data from the
+NVMes will need to be copied back to the parallel filesystem before the job
+ends. This largely manual mode of usage will not be the recommended way to use
+the burst buffer for most applications because tools are actively being
+developed to automate and improve the NVMe transfer and data management process.
+Here are the basic steps for using the BurstBuffers in their current limited
+mode of usage:
+
+
+#. Modify your application to write to /mnt/bb/$USER, a directory that will be
+   created on each NVMe.
+
+#. Modify either your application or your job submission script to copy the
+   desired data from /mnt/bb/$USER back to the parallel filesystem before the
+   job ends.
+
+#. Modify your job submission script to include the ``-alloc_flags NVME``  bsub
+   option. Then on each reserved Burst Buffer node will be available a directory
+   called /mnt/bb/$USER.
+
+#. Submit your bash script or run the application.
+
+#. Assemble the resulting data as needed.
+
+Interactive Jobs Using the NVMe
+--------------------------------
+
+The NVMe can be setup for test usage within an interactive job as follows:
+
+.. code::
+
+    bsub -W 30 -nnodes 1 -alloc_flags "NVME" -P project123 -Is bash
+
+The ``-alloc_flags NVME`` option will create a directory called /mnt/bb/$USER on
+each requested node's NVMe. The ``/mnt/bb/$USER`` directories will be writeable
+and readable until the interactive job ends. Outside of a job ``/mnt/bb/`` will
+be empty and you will not be able to write to it.
+
+NVMe Usage Example
+-------------------
+
+The following example illustrates how to use the burst buffers (NVMes) by
+default on Summit. This example uses a submission script, check_nvme.lsf. It is
+assumed that the files are saved in the user's GPFS scratch area,
+/gpfs/alpine/scratch/$USER/projid, and that the user is operating from there as
+well. Do not forget that for all the commands on NVMe, it is required to use
+jsrun. This will submit a job to run on one node.
+
+**Job submssion script: check_nvme.lsf.** 
+
+.. code::
+
+   #!/bin/bash
+   #BSUB -P project123
+   #BSUB -J name_test
+   #BSUB -o nvme_test.o%J
+   #BSUB -W 2
+   #BSUB -nnodes 1
+   #BSUB -alloc_flags NVME
+
+   #Declare your project in the variable
+   projid=xxxxx
+   cd /gpfs/alpine/scratch/$USER/$projid
+
+   #Save the hostname of the compute node in a file
+   jsrun -n 1 echo $HOSTNAME > test_file
+
+   #Check what files are saved on the NVMe, always use jsrun to access the NVMe devices
+   jsrun -n 1 ls -l /mnt/bb/$USER/
+
+   #Copy the test_file in your NVMe
+   jsrun -n 1 cp test_file /mnt/bb/$USER/
+
+   #Delete the test_file from your local space
+   rm test_file
+
+   #Check again what the NVMe folder contains
+   jsrun -n 1 ls -l /mnt/bb/$USER/
+
+   #Output of the test_file contents
+   jsrun -n 1 cat /mnt/bb/$USER/test_file
+
+   #Copy the file from the NVMe to your local space
+   jsrun -n 1 cp /mnt/bb/$USER/test_file .
+
+   #Check the file locally
+   ls -l test_file
+
+To run this example: ``bsub ./check_nvme.lsf``.   We could include all the
+commands in a script and call this file as a jsrun argument in an interactive
+job, in order to avoid changing numbers of processes for all the jsrun
+calls. You can see in the table below an example of the differences in a
+submission script for executing an application on GPFS and NVMe. In the example,
+a binary ``./btio`` reads input from an input file and generates output files.
+In this particular case we copy the binary and the input file onto the NVMe, but
+this depends on the application as it is not always necessary, we can execute
+the binary on the GPFS and write/read the data from NVMe if it is supported by
+the application.
+
+.. role:: raw-html(raw)
+    :format: html
+
++----------------------------------------+------------------------------------------------+
+| *Using GPFS*          		 | *Using NVMe*         			  |
++----------------------------------------+------------------------------------------------+
+|               	``#!/bin/bash``  | ``#!/bin/bash`` 	     			  |
++----------------------------------------+------------------------------------------------+
+| 	 	       ``#BSUB -P xxx``  | ``#BSUB -P xxx``  		   	          |
++----------------------------------------+------------------------------------------------+
+|	  	  ``#BSUB -J NAS-BTIO``  | ``#BSUB -J NAS-BTIO``  			  |
++----------------------------------------+--------------+---------------------------------+
+|   	       ``#BSUB -o nasbtio.o%J``  | ``#BSUB -o nasbtio.o%J`` 	                  |
++----------------------------------------+---------------+--------------------------------+
+|              ``#BSUB -e nasbtio.e%J``  | ``#BSUB -e nasbtio.e%J``   			  |
++----------------------------------------+------------------------------------------------+
+|			``#BSUB -W 10``  | ``#BSUB -W 10``    		 	          |
++----------------------------------------+------------------------------------------------+
+|	     ``#BSUB -nnodes 1``         | ``#BSUB -nnodes 1``  	 		  |
++----------------------------------------+------------------------------------------------+
+| 		    			 | ``#BSUB -alloc_flags nvme`` 			  |
+|					 +------------------------------------------------+
+| 	            			 | ``export BBPATH=/mnt/bb/$USER/``		  |
+|					 +------------------------------------------------+
+| 		    			 | ``jsrun -n 1 cp btio ${BBPATH}``		  |
+|					 +------------------------------------------------+
+| 		    			 | ``jsrun -n 1 cp input* ${BBPATH}``		  |
+|					 +------------------------------------------------+
+| ``jsrun -n 1 -a 16 -c 16 -r 1 ./btio`` | ``jsrun -n 1 -a 16 -c 16 -r 1 ${BBPATH}/btio`` |
+|					 +------------------------------------------------+
+| ``ls -l``		`		 | ``jsrun -n 1 ls -l ${BBPATH}/``		  |
+|					 +------------------------------------------------+
+|					 | ``jsrun -n 1 cp ${BBPATH}/* .``		  |
++----------------------------------------+------------------------------------------------+
+
+When a user occupies more than one compute node, then they are using more NVMes
+and the I/O can scale linearly. For example in the following plot you can observe
+the scalability of the IOR benchmark on 2048 compute nodes on Summit where the
+write performance achieves 4TB/s and the read 11.3 TB/s
+
+
+.. image:: /images/nvme_ior_summit.png
+   :align: center
+
+Remember that by default NVMe support one file per MPI process up to one file
+per compute node. If users desire a single file as output from data staged on
+the NVMe they will need to construct it.  Tools to save automatically checkpoint
+files from NVMe to GPFS as also methods that allow automatic n to 1 file writing
+with NVMe staging are under development.   Tutorials about NVME:   Burst Buffer
+on Summit (`slides
+<https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_BB_markomanolis.pdf>`__,
+`video <https://vimeo.com/306890779>`__) Summit Burst Buffer Libraries (`slides
+<https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_BB_zimmer.pdf>`__,
+`video <https://vimeo.com/306891012>`__). 
+
+.. _spectral-library:
+
+Spectral Library
+----------------
+
+Spectral is a portable and transparent middleware library to enable use of the
+node-local burst buffers for accelerated application output on Summit. It is
+used to transfer files from node-local NVMe back to the parallel GPFS file
+system without the need of the user to interact during the job execution.
+Spectral runs on the isolated core of each reserved node, so it does not occupy
+resources and based on some parameters the user could define which folder to be
+copied to the GPFS. In order to use Spectral, the user has to do the following
+steps in the submission script:
+
+#. Request Spectral resources instead of NVMe
+#. Declare the path where the files will be saved in the node-local NVMe
+   (PERSIST_DIR)
+#. Declare the path on GPFS where the files will be copied (PFS_DIR)
+#. Execute the script spectral_wait.py when the application is finished in order
+   to copy the files from NVMe to GPFS
+
+The following table shows the differences of executing an application on GPFS,
+NVMe, and NVMe with Spectral. This example is using one compute node. We copy
+the executable and input file for the NVMe cases but this is not always
+necessary. Depending on the application, you could execute the binary from the
+GPFS and save the output files on NVMe. Adjust your parameters to copy, if
+necessary, the executable and input files onto all the NVMe devices.
+
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| *Using GPFS* 			         | *Using NVMe*                                   | *Using NVME with Spectral library*             |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``#!/bin/bash``		         | ``#!/bin/bash``                                | ``#!/bin/bash``                                |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``#BSUB -P xxx``		         | ``#BSUB -P xxx``                               | ``#BSUB -P xxx``                               |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``#BSUB -J NAS-BTIO``		         | ``#BSUB -J NAS-BTIO``                          | ``#BSUB -J NAS-BTIO``                          |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``#BSUB -o nasbtio.o%J``	         | ``#BSUB -o nasbtio.o%J``                       | ``#BSUB -o nasbtio.o%J``                       |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``#BSUB -e nasbtio.e%J``	         | ``#BSUB -e nasbtio.e%J``                       | ``#BSUB -e nasbtio.e%J``                       |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``#BSUB -W 10``		         | ``#BSUB -W 10``                                | ``#BSUB -W 10``                                |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``#BSUB -nnodes 1``		         | ``#BSUB -nnodes 1``                            | ``#BSUB -nnodes 1``                            |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| 				         | ``#BSUB -alloc_flags nvme``                    | ``#BSUB -alloc_flags spectral``                |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| 				         |                                                | ``module load spectral``                       |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| 				         | ``export BBPATH=/mnt/bb/$USER``                | ``export BBPATH=/mnt/bb/$USER``                |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| 				         |                                                | ``export PERSIST_DIR=${BBPATH}``               |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| 				         |                                                | ``export PFS_DIR=$PWD/spect/``                 |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| 				         | ``jsrun -n 1 cp btio ${BBPATH}``               | ``jsrun -n 1 cp btio ${BBPATH}``               |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| 				         | ``jsrun -n 1 cp input* ${BBPATH}``             | ``jsrun -n 1 cp input* ${BBPATH}``             |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``jsrun -n 1 -a 16 -c 16 -r 1 ./btio`` | ``jsrun -n 1 -a 16 -c 16 -r 1 ${BBPATH}/btio`` | ``jsrun -n 1 -a 16 -c 16 -r 1 ${BBPATH}/btio`` |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``ls -l``			         | ``jsrun -n 1 ls -l ${BBPATH}/``	          | ``jsrun -n 1 ls -l ${BBPATH}/``	           |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| 				         | ``jsrun -n 1 cp ${BBPATH}/* .``                | ``spectral_wait.py``                           |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+
+
+When the Spectral library is not used, any output data produced has to be copied
+back from NVMe.  You can observe that with the Spectral library there is no reason
+to explicitly ask for the data to be copied to GPFS as it is done automatically
+through the spectral_wait.py script. Also a log file called spectral.log will be
+created with information on the files that were copied.
 
 .. _known-issues:
 
