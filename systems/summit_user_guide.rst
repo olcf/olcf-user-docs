@@ -37,6 +37,10 @@ applications with a mixed-precision capability in excess of 3 EF.
 Summit Nodes
 ------------
 
+.. image:: /images/summit_node_architecture.png
+   :align: center
+   :alt: Summit node architecture diagram
+
 The basic building block of Summit is the IBM Power System AC922 node.
 Each of the approximately 4,600 compute nodes on Summit contains two IBM
 POWER9 processors and six `NVIDIA Tesla V100`_ accelerators and provides
