@@ -11,9 +11,9 @@ to get the necessary configuration injected into the container at runtime.
   :widths: 5, 8, 5, 25
 
   "Marble", "ccs.ornl.gov/fs", "olcf", "/ccs/sw, /ccs/home, /ccs/sys, /ccs/proj, /gpfs/alpine"
-  "Marble", "ccs.ornl.gov/fs", "olcf-nfs", "/ccs/sw, /ccs/home, /ccs/sys, /ccs/proj"
+  "Marble", "ccs.ornl.gov/fs", "olcf-nfs", "/ccs/sw, /ccs/home, /ccs/sys, /ccs/proj, /gpfs/alpine"
   "Onyx", "ccs.ornl.gov/fs", "ccsopen", "/ccsopen/sw, /ccsopen/home, /ccsopen/proj, /gpfs/wolf"
-  "Onyx", "ccs.ornl.gov/fs", "open-nfs", "/ccsopen/sw, /ccsopen/home, /ccsopen/proj"
+  "Onyx", "ccs.ornl.gov/fs", "ccsopen-nfs", "/ccsopen/sw, /ccsopen/home, /ccsopen/proj"
 
 If you already have a Deployment running you can add the annotation with the client
 
