@@ -10,8 +10,8 @@ to get the necessary configuration injected into the container at runtime.
   :header: "Cluster", "Annotation", "Value", "Mounts"
   :widths: 5, 8, 5, 25
 
-  "Marble", "ccs.ornl.gov/fs", "olcf", "/ccs/sw, /ccs/home, /ccs/home1, /ccs/home2, /ccs/sys, /ccs/proj, /gpfs/alpine"
-  "Marble", "ccs.ornl.gov/fs", "olcf-nfs", "/ccs/sw, /ccs/home, /ccs/home1, /ccs/home2, /ccs/sys, /ccs/proj"
+  "Marble", "ccs.ornl.gov/fs", "olcf", "/ccs/sw, /ccs/home, /ccs/sys, /ccs/proj, /gpfs/alpine"
+  "Marble", "ccs.ornl.gov/fs", "olcf-nfs", "/ccs/sw, /ccs/home, /ccs/sys, /ccs/proj"
   "Onyx", "ccs.ornl.gov/fs", "ccsopen", "/ccsopen/sw, /ccsopen/home, /ccsopen/proj, /gpfs/wolf"
   "Onyx", "ccs.ornl.gov/fs", "open-nfs", "/ccsopen/sw, /ccsopen/home, /ccsopen/proj"
 
