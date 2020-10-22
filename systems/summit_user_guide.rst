@@ -231,7 +231,7 @@ the shell interface a user will be presented with upon login to any OLCF
 system. Currently, supported shells include:
 
 -  bash
--  tsch
+-  tcsh
 -  csh
 -  ksh
 
@@ -753,7 +753,7 @@ As an example, consider the following batch script:
 +----------+------------+--------------------------------------------------------------------------------------------+
 | 4        | Required   | Maximum walltime for the job is 3 hours                                                    |
 +----------+------------+--------------------------------------------------------------------------------------------+
-| 5        | Required   | The job will use 2,048 nodes                                                               |
+| 5        | Required   | The job will use 2,048 compute nodes                                                       |
 +----------+------------+--------------------------------------------------------------------------------------------+
 | 6        | Optional   | Enable GPU Multi-Process Service                                                           |
 +----------+------------+--------------------------------------------------------------------------------------------+
@@ -771,7 +771,7 @@ As an example, consider the following batch script:
 +----------+------------+--------------------------------------------------------------------------------------------+
 | 13       | -          | Run the ``date`` command to write a timestamp to the standard output file                  |
 +----------+------------+--------------------------------------------------------------------------------------------+
-| 14       | -          | Run the executable                                                                         |
+| 14       | -          | Run the executable on the allocated compute nodes                                          |
 +----------+------------+--------------------------------------------------------------------------------------------+
 | 15       | -          | Copy output files from the scratch area into a more permanent location                     |
 +----------+------------+--------------------------------------------------------------------------------------------+

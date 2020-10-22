@@ -1,2 +1,3 @@
 _build
 .vscode
+._* # ignore macos tmp files
