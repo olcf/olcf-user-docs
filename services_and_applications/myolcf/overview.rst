@@ -17,7 +17,7 @@ What can it do?
 
 As you are waiting on your first user account, myOLCF lets you:
 
-* Check the status of your first-time account application
+* :ref:`Check the status <checking-application-status>` of your first-time account application
 * Schedule a video conference for identity proofing
 
 As a current project member, myOLCF lets you:
@@ -33,7 +33,7 @@ As a current project member, myOLCF lets you:
 
 Additionaly, as a current principal investigator, myOLCF lets you:
 
-* Approve or deny requests to join your project(s)
+* :ref:`Approve or deny requests <processing_project_membership_requests>` to join your project(s)
 * Apply for project renewal or extensions
 
 Can I suggest a feature?
