@@ -75,12 +75,12 @@ computing preparation, INCITE and ALCC scaling, and application
 performance to maximize scientific application efficiency and
 productivity on leadership computing platforms. The OLCF Resource
 Utilization Council, as well as independent referees, review and approve
-all DD requests. Applications are accepted year round via the `OLCF
+all DD requests. Applications are accepted year-round via the `OLCF
 Director's Discretion Project
 Application <https://www.olcf.ornl.gov/for-users/documents-forms/olcf-directors-discretion-project-application/>`__.
 
 **Vendor –** OLCF resources are also available to ORNL vendors.
-Applications may be submitted year round by completing the `Vendor
+Applications may be submitted year-round by completing the `Vendor
 Project
 Application <https://www.olcf.ornl.gov/support/getting-started/olcf-vendor-project-application/>`__.
 
@@ -183,7 +183,7 @@ Checking the status of your application
 You can check the general status of your application at any time using the myOLCF self-service
 portal's `account status page <https://my.olcf.ornl.gov/pending/status>`__.
 For more information, see the :ref:`myOLCF self-service portal documentation<myolcf-overview>`.
-If you need to make further inquiries about your application you may email our
+If you need to make further inquiries about your application, you may email our
 Accounts Team at accounts@ccs.ornl.gov.
 
 When all of the above steps are completed, your user account will be
