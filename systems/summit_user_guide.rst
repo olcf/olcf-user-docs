@@ -3028,7 +3028,7 @@ _____
 2. Load the ``job-step-viewer`` module
     * ``module load job-step-viewer``
 3. Test out a ``jsrun`` line by itself, or provide an executable as normal
-    * ``jsrun -n12 -r6 -c7 -g1 -a1 EOMP_NUM_THREADS=7 -brs``
+    * ``jsrun -n12 -r6 -c7 -g1 -a1 -EOMP_NUM_THREADS=7 -brs``
 4. Visit the provided URL
     * https://jobstepviewer.olcf.ornl.gov/summit/871957-1
 
