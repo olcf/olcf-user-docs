@@ -8,3 +8,4 @@ Services and Applications
    :maxdepth: 2
 
    slate/index.rst
+   myolcf/index.rst

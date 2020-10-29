@@ -141,57 +141,76 @@ about Summit, please visit the :ref:`summit-user-guide`.
 Applying for a user account
 ================================
 
-
 Collaborators involved with an approved and activated OLCF project can
 apply for a user account associated with it. There are several steps in
 receiving a user account, and we're here to help you through them.
 
 .. note::
     Project PIs do not receive a user account with project
-    creation, and must also submit a User Account Application.
+    creation, and must also apply.
 
 .. note::
     If you will be contributing to multiple projects, your user
-    account will need to be associated with each. If you already have a user
-    account and need to be added to additional projects, complete the User
-    Account Application and indicate you are an existing user.
+    account will need to be associated with each. For instructions on joining
+    additional projects with an existing account, see the
+    :ref:`Get access to additional projects<get-additional-projects>` section below.
 
-#. Apply for an account using the `Account Request
+#. First-time users should apply for an account using the `Account Request
    Form <https://www.olcf.ornl.gov/support/getting-started/olcf-account-application>`__.
+#. When our accounts team begins processing your application, you will receive an automated
+   email containing an unique 36-character confirmation code. Make note of it; you can use
+   it to check the status of your application at any time.
 #. The principal investigator (PI) of the project must approve your
-   account and system access. The Accounts Team will contact the PI for
-   this approval.
-#. If you have or will receive a RSA SecurID from our facility,
-   additional paperwork will be sent to you via email to complete for
-   identity proofing.
+   account and system access. We will make the project PI aware of your request.
 #. Foreign national participants will be sent an Oak Ridge National Lab
    (ORNL) Personnel Access System (PAS) request specific for the
    facility and cyber-only access. After receiving your response, it
    takes between 15-35 days for approval.
-#. Fully-executed User Agreements with each institution having
+#. Fully-executed Institutional User Agreements with each institution having
    participants are required. If our records indicate your institution
-   needs to sign either a User Agreement and/or Appendix A, the form(s)
-   along with instructions will be sent via email.
+   needs to sign either an Institutional User Agreement and/or Appendix A, the proper
+   form(s), along with instructions, will be sent via email.
 #. If you are processing sensitive or proprietary data, additional
    paperwork is required and will be sent to you.
+#. If you need an RSA SecurID token from our facility, the token and
+   additional paperwork will be sent to you via email to complete identity proofing.
+
+.. _checking-application-status:
+
+Checking the status of your application
+=======================================
+
+You can check the general status of your application at any time using the myOLCF self-service
+portal's `account status page <https://my.olcf.ornl.gov/pending/status>`__.
+For more information, see the :ref:`myOLCF self-service portal documentation<myolcf-overview>`.
+If you need to make further inquiries about your application you may email our
+Accounts Team at accounts@ccs.ornl.gov.
 
 When all of the above steps are completed, your user account will be
 created and you will be notified by email. Now that you have a user
 account and it has been associated with a project, you're ready to get
 to work. This website provides extensive documentation for OLCF systems,
 and can help you efficiently use your project's allocation. We recommend
-reading the :ref:`system-user-guides` for the machines you will be using often.
+reading the :ref:`System User Guides<system-user-guides>` for the machines you will be using often.
+
+.. _get-additional-projects:
 
 Get access to additional projects
 ======================================
 
-This process is similar to applying for a new user account. However, if you
-already have a user account at the OLCF, your exiting credentials can be reused
-on multiple projects.
+If you already have a user account at the OLCF, your existing credentials can be
+leveraged across multiple projects.
 
-To gain access to another project, fill out the `Account Request Form
-<https://www.olcf.ornl.gov/support/getting-started/olcf-account-application>`__,
-and indicate your username, Once the PI of that project has been contacted and
-given permission, your username will be added to the relevant charge accounts
-and unix groups, and you will see these additions when you log in with your OLCF
-username and PIN+tokencode.
+If your user account has an associated RSA SecurID (i.e. you have an "OLCF Moderate" account), you
+gain access to another project by logging in to the `myOLCF self-service portal <https://my.olcf.ornl.gov>`__
+and filling out the application under `My Account` > `Join Another Project`. For more information,
+see the :ref:`myOLCF self-service portal documentation<myolcf-overview>`.
+
+If your user account has only an associated password (i.e. you have an "OLCF Open" account) you
+gain access to another project by filling out the `Account Request Form
+<https://www.olcf.ornl.gov/support/getting-started/olcf-account-application>`__; myOLCF is only
+available to users with RSA SecurID tokens at this time.
+
+In either case, once the PI of that project has been contacted and granted permission, your user account
+will be added to the relevant charge accounts and unix groups, and you will see these additions
+when you log in.
