@@ -29,11 +29,15 @@ Forms for Requesting an Account
 ===============================
 
 `Request an Account <https://www.olcf.ornl.gov/for-users/documents-forms/olcf-account-application/>`_
-Use this form to request a new user account or join an additional project.
+First-time users should use this form to request a new user account. See the section :ref:`applying-for-a-user-account`
+for complete details.
 
-`Notary Token Verification
-Form <https://www.olcf.ornl.gov/wp-content/accounts/Notary_Token_Verification_Form.pdf>`_ (See
-`Notary Instructions <https://www.olcf.ornl.gov/wp-content/accounts/Notary_Instructions.pdf>`__)
+`Join an Additional Project <https://my.olcf.ornl.gov>`__
+Existing users with RSA SecurID tokens should use the myOLCF self-service portal to apply for additional projects.
+See the section :ref:`applying-for-a-user-account` for complete details.
+
+`Notary Token Verification Form <https://www.olcf.ornl.gov/wp-content/accounts/Notary_Token_Verification_Form.pdf>`_
+(See `Notary Instructions <https://www.olcf.ornl.gov/wp-content/accounts/Notary_Instructions.pdf>`__)
 For certain resources, ORNL requires identity proofing to authenticate a
 user’s identity and possession of the token prior to activation. The
 Notary Token Verification Form verifies the identity of the applicant
