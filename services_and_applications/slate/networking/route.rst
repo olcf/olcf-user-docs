@@ -162,7 +162,7 @@ Web Interface Configuration
 Routes can also be created from the web interface. On the hamburger menu, click ``Networking``\ , then ``Routes``.
 
 
-.. image:: /images/slate/routeMenu.png
+.. image:: /images/slate/RouteMenu.png
    :alt: Route in Hamburger Menu
 
 If no routes have been created for a project, you will be presented with a ``Create Route`` button.
@@ -256,7 +256,7 @@ GUI
 In the web interface, from the side menu, select ``Applications``\ , then ``Routes``.
 
 
-.. image:: /images/slate/routeMenu.png
+.. image:: /images/slate/RouteMenu.png
    :alt: Routes Menu
 
 
