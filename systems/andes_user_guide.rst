@@ -47,8 +47,8 @@ Andes contains 704 compute nodes and 9 GPU nodes. Andes has two partitions:
 | Partition   | Node Count  | Memory  | GPU               | CPU                                |
 +=============+=============+=========+===================+====================================+
 | batch       | 704         | 256 GB  | N/A               | [2x] AMD EPYC 7302 16Core Processor|
-| (default)   |             |         |                   | 3.0 GHz, 16 SMT                    |   
-|             |             |         |                   | (total 32 cores, 32 SMT *per node*)|
+| (default)   |             |         |                   | 3.0 GHz, 16 cores                  |   
+|             |             |         |                   | (total 32 cores *per node*)        |
 +-------------+-------------+---------+-------------------+------------------------------------+
 | gpu         | 9           | 1 TB    | [2x]              | [2x] Intel\ |R| Xeon\ |R| E5-2695  |
 |             |             |         | NVIDIA\ |R|       | @2.3 GHz - 14 cores, 28 HT         |
