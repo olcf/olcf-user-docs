@@ -3,7 +3,7 @@ Andes
 ******
 
 .. note::
-    We are pleased to announce a new pre/post processing and data analysis cluster, ``Andes``.  Andes will soon be available for access and will replace Rhea in September, 2020.  Please note the following:
+    We are pleased to announce a new pre/post processing and data analysis cluster, ``Andes``.  Andes will soon be available for access and will replace Rhea in January, 2021.  Please note the following:
     
     -  **Access and Allocations:** Projects with allocations on Rhea will automatically be given access to Andes.  Allocations will start fresh on Andes and in most cases will be the same node-hour allocation awarded on Rhea. 
     -  **Timeline:** Access to Andes and Rhea will overlap for approximately one month to allow a transition period.  During this overlap, all current Rhea users will have access to both systems.
@@ -47,8 +47,8 @@ Andes contains 704 compute nodes and 9 GPU nodes. Andes has two partitions:
 | Partition   | Node Count  | Memory  | GPU               | CPU                                |
 +=============+=============+=========+===================+====================================+
 | batch       | 704         | 256 GB  | N/A               | [2x] AMD EPYC 7302 16Core Processor|
-| (default)   |             |         |                   | 3.0 GHz, 32 SMT                    |   
-|             |             |         |                   | (total 32 cores, 64 SMT *per node*)|
+| (default)   |             |         |                   | 3.0 GHz, 16 cores                  |   
+|             |             |         |                   | (total 32 cores *per node*)        |
 +-------------+-------------+---------+-------------------+------------------------------------+
 | gpu         | 9           | 1 TB    | [2x]              | [2x] Intel\ |R| Xeon\ |R| E5-2695  |
 |             |             |         | NVIDIA\ |R|       | @2.3 GHz - 14 cores, 28 HT         |
@@ -884,11 +884,9 @@ Andes Compute Node Description
 The following image represents a high level compute node that will be used below
 to display layout options.
 
-.. image:: /images/Andes-Node-Description-SMT.jpg
+.. image:: /images/Andes-Node-Description-SMT1.jpg
    :align: center
 
-.. note::
-    0 and 32 are on the same physical core.
 
 Using ``srun``
 """"""""""""""
@@ -928,7 +926,7 @@ Physical Core Binding
 The following will run four copies of a.out, one per CPU, two per node with
 physical core binding
 
-.. image:: /images/Andes-layout-physical-core-1-per-CPU.jpg
+.. image:: /images/Andes-layout-physical-core-1-per-CPU-SMT1.jpg
    :align: center
 
 
@@ -937,7 +935,7 @@ Simultaneous Multithreading Binding
 The following will run four copies of a.out, one per SMT, two per node
 using a round robin task layout between nodes:
 
-.. image:: /images/Andes-layout-1-per-SMT-cyclic.jpg
+.. image:: /images/Andes-layout-1-per-SMT1-cyclic.jpg
    :align: center
 
 .. _andes-thread-layout:
@@ -949,7 +947,7 @@ Thread Layout
 The following will run four copies of a.out. Each task will launch two threads.
 The ``-c`` flag will provide room for the threads.
 
-.. image:: /images/Andes-layout-thread-per-hyperthread.jpg
+.. image:: /images/Andes-layout-thread-per-SMT1.jpg
    :align: center
 
 .. warning::
