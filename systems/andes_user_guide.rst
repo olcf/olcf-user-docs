@@ -917,7 +917,7 @@ execute an MPI binary on one or more compute nodes in parallel.
 MPI Task Layout
 """""""""""""""""
 
-Each compute node on Andes contains two sockets each with 8 cores.  Depending on
+Each compute node on Andes contains two sockets each with 16 cores.  Depending on
 your job, it may be useful to control task layout within and across nodes.
 
 Physical Core Binding
