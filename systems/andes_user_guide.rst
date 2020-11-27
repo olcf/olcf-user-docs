@@ -1151,3 +1151,110 @@ The My OLCF site is provided to aid in the utilization and management of OLCF
 allocations. If you have any questions or have a request for additional data,
 please contact the OLCF User Assistance Center.
 
+--------------
+
+.. _visualization-tools:
+
+Visualization tools
+====================
+
+Remote Visualization using VNC (non-GPU)
+----------------------------------------
+
+In addition to the instructions below, `Benjamin
+Hernandez <https://www.olcf.ornl.gov/directory/staff-member/benjamin-hernandez/>`__ of the `OLCF
+Advanced Technologies
+Section <https://www.olcf.ornl.gov/about-olcf/staff-sections/advanced-technologies/>`__
+presented a related talk, `GPU Rendering in Rhea and
+Titan <https://www.olcf.ornl.gov/wp-content/uploads/2016/01/GPURenderingRheaTitan-1.pdf>`__,
+during the 2016 OLCF User Meeting.
+
+Step 1 (local system)
+^^^^^^^^^^^^^^^^^^^^^
+
+Install a vncviewer (turbovnc, tigervnc, etc.) on your local machine.  When
+running vncviewer for the first time, it will ask to set a password for this and
+future vnc sessions.
+
+Step 2 (terminal 1)
+^^^^^^^^^^^^^^^^^^^
+
+From a Andes connection launch a batch job and execute the below matlab-vnc.sh
+script to start the vncserver and run matlab within:
+
+#. localsytem: ``ssh -X username@andes.olcf.ornl.gov``
+#. andes: ``salloc -A abc123 -N 1 -t 1:00:00 --x11=batch``
+#. andes: ``./matlab-vnc.sh``
+
+.. code::
+
+    $ ./matlab-vnc.sh
+
+    Starting vncserver
+
+    Desktop 'TurboVNC: andes79.olcf.ornl.gov:1 (userA)' started on display andes79.olcf.ornl.gov:1
+
+    Starting applications specified in /ccs/home/userA/.vnc/xstartup.turbovnc
+    Log file is /ccs/home/userA/.vnc/andes79.olcf.ornl.gov:1.log
+
+    **************************************************************************
+    Instructions
+
+    In a new terminal, open a tunneling connection with andes79.olcf.ornl.gov and port 5901
+    example:
+         username@andes.olcf.ornl.gov -L 5901:andes79.olcf.ornl.gov:5901
+
+    **************************************************************************
+
+    MATLAB is selecting SOFTWARE OPENGL rendering.
+
+
+Step 3 (terminal 2)
+^^^^^^^^^^^^^^^^^^^
+
+In a second terminal on your local system open a tunneling connection following
+the instructions given by the vnc start-up script:
+
+-  localsystem: ``ssh username@andes.olcf.ornl.gov -L 5901:andes79:5901``
+
+Step 4 (local system)
+^^^^^^^^^^^^^^^^^^^^^
+
+Launch the vncviewer. When you launch the vncviewer that you downloaded you will
+need to specify ``localhost:5901``. You will also set a password for the initial
+connection or enter the created password for subsequent connections.
+
+matlab-vnc.sh (non-GPU rendering)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code::
+
+    #!/bin/sh
+
+    what()
+    {
+       hostname
+    } 
+    echo "Starting vncserver"
+
+    /opt/TurboVNC/bin/vncserver :1 -geometry 1920x1080 -depth 24
+
+    echo
+    echo
+    echo "**************************************************************************"
+    echo "Instructions"
+    echo
+    echo "In a new terminal, open a tunneling connection with $(what) and port 5901"
+    echo "example:"
+    echo  "         username@andes.olcf.ornl.gov -L 5901:$(what):5901 "
+    echo
+    echo "**************************************************************************"
+    echo
+    echo
+
+    export DISPLAY=:1
+
+    /autofs/nccs-svm1_sw/rhea/.swci/0-core/opt/spack/20191017/linux-rhel7-x86_64/gcc-4.8.5/matlab-R2017a-gvlhdvhhq4ucnm5zalzmn7i2jkl444uf/bin/matlab
+
+    vncserver -kill :1
+
