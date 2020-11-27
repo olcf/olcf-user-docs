@@ -1357,7 +1357,7 @@ In a second terminal on your local system open a tunneling connection following
 the instructions given by the vnc start-up script:
 
 -  localsystem: ``ssh -L 5901:localhost:5901 username@andes.olcf.ornl.gov``
--  andes$ ``ssh -L 5901:localhost:5901 andes-gpu5``
+-  andes: ``ssh -L 5901:localhost:5901 andes-gpu5``
 
 Step 4 (local system)
 ^^^^^^^^^^^^^^^^^^^^^
@@ -1392,7 +1392,7 @@ vmd-vgl.sh (GPU rendering)
     echo
     echo "In a new terminal, open a tunneling connection with $(what) and port 5901"
     echo "example:"
-    echo  "         username@rhea.ccs.ornl.gov -L 5901:$(what):5901 "
+    echo  "         username@andes.olcf.ornl.gov -L 5901:$(what):5901 "
     echo
     echo "**************************************************************************"
     echo
@@ -1401,4 +1401,44 @@ vmd-vgl.sh (GPU rendering)
     module load vmd
     vglrun vmd
     vncserver -kill :1
+
+Remote Visualization using Nice DCV (GPU nodes only)
+----------------------------------------------------
+
+Step 1 (terminal 1)
+^^^^^^^^^^^^^^^^^^^
+
+Launch an interactive job:
+
+.. code::
+
+     salloc -A PROJECT_ID -p gpu -N 1 -t 60:00 -M andes -C DCV
+
+Run the following commands:
+
+.. code::
+
+    $ xinit &
+    $ export DISPLAY=:0
+    $ dcv create-session --gl-display :0 mySessionName
+    $ hostname  // will be used to open a tunneling connection with this node
+
+Step 1 (terminal 2)
+^^^^^^^^^^^^^^^^^^^
+
+Open a tunneling connection with gpu node ``N``, given by hostname:
+
+.. code::
+
+    localsystem: ssh username@andes.olcf.ornl.gov -L 8443:andes-gpuN:8443
+    andes:       ssh -L 8443:localhost:8443 andes-gpuN
+
+Open your web browser using the following link and use your credentials to
+access OLCF systems: ``https://localhost:8443`` When finished, kill the dcv
+session in first terminal:
+
+.. code::
+
+    $ dcv close-session mySessionName
+    $ kill %1
 
