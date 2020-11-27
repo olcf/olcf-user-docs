@@ -1423,7 +1423,7 @@ Run the following commands:
     $ dcv create-session --gl-display :0 mySessionName
     $ hostname  // will be used to open a tunneling connection with this node
 
-Step 1 (terminal 2)
+Step 2 (terminal 2)
 ^^^^^^^^^^^^^^^^^^^
 
 Open a tunneling connection with gpu node ``N``, given by hostname:
