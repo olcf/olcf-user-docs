@@ -1257,8 +1257,8 @@ matlab-vnc.sh (non-GPU rendering)
 
     export DISPLAY=:1
 
-    /autofs/nccs-svm1_sw/rhea/.swci/0-core/opt/spack/20191017/linux-rhel7-x86_64/gcc-4.8.5/matlab-R2017a-gvlhdvhhq4ucnm5zalzmn7i2jkl444uf/bin/matlab
-
+    module load matlab
+    matlab
     vncserver -kill :1
 
 Remote Visualization using VNC (GPU nodes)
