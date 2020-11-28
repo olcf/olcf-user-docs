@@ -1202,7 +1202,8 @@ script to start the vncserver and run matlab within:
 
     In a new terminal, open a tunneling connection with andes79.olcf.ornl.gov and port 5901
     example:
-         username@andes.olcf.ornl.gov -L 5901:andes79.olcf.ornl.gov:5901
+         localsystem: ssh -L 5901:localhost:5901 username@andes.olcf.ornl.gov
+         andes: ssh -L 5901:localhost:5901 andes79
 
     **************************************************************************
 
@@ -1216,7 +1217,7 @@ In a second terminal on your local system open a tunneling connection following
 the instructions given by the vnc start-up script:
 
 -  localsystem: ``ssh -L 5901:localhost:5901 username@andes.olcf.ornl.gov``
--  andes$ ``ssh -L 5901:localhost:5901 andes79``
+-  andes: ``ssh -L 5901:localhost:5901 andes79``
 
 Step 4 (local system)
 ^^^^^^^^^^^^^^^^^^^^^
@@ -1247,7 +1248,8 @@ matlab-vnc.sh (non-GPU rendering)
     echo
     echo "In a new terminal, open a tunneling connection with $(what) and port 5901"
     echo "example:"
-    echo  "         username@andes.olcf.ornl.gov -L 5901:$(what):5901 "
+    echo "   localsystom: ssh -L 5901:localhost:5901 username@andes.olcf.ornl.gov "
+    echo "   andes: ssh -L 5901:localhost:5901 $(what) "
     echo
     echo "**************************************************************************"
     echo
@@ -1315,7 +1317,8 @@ script to start the vncserver and run vmd within:
 
     In a new terminal, open a tunneling connection with andes-gpu5.olcf.ornl.gov and                                                                              port 5901
     example:
-         username@andes.olcf.ornl.gov -L 5901:andes-gpu5.olcf.ornl.gov:5901
+         localsystem: ssh -L 5901:localhost:5901 username@andes.olcf.ornl.gov
+         andes: ssh -L 5901:localhost:5901 andes-gpu5
 
     **************************************************************************
 
@@ -1392,7 +1395,8 @@ vmd-vgl.sh (GPU rendering)
     echo
     echo "In a new terminal, open a tunneling connection with $(what) and port 5901"
     echo "example:"
-    echo  "         username@andes.olcf.ornl.gov -L 5901:$(what):5901 "
+    echo "   localsystem: ssh -L 5901:localhost:5901 username@andes.olcf.ornl.gov "
+    echo "   andes: ssh -L 5901:localhost:5901 $(what) "
     echo
     echo "**************************************************************************"
     echo
