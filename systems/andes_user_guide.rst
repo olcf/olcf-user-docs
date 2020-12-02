@@ -1325,6 +1325,162 @@ When your job reaches the top of the queue, the ``RenderView1`` view window
 will return. At this point you are connected to Andes and can open files that
 reside there and visualize them interactively.
 
+VisIt
+-----
+
+VisIt is a interactive, parallel analysis and visualization tool for
+scientific data. VisIt contains a rich set of visualization features so
+you can view your data in a variety of ways. It can be used to visualize
+scalar and vector fields defined on two- and three-dimensional (2D and
+3D) structured and unstructured meshes.
+
+Installing and Setting Up Visit
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+VisIt uses a client-server architecture. You will obtain the best
+performance by running the VisIt client on your local computer and
+running the server on OLCF resources. VisIt for your local computer can
+be obtained here: `VisIt Installation <http://visit.llnl.gov>`__. Andes
+currently has Remote Backend Version 3.1.2 available, so the local client
+version 3.1.2 is recommended.
+
+The first time you launch VisIt (after installing), you will be prompted
+for a remote host preference. Unfortunately, ORNL does not maintain this
+list and the ORNL entry is outdated. Click the “None” option instead.
+Restart VisIt, and go to Options→Host Profiles. Select “New Host”
+
+- For host nickname: Andes (this is arbitrary)
+- Remote hostname: andes.olcf.ornl.gov (required)
+- Host name aliases: andes-login#g (required)
+- Maximum Nodes: unchecked (unless using the GPU partition on Rhea)
+- Maximum processors: unchecked (arbitrary but use fewer than cores available)
+- Path to VisIt Installation: ``/sw/andes/visit`` (required)
+- Username: Your OLCF Username (required)
+- Tunnel data connections through SSH: Checked (required)
+
+Under the “Launch Profiles” tab create a launch profile. Most of these values
+are arbitrary
+
+- Profile Name: No GPU, MPI, Multinode (arbitrary)
+- Timeout: 480 (arbitrary)
+- Number of threads per task: 0 (arbitrary, but not tested
+  with OMP/pthread support)
+- Additional arguments: blank (arbitrary)
+
+Under the “Parallel” Tab:
+
+- Launch parallel engine: Checked (required)
+- Launch Tab:
+    - Parallel launch method:
+      sbatch/srun (required)
+    - Partition/Pool/Queue: batch (required)
+    - Number of processors: 2 (arbitrary, but
+      high number may lead to OOM errors)
+    - Number of nodes: 2 (arbitrary)
+    - Bank/Account: Your OLCF project to use (required)
+    - Time Limit: 1:00:00 (arbitrary)
+    - Machine file: Unchecked (required – Lets VisIt get
+      the nodelist from the scheduler)
+    - Constraints: unchecked
+- Advanced tab – All boxes unchecked
+- GPU Acceleration
+    - Use cluster’s graphics cards: Unchecked
+
+Click “Apply”. Exit and re-launch VisIt.
+
+Usage
+^^^^^
+
+Once you have VisIt installed and set up on your local computer:
+
+-  Open VisIt on your local computer.
+-  Go to: "File→Open file" or click the "Open" button on the GUI.
+-  Click the "Host" dropdown menu on the "File open" window that popped
+   up and choose "ORNL\_Andes".
+-  This will prompt you for your OLCF password, and connect you to Andes.
+-  Navigate to the appropriate file.
+-  Once you choose a file, you will be prompted for the number of nodes
+   and processors you would like to use (remember that each node of Andes
+   contains 32 processors) and the Project ID, which VisIt calls a
+   "Bank" as shown below.
+
+.. image:: /images/Visit_Andes_1.png
+   :align: center
+
+-  Once specified, the server side of VisIt will be launched, and you
+   can interact with your data.
+
+Please do not run VisIt's client from an OLCF machine. You will get much better
+performance if you install a client on your workstation and launch locally. You
+can directly connect to OLCF machines from inside VisIt and access your data
+remotely. For additional resources, please see the `VisIt Wiki
+<http://www.visitusers.org>`__.
+
+Troubleshooting
+^^^^^^^^^^^^^^^
+
+VisIt keeps asking for your password.
+"""""""""""""""""""""""""""""""""""""
+
+If VisIt keeps asking for your "Password" in the dialog box below, and you are
+entering your correct PIN + RSA token code, you might need to select "Change
+username" and then enter your OLCF username when prompted.
+
+.. image:: /images/Visit_Andes_2.png
+   :align: center
+
+This will give you a new opportunity to enter your PIN + token code and your
+username will appear in login request box as shown below. If you want you OLCF
+username to be filled in by default, go to "Options→Host profiles" and enter it
+under "Username".
+
+.. image:: /images/Visit_Andes_3.png
+   :align: center
+
+VisIt will not connect when you try to draw an image.
+"""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+If VisIt will not connect to Andes when you try to draw an image, you should
+login to Andes and enter "squeue" from the command line. Your VisIt job should
+appear in the queue. If you see it in a state marked "PD" you should wait a bit
+longer to see if it will start. If you do not see your job listed in the queue,
+check to make sure your project ID is entered in your VisIt host profile. See
+the :ref:`modifying-host-profiles` section below for instructions.
+
+.. _modifying-host-profiles:
+
+Modifying Host Profiles
+^^^^^^^^^^^^^^^^^^^^^^^
+
+To make changes to an exiting host profile, do the following:
+
+-  Go to "Options→Host Profiles".
+-  The window will display the known hosts on the left, with the
+   settings for that host shown on the right in the "Host Settings" tab.
+-  You can modify settings relevant to this host machine. For example,
+   you can change the "Username" field if your OLCF username differs
+   from your local computer username.
+-  Once you have made your changes, press the "Apply" button, and then
+   save the settings (Options/Save Settings).
+
+Each host can have several launch profiles. A launch profile specifies VisIt can
+be run on a given host computer. To make changes to a host's launch profile, do
+the following:
+
+-  Go to "Options→Host Profiles".
+-  Select the host in the left side of the window.
+-  Select the "Launch Profiles" tab in the right side of the window.
+   This will display the known launch profiles for this host.
+-  Select a "Launch Profile" and the settings are displayed in the tabs
+   below.
+-  You can set your Project ID in the "Default Bank/Account" field in
+   the "Parallel" tab.
+-  You can change the queue used by modifying the "Partition/Pool/Queue"
+   field in the "Parallel" tab.
+-  Once you have made your changes, press the "Apply" button, and then
+   save the settings (Options/Save Settings).
+
+
 Remote Visualization using VNC (non-GPU)
 ----------------------------------------
 
