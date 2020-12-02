@@ -81,7 +81,7 @@ Then, you can start a notebook in the directory of your choosing (relative to yo
 Conda Environments
 ------------------
 
-he base environment provides a few common data analysis libraries by default, including
+The base environment provides a few common data analysis libraries by default, including
 Pytorch, Numpy, Pandas, Bokeh, Seaborn etc. To see the full list, open the Terminal from
 the Launcher and type ``conda list``. The libraries in the base environment should
 cover most use cases.
