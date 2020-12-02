@@ -35,24 +35,47 @@ The above link will present you with the page below. Please login with your OLCF
 .. image:: /images/jupyter/login.png
 
 
+After succesfull authentication you will be presented with a choice of JupyterLab images (similar to the image below):
 
-After succesfull authentication you will be presented with a choice of JupyterLab images (see below for description of lab images):
+- CPU-Only
+- GPU-Lab(s) with varying CUDA version
+
+**NOTE: These GPU-enabled labs are limited. You may get get a message saying the resource is not schedulable, if all GPUs in the pool are occupied.**
+
 
 .. image:: /images/jupyter/jupyterlab_images.png
+
+**Select the lab you would like and click "Start".**
+
+Once inside a lab, you will be presented with the default notebook/environment in the "launcher" page of the JupyterLab interface. You can read about the default environment more, below, in the "Conda Environments" section. In addtion, that section will show you how to create your own Conda Environments.
+
+Once inside the JupyterLab, please take a moment to explore the interface.
+
+To read more about the JupyterLab interface, in general, please check out this wonderful documentation: `JupyterLab Docs <https://jupyterlab.readthedocs.io/en/stable/user/interface.html>`__
 
 
 CPU vs. GPU JupyterLab (Available Resources)
 --------------------------------------------
 
-Each single-user notebook, either CPU-only or GPU-enabled, spawned by OLCF's JupyterHub gets these resources:
+Each single-user JupyterLab, spawned by OLCF's JupyterHub, gets these default resources:
 
 - 16 CPU's
 - 32GB Memory
 - NCCS filesystem access (GPFS and NFS)
 
+**You have the same filesystem access as if you were on Summit, to both NFS and GPFS, as you will be working under your standard OLCF UID.**
+
 The CPU-only JupyterLab is limited to the above resources.
 
-The GPU-enabled JupyterLab will launch a notebook onto a resource containing a GPU (in addtion to the above resources). This allows you to experiment with GPU-enabled anaylytics from JupyterLab. *These GPU resources are limited*. You may get get a message saying the resource is not schedulable, if all GPUs in the pool are occupied. 
+The GPU-enabled JupyterLab will launch a notebook onto a resource containing a GPU (in addtion to the above resources). This allows you to experiment with GPU-enabled anaylytics from JupyterLab.
+
+To see the root of your filesystem access, within your JupyterLab interface, click this circled folder (you can traverse to your users spaces from there):
+
+.. image:: /images/jupyter/directory_access.png
+
+Then, you can start a notebook in the directory of your choosing (relative to your user access). In the example image below, I have launched a notebook in my /ccs/proj/<proj>/<uid>/ directory:
+
+.. image:: /images/jupyter/directory_example.png
 
 
 Conda Environments
@@ -76,7 +99,7 @@ Setting up your own custom Conda environment is useful when the base environment
 you need and you want your installed libraries to persist across sessions. These custom
 Conda environments need to be saved in a ``/ccs`` or ``/gpfs/alpine`` directory.
 
-*Please note that GPSF is purged. Using /ccs/proj/ is recommended*
+**Please note that GPFS is purged. Using /ccs/proj/ is recommended**
 
 Let us look at an example with creating a custom environment that has Tensorflow.
 
