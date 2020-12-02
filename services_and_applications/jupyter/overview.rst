@@ -69,13 +69,26 @@ The CPU-only JupyterLab is limited to the above resources.
 
 The GPU-enabled JupyterLab will launch a notebook onto a resource containing a GPU (in addtion to the above resources). This allows you to experiment with GPU-enabled anaylytics from JupyterLab.
 
+Working within GPFS and NFS
+---------------------------
+
 To see the root of your filesystem access, within your JupyterLab interface, click this circled folder (you can traverse to your users spaces from there):
 
 .. image:: /images/jupyter/directory_access.png
 
+Here are the mappings:
+
+| **gpfs -> /gpfs/alpine**
+| **home -> /ccs/home**
+| **proj -> /ccs/proj**
+
 Then, you can start a notebook in the directory of your choosing (relative to your user access). In the example image below, I have launched a notebook in my /ccs/proj/<proj>/<uid>/ directory:
 
 .. image:: /images/jupyter/directory_example.png
+
+Another method of getting to the filesystem path of your choosing is selecting **File->"Open from Path"** and typing the desired path in the text box:
+
+.. image:: /images/jupyter/open_file_path.png
 
 
 Conda Environments
