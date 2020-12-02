@@ -1158,6 +1158,329 @@ please contact the OLCF User Assistance Center.
 Visualization tools
 ====================
 
+ParaView
+--------
+
+`ParaView <http://paraview.org>`__ is an open-source, multi-platform data
+analysis and visualization application. ParaView users can quickly build
+visualizations to analyze their data using qualitative and quantitative
+techniques. The data exploration can be done interactively in 3D or
+programmatically using ParaView’s batch processing capabilities.
+
+ParaView was developed to analyze extremely large datasets using distributed
+memory computing resources. The OLCF provides ParaView server installs on Andes
+to facilitate large scale distributed visualizations. The ParaView server
+running on Andes may be used in a headless batch processing mode or be used to
+drive a ParaView GUI client running on your local machine.
+
+ParaView client
+^^^^^^^^^^^^^^^
+
+A ParaView client instance is not available on Andes. Interactive mode requires
+that your local machine have a version matched ParaView client installation and
+batch mode can benefit from a local installation as well to aid in script
+generation. Precompiled ParaView binaries for Windows, Macintosh, and Linux can
+be downloaded from `Kitware
+<http://paraview.org/paraview/resources/software.php>`__.
+
+Interactive mode
+^^^^^^^^^^^^^^^^
+
+Although in a single machine setup both the ParaView client and server run on
+the same host, this need not be the case. It is possible to run a local ParaView
+client to display and interact with your data while the ParaView server runs in
+a Andes batch job, allowing interactive analysis of very large data sets.
+
+.. warning::
+    In interactive mode your local ParaView version number must
+    match the ParaView version number available on Andes. Please check the
+    available ParaView versions using ``module avail paraview``.
+
+Interactive Example
+"""""""""""""""""""
+
+The following provides an example of launching the ParaView server on Andes and
+connecting to it from a locally running ParaView client.  Although several
+methods may be used the one described should work in most cases.
+
+.. warning::
+    For Macintosh clients, it is necessary to install `XQuartz
+    (X11) <https://support.apple.com/en-us/HT201341>`__ to get a command prompt
+    in which you will securely enter your OLCF credentials.
+
+    For Windows clients, it is necessary to install PuTTY to
+    create an ssh connection in step 2.
+
+
+**Step 1: Save the following servers.pvsc file to your local computer**
+
+.. code::
+
+    <Servers>
+     <Server name="Andes@ORNL" resource="csrc://localhost:11111">
+      <CommandStartup>
+       <Options>
+        <Option name="XTERM_EXE" label="Xterm executable" save="true">
+          <File default="/usr/bin/xterm"/>
+        </Option>
+        <Option name="SSH_EXE" label="SSH executable" save="true">
+          <File default="ssh"/>
+        </Option>
+        <Option name="MACHINE" label="Remote machine" save="true">
+          <String default="andes-login3.olcf.ornl.gov"/>
+        </Option>
+        <Option name="VERSION" label="ParaView version" save="true">
+          <String default="5.8.1"/>
+        </Option>
+        <Option name="USER" label="Username" save="true">
+          <String default="YOURUSERNAME"/>
+        </Option>
+        <Option name="CLIENT_PORT" label="Client port">
+          <Range type="int" min="1025" max="65535" step="1" default="11111"/>
+        </Option>
+        <Option name="SERVER_PORT" label="Server port">
+          <Range type="int" min="1025" max="65535" step="1" default="random"/>
+        </Option>
+        <Option name="NUMNODES" label="Number of nodes to reserve" save="true">
+          <Range type="int" min="1" max="1024" step="4" default="2"/>
+        </Option>
+        <Option name="CPUSPERNODE" label="Number of cpus to use on each node" save="true"> 
+          <Range type="int" min="1" max="32" step="1" default="8"/>
+        </Option>
+        <Option name="NUMMINUTES" label="Number of minutes to reserve" save="true"> 
+          <Range type="int" min="5" max="1000" step="5" default="20"/>
+        </Option>
+        <Option name="ACCOUNT" label="Account" save="true">
+          <String default="YOURPROJECT"/>
+        </Option>
+        <Option name="QUEUE" label="Queue" save="true">
+          <String default="batch"/>
+        </Option>
+        <Option name="JOBNAME" label="Job name" save="true">
+          <String default="paraview_interactive"/>
+        </Option>
+       </Options>
+      <Command exec="$XTERM_EXE$" timeout="0" delay="2">
+        <Arguments>
+          <Argument value="-T"/>
+          <Argument value="&#x22;ParaView_$VERSION$"/>
+          <Argument value="$USER$@$MACHINE$&#x22;"/>
+          <Argument value="-hold"/>
+          <Argument value="-e"/>
+          <Argument value="$SSH_EXE$"/>
+          <Argument value="-R"/>
+          <Argument value="$SERVER_PORT$:localhost:$CLIENT_PORT$"/>
+          <Argument value="$USER$@$MACHINE$"/>
+          <Argument value="/sw/andes/paraview/connect/launch.sh"/>
+          <Argument value="$NUMNODES$"/>
+          <Argument value="$NUMMINUTES$"/>
+          <Argument value="$ACCOUNT$"/>
+          <Argument value="$QUEUE$"/>
+          <Argument value="$JOBNAME$"/>
+          <Argument value="$SERVER_PORT$"/>
+          <Argument value="pvserver"/>
+          <Argument value="$VERSION$"/>
+          <Argument value="$CPUSPERNODE$"/>
+        </Arguments>
+       </Command>
+      </CommandStartup>
+     </Server>
+     # ...
+    </Servers>
+**Step 2: Launch ParaView on your Desktop and Click on File -> Connect**
+
+Start ParaView and then select ``File/Connect`` to begin.
+
+.. image:: /images/paraview_step1a_Andes.jpg
+   :align: center
+
+Click Load Servers button and find the servers.pvsc file
+
+.. image:: /images/paraview_step2a_Andes.jpg
+   :align: center
+
+**Step 3: Establish a connection to Andes**
+
+Select Andes@ORNL, click on Connect and change the values in the Connection Options box.
+
+.. image:: /images/paraview_step2a_Andes_2.jpg
+   :align: center
+
+A dialog box follows, in which you must enter in your username and project
+allocation, the number of nodes to reserve and a duration to reserve them for.
+Please make sure to check the correct path of the xterm on your local computer
+and add the path to the option box.
+
+
+.. image:: /images/paraview_step2b_Andes.jpg
+   :align: center
+
+When you click OK, a windows command prompt or ``xterm`` pops up. In this
+window enter your credentials at the OLCF login prompt.
+
+.. image:: /images/paraview_step2c_Andes.jpg
+   :align: center
+
+When your job reaches the top of the queue, the ``RenderView1`` view window
+will return. At this point you are connected to Andes and can open files that
+reside there and visualize them interactively.
+
+VisIt
+-----
+
+VisIt is a interactive, parallel analysis and visualization tool for
+scientific data. VisIt contains a rich set of visualization features so
+you can view your data in a variety of ways. It can be used to visualize
+scalar and vector fields defined on two- and three-dimensional (2D and
+3D) structured and unstructured meshes.
+
+Installing and Setting Up Visit
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+VisIt uses a client-server architecture. You will obtain the best
+performance by running the VisIt client on your local computer and
+running the server on OLCF resources. VisIt for your local computer can
+be obtained here: `VisIt Installation <http://visit.llnl.gov>`__. Andes
+currently has Remote Backend Version 3.1.2 available, so the local client
+version 3.1.2 is recommended.
+
+The first time you launch VisIt (after installing), you will be prompted
+for a remote host preference. Unfortunately, ORNL does not maintain this
+list and the ORNL entry is outdated. Click the “None” option instead.
+Restart VisIt, and go to Options→Host Profiles. Select “New Host”
+
+- For host nickname: Andes (this is arbitrary)
+- Remote hostname: andes.olcf.ornl.gov (required)
+- Host name aliases: andes-login#g (required)
+- Maximum Nodes: unchecked (unless using the GPU partition on Rhea)
+- Maximum processors: unchecked (arbitrary but use fewer than cores available)
+- Path to VisIt Installation: ``/sw/andes/visit`` (required)
+- Username: Your OLCF Username (required)
+- Tunnel data connections through SSH: Checked (required)
+
+Under the “Launch Profiles” tab create a launch profile. Most of these values
+are arbitrary
+
+- Profile Name: No GPU, MPI, Multinode (arbitrary)
+- Timeout: 480 (arbitrary)
+- Number of threads per task: 0 (arbitrary, but not tested
+  with OMP/pthread support)
+- Additional arguments: blank (arbitrary)
+
+Under the “Parallel” Tab:
+
+- Launch parallel engine: Checked (required)
+- Launch Tab:
+    - Parallel launch method:
+      sbatch/srun (required)
+    - Partition/Pool/Queue: batch (required)
+    - Number of processors: 2 (arbitrary, but
+      high number may lead to OOM errors)
+    - Number of nodes: 2 (arbitrary)
+    - Bank/Account: Your OLCF project to use (required)
+    - Time Limit: 1:00:00 (arbitrary)
+    - Machine file: Unchecked (required – Lets VisIt get
+      the nodelist from the scheduler)
+    - Constraints: unchecked
+- Advanced tab – All boxes unchecked
+- GPU Acceleration
+    - Use cluster’s graphics cards: Unchecked
+
+Click “Apply”. Exit and re-launch VisIt.
+
+Usage
+^^^^^
+
+Once you have VisIt installed and set up on your local computer:
+
+-  Open VisIt on your local computer.
+-  Go to: "File→Open file" or click the "Open" button on the GUI.
+-  Click the "Host" dropdown menu on the "File open" window that popped
+   up and choose "ORNL\_Andes".
+-  This will prompt you for your OLCF password, and connect you to Andes.
+-  Navigate to the appropriate file.
+-  Once you choose a file, you will be prompted for the number of nodes
+   and processors you would like to use (remember that each node of Andes
+   contains 32 processors) and the Project ID, which VisIt calls a
+   "Bank" as shown below.
+
+.. image:: /images/Visit_Andes_1.png
+   :align: center
+
+-  Once specified, the server side of VisIt will be launched, and you
+   can interact with your data.
+
+Please do not run VisIt's client from an OLCF machine. You will get much better
+performance if you install a client on your workstation and launch locally. You
+can directly connect to OLCF machines from inside VisIt and access your data
+remotely. For additional resources, please see the `VisIt Wiki
+<http://www.visitusers.org>`__.
+
+Troubleshooting
+^^^^^^^^^^^^^^^
+
+VisIt keeps asking for your password.
+"""""""""""""""""""""""""""""""""""""
+
+If VisIt keeps asking for your "Password" in the dialog box below, and you are
+entering your correct PIN + RSA token code, you might need to select "Change
+username" and then enter your OLCF username when prompted.
+
+.. image:: /images/Visit_Andes_2.png
+   :align: center
+
+This will give you a new opportunity to enter your PIN + token code and your
+username will appear in login request box as shown below. If you want you OLCF
+username to be filled in by default, go to "Options→Host profiles" and enter it
+under "Username".
+
+.. image:: /images/Visit_Andes_3.png
+   :align: center
+
+VisIt will not connect when you try to draw an image.
+"""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+If VisIt will not connect to Andes when you try to draw an image, you should
+login to Andes and enter "squeue" from the command line. Your VisIt job should
+appear in the queue. If you see it in a state marked "PD" you should wait a bit
+longer to see if it will start. If you do not see your job listed in the queue,
+check to make sure your project ID is entered in your VisIt host profile. See
+the :ref:`modifying-host-profiles` section below for instructions.
+
+.. _modifying-host-profiles:
+
+Modifying Host Profiles
+^^^^^^^^^^^^^^^^^^^^^^^
+
+To make changes to an exiting host profile, do the following:
+
+-  Go to "Options→Host Profiles".
+-  The window will display the known hosts on the left, with the
+   settings for that host shown on the right in the "Host Settings" tab.
+-  You can modify settings relevant to this host machine. For example,
+   you can change the "Username" field if your OLCF username differs
+   from your local computer username.
+-  Once you have made your changes, press the "Apply" button, and then
+   save the settings (Options/Save Settings).
+
+Each host can have several launch profiles. A launch profile specifies VisIt can
+be run on a given host computer. To make changes to a host's launch profile, do
+the following:
+
+-  Go to "Options→Host Profiles".
+-  Select the host in the left side of the window.
+-  Select the "Launch Profiles" tab in the right side of the window.
+   This will display the known launch profiles for this host.
+-  Select a "Launch Profile" and the settings are displayed in the tabs
+   below.
+-  You can set your Project ID in the "Default Bank/Account" field in
+   the "Parallel" tab.
+-  You can change the queue used by modifying the "Partition/Pool/Queue"
+   field in the "Parallel" tab.
+-  Once you have made your changes, press the "Apply" button, and then
+   save the settings (Options/Save Settings).
+
+
 Remote Visualization using VNC (non-GPU)
 ----------------------------------------
 
@@ -1445,4 +1768,3 @@ session in first terminal:
 
     $ dcv close-session mySessionName
     $ kill %1
-
