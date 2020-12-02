@@ -1194,7 +1194,7 @@ a Andes batch job, allowing interactive analysis of very large data sets.
 .. warning::
     In interactive mode your local ParaView version number must
     match the ParaView version number available on Andes. Please check the
-    available ParaView versions using Lmod
+    available ParaView versions using ``module avail paraview``.
 
 Interactive Example
 """""""""""""""""""
@@ -1768,4 +1768,3 @@ session in first terminal:
 
     $ dcv close-session mySessionName
     $ kill %1
-
