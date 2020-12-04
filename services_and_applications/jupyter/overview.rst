@@ -72,8 +72,8 @@ The GPU-enabled JupyterLab will launch a notebook onto a resource containing a G
 **NOTE: These GPU-enabled labs are limited. You may get get a message saying the resource is not schedulable, if all GPUs in the pool are occupied.**
 
 
-Working within GPFS and NFS
----------------------------
+Working within GPFS and NFS (Launching a notebook)
+--------------------------------------------------
 
 To see the root of your filesystem access, within your JupyterLab interface, click this circled folder (you can traverse to your users spaces from there):
 
@@ -81,7 +81,11 @@ To see the root of your filesystem access, within your JupyterLab interface, cli
 
 You should see **gpfs** and **ccs** - the "top" of GPFS amd NFS respectively.
 
-Then, you can start a notebook in the directory of your choosing (relative to your user access). In the example image below, I have launched a notebook in my **/ccs/proj/<proj>/<uid>/** directory:
+Then, you can start a notebook in the directory of your choosing (relative to your user access). 
+
+To do so, traverse the filesystem to your desired path and then click the "Python 3" notebook in the launcher page. This will launch the default notebook environment and store the notebook in your current path. 
+
+In the example image below, I have launched a notebook in my **/ccs/proj/<proj>/<uid>/** directory (the notebook filename is "Untitled.ipynb" - you can rename yours):
 
 .. image:: /images/jupyter/directory_example.png
 
@@ -90,13 +94,14 @@ Another method of getting to the filesystem path of your choosing is selecting *
 .. image:: /images/jupyter/open_file_path.png
 
 
-Conda Environments
-------------------
+Conda environments and custom notebooks
+---------------------------------------
 
 The base environment provides a few common data analysis libraries by default, including
 Pytorch, Numpy, Pandas, Bokeh, Seaborn etc. To see the full list, open the Terminal from
 the Launcher and type ``conda list``. The libraries in the base environment should
-cover most use cases.
+cover most use cases. This base environment is provided to the default "Python 3" notebook, visible in the 
+JupyterLab "Launcher" page.
 
 From the Terminal, you can install additional libraries with a simple ``conda install`` to
 use in your current session. But these installed libraries won't persist across sessions
@@ -104,8 +109,8 @@ if your server is restarted.
 
 
 
-Creating your own Conda environment
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Creating your own Conda environment and notebook entry
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Setting up your own custom Conda environment is useful when the base environment doesn't provide what
 you need and you want your installed libraries to persist across sessions. These custom
@@ -113,7 +118,9 @@ Conda environments need to be saved in a ``/ccs`` or ``/gpfs/alpine`` directory.
 
 **Please note that GPFS is purged. Using /ccs/proj/ is recommended**
 
-Let us look at an example with creating a custom environment that has Tensorflow.
+Let us look at an example with creating a custom environment that has Tensorflow. 
+
+At the end of this example you will have a "tensorflowenv" notebook visible in the JuptyerLab "Launcher" page.
 
 
 Example: Creating a Conda environment for Tensorflow
@@ -137,13 +144,15 @@ Example: Creating a Conda environment for Tensorflow
    * When you refresh the page and look at the Launcher, you will see buttons labelled
      ``tensorflowenv``. Clicking it will start a Notebook or Console running in your
      ``tensorflowenv`` environment.
+
+.. image:: /images/jupyter/tensorflow_notebook_image.png
      
 #. Back in our Terminal, with our environment still activated, install Tensorflow with
    ``conda install tensorflow`` (or ``pip install tensorflow`` for the latest
    version). Now open a ``tensorflowenv`` notebook and type ``import tensorflow`` to check
    if the installation was successful.
-#. If you restart the server, you will see that the ``tensorflowenv`` Notebook and Console
-   buttons are still available. 
+#. If restart the server or lose your session, you will see that the ``tensorflowenv`` Notebook and Console
+   buttons are still available after coming back. 
 #. You can always install more libraries into your Conda environment as needed by opening
    the Terminal in JupyterLab again, activating the environment with ``source activate``
    and doing ``conda install`` or ``pip install``.
@@ -151,6 +160,13 @@ Example: Creating a Conda environment for Tensorflow
 
 To delete your environment, you will need to delete it from the path where the environment
 was created, as well as delete the corresponding directory from ``~/.local/share/jupyter/kernels``.
+
+Things to be aware of
+---------------------
+
+- All notebooks have an idle time limit of 1-hour. After 1-hour of idle time, your JupyterLab session will terminate. You may restart your session though.
+- To persist a notebook and conda environment, it is highly recommended to use your NFS project space (/ccs/proj/<project-id>/<uid>/).
+- The GPU-labs are limited resources. There is no guarantee of a GPU being readily available for JupyterLab. Please use the more readily accessible CPU-Labs, unless you absolutely need a GPU.
 
 Example Jupyter Notebooks
 -------------------------
