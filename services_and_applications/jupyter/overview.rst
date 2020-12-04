@@ -63,11 +63,14 @@ Each single-user JupyterLab, spawned by OLCF's JupyterHub, gets these default re
 - 32GB Memory
 - NCCS filesystem access (GPFS and NFS)
 
-**You have the same filesystem access as if you were on Summit, to both NFS and GPFS, as you will be working under your standard OLCF UID.**
+**NOTE: You have the same filesystem access as if you were on Summit, to both NFS and GPFS, as you will be working under your standard OLCF UID.**
 
 The CPU-only JupyterLab is limited to the above resources.
 
 The GPU-enabled JupyterLab will launch a notebook onto a resource containing a GPU (in addtion to the above resources). This allows you to experiment with GPU-enabled anaylytics from JupyterLab.
+
+**NOTE: These GPU-enabled labs are limited. You may get get a message saying the resource is not schedulable, if all GPUs in the pool are occupied.**
+
 
 Working within GPFS and NFS
 ---------------------------
@@ -76,13 +79,9 @@ To see the root of your filesystem access, within your JupyterLab interface, cli
 
 .. image:: /images/jupyter/directory_access.png
 
-Here are the mappings:
+You should see **gpfs** and **ccs** - the "top" of GPFS amd NFS respectively.
 
-| **gpfs -> /gpfs/alpine**
-| **home -> /ccs/home**
-| **proj -> /ccs/proj**
-
-Then, you can start a notebook in the directory of your choosing (relative to your user access). In the example image below, I have launched a notebook in my /ccs/proj/<proj>/<uid>/ directory:
+Then, you can start a notebook in the directory of your choosing (relative to your user access). In the example image below, I have launched a notebook in my **/ccs/proj/<proj>/<uid>/** directory:
 
 .. image:: /images/jupyter/directory_example.png
 
@@ -152,3 +151,8 @@ Example: Creating a Conda environment for Tensorflow
 
 To delete your environment, you will need to delete it from the path where the environment
 was created, as well as delete the corresponding directory from ``~/.local/share/jupyter/kernels``.
+
+Example Jupyter Notebooks
+-------------------------
+
+Please check out our OLCF `Jupyter-Examples <https://github.com/olcf/jupyter-examples>`__ repository on GitHub.
