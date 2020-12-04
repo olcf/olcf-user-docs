@@ -163,6 +163,15 @@ Example: Creating a Conda environment for Tensorflow
 To delete your environment, you will need to delete it from the path where the environment
 was created, as well as delete the corresponding directory from ``~/.local/share/jupyter/kernels``.
 
+Manually stopping your JupyterLab session
+-----------------------------------------
+
+All JupyterLab sessions expire and termninate if they are left idle for an 1-hour. 
+
+If you would like to terminate your session manually though, to select a different JupyterLab image for instance (going from CPU to GPU-enabled, or vice versa), you can do so by going to **File -> Hub Control Panel -> Stop Server**. 
+
+This will take a few seconds to shutdown, then you can restart and reselect a provided JupyterLab image from the menu.
+
 Things to be aware of
 ---------------------
 
