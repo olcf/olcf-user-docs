@@ -28,6 +28,8 @@ JupyterHub within OLCF works by first authenticating each user using NCCS LDAP a
 Access
 ------
 
+All members of currently enabled OLCF projects have access to the OLCF JupyterHub and JupyterLab.
+
 OLCF JupyterHub link: `https://jupyter.olcf.ornl.gov/ <https://jupyter.olcf.ornl.gov/>`__
 
 The above link will present you with the page below. Please login with your OLCF account and PASSCODE.
