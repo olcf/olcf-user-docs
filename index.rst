@@ -27,7 +27,7 @@ guidelines for :ref:`getting-help`.
 
 
 New User Quick Start
----------
+---------------------
 
 .. toctree::
    :maxdepth: 2

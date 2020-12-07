@@ -26,6 +26,14 @@ guidelines for :ref:`getting-help`.
 `New User Quick Start Guide <https://github.com/olcf/NewUserQuickStart/blob/master/README.md>`_
 
 
+New User Quick Start
+---------
+
+.. toctree::
+   :maxdepth: 2
+
+   `New User Quick Start Guide <https://github.com/olcf/NewUserQuickStart/blob/master/README.md>`_
+
 Accounts
 ---------
 
