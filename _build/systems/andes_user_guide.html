@@ -1,0 +1,2583 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Andes &mdash; OLCF User Documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme_overrides.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+  
+  
+    <link rel="canonical" href="https://docs.olcf.ornl.govsystems/andes_user_guide.html"/>
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/js/custom.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Services and Applications" href="../services_and_applications/index.html" />
+    <link rel="prev" title="Ascent" href="ascent_user_guide.html" />
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #efefef" >
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/olcf_logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../accounts/index.html">Accounts and Projects</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../accounts/accounts_and_projects.html">Request a New Allocation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../accounts/accounts_and_projects.html#what-are-the-differences-between-project-types">What are the differences between project types?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../accounts/accounts_and_projects.html#what-happens-after-a-project-request-is-approved">What happens after a project request is approved?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../accounts/accounts_and_projects.html#guidance-on-summit-allocation-requests">Guidance on Summit Allocation Requests</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../accounts/accounts_and_projects.html#applying-for-a-user-account">Applying for a user account</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../accounts/accounts_and_projects.html#checking-the-status-of-your-application">Checking the status of your application</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../accounts/accounts_and_projects.html#get-access-to-additional-projects">Get access to additional projects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../accounts/frequently_asked_questions.html">Frequently Asked Questions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../accounts/frequently_asked_questions.html#how-do-i-apply-for-an-account">How do I apply for an account?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../accounts/frequently_asked_questions.html#what-is-the-status-of-my-application">What is the status of my application?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../accounts/frequently_asked_questions.html#how-should-i-acknowledge-the-olcf-in-my-publications-and-presentations">How should I acknowledge the OLCF in my publications and presentations?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../accounts/frequently_asked_questions.html#what-is-a-subproject">What is a subproject?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../accounts/frequently_asked_questions.html#i-no-longer-need-my-account-who-should-i-inform-and-what-should-i-do-with-my-olcf-issued-rsa-securid-token">I no longer need my account. Who should I inform and what should I do with my OLCF issued RSA SecurID token?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../accounts/frequently_asked_questions.html#my-securid-token-is-broken-expired-what-should-i-do">My SecurID token is broken/expired. What should I do?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../accounts/frequently_asked_questions.html#getting-help">Getting Help</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../accounts/frequently_asked_questions.html#additional-resources">Additional Resources</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../accounts/documents_and_forms.html">Documents and Forms</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../accounts/documents_and_forms.html#forms-for-requesting-a-project-allocation">Forms for Requesting a Project Allocation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../accounts/documents_and_forms.html#forms-for-requesting-an-account">Forms for Requesting an Account</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../accounts/documents_and_forms.html#forms-to-request-changes-to-computers-jobs-or-accounts">Forms to Request Changes to Computers, Jobs, or Accounts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../accounts/documents_and_forms.html#report-templates">Report Templates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../accounts/documents_and_forms.html#miscellaneous-forms">Miscellaneous Forms</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../accounts/olcf_policy_guide.html">OLCF Policy Guides</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../accounts/olcf_policy_guide.html#olcf-acknowledgement">OLCF Acknowledgement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../accounts/olcf_policy_guide.html#computing-policy">Computing Policy</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../accounts/olcf_policy_guide.html#computer-use">Computer Use</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../accounts/olcf_policy_guide.html#data-use">Data Use</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../accounts/olcf_policy_guide.html#software-use">Software Use</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../accounts/olcf_policy_guide.html#user-accountability">User Accountability</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../accounts/olcf_policy_guide.html#data-management-policy">Data Management Policy</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../accounts/olcf_policy_guide.html#introduction">Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../accounts/olcf_policy_guide.html#data-retention-purge-quotas">Data Retention, Purge, &amp; Quotas</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../accounts/olcf_policy_guide.html#data-prohibitions-safeguards">Data Prohibitions &amp; Safeguards</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../accounts/olcf_policy_guide.html#software">Software</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../accounts/olcf_policy_guide.html#security-policy">Security Policy</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../accounts/olcf_policy_guide.html#scope">Scope</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../accounts/olcf_policy_guide.html#personal-use">Personal Use</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../accounts/olcf_policy_guide.html#accessing-olcf-computational-resources">Accessing OLCF Computational Resources</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../accounts/olcf_policy_guide.html#data-management">Data Management</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../accounts/olcf_policy_guide.html#sensitive-data">Sensitive Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../accounts/olcf_policy_guide.html#data-transfer">Data Transfer</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../accounts/olcf_policy_guide.html#incite-allocation-under-utilization-policy">INCITE Allocation Under-utilization Policy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../accounts/olcf_policy_guide.html#project-reporting-policy">Project Reporting Policy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../accounts/olcf_policy_guide.html#non-proprietary-institutional-user-agreement-policy">Non-proprietary Institutional User Agreement Policy</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../accounts/olcf_policy_guide.html#access">Access</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../accounts/olcf_policy_guide.html#rules-and-regulations">Rules and Regulations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../accounts/olcf_policy_guide.html#safety-and-health">Safety and Health</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../accounts/olcf_policy_guide.html#intent-to-publish">Intent to Publish</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../accounts/olcf_policy_guide.html#export-control">Export Control</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../accounts/olcf_policy_guide.html#intellectual-property">Intellectual Property</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../accounts/olcf_policy_guide.html#special-requests-and-policy-exemptions">Special Requests and Policy Exemptions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../accounts/glossary.html">Glossary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../accounts/index.html#additional-resources">Additional Resources</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../connecting/index.html">Connecting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../connecting/index.html#connecting-for-the-first-time">Connecting for the first time</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../connecting/index.html#activating-a-new-securid-fob">Activating a new SecurID fob</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../connecting/index.html#pins-passcodes-and-tokencodes">PINs, Passcodes, and Tokencodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../connecting/index.html#x11-forwarding">X11 Forwarding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../connecting/index.html#id2">Systems Available to All Projects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../connecting/index.html#olcf-system-hostnames">OLCF System Hostnames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../connecting/index.html#checking-system-availability">Checking System Availability</a></li>
+</ul>
+</li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Systems</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="summit_user_guide.html">Summit User Guide</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="summit_user_guide.html#summit-documentation-resources">Summit Documentation Resources</a></li>
+<li class="toctree-l3"><a class="reference internal" href="summit_user_guide.html#system-overview">System Overview</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#summit-nodes">Summit Nodes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#node-types">Node Types</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#system-interconnect">System Interconnect</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#file-systems">File Systems</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#operating-system">Operating System</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#hardware-threads">Hardware Threads</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#gpus">GPUs</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="summit_user_guide.html#connecting">Connecting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="summit_user_guide.html#data-and-storage">Data and Storage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="summit_user_guide.html#software">Software</a></li>
+<li class="toctree-l3"><a class="reference internal" href="summit_user_guide.html#shell-programming-environments">Shell &amp; Programming Environments</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#default-shell">Default Shell</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#environment-management-with-lmod">Environment Management with Lmod</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="summit_user_guide.html#compiling">Compiling</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#compilers">Compilers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#linking-in-libraries">Linking in Libraries</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="summit_user_guide.html#running-jobs">Running Jobs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#login-launch-and-compute-nodes">Login, Launch, and Compute Nodes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#batch-scripts">Batch Scripts</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#interactive-jobs">Interactive Jobs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#common-bsub-options">Common bsub Options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#batch-environment-variables">Batch Environment Variables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#job-states">Job States</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#scheduling-policy">Scheduling Policy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#job-dependencies">Job Dependencies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#job-launcher-jsrun">Job Launcher (jsrun)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#cuda-aware-mpi">CUDA-Aware MPI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#monitoring-jobs">Monitoring Jobs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#interacting-with-jobs">Interacting With Jobs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#other-lsf-commands">Other LSF Commands</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#pbs-torque-moab-to-lsf-translation">PBS/Torque/MOAB-to-LSF Translation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#easy-mode-vs-expert-mode">Easy Mode vs. Expert Mode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#system-service-core-isolation">System Service Core Isolation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#resource-accounting">Resource Accounting</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#other-notes">Other Notes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="summit_user_guide.html#debugging">Debugging</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#arm-ddt">Arm DDT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#gdb">GDB</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#valgrind">Valgrind</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="summit_user_guide.html#optimizing-and-profiling">Optimizing and Profiling</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#profiling-gpu-code-with-nvidia-developer-tools">Profiling GPU Code with NVIDIA Developer Tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#score-p">Score-P</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#vampir">Vampir</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="summit_user_guide.html#nvidia-tesla-v100">NVIDIA V100 GPUs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#nvidia-v100-sm">NVIDIA V100 SM</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#hbm2">HBM2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#nvidia-nvlink">NVIDIA NVLink</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#volta-multi-process-service">Volta Multi-Process Service</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#unified-memory">Unified Memory</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#independent-thread-scheduling">Independent Thread Scheduling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#tensor-cores">Tensor Cores</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#tesla-v100-specifications">Tesla V100 Specifications</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#further-reading">Further Reading</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="summit_user_guide.html#burst-buffer">Burst Buffer</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#nvme-xfs">NVMe (XFS)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#current-nvme-usage">Current NVMe Usage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#interactive-jobs-using-the-nvme">Interactive Jobs Using the NVMe</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#nvme-usage-example">NVMe Usage Example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#spectral-library">Spectral Library</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="summit_user_guide.html#known-issues">Known Issues</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#open-issues">Open Issues</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#resolved-issues">Resolved Issues</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#cuda-10-1-known-issues">CUDA 10.1 Known Issues</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="summit_user_guide.html#training-system-ascent">Training System (Ascent)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#id26">File Systems</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#obtaining-access-to-ascent">Obtaining Access to Ascent</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#logging-in-to-ascent">Logging In to Ascent</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="summit_user_guide.html#preparing-for-frontier">Preparing For Frontier</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#hip">HIP</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#using-hip-on-summit">Using HIP on Summit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#learning-to-program-with-hip">Learning to Program with HIP</a></li>
+<li class="toctree-l4"><a class="reference internal" href="summit_user_guide.html#previous-frontier-training-events">Previous Frontier Training Events</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rhea_user_guide.html">Rhea User Guide</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rhea_user_guide.html#system-overview">System Overview</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rhea_user_guide.html#compute-nodes">Compute nodes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rhea_user_guide.html#login-nodes">Login nodes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rhea_user_guide.html#file-systems">File systems</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="rhea_user_guide.html#shell-and-programming-environments">Shell and programming environments</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rhea_user_guide.html#default-shell">Default shell</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rhea_user_guide.html#environment-management-with-lmod">Environment management with lmod</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rhea_user_guide.html#installed-software">Installed Software</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="rhea_user_guide.html#compiling">Compiling</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rhea_user_guide.html#available-compilers">Available compilers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rhea_user_guide.html#changing-compilers">Changing compilers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rhea_user_guide.html#compiler-wrappers">Compiler wrappers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rhea_user_guide.html#compiling-threaded-codes">Compiling threaded codes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="rhea_user_guide.html#running-jobs">Running Jobs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rhea_user_guide.html#login-vs-compute-nodes-on-commodity-clusters">Login vs Compute Nodes on Commodity Clusters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rhea_user_guide.html#slurm">Slurm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rhea_user_guide.html#interactive-batch-jobs-on-commodity-clusters">Interactive Batch Jobs on Commodity Clusters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rhea_user_guide.html#common-batch-options-to-slurm">Common Batch Options to Slurm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rhea_user_guide.html#batch-environment-variables">Batch Environment Variables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rhea_user_guide.html#modifying-batch-jobs">Modifying Batch Jobs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rhea_user_guide.html#monitoring-batch-jobs">Monitoring Batch Jobs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rhea_user_guide.html#job-execution">Job Execution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rhea_user_guide.html#batch-queues-on-rhea">Batch Queues on Rhea</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rhea_user_guide.html#job-accounting-on-rhea">Job Accounting on Rhea</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="rhea_user_guide.html#visualization-tools">Visualization tools</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="rhea_user_guide.html#paraview">ParaView</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rhea_user_guide.html#visit">VisIt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rhea_user_guide.html#remote-visualization-using-vnc-non-gpu">Remote Visualization using VNC (non-GPU)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rhea_user_guide.html#remote-visualization-using-vnc-gpu-nodes">Remote Visualization using VNC (GPU nodes)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rhea_user_guide.html#remote-visualization-using-nice-dcv-gpu-nodes-only">Remote Visualization using Nice DCV (GPU nodes only)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="home_user_guide.html">Home</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="home_user_guide.html#system-overview">System Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="home_user_guide.html#access-connecting">Access &amp; Connecting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="home_user_guide.html#usage">Usage</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="home_user_guide.html#acceptable-tasks">Acceptable Tasks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="home_user_guide.html#unacceptable-tasks">Unacceptable Tasks</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="dtn_user_guide.html">Data Transfer Nodes (DTNs)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dtn_user_guide.html#system-overview">System Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dtn_user_guide.html#access-connecting">Access &amp; Connecting</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hpss_user_guide.html">High Performance Storage System</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="hpss_user_guide.html#system-overview">System Overview</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ascent_user_guide.html">Ascent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ascent_user_guide.html#system-overview">System Overview</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Andes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#system-overview">System Overview</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#compute-nodes">Compute nodes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#login-nodes">Login nodes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#file-systems">File systems</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#shell-and-programming-environments">Shell and programming environments</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#default-shell">Default shell</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#environment-management-with-lmod">Environment management with lmod</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#installed-software">Installed Software</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#compiling">Compiling</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#available-compilers">Available compilers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#changing-compilers">Changing compilers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#compiler-wrappers">Compiler wrappers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#compiling-threaded-codes">Compiling threaded codes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#running-jobs">Running Jobs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#login-vs-compute-nodes-on-commodity-clusters">Login vs Compute Nodes on Commodity Clusters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#slurm">Slurm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#interactive-batch-jobs-on-commodity-clusters">Interactive Batch Jobs on Commodity Clusters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#common-batch-options-to-slurm">Common Batch Options to Slurm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#batch-environment-variables">Batch Environment Variables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#modifying-batch-jobs">Modifying Batch Jobs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#monitoring-batch-jobs">Monitoring Batch Jobs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#job-execution">Job Execution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#batch-queues-on-andes">Batch Queues on Andes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#job-accounting-on-andes">Job Accounting on Andes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#visualization-tools">Visualization tools</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#paraview">ParaView</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#visit">VisIt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#remote-visualization-using-vnc-non-gpu">Remote Visualization using VNC (non-GPU)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#remote-visualization-using-vnc-gpu-nodes">Remote Visualization using VNC (GPU nodes)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#remote-visualization-using-nice-dcv-gpu-nodes-only">Remote Visualization using Nice DCV (GPU nodes only)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../services_and_applications/index.html">Services and Applications</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../services_and_applications/slate/index.html">Slate</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../services_and_applications/slate/overview.html">Overview</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/slate/overview.html#what-is-slate">What is Slate?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/slate/overview.html#what-is-kubernetes">What is Kubernetes?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/slate/overview.html#what-is-openshift">What is OpenShift?</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../services_and_applications/slate/getting_started.html">Getting Started</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/slate/getting_started.html#requesting-a-slate-project-allocation">Requesting A Slate Project Allocation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/slate/getting_started.html#logging-in">Logging in</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/slate/getting_started.html#slate-namespaces">Slate Namespaces</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/slate/getting_started.html#install-the-oc-tool">Install the OC tool</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/slate/getting_started.html#test-login-with-oc-tool">Test login with OC Tool</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../services_and_applications/slate/guided_tutorial.html">Guided Tutorial</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/slate/guided_tutorial.html#creating-your-project">Creating your project</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/slate/guided_tutorial.html#guided-web-gui-tutorial">Guided Web GUI Tutorial</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../services_and_applications/slate/guided_tutorial_cli.html">Guided Tutorial: CLI</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/slate/guided_tutorial_cli.html#adding-a-pod-to-your-project">Adding a Pod to your Project</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../services_and_applications/slate/image_building.html">Image Building</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/slate/image_building.html#build-types">Build Types</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/slate/image_building.html#examples">Examples</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/slate/image_building.html#logging-into-the-registry-externally">Logging into the registry externally</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../services_and_applications/slate/workloads/index.html">Workloads</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/slate/workloads/pod.html">Pods</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/slate/workloads/deployment.html">Deployments</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../services_and_applications/slate/networking/index.html">Networking</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/slate/networking/services.html">Services</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/slate/networking/nodeport.html">NodePorts</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/slate/networking/route.html">Routes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/slate/networking/networkpolicy.html">Network Policies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/slate/networking/port_forwarding.html">Quick Access from Outside Slate</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../services_and_applications/slate/storage.html">Persistent Storage</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/slate/storage.html#creating-a-persistent-volume-claim">Creating A Persistent Volume Claim</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/slate/storage.html#adding-pvc-to-pod">Adding PVC To Pod</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/slate/storage.html#backups">Backups</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../services_and_applications/slate/use_cases/index.html">Application Deployment Examples</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/slate/use_cases/simple_website.html">Build and Deploy Simple Website</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/slate/use_cases/mongodb_service.html">Deploy MongoDB</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/slate/use_cases/nginx_hello_world.html">Deploy NGINX with Hello World</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/slate/use_cases/helm_example.html">Deploy Packages with Helm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/slate/use_cases/minio.html">MinIO Object Store (On an NCCS Filesystem)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../services_and_applications/slate/access_olcf_resources/index.html">Access OLCF Resources From Containers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/slate/access_olcf_resources/job_submit.html">Batch Job Submission</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/slate/access_olcf_resources/mount_fs.html">Mount OLCF Filesystems</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../services_and_applications/slate/other_resources.html">Schedule Other Slate Resources</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/slate/other_resources.html#gpus">GPUs</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../services_and_applications/slate/olcf_provided_applications/index.html">OLCF-Provided Applications on Slate</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../services_and_applications/slate/troubleshooting/index.html">Troubleshooting</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/slate/troubleshooting/fix-writable-directories.html">Fix Container Image Permissions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/slate/troubleshooting/debugging.html">Debugging</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../services_and_applications/slate/examples.html">YAML Object Quick Reference</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/slate/examples.html#cronjobs">CronJobs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/slate/examples.html#deployments-and-stateful-sets">Deployments and Stateful Sets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/slate/examples.html#pods">Pods</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/slate/examples.html#roles-and-rolebindings">Roles and Rolebindings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/slate/examples.html#routes-services-and-nodeports">Routes, Services and Nodeports</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/slate/examples.html#persistent-volume-claims">Persistent Volume Claims</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../services_and_applications/slate/glossary.html">Glossary</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../services_and_applications/myolcf/index.html">myOLCF</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../services_and_applications/myolcf/overview.html">Overview</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/myolcf/overview.html#what-is-myolcf">What is myOLCF?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/myolcf/overview.html#what-can-it-do">What can it do?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/myolcf/overview.html#can-i-suggest-a-feature">Can I suggest a feature?</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../services_and_applications/myolcf/authenticating.html">Authenticating</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/myolcf/authenticating.html#olcf-moderate-accounts">OLCF Moderate Accounts</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/myolcf/authenticating.html#olcf-open-accounts">OLCF Open Accounts</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../services_and_applications/myolcf/project_pages/project_pages.html">Project Pages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/myolcf/project_pages/project_pages.html#project-context">Project Context</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/myolcf/project_pages/project_pages.html#switching-project-contexts">Switching Project Contexts</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/myolcf/project_pages/project_pages.html#available-pages">Available Pages</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../services_and_applications/myolcf/account_pages/account_pages.html">Account Pages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/myolcf/account_pages/account_pages.html#account-context">Account Context</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../services_and_applications/myolcf/account_pages/account_pages.html#available-pages">Available Pages</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../services_and_applications/myolcf/account_pages/processing_membership_requests.html">Processing Project Membership Requests</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../data/index.html">Data Storage and Transfers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../data/storage_overview.html">Storage Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../data/storage_overview.html#storage-areas">Storage Areas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../data/storage_overview.html#alpine-ibm-spectrum-scale-filesystem">Alpine IBM Spectrum Scale Filesystem</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../data/storage_overview.html#performance-under-not-ideal-workload">Performance under not ideal workload</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../data/storage_overview.html#tips">Tips</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../data/storage_overview.html#major-difference-between-lustre-and-ibm-spectrum-scale">Major difference between Lustre and IBM Spectrum Scale</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../data/policies.html">Policy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../data/policies.html#information">Information</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../data/policies.html#purge">Purge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../data/policies.html#data-retention">Data Retention</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../data/user_centric.html">User-Centric Data Storage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../data/user_centric.html#user-home-directories-nfs">User Home Directories (NFS)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../data/user_centric.html#user-home-quotas">User Home Quotas</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../data/user_centric.html#user-home-permissions">User Home Permissions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../data/user_centric.html#user-home-backups">User Home Backups</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../data/user_centric.html#user-website-directory">User Website Directory</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../data/user_centric.html#user-archive-directories-hpss">User Archive Directories (HPSS)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../data/user_centric.html#user-archive-access">User Archive Access</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../data/user_centric.html#user-archive-accounting">User Archive Accounting</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../data/project_centric.html">Project-Centric Data Storage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../data/project_centric.html#project-home-directories-nfs">Project Home Directories (NFS)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../data/project_centric.html#project-home-path">Project Home Path</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../data/project_centric.html#project-home-quotas">Project Home Quotas</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../data/project_centric.html#project-home-permissions">Project Home Permissions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../data/project_centric.html#project-home-backups">Project Home Backups</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../data/project_centric.html#project-work-areas">Project Work Areas</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../data/project_centric.html#three-project-work-areas-to-facilitate-collaboration">Three Project Work Areas to Facilitate Collaboration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../data/project_centric.html#backups">Backups</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../data/project_centric.html#project-archive-directories">Project Archive Directories</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../data/project_centric.html#three-project-archive-areas-facilitae-collaboration-on-archival-data">Three Project Archive Areas Facilitae Collaboration on Archival Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../data/project_centric.html#project-archive-access">Project Archive Access</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../data/transferring.html">Transferring Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../data/transferring.html#using-common-terminal-tools">Using common terminal tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../data/transferring.html#using-globus-from-your-local-machine">Using Globus from your local machine</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../data/archiving.html">HPSS Data Archival System</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../data/archiving.html#using-globus">Using Globus</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../data/archiving.html#using-hsi">Using HSI</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../data/archiving.html#additional-hsi-documentation">Additional HSI Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../data/archiving.html#using-htar">Using HTAR</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../data/archiving.html#htar-limitations">HTAR Limitations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../data/archiving.html#additional-htar-documentation">Additional HTAR Documentation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../data/index.html#burst-buffer-and-spectral-library">Burst Buffer and Spectral Library</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../software/index.html">Software</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../software/software-news.html">Software News</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../software/analytics/index.html">ML/DL, Analytics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../software/analytics/ibm-wml-ce.html">IBM Watson Machine Learning CE -&gt; Open CE</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../software/analytics/ibm-wml-ce.html#getting-started">Getting Started</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../software/analytics/ibm-wml-ce.html#running-distributed-deep-learning-jobs">Running Distributed Deep Learning Jobs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../software/analytics/ibm-wml-ce.html#setting-up-custom-environments">Setting up Custom Environments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../software/analytics/ibm-wml-ce.html#best-distributed-deep-learning-performance">Best Distributed Deep Learning Performance</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../software/analytics/ibm-wml-ce.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../software/analytics/pbdR.html">Programming with Big Data in R (pbdR)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../software/python.html">Python on OLCF Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../software/profiling/index.html">Profiling Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../software/profiling/TAU.html">Tuning and Analysis Utilities (TAU)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../software/profiling/TAU.html#run-time-environment-variables">Run-Time Environment Variables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../software/profiling/TAU.html#compile-time-environment-variables">Compile-Time Environment Variables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../software/profiling/TAU.html#miniweather-example-application">MiniWeather Example Application</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../software/profiling/TAU.html#cuda-profiling-tools-interface">CUDA Profiling Tools Interface</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../software/profiling/TAU.html#tracing">Tracing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../software/profiling/TAU.html#selective-instrumentation">Selective Instrumentation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../software/profiling/TAU.html#dynamic-phase">Dynamic Phase</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../software/profiling/TAU.html#static-phase">Static Phase</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../software/profiling/TAU.html#openmp-offload">OpenMP Offload</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../software/UMS/index.html">User-Managed Software</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../software/UMS/Flux.html">Flux</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../training/index.html">Training</a><ul>
+<li class="toctree-l2"><a class="reference external" href="https://www.olcf.ornl.gov/for-users/training/training-calendar" target="_blank">OLCF Training Calendar</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://github.com/olcf-tutorials" target="_blank">OLCF Tutorials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../training/training_archive.html">OLCF Training Archive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../training/olcf_gpu_hackathons.html">OLCF GPU Hackathons</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://vimeo.com/channels/olcftraining" target="_blank">OLCF Vimeo Channel</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/index.html">Contributing to these docs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../contributing/index.html#submitting-suggestions">Submitting suggestions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing/index.html#authoring-content">Authoring content</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contributing/index.html#setup-authoring-environment">Setup authoring environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing/index.html#edit-the-docs">Edit the docs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing/index.html#resources">Resources</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing/index.html#github-guidelines">GitHub Guidelines</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">OLCF User Documentation</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Systems</a> &raquo;</li>
+        
+      <li>Andes</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/olcf/olcf-user-docs/blob/master/systems/andes_user_guide.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="andes">
+<h1>Andes<a class="headerlink" href="#andes" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>We are pleased to announce a new pre/post processing and data analysis cluster, <code class="docutils literal notranslate"><span class="pre">Andes</span></code>.  Andes will soon be available for access and will replace Rhea in January, 2021.  Please note the following:</p>
+<ul class="last">
+<li><p class="first"><strong>Access and Allocations:</strong> Projects with allocations on Rhea will automatically be given access to Andes.  Allocations will start fresh on Andes and in most cases will be the same node-hour allocation awarded on Rhea.</p>
+</li>
+<li><p class="first"><strong>Timeline:</strong> Access to Andes and Rhea will overlap for approximately one month to allow a transition period.  During this overlap, all current Rhea users will have access to both systems.</p>
+</li>
+<li><p class="first"><strong>High Memory GPU nodes:</strong> Rhea’s high memory GPU nodes will be moved from Rhea to Andes.  This will be accomplished by moving half of the nodes (5) onto Andes initially.  The remaining GPU nodes (4) will then be move onto Andes during the second week of the transition period.</p>
+</li>
+<li><p class="first"><strong>Filesystems:</strong> Andes will mount the same center-wide GPFS and NFS filesystems as Rhea.</p>
+</li>
+<li><p class="first"><strong>Batch System:</strong> Andes will use the Slurm as is used on Rhea.  Batch scripts in use on Rhea should also run on Andes.  Batch policies will also remain the same.</p>
+</li>
+<li><p class="first"><strong>Recompile:</strong> Due to the changes in hardware, OS, and software, rebuilds prior to running on Andes is strongly suggested.</p>
+</li>
+<li><p class="first"><strong>Default Version Changes:</strong> All software provided in /sw has been rebuilt.  In many cases, default versions have been updated.</p>
+</li>
+<li><p class="first"><strong>Hardware:</strong> The following table lists several notable hardware differences between Andes and Rhea.</p>
+<blockquote>
+<div><table border="1" class="docutils align-default">
+<colgroup>
+<col width="17%" />
+<col width="39%" />
+<col width="45%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">&#160;</th>
+<th class="head">Rhea</th>
+<th class="head">Andes</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Processor</td>
+<td>Intel<sup>®</sup> Xeon<sup>®</sup> E5-2650</td>
+<td>AMD EPYC 7302</td>
+</tr>
+<tr class="row-odd"><td>Node Count</td>
+<td>512 compute nodes</td>
+<td>704 compute nodes</td>
+</tr>
+<tr class="row-even"><td>Core per node</td>
+<td>16 cores per node</td>
+<td>32 cores per node</td>
+</tr>
+<tr class="row-odd"><td>node memory</td>
+<td>128 GB</td>
+<td>256 GB</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</li>
+</ul>
+</div>
+<div class="section" id="system-overview">
+<h2>System Overview<a class="headerlink" href="#system-overview" title="Permalink to this headline">¶</a></h2>
+<p>Andes is a 704-compute node commodity-type linux cluster. The primary purpose of Andes is to provide a
+conduit for large-scale scientific discovery via pre/post processing and
+analysis of simulation data generated on Summit.</p>
+<div class="section" id="compute-nodes">
+<span id="andes-compute-nodes"></span><h3>Compute nodes<a class="headerlink" href="#compute-nodes" title="Permalink to this headline">¶</a></h3>
+<p>Andes contains 704 compute nodes and 9 GPU nodes. Andes has two partitions:</p>
+<table border="1" class="docutils align-default">
+<colgroup>
+<col width="14%" />
+<col width="14%" />
+<col width="10%" />
+<col width="21%" />
+<col width="40%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Partition</th>
+<th class="head">Node Count</th>
+<th class="head">Memory</th>
+<th class="head">GPU</th>
+<th class="head">CPU</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>batch
+(default)</td>
+<td>704</td>
+<td>256 GB</td>
+<td>N/A</td>
+<td>[2x] AMD EPYC 7302 16Core Processor
+3.0 GHz, 16 cores
+(total 32 cores <em>per node</em>)</td>
+</tr>
+<tr class="row-odd"><td>gpu</td>
+<td>9</td>
+<td>1 TB</td>
+<td>[2x]
+NVIDIA<sup>®</sup>
+K80</td>
+<td>[2x] Intel<sup>®</sup> Xeon<sup>®</sup> E5-2695
+&#64;2.3 GHz - 14 cores, 28 HT
+(total 28 cores, 56 HT <em>per node</em>)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Batch Partition</strong></p>
+<p>The first 704 nodes make up the <em>batch</em> partition, where each node contains two
+16-core 3.0 GHz AMD EPYC 7302 processors with AMD’s Simultaneous Multithreading
+(SMT) Technology and 256GB of main memory.  Each CPU in this partition features 16 physical
+cores, for a total of 32 physical cores per node.</p>
+<p><strong>GPU Partition</strong></p>
+<p>Andes also has 9 large memory/GPU nodes, which make up the <em>gpu</em> partition.
+These nodes each have 1TB of main memory and two NVIDIA K80 GPUs in addition to
+two 14-core 2.30 GHz Intel Xeon processors with HT Technology. Each CPU in this
+partition features 14 physical cores, for a total of 28 physical cores per
+node.  With Hyper-Threading enabled, these nodes have 56 logical cores that can
+execute 56 hardware threads for increased parallelism.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">To access the gpu partition, batch job submissions should request <code class="docutils literal notranslate"><span class="pre">-p</span> <span class="pre">gpu</span></code>.</p>
+</div>
+<p>Please see the <a class="reference internal" href="#batch-queues-on-andes"><span class="std std-ref">Batch Queues on Andes</span></a> section to learn about the queuing
+policies for these two partitions. Both compute partitions are accessible
+through the same batch queue from Andes’s <a class="reference internal" href="#andes-login-nodes"><span class="std std-ref">Login nodes</span></a>.</p>
+<p>Andes features a S8500 Series HDR Infiniband interconnect, with a maximum theoretical
+transfer rate of 200 Gb/s.</p>
+</div>
+<div class="section" id="login-nodes">
+<span id="andes-login-nodes"></span><h3>Login nodes<a class="headerlink" href="#login-nodes" title="Permalink to this headline">¶</a></h3>
+<p>Andes features 8 login nodes which are identical to the <em>batch</em> partition
+compute nodes.  The login nodes provide an environment for editing, compiling,
+and launching codes onto the compute nodes. All Andes users will access the
+system through these same login nodes, and as such, any CPU- or
+memory-intensive tasks on these nodes could interrupt service to other users.
+As a courtesy, we ask that you refrain from doing any analysis or visualization
+tasks on the login nodes.</p>
+<p>To connect to Andes, ssh to andes.olcf.ornl.gov</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ssh</span> <span class="n">username</span><span class="nd">@andes</span><span class="o">.</span><span class="n">olcf</span><span class="o">.</span><span class="n">ornl</span><span class="o">.</span><span class="n">gov</span>
+</pre></div>
+</div>
+<p>For more information on connecting to OLCF resources, see <a class="reference internal" href="../connecting/index.html#connecting-to-olcf"><span class="std std-ref">Connecting for the first time</span></a>.</p>
+</div>
+<hr class="docutils" />
+<div class="section" id="file-systems">
+<h3>File systems<a class="headerlink" href="#file-systems" title="Permalink to this headline">¶</a></h3>
+<p>The OLCF’s center-wide <a class="reference internal" href="../data/storage_overview.html#alpine-ibm-spectrum-scale-filesystem"><span class="std std-ref">Alpine IBM Spectrum Scale Filesystem</span></a> name Alpine
+is available on Andes for computational work.  An NFS-based file system provides
+<a class="reference internal" href="../data/user_centric.html#user-home-directories-nfs"><span class="std std-ref">User Home Directories (NFS)</span></a> and <a class="reference internal" href="../data/project_centric.html#project-home-directories-nfs"><span class="std std-ref">Project Home Directories (NFS)</span></a>.
+Additionally, the OLCF’s <a class="reference internal" href="../data/archiving.html#hpss"><span class="std std-ref">HPSS Data Archival System</span></a> provides archival spaces.</p>
+</div>
+</div>
+<div class="section" id="shell-and-programming-environments">
+<h2>Shell and programming environments<a class="headerlink" href="#shell-and-programming-environments" title="Permalink to this headline">¶</a></h2>
+<p>OLCF systems provide hundreds of software packages and scientific libraries
+pre-installed at the system-level for users to take advantage of. To facilitate
+this, environment management tools are employed to handle necessary changes to
+the shell dynamically. The sections below provide information about using the
+management tools at the OLCF.</p>
+<hr class="docutils" />
+<div class="section" id="default-shell">
+<h3>Default shell<a class="headerlink" href="#default-shell" title="Permalink to this headline">¶</a></h3>
+<p>A user’s default shell is selected when completing the user account request
+form. The chosen shell is set across all OLCF resources.  Currently, supported
+shells include:</p>
+<ul class="simple">
+<li>bash</li>
+<li>tsch</li>
+<li>csh</li>
+<li>ksh</li>
+</ul>
+<p>If you would like to have your default shell changed, please contact the
+<a class="reference external" href="https://www.olcf.ornl.gov/for-users/user-assistance/" target="_blank">OLCF user assistance center</a> at
+<a class="reference external" href="mailto:help&#37;&#52;&#48;olcf&#46;ornl&#46;gov" target="_blank">help<span>&#64;</span>olcf<span>&#46;</span>ornl<span>&#46;</span>gov</a>.</p>
+</div>
+<hr class="docutils" />
+<div class="section" id="environment-management-with-lmod">
+<h3>Environment management with lmod<a class="headerlink" href="#environment-management-with-lmod" title="Permalink to this headline">¶</a></h3>
+<p>The <em>modules</em> software package allows you to dynamically modify your user
+environment by using pre-written <em>modulefiles</em>. environment modules are provided
+through <a class="reference external" href="https://lmod.readthedocs.io/en/latest/" target="_blank">Lmod</a>, a Lua-based module
+system for dynamically altering shell environments.  by managing changes to the
+shell’s environment variables (such as <code class="docutils literal notranslate"><span class="pre">path</span></code>, <code class="docutils literal notranslate"><span class="pre">ld_library_path</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">pkg_config_path</span></code>), Lmod allows you to alter the software available in your
+shell environment without the risk of creating package and version combinations
+that cannot coexist in a single environment.</p>
+<p>Lmod is a recursive environment module system, meaning it is aware of module
+compatibility and actively alters the environment to protect against conflicts.
+Messages to stderr are issued upon Lmod implicitly altering the environment.
+Environment modules are structured hierarchically by compiler family such that
+packages built with a given compiler will only be accessible if the compiler
+family is first present in the environment.</p>
+<blockquote>
+<div><strong>note:</strong> Lmod can interpret both Lua modulefiles and legacy Tcl
+modulefiles. However, long and logic-heavy Tcl modulefiles may require
+porting to Lua.</div></blockquote>
+<div class="section" id="general-usage">
+<h4>General usage<a class="headerlink" href="#general-usage" title="Permalink to this headline">¶</a></h4>
+<p>Typical use of Lmod is very similar to that of interacting with modulefiles on
+other OLCF systems. The interface to Lmod is provided by the <code class="docutils literal notranslate"><span class="pre">module</span></code> command:</p>
+<table border="1" class="docutils align-default">
+<colgroup>
+<col width="32%" />
+<col width="68%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Command</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>module -t list</td>
+<td>Shows a terse list of the currently loaded modules.</td>
+</tr>
+<tr class="row-odd"><td>module avail</td>
+<td>Shows a table of the currently available modules</td>
+</tr>
+<tr class="row-even"><td>module help &lt;modulename&gt;</td>
+<td>Shows help information about &lt;modulename&gt;</td>
+</tr>
+<tr class="row-odd"><td>module show &lt;modulename&gt;</td>
+<td>Shows the environment changes made by the &lt;modulename&gt; modulefile</td>
+</tr>
+<tr class="row-even"><td>module spider &lt;string&gt;</td>
+<td>Searches all possible modules according to &lt;string&gt;</td>
+</tr>
+<tr class="row-odd"><td>module load &lt;modulename&gt; […]</td>
+<td>Loads the given &lt;modulename&gt;(s) into the current environment</td>
+</tr>
+<tr class="row-even"><td>module use &lt;path&gt;</td>
+<td>Adds &lt;path&gt; to the modulefile search cache and <code class="docutils literal notranslate"><span class="pre">MODULESPATH</span></code></td>
+</tr>
+<tr class="row-odd"><td>module unuse &lt;path&gt;</td>
+<td>Removes &lt;path&gt; from the modulefile search cache and <code class="docutils literal notranslate"><span class="pre">MODULESPATH</span></code></td>
+</tr>
+<tr class="row-even"><td>module purge</td>
+<td>Unloads all modules</td>
+</tr>
+<tr class="row-odd"><td>module reset</td>
+<td>Resets loaded modules to system defaults</td>
+</tr>
+<tr class="row-even"><td>module update</td>
+<td>Reloads all currently loaded modules</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Modules are changed recursively. Some commands, such as
+<code class="docutils literal notranslate"><span class="pre">module</span> <span class="pre">swap</span></code>, are available to maintain compatibility with scripts
+using Tcl Environment Modules, but are not necessary since Lmod
+recursively processes loaded modules and automatically resolves
+conflicts.</p>
+</div>
+</div>
+<div class="section" id="searching-for-modules">
+<h4>Searching for modules<a class="headerlink" href="#searching-for-modules" title="Permalink to this headline">¶</a></h4>
+<p>Modules with dependencies are only available when the underlying dependencies,
+such as compiler families, are loaded. Thus, <code class="docutils literal notranslate"><span class="pre">module</span> <span class="pre">avail</span></code> will only display
+modules that are compatible with the current state of the environment. To search
+the entire hierarchy across all possible dependencies, the <code class="docutils literal notranslate"><span class="pre">spider</span></code>
+sub-command can be used as summarized in the following table.</p>
+<table border="1" class="docutils align-default">
+<colgroup>
+<col width="32%" />
+<col width="68%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Command</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>module spider</td>
+<td>Shows the entire possible graph of modules</td>
+</tr>
+<tr class="row-odd"><td>module spider &lt;modulename&gt;</td>
+<td>Searches for modules named &lt;modulename&gt; in the graph of possible modules</td>
+</tr>
+<tr class="row-even"><td>module spider &lt;modulename&gt;/&lt;version&gt;</td>
+<td>Searches for a specific version of &lt;modulename&gt; in the graph of possible modules</td>
+</tr>
+<tr class="row-odd"><td>module spider &lt;string&gt;</td>
+<td>Searches for modulefiles containing &lt;string&gt;</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="defining-custom-module-collections">
+<h4>Defining custom module collections<a class="headerlink" href="#defining-custom-module-collections" title="Permalink to this headline">¶</a></h4>
+<p>Lmod supports caching commonly used collections of environment modules on a
+per-user basis in <code class="docutils literal notranslate"><span class="pre">$home/.lmod.d</span></code>. to create a collection called “NAME” from
+the currently loaded modules, simply call <code class="docutils literal notranslate"><span class="pre">module</span> <span class="pre">save</span> <span class="pre">NAME</span></code>. omitting “NAME”
+will set the user’s default collection. Saved collections can be recalled and
+examined with the commands summarized in the following table.</p>
+<table border="1" class="docutils align-default">
+<colgroup>
+<col width="30%" />
+<col width="70%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Command</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>module restore NAME</td>
+<td>Recalls a specific saved user collection titled “NAME”</td>
+</tr>
+<tr class="row-odd"><td>module restore</td>
+<td>Recalls the user-defined defaults</td>
+</tr>
+<tr class="row-even"><td>module reset</td>
+<td>Resets loaded modules to system defaults</td>
+</tr>
+<tr class="row-odd"><td>module restore system</td>
+<td>Recalls the system defaults</td>
+</tr>
+<tr class="row-even"><td>module savelist</td>
+<td>Shows the list user-defined saved collections</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You should use unique names when creating collections to
+specify the application (and possibly branch) you are working on. For
+example, <code class="docutils literal notranslate"><span class="pre">app1-development</span></code>, <code class="docutils literal notranslate"><span class="pre">app1-production</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">app2-production</span></code>.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In order to avoid conflicts between user-defined collections
+on multiple compute systems that share a home file system (e.g.
+<code class="docutils literal notranslate"><span class="pre">/ccs/home/[username]</span></code>), lmod appends the hostname of each system to the
+files saved in in your <code class="docutils literal notranslate"><span class="pre">~/.lmod.d</span></code> directory (using the environment
+variable <code class="docutils literal notranslate"><span class="pre">lmod_system_name</span></code>). This ensures that only collections
+appended with the name of the current system are visible.</p>
+</div>
+<p>The following screencast shows an example of setting up user-defined module
+collections on Summit. <a class="reference external" href="https://vimeo.com/293582400" target="_blank">https://vimeo.com/293582400</a></p>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="installed-software">
+<h3>Installed Software<a class="headerlink" href="#installed-software" title="Permalink to this headline">¶</a></h3>
+<p>The OLCF provides hundreds of pre-installed software packages and scientific
+libraries for your use, in addition to taking <a class="reference external" href="https://www.olcf.ornl.gov/support/software/software-request/" target="_blank">software installation requests</a>. See the
+<a class="reference external" href="https://www.olcf.ornl.gov/for-users/software/" target="_blank">software</a> page for complete
+details on existing installs.</p>
+</div>
+</div>
+<div class="section" id="compiling">
+<h2>Compiling<a class="headerlink" href="#compiling" title="Permalink to this headline">¶</a></h2>
+<p>Compiling code on andes is typical of commodity or beowulf-style hpc linux
+clusters.</p>
+<div class="section" id="available-compilers">
+<h3>Available compilers<a class="headerlink" href="#available-compilers" title="Permalink to this headline">¶</a></h3>
+<p>The following compilers are available on andes:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://www.olcf.ornl.gov/software_package/intel/" target="_blank">intel</a>, intel composer xe (default)</li>
+<li><a class="reference external" href="https://www.olcf.ornl.gov/software_package/pgi/" target="_blank">pgi</a>, the portland group compilar suite</li>
+<li><a class="reference external" href="https://www.olcf.ornl.gov/software_package/gcc/" target="_blank">gcc</a>, the gnu compiler collection</li>
+</ul>
+<p>Upon login, default versions of the intel compiler and openmpi (message passing
+interface) libraries are automatically added to each user’s environment. Users
+do not need to make any environment changes to use the default version of intel
+and openmpi.</p>
+</div>
+<hr class="docutils" />
+<div class="section" id="changing-compilers">
+<h3>Changing compilers<a class="headerlink" href="#changing-compilers" title="Permalink to this headline">¶</a></h3>
+<p>If a different compiler is required, it is important to use the correct
+environment for each compiler. To aid users in pairing the correct compiler and
+environment, the module system on andes automatically pulls in libraries compiled
+with a given compiler when changing compilers. The compiler modules will load
+the correct pairing of compiler version, message passing libraries, and other
+items required to build and run code. To change the default loaded intel
+environment to the gcc environment for example, use:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ module load gcc
+</pre></div>
+</div>
+<p>This will automatically unload the current compiler and system libraries
+associated with it, load the new compiler environment and automatically load
+associated system libraries as well.</p>
+<div class="section" id="changing-versions-of-the-same-compiler">
+<h4>Changing versions of the same compiler<a class="headerlink" href="#changing-versions-of-the-same-compiler" title="Permalink to this headline">¶</a></h4>
+<p>To use a specific compiler <em>version</em>, you must first ensure the compiler’s
+module is loaded, and <em>then</em> swap to the correct compiler version. For example,
+the following will configure the environment to use the gcc compilers, then load
+a non-default gcc compiler version:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ module load gcc
+$ module swap gcc gcc/4.7.1
+</pre></div>
+</div>
+<blockquote>
+<div><p><strong>note: we recommend the following general guidelines for using the
+programming environment modules:</strong></p>
+<ul class="simple">
+<li>Do not purge all modules; rather, use the default module environment
+provided at the time of login, and modify it.</li>
+<li>Do not swap moab, torque, or mysql modules after loading a
+programming environment modulefile.</li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="compiler-wrappers">
+<h3>Compiler wrappers<a class="headerlink" href="#compiler-wrappers" title="Permalink to this headline">¶</a></h3>
+<p>Commodity clusters at the olcf can be accessed via the following wrapper
+programs:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">mpicc</span></code> to invoke the c compiler</li>
+<li><code class="docutils literal notranslate"><span class="pre">mpicc</span></code>, <code class="docutils literal notranslate"><span class="pre">mpicxx</span></code>, or <code class="docutils literal notranslate"><span class="pre">mpic++</span></code> to invoke the c++ compiler</li>
+<li><code class="docutils literal notranslate"><span class="pre">mpif77</span></code> or <code class="docutils literal notranslate"><span class="pre">mpif90</span></code> to invoke appropriate versions of the
+fortran compiler</li>
+</ul>
+<p>These wrapper programs are cognizant of your currently loaded modules, and will
+ensure that your code links against our openmpi installation.  more information
+about using openmpi at our center can be found in our <a class="reference external" href="https://www.olcf.ornl.gov/software_package/openmpi/" target="_blank">software documentation</a>.</p>
+</div>
+<div class="section" id="compiling-threaded-codes">
+<h3>Compiling threaded codes<a class="headerlink" href="#compiling-threaded-codes" title="Permalink to this headline">¶</a></h3>
+<p>When building threaded codes, compiler-specific flags must be included to ensure
+a proper build.</p>
+<div class="section" id="openmp">
+<h4>Openmp<a class="headerlink" href="#openmp" title="Permalink to this headline">¶</a></h4>
+<p>For pgi, add “-mp” to the build line.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ mpicc -mp test.c -o test.x
+$ export OMP_NUM_THREADS=2
+</pre></div>
+</div>
+<p>For gnu, add “-fopenmp” to the build line.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ mpicc -fopenmp test.c -o test.x
+$ export OMP_NUM_THREADS=2
+</pre></div>
+</div>
+<p>For intel, add “-qopenmp” to the build line.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ mpicc -qopenmp test.c -o test.x
+$ export OMP_NUM_THREADS=2
+</pre></div>
+</div>
+<p>For information on <em>running threaded codes</em>, please see the <a class="reference internal" href="#andes-thread-layout"><span class="std std-ref">Thread Layout</span></a>
+subsection of the <a class="reference internal" href="#andes-running-jobs"><span class="std std-ref">Running Jobs</span></a> section in this user guide.</p>
+</div>
+</div>
+</div>
+<div class="section" id="running-jobs">
+<span id="andes-running-jobs"></span><h2>Running Jobs<a class="headerlink" href="#running-jobs" title="Permalink to this headline">¶</a></h2>
+<p>In High Performance Computing (HPC), computational work is performed by <em>jobs</em>.
+Individual jobs produce data that lend relevant insight into grand challenges in
+science and engineering. As such, the timely, efficient execution of jobs is the
+primary concern in the operation of any HPC system.</p>
+<p>A job on a commodity cluster typically comprises a few different components:</p>
+<ul class="simple">
+<li>A batch submission script.</li>
+<li>A binary executable.</li>
+<li>A set of input files for the executable.</li>
+<li>A set of output files created by the executable.</li>
+</ul>
+<p>And the process for running a job, in general, is to:</p>
+<ol class="arabic simple">
+<li>Prepare executables and input files.</li>
+<li>Write a batch script.</li>
+<li>Submit the batch script to the batch scheduler.</li>
+<li>Optionally monitor the job before and during execution.</li>
+</ol>
+<p>The following sections describe in detail how to create, submit, and manage jobs
+for execution on commodity clusters.</p>
+<hr class="docutils" />
+<div class="section" id="login-vs-compute-nodes-on-commodity-clusters">
+<h3>Login vs Compute Nodes on Commodity Clusters<a class="headerlink" href="#login-vs-compute-nodes-on-commodity-clusters" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id1">
+<h4>Login Nodes<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
+<p>When you log into an OLCF cluster, you are placed on a <em>login</em> node.  Login node
+resources are shared by all users of the system. Because of this, users should
+be mindful when performing tasks on a login node.</p>
+<p>Login nodes should be used for basic tasks such as file editing, code
+compilation, data backup, and job submission. Login nodes should <em>not</em> be used
+for memory- or compute-intensive tasks. Users should also limit the number of
+simultaneous tasks performed on the login resources. For example, a user should
+not run (10) simultaneous <code class="docutils literal notranslate"><span class="pre">tar</span></code> processes on a login node.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Compute-intensive, memory-intensive, or otherwise disruptive processes
+running on login nodes may be killed without warning.</p>
+</div>
+</div>
+</div>
+<div class="section" id="slurm">
+<h3>Slurm<a class="headerlink" href="#slurm" title="Permalink to this headline">¶</a></h3>
+<p>Most OLCF resources now use the Slurm batch scheduler. Previously, most OLCF resources
+used the Moab scheduler. Summit and other IBM hardware use the LSF scheduler.
+Below is a comparison table of useful commands among the three schedulers.</p>
+<table border="1" class="docutils align-default">
+<colgroup>
+<col width="51%" />
+<col width="27%" />
+<col width="22%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Task</th>
+<th class="head">LSF (Summit)</th>
+<th class="head">Slurm</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>View batch queue</td>
+<td><code class="docutils literal notranslate"><span class="pre">jobstat</span></code></td>
+<td><code class="docutils literal notranslate"><span class="pre">squeue</span></code></td>
+</tr>
+<tr class="row-odd"><td>Submit batch script</td>
+<td><code class="docutils literal notranslate"><span class="pre">bsub</span></code></td>
+<td><code class="docutils literal notranslate"><span class="pre">sbatch</span></code></td>
+</tr>
+<tr class="row-even"><td>Submit interactive batch job</td>
+<td><code class="docutils literal notranslate"><span class="pre">bsub</span> <span class="pre">-Is</span> <span class="pre">$SHELL</span></code></td>
+<td><code class="docutils literal notranslate"><span class="pre">salloc</span></code></td>
+</tr>
+<tr class="row-odd"><td>Run parallel code within batch job</td>
+<td><code class="docutils literal notranslate"><span class="pre">jsrun</span></code></td>
+<td><code class="docutils literal notranslate"><span class="pre">srun</span></code></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="writing-batch-scripts">
+<h4>Writing Batch Scripts<a class="headerlink" href="#writing-batch-scripts" title="Permalink to this headline">¶</a></h4>
+<p>Batch scripts, or job submission scripts, are the mechanism by which a user
+configures and submits a job for execution. A batch script is simply a shell
+script that also includes commands to be interpreted by the batch scheduling
+software (e.g. Slurm).</p>
+<p>Batch scripts are submitted to the batch scheduler, where they are then parsed
+for the scheduling configuration options. The batch scheduler then places the
+script in the appropriate queue, where it is designated as a batch job. Once the
+batch jobs makes its way through the queue, the script will be executed on the
+primary compute node of the allocated resources.</p>
+</div>
+<div class="section" id="components-of-a-batch-script">
+<h4>Components of a Batch Script<a class="headerlink" href="#components-of-a-batch-script" title="Permalink to this headline">¶</a></h4>
+<p>Batch scripts are parsed into the following (3) sections:</p>
+<div class="section" id="interpreter-line">
+<h5>Interpreter Line<a class="headerlink" href="#interpreter-line" title="Permalink to this headline">¶</a></h5>
+<p>The first line of a script can be used to specify the script’s interpreter; this
+line is optional. If not used, the submitter’s default shell will be used. The
+line uses the <em>hash-bang</em> syntax, i.e., <code class="docutils literal notranslate"><span class="pre">#!/path/to/shell</span></code>.</p>
+</div>
+<div class="section" id="slurm-submission-options">
+<h5>Slurm Submission Options<a class="headerlink" href="#slurm-submission-options" title="Permalink to this headline">¶</a></h5>
+<p>The Slurm submission options are preceded by the string <code class="docutils literal notranslate"><span class="pre">#SBATCH</span></code>, making them
+appear as comments to a shell. Slurm will look for <code class="docutils literal notranslate"><span class="pre">#SBATCH</span></code> options in a
+batch script from the script’s first line through the first non-comment line. A
+comment line begins with <code class="docutils literal notranslate"><span class="pre">#</span></code>. <code class="docutils literal notranslate"><span class="pre">#SBATCH</span></code> options entered after the first
+non-comment line will not be read by Slurm.</p>
+</div>
+<div class="section" id="shell-commands">
+<h5>Shell Commands<a class="headerlink" href="#shell-commands" title="Permalink to this headline">¶</a></h5>
+<p>The shell commands follow the last <code class="docutils literal notranslate"><span class="pre">#SBATCH</span></code> option and represent the
+executable content of the batch job. If any <code class="docutils literal notranslate"><span class="pre">#SBATCH</span></code> lines follow executable
+statements, they will be treated as comments only.</p>
+<p>The execution section of a script will be interpreted by a shell and can contain
+multiple lines of executables, shell commands, and comments.  when the job’s
+queue wait time is finished, commands within this section will be executed on
+the primary compute node of the job’s allocated resources. Under normal
+circumstances, the batch job will exit the queue after the last line of the
+script is executed.</p>
+</div>
+</div>
+<div class="section" id="example-batch-script">
+<h4>Example Batch Script<a class="headerlink" href="#example-batch-script" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-bash notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="c1">#SBATCH -A XXXYYY</span>
+<span class="c1">#SBATCH -J test</span>
+<span class="c1">#SBATCH -N 2</span>
+<span class="c1">#SBATCH -t 1:00:00</span>
+
+<span class="nb">cd</span> <span class="nv">$SLURM_SUBMIT_DIR</span>
+date
+srun -n <span class="m">8</span> ./a.out
+</pre></div>
+</td></tr></table></div>
+<p>This batch script shows examples of the three sections outlined above:</p>
+<div class="section" id="id2">
+<h5>Interpreter Line<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h5>
+<p>1: This line is optional and can be used to specify a shell to interpret the
+script. In this example, the bash shell will be used.</p>
+</div>
+<div class="section" id="slurm-options">
+<h5>Slurm Options<a class="headerlink" href="#slurm-options" title="Permalink to this headline">¶</a></h5>
+<p>2: The job will be charged to the “XXXYYY” project.</p>
+<p>3: The job will be named test.</p>
+<p>4: The job will request (2) nodes.</p>
+<p>5: The job will request (1) hour walltime.</p>
+</div>
+<div class="section" id="id3">
+<h5>Shell Commands<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h5>
+<p>6: This line is left blank, so it will be ignored.</p>
+<p>7: This command will change the current directory to the directory
+from where the script was submitted.</p>
+<p>8: This command will run the date command.</p>
+<p>9: This command will run (8) MPI instances of the executable a.out
+on the compute nodes allocated by the batch system.</p>
+<p>Batch scripts can be submitted for execution using the <code class="docutils literal notranslate"><span class="pre">sbatch</span></code> command.
+For example, the following will submit the batch script named <code class="docutils literal notranslate"><span class="pre">test.slurm</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sbatch</span> <span class="n">test</span><span class="o">.</span><span class="n">slurm</span>
+</pre></div>
+</div>
+<p>If successfully submitted, a Slurm job ID will be returned. This ID can be used
+to track the job. It is also helpful in troubleshooting a failed job; make a
+note of the job ID for each of your jobs in case you must contact the <a class="reference external" href="https://www.olcf.ornl.gov/for-users/user-assistance/" target="_blank">OLCF User
+Assistance Center for support</a>.</p>
+</div>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="interactive-batch-jobs-on-commodity-clusters">
+<h3>Interactive Batch Jobs on Commodity Clusters<a class="headerlink" href="#interactive-batch-jobs-on-commodity-clusters" title="Permalink to this headline">¶</a></h3>
+<p>Batch scripts are useful when one has a pre-determined group of commands to
+execute, the results of which can be viewed at a later time. However, it is
+often necessary to run tasks on compute resources interactively.</p>
+<p>Users are not allowed to access cluster compute nodes directly from a login
+node. Instead, users must use an <em>interactive batch job</em> to allocate and gain
+access to compute resources. This is done by using the Slurm <code class="docutils literal notranslate"><span class="pre">salloc</span></code> command.
+Other Slurm options are passed to <code class="docutils literal notranslate"><span class="pre">salloc</span></code> on the command line as well:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ salloc -A abc123 -p gpu -N 4 -t 1:00:00
+</pre></div>
+</div>
+<p>This request will:</p>
+<table border="1" class="docutils align-default">
+<colgroup>
+<col width="30%" />
+<col width="70%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">salloc</span></code></td>
+<td>Start an interactive session</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">-A</span></code></td>
+<td>Charge to the <code class="docutils literal notranslate"><span class="pre">abc123</span></code> project</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">-p</span> <span class="pre">gpu</span></code></td>
+<td>Run in the <code class="docutils literal notranslate"><span class="pre">gpu</span></code> partition</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">-N</span> <span class="pre">4</span></code></td>
+<td>request (4) nodes…</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">-t</span> <span class="pre">1:00:00</span></code></td>
+<td>…for (1) hour</td>
+</tr>
+</tbody>
+</table>
+<p>After running this command, the job will wait until enough compute nodes are
+available, just as any other batch job must. However, once the job starts, the
+user will be given an interactive prompt on the primary compute node within the
+allocated resource pool. Commands may then be executed directly (instead of
+through a batch script).</p>
+<div class="section" id="debugging">
+<h4>Debugging<a class="headerlink" href="#debugging" title="Permalink to this headline">¶</a></h4>
+<p>A common use of interactive batch is to aid in debugging efforts.  interactive
+access to compute resources allows the ability to run a process to the point of
+failure; however, unlike a batch job, the process can be restarted after brief
+changes are made without losing the compute resource pool; thus speeding up the
+debugging effort.</p>
+</div>
+<div class="section" id="choosing-a-job-size">
+<h4>Choosing a Job Size<a class="headerlink" href="#choosing-a-job-size" title="Permalink to this headline">¶</a></h4>
+<p>Because interactive jobs must sit in the queue until enough resources become
+available to allocate, it is useful to know when a job can start.</p>
+<p>Use the <code class="docutils literal notranslate"><span class="pre">sbatch</span> <span class="pre">--test-only</span></code> command to see when a job of a specific size
+could be scheduled. For example, the snapshot below shows that a (2) node job
+would start at 10:54.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sbatch --test-only -N2 -t1:00:00 batch-script.slurm
+
+  sbatch: Job 1375 to start at 2019-08-06T10:54:01 using 64 processors on nodes andes[499-500] in partition batch
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The queue is fluid, the given time is an estimate made from the current queue state and load. Future job submissions and job
+completions will alter the estimate.</p>
+</div>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="common-batch-options-to-slurm">
+<h3>Common Batch Options to Slurm<a class="headerlink" href="#common-batch-options-to-slurm" title="Permalink to this headline">¶</a></h3>
+<p>The following table summarizes frequently-used options to Slurm:</p>
+<table border="1" class="docutils align-default">
+<colgroup>
+<col width="16%" />
+<col width="31%" />
+<col width="53%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Option</th>
+<th class="head">Use</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>-A</td>
+<td>#SBATCH -A &lt;account&gt;</td>
+<td>Causes the job time to be charged to <code class="docutils literal notranslate"><span class="pre">&lt;account&gt;</span></code>.
+The account string, e.g. <code class="docutils literal notranslate"><span class="pre">pjt000</span></code> is typically composed
+of three letters followed by three digits and optionally
+followed by a subproject identifier. The utility
+<code class="docutils literal notranslate"><span class="pre">showproj</span></code> can be used to list your valid assigned
+project ID(s). This option is required by all jobs.</td>
+</tr>
+<tr class="row-odd"><td>-N</td>
+<td>#SBATCH -N &lt;value&gt;</td>
+<td>Number of compute nodes to allocate.
+Jobs cannot request partial nodes.</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>#SBATCH -t &lt;time&gt;</td>
+<td>Maximum wall-clock time. <code class="docutils literal notranslate"><span class="pre">&lt;time&gt;</span></code> is in the
+format HH:MM:SS.</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>#SBATCH -p &lt;partition_name&gt;</td>
+<td>Allocates resources on specified partition.</td>
+</tr>
+<tr class="row-even"><td>-o</td>
+<td>#SBATCH -o &lt;filename&gt;</td>
+<td>Writes standard output to <code class="docutils literal notranslate"><span class="pre">&lt;name&gt;</span></code> instead of
+<code class="docutils literal notranslate"><span class="pre">&lt;job_script&gt;.o$SLURM_JOB_UID</span></code>. <code class="docutils literal notranslate"><span class="pre">$SLURM_JOB_UID</span></code>
+is an environment variable created by Slurm that
+contains the batch job identifier.</td>
+</tr>
+<tr class="row-odd"><td>-e</td>
+<td>#SBATCH -e &lt;filename&gt;</td>
+<td>Writes standard error to <code class="docutils literal notranslate"><span class="pre">&lt;name&gt;</span></code> instead
+of <code class="docutils literal notranslate"><span class="pre">&lt;job_script&gt;.e$SLURM_JOB_UID</span></code>.</td>
+</tr>
+<tr class="row-even"><td>\-\-mail-type</td>
+<td>#SBATCH \-\-mail-type=FAIL</td>
+<td>Sends email to the submitter when the job fails.</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>#SBATCH \-\-mail-type=BEGIN</td>
+<td>Sends email to the submitter when the job begins.</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>#SBATCH \-\-mail-type=END</td>
+<td>Sends email to the submitter when the job ends.</td>
+</tr>
+<tr class="row-odd"><td>\-\-mail-user</td>
+<td>#SBATCH \-\-mail-user=&lt;address&gt;</td>
+<td>Specifies email address to use for
+<code class="docutils literal notranslate"><span class="pre">--mail-type</span></code> options.</td>
+</tr>
+<tr class="row-even"><td>-J</td>
+<td>#SBATCH -J &lt;name&gt;</td>
+<td>Sets the job name to <code class="docutils literal notranslate"><span class="pre">&lt;name&gt;</span></code> instead of the
+name of the job script.</td>
+</tr>
+<tr class="row-odd"><td>\-\-get-user-env</td>
+<td>#SBATCH \-\-get-user-env</td>
+<td>Exports all environment variables from the
+submitting shell into the batch job shell.
+Since the login nodes differ from the service
+nodes, using the <code class="docutils literal notranslate"><span class="pre">–get-user-env</span></code> option is
+<strong>not recommended</strong>. Users should create the
+needed environment within the batch job.</td>
+</tr>
+<tr class="row-even"><td>\-\-mem=0</td>
+<td>#SBATCH \-\-mem=0</td>
+<td>Declare to use all the available memory of the node</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Because the login nodes differ from the service nodes, using
+the <code class="docutils literal notranslate"><span class="pre">–get-user-env</span></code> option is not recommended. Users should create the
+needed environment within the batch job.</p>
+</div>
+<p>Further details and other Slurm options may be found through the <code class="docutils literal notranslate"><span class="pre">sbatch</span></code> man
+page.</p>
+</div>
+<hr class="docutils" />
+<div class="section" id="batch-environment-variables">
+<h3>Batch Environment Variables<a class="headerlink" href="#batch-environment-variables" title="Permalink to this headline">¶</a></h3>
+<p>Slurm sets multiple environment variables at submission time. The following
+Slurm variables are useful within batch scripts:</p>
+<table border="1" class="docutils align-default">
+<colgroup>
+<col width="32%" />
+<col width="68%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Variable</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">$SLURM_SUBMIT_DIR</span></code></td>
+<td>The directory from which the batch job was submitted.
+By default, a new job starts in your home directory.
+You can get back to the directory of job submission
+with <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">$SLURM_SUBMIT_DIR</span></code>. Note that this is not
+necessarily the same directory in which the batch
+script resides.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">$SLURM_JOBID</span></code></td>
+<td>The job’s full identifier. A common use for
+<code class="docutils literal notranslate"><span class="pre">SLURM_JOBID</span></code> is to append the job’s ID to
+the standard output and error files.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">$SLURM_JOB_NUM_NODES</span></code></td>
+<td>The number of nodes requested.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">$SLURM_JOB_NAME</span></code></td>
+<td>The job name supplied by the user.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">$SLURM_NODELIST</span></code></td>
+<td>The list of nodes assigned to the job.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr class="docutils" />
+<div class="section" id="modifying-batch-jobs">
+<h3>Modifying Batch Jobs<a class="headerlink" href="#modifying-batch-jobs" title="Permalink to this headline">¶</a></h3>
+<p>The batch scheduler provides a number of utility commands for managing
+submitted jobs. See each utilities’ man page for more information.</p>
+<div class="section" id="removing-and-holding-jobs">
+<h4>Removing and Holding Jobs<a class="headerlink" href="#removing-and-holding-jobs" title="Permalink to this headline">¶</a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">scancel</span></code></p>
+<p>Jobs in the queue in any state can be stopped and removed from the queue
+using the command <code class="docutils literal notranslate"><span class="pre">scancel</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ scancel 1234
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">scontrol</span> <span class="pre">hold</span></code></p>
+<p>Jobs in the queue in a non-running state may be placed on hold using the
+<code class="docutils literal notranslate"><span class="pre">scontrol</span> <span class="pre">hold</span></code> command. Jobs placed on hold will not be removed from the
+queue, but they will not be eligible for execution.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ scontrol hold 1234
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">scontrol</span> <span class="pre">release</span></code></p>
+<p>Once on hold the job will not be eligible to run until it is released to
+return to a queued state. The <code class="docutils literal notranslate"><span class="pre">scontrol</span> <span class="pre">release</span></code> command can be used to
+remove a job from the held state.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ scontrol release 1234
+</pre></div>
+</div>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="monitoring-batch-jobs">
+<h3>Monitoring Batch Jobs<a class="headerlink" href="#monitoring-batch-jobs" title="Permalink to this headline">¶</a></h3>
+<p>Slurm provides multiple tools to view queue, system, and job status. Below are
+the most common and useful of these tools.</p>
+<div class="section" id="job-monitoring-commands">
+<h4>Job Monitoring Commands<a class="headerlink" href="#job-monitoring-commands" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="squeue">
+<h5><code class="docutils literal notranslate"><span class="pre">squeue</span></code><a class="headerlink" href="#squeue" title="Permalink to this headline">¶</a></h5>
+<p>The Slurm utility <code class="docutils literal notranslate"><span class="pre">squeue</span></code> can be used to view the batch queue.</p>
+<p>To see all jobs currently in the queue:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ squeue -l
+</pre></div>
+</div>
+<p>To see all of your queued jobs:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ squeue -l -u $USER
+</pre></div>
+</div>
+</div>
+<div class="section" id="sacct">
+<h5><code class="docutils literal notranslate"><span class="pre">sacct</span></code><a class="headerlink" href="#sacct" title="Permalink to this headline">¶</a></h5>
+<p>The Slurm utility <code class="docutils literal notranslate"><span class="pre">sacct</span></code> can be used to view jobs currently in the queue and
+those completed within the last few days. The utility can also be used to see
+job steps in each batch job.</p>
+<p>To see all jobs currently in the queue:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sacct -a -X
+</pre></div>
+</div>
+<p>To see all jobs including steps owned by userA currently in the queue:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sacct -u userA
+</pre></div>
+</div>
+<p>To see all steps submitted to job 123:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sacct -j 123
+</pre></div>
+</div>
+<p>To see all of your jobs that completed on 2019-06-10:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sacct -S 2019-06-10T00:00:00 -E 2019-06-10T23:59:59 -o&quot;jobid,user,account%16,cluster,AllocNodes,Submit,Start,End,TimeLimit&quot; -X -P
+</pre></div>
+</div>
+</div>
+<div class="section" id="scontrol-show-job-jobid">
+<h5><code class="docutils literal notranslate"><span class="pre">scontrol</span> <span class="pre">show</span> <span class="pre">job</span> <span class="pre">&lt;jobid&gt;</span></code><a class="headerlink" href="#scontrol-show-job-jobid" title="Permalink to this headline">¶</a></h5>
+<p>Provides additional details of given job.</p>
+</div>
+<div class="section" id="sview">
+<h5><code class="docutils literal notranslate"><span class="pre">sview</span></code><a class="headerlink" href="#sview" title="Permalink to this headline">¶</a></h5>
+<p>The <code class="docutils literal notranslate"><span class="pre">sview</span></code> tool provide a graphical queue monitoring tool. To use, you will
+need an X server running on your local system. You will also need to tunnel X
+traffic through your ssh connection:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">local</span><span class="o">-</span><span class="n">system</span><span class="o">&gt;</span> <span class="n">ssh</span> <span class="o">-</span><span class="n">Y</span> <span class="n">username</span><span class="nd">@andes</span><span class="o">.</span><span class="n">ccs</span><span class="o">.</span><span class="n">ornl</span><span class="o">.</span><span class="n">gov</span>
+<span class="n">andes</span><span class="o">-</span><span class="n">login</span><span class="o">&gt;</span> <span class="n">sview</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="job-execution">
+<h3>Job Execution<a class="headerlink" href="#job-execution" title="Permalink to this headline">¶</a></h3>
+<p>Once resources have been allocated through the batch system, users have the
+option of running commands on the allocated resources’ primary compute node (a
+serial job) and/or running an MPI/OpenMP executable across all the resources in
+the allocated resource pool simultaneously (a parallel job).</p>
+<div class="section" id="serial-job-execution">
+<h4>Serial Job Execution<a class="headerlink" href="#serial-job-execution" title="Permalink to this headline">¶</a></h4>
+<p>The executable portion of batch scripts is interpreted by the shell specified on
+the first line of the script. If a shell is not specified, the submitting user’s
+default shell will be used.</p>
+<p>The serial portion of the batch script may contain comments, shell commands,
+executable scripts, and compiled executables. These can be used in combination
+to, for example, navigate file systems, set up job execution, run serial
+executables, and even submit other batch jobs.</p>
+<div class="section" id="andes-compute-node-description">
+<h5>Andes Compute Node Description<a class="headerlink" href="#andes-compute-node-description" title="Permalink to this headline">¶</a></h5>
+<p>The following image represents a high level compute node that will be used below
+to display layout options.</p>
+<img alt="../_images/Andes-Node-Description-SMT1.jpg" class="align-center" src="../_images/Andes-Node-Description-SMT1.jpg" />
+</div>
+<div class="section" id="using-srun">
+<h5>Using <code class="docutils literal notranslate"><span class="pre">srun</span></code><a class="headerlink" href="#using-srun" title="Permalink to this headline">¶</a></h5>
+<p>By default, commands will be executed on the job’s primary compute node,
+sometimes referred to as the job’s head node. The <code class="docutils literal notranslate"><span class="pre">srun</span></code> command is used to
+execute an MPI binary on one or more compute nodes in parallel.</p>
+<p><code class="docutils literal notranslate"><span class="pre">srun</span></code> accepts the following common options:</p>
+<table border="1" class="docutils align-default">
+<colgroup>
+<col width="36%" />
+<col width="64%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">-N</span></code></td>
+<td>Minimum number of nodes</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">-n</span></code></td>
+<td>Total number of MPI tasks</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">--cpu-bind=no</span></code></td>
+<td>Allow code to control thread affinity</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">-c</span></code></td>
+<td>Cores per MPI task</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">--cpu-bind=cores</span></code></td>
+<td>Bind to cores</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If you do not specify the number of MPI tasks to <code class="docutils literal notranslate"><span class="pre">srun</span></code>
+via <code class="docutils literal notranslate"><span class="pre">-n</span></code>, the system will default to using only one task per node.</p>
+</div>
+</div>
+<div class="section" id="mpi-task-layout">
+<h5>MPI Task Layout<a class="headerlink" href="#mpi-task-layout" title="Permalink to this headline">¶</a></h5>
+<p>Each compute node on Andes contains two sockets each with 16 cores.  Depending on
+your job, it may be useful to control task layout within and across nodes.</p>
+</div>
+<div class="section" id="physical-core-binding">
+<h5>Physical Core Binding<a class="headerlink" href="#physical-core-binding" title="Permalink to this headline">¶</a></h5>
+<p>The following will run four copies of a.out, one per CPU, two per node with
+physical core binding</p>
+<img alt="../_images/Andes-layout-physical-core-1-per-CPU-SMT1.jpg" class="align-center" src="../_images/Andes-layout-physical-core-1-per-CPU-SMT1.jpg" />
+</div>
+<div class="section" id="simultaneous-multithreading-binding">
+<h5>Simultaneous Multithreading Binding<a class="headerlink" href="#simultaneous-multithreading-binding" title="Permalink to this headline">¶</a></h5>
+<p>The following will run four copies of a.out, one per SMT, two per node
+using a round robin task layout between nodes:</p>
+<img alt="../_images/Andes-layout-1-per-SMT1-cyclic.jpg" class="align-center" src="../_images/Andes-layout-1-per-SMT1-cyclic.jpg" />
+</div>
+<div class="section" id="thread-layout">
+<span id="andes-thread-layout"></span><h5>Thread Layout<a class="headerlink" href="#thread-layout" title="Permalink to this headline">¶</a></h5>
+<p><strong>Thread per SMT</strong></p>
+<p>The following will run four copies of a.out. Each task will launch two threads.
+The <code class="docutils literal notranslate"><span class="pre">-c</span></code> flag will provide room for the threads.</p>
+<img alt="../_images/Andes-layout-thread-per-SMT1.jpg" class="align-center" src="../_images/Andes-layout-thread-per-SMT1.jpg" />
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Not adding enough resources using the <code class="docutils literal notranslate"><span class="pre">-c</span></code> flag,
+threads may be placed on the same resource.</p>
+</div>
+</div>
+<div class="section" id="multiple-simultaneous-jobsteps">
+<h5>Multiple Simultaneous Jobsteps<a class="headerlink" href="#multiple-simultaneous-jobsteps" title="Permalink to this headline">¶</a></h5>
+<p>Multiple simultaneous sruns can be executed within a batch job by placing each
+<code class="docutils literal notranslate"><span class="pre">srun</span></code> in the background.</p>
+<div class="highlight-bash notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="c1">#SBATCH -N 2</span>
+<span class="c1">#SBATCH -t 1:00:00</span>
+<span class="c1">#SBATCH -A prj123</span>
+<span class="c1">#SBATCH -J simultaneous-jobsteps</span>
+
+srun -n16 -N2 -c1 --cpu-bind<span class="o">=</span>cores --exclusive ./a.out <span class="p">&amp;</span>
+srun -n8 -N2 -c1 --cpu-bind<span class="o">=</span>cores --exclusive ./b.out <span class="p">&amp;</span>
+srun -n4 -N1 -c1 --cpu-bind<span class="o">=</span>threads --exclusive ./c.out <span class="p">&amp;</span>
+<span class="nb">wait</span>
+</pre></div>
+</td></tr></table></div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <code class="docutils literal notranslate"><span class="pre">wait</span></code> command must be used in a batch script
+to prevent the shell from exiting before all backgrounded
+sruns have completed.</p>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The <code class="docutils literal notranslate"><span class="pre">--exclusive</span></code> flag must be used to prevent
+resource sharing. Without the flag each backgrounded srun
+will likely be placed on the same resources.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="batch-queues-on-andes">
+<span id="id4"></span><h3>Batch Queues on Andes<a class="headerlink" href="#batch-queues-on-andes" title="Permalink to this headline">¶</a></h3>
+<p>The compute nodes on Andes are separated into two partitions the “batch partition”
+and the “GPU partition” as described in the <a class="reference internal" href="#andes-compute-nodes"><span class="std std-ref">Compute nodes</span></a> section. The scheduling
+policies for the individual partitions are as follows:</p>
+<div class="section" id="batch-partition-policy-default">
+<h4>Batch Partition Policy (default)<a class="headerlink" href="#batch-partition-policy-default" title="Permalink to this headline">¶</a></h4>
+<p>Jobs that do not specify a partition will run in the 704 node batch partition:</p>
+<table border="1" class="docutils align-default">
+<colgroup>
+<col width="7%" />
+<col width="21%" />
+<col width="16%" />
+<col width="57%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Bin</th>
+<th class="head">Node Count</th>
+<th class="head">Duration</th>
+<th class="head">Policy</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>A</td>
+<td>1 - 16 Nodes</td>
+<td>0 - 48 hr</td>
+<td rowspan="3">max 4 jobs running and 4 jobs eligible
+<strong>per user</strong>
+in bins A, B, and C</td>
+</tr>
+<tr class="row-odd"><td>B</td>
+<td>17 - 64 Nodes</td>
+<td>0 - 36 hr</td>
+</tr>
+<tr class="row-even"><td>C</td>
+<td>65 - 384 Nodes</td>
+<td>0 - 3 hr</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="gpu-partition-policy">
+<h4>GPU Partition Policy<a class="headerlink" href="#gpu-partition-policy" title="Permalink to this headline">¶</a></h4>
+<p>To access the 9 node GPU Partition batch job submissions should request <code class="docutils literal notranslate"><span class="pre">-p</span>
+<span class="pre">gpu</span></code></p>
+<table border="1" class="docutils align-default">
+<colgroup>
+<col width="18%" />
+<col width="19%" />
+<col width="63%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Node Count</th>
+<th class="head">Duration</th>
+<th class="head">Policy</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1-2 Nodes</td>
+<td>0 - 48 hrs</td>
+<td>max 1 job running <strong>per user</strong></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The queue structure was designed based on user feedback and
+analysis of batch jobs over the recent years. However, we understand that
+the structure may not meet the needs of all users. <strong>If this structure
+limits your use of the system, please let us know.</strong> We want Andes to be a
+useful OLCF resource and will work with you providing exceptions or even
+changing the queue structure if necessary.</p>
+</div>
+<p>Users wishing to submit jobs that fall outside the queue structure are
+encouraged to request a reservation via the <a class="reference external" href="https://www.olcf.ornl.gov/for-users/getting-started/special-request-form/" target="_blank">Special Request
+Form</a>.</p>
+</div>
+<div class="section" id="allocation-overuse-policy">
+<h4>Allocation Overuse Policy<a class="headerlink" href="#allocation-overuse-policy" title="Permalink to this headline">¶</a></h4>
+<p>Projects that overrun their allocation are still allowed to run on OLCF systems,
+although at a reduced priority. Like the adjustment for the number of processors
+requested above, this is an adjustment to the apparent submit time of the job.
+However, this adjustment has the effect of making jobs appear much younger than
+jobs submitted under projects that have not exceeded their allocation. In
+addition to the priority change, these jobs are also limited in the amount of
+wall time that can be used.</p>
+<p>For example, consider that <code class="docutils literal notranslate"><span class="pre">job1</span></code> is submitted at the same time as <code class="docutils literal notranslate"><span class="pre">job2</span></code>.
+The project associated with <code class="docutils literal notranslate"><span class="pre">job1</span></code> is over its allocation, while the project
+for <code class="docutils literal notranslate"><span class="pre">job2</span></code> is not. The batch system will consider <code class="docutils literal notranslate"><span class="pre">job2</span></code> to have been
+waiting for a longer time than <code class="docutils literal notranslate"><span class="pre">job1</span></code>. In addition, projects that are at 125%
+of their allocated time will be limited to only one running job at a time. The
+adjustment to the apparent submit time depends upon the percentage that the
+project is over its allocation, as shown in the table below:</p>
+<table border="1" class="docutils align-default">
+<colgroup>
+<col width="27%" />
+<col width="24%" />
+<col width="29%" />
+<col width="20%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">% Of Allocation Used</th>
+<th class="head">Priority Reduction</th>
+<th class="head">number eligible-to-run</th>
+<th class="head">number running</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>&lt; 100%</td>
+<td>0 days</td>
+<td>4 jobs</td>
+<td>unlimited jobs</td>
+</tr>
+<tr class="row-odd"><td>100% to 125%</td>
+<td>30 days</td>
+<td>4 jobs</td>
+<td>unlimited jobs</td>
+</tr>
+<tr class="row-even"><td>&gt; 125%</td>
+<td>365 days</td>
+<td>4 jobs</td>
+<td>1 job</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="job-accounting-on-andes">
+<h3>Job Accounting on Andes<a class="headerlink" href="#job-accounting-on-andes" title="Permalink to this headline">¶</a></h3>
+<p>Jobs on Andes are scheduled in full node increments; a node’s cores cannot be
+allocated to multiple jobs. Because the OLCF charges based on what a job makes
+<em>unavailable</em> to other users, a job is charged for an entire node even if it
+uses only one core on a node. To simplify the process, users are given a
+multiples of entire nodes through Slurm.</p>
+<div class="section" id="viewing-allocation-utilization">
+<h4>Viewing Allocation Utilization<a class="headerlink" href="#viewing-allocation-utilization" title="Permalink to this headline">¶</a></h4>
+<p>Projects are allocated time on Andes in units of <em>node-hours</em>. This is separate
+from a project’s Summit allocation, and usage of Andes does not count against
+that allocation. This page describes how such units are calculated, and how
+users can access more detailed information on their relevant allocations.</p>
+</div>
+<div class="section" id="node-hour-calculation">
+<h4>Node-Hour Calculation<a class="headerlink" href="#node-hour-calculation" title="Permalink to this headline">¶</a></h4>
+<p>The <em>node-hour</em> charge for each batch job will be calculated as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">node</span><span class="o">-</span><span class="n">hours</span> <span class="o">=</span> <span class="n">nodes</span> <span class="n">requested</span> <span class="o">*</span> <span class="p">(</span> <span class="n">batch</span> <span class="n">job</span> <span class="n">endtime</span> <span class="o">-</span> <span class="n">batch</span> <span class="n">job</span> <span class="n">starttime</span> <span class="p">)</span>
+</pre></div>
+</div>
+<p>Where <em>batch job starttime</em> is the time the job moves into a running state, and
+<em>batch job endtime</em> is the time the job exits a running state.</p>
+<p>A batch job’s usage is calculated solely on requested nodes and the batch job’s
+start and end time. The number of cores actually used within any particular node
+within the batch job is not used in the calculation. For example, if a job
+requests (6) nodes through the batch script, runs for (1) hour, uses only (2)
+CPU cores per node, the job will still be charged for 6 nodes * 1 hour = <em>6
+node-hours</em>.</p>
+</div>
+<div class="section" id="viewing-usage">
+<h4>Viewing Usage<a class="headerlink" href="#viewing-usage" title="Permalink to this headline">¶</a></h4>
+<p>Utilization is calculated daily using batch jobs which complete between 00:00
+and 23:59 of the previous day. For example, if a job moves into a run state on
+Tuesday and completes Wednesday, the job’s utilization will be recorded
+Thursday. Only batch jobs which write an end record are used to calculate
+utilization. Batch jobs which do not write end records due to system failure or
+other reasons are not used when calculating utilization. Jobs which fail because
+of run-time errors (e.g. the user’s application causes a segmentation fault) are
+counted against the allocation.</p>
+<p>Each user may view usage for projects on which they are members from the command
+line tool <code class="docutils literal notranslate"><span class="pre">showusage</span></code> and the <a class="reference external" href="https://users.nccs.gov" target="_blank">My OLCF site</a>.</p>
+<div class="section" id="on-the-command-line-via-showusage">
+<h5>On the Command Line via <code class="docutils literal notranslate"><span class="pre">showusage</span></code><a class="headerlink" href="#on-the-command-line-via-showusage" title="Permalink to this headline">¶</a></h5>
+<p>The <code class="docutils literal notranslate"><span class="pre">showusage</span></code> utility can be used to view your usage from January 01
+through midnight of the previous day. For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ showusage
+  Usage:
+                           Project Totals
+  Project             Allocation      Usage      Remaining     Usage
+  _________________|______________|___________|____________|______________
+  abc123           |  20000       |   126.3   |  19873.7   |   1560.80
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">-h</span></code> option will list more usage details.</p>
+</div>
+<div class="section" id="on-the-web-via-my-olcf">
+<h5>On the Web via My OLCF<a class="headerlink" href="#on-the-web-via-my-olcf" title="Permalink to this headline">¶</a></h5>
+<p>More detailed metrics may be found on each project’s usage section of the <a class="reference external" href="https://users.nccs.gov" target="_blank">My
+OLCF site</a>. The following information is available
+for each project:</p>
+<ul class="simple">
+<li>YTD usage by system, subproject, and project member</li>
+<li>Monthly usage by system, subproject, and project member</li>
+<li>YTD usage by job size groupings for each system, subproject, and
+project member</li>
+<li>Weekly usage by job size groupings for each system, and subproject</li>
+<li>Batch system priorities by project and subproject</li>
+<li>Project members</li>
+</ul>
+<p>The My OLCF site is provided to aid in the utilization and management of OLCF
+allocations. If you have any questions or have a request for additional data,
+please contact the OLCF User Assistance Center.</p>
+<hr class="docutils" />
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="visualization-tools">
+<span id="id5"></span><h2>Visualization tools<a class="headerlink" href="#visualization-tools" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="paraview">
+<h3>ParaView<a class="headerlink" href="#paraview" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="http://paraview.org" target="_blank">ParaView</a> is an open-source, multi-platform data
+analysis and visualization application. ParaView users can quickly build
+visualizations to analyze their data using qualitative and quantitative
+techniques. The data exploration can be done interactively in 3D or
+programmatically using ParaView’s batch processing capabilities.</p>
+<p>ParaView was developed to analyze extremely large datasets using distributed
+memory computing resources. The OLCF provides ParaView server installs on Andes
+to facilitate large scale distributed visualizations. The ParaView server
+running on Andes may be used in a headless batch processing mode or be used to
+drive a ParaView GUI client running on your local machine.</p>
+<div class="section" id="paraview-client">
+<h4>ParaView client<a class="headerlink" href="#paraview-client" title="Permalink to this headline">¶</a></h4>
+<p>A ParaView client instance is not available on Andes. Interactive mode requires
+that your local machine have a version matched ParaView client installation and
+batch mode can benefit from a local installation as well to aid in script
+generation. Precompiled ParaView binaries for Windows, Macintosh, and Linux can
+be downloaded from <a class="reference external" href="http://paraview.org/paraview/resources/software.php" target="_blank">Kitware</a>.</p>
+</div>
+<div class="section" id="interactive-mode">
+<h4>Interactive mode<a class="headerlink" href="#interactive-mode" title="Permalink to this headline">¶</a></h4>
+<p>Although in a single machine setup both the ParaView client and server run on
+the same host, this need not be the case. It is possible to run a local ParaView
+client to display and interact with your data while the ParaView server runs in
+a Andes batch job, allowing interactive analysis of very large data sets.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">In interactive mode your local ParaView version number must
+match the ParaView version number available on Andes. Please check the
+available ParaView versions using <code class="docutils literal notranslate"><span class="pre">module</span> <span class="pre">avail</span> <span class="pre">paraview</span></code>.</p>
+</div>
+<div class="section" id="interactive-example">
+<h5>Interactive Example<a class="headerlink" href="#interactive-example" title="Permalink to this headline">¶</a></h5>
+<p>The following provides an example of launching the ParaView server on Andes and
+connecting to it from a locally running ParaView client.  Although several
+methods may be used the one described should work in most cases.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p>For Macintosh clients, it is necessary to install <a class="reference external" href="https://support.apple.com/en-us/HT201341" target="_blank">XQuartz
+(X11)</a> to get a command prompt
+in which you will securely enter your OLCF credentials.</p>
+<p class="last">For Windows clients, it is necessary to install PuTTY to
+create an ssh connection in step 2.</p>
+</div>
+<p><strong>Step 1: Save the following servers.pvsc file to your local computer</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">Servers</span><span class="o">&gt;</span>
+ <span class="o">&lt;</span><span class="n">Server</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Andes@ORNL&quot;</span> <span class="n">resource</span><span class="o">=</span><span class="s2">&quot;csrc://localhost:11111&quot;</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">CommandStartup</span><span class="o">&gt;</span>
+   <span class="o">&lt;</span><span class="n">Options</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">Option</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;XTERM_EXE&quot;</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Xterm executable&quot;</span> <span class="n">save</span><span class="o">=</span><span class="s2">&quot;true&quot;</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">File</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;/usr/bin/xterm&quot;</span><span class="o">/&gt;</span>
+    <span class="o">&lt;/</span><span class="n">Option</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">Option</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;SSH_EXE&quot;</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;SSH executable&quot;</span> <span class="n">save</span><span class="o">=</span><span class="s2">&quot;true&quot;</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">File</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;ssh&quot;</span><span class="o">/&gt;</span>
+    <span class="o">&lt;/</span><span class="n">Option</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">Option</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;MACHINE&quot;</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Remote machine&quot;</span> <span class="n">save</span><span class="o">=</span><span class="s2">&quot;true&quot;</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">String</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;andes-login3.olcf.ornl.gov&quot;</span><span class="o">/&gt;</span>
+    <span class="o">&lt;/</span><span class="n">Option</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">Option</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;VERSION&quot;</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;ParaView version&quot;</span> <span class="n">save</span><span class="o">=</span><span class="s2">&quot;true&quot;</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">String</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;5.8.1&quot;</span><span class="o">/&gt;</span>
+    <span class="o">&lt;/</span><span class="n">Option</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">Option</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;USER&quot;</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Username&quot;</span> <span class="n">save</span><span class="o">=</span><span class="s2">&quot;true&quot;</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">String</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;YOURUSERNAME&quot;</span><span class="o">/&gt;</span>
+    <span class="o">&lt;/</span><span class="n">Option</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">Option</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;CLIENT_PORT&quot;</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Client port&quot;</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">Range</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;int&quot;</span> <span class="nb">min</span><span class="o">=</span><span class="s2">&quot;1025&quot;</span> <span class="nb">max</span><span class="o">=</span><span class="s2">&quot;65535&quot;</span> <span class="n">step</span><span class="o">=</span><span class="s2">&quot;1&quot;</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;11111&quot;</span><span class="o">/&gt;</span>
+    <span class="o">&lt;/</span><span class="n">Option</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">Option</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;SERVER_PORT&quot;</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Server port&quot;</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">Range</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;int&quot;</span> <span class="nb">min</span><span class="o">=</span><span class="s2">&quot;1025&quot;</span> <span class="nb">max</span><span class="o">=</span><span class="s2">&quot;65535&quot;</span> <span class="n">step</span><span class="o">=</span><span class="s2">&quot;1&quot;</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="o">/&gt;</span>
+    <span class="o">&lt;/</span><span class="n">Option</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">Option</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;NUMNODES&quot;</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Number of nodes to reserve&quot;</span> <span class="n">save</span><span class="o">=</span><span class="s2">&quot;true&quot;</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">Range</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;int&quot;</span> <span class="nb">min</span><span class="o">=</span><span class="s2">&quot;1&quot;</span> <span class="nb">max</span><span class="o">=</span><span class="s2">&quot;1024&quot;</span> <span class="n">step</span><span class="o">=</span><span class="s2">&quot;4&quot;</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;2&quot;</span><span class="o">/&gt;</span>
+    <span class="o">&lt;/</span><span class="n">Option</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">Option</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;CPUSPERNODE&quot;</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Number of cpus to use on each node&quot;</span> <span class="n">save</span><span class="o">=</span><span class="s2">&quot;true&quot;</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">Range</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;int&quot;</span> <span class="nb">min</span><span class="o">=</span><span class="s2">&quot;1&quot;</span> <span class="nb">max</span><span class="o">=</span><span class="s2">&quot;32&quot;</span> <span class="n">step</span><span class="o">=</span><span class="s2">&quot;1&quot;</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;8&quot;</span><span class="o">/&gt;</span>
+    <span class="o">&lt;/</span><span class="n">Option</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">Option</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;NUMMINUTES&quot;</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Number of minutes to reserve&quot;</span> <span class="n">save</span><span class="o">=</span><span class="s2">&quot;true&quot;</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">Range</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;int&quot;</span> <span class="nb">min</span><span class="o">=</span><span class="s2">&quot;5&quot;</span> <span class="nb">max</span><span class="o">=</span><span class="s2">&quot;1000&quot;</span> <span class="n">step</span><span class="o">=</span><span class="s2">&quot;5&quot;</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;20&quot;</span><span class="o">/&gt;</span>
+    <span class="o">&lt;/</span><span class="n">Option</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">Option</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;ACCOUNT&quot;</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Account&quot;</span> <span class="n">save</span><span class="o">=</span><span class="s2">&quot;true&quot;</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">String</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;YOURPROJECT&quot;</span><span class="o">/&gt;</span>
+    <span class="o">&lt;/</span><span class="n">Option</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">Option</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;QUEUE&quot;</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Queue&quot;</span> <span class="n">save</span><span class="o">=</span><span class="s2">&quot;true&quot;</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">String</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;batch&quot;</span><span class="o">/&gt;</span>
+    <span class="o">&lt;/</span><span class="n">Option</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">Option</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;JOBNAME&quot;</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Job name&quot;</span> <span class="n">save</span><span class="o">=</span><span class="s2">&quot;true&quot;</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">String</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;paraview_interactive&quot;</span><span class="o">/&gt;</span>
+    <span class="o">&lt;/</span><span class="n">Option</span><span class="o">&gt;</span>
+   <span class="o">&lt;/</span><span class="n">Options</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">Command</span> <span class="n">exec</span><span class="o">=</span><span class="s2">&quot;$XTERM_EXE$&quot;</span> <span class="n">timeout</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">delay</span><span class="o">=</span><span class="s2">&quot;2&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">Arguments</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">Argument</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;-T&quot;</span><span class="o">/&gt;</span>
+      <span class="o">&lt;</span><span class="n">Argument</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;&amp;#x22;ParaView_$VERSION$&quot;</span><span class="o">/&gt;</span>
+      <span class="o">&lt;</span><span class="n">Argument</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;$USER$@$MACHINE$&amp;#x22;&quot;</span><span class="o">/&gt;</span>
+      <span class="o">&lt;</span><span class="n">Argument</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;-hold&quot;</span><span class="o">/&gt;</span>
+      <span class="o">&lt;</span><span class="n">Argument</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;-e&quot;</span><span class="o">/&gt;</span>
+      <span class="o">&lt;</span><span class="n">Argument</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;$SSH_EXE$&quot;</span><span class="o">/&gt;</span>
+      <span class="o">&lt;</span><span class="n">Argument</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;-R&quot;</span><span class="o">/&gt;</span>
+      <span class="o">&lt;</span><span class="n">Argument</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;$SERVER_PORT$:localhost:$CLIENT_PORT$&quot;</span><span class="o">/&gt;</span>
+      <span class="o">&lt;</span><span class="n">Argument</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;$USER$@$MACHINE$&quot;</span><span class="o">/&gt;</span>
+      <span class="o">&lt;</span><span class="n">Argument</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;/sw/andes/paraview/connect/launch.sh&quot;</span><span class="o">/&gt;</span>
+      <span class="o">&lt;</span><span class="n">Argument</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;$NUMNODES$&quot;</span><span class="o">/&gt;</span>
+      <span class="o">&lt;</span><span class="n">Argument</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;$NUMMINUTES$&quot;</span><span class="o">/&gt;</span>
+      <span class="o">&lt;</span><span class="n">Argument</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;$ACCOUNT$&quot;</span><span class="o">/&gt;</span>
+      <span class="o">&lt;</span><span class="n">Argument</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;$QUEUE$&quot;</span><span class="o">/&gt;</span>
+      <span class="o">&lt;</span><span class="n">Argument</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;$JOBNAME$&quot;</span><span class="o">/&gt;</span>
+      <span class="o">&lt;</span><span class="n">Argument</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;$SERVER_PORT$&quot;</span><span class="o">/&gt;</span>
+      <span class="o">&lt;</span><span class="n">Argument</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;pvserver&quot;</span><span class="o">/&gt;</span>
+      <span class="o">&lt;</span><span class="n">Argument</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;$VERSION$&quot;</span><span class="o">/&gt;</span>
+      <span class="o">&lt;</span><span class="n">Argument</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;$CPUSPERNODE$&quot;</span><span class="o">/&gt;</span>
+    <span class="o">&lt;/</span><span class="n">Arguments</span><span class="o">&gt;</span>
+   <span class="o">&lt;/</span><span class="n">Command</span><span class="o">&gt;</span>
+  <span class="o">&lt;/</span><span class="n">CommandStartup</span><span class="o">&gt;</span>
+ <span class="o">&lt;/</span><span class="n">Server</span><span class="o">&gt;</span>
+ <span class="c1"># ...</span>
+<span class="o">&lt;/</span><span class="n">Servers</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p><strong>Step 2: Launch ParaView on your Desktop and Click on File -&gt; Connect</strong></p>
+<p>Start ParaView and then select <code class="docutils literal notranslate"><span class="pre">File/Connect</span></code> to begin.</p>
+<img alt="../_images/paraview_step1a_Andes.jpg" class="align-center" src="../_images/paraview_step1a_Andes.jpg" />
+<p>Click Load Servers button and find the servers.pvsc file</p>
+<img alt="../_images/paraview_step2a_Andes.jpg" class="align-center" src="../_images/paraview_step2a_Andes.jpg" />
+<p><strong>Step 3: Establish a connection to Andes</strong></p>
+<p>Select <a class="reference external" href="mailto:Andes&#37;&#52;&#48;ORNL" target="_blank">Andes<span>&#64;</span>ORNL</a>, click on Connect and change the values in the Connection Options box.</p>
+<img alt="../_images/paraview_step2a_Andes_2.jpg" class="align-center" src="../_images/paraview_step2a_Andes_2.jpg" />
+<p>A dialog box follows, in which you must enter in your username and project
+allocation, the number of nodes to reserve and a duration to reserve them for.
+Please make sure to check the correct path of the xterm on your local computer
+and add the path to the option box.</p>
+<img alt="../_images/paraview_step2b_Andes.jpg" class="align-center" src="../_images/paraview_step2b_Andes.jpg" />
+<p>When you click OK, a windows command prompt or <code class="docutils literal notranslate"><span class="pre">xterm</span></code> pops up. In this
+window enter your credentials at the OLCF login prompt.</p>
+<img alt="../_images/paraview_step2c_Andes.jpg" class="align-center" src="../_images/paraview_step2c_Andes.jpg" />
+<p>When your job reaches the top of the queue, the <code class="docutils literal notranslate"><span class="pre">RenderView1</span></code> view window
+will return. At this point you are connected to Andes and can open files that
+reside there and visualize them interactively.</p>
+</div>
+</div>
+</div>
+<div class="section" id="visit">
+<h3>VisIt<a class="headerlink" href="#visit" title="Permalink to this headline">¶</a></h3>
+<p>VisIt is a interactive, parallel analysis and visualization tool for
+scientific data. VisIt contains a rich set of visualization features so
+you can view your data in a variety of ways. It can be used to visualize
+scalar and vector fields defined on two- and three-dimensional (2D and
+3D) structured and unstructured meshes.</p>
+<div class="section" id="installing-and-setting-up-visit">
+<h4>Installing and Setting Up Visit<a class="headerlink" href="#installing-and-setting-up-visit" title="Permalink to this headline">¶</a></h4>
+<p>VisIt uses a client-server architecture. You will obtain the best
+performance by running the VisIt client on your local computer and
+running the server on OLCF resources. VisIt for your local computer can
+be obtained here: <a class="reference external" href="http://visit.llnl.gov" target="_blank">VisIt Installation</a>. Andes
+currently has Remote Backend Version 3.1.2 available, so the local client
+version 3.1.2 is recommended.</p>
+<p>The first time you launch VisIt (after installing), you will be prompted
+for a remote host preference. Unfortunately, ORNL does not maintain this
+list and the ORNL entry is outdated. Click the “None” option instead.
+Restart VisIt, and go to Options→Host Profiles. Select “New Host”</p>
+<ul class="simple">
+<li>For host nickname: Andes (this is arbitrary)</li>
+<li>Remote hostname: andes.olcf.ornl.gov (required)</li>
+<li>Host name aliases: andes-login#g (required)</li>
+<li>Maximum Nodes: unchecked (unless using the GPU partition on Rhea)</li>
+<li>Maximum processors: unchecked (arbitrary but use fewer than cores available)</li>
+<li>Path to VisIt Installation: <code class="docutils literal notranslate"><span class="pre">/sw/andes/visit</span></code> (required)</li>
+<li>Username: Your OLCF Username (required)</li>
+<li>Tunnel data connections through SSH: Checked (required)</li>
+</ul>
+<p>Under the “Launch Profiles” tab create a launch profile. Most of these values
+are arbitrary</p>
+<ul class="simple">
+<li>Profile Name: No GPU, MPI, Multinode (arbitrary)</li>
+<li>Timeout: 480 (arbitrary)</li>
+<li>Number of threads per task: 0 (arbitrary, but not tested
+with OMP/pthread support)</li>
+<li>Additional arguments: blank (arbitrary)</li>
+</ul>
+<p>Under the “Parallel” Tab:</p>
+<ul class="simple">
+<li>Launch parallel engine: Checked (required)</li>
+<li><dl class="first docutils">
+<dt>Launch Tab:</dt><dd><ul>
+<li>Parallel launch method:
+sbatch/srun (required)</li>
+<li>Partition/Pool/Queue: batch (required)</li>
+<li>Number of processors: 2 (arbitrary, but
+high number may lead to OOM errors)</li>
+<li>Number of nodes: 2 (arbitrary)</li>
+<li>Bank/Account: Your OLCF project to use (required)</li>
+<li>Time Limit: 1:00:00 (arbitrary)</li>
+<li>Machine file: Unchecked (required – Lets VisIt get
+the nodelist from the scheduler)</li>
+<li>Constraints: unchecked</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li>Advanced tab – All boxes unchecked</li>
+<li><dl class="first docutils">
+<dt>GPU Acceleration</dt><dd><ul>
+<li>Use cluster’s graphics cards: Unchecked</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p>Click “Apply”. Exit and re-launch VisIt.</p>
+</div>
+<div class="section" id="usage">
+<h4>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h4>
+<p>Once you have VisIt installed and set up on your local computer:</p>
+<ul class="simple">
+<li>Open VisIt on your local computer.</li>
+<li>Go to: “File→Open file” or click the “Open” button on the GUI.</li>
+<li>Click the “Host” dropdown menu on the “File open” window that popped
+up and choose “ORNL_Andes”.</li>
+<li>This will prompt you for your OLCF password, and connect you to Andes.</li>
+<li>Navigate to the appropriate file.</li>
+<li>Once you choose a file, you will be prompted for the number of nodes
+and processors you would like to use (remember that each node of Andes
+contains 32 processors) and the Project ID, which VisIt calls a
+“Bank” as shown below.</li>
+</ul>
+<img alt="../_images/Visit_Andes_1.png" class="align-center" src="../_images/Visit_Andes_1.png" />
+<ul class="simple">
+<li>Once specified, the server side of VisIt will be launched, and you
+can interact with your data.</li>
+</ul>
+<p>Please do not run VisIt’s client from an OLCF machine. You will get much better
+performance if you install a client on your workstation and launch locally. You
+can directly connect to OLCF machines from inside VisIt and access your data
+remotely. For additional resources, please see the <a class="reference external" href="http://www.visitusers.org" target="_blank">VisIt Wiki</a>.</p>
+</div>
+<div class="section" id="troubleshooting">
+<h4>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="visit-keeps-asking-for-your-password">
+<h5>VisIt keeps asking for your password.<a class="headerlink" href="#visit-keeps-asking-for-your-password" title="Permalink to this headline">¶</a></h5>
+<p>If VisIt keeps asking for your “Password” in the dialog box below, and you are
+entering your correct PIN + RSA token code, you might need to select “Change
+username” and then enter your OLCF username when prompted.</p>
+<img alt="../_images/Visit_Andes_2.png" class="align-center" src="../_images/Visit_Andes_2.png" />
+<p>This will give you a new opportunity to enter your PIN + token code and your
+username will appear in login request box as shown below. If you want you OLCF
+username to be filled in by default, go to “Options→Host profiles” and enter it
+under “Username”.</p>
+<img alt="../_images/Visit_Andes_3.png" class="align-center" src="../_images/Visit_Andes_3.png" />
+</div>
+<div class="section" id="visit-will-not-connect-when-you-try-to-draw-an-image">
+<h5>VisIt will not connect when you try to draw an image.<a class="headerlink" href="#visit-will-not-connect-when-you-try-to-draw-an-image" title="Permalink to this headline">¶</a></h5>
+<p>If VisIt will not connect to Andes when you try to draw an image, you should
+login to Andes and enter “squeue” from the command line. Your VisIt job should
+appear in the queue. If you see it in a state marked “PD” you should wait a bit
+longer to see if it will start. If you do not see your job listed in the queue,
+check to make sure your project ID is entered in your VisIt host profile. See
+the <a class="reference internal" href="rhea_user_guide.html#modifying-host-profiles"><span class="std std-ref">Modifying Host Profiles</span></a> section below for instructions.</p>
+</div>
+</div>
+<div class="section" id="modifying-host-profiles">
+<span id="id6"></span><h4>Modifying Host Profiles<a class="headerlink" href="#modifying-host-profiles" title="Permalink to this headline">¶</a></h4>
+<p>To make changes to an exiting host profile, do the following:</p>
+<ul class="simple">
+<li>Go to “Options→Host Profiles”.</li>
+<li>The window will display the known hosts on the left, with the
+settings for that host shown on the right in the “Host Settings” tab.</li>
+<li>You can modify settings relevant to this host machine. For example,
+you can change the “Username” field if your OLCF username differs
+from your local computer username.</li>
+<li>Once you have made your changes, press the “Apply” button, and then
+save the settings (Options/Save Settings).</li>
+</ul>
+<p>Each host can have several launch profiles. A launch profile specifies VisIt can
+be run on a given host computer. To make changes to a host’s launch profile, do
+the following:</p>
+<ul class="simple">
+<li>Go to “Options→Host Profiles”.</li>
+<li>Select the host in the left side of the window.</li>
+<li>Select the “Launch Profiles” tab in the right side of the window.
+This will display the known launch profiles for this host.</li>
+<li>Select a “Launch Profile” and the settings are displayed in the tabs
+below.</li>
+<li>You can set your Project ID in the “Default Bank/Account” field in
+the “Parallel” tab.</li>
+<li>You can change the queue used by modifying the “Partition/Pool/Queue”
+field in the “Parallel” tab.</li>
+<li>Once you have made your changes, press the “Apply” button, and then
+save the settings (Options/Save Settings).</li>
+</ul>
+</div>
+</div>
+<div class="section" id="remote-visualization-using-vnc-non-gpu">
+<h3>Remote Visualization using VNC (non-GPU)<a class="headerlink" href="#remote-visualization-using-vnc-non-gpu" title="Permalink to this headline">¶</a></h3>
+<p>In addition to the instructions below, <a class="reference external" href="https://www.olcf.ornl.gov/directory/staff-member/benjamin-hernandez/" target="_blank">Benjamin
+Hernandez</a> of the <a class="reference external" href="https://www.olcf.ornl.gov/about-olcf/staff-sections/advanced-technologies/" target="_blank">OLCF
+Advanced Technologies
+Section</a>
+presented a related talk, <a class="reference external" href="https://www.olcf.ornl.gov/wp-content/uploads/2016/01/GPURenderingRheaTitan-1.pdf" target="_blank">GPU Rendering in Rhea and
+Titan</a>,
+during the 2016 OLCF User Meeting.</p>
+<div class="section" id="step-1-local-system">
+<h4>Step 1 (local system)<a class="headerlink" href="#step-1-local-system" title="Permalink to this headline">¶</a></h4>
+<p>Install a vncviewer (turbovnc, tigervnc, etc.) on your local machine.  When
+running vncviewer for the first time, it will ask to set a password for this and
+future vnc sessions.</p>
+</div>
+<div class="section" id="step-2-terminal-1">
+<h4>Step 2 (terminal 1)<a class="headerlink" href="#step-2-terminal-1" title="Permalink to this headline">¶</a></h4>
+<p>From an Andes connection launch a batch job and execute the below matlab-vnc.sh
+script to start the vncserver and run matlab within:</p>
+<ol class="arabic simple">
+<li>localsytem: <code class="docutils literal notranslate"><span class="pre">ssh</span> <span class="pre">-X</span> <span class="pre">username&#64;andes.olcf.ornl.gov</span></code></li>
+<li>andes: <code class="docutils literal notranslate"><span class="pre">salloc</span> <span class="pre">-A</span> <span class="pre">abc123</span> <span class="pre">-N</span> <span class="pre">1</span> <span class="pre">-t</span> <span class="pre">1:00:00</span> <span class="pre">--x11=batch</span></code></li>
+<li>andes: <code class="docutils literal notranslate"><span class="pre">./matlab-vnc.sh</span></code></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ./matlab-vnc.sh
+
+Starting vncserver
+
+Desktop &#39;TurboVNC: andes79.olcf.ornl.gov:1 (userA)&#39; started on display andes79.olcf.ornl.gov:1
+
+Starting applications specified in /ccs/home/userA/.vnc/xstartup.turbovnc
+Log file is /ccs/home/userA/.vnc/andes79.olcf.ornl.gov:1.log
+
+**************************************************************************
+Instructions
+
+In a new terminal, open a tunneling connection with andes79.olcf.ornl.gov and port 5901
+example:
+     localsystem: ssh -L 5901:localhost:5901 username@andes.olcf.ornl.gov
+     andes: ssh -L 5901:localhost:5901 andes79
+
+**************************************************************************
+
+MATLAB is selecting SOFTWARE OPENGL rendering.
+</pre></div>
+</div>
+</div>
+<div class="section" id="step-3-terminal-2">
+<h4>Step 3 (terminal 2)<a class="headerlink" href="#step-3-terminal-2" title="Permalink to this headline">¶</a></h4>
+<p>In a second terminal on your local system open a tunneling connection following
+the instructions given by the vnc start-up script:</p>
+<ul class="simple">
+<li>localsystem: <code class="docutils literal notranslate"><span class="pre">ssh</span> <span class="pre">-L</span> <span class="pre">5901:localhost:5901</span> <span class="pre">username&#64;andes.olcf.ornl.gov</span></code></li>
+<li>andes: <code class="docutils literal notranslate"><span class="pre">ssh</span> <span class="pre">-L</span> <span class="pre">5901:localhost:5901</span> <span class="pre">andes79</span></code></li>
+</ul>
+</div>
+<div class="section" id="step-4-local-system">
+<h4>Step 4 (local system)<a class="headerlink" href="#step-4-local-system" title="Permalink to this headline">¶</a></h4>
+<p>Launch the vncviewer. When you launch the vncviewer that you downloaded you will
+need to specify <code class="docutils literal notranslate"><span class="pre">localhost:5901</span></code>. You will also set a password for the initial
+connection or enter the created password for subsequent connections.</p>
+</div>
+<div class="section" id="matlab-vnc-sh-non-gpu-rendering">
+<h4>matlab-vnc.sh (non-GPU rendering)<a class="headerlink" href="#matlab-vnc-sh-non-gpu-rendering" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/sh</span>
+
+<span class="n">what</span><span class="p">()</span>
+<span class="p">{</span>
+   <span class="n">hostname</span>
+<span class="p">}</span>
+<span class="n">echo</span> <span class="s2">&quot;Starting vncserver&quot;</span>
+
+<span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">TurboVNC</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">vncserver</span> <span class="p">:</span><span class="mi">1</span> <span class="o">-</span><span class="n">geometry</span> <span class="mi">1920</span><span class="n">x1080</span> <span class="o">-</span><span class="n">depth</span> <span class="mi">24</span>
+
+<span class="n">echo</span>
+<span class="n">echo</span>
+<span class="n">echo</span> <span class="s2">&quot;**************************************************************************&quot;</span>
+<span class="n">echo</span> <span class="s2">&quot;Instructions&quot;</span>
+<span class="n">echo</span>
+<span class="n">echo</span> <span class="s2">&quot;In a new terminal, open a tunneling connection with $(what) and port 5901&quot;</span>
+<span class="n">echo</span> <span class="s2">&quot;example:&quot;</span>
+<span class="n">echo</span> <span class="s2">&quot;   localsystom: ssh -L 5901:localhost:5901 username@andes.olcf.ornl.gov &quot;</span>
+<span class="n">echo</span> <span class="s2">&quot;   andes: ssh -L 5901:localhost:5901 $(what) &quot;</span>
+<span class="n">echo</span>
+<span class="n">echo</span> <span class="s2">&quot;**************************************************************************&quot;</span>
+<span class="n">echo</span>
+<span class="n">echo</span>
+
+<span class="n">export</span> <span class="n">DISPLAY</span><span class="o">=</span><span class="p">:</span><span class="mi">1</span>
+
+<span class="n">module</span> <span class="n">load</span> <span class="n">matlab</span>
+<span class="n">matlab</span>
+<span class="n">vncserver</span> <span class="o">-</span><span class="n">kill</span> <span class="p">:</span><span class="mi">1</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="remote-visualization-using-vnc-gpu-nodes">
+<h3>Remote Visualization using VNC (GPU nodes)<a class="headerlink" href="#remote-visualization-using-vnc-gpu-nodes" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id7">
+<h4>Step 1 (local system)<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h4>
+<p>Install a vncviewer (turbovnc, tigervnc, etc.) on your local machine.  When
+running vncviewer for the first time, it will ask to set a password for this and
+future vnc sessions.</p>
+</div>
+<div class="section" id="id8">
+<h4>Step 2 (terminal 1)<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h4>
+<p>From an Andes connection launch a batch job and execute the below vmd-vgl.sh
+script to start the vncserver and run vmd within:</p>
+<ol class="arabic simple">
+<li>localsytem: <code class="docutils literal notranslate"><span class="pre">ssh</span> <span class="pre">-X</span> <span class="pre">username&#64;andes.olcf.ornl.gov</span></code></li>
+<li>andes: <code class="docutils literal notranslate"><span class="pre">salloc</span> <span class="pre">-A</span> <span class="pre">abc123</span> <span class="pre">-N</span> <span class="pre">1</span> <span class="pre">-t</span> <span class="pre">1:00:00</span> <span class="pre">-p</span> <span class="pre">gpu</span> <span class="pre">--x11=batch</span></code></li>
+<li>andes: <code class="docutils literal notranslate"><span class="pre">./vmd-vgl.sh</span></code></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ./vmd-vgl.sh
+
+Starting X
+
+
+X.Org X Server 1.20.3
+X Protocol Version 11, Revision 0
+Build Operating System:  4.14.0-49.el7a.noaead.x86_64
+Current Operating System: Linux andes-gpu5.olcf.ornl.gov 4.18.0-147.8.1.el8_1.x86_64 #1 SMP Wed Feb 26 03:08:15 UTC 2020 x86_64
+Kernel command line: selinux=0 audit=0 panic=10 biosdevname=0 console=ttyS1,115200n8 nouveau.modeset=0 rd.driver.blacklist=nouveau ip=dhcp BOOTIF=54:9f:35:25:a3:50 root=anchor init=/sbin/init dropbear_auth_key=/root-key.pub squashfs_mount_only=1 overlayfs_size=4096m overlayfs_write=/ image=andes_gpu:prod_20201109-73f962-12c93c6 initrd=initrd-4.18.0-147.8.1.el8_1.x86_64-anchor-0.1.4-4632674.el7-andes-mlnx
+Build Date: 13 September 2019  02:55:13PM
+Build ID: xorg-x11-server 1.20.3-11.el8
+Current version of pixman: 0.36.0
+    Before reporting problems, check http://wiki.x.org
+    to make sure that you have the latest version.
+Markers: (--) probed, (**) from config file, (==) default setting,
+    (++) from command line, (!!) notice, (II) informational,
+    (WW) warning, (EE) error, (NI) not implemented, (??) unknown.
+(==) Log file: &quot;/var/log/Xorg.0.log&quot;, Time: Thu Nov 26 22:14:04 2020
+(==) Using config file: &quot;/etc/X11/xorg.conf&quot;
+(==) Using config directory: &quot;/etc/X11/xorg.conf.d&quot;
+(==) Using system config directory &quot;/usr/share/X11/xorg.conf.d&quot;
+Starting vncserver
+
+Desktop &#39;TurboVNC: andes-gpu5.olcf.ornl.gov:1 (userA)&#39; started on display andes-g                                                                             pu5.olcf.ornl.gov:1
+
+Starting applications specified in /ccs/home/userA/.vnc/xstartup.turbovnc
+Log file is /ccs/home/userA/.vnc/andes-gpu5.olcf.ornl.gov:1.log
+
+**************************************************************************
+Instructions
+
+In a new terminal, open a tunneling connection with andes-gpu5.olcf.ornl.gov and                                                                              port 5901
+example:
+     localsystem: ssh -L 5901:localhost:5901 username@andes.olcf.ornl.gov
+     andes: ssh -L 5901:localhost:5901 andes-gpu5
+
+**************************************************************************
+
+
+/sw/andes/spack-envs/base/opt/linux-rhel8-x86_64/gcc-8.3.1/vmd-1.9.3-javakxxmgnha3ah4hqcv2rpx4paunyzf/lib/vmd_LINUXAMD64: /lib64/libGL.so.1: no version information available (required by /sw/andes/spack-envs/base/opt/linux-rhel8-x86_64/gcc-8.3.1/vmd-1.9.3-javakxxmgnha3ah4hqcv2rpx4paunyzf/lib/vmd_LINUXAMD64)
+Info) VMD for LINUXAMD64, version 1.9.3 (November 30, 2016)
+Info) http://www.ks.uiuc.edu/Research/vmd/
+Info) Email questions and bug reports to vmd@ks.uiuc.edu
+Info) Please include this reference in published work using VMD:
+Info)    Humphrey, W., Dalke, A. and Schulten, K., `VMD - Visual
+Info)    Molecular Dynamics&#39;, J. Molec. Graphics 1996, 14.1, 33-38.
+Info) -------------------------------------------------------------
+Info) Multithreading available, 56 CPUs detected.
+Info)   CPU features: SSE2 AVX AVX2 FMA
+Info) Free system memory: 986GB (97%)
+Info) Creating CUDA device pool and initializing hardware...
+Info) Detected 4 available CUDA accelerators:
+Info) [0] Tesla K80          13 SM_3.7 @ 0.82 GHz, 11GB RAM, KTO, AE2, ZCP
+Info) [1] Tesla K80          13 SM_3.7 @ 0.82 GHz, 11GB RAM, AE2, ZCP
+Info) [2] Tesla K80          13 SM_3.7 @ 0.82 GHz, 11GB RAM, AE2, ZCP
+Info) [3] Tesla K80          13 SM_3.7 @ 0.82 GHz, 11GB RAM, AE2, ZCP
+Warning) Detected X11 &#39;Composite&#39; extension: if incorrect display occurs
+Warning) try disabling this X server option.  Most OpenGL drivers
+Warning) disable stereoscopic display when &#39;Composite&#39; is enabled.
+Info) OpenGL renderer: Tesla K80/PCIe/SSE2
+Info)   Features: STENCIL MSAA(4) MDE CVA MTX NPOT PP PS GLSL(OVFGS)
+Info)   Full GLSL rendering mode is available.
+Info)   Textures: 2-D (16384x16384), 3-D (2048x2048x2048), Multitexture (4)
+Info) Detected 4 available TachyonL/OptiX ray tracing accelerators
+Info)   Compiling 1 OptiX shaders on 4 target GPUs...
+Info) Dynamically loaded 2 plugins in directory:
+Info) /sw/andes/spack-envs/base/opt/linux-rhel8-x86_64/gcc-8.3.1/vmd-1.9.3-javakxxmgnha3ah4hqcv2rpx4paunyzf/lib/plugins/LINUXAMD64/molfile
+vmd &gt;
+</pre></div>
+</div>
+</div>
+<div class="section" id="id9">
+<h4>Step 3 (terminal 2)<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h4>
+<p>In a second terminal on your local system open a tunneling connection following
+the instructions given by the vnc start-up script:</p>
+<ul class="simple">
+<li>localsystem: <code class="docutils literal notranslate"><span class="pre">ssh</span> <span class="pre">-L</span> <span class="pre">5901:localhost:5901</span> <span class="pre">username&#64;andes.olcf.ornl.gov</span></code></li>
+<li>andes: <code class="docutils literal notranslate"><span class="pre">ssh</span> <span class="pre">-L</span> <span class="pre">5901:localhost:5901</span> <span class="pre">andes-gpu5</span></code></li>
+</ul>
+</div>
+<div class="section" id="id10">
+<h4>Step 4 (local system)<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h4>
+<p>Launch the vncviewer. When you launch the vncviewer that you downloaded you will
+need to specify <code class="docutils literal notranslate"><span class="pre">localhost:5901</span></code>. You will also set a passoword for the initial
+connection or enter the created password for subsequent connections.</p>
+</div>
+<div class="section" id="vmd-vgl-sh-gpu-rendering">
+<h4>vmd-vgl.sh (GPU rendering)<a class="headerlink" href="#vmd-vgl-sh-gpu-rendering" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/sh</span>
+
+<span class="n">what</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">hostname</span>
+<span class="p">}</span>
+<span class="n">echo</span>
+<span class="n">echo</span> <span class="s2">&quot;Starting X&quot;</span>
+<span class="n">xinit</span> <span class="o">&amp;</span>
+<span class="n">sleep</span> <span class="mi">5</span>
+<span class="n">echo</span> <span class="s2">&quot;Starting vncserver&quot;</span>
+
+<span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">TurboVNC</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">vncserver</span> <span class="p">:</span><span class="mi">1</span> <span class="o">-</span><span class="n">geometry</span> <span class="mi">1920</span><span class="n">x1080</span> <span class="o">-</span><span class="n">depth</span> <span class="mi">24</span>
+
+<span class="n">echo</span>
+<span class="n">echo</span>
+<span class="n">echo</span> <span class="s2">&quot;**************************************************************************&quot;</span>
+<span class="n">echo</span> <span class="s2">&quot;Instructions&quot;</span>
+<span class="n">echo</span>
+<span class="n">echo</span> <span class="s2">&quot;In a new terminal, open a tunneling connection with $(what) and port 5901&quot;</span>
+<span class="n">echo</span> <span class="s2">&quot;example:&quot;</span>
+<span class="n">echo</span> <span class="s2">&quot;   localsystem: ssh -L 5901:localhost:5901 username@andes.olcf.ornl.gov &quot;</span>
+<span class="n">echo</span> <span class="s2">&quot;   andes: ssh -L 5901:localhost:5901 $(what) &quot;</span>
+<span class="n">echo</span>
+<span class="n">echo</span> <span class="s2">&quot;**************************************************************************&quot;</span>
+<span class="n">echo</span>
+<span class="n">echo</span>
+<span class="n">export</span> <span class="n">DISPLAY</span><span class="o">=</span><span class="p">:</span><span class="mi">1</span>
+<span class="n">module</span> <span class="n">load</span> <span class="n">vmd</span>
+<span class="n">vglrun</span> <span class="n">vmd</span>
+<span class="n">vncserver</span> <span class="o">-</span><span class="n">kill</span> <span class="p">:</span><span class="mi">1</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="remote-visualization-using-nice-dcv-gpu-nodes-only">
+<h3>Remote Visualization using Nice DCV (GPU nodes only)<a class="headerlink" href="#remote-visualization-using-nice-dcv-gpu-nodes-only" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="step-1-terminal-1">
+<h4>Step 1 (terminal 1)<a class="headerlink" href="#step-1-terminal-1" title="Permalink to this headline">¶</a></h4>
+<p>Launch an interactive job:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">salloc</span> <span class="o">-</span><span class="n">A</span> <span class="n">PROJECT_ID</span> <span class="o">-</span><span class="n">p</span> <span class="n">gpu</span> <span class="o">-</span><span class="n">N</span> <span class="mi">1</span> <span class="o">-</span><span class="n">t</span> <span class="mi">60</span><span class="p">:</span><span class="mi">00</span> <span class="o">-</span><span class="n">M</span> <span class="n">andes</span> <span class="o">-</span><span class="n">C</span> <span class="n">DCV</span>
+</pre></div>
+</div>
+<p>Run the following commands:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ xinit &amp;
+$ export DISPLAY=:0
+$ dcv create-session --gl-display :0 mySessionName
+$ hostname  // will be used to open a tunneling connection with this node
+</pre></div>
+</div>
+</div>
+<div class="section" id="step-2-terminal-2">
+<h4>Step 2 (terminal 2)<a class="headerlink" href="#step-2-terminal-2" title="Permalink to this headline">¶</a></h4>
+<p>Open a tunneling connection with gpu node <code class="docutils literal notranslate"><span class="pre">N</span></code>, given by hostname:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">localsystem</span><span class="p">:</span> <span class="n">ssh</span> <span class="n">username</span><span class="nd">@andes</span><span class="o">.</span><span class="n">olcf</span><span class="o">.</span><span class="n">ornl</span><span class="o">.</span><span class="n">gov</span> <span class="o">-</span><span class="n">L</span> <span class="mi">8443</span><span class="p">:</span><span class="n">andes</span><span class="o">-</span><span class="n">gpuN</span><span class="p">:</span><span class="mi">8443</span>
+<span class="n">andes</span><span class="p">:</span>       <span class="n">ssh</span> <span class="o">-</span><span class="n">L</span> <span class="mi">8443</span><span class="p">:</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8443</span> <span class="n">andes</span><span class="o">-</span><span class="n">gpuN</span>
+</pre></div>
+</div>
+<p>Open your web browser using the following link and use your credentials to
+access OLCF systems: <code class="docutils literal notranslate"><span class="pre">https://localhost:8443</span></code> When finished, kill the dcv
+session in first terminal:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ dcv close-session mySessionName
+$ kill %1
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../services_and_applications/index.html" class="btn btn-neutral float-right" title="Services and Applications" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="ascent_user_guide.html" class="btn btn-neutral float-left" title="Ascent" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, OLCF
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+    
+
+
+
+</body>
+</html>

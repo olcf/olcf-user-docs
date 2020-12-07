@@ -1,0 +1,41 @@
+.wy-nav-content {
+   max-width: 1200px;
+}
+
+/* Adds whitespace between OLCF logo and Docs Home link */
+body > div > nav > div > div.wy-side-nav-search > a > img {
+    padding-bottom: 10px;
+}
+
+/* Clicking on the OLCF logo does nothing 
+   (disable RTD theme's default <a> behavior) */
+body > div > nav > div > div.wy-side-nav-search > a{
+    pointer-events: none;
+    cursor: default;
+}
+
+/* Supersede the above block, and allow the Docs Home link to be clickable */
+body > div > nav > div > div.wy-side-nav-search > a > a{
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    color: grey !important;
+}
+
+/* Don't let the color of the Docs Home link change. */
+body > div > nav > div > div.wy-side-nav-search > a > a:visited{
+    color: grey !important;
+}
+
+/* override table width restrictions */
+@media screen and (min-width: 767px) {
+
+   .wy-table-responsive table td {
+      /* !important prevents the common CSS stylesheets from overriding
+         this as on RTD they are loaded after this stylesheet */
+      white-space: normal !important;
+   }
+
+   .wy-table-responsive {
+      overflow: auto !important;
+   }
+}

@@ -1,0 +1,1029 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Routes &mdash; OLCF User Documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme_overrides.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+  
+  
+  
+    <link rel="canonical" href="https://docs.olcf.ornl.govservices_and_applications/slate/networking/route.html"/>
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script src="../../../_static/js/custom.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Network Policies" href="networkpolicy.html" />
+    <link rel="prev" title="NodePorts" href="nodeport.html" />
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #efefef" >
+          
+
+          
+            <a href="../../../index.html">
+          
+
+          
+            
+            <img src="../../../_static/olcf_logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../accounts/index.html">Accounts and Projects</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../accounts/accounts_and_projects.html">Request a New Allocation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../accounts/accounts_and_projects.html#what-are-the-differences-between-project-types">What are the differences between project types?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../accounts/accounts_and_projects.html#what-happens-after-a-project-request-is-approved">What happens after a project request is approved?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../accounts/accounts_and_projects.html#guidance-on-summit-allocation-requests">Guidance on Summit Allocation Requests</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../accounts/accounts_and_projects.html#applying-for-a-user-account">Applying for a user account</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../accounts/accounts_and_projects.html#checking-the-status-of-your-application">Checking the status of your application</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../accounts/accounts_and_projects.html#get-access-to-additional-projects">Get access to additional projects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../accounts/frequently_asked_questions.html">Frequently Asked Questions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../accounts/frequently_asked_questions.html#how-do-i-apply-for-an-account">How do I apply for an account?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../accounts/frequently_asked_questions.html#what-is-the-status-of-my-application">What is the status of my application?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../accounts/frequently_asked_questions.html#how-should-i-acknowledge-the-olcf-in-my-publications-and-presentations">How should I acknowledge the OLCF in my publications and presentations?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../accounts/frequently_asked_questions.html#what-is-a-subproject">What is a subproject?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../accounts/frequently_asked_questions.html#i-no-longer-need-my-account-who-should-i-inform-and-what-should-i-do-with-my-olcf-issued-rsa-securid-token">I no longer need my account. Who should I inform and what should I do with my OLCF issued RSA SecurID token?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../accounts/frequently_asked_questions.html#my-securid-token-is-broken-expired-what-should-i-do">My SecurID token is broken/expired. What should I do?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../accounts/frequently_asked_questions.html#getting-help">Getting Help</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../accounts/frequently_asked_questions.html#additional-resources">Additional Resources</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../accounts/documents_and_forms.html">Documents and Forms</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../accounts/documents_and_forms.html#forms-for-requesting-a-project-allocation">Forms for Requesting a Project Allocation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../accounts/documents_and_forms.html#forms-for-requesting-an-account">Forms for Requesting an Account</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../accounts/documents_and_forms.html#forms-to-request-changes-to-computers-jobs-or-accounts">Forms to Request Changes to Computers, Jobs, or Accounts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../accounts/documents_and_forms.html#report-templates">Report Templates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../accounts/documents_and_forms.html#miscellaneous-forms">Miscellaneous Forms</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../accounts/olcf_policy_guide.html">OLCF Policy Guides</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../accounts/olcf_policy_guide.html#olcf-acknowledgement">OLCF Acknowledgement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../accounts/olcf_policy_guide.html#computing-policy">Computing Policy</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../accounts/olcf_policy_guide.html#computer-use">Computer Use</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../accounts/olcf_policy_guide.html#data-use">Data Use</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../accounts/olcf_policy_guide.html#software-use">Software Use</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../accounts/olcf_policy_guide.html#user-accountability">User Accountability</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../accounts/olcf_policy_guide.html#data-management-policy">Data Management Policy</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../accounts/olcf_policy_guide.html#introduction">Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../accounts/olcf_policy_guide.html#data-retention-purge-quotas">Data Retention, Purge, &amp; Quotas</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../accounts/olcf_policy_guide.html#data-prohibitions-safeguards">Data Prohibitions &amp; Safeguards</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../accounts/olcf_policy_guide.html#software">Software</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../accounts/olcf_policy_guide.html#security-policy">Security Policy</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../accounts/olcf_policy_guide.html#scope">Scope</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../accounts/olcf_policy_guide.html#personal-use">Personal Use</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../accounts/olcf_policy_guide.html#accessing-olcf-computational-resources">Accessing OLCF Computational Resources</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../accounts/olcf_policy_guide.html#data-management">Data Management</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../accounts/olcf_policy_guide.html#sensitive-data">Sensitive Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../accounts/olcf_policy_guide.html#data-transfer">Data Transfer</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../accounts/olcf_policy_guide.html#incite-allocation-under-utilization-policy">INCITE Allocation Under-utilization Policy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../accounts/olcf_policy_guide.html#project-reporting-policy">Project Reporting Policy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../accounts/olcf_policy_guide.html#non-proprietary-institutional-user-agreement-policy">Non-proprietary Institutional User Agreement Policy</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../accounts/olcf_policy_guide.html#access">Access</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../accounts/olcf_policy_guide.html#rules-and-regulations">Rules and Regulations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../accounts/olcf_policy_guide.html#safety-and-health">Safety and Health</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../accounts/olcf_policy_guide.html#intent-to-publish">Intent to Publish</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../accounts/olcf_policy_guide.html#export-control">Export Control</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../accounts/olcf_policy_guide.html#intellectual-property">Intellectual Property</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../accounts/olcf_policy_guide.html#special-requests-and-policy-exemptions">Special Requests and Policy Exemptions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../accounts/glossary.html">Glossary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../accounts/index.html#additional-resources">Additional Resources</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../connecting/index.html">Connecting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../connecting/index.html#connecting-for-the-first-time">Connecting for the first time</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../connecting/index.html#activating-a-new-securid-fob">Activating a new SecurID fob</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../connecting/index.html#pins-passcodes-and-tokencodes">PINs, Passcodes, and Tokencodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../connecting/index.html#x11-forwarding">X11 Forwarding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../connecting/index.html#id2">Systems Available to All Projects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../connecting/index.html#olcf-system-hostnames">OLCF System Hostnames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../connecting/index.html#checking-system-availability">Checking System Availability</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../systems/index.html">Systems</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../systems/summit_user_guide.html">Summit User Guide</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../systems/summit_user_guide.html#summit-documentation-resources">Summit Documentation Resources</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../systems/summit_user_guide.html#system-overview">System Overview</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#summit-nodes">Summit Nodes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#node-types">Node Types</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#system-interconnect">System Interconnect</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#file-systems">File Systems</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#operating-system">Operating System</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#hardware-threads">Hardware Threads</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#gpus">GPUs</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../systems/summit_user_guide.html#connecting">Connecting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../systems/summit_user_guide.html#data-and-storage">Data and Storage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../systems/summit_user_guide.html#software">Software</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../systems/summit_user_guide.html#shell-programming-environments">Shell &amp; Programming Environments</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#default-shell">Default Shell</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#environment-management-with-lmod">Environment Management with Lmod</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../systems/summit_user_guide.html#compiling">Compiling</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#compilers">Compilers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#linking-in-libraries">Linking in Libraries</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../systems/summit_user_guide.html#running-jobs">Running Jobs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#login-launch-and-compute-nodes">Login, Launch, and Compute Nodes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#batch-scripts">Batch Scripts</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#interactive-jobs">Interactive Jobs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#common-bsub-options">Common bsub Options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#batch-environment-variables">Batch Environment Variables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#job-states">Job States</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#scheduling-policy">Scheduling Policy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#job-dependencies">Job Dependencies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#job-launcher-jsrun">Job Launcher (jsrun)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#cuda-aware-mpi">CUDA-Aware MPI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#monitoring-jobs">Monitoring Jobs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#interacting-with-jobs">Interacting With Jobs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#other-lsf-commands">Other LSF Commands</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#pbs-torque-moab-to-lsf-translation">PBS/Torque/MOAB-to-LSF Translation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#easy-mode-vs-expert-mode">Easy Mode vs. Expert Mode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#system-service-core-isolation">System Service Core Isolation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#resource-accounting">Resource Accounting</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#other-notes">Other Notes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../systems/summit_user_guide.html#debugging">Debugging</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#arm-ddt">Arm DDT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#gdb">GDB</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#valgrind">Valgrind</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../systems/summit_user_guide.html#optimizing-and-profiling">Optimizing and Profiling</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#profiling-gpu-code-with-nvidia-developer-tools">Profiling GPU Code with NVIDIA Developer Tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#score-p">Score-P</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#vampir">Vampir</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../systems/summit_user_guide.html#nvidia-tesla-v100">NVIDIA V100 GPUs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#nvidia-v100-sm">NVIDIA V100 SM</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#hbm2">HBM2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#nvidia-nvlink">NVIDIA NVLink</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#volta-multi-process-service">Volta Multi-Process Service</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#unified-memory">Unified Memory</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#independent-thread-scheduling">Independent Thread Scheduling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#tensor-cores">Tensor Cores</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#tesla-v100-specifications">Tesla V100 Specifications</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#further-reading">Further Reading</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../systems/summit_user_guide.html#burst-buffer">Burst Buffer</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#nvme-xfs">NVMe (XFS)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#current-nvme-usage">Current NVMe Usage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#interactive-jobs-using-the-nvme">Interactive Jobs Using the NVMe</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#nvme-usage-example">NVMe Usage Example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#spectral-library">Spectral Library</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../systems/summit_user_guide.html#known-issues">Known Issues</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#open-issues">Open Issues</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#resolved-issues">Resolved Issues</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#cuda-10-1-known-issues">CUDA 10.1 Known Issues</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../systems/summit_user_guide.html#training-system-ascent">Training System (Ascent)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#id26">File Systems</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#obtaining-access-to-ascent">Obtaining Access to Ascent</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#logging-in-to-ascent">Logging In to Ascent</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../systems/summit_user_guide.html#preparing-for-frontier">Preparing For Frontier</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#hip">HIP</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#using-hip-on-summit">Using HIP on Summit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#learning-to-program-with-hip">Learning to Program with HIP</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/summit_user_guide.html#previous-frontier-training-events">Previous Frontier Training Events</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../systems/rhea_user_guide.html">Rhea User Guide</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../systems/rhea_user_guide.html#system-overview">System Overview</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/rhea_user_guide.html#compute-nodes">Compute nodes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/rhea_user_guide.html#login-nodes">Login nodes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/rhea_user_guide.html#file-systems">File systems</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../systems/rhea_user_guide.html#shell-and-programming-environments">Shell and programming environments</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/rhea_user_guide.html#default-shell">Default shell</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/rhea_user_guide.html#environment-management-with-lmod">Environment management with lmod</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/rhea_user_guide.html#installed-software">Installed Software</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../systems/rhea_user_guide.html#compiling">Compiling</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/rhea_user_guide.html#available-compilers">Available compilers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/rhea_user_guide.html#changing-compilers">Changing compilers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/rhea_user_guide.html#compiler-wrappers">Compiler wrappers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/rhea_user_guide.html#compiling-threaded-codes">Compiling threaded codes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../systems/rhea_user_guide.html#running-jobs">Running Jobs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/rhea_user_guide.html#login-vs-compute-nodes-on-commodity-clusters">Login vs Compute Nodes on Commodity Clusters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/rhea_user_guide.html#slurm">Slurm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/rhea_user_guide.html#interactive-batch-jobs-on-commodity-clusters">Interactive Batch Jobs on Commodity Clusters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/rhea_user_guide.html#common-batch-options-to-slurm">Common Batch Options to Slurm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/rhea_user_guide.html#batch-environment-variables">Batch Environment Variables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/rhea_user_guide.html#modifying-batch-jobs">Modifying Batch Jobs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/rhea_user_guide.html#monitoring-batch-jobs">Monitoring Batch Jobs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/rhea_user_guide.html#job-execution">Job Execution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/rhea_user_guide.html#batch-queues-on-rhea">Batch Queues on Rhea</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/rhea_user_guide.html#job-accounting-on-rhea">Job Accounting on Rhea</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../systems/rhea_user_guide.html#visualization-tools">Visualization tools</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/rhea_user_guide.html#paraview">ParaView</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/rhea_user_guide.html#visit">VisIt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/rhea_user_guide.html#remote-visualization-using-vnc-non-gpu">Remote Visualization using VNC (non-GPU)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/rhea_user_guide.html#remote-visualization-using-vnc-gpu-nodes">Remote Visualization using VNC (GPU nodes)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/rhea_user_guide.html#remote-visualization-using-nice-dcv-gpu-nodes-only">Remote Visualization using Nice DCV (GPU nodes only)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../systems/home_user_guide.html">Home</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../systems/home_user_guide.html#system-overview">System Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../systems/home_user_guide.html#access-connecting">Access &amp; Connecting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../systems/home_user_guide.html#usage">Usage</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/home_user_guide.html#acceptable-tasks">Acceptable Tasks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/home_user_guide.html#unacceptable-tasks">Unacceptable Tasks</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../systems/dtn_user_guide.html">Data Transfer Nodes (DTNs)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../systems/dtn_user_guide.html#system-overview">System Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../systems/dtn_user_guide.html#access-connecting">Access &amp; Connecting</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../systems/hpss_user_guide.html">High Performance Storage System</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../systems/hpss_user_guide.html#system-overview">System Overview</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../systems/ascent_user_guide.html">Ascent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../systems/ascent_user_guide.html#system-overview">System Overview</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../systems/andes_user_guide.html">Andes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../systems/andes_user_guide.html#system-overview">System Overview</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/andes_user_guide.html#compute-nodes">Compute nodes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/andes_user_guide.html#login-nodes">Login nodes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/andes_user_guide.html#file-systems">File systems</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../systems/andes_user_guide.html#shell-and-programming-environments">Shell and programming environments</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/andes_user_guide.html#default-shell">Default shell</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/andes_user_guide.html#environment-management-with-lmod">Environment management with lmod</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/andes_user_guide.html#installed-software">Installed Software</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../systems/andes_user_guide.html#compiling">Compiling</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/andes_user_guide.html#available-compilers">Available compilers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/andes_user_guide.html#changing-compilers">Changing compilers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/andes_user_guide.html#compiler-wrappers">Compiler wrappers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/andes_user_guide.html#compiling-threaded-codes">Compiling threaded codes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../systems/andes_user_guide.html#running-jobs">Running Jobs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/andes_user_guide.html#login-vs-compute-nodes-on-commodity-clusters">Login vs Compute Nodes on Commodity Clusters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/andes_user_guide.html#slurm">Slurm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/andes_user_guide.html#interactive-batch-jobs-on-commodity-clusters">Interactive Batch Jobs on Commodity Clusters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/andes_user_guide.html#common-batch-options-to-slurm">Common Batch Options to Slurm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/andes_user_guide.html#batch-environment-variables">Batch Environment Variables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/andes_user_guide.html#modifying-batch-jobs">Modifying Batch Jobs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/andes_user_guide.html#monitoring-batch-jobs">Monitoring Batch Jobs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/andes_user_guide.html#job-execution">Job Execution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/andes_user_guide.html#batch-queues-on-andes">Batch Queues on Andes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/andes_user_guide.html#job-accounting-on-andes">Job Accounting on Andes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../systems/andes_user_guide.html#visualization-tools">Visualization tools</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/andes_user_guide.html#paraview">ParaView</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/andes_user_guide.html#visit">VisIt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/andes_user_guide.html#remote-visualization-using-vnc-non-gpu">Remote Visualization using VNC (non-GPU)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/andes_user_guide.html#remote-visualization-using-vnc-gpu-nodes">Remote Visualization using VNC (GPU nodes)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../systems/andes_user_guide.html#remote-visualization-using-nice-dcv-gpu-nodes-only">Remote Visualization using Nice DCV (GPU nodes only)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Services and Applications</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Slate</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../overview.html">Overview</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../overview.html#what-is-slate">What is Slate?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../overview.html#what-is-kubernetes">What is Kubernetes?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../overview.html#what-is-openshift">What is OpenShift?</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started.html">Getting Started</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started.html#requesting-a-slate-project-allocation">Requesting A Slate Project Allocation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started.html#logging-in">Logging in</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started.html#slate-namespaces">Slate Namespaces</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started.html#install-the-oc-tool">Install the OC tool</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started.html#test-login-with-oc-tool">Test login with OC Tool</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../guided_tutorial.html">Guided Tutorial</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../guided_tutorial.html#creating-your-project">Creating your project</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guided_tutorial.html#guided-web-gui-tutorial">Guided Web GUI Tutorial</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../guided_tutorial_cli.html">Guided Tutorial: CLI</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../guided_tutorial_cli.html#adding-a-pod-to-your-project">Adding a Pod to your Project</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../image_building.html">Image Building</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../image_building.html#build-types">Build Types</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../image_building.html#examples">Examples</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../image_building.html#logging-into-the-registry-externally">Logging into the registry externally</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../workloads/index.html">Workloads</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../workloads/pod.html">Pods</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../workloads/deployment.html">Deployments</a></li>
+</ul>
+</li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Networking</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="services.html">Services</a></li>
+<li class="toctree-l4"><a class="reference internal" href="nodeport.html">NodePorts</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Routes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="networkpolicy.html">Network Policies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="port_forwarding.html">Quick Access from Outside Slate</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../storage.html">Persistent Storage</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../storage.html#creating-a-persistent-volume-claim">Creating A Persistent Volume Claim</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../storage.html#adding-pvc-to-pod">Adding PVC To Pod</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../storage.html#backups">Backups</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../use_cases/index.html">Application Deployment Examples</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../use_cases/simple_website.html">Build and Deploy Simple Website</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../use_cases/mongodb_service.html">Deploy MongoDB</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../use_cases/nginx_hello_world.html">Deploy NGINX with Hello World</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../use_cases/helm_example.html">Deploy Packages with Helm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../use_cases/minio.html">MinIO Object Store (On an NCCS Filesystem)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../access_olcf_resources/index.html">Access OLCF Resources From Containers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../access_olcf_resources/job_submit.html">Batch Job Submission</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../access_olcf_resources/mount_fs.html">Mount OLCF Filesystems</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../other_resources.html">Schedule Other Slate Resources</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../other_resources.html#gpus">GPUs</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../olcf_provided_applications/index.html">OLCF-Provided Applications on Slate</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../troubleshooting/index.html">Troubleshooting</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../troubleshooting/fix-writable-directories.html">Fix Container Image Permissions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../troubleshooting/debugging.html">Debugging</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html">YAML Object Quick Reference</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../examples.html#cronjobs">CronJobs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../examples.html#deployments-and-stateful-sets">Deployments and Stateful Sets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../examples.html#pods">Pods</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../examples.html#roles-and-rolebindings">Roles and Rolebindings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../examples.html#routes-services-and-nodeports">Routes, Services and Nodeports</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../examples.html#persistent-volume-claims">Persistent Volume Claims</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../myolcf/index.html">myOLCF</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../myolcf/overview.html">Overview</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../myolcf/overview.html#what-is-myolcf">What is myOLCF?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../myolcf/overview.html#what-can-it-do">What can it do?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../myolcf/overview.html#can-i-suggest-a-feature">Can I suggest a feature?</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../myolcf/authenticating.html">Authenticating</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../myolcf/authenticating.html#olcf-moderate-accounts">OLCF Moderate Accounts</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../myolcf/authenticating.html#olcf-open-accounts">OLCF Open Accounts</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../myolcf/project_pages/project_pages.html">Project Pages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../myolcf/project_pages/project_pages.html#project-context">Project Context</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../myolcf/project_pages/project_pages.html#switching-project-contexts">Switching Project Contexts</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../myolcf/project_pages/project_pages.html#available-pages">Available Pages</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../myolcf/account_pages/account_pages.html">Account Pages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../myolcf/account_pages/account_pages.html#account-context">Account Context</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../myolcf/account_pages/account_pages.html#available-pages">Available Pages</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../myolcf/account_pages/processing_membership_requests.html">Processing Project Membership Requests</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../data/index.html">Data Storage and Transfers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../data/storage_overview.html">Storage Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../data/storage_overview.html#storage-areas">Storage Areas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../data/storage_overview.html#alpine-ibm-spectrum-scale-filesystem">Alpine IBM Spectrum Scale Filesystem</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../data/storage_overview.html#performance-under-not-ideal-workload">Performance under not ideal workload</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../data/storage_overview.html#tips">Tips</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../data/storage_overview.html#major-difference-between-lustre-and-ibm-spectrum-scale">Major difference between Lustre and IBM Spectrum Scale</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../data/policies.html">Policy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../data/policies.html#information">Information</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../data/policies.html#purge">Purge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../data/policies.html#data-retention">Data Retention</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../data/user_centric.html">User-Centric Data Storage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../data/user_centric.html#user-home-directories-nfs">User Home Directories (NFS)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../data/user_centric.html#user-home-quotas">User Home Quotas</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../data/user_centric.html#user-home-permissions">User Home Permissions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../data/user_centric.html#user-home-backups">User Home Backups</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../data/user_centric.html#user-website-directory">User Website Directory</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../data/user_centric.html#user-archive-directories-hpss">User Archive Directories (HPSS)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../data/user_centric.html#user-archive-access">User Archive Access</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../data/user_centric.html#user-archive-accounting">User Archive Accounting</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../data/project_centric.html">Project-Centric Data Storage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../data/project_centric.html#project-home-directories-nfs">Project Home Directories (NFS)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../data/project_centric.html#project-home-path">Project Home Path</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../data/project_centric.html#project-home-quotas">Project Home Quotas</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../data/project_centric.html#project-home-permissions">Project Home Permissions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../data/project_centric.html#project-home-backups">Project Home Backups</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../data/project_centric.html#project-work-areas">Project Work Areas</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../data/project_centric.html#three-project-work-areas-to-facilitate-collaboration">Three Project Work Areas to Facilitate Collaboration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../data/project_centric.html#backups">Backups</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../data/project_centric.html#project-archive-directories">Project Archive Directories</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../data/project_centric.html#three-project-archive-areas-facilitae-collaboration-on-archival-data">Three Project Archive Areas Facilitae Collaboration on Archival Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../data/project_centric.html#project-archive-access">Project Archive Access</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../data/transferring.html">Transferring Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../data/transferring.html#using-common-terminal-tools">Using common terminal tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../data/transferring.html#using-globus-from-your-local-machine">Using Globus from your local machine</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../data/archiving.html">HPSS Data Archival System</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../data/archiving.html#using-globus">Using Globus</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../data/archiving.html#using-hsi">Using HSI</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../data/archiving.html#additional-hsi-documentation">Additional HSI Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../data/archiving.html#using-htar">Using HTAR</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../data/archiving.html#htar-limitations">HTAR Limitations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../data/archiving.html#additional-htar-documentation">Additional HTAR Documentation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../data/index.html#burst-buffer-and-spectral-library">Burst Buffer and Spectral Library</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../software/index.html">Software</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../software/software-news.html">Software News</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../software/analytics/index.html">ML/DL, Analytics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../software/analytics/ibm-wml-ce.html">IBM Watson Machine Learning CE -&gt; Open CE</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../software/analytics/ibm-wml-ce.html#getting-started">Getting Started</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../software/analytics/ibm-wml-ce.html#running-distributed-deep-learning-jobs">Running Distributed Deep Learning Jobs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../software/analytics/ibm-wml-ce.html#setting-up-custom-environments">Setting up Custom Environments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../software/analytics/ibm-wml-ce.html#best-distributed-deep-learning-performance">Best Distributed Deep Learning Performance</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../software/analytics/ibm-wml-ce.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../software/analytics/pbdR.html">Programming with Big Data in R (pbdR)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../software/python.html">Python on OLCF Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../software/profiling/index.html">Profiling Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../software/profiling/TAU.html">Tuning and Analysis Utilities (TAU)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../software/profiling/TAU.html#run-time-environment-variables">Run-Time Environment Variables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../software/profiling/TAU.html#compile-time-environment-variables">Compile-Time Environment Variables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../software/profiling/TAU.html#miniweather-example-application">MiniWeather Example Application</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../software/profiling/TAU.html#cuda-profiling-tools-interface">CUDA Profiling Tools Interface</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../software/profiling/TAU.html#tracing">Tracing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../software/profiling/TAU.html#selective-instrumentation">Selective Instrumentation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../software/profiling/TAU.html#dynamic-phase">Dynamic Phase</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../software/profiling/TAU.html#static-phase">Static Phase</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../software/profiling/TAU.html#openmp-offload">OpenMP Offload</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../software/UMS/index.html">User-Managed Software</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../software/UMS/Flux.html">Flux</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../training/index.html">Training</a><ul>
+<li class="toctree-l2"><a class="reference external" href="https://www.olcf.ornl.gov/for-users/training/training-calendar" target="_blank">OLCF Training Calendar</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://github.com/olcf-tutorials" target="_blank">OLCF Tutorials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../training/training_archive.html">OLCF Training Archive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../training/olcf_gpu_hackathons.html">OLCF GPU Hackathons</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://vimeo.com/channels/olcftraining" target="_blank">OLCF Vimeo Channel</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing/index.html">Contributing to these docs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributing/index.html#submitting-suggestions">Submitting suggestions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributing/index.html#authoring-content">Authoring content</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributing/index.html#setup-authoring-environment">Setup authoring environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributing/index.html#edit-the-docs">Edit the docs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributing/index.html#resources">Resources</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributing/index.html#github-guidelines">GitHub Guidelines</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">OLCF User Documentation</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Services and Applications</a> &raquo;</li>
+        
+          <li><a href="../index.html">Slate</a> &raquo;</li>
+        
+          <li><a href="index.html">Networking</a> &raquo;</li>
+        
+      <li>Routes</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/olcf/olcf-user-docs/blob/master/services_and_applications/slate/networking/route.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="routes">
+<span id="slate-routes"></span><h1>Routes<a class="headerlink" href="#routes" title="Permalink to this headline">¶</a></h1>
+<p>In OpenShift, a <a class="reference internal" href="../glossary.html#term-Route"><span class="xref std std-term">Route</span></a> exposes <a class="reference internal" href="services.html#slate-services"><span class="std std-ref">Services</span></a> with a host name, such as <code class="docutils literal notranslate"><span class="pre">https://my-project.apps.&lt;cluster&gt;.ccs.ornl.gov</span></code>.</p>
+<p>A <a class="reference internal" href="../glossary.html#term-Service"><span class="xref std std-term">Service</span></a> can be exposed with routes over HTTP (insecure), HTTPS (secure), and TLS with SNI (also secure).</p>
+<div class="section" id="why-routes">
+<h2>Why Routes<a class="headerlink" href="#why-routes" title="Permalink to this headline">¶</a></h2>
+<p>Routes are best used when you have created a service which communicates over HTTP or HTTPS, and you
+want this service to be accessible from outside the cluster with a FQDN.</p>
+<p>If your application doesn’t communicate over HTTP or HTTPS, you should use <a class="reference internal" href="nodeport.html#slate-nodeports"><span class="std std-ref">NodePorts</span></a> instead.</p>
+</div>
+<div class="section" id="creating-routes">
+<h2>Creating Routes<a class="headerlink" href="#creating-routes" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If no hostname is provided when creating routes, the default will be
+<code class="docutils literal notranslate"><span class="pre">{SERVICE_NAME}-{PROJECT_NAME}.apps.&lt;cluster&gt;.ccs.ornl.gov</span></code>. Any hostname that follows the pattern
+<code class="docutils literal notranslate"><span class="pre">*.apps.&lt;cluster&gt;.ccs.ornl.gov</span></code> can be provided, as long as another service isn’t using that hostname already.</p>
+</div>
+<div class="section" id="cli">
+<h3>CLI<a class="headerlink" href="#cli" title="Permalink to this headline">¶</a></h3>
+<p>Secured routes (over HTTPS) offer encryption to keep connections private. You can use <code class="docutils literal notranslate"><span class="pre">oc</span> <span class="pre">create</span> <span class="pre">route</span></code> to create a secured HTTPS route.</p>
+<p>Secured routes can use 3 different types of secure TLS termination.</p>
+<div class="section" id="edge-termination">
+<h4>Edge Termination<a class="headerlink" href="#edge-termination" title="Permalink to this headline">¶</a></h4>
+<p>Edge Termination terminates TLS at the router, before sending traffic to the service. We have a wildcard certificate on the routers for each cluster. These will be used by default if no certificate is provided, and this is the preferred method for securing a route.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ oc create route edge --service=my-project \
+  --hostname=my-project.apps.&lt;cluster&gt;.ccs.ornl.gov
+</pre></div>
+</div>
+<p>If you would like to use your own keys with edge termination, this can be done with a command similar to this example.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ oc create route edge --service=my-project \
+  --hostname=my-project.apps.&lt;cluster&gt;.ccs.ornl.gov \
+  --cert=ca.crt \
+  --key=ca.key \
+  --ca-cert=ca.crt \
+</pre></div>
+</div>
+<p>Then, <code class="docutils literal notranslate"><span class="pre">oc</span> <span class="pre">get</span> <span class="pre">route</span> <span class="pre">my-project</span> <span class="pre">-o</span> <span class="pre">yaml</span></code> will show the YAML:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">apiVersion</span><span class="p">:</span> <span class="n">v1</span>
+<span class="n">kind</span><span class="p">:</span> <span class="n">Route</span>
+<span class="n">metadata</span><span class="p">:</span>
+  <span class="n">name</span><span class="p">:</span> <span class="n">my</span><span class="o">-</span><span class="n">project</span>
+<span class="n">spec</span><span class="p">:</span>
+  <span class="n">host</span><span class="p">:</span> <span class="n">my</span><span class="o">-</span><span class="n">project</span><span class="o">.</span><span class="n">apps</span><span class="o">.&lt;</span><span class="n">cluster</span><span class="o">&gt;.</span><span class="n">ccs</span><span class="o">.</span><span class="n">ornl</span><span class="o">.</span><span class="n">gov</span>
+  <span class="n">to</span><span class="p">:</span>
+    <span class="n">kind</span><span class="p">:</span> <span class="n">Service</span>
+    <span class="n">name</span><span class="p">:</span> <span class="n">my</span><span class="o">-</span><span class="n">project</span>
+  <span class="n">tls</span><span class="p">:</span>
+    <span class="n">termination</span><span class="p">:</span> <span class="n">edge</span>
+    <span class="n">key</span><span class="p">:</span> <span class="o">|-</span>
+      <span class="o">-----</span><span class="n">BEGIN</span> <span class="n">PRIVATE</span> <span class="n">KEY</span><span class="o">-----</span>
+      <span class="p">[</span><span class="o">...</span><span class="p">]</span>
+      <span class="o">-----</span><span class="n">END</span> <span class="n">PRIVATE</span> <span class="n">KEY</span><span class="o">-----</span>
+    <span class="n">certificate</span><span class="p">:</span> <span class="o">|-</span>
+      <span class="o">-----</span><span class="n">BEGIN</span> <span class="n">CERTIFICATE</span><span class="o">-----</span>
+      <span class="p">[</span><span class="o">...</span><span class="p">]</span>
+      <span class="o">-----</span><span class="n">END</span> <span class="n">CERTIFICATE</span><span class="o">-----</span>
+    <span class="n">caCertificate</span><span class="p">:</span> <span class="o">|-</span>
+      <span class="o">-----</span><span class="n">BEGIN</span> <span class="n">CERTIFICATE</span><span class="o">-----</span>
+      <span class="p">[</span><span class="o">...</span><span class="p">]</span>
+      <span class="o">-----</span><span class="n">END</span> <span class="n">CERTIFICATE</span><span class="o">-----</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="passthrough-termination">
+<h4>Passthrough Termination<a class="headerlink" href="#passthrough-termination" title="Permalink to this headline">¶</a></h4>
+<p>With Passthrough Termination, the encrypted traffic goes straight to the pod with no TLS termination.
+This is useful if you are running a service such as HTTPD that is handling TLS termination itself. Another use case example could be doing mutual TLS authentication from a pod.</p>
+<p>The following command will create a secured route with passthrough termination.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">oc</span> <span class="n">create</span> <span class="n">route</span> <span class="n">passthrough</span> <span class="o">--</span><span class="n">service</span><span class="o">=</span><span class="n">my</span><span class="o">-</span><span class="n">project</span> \
+  <span class="o">--</span><span class="n">hostname</span><span class="o">=</span><span class="n">my</span><span class="o">-</span><span class="n">project</span><span class="o">.</span><span class="n">apps</span><span class="o">.&lt;</span><span class="n">cluster</span><span class="o">&gt;.</span><span class="n">ccs</span><span class="o">.</span><span class="n">ornl</span><span class="o">.</span><span class="n">gov</span>
+</pre></div>
+</div>
+<p>The produced yaml will look like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">apiVersion</span><span class="p">:</span> <span class="n">v1</span>
+<span class="n">kind</span><span class="p">:</span> <span class="n">Route</span>
+<span class="n">metadata</span><span class="p">:</span>
+  <span class="n">name</span><span class="p">:</span> <span class="n">my</span><span class="o">-</span><span class="n">service</span>
+<span class="n">spec</span><span class="p">:</span>
+  <span class="n">host</span><span class="p">:</span> <span class="n">my</span><span class="o">-</span><span class="n">project</span><span class="o">.</span><span class="n">apps</span><span class="o">.&lt;</span><span class="n">cluster</span><span class="o">&gt;.</span><span class="n">ccs</span><span class="o">.</span><span class="n">ornl</span><span class="o">.</span><span class="n">gov</span>
+  <span class="n">to</span><span class="p">:</span>
+    <span class="n">kind</span><span class="p">:</span> <span class="n">Service</span>
+    <span class="n">name</span><span class="p">:</span> <span class="n">service</span><span class="o">-</span><span class="n">name</span>
+  <span class="n">tls</span><span class="p">:</span>
+    <span class="n">termination</span><span class="p">:</span> <span class="n">passthrough</span>
+</pre></div>
+</div>
+<p>Note that with passthrough termination, no keys are provided to the route.</p>
+</div>
+<div class="section" id="re-encryption-termination">
+<h4>Re-encryption Termination<a class="headerlink" href="#re-encryption-termination" title="Permalink to this headline">¶</a></h4>
+<p>Re-encryption termination combines edge termination and passthrough termination, in that the router terminates TLS, then re-encrypts its connection. The endpoint may have a different certificate. With re-encryption termination, both the internal and external network paths are encrypted.</p>
+<p>The following command will create a secured route with re-encryption termination.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">oc</span> <span class="n">create</span> <span class="n">route</span> <span class="n">reencrypt</span> <span class="o">--</span><span class="n">service</span><span class="o">=</span><span class="n">my</span><span class="o">-</span><span class="n">project</span> \
+  <span class="o">--</span><span class="n">hostname</span><span class="o">=</span><span class="n">my</span><span class="o">-</span><span class="n">project</span><span class="o">.</span><span class="n">apps</span><span class="o">.&lt;</span><span class="n">cluster</span><span class="o">&gt;.</span><span class="n">ccs</span><span class="o">.</span><span class="n">ornl</span><span class="o">.</span><span class="n">gov</span> \
+  <span class="o">--</span><span class="n">dest</span><span class="o">-</span><span class="n">ca</span><span class="o">-</span><span class="n">cert</span><span class="o">=</span><span class="n">ca</span><span class="o">.</span><span class="n">crt</span>
+</pre></div>
+</div>
+<p>Note that the <code class="docutils literal notranslate"><span class="pre">--dest-ca-cert</span></code> flag for the destination CA certificate is required for re-encryption.</p>
+<p>The outputted YAML will look like this example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">apiVersion</span><span class="p">:</span> <span class="n">v1</span>
+<span class="n">kind</span><span class="p">:</span> <span class="n">Route</span>
+<span class="n">metadata</span><span class="p">:</span>
+  <span class="n">name</span><span class="p">:</span> <span class="n">my</span><span class="o">-</span><span class="n">service</span>
+<span class="n">spec</span><span class="p">:</span>
+  <span class="n">host</span><span class="p">:</span> <span class="n">my</span><span class="o">-</span><span class="n">service</span><span class="o">.</span><span class="n">apps</span><span class="o">.&lt;</span><span class="n">cluster</span><span class="o">&gt;.</span><span class="n">ccs</span><span class="o">.</span><span class="n">ornl</span><span class="o">.</span><span class="n">gov</span>
+  <span class="n">to</span><span class="p">:</span>
+    <span class="n">kind</span><span class="p">:</span> <span class="n">Service</span>
+    <span class="n">name</span><span class="p">:</span> <span class="n">my</span><span class="o">-</span><span class="n">service</span>
+  <span class="n">tls</span><span class="p">:</span>
+    <span class="n">termination</span><span class="p">:</span> <span class="n">reencrypt</span>
+    <span class="n">destinationCACertificate</span><span class="p">:</span> <span class="o">|-</span>
+      <span class="o">-----</span><span class="n">BEGIN</span> <span class="n">CERTIFICATE</span><span class="o">-----</span>
+      <span class="p">[</span><span class="o">...</span><span class="p">]</span>
+      <span class="o">-----</span><span class="n">END</span> <span class="n">CERTIFICATE</span><span class="o">-----</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">As with edge encryption, by default the wildcard certificate for the router is used. You can
+provide your own keys if you like.</p>
+</div>
+</div>
+<div class="section" id="http">
+<h4>HTTP<a class="headerlink" href="#http" title="Permalink to this headline">¶</a></h4>
+<p>OpenShift supports unsecured routes over HTTP, but it is not recommended for use. Use edge encryption if you are unsure.</p>
+</div>
+</div>
+</div>
+<div class="section" id="web-interface-configuration">
+<h2>Web Interface Configuration<a class="headerlink" href="#web-interface-configuration" title="Permalink to this headline">¶</a></h2>
+<p>Routes can also be created from the web interface. On the hamburger menu, click <code class="docutils literal notranslate"><span class="pre">Networking</span></code>, then <code class="docutils literal notranslate"><span class="pre">Routes</span></code>.</p>
+<img alt="Route in Hamburger Menu" src="../../../_images/routeMenu.png" />
+<p>If no routes have been created for a project, you will be presented with a <code class="docutils literal notranslate"><span class="pre">Create</span> <span class="pre">Route</span></code> button.</p>
+<img alt="Create Route" src="../../../_images/createRoute.png" />
+<p>On the <code class="docutils literal notranslate"><span class="pre">Create</span> <span class="pre">Route</span></code> screen, fill out the form, select your service in the <code class="docutils literal notranslate"><span class="pre">service</span></code> dropdown.</p>
+<p>Be sure to check the <code class="docutils literal notranslate"><span class="pre">Secure</span> <span class="pre">Route</span></code> checkbox. See the CLI sections to determine which encryption type is best
+for you. If you don’t know, it’s probably edge encryption. You can leave the certificate fields blank when using edge
+encryption on a wildcard <code class="docutils literal notranslate"><span class="pre">*.apps.&lt;cluster&gt;.ccs.ornl.gov</span></code></p>
+</div>
+<div class="section" id="routes-with-nccs-authentication">
+<h2>Routes with NCCS Authentication<a class="headerlink" href="#routes-with-nccs-authentication" title="Permalink to this headline">¶</a></h2>
+<p>In order for us to maintain our existing security posture, only users who are on a project will be able
+to access to services that the project runs. This means that when a user accesses a route they will first be
+prompted to log in to OpenShift and once they are authenticated they will be able to access the service.</p>
+<img alt="login prompt" src="../../../_images/loginprompt.png" />
+<div class="section" id="requirements">
+<h3>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>All routes require authentication</li>
+<li>HTTPS is required on routes for authentication so that sensitive cookie information is not leaked.</li>
+<li>The authenticated user must use their NCCS Username and RSA PASSCODE to log in to OpenShift</li>
+<li>The authenticated user must be on the project in order to use the application running in OpenShift</li>
+</ul>
+</div>
+<div class="section" id="optional-application-authentication">
+<h3>Optional Application Authentication<a class="headerlink" href="#optional-application-authentication" title="Permalink to this headline">¶</a></h3>
+<p>The authentication will be handled by the cluster load balancers so that nothing is required by a user
+application. If a user application needs to authenticate a user we set the <code class="docutils literal notranslate"><span class="pre">X-Remote-User</span></code> header which
+is the NCCS username of the authenticated user.</p>
+<p>An example list of headers that are set by the loadbalancer:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Host</span><span class="p">:</span> <span class="n">nginx</span><span class="o">-</span><span class="n">echo</span><span class="o">-</span><span class="n">headers</span><span class="o">-</span><span class="n">stf002platform</span><span class="o">.</span><span class="n">bedrock</span><span class="o">-</span><span class="n">dev</span><span class="o">.</span><span class="n">ccs</span><span class="o">.</span><span class="n">ornl</span><span class="o">.</span><span class="n">gov</span>
+<span class="n">X</span><span class="o">-</span><span class="n">Remote</span><span class="o">-</span><span class="n">User</span><span class="p">:</span> <span class="n">kincljc</span>
+<span class="n">X</span><span class="o">-</span><span class="n">Forwarded</span><span class="o">-</span><span class="n">Host</span><span class="p">:</span> <span class="n">nginx</span><span class="o">-</span><span class="n">echo</span><span class="o">-</span><span class="n">headers</span><span class="o">-</span><span class="n">stf002platform</span><span class="o">.</span><span class="n">bedrock</span><span class="o">-</span><span class="n">dev</span><span class="o">.</span><span class="n">ccs</span><span class="o">.</span><span class="n">ornl</span><span class="o">.</span><span class="n">gov</span>
+<span class="n">X</span><span class="o">-</span><span class="n">Forwarded</span><span class="o">-</span><span class="n">Port</span><span class="p">:</span> <span class="mi">443</span>
+<span class="n">X</span><span class="o">-</span><span class="n">Forwarded</span><span class="o">-</span><span class="n">Proto</span><span class="p">:</span> <span class="n">https</span>
+<span class="n">Forwarded</span><span class="p">:</span> <span class="k">for</span><span class="o">=</span><span class="mf">160.91</span><span class="o">.</span><span class="mf">195.36</span><span class="p">;</span><span class="n">host</span><span class="o">=</span><span class="n">nginx</span><span class="o">-</span><span class="n">echo</span><span class="o">-</span><span class="n">headers</span><span class="o">-</span><span class="n">stf002platform</span><span class="o">.</span><span class="n">bedrock</span><span class="o">-</span><span class="n">dev</span><span class="o">.</span><span class="n">ccs</span><span class="o">.</span><span class="n">ornl</span><span class="o">.</span><span class="n">gov</span><span class="p">;</span><span class="n">proto</span><span class="o">=</span><span class="n">https</span><span class="p">;</span><span class="n">proto</span><span class="o">-</span><span class="n">version</span><span class="o">=</span>
+<span class="n">X</span><span class="o">-</span><span class="n">Forwarded</span><span class="o">-</span><span class="n">For</span><span class="p">:</span> <span class="mf">160.91</span><span class="o">.</span><span class="mf">195.36</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="how">
+<h3>How<a class="headerlink" href="#how" title="Permalink to this headline">¶</a></h3>
+<p>Routes are secured by adding the annotation <code class="docutils literal notranslate"><span class="pre">ccs.ornl.gov/requireAuth</span> <span class="pre">=</span> <span class="pre">&quot;true&quot;</span></code> to the route.</p>
+</div>
+<div class="section" id="exemptions">
+<h3>Exemptions<a class="headerlink" href="#exemptions" title="Permalink to this headline">¶</a></h3>
+<p>If you have an application that should not require authentication reach out to NCCS Support.</p>
+</div>
+</div>
+<div class="section" id="internet-facing-services">
+<h2>Internet-facing Services<a class="headerlink" href="#internet-facing-services" title="Permalink to this headline">¶</a></h2>
+<p>By default, a route will only expose your <a class="reference internal" href="services.html#slate-services"><span class="std std-ref">Services</span></a>
+to NCCS networks. If you need your service exposed to the world outside ORNL, you will first need to get your project
+approved for external routes. To do this, submit a systems ticket. In the description, give us your project name
+and a brief reasoning for why exposing externally is needed.</p>
+<p>We will let you know once your project is able to set up external routes.</p>
+<div class="section" id="labelling-routes">
+<h3>Labelling Routes<a class="headerlink" href="#labelling-routes" title="Permalink to this headline">¶</a></h3>
+<p>Once your project has been approved, you only need to give your route a <em>label</em> to tell the OpenShift router to expose
+this service externally. You can do this in the CLI or in the web interface.</p>
+<div class="section" id="id1">
+<h4>CLI<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
+<p>On the CLI, run <code class="docutils literal notranslate"><span class="pre">oc</span> <span class="pre">label</span> <span class="pre">route</span> <span class="pre">{ROUTE_NAME}</span> <span class="pre">ccs.ornl.gov/externalRoute=true</span></code>.</p>
+</div>
+<div class="section" id="gui">
+<h4>GUI<a class="headerlink" href="#gui" title="Permalink to this headline">¶</a></h4>
+<p>In the web interface, from the side menu, select <code class="docutils literal notranslate"><span class="pre">Applications</span></code>, then <code class="docutils literal notranslate"><span class="pre">Routes</span></code>.</p>
+<img alt="Routes Menu" src="../../../_images/routeMenu.png" />
+<p>This will show a list of your routes. Click the route you want to expose, and click the <code class="docutils literal notranslate"><span class="pre">YAML</span></code> tab.</p>
+<p>Under metadata, add a label for <code class="docutils literal notranslate"><span class="pre">ccs.ornl.gov/externalRoute:</span> <span class="pre">'true'</span></code> as shown below and click the <code class="docutils literal notranslate"><span class="pre">Save</span></code> button at the bottom of the page.</p>
+<img alt="Route After" src="../../../_images/RouteYAMLAfter.png" />
+<p>After saving, your route will be exposed on two routers, <code class="docutils literal notranslate"><span class="pre">default</span></code> and <code class="docutils literal notranslate"><span class="pre">external</span></code>. This means your service is now
+accessible from outside ORNL. Note that if your project has not yet been approved for external routing, this second
+router will not expose your route.</p>
+<img alt="Route Exposed" src="../../../_images/RouteExternallyExposed.png" />
+</div>
+</div>
+</div>
+<div class="section" id="advanced-routes">
+<h2>Advanced Routes<a class="headerlink" href="#advanced-routes" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="multiple-services">
+<h3>Multiple Services<a class="headerlink" href="#multiple-services" title="Permalink to this headline">¶</a></h3>
+<p>While a route usually points to one service through the <code class="docutils literal notranslate"><span class="pre">to</span></code> parameter in the configuration, it is
+possible to have as many as four services to load balance between. This is used with A/B deployments.</p>
+<p>Here is an example route which points to 3 services:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">apiVersion</span><span class="p">:</span> <span class="n">v1</span>
+<span class="n">kind</span><span class="p">:</span> <span class="n">Route</span>
+<span class="n">metadata</span><span class="p">:</span>
+  <span class="n">name</span><span class="p">:</span> <span class="n">route</span><span class="o">-</span><span class="n">alternate</span><span class="o">-</span><span class="n">service</span>
+  <span class="n">annotations</span><span class="p">:</span>
+    <span class="n">haproxy</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">openshift</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">balance</span><span class="p">:</span> <span class="n">roundrobin</span>
+<span class="n">spec</span><span class="p">:</span>
+  <span class="n">host</span><span class="p">:</span> <span class="n">www</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span>
+  <span class="n">to</span><span class="p">:</span>
+    <span class="n">kind</span><span class="p">:</span> <span class="n">Service</span>
+    <span class="n">name</span><span class="p">:</span> <span class="n">service</span><span class="o">-</span><span class="n">name</span>
+    <span class="n">weight</span><span class="p">:</span> <span class="mi">20</span>
+  <span class="n">alternateBackends</span><span class="p">:</span>
+  <span class="o">-</span> <span class="n">kind</span><span class="p">:</span> <span class="n">Service</span>
+    <span class="n">name</span><span class="p">:</span> <span class="n">service</span><span class="o">-</span><span class="n">name2</span>
+    <span class="n">weight</span><span class="p">:</span> <span class="mi">10</span>
+    <span class="n">kind</span><span class="p">:</span> <span class="n">Service</span>
+    <span class="n">name</span><span class="p">:</span> <span class="n">service</span><span class="o">-</span><span class="n">name3</span>
+    <span class="n">weight</span><span class="p">:</span> <span class="mi">10</span>
+</pre></div>
+</div>
+<p>Notice the <code class="docutils literal notranslate"><span class="pre">weight</span></code> parameter on each service. This <code class="docutils literal notranslate"><span class="pre">weight</span></code> must be in the range 0-256. The default
+is <code class="docutils literal notranslate"><span class="pre">1</span></code>. If the weight is 0, no requests will be passed to the service. If all services have a <code class="docutils literal notranslate"><span class="pre">0</span></code> weight,
+then all requests will return a 503 error.</p>
+<p>The portion of requests sent to each service is determined by its <code class="docutils literal notranslate"><span class="pre">weight</span></code> divided by the sum of all
+weights. In the above example, <code class="docutils literal notranslate"><span class="pre">service-name</span></code> will get 20/40 or 1/2 of the requests, and <code class="docutils literal notranslate"><span class="pre">service-name2</span></code>
+and <code class="docutils literal notranslate"><span class="pre">service-name3</span></code> will each get 10/40 or 1/4 of the requests.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">When using <code class="docutils literal notranslate"><span class="pre">alternateBackends</span></code>, be sure to set <code class="docutils literal notranslate"><span class="pre">.metadata.annotations.haproxy.router.openshift.io/balance</span></code>
+to <code class="docutils literal notranslate"><span class="pre">roundrobin</span></code>, like in the above example. This will ensure that HAProxy will use a round robin load balancing strategy.</p>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="networkpolicy.html" class="btn btn-neutral float-right" title="Network Policies" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="nodeport.html" class="btn btn-neutral float-left" title="NodePorts" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, OLCF
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+    
+
+
+
+</body>
+</html>
