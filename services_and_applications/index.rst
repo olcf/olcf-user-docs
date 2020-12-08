@@ -9,3 +9,4 @@ Services and Applications
 
    slate/index.rst
    myolcf/index.rst
+   jupyter/index.rst
