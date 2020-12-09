@@ -23,6 +23,15 @@ Have an idea to improve this documentation? See :doc:`contributing/index`.
 Have a question? Write to us at -- help\@olcf.ornl.gov -- and consider the
 guidelines for :ref:`getting-help`.
 
+
+New User Quick Start
+---------------------
+
+.. toctree::
+   :maxdepth: 2
+
+   quickstart/index
+
 Accounts
 ---------
 
