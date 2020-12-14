@@ -130,39 +130,39 @@ Example: Creating a Conda environment for RAPIDS
 =================================================
 
 #. From the Launcher page in JupyterLab, click on Terminal.
-#. Create a conda environment with 
-   ``conda create -p /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_UID>/rapids -c rapidsai -c nvidia -c conda-forge \``
+#. Create a conda environment with ``conda create -p /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_UID>/rapids -c rapidsai -c nvidia -c conda-forge \``
    ``-c defaults rapids-blazing=0.17 python=3.7 cudatoolkit=10.2``
    
-  * **NOTE**: The ``conda create`` command above **assumes you are using** ``CUDA 10`` JuptyerLab environment.
+     * **NOTE**: The ``conda create`` command above **assumes you are using** ``CUDA 10`` JuptyerLab environment.
    
-  * You need to use ``-p`` method if you want your environment to persist across Jupyter
-    restarts. The path can be a location in ``/ccs`` or ``/gpfs/alpine`` that is writable
-    by your user.
+     * You need to use ``-p`` method if you want your environment to persist across Jupyter
+       restarts. The path can be a location in ``/ccs`` or ``/gpfs/alpine`` that is writable
+       by your user.
      
 #. Activate the environment ``source activate /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_UID>/rapids``.
 
-  * **NOTE**: It is **recommended to use** ``source activate`` instead of ``conda activate``, even though
-    the ``conda create`` process recommends ``conda activate`` at it's completion. Using ``conda activate`` requires modification
-    of the ``.bashrc`` file, which is not covered here. 
+     * **NOTE**: It is **recommended to use** ``source activate`` instead of ``conda activate``, even though
+       the ``conda create`` process recommends ``conda activate`` at it's completion. Using ``conda activate`` requires modification
+       of the ``.bashrc`` file, which is not covered here. 
    
 #. After activating, to make your created environment visible in JupyterLab, run ``python -m
    ipykernel install --user --name rapids --display-name rapids``. A
    kernelspec is created in your ``/ccs/home/<YOUR_UID>/.local/share/jupyter`` directory which
    JupyterLab reads to see which custom environments are available for it to use.
   
-  * When you refresh the page and look at the Launcher, you will see buttons labelled
-    ``rapids``. Clicking it will start a Notebook or Console running in your
-    ``rapids`` environment.
+     * When you refresh the page and look at the Launcher, you will see buttons labelled
+       ``rapids``. Clicking it will start a Notebook or Console running in your
+       ``rapids`` environment.
 
    
-  .. image:: /images/jupyter/rapids_notebook_image.png
+   .. image:: /images/jupyter/rapids_notebook_image.png
      
 
-#. Now open a ``rapids`` notebook to check if the installation was successful. In the below image, I created a notebook called *rapids-test* in my NFS project space and did a very basic cuDF operation on some example data (in the red circle, you can see I am using the created "rapids" environment/kernel):
+#. Now open a ``rapids`` notebook to check if the installation was successful. In the below image, I created a notebook called *rapids-test* in my NFS 
+   project space and did a very basic cuDF operation on some example data (in  the red circle, you can see I am using the created "rapids" environment/kernel):
 
    
-  ..  image:: /images/jupyter/cudf_rapids_test.png
+   ..  image:: /images/jupyter/cudf_rapids_test.png
 
 
 #. If restart the server or lose your session, you will see that the ``rapids`` Notebook and Console
