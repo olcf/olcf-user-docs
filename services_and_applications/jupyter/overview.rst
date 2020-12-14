@@ -120,40 +120,48 @@ Conda environments need to be saved in a ``/ccs`` or ``/gpfs/alpine`` directory.
 
 **Please note that GPFS is purged. Using /ccs/proj/ is recommended**
 
-Let us look at an example with creating a custom environment that has Tensorflow. 
+Let us look at an example with creating a custom environment that has RAPIDS (https://rapids.ai/start.html).
 
-At the end of this example you will have a "tensorflowenv" notebook visible in the JuptyerLab "Launcher" page.
+At the end of this example you will have a "rapids" notebook visible in the JuptyerLab "Launcher" page. We will make the RAPIDS environment persistent by 
+building it at /ccs/proj/<uid>/rapids. 
 
 
-Example: Creating a Conda environment for Tensorflow
-====================================================
+Example: Creating a Conda environment for RAPIDS
+=================================================
 
 #. From the Launcher page in JupyterLab, click on Terminal.
-#. Create a conda environment with  ``conda create -p /path/to/tensorflowenv python=3.7
-   ipykernel``.
+#. Create a conda environment with 
+   ``conda create -p /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_UID>/rapids -c rapidsai -c nvidia -c conda-forge \``
+   ``-c defaults rapids-blazing=0.17 python=3.7 cudatoolkit=10.2``
+   
+   * **NOTE**: The *conda create* command above assumes you are using **CUDA 10** JuptyerLab environment.
    
    * You need to use ``-p`` method if you want your environment to persist across Jupyter
      restarts. The path can be a location in ``/ccs`` or ``/gpfs/alpine`` that is writable
      by your user.
      
-#. Activate the environment ``source activate /path/to/tensorflowenv``.
+#. Activate the environment ``source activate /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_UID>/rapids``.
    
 #. After activating, to make your created environment visible in JupyterLab, run ``python -m
-   ipykernel install --user --name tensorflowenv --display-name tensorflowenv``. A
-   kernelspec is created in your ``/ccs/home/<user>/.local/share/jupyter`` directory which
+   ipykernel install --user --name rapids --display-name rapids``. A
+   kernelspec is created in your ``/ccs/home/<YOUR_UID>/.local/share/jupyter`` directory which
    JupyterLab reads to see which custom environments are available for it to use.
   
    * When you refresh the page and look at the Launcher, you will see buttons labelled
-     ``tensorflowenv``. Clicking it will start a Notebook or Console running in your
-     ``tensorflowenv`` environment.
+     ``rapids``. Clicking it will start a Notebook or Console running in your
+     ``rapids`` environment.
 
-.. image:: /images/jupyter/tensorflow_notebook_image.png
+   
+   .. image:: /images/jupyter/rapids_notebook_image.png
      
-#. Back in our Terminal, with our environment still activated, install Tensorflow with
-   ``conda install tensorflow`` (or ``pip install tensorflow`` for the latest
-   version). Now open a ``tensorflowenv`` notebook and type ``import tensorflow`` to check
-   if the installation was successful.
-#. If restart the server or lose your session, you will see that the ``tensorflowenv`` Notebook and Console
+
+#. Now open a ``rapids`` notebook to check if the installation was successful. In the below image, I created a notebook called *rapids-test* in my NFS project space and did a very basic cuDF operation on some example data (in the red circle, you can see I am using the created "rapids" environment/kernel):
+
+   
+   ..  image:: /images/jupyter/cudf_rapids_test.png
+
+
+#. If restart the server or lose your session, you will see that the ``rapids`` Notebook and Console
    buttons are still available after coming back. 
 #. You can always install more libraries into your Conda environment as needed by opening
    the Terminal in JupyterLab again, activating the environment with ``source activate``
@@ -162,6 +170,14 @@ Example: Creating a Conda environment for Tensorflow
 
 To delete your environment, you will need to delete it from the path where the environment
 was created, as well as delete the corresponding directory from ``~/.local/share/jupyter/kernels``.
+
+You may follow these general steps to create and install packages within an any environment you decide to create. The main componentes to accomplish this, using a terminal session, are: 
+ 
+ - *conda create -p /path/to/env*
+ - *source activate /path/to/env*
+ - *python -m ipykernel install --user --name <env-name> --display-name <env-name>*
+ - *install packages with conda or pip in the activate environment*
+
 
 Manually stopping your JupyterLab session
 -----------------------------------------
