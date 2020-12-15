@@ -11,7 +11,7 @@ OLCF GPU Hackathons
 Each year, the Oak Ridge Leadership Computing Facility (OLCF) works with our
 vendor partners to organize a series of GPU hackathons at a number of host
 locations around the world. The table below lists the OLCF-supported events
-scheduled for 2020.
+scheduled for 2021.
 
 .. table::
    :align: center
@@ -20,17 +20,16 @@ scheduled for 2020.
    +-------------------------------------------------+-------------------+-------------------------+
    | Location (virtual)                              | Proposal Deadline | Event Dates             |
    +=================================================+===================+=========================+
-   | San Diego Supercomputing Center - San Diego, CA | March 11          | April 27, May 11 - 13   | 
+   | Argonne National Laboratory - Lemont, IL        | TBD               | April 20-29             | 
    +-------------------------------------------------+-------------------+-------------------------+
-   | Princeton University - Princeton, NJ            | March 2           | June 1, 8 - 10          |
+   | San Diego Supercomputing Center - San Diego, CA | TBD               | May 4, May 11 - 13      | 
+   +-------------------------------------------------+-------------------+-------------------------+
+   | Princeton University - Princeton, NJ            | TBD               | June 2, 8 - 10          |
    +-------------------------------------------------+-------------------+-------------------------+ 
-   | NERSC - Oakland, CA                             | May 13            | July 7, 13 - 15         |
+   | NERSC - Oakland, CA                             | TBD               | July  19 - 28           |
    +-------------------------------------------------+-------------------+-------------------------+ 
-   | Brookhaven National Laboratory - Upton, NY      | June 28           | August 10, 17 - 19      |
+   | OLCF - Knoxville, TN                            | August 5          | October 11, 18-27       | 
    +-------------------------------------------------+-------------------+-------------------------+
-   | OLCF - Knoxville, TN                            | August 6          | October 19, 26-28       | 
-   +-------------------------------------------------+-------------------+-------------------------+
-
 
 .. note::
 	 The OLCF-supported events are a subset of a larger number of GPU hackathons organized within the community. For the full list, please visit `gpuhackathons.org <https://gpuhackathons.org>`__
