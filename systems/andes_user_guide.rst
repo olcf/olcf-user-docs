@@ -1740,8 +1740,8 @@ Launch an interactive job:
 
 .. code::
 
-     localsytem: ssh -X username@andes.olcf.ornl.gov
-     andes: salloc -A PROJECT_ID -p gpu -N 1 -t 60:00 -M andes -C DCV
+     localsytem: ssh username@andes.olcf.ornl.gov
+     andes: salloc -A PROJECT_ID -p gpu -N 1 -t 60:00 -M andes --constraint=DCV
 
 Run the following commands:
 
@@ -1751,6 +1751,7 @@ Run the following commands:
     $ export DISPLAY=:0
     $ dcv create-session --gl-display :0 mySessionName
     $ hostname  // will be used to open a tunneling connection with this node
+    $ andes-gpuN
 
 Step 2 (terminal 2)
 ^^^^^^^^^^^^^^^^^^^
@@ -1759,8 +1760,7 @@ Open a tunneling connection with gpu node ``N``, given by hostname:
 
 .. code::
 
-    localsystem: ssh -L 8443:localhost:8443 username@andes.olcf.ornl.gov
-    andes: ssh -L 8443:localhost:8443 andes-gpuN
+    localsystem: ssh username@andes.olcf.ornl.gov -L 8443:andes-gpuN:8443
 
 Open your web browser using the following link and use your credentials to
 access OLCF systems: ``https://localhost:8443`` When finished, kill the dcv
