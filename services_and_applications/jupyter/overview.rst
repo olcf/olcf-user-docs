@@ -87,6 +87,8 @@ Then, you can start a notebook in the directory of your choosing (relative to yo
 
 To do so, traverse the filesystem to your desired path and then click the "Python 3" notebook in the launcher page. This will launch the default notebook environment and store the notebook in your current path. 
 
+**NOTE:  Any notebooks saved in the root location won't be persisted across sessions. Make sure you are saving your work in a location in /ccs or /gpfs where you have write access.**
+
 In the example image below, I have launched a notebook in my **/ccs/proj/<proj>/<uid>/** directory (the notebook filename is "Untitled.ipynb" - you can rename yours):
 
 .. image:: /images/jupyter/directory_example.png
