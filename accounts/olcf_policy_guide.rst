@@ -2,6 +2,8 @@
 OLCF Policy Guides
 ****************************
 
+********
+
 OLCF Acknowledgement
 ====================
 
@@ -13,6 +15,24 @@ that speak to work performed on OLCF resources:
     Office of Science of the U.S. Department of Energy under Contract No.
     DE-AC05-00OR22725.
 
+********
+
+Special Requests and Policy Exemptions
+======================================
+
+To request policy exemptions, please submit the appropriate webform available on
+the :ref:`documents-and-forms` page. Special request forms allow a user to:
+
+-  Request Software installations
+-  Request relaxed queue limits for a job
+-  Request a system reservation
+-  Request a disk quota increase
+-  Request a User Work area purge exemption
+
+Special requests are reviewed weekly by the OLCF Resource Utilization
+Council. Please contact help@olcf.ornl.gov for more information.
+
+********
 
 Computing Policy
 ================
@@ -190,6 +210,8 @@ Denial of Service
 Users may not deliberately interfere with other users accessing system
 resources.  
 
+********
+
 Data Management Policy
 ======================
 
@@ -265,14 +287,14 @@ User Archive
 The High Performance Storage System (HPSS) is the tape-archive storage
 system at the OLCF and is the storage technology that supports the User
 Archive areas. HPSS is intended for data that do not require day-to-day
-access. 
+access.
 
 .. note::
     Use of this directory for data storage is deprecated in favor of storing
     data in the User, Project, and World Archive directories. For new users,
-    this directory is a "link farm" with symlinks to that user's /hpss/prod 
+    this directory is a "link farm" with symlinks to that user's /hpss/prod
     directories. Data for existing users remains in this directory but should
-    be moved into a User/Project/World Archive directory, at which time this 
+    be moved into a User/Project/World Archive directory, at which time this
     directory will automatically convert to a link farm.
 
 Project Home
@@ -501,7 +523,7 @@ Transfer of Member Work and Member Archive Data
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Although the Member Work and Member Archive directories are for storage
-of data a user does not want to make available to other users on the 
+of data a user does not want to make available to other users on the
 system, files in these directories are still considered project data
 and can be reassigned to another user at the PI's request.
 
@@ -626,6 +648,8 @@ Users are not permitted to reconstruct information or software for which
 they are not authorized. This includes but is not limited to any reverse
 engineering of copyrighted software or firmware present on OLCF
 computing resources.  
+
+********
 
 Security Policy
 ===============
@@ -927,6 +951,8 @@ the DTNs and available utilities.
 .. CPU-time equivalent to
 .. ``(# of cores reserved) * (length of reservation in hours)``.
 
+********
+
 INCITE Allocation Under-utilization Policy
 ==========================================
 
@@ -963,6 +989,8 @@ For example, a 1,000,000 core-hour INCITE project that has utilized only
 50,000 core-hours (5% of the allocation) on May 1st would forfeit (0.30
 \* 950,000) = 285,000 core-hours from their remaining allocation.  
 
+********
+
 Project Reporting Policy
 ========================
 
@@ -990,7 +1018,7 @@ imposes the following penalties for late submission:
 | 3 Months Late   | Login privileges will be suspended for all OLCF resources for all users associated with offending project.   |
 +-----------------+--------------------------------------------------------------------------------------------------------------+
 
-  
+********
 
 Non-proprietary Institutional User Agreement Policy
 ===================================================
@@ -1064,17 +1092,63 @@ Intellectual Property
   title to the invention and the U.S. Government retains rights to the
   invention.
 
-Special Requests and Policy Exemptions
-======================================
+********
 
-To request policy exemptions, please submit the appropriate webform available on
-the :ref:`documents-and-forms` page. Special request forms allow a user to:
+HIPAA/ITAR Project Rules of Behavior Policy
+===========================================
 
--  Request Software installations
--  Request relaxed queue limits for a job
--  Request a system reservation
--  Request a disk quota increase
--  Request a User Work area purge exemption
+.. note::
+    This details an official policy of the OLCF, and must be
+    agreed to by the following persons as a condition of access to and use
+    of OLCF computational resources:
 
-Special requests are reviewed weekly by the OLCF Resource Utilization
-Council. Please contact help@olcf.ornl.gov for more information.
+    -  Principal Investigators of HIPAA/ITAR Projects
+    -  Users on HIPAA/ITAR Projects
+
+    **Title:** HIPAA/ITAR Project Rules of Behavior Policy **Version:** 21.01
+
+Portions of data and/or software used in your project require extra
+protections due to requirements for protecting HIPAA/ITAR or other sensitive
+or controlled information. There are countries from which citizens are
+restricted from accessing sensitive/controlled information and therefore
+cannot be a part of your project. When you request users to be added to
+your project, our user assistance center will check the nationality of
+those users for conflict.
+
+In addition, to protect sensitive data and code identified by these export
+control restrictions, data and code must be handled in accordance with the following rules:
+
+1. HIPAA/ITAR regulated data is **only allowed** within the following directory:
+
++---------------------+---------------------------------------------+----------------+
+| Area                | Path                                        | Type           |
++=====================+=============================================+================+
+| Project scratch     | ``/gpfs/arx/[projid]``                      | GPFS           |
++---------------------+---------------------------------------------+----------------+
+
+This is your project's scratch space on the "arx" filesystem. Only members of your project will have access.
+
+2. Filenames, application names, job names, environment variables, batch job scripts, or
+any other unencrypted text must never contain sensitive or controlled information.
+Transfer of sensitive or controlled information must only take place through designated
+Data Transfer Nodes (DTNs) over an encrypted transport protocol.
+
+3. Prior to your project being initialized, we must have source IP addresses for devices
+in your organization that are authorized to transfer sensitive/controlled information
+to/from your organization, or for use in accessing that information. Encryption is
+necessary for transferring sensitive and/or controlled information to and from the OLCF.
+
+4. For codes being used, please make sure that the proper number of licenses have been
+obtained from the vendors of the respective software. It is also the responsibility of
+the PI to ensure that all project members have the appropriate authorization to access
+any sensitive data and/or codes used as required by relevant data use agreements.
+
+5. The Principal Investigator (PI) has the responsibility to make sure that other project members
+follow the sensitive controls outlined in this policy and protect sensitive/controlled
+information. It is also the responsibility of the PI to alert us of any personnel
+changes on the project.
+
+If you have security-related questions, contact us via email at: security-admins@ccs.ornl.gov.
+Other questions can be sent to help@olcf.ornl.gov.
+
+********
