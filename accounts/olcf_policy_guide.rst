@@ -17,17 +17,20 @@ that speak to work performed on OLCF resources:
 
 ********
 
+Software Requests
+=================
+
+To request software installation, please submit the appropriate webform available on the :ref:`documents-and-forms` page.
+
 Special Requests and Policy Exemptions
 ======================================
 
-To request policy exemptions, please submit the appropriate webform available on
-the :ref:`documents-and-forms` page. Special request forms allow a user to:
+To request exemption to certain system policies, contact help@olcf.ornl.gov with an overview of the exemption you need. Example requests include:
 
--  Request Software installations
--  Request relaxed queue limits for a job
--  Request a system reservation
--  Request a disk quota increase
--  Request a User Work area purge exemption
+- Relaxed queue limits for one or more jobs (longer walltime, higher priority)
+- System reservation (a dedicated set of nodes at a specific date/time)
+- Increased disk quota
+- Purge exemption for User/Group/World Work areas
 
 Special requests are reviewed weekly by the OLCF Resource Utilization
 Council. Please contact help@olcf.ornl.gov for more information.

@@ -65,34 +65,12 @@ Form <https://www.olcf.ornl.gov/support/software/software-request>`_
 Use this form to request
 a software/library/application installation on a center computer.
 
-`Relaxed Queue Limit Request
-Form <https://www.olcf.ornl.gov/user-support-overview/getting-started/special-request-form/>`_
-Use this form to request deviations from the standard batch queue
-policy. Typical requests would be for increased priority for one (or
-several) jobs or an increased wall-time limit.
+You no longer need to use a special form for the following requests. If you need to request any of the following, please do so via email to help@olcf.ornl.gov.
 
-`System Reservation Request
-Form <https://www.olcf.ornl.gov/user-support-overview/getting-started/special-request-form/>`_
-Use this form to request dedicated access to some or all of a machine.
-If granted, no other users/projects will be running on the processors
-that have been reserved. Please note that if granted, your project will
-be charged for the entire dedicated time and not just the time used by
-your jobs. Thus, a reservation for 100 nodes on Titan for 48 hours will
-result in a charge of 144,000 core-hours (100 nodes × 30 "cores" per
-node x 48 hours). A reservation differs from increased priority requests
-and increased wall-time requests in that those requests must still wait
-in the batch queue. A reservation sets aside a set of processors for a
-user (or group of users) with a definite start and end time.
-Additionally, the reservation differs from traditional batch jobs in the
-way it is charged against an allocation (described above).
-
-`Disk Quota Increase Request
-Form <https://www.olcf.ornl.gov/user-support-overview/getting-started/special-request-form/>`_
-Use this form to request an increased disk quota.
-
-`Purge Exemption Request
-Form <https://www.olcf.ornl.gov/user-support-overview/getting-started/special-request-form/>`_
-Use this form to request temporary relief from the scratch disk purge.
+- Relaxed queue limits for one or more jobs (longer walltime, higher priority)
+- System reservation (a dedicated set of nodes at a specific date/time)
+- Increased disk quota
+- Purge exemption for User/Group/World Work areas
 
 --------------
 
