@@ -1018,11 +1018,7 @@ that enable large jobs to run in a timely fashion.
 The basic priority-setting mechanism for jobs waiting in the queue is
 the time a job has been waiting relative to other jobs in the queue.
 
-If your jobs require resources outside these queue policies, please
-complete the relevant request form on the `Special
-Requests <https://www.olcf.ornl.gov/for-users/documents-forms/special-request-form/>`__ page. If
-you have any questions or comments on the queue policies below, please
-direct them to the User Assistance Center.
+If your jobs require resources outside these queue policies such as higher priority or longer walltimes, please contact help@olcf.ornl.gov. 
 
 Job Priority by Processor Count
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1181,10 +1177,8 @@ over its allocation, as shown in the table below:
 System Reservation Policy
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Projects may request to reserve a set of processors for a period of time
-through the reservation request form, which can be found on the `Special
-Requests <http://www.olcf.ornl.gov/support/getting-started/special-request-form/>`__
-page. If the reservation is granted, the reserved processors will be
+Projects may request to reserve a set of nodes for a period of time
+by contacting help@olcf.ornl.gov. If the reservation is granted, the reserved nodes will be
 blocked from general use for a given period of time. Only users that
 have been authorized to use the reservation can utilize those resources.
 Since no other users can access the reserved resources, it is crucial

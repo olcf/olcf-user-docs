@@ -1030,9 +1030,7 @@ gpu``
     useful OLCF resource and will work with you providing exceptions or even
     changing the queue structure if necessary.
 
-Users wishing to submit jobs that fall outside the queue structure are
-encouraged to request a reservation via the `Special Request
-Form <https://www.olcf.ornl.gov/for-users/getting-started/special-request-form/>`__.
+If your jobs require resources outside these queue policies such as higher priority or longer walltimes, please contact help@olcf.ornl.gov.
 
 Allocation Overuse Policy
 ^^^^^^^^^^^^^^^^^^^^^^^^^

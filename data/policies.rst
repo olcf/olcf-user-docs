@@ -59,7 +59,7 @@ the table below:
 
 
 
-On Summit, Rhea and the DTNs, additional paths to the various project-centric work areas are available
+On Summit, Andes, and the DTNs, additional paths to the various project-centric work areas are available
 via the following symbolic links and/or environment variables:
 
 - Member Work Directory:  ``/gpfs/alpine/scratch/[userid]/[projid]`` or ``$MEMBERWORK/[projid]``
@@ -69,9 +69,9 @@ via the following symbolic links and/or environment variables:
 Information
 ============
 
-- Although there are no hard quota limits for the project storage, an upper
-  storage limit should be reported in the project request. The available space
-  of a project can be modified upon request.
+Although there are no hard quota limits for the project storage, an upper
+storage limit should be reported in the project request. The available space
+of a project can be modified upon request.
 
 Purge
 ======
@@ -82,6 +82,11 @@ shown in the table above. Please make sure that valuable data is moved off of
 these systems regularly. See :ref:`hpss`. for information about using the HSI
 and HTAR utilities to archive data on HPSS. Just to note that when you read a
 file, then the 90 days counter restarts.
+
+Special Requests
+================
+
+If you need an exception to the limits listed in the table above, such as a higher quota in your User/Project Home or a purge exemption in a Member/Project/World Work area, contact help@olcf.ornl.gov with a summary of the exception that you need.
 
 Data Retention
 ==============
