@@ -4,6 +4,11 @@
 Rhea User Guide
 *********************
 
+.. note::
+   Rhea was decommissioned on January 15, 2021. Andes replaced Rhea as OLCF's pre/post processing and 
+   data analysis cluster. Please consult the :ref:`Andes documentation<andes-user-guide>` for more information.
+    
+
 System Overview
 ===============
 

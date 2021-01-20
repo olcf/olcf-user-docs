@@ -1,16 +1,17 @@
+.. _andes-user-guide:
+
 ******
 Andes
 ******
 
 .. note::
-    We are pleased to announce the availability of a new pre/post processing and data analysis cluster, ``Andes``.  Andes is available to all users with current Rhea access.  Rhea will be decommissioned on January 15, 2021.  Please note the following:
+    We are pleased to announce the availability of a new pre/post processing and data analysis cluster, ``Andes``.  Andes is available to all users with current Rhea access.  Rhea was decommissioned on January 15, 2021.  Please note the following:
     
-    -  **Rhea Decommission:** Rhea will be decommissioned on January 15, 2021.  Rhea users should begin migrating to Andes now to reduce possible impact to workflows. 
     -  **Access and Allocations:** Projects with allocations on Rhea have automatically been given access to Andes.  Allocations will start fresh on Andes and in most cases will be the same node-hour allocation awarded on Rhea. 
     -  **Timeline:** Access to Andes and Rhea will overlap undil January 15, 2021.  During this overlap users will have access to both systems to facilitate workflow migration.
-    -  **High Memory GPU nodes:** Rhea’s high memory GPU nodes will be moved from Rhea to Andes.  (5) high memory GPU nodes have been moved to Andes and are available through the ``gpu`` partition.  The remaining (4) nodes will be migrated on Dec 15.  
+    -  **High Memory GPU nodes:** Rhea’s high memory GPU nodes have been  moved to Andes. 
     -  **Filesystems:** Andes mounts the same center-wide GPFS and NFS filesystems as Rhea.
-    -  **Batch System:** Andes utilizes Slurm as does Rhea.  Batch scripts in use on Rhea should also run on Andes.  Batch policies will also remain the same.
+    -  **Batch System:** Andes utilizes Slurm like Rhea did.  Batch scripts in use on Rhea should also run on Andes.  Batch policies will also remain the same.
     -  **Recompile:** Due to the changes in hardware, OS, and software, rebuilds prior to running on Andes is strongly suggested.
     -  **Default Version Changes:** All software provided in /sw has been rebuilt.  In many cases, default versions have been updated.  
     -  **Hardware:** The following table lists several notable hardware differences between Andes and Rhea.
