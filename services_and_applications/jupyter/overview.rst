@@ -107,10 +107,13 @@ the Launcher and type ``conda list``. The libraries in the base environment shou
 cover most use cases. This base environment is provided to the default "Python 3" notebook, visible in the 
 JupyterLab "Launcher" page.
 
-From the Terminal, you can install additional libraries with a simple ``conda install`` to
+From the Jupyter Terminal, you can install additional libraries with a simple ``conda install`` to
 use in your current session. But these installed libraries won't persist across sessions
-if your server is restarted. 
+if your server is restarted.
 
+Since conda's dependency concretizer has sometimes problems to extend existing environments with new
+libraries, you can also use the `mamba <https://github.com/mamba-org/mamba>`_ package manager. Just
+install it with ``conda install -c conda-forge mamba`` and replace ``conda`` with ``mamba`` calls.
 
 
 Creating your own Conda environment and notebook entry
@@ -183,6 +186,23 @@ You may follow these general steps to create and install packages within an any 
  - *source activate /path/to/env*
  - *python -m ipykernel install --user --name <env-name> --display-name <env-name>*
  - *install packages with conda or pip in the activate environment*
+
+
+
+Example: Creating a Conda environment for Matplotlib Widgets
+============================================================
+
+We currently install Jupyterlab version 2, which needs additional treatment to get interactive extensions
+`such as matplotlib widgets installed <https://github.com/matplotlib/ipympl>`_.
+
+Here is an example how to install matplotlib:
+
+:: 
+   conda install -c conda-forge ipympl==0.5.8``
+   jupyter labextension install @jupyter-widgets/jupyterlab-manager jupyter-matplotlib@0.7.3
+
+Once the installation fishes, restart the kernel of your current notebook and refresh the page.
+You can now use the `%matplotlib ipympl` magic before importing matplotlib to render interactive plots.
 
 
 Manually stopping your JupyterLab session
