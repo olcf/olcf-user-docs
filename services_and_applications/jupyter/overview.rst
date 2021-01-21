@@ -198,7 +198,7 @@ We currently install Jupyterlab version 2, which needs additional treatment to g
 Here is an example how to install matplotlib:
 
 :: 
-   conda install -c conda-forge ipympl==0.5.8``
+   conda install -c conda-forge ipympl==0.5.8
    jupyter labextension install @jupyter-widgets/jupyterlab-manager jupyter-matplotlib@0.7.3
 
 Once the installation fishes, restart the kernel of your current notebook and refresh the page.
