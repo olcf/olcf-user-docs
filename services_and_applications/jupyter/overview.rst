@@ -188,7 +188,6 @@ You may follow these general steps to create and install packages within an any 
  - *install packages with conda or pip in the activate environment*
 
 
-
 Example: Creating a Conda environment for Matplotlib Widgets
 ============================================================
 
