@@ -202,7 +202,7 @@ Here is an example how to install matplotlib:
    jupyter labextension install @jupyter-widgets/jupyterlab-manager jupyter-matplotlib@0.7.3
 
 Once the installation fishes, restart the kernel of your current notebook and refresh the page.
-You can now use the `%matplotlib ipympl` magic before importing matplotlib to render interactive plots.
+You can now use the ``%matplotlib ipympl`` magic before importing matplotlib to render interactive plots.
 
 
 Manually stopping your JupyterLab session
