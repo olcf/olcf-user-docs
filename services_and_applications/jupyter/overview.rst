@@ -112,7 +112,7 @@ use in your current session. But these installed libraries won't persist across 
 if your server is restarted.
 
 Since conda's dependency concretizer has sometimes problems to extend existing environments with new
-libraries, you can also use the `mamba <https://github.com/mamba-org/mamba>`_ package manager. Just
+libraries, you can also use the `mamba <https://github.com/mamba-org/mamba>`__ package manager. Just
 install it with ``conda install -c conda-forge mamba`` and replace ``conda`` with ``mamba`` calls.
 
 
@@ -192,7 +192,7 @@ Example: Creating a Conda environment for Matplotlib Widgets
 ============================================================
 
 We currently install Jupyterlab version 2, which needs additional treatment to get interactive extensions
-`such as matplotlib widgets installed <https://github.com/matplotlib/ipympl>`_.
+`such as matplotlib widgets installed <https://github.com/matplotlib/ipympl>`__.
 
 Here is an example how to install matplotlib:
 
