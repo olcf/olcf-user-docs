@@ -188,23 +188,6 @@ You may follow these general steps to create and install packages within an any 
  - *install packages with conda or pip in the activate environment*
 
 
-Example: Creating a Conda environment for Matplotlib Widgets
-============================================================
-
-We currently install Jupyterlab version 2, which needs additional treatment to get interactive extensions
-`such as matplotlib widgets installed <https://github.com/matplotlib/ipympl>`__.
-
-Here is an example how to install matplotlib:
-
-.. code-block:: bash
-
-   conda install -c conda-forge ipympl==0.5.8
-   jupyter labextension install @jupyter-widgets/jupyterlab-manager jupyter-matplotlib@0.7.3
-
-Once the installation fishes, restart the kernel of your current notebook and refresh the page.
-You can now use the ``%matplotlib ipympl`` magic before importing matplotlib to render interactive plots.
-
-
 Manually stopping your JupyterLab session
 -----------------------------------------
 
