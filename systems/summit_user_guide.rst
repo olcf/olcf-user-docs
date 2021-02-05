@@ -1085,6 +1085,24 @@ Jobs may use all 54 nodes. It enforces the following policies:
 To submit a job to the ``batch-hm`` queue, add the ``-q batch-hm`` option to your
 ``bsub`` command or ``#BSUB -q batch-hm`` to your job script.
 
+
+Moderate Enhanced Projects ``batch-spi`` Queue Policy
+"""""""""""""""""""""""""""""""""""""""""""""""""""""
+The ``batch-spi`` queue is used by Summit's "Moderate Enhanced Enclave" projects. Projects in
+this enclave will be required to add ``-q batch-spi`` to their ``bsub`` command, or ``#BSUB -q batch-spi`` to
+their job scripts. Except for the enhanced security policies for jobs in these queues, all other queue properties are
+the same as the regular batch queue, including walltime limits based on node count, job aging priorities based on node
+count, and maximum number of jobs per user.
+
+Moderate Enhanced Projects ``batch-spi-hm`` Queue Policy
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+The ``batch-spi-hm`` queue is used by Summit's "Moderate Enhanced Enclave" projects that also want to
+take advantage of Summit's high-memory nodes. Projects in this enclave that want to use the Summit
+high-memory nodes will need to add ``-q batch-spi-hm`` to their ``bsub`` command, or ``#BSUB -q batch-spi-hm`` to
+their job scripts. Except for the enhanced security policies for jobs in these queues, all other queue properties are the same 
+as the ``batch-hm`` queue, such as maximum walltime and number of eligible running jobs.
+
+
 ``killable`` Queue Policy
 """"""""""""""""""""""""""
 
