@@ -31,3 +31,17 @@ To connect to the DTNs, SSH to ``dtn.ccs.ornl.gov``. For example:
 
 For more information on connecting to OLCF resources, see
 :ref:`connecting-to-olcf`.
+
+Batch Queue
+===================
+
+The DTN contains 8 nodes accessible through the DTN batch system.
+
+Queue Policy
+^^^^^^^^^^^^^^^^^^^^
+
++------------+-------------+-------------------------------------------+
+| Node Count |  Duration   |  Policy                                   |
++============+=============+===========================================+
+| 1-4 Nodes  |  0 - 24 hrs |     max 1 job running **per user**        |
++------------+-------------+-------------------------------------------+
