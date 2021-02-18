@@ -1094,11 +1094,11 @@ their job scripts. Except for the enhanced security policies for jobs in these q
 the same as the regular batch queue, including walltime limits based on node count, job aging priorities based on node
 count, and maximum number of jobs per user.
 
-Moderate Enhanced Projects ``batch-spi-hm`` Queue Policy
+Moderate Enhanced Projects ``batch-hm-spi`` Queue Policy
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
-The ``batch-spi-hm`` queue is used by Summit's "Moderate Enhanced Enclave" projects that also want to
+The ``batch-hm-spi`` queue is used by Summit's "Moderate Enhanced Enclave" projects that also want to
 take advantage of Summit's high-memory nodes. Projects in this enclave that want to use the Summit
-high-memory nodes will need to add ``-q batch-spi-hm`` to their ``bsub`` command, or ``#BSUB -q batch-spi-hm`` to
+high-memory nodes will need to add ``-q batch-hm-spi`` to their ``bsub`` command, or ``#BSUB -q batch-hm-spi`` to
 their job scripts. Except for the enhanced security policies for jobs in these queues, all other queue properties are the same 
 as the ``batch-hm`` queue, such as maximum walltime and number of eligible running jobs.
 
