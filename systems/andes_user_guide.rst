@@ -1,8 +1,8 @@
 .. _andes-user-guide:
 
-******
-Andes
-******
+****************
+Andes User Guide
+****************
 
 .. note::
     We are pleased to announce the availability of a new pre/post processing and data analysis cluster, ``Andes``.  Andes is available to all users with current Rhea access.  Rhea was decommissioned on January 15, 2021.  Please note the following:
