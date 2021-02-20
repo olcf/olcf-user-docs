@@ -1199,6 +1199,7 @@ Projects may request to reserve a set of nodes for a period of time
 by contacting help@olcf.ornl.gov. If the reservation is granted, the reserved nodes will be
 blocked from general use for a given period of time. Only users that
 have been authorized to use the reservation can utilize those resources.
+To access the reservation, please add -U {reservation name} to bsub or job script.
 Since no other users can access the reserved resources, it is crucial
 that groups given reservations take care to ensure the utilization on
 those resources remains high. To prevent reserved resources from
