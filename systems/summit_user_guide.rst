@@ -430,7 +430,9 @@ startup of the interactive job unfortunately. Typical work flow would be:
 
 At this point, it is possible to run a quick test job using jsrun or fix any compilation issues which may have occured.
 
-Eventually, the Summit login nodes will be upgraded to match the Moderate Enhanced login node and this will no longer be necessary
+.. note:: 
+
+    Eventually, the Summit login nodes will be upgraded to match the Moderate Enhanced login node and this will no longer be necessary
 
     
 C compilation
