@@ -432,7 +432,7 @@ At this point, it is possible to run a quick test job using jsrun or fix any com
 
 .. note:: 
 
-    Eventually, the Summit login nodes will be upgraded to match the Moderate Enhanced login node and this will no longer be necessary
+    Eventually, the Summit compute nodes will be upgraded to match the Moderate Enhanced login node and this will no longer be necessary
 
     
 C compilation
