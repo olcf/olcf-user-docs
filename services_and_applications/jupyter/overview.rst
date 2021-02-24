@@ -39,8 +39,9 @@ The above link will present you with the page below. Please login with your OLCF
 
 After succesfull authentication you will be presented with a choice of JupyterLab images (similar to the image below):
 
-- CPU-Only
-- GPU-Lab(s) with varying CUDA version
+- CPU-Only Lab
+- GPU-Lab
+
 
 **NOTE: These GPU-enabled labs are limited. You may get get a message saying the resource is not schedulable, if all GPUs in the pool are occupied.**
 
@@ -49,7 +50,10 @@ After succesfull authentication you will be presented with a choice of JupyterLa
 
 **Select the lab you would like and click "Start".**
 
-Once inside a lab, you will be presented with the default notebook/environment in the "launcher" page of the JupyterLab interface. You can read about the default environment more, below, in the "Conda Environments" section. In addtion, that section will show you how to create your own Conda Environments.
+The CPU Lab provides a single default notebook/environment in the "launcher" page of the Jupyterlab interface.
+The GPU Lab provides options for CUDA 10 and CUDA 11 environments.
+
+You can read about the environments more, below, in the "Conda Environments" section. In addtion, that section will show you how to create your own Conda Environments.
 
 Once inside the JupyterLab, please take a moment to explore the interface.
 
@@ -58,6 +62,9 @@ To read more about the JupyterLab interface, in general, please check out this w
 
 CPU vs. GPU JupyterLab (Available Resources)
 --------------------------------------------
+
+Hardware Resources
+^^^^^^^^^^^^^^^^^^
 
 Each single-user JupyterLab, spawned by OLCF's JupyterHub, gets these default resources:
 
@@ -69,9 +76,19 @@ Each single-user JupyterLab, spawned by OLCF's JupyterHub, gets these default re
 
 The CPU-only JupyterLab is limited to the above resources.
 
-The GPU-enabled JupyterLab will launch a notebook onto a resource containing a GPU (in addtion to the above resources). This allows you to experiment with GPU-enabled anaylytics from JupyterLab.
+The GPU-enabled JupyterLab will launch a notebook onto a resource containing a GPU (in addtion to the above resources). This allows you to experiment with GPU-enabled analytics from JupyterLab.
 
-**NOTE: These GPU-enabled labs are limited. You may get get a message saying the resource is not schedulable, if all GPUs in the pool are occupied.**
+Software and Libraries
+^^^^^^^^^^^^^^^^^^^^^^
+
+Both CPU and GPU labs have the standard analysis and ML libraries: PyTorch, TensorFlow,
+Pandas, NumPy; and visualization libraries: Bokeh, Jax, Matplotlib, OpenCV. To see the
+full list of installed libraries, open a Console from the Launcher page and type in
+``conda list``. These libraries should cover most use cases. You can also find
+instructions for setting up a custom conda environment for use with JupyterLab further
+down.
+
+The GPU lab provides two different environments, CUDA10 and CUDA11. **GPU support for Tensorflow is currently only available in the CUDA10 environment.** Tensorflow only has CPU support in the other environments. Both the CUDA10 and CUDA11 environments provide GPU support for PyTorch, CuPy, and CudNN. 
 
 
 Working within GPFS and NFS (Launching a notebook)
@@ -107,8 +124,8 @@ the Launcher and type ``conda list``. The libraries in the base environment shou
 cover most use cases. This base environment is provided to the default "Python 3" notebook, visible in the 
 JupyterLab "Launcher" page.
 
-From the Terminal, you can install additional libraries with a simple ``conda install`` to
-use in your current session. But these installed libraries won't persist across sessions
+From the Console of a particular environment, you can install additional libraries with a simple ``conda install`` to
+use in that particular environment in the current session. But these installed libraries won't persist across sessions
 if your server is restarted. 
 
 
