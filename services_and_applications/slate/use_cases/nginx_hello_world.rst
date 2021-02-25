@@ -230,7 +230,7 @@ deployment that is considered by the cluster to be ready.
        protocol: TCP
        targetPort: 8080
      selector:
-       deployment: nginx-hello-world
+       app: nginx-hello-world
      sessionAffinity: None
      type: ClusterIP
 

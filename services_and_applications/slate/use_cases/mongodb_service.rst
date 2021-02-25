@@ -126,7 +126,7 @@ Create a file with the above contents and instantiate the objects in Kubernetes
 
 .. code-block:: text
 
-   oc apply -f buildconfig.yaml
+   oc apply -f deployment.yaml
 
 .. note::
   Snippet created with ``oc create deployment mongoku --image huggingface/mongoku --dry-run -o yaml``
