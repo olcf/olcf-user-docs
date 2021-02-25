@@ -16,7 +16,7 @@ By default, helm doesn't have any chart repositories, so let's add the upstream 
 
 .. code-block::
 
-   helm repo add stable https://kubernetes-charts.storage.googleapis.com
+   helm repo add stable https://charts.helm.sh/stable
 
 Now you can install helm charts with ``helm install stable/<package_name>``. You can think of this command as a parallel to running ``yum install`` on a RHEL/CentOS-based system, or ``apt install`` on a debian-based system.
 
