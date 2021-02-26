@@ -43,7 +43,8 @@ After succesfull authentication you will be presented with a choice of JupyterLa
 - GPU-Lab
 
 
-**NOTE: These GPU-enabled labs are limited. You may get get a message saying the resource is not schedulable, if all GPUs in the pool are occupied.**
+.. note::
+  These GPU-enabled labs are limited. You may get get a message saying the resource is not schedulable, if all GPUs in the pool are occupied.**
 
 
 .. image:: /images/jupyter/jupyterlab_images.png
@@ -66,17 +67,25 @@ CPU vs. GPU JupyterLab (Available Resources)
 Hardware Resources
 ^^^^^^^^^^^^^^^^^^
 
-Each single-user JupyterLab, spawned by OLCF's JupyterHub, gets these default resources:
 
-- 16 CPU's
+Each CPU Lab, spawned by OLCF's JupyterHub, gets these default resources:
+
+- 32 CPUs
 - 32GB Memory
 - NCCS filesystem access (GPFS and NFS)
 
-**NOTE: You have the same filesystem access as if you were on Summit, to both NFS and GPFS, as you will be working under your standard OLCF UID.**
 
-The CPU-only JupyterLab is limited to the above resources.
+Each GPU Lab gets the following resources:
 
-The GPU-enabled JupyterLab will launch a notebook onto a resource containing a GPU (in addtion to the above resources). This allows you to experiment with GPU-enabled analytics from JupyterLab.
+- 16 CPUs
+- 32GB Memory
+- Nvidia V100 GPU
+- NCCS filesystem access (GPFS and NFS)
+
+
+.. note::
+  You have the same filesystem access as if you were on Summit, to both NFS and
+  GPFS, as you will be working under your standard OLCF UID.
 
 Software and Libraries
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -88,8 +97,12 @@ full list of installed libraries, open a Console from the Launcher page and type
 instructions for setting up a custom conda environment for use with JupyterLab further
 down.
 
-The GPU lab provides two different environments, CUDA10 and CUDA11. **GPU support for Tensorflow is currently only available in the CUDA10 environment.** Tensorflow only has CPU support in the other environments. Both the CUDA10 and CUDA11 environments provide GPU support for PyTorch, CuPy, and CudNN. 
+The GPU lab provides two different environments, CUDA10 and CUDA11. Both the CUDA10 and
+CUDA11 environments provide GPU support for PyTorch, CuPy, and CudNN. **GPU support for
+Tensorflow is currently only available in the CUDA10 environment.** Tensorflow only has
+CPU support in the CUDA11 environments. The image below shows the CUDA options in the Launcher page.
 
+.. image:: /images/jupyter/jupyter_launcher_cudaenvs.png
 
 Working within GPFS and NFS (Launching a notebook)
 --------------------------------------------------
@@ -104,7 +117,10 @@ Then, you can start a notebook in the directory of your choosing (relative to yo
 
 To do so, traverse the filesystem to your desired path and then click the "Python 3" notebook in the launcher page. This will launch the default notebook environment and store the notebook in your current path. 
 
-**NOTE:  Any notebooks saved in the root location won't be persisted across sessions. Make sure you are saving your work in a location in /ccs or /gpfs where you have write access.**
+.. note::
+  Any notebooks saved in the root location won't be persisted across
+  sessions. Make sure you are saving your work in a location in /ccs or /gpfs where you
+  have write access.
 
 In the example image below, I have launched a notebook in my **/ccs/proj/<proj>/<uid>/** directory (the notebook filename is "Untitled.ipynb" - you can rename yours):
 
@@ -117,12 +133,6 @@ Another method of getting to the filesystem path of your choosing is selecting *
 
 Conda environments and custom notebooks
 ---------------------------------------
-
-The base environment provides a few common data analysis libraries by default, including
-Pytorch, Numpy, Pandas, Bokeh, Seaborn etc. To see the full list, open the Terminal from
-the Launcher and type ``conda list``. The libraries in the base environment should
-cover most use cases. This base environment is provided to the default "Python 3" notebook, visible in the 
-JupyterLab "Launcher" page.
 
 From the Console of a particular environment, you can install additional libraries with a simple ``conda install`` to
 use in that particular environment in the current session. But these installed libraries won't persist across sessions
@@ -152,10 +162,10 @@ Example: Creating a Conda environment for RAPIDS
 #. Create a conda environment with ``conda create -p /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_UID>/rapids -c rapidsai -c nvidia -c conda-forge \``
    ``-c defaults rapids-blazing=0.17 python=3.7 cudatoolkit=10.2``
    
-     * **NOTE**: The ``conda create`` command above **assumes you are using** ``CUDA 10`` JuptyerLab environment.
+     * **NOTE**: The ``conda create`` command above **assumes you are using** the GPU Lab.
    
      * You need to use ``-p`` method if you want your environment to persist across Jupyter
-       restarts. The path can be a location in ``/ccs`` or ``/gpfs/alpine`` that is writable
+       Restarts. The path can be a location in ``/ccs`` or ``/gpfs/alpine`` that is writable
        by your user.
      
 #. Activate the environment ``source activate /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_UID>/rapids``.
