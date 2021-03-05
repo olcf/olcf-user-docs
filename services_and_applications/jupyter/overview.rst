@@ -149,7 +149,7 @@ Conda environments need to be saved in a ``/ccs`` or ``/gpfs/alpine`` directory.
 
 **NOTE**: Please note that **GPFS is purged**. Using /ccs/proj/ is recommended
 
-Let us look at an example, which creates a custom environment that has RAPIDS installed (https://rapids.ai/start.html).
+Let us look at an example, which creates a custom environment and install the `TOML <https://github.com/uiri/toml>`__ package.
 
 At the end of this example you will have a "rapids" notebook visible in the JuptyerLab "Launcher" page. We will make the RAPIDS environment persistent by 
 building it at /ccs/proj/<YOUR_UID>/rapids. 
@@ -158,14 +158,15 @@ building it at /ccs/proj/<YOUR_UID>/rapids.
 Example: Creating a Conda environment for RAPIDS
 =================================================
 
+#. Start a GPU Lab from `https://jupyter.olcf.ornl.gov <https://jupyter.olcf.ornl.gov>`__ . 
 #. From the Launcher page in JupyterLab, click on Terminal.
 #. Create a conda environment with ``conda create -p /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_UID>/rapids -c rapidsai -c nvidia -c conda-forge \``
    ``-c defaults rapids-blazing=0.17 python=3.7 cudatoolkit=10.2``
    
-     * **NOTE**: The ``conda create`` command above **assumes you are using** the GPU Lab.
+     * **NOTE**: The ``conda create`` command above **assumes you are using** ``CUDA 10`` JuptyerLab environment.
    
      * You need to use ``-p`` method if you want your environment to persist across Jupyter
-       Restarts. The path can be a location in ``/ccs`` or ``/gpfs/alpine`` that is writable
+       restarts. The path can be a location in ``/ccs`` or ``/gpfs/alpine`` that is writable
        by your user.
      
 #. Activate the environment ``source activate /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_UID>/rapids``.
@@ -209,7 +210,44 @@ You may follow these general steps to create and install packages within an any 
  - *conda create -p /path/to/env*
  - *source activate /path/to/env*
  - *python -m ipykernel install --user --name <env-name> --display-name <env-name>*
- - *install packages with conda or pip in the activate environment*
+ - *install packages with conda or pip in the activated environment*
+
+
+Example: Cloning an existing environment
+========================================
+
+The below steps apply for either the CPU or GPU lab.
+
+#. Start a GPU or CPU lab from `https://jupyter.olcf.ornl.gov <https://jupyter.olcf.ornl.gov>`__. 
+#. From the Launcher page in JupyterLab, click on Terminal.
+#. See available environments in the JupyterLab by opening a Terminal and typing ``conda
+   env list``. In GPU lab, you will see the ``base`` and the ``cuda10`` environments.
+     * In the CPU lab, clone the base Conda environment with ``conda create -p
+       /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_UID>/yourenvname --clone base``.
+     * For the GPU lab, use the same command but replace the ``--clone`` flag with
+       ``--clone cuda10`` for cloning the Cuda 10 environment. Use ``--clone base`` to
+       clone the Cuda 11 environment (internally the Cuda 11 environment is actually the
+       relabeled 'base' environment).
+     * **NOTE**: You need to use ``-p`` method if you want your environment to persist across Jupyter
+       Restarts. The path can be a location in ``/ccs`` or ``/gpfs/alpine`` that is writable
+       by your user.
+#. Activate the environment ``source activate
+   /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_UID>/yourenvname``.
+     * **NOTE**: It is **recommended to use** ``source activate`` instead of ``conda
+       activate``, even though the ``conda create`` process recommends ``conda activate``
+       at its completion. Using ``conda activate`` requires modification of the
+       ``.bashrc`` file, which is not covered here.
+#. After activating, you can install additional packages with ``conda install`` or ``pip
+   install``.
+     * For example ``conda install toml``.
+#. To make your created environment visible in JupyterLab, run ``python -m ipykernel
+   install --user --name yourenvname --display-name yourenvname``. A kernelspec is created
+   in your ``/ccs/home/<YOUR_UID>/.local/share/jupyter`` directory which JupyterLab reads
+   to see which custom environments are available for it to use.
+     * When you refresh the page and look at the Launcher, you will see buttons labelled
+       ``yourenvname``. Clicking it will start a Notebook or Console running in your
+       ``yourenvname`` environment.
+
 
 
 Manually stopping your JupyterLab session
