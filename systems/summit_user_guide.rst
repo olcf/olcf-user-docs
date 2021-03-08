@@ -3504,10 +3504,19 @@ created with information on the files that were copied.
 Known Issues
 ============
 
-Last Updated: 03 April 2020
+Last Updated: 23 February 2021
 
 Open Issues
 -----------
+
+Improper permissions on ``~/.ssh/config`` cause job state flip-flop/jobs ending in suspended state
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Improper permissions on your SSH configuration file (``~/.ssh/config``) will cause jobs to alternate between pending & running states until the job ultimately ends up in a PSUSP state.
+
+LSF uses SSH to communicate with nodes allocated to your job, and in this case the improper permissions (i.e. write permission for anyone other than the user) cause SSH to fail, which in turn causes the job launch to fail. Note that SSH only checks the permissions of the configuration file itself. Thus, even if the ``~/.ssh/`` directory itself grants no group or other permissions, SSH will fail due to permissions on the configuration file.
+
+To fix this, use a more secure permission setting on the configuration file. An appropriate setting would be read and write permission for the user and no other permissions. You can set this with the command ``chmod 600 ~/.ssh/config``.
 
 Setting ``TMPDIR`` causes JSM (``jsrun``) errors / job state flip-flop
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
