@@ -1015,6 +1015,11 @@ states you’re most likely to see are:
 | SSUSP   | Job was suspended by the system after starting                              |
 +---------+-----------------------------------------------------------------------------+
 
+.. note::
+    Jobs may end up in the PSUSP state for a number of reasons. Two common reasons for PSUSP jobs include jobs that have been held by the user or jobs with unresolved dependencies. 
+    
+    Another common reason that jobs end up in a PSUSP state is a job that the system is unable to start. You may notice a job alternating between PEND and RUN states a few times and ultimately ends up as PSUSP. In this case, the system attempted to start the job but failed for some reason. This can be due to a system issue, but we have also seen this casued by improper settings on user ``~/.ssh/config`` files. (The batch system uses SSH, and the improper settings cause SSH to fail.) If you notice your jobs alternating between PEND and RUN, you might want to check permissions of your ``~/.ssh/config`` file to make sure it does not have write permission for "group" or "other". (A setting of read/write for the user and no other permissions, which can be set with ``chmod 600 ~/.ssh/config``, is recommended.)
+
 Scheduling Policy
 -----------------
 
