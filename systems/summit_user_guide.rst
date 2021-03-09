@@ -1025,6 +1025,11 @@ states you’re most likely to see are:
 | SSUSP   | Job was suspended by the system after starting                              |
 +---------+-----------------------------------------------------------------------------+
 
+.. note::
+    Jobs may end up in the PSUSP state for a number of reasons. Two common reasons for PSUSP jobs include jobs that have been held by the user or jobs with unresolved dependencies. 
+    
+    Another common reason that jobs end up in a PSUSP state is a job that the system is unable to start. You may notice a job alternating between PEND and RUN states a few times and ultimately ends up as PSUSP. In this case, the system attempted to start the job but failed for some reason. This can be due to a system issue, but we have also seen this casued by improper settings on user ``~/.ssh/config`` files. (The batch system uses SSH, and the improper settings cause SSH to fail.) If you notice your jobs alternating between PEND and RUN, you might want to check permissions of your ``~/.ssh/config`` file to make sure it does not have write permission for "group" or "other". (A setting of read/write for the user and no other permissions, which can be set with ``chmod 600 ~/.ssh/config``, is recommended.)
+
 Scheduling Policy
 -----------------
 
@@ -3514,10 +3519,19 @@ created with information on the files that were copied.
 Known Issues
 ============
 
-Last Updated: 03 April 2020
+Last Updated: 8 March 2021
 
 Open Issues
 -----------
+
+Improper permissions on ``~/.ssh/config`` cause job state flip-flop/jobs ending in suspended state
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Improper permissions on your SSH configuration file (``~/.ssh/config``) will cause jobs to alternate between pending & running states until the job ultimately ends up in a PSUSP state.
+
+LSF uses SSH to communicate with nodes allocated to your job, and in this case the improper permissions (i.e. write permission for anyone other than the user) cause SSH to fail, which in turn causes the job launch to fail. Note that SSH only checks the permissions of the configuration file itself. Thus, even if the ``~/.ssh/`` directory itself grants no group or other permissions, SSH will fail due to permissions on the configuration file.
+
+To fix this, use a more secure permission setting on the configuration file. An appropriate setting would be read and write permission for the user and no other permissions. You can set this with the command ``chmod 600 ~/.ssh/config``.
 
 Setting ``TMPDIR`` causes JSM (``jsrun``) errors / job state flip-flop
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
