@@ -423,13 +423,14 @@ Compiling for Projects in the Moderate Enhanced Security Enclave
 
 Moderate Enhanced projects need to compile code on a batch node rather than the moderate-enhanced login node because the
 login node has a newer version of the operating system than standard Summit login nodes and compute nodes. 
-To do this requires submitting an interactive batch job and then compiling the code on the batch node. To facilitate this, users can 
-submit to the ``debug-spi`` queue for a slight priority boost.  Note that machine load on Summit can still delay
-startup of the interactive job unfortunately. Typical work flow would be:
+To do this requires submitting an interactive batch job and then compiling the code on the batch node. Users must also "re-login" or
+spawn a "login shell" to re-setup their environment. This is typically done by passing ``-l`` to the shell (as shown below).
+To facilitate this interactive use, users can submit to the ``debug-spi`` queue for a slight priority boost.  
+Note that machine load on Summit can still delay startup of the interactive job unfortunately. Typical work flow would be:
 
 ::
    
-   user@citadel > bsub -q debug-spi -nnodes 1  -P ABC123_MDE -W 2:00 -Is $SHELL
+   user@citadel > bsub -q debug-spi -nnodes 1  -P ABC123_MDE -W 2:00 -Is $SHELL -l
    Job <XXXXXX> is submitted to queue <debug-spi>
    <<Waiting for dispatch ....>>
    [Possible delay here until a node is available]
