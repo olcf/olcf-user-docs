@@ -73,7 +73,7 @@ Comparing to IBM WML CE, `Open-CE <https://github.com/open-ce/open-ce>`_ no long
     | ML/DL on Summit (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2020/02/MLDL-on-Summit-June2020.pdf>`__ | `recording <https://vimeo.com/427791205>`__)
 
 Running Distributed Deep Learning Jobs
-================
+======================================
 
 The IBM ``ddlrun`` tool has been deprecated. The recommended tool for
 launching distributed deep learning jobs on Summit is ``jsrun``. When
@@ -99,7 +99,7 @@ correctly launch most DDL scripts:
 +----------------+------------------------------------------------------+
 
 Basic Distributed Deep Learning BSUB Script
----------------------
+-------------------------------------------
 
 The following bsub script will run a distributed Tensorflow resnet50
 training job across 2 nodes.

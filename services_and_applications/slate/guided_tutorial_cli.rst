@@ -1,8 +1,8 @@
 .. _slate_guided_tutorial_cli:
 
-***************
+********************
 Guided Tutorial: CLI
-***************
+********************
 
 This tutorial is a continuation of the :ref:`slate_guided_tutorial` and you should start there.
 
