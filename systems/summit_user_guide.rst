@@ -264,6 +264,14 @@ family is first present in the environment.
     modulefiles. However, long and logic-heavy Tcl modulefiles may require
     porting to Lua.
 
+.. note::
+    Because of the mismatched operating system versions between the Moderate Enhanced login node and the Summit
+    compute nodes, the ``module`` command is not available on the Moderate Enhanced login node. Similar to how
+    users need to compile on a batch node, the module system is also only available on the batch nodes. For
+    more information see :ref:`compiling-mod-enhanced` .
+    Eventually, the Summit login nodes will be upgraded to match the Moderate Enhanced login node and this
+    will no longer be necessary
+
 General Usage
 ^^^^^^^^^^^^^
 
@@ -407,6 +415,8 @@ using the modules system:
     pgi/19.4
     pgi/19.5
     pgi/19.7
+
+.. _compiling-mod-enhanced:
 
 Compiling for Projects in the Moderate Enhanced Security Enclave 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
