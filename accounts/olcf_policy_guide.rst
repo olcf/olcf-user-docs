@@ -2,8 +2,6 @@
 OLCF Policy Guides
 ****************************
 
-********
-
 OLCF Acknowledgement
 ====================
 
@@ -1154,4 +1152,3 @@ changes on the project.
 If you have security-related questions, contact us via email at: security-admins@ccs.ornl.gov.
 Other questions can be sent to help@olcf.ornl.gov.
 
-********

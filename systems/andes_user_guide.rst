@@ -1287,6 +1287,7 @@ methods may be used the one described should work in most cases.
      </Server>
      # ...
     </Servers>
+
 **Step 2: Launch ParaView on your Desktop and Click on File -> Connect**
 
 Start ParaView and then select ``File/Connect`` to begin.

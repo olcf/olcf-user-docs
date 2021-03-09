@@ -204,9 +204,9 @@ I/O.  More information can be found later in the `Burst Buffer`_ section.
 Software
 ========
 
-Visualization and analysis tasks should be done on the Rhea cluster. There are a
+Visualization and analysis tasks should be done on the Andes cluster. There are a
 few tools provided for various visualization tasks, as described in the
-:ref:`visualization-tools` section of the :ref:`rhea-user-guide`.
+:ref:`visualization-tools` section of the :ref:`andes-user-guide`.
 
 For a full list of software available at the OLCF, please see the
 Software section (coming soon).
