@@ -44,7 +44,7 @@ After succesfull authentication you will be presented with a choice of JupyterLa
 
 
 .. note::
-  These GPU-enabled labs are limited. You may get get a message saying the resource is not schedulable, if all GPUs in the pool are occupied.**
+  These GPU-enabled labs are limited. You may get get a message saying the resource is not schedulable, if all GPUs in the pool are occupied.
 
 
 .. image:: /images/jupyter/jupyterlab_images.png
@@ -107,7 +107,8 @@ CPU support in the CUDA11 environments. The image below shows the CUDA options i
 Working within GPFS and NFS (Launching a notebook)
 --------------------------------------------------
 
-To see the root of your filesystem access, within your JupyterLab interface, click this circled folder (you can traverse to your users spaces from there):
+To see the root of your filesystem access, within your JupyterLab interface, click this
+circled folder (you can traverse to your users spaces from there):
 
 .. image:: /images/jupyter/directory_access.png
 
@@ -115,18 +116,22 @@ You should see **gpfs** and **ccs** - the "top" of GPFS amd NFS respectively.
 
 Then, you can start a notebook in the directory of your choosing (relative to your user access). 
 
-To do so, traverse the filesystem to your desired path and then click the "Python 3" notebook in the launcher page. This will launch the default notebook environment and store the notebook in your current path. 
+To do so, traverse the filesystem to your desired path and then click the "Python 3"
+notebook in the launcher page. This will launch the default notebook environment and store
+the notebook in your current path.
 
 .. note::
   Any notebooks saved in the root location won't be persisted across
   sessions. Make sure you are saving your work in a location in /ccs or /gpfs where you
   have write access.
 
-In the example image below, I have launched a notebook in my **/ccs/proj/<proj>/<uid>/** directory (the notebook filename is "Untitled.ipynb" - you can rename yours):
+In the example image below, I have launched a notebook in my **/ccs/proj/<proj>/<uid>/**
+directory (the notebook filename is "Untitled.ipynb" - you can rename yours):
 
 .. image:: /images/jupyter/directory_example.png
 
-Another method of getting to the filesystem path of your choosing is selecting **File->"Open from Path"** and typing the desired path in the text box:
+Another method of getting to the filesystem path of your choosing is selecting
+**File->"Open from Path"** and typing the desired path in the text box:
 
 .. image:: /images/jupyter/open_file_path.png
 
@@ -149,10 +154,6 @@ Conda environments need to be saved in a ``/ccs`` or ``/gpfs/alpine`` directory.
 
 **NOTE**: Please note that **GPFS is purged**. Using /ccs/proj/ is recommended
 
-Let us look at an example, which creates a custom environment and install the `TOML <https://github.com/uiri/toml>`__ package.
-
-At the end of this example you will have a "rapids" notebook visible in the JuptyerLab "Launcher" page. We will make the RAPIDS environment persistent by 
-building it at /ccs/proj/<YOUR_UID>/rapids. 
 
 
 Example: Creating a Conda environment for RAPIDS
@@ -188,8 +189,10 @@ Example: Creating a Conda environment for RAPIDS
    .. image:: /images/jupyter/rapids_notebook_image.png
      
 
-#. Now open a ``rapids`` notebook to check if the installation was successful. In the below image, I created a notebook called *rapids-test* in my NFS 
-   project space and did a very basic cuDF operation on some example data (in  the red circle, you can see I am using the created "rapids" environment/kernel):
+#. Now open a ``rapids`` notebook to check if the installation was successful. In the
+   below image, I created a notebook called *rapids-test* in my NFS project space and did
+   a very basic cuDF operation on some example data (in the red circle, you can see I am
+   using the created "rapids" environment/kernel):
 
    
    ..  image:: /images/jupyter/cudf_rapids_test.png
@@ -205,7 +208,9 @@ Example: Creating a Conda environment for RAPIDS
 To delete your environment, you will need to delete it from the path where the environment
 was created, as well as delete the corresponding directory from ``~/.local/share/jupyter/kernels``.
 
-You may follow these general steps to create and install packages within an any environment you decide to create. The main componentes to accomplish this, using a terminal session, are: 
+You may follow these general steps to create and install packages within an any
+environment you decide to create. The main componentes to accomplish this, using a
+terminal session, are:
  
  - *conda create -p /path/to/env*
  - *source activate /path/to/env*
@@ -218,16 +223,23 @@ Example: Cloning an existing environment
 
 The below steps apply for either the CPU or GPU lab.
 
+.. note::
+   Running ``conda env list`` on the Terminal in the GPU lab will show the 'base'
+   and 'olcf-cuda10' environments. The 'base' environment corresponds to the 'OLCF-CUDA11'
+   notebook and the 'olcf-cuda10' environment corresponds to the 'OLCF-CUDA10' notebook in
+   the Launcher page. In the CPU lab, the 'base' environment corresponds to the
+   'OLCF-base' notebook in the Launcher page.
+
 #. Start a GPU or CPU lab from `https://jupyter.olcf.ornl.gov <https://jupyter.olcf.ornl.gov>`__. 
 #. From the Launcher page in JupyterLab, click on Terminal.
 #. See available environments in the JupyterLab by opening a Terminal and typing ``conda
-   env list``. In GPU lab, you will see the ``base`` and the ``cuda10`` environments.
+   env list``.
      * In the CPU lab, clone the base Conda environment with ``conda create -p
        /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_UID>/yourenvname --clone base``.
      * For the GPU lab, use the same command but replace the ``--clone`` flag with
-       ``--clone cuda10`` for cloning the Cuda 10 environment. Use ``--clone base`` to
-       clone the Cuda 11 environment (internally the Cuda 11 environment is actually the
-       relabeled 'base' environment).
+       ``--clone olcf-cuda10`` for cloning the Cuda 10 environment. Use ``--clone base`` to
+       clone the Cuda 11 environment (internally the OLCF-CUDA11 notebook is actually the
+       'base' notebook relabeled).
      * **NOTE**: You need to use ``-p`` method if you want your environment to persist across Jupyter
        Restarts. The path can be a location in ``/ccs`` or ``/gpfs/alpine`` that is writable
        by your user.
@@ -249,6 +261,11 @@ The below steps apply for either the CPU or GPU lab.
        ``yourenvname`` environment.
 
 
+.. note::
+   Conda environments created this way are only usable in JupyterLab. You can't
+   create an environment within JupyterLab and use these environments on other machines
+   like Summit or Andes to run jobs. You will need to recreate the environment separately
+   on those machines.
 
 Manually stopping your JupyterLab session
 -----------------------------------------
