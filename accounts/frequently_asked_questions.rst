@@ -98,7 +98,7 @@ the User Assistance Team (help@olcf.ornl.gov) or the Accounts Team
 (`accounts@olcf.ornl.gov <mailto:accounts@ccs.ornl.gov>`__). You do not
 need to return the broken/expired RSA token to OLCF. Disposal and
 recycling information can be found in the vendor's `disposal
-statement <https://www.emc.com/collateral/legal/token-disposal-statement.pdf>`__.
+statement <https://community.rsa.com/t5/support-information/rsa-statement-on-safe-use-and-disposal-of-rsa-securid-tokens/ta-p/569883>`__.
 
 .. _getting-help:
 
