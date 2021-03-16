@@ -781,10 +781,14 @@ As an example, consider the following batch script:
     jsrun -n 4092 -r 2 -a 12 -g 3 ./a.out
     cp my_output_file /ccs/proj/abc123/Output.123
 
+.. note:: 
+   For Moderate Enhanced Projects, job scripts need to add "-l" ("ell") to the shell specification, similar to interactive usage.
+
 +----------+------------+--------------------------------------------------------------------------------------------+
 | Line #   | Option     | Description                                                                                |
 +==========+============+============================================================================================+
-| 1        |            | Shell specification. This script will run under with bash as the shell                     |
+| 1        |            | Shell specification. This script will run under with bash as the shell. Moderate enhanced  |
+|          |            | projects should add ``-l`` ("ell") to the shell specification.                             |
 +----------+------------+--------------------------------------------------------------------------------------------+
 | 2        |            | Comment line                                                                               |
 +----------+------------+--------------------------------------------------------------------------------------------+
