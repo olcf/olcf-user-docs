@@ -14,3 +14,4 @@ Software
    python
    profiling/index
    UMS/index
+   workflows/index
