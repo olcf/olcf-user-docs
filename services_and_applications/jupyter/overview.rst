@@ -107,10 +107,13 @@ the Launcher and type ``conda list``. The libraries in the base environment shou
 cover most use cases. This base environment is provided to the default "Python 3" notebook, visible in the 
 JupyterLab "Launcher" page.
 
-From the Terminal, you can install additional libraries with a simple ``conda install`` to
+From the Jupyter Terminal, you can install additional libraries with a simple ``conda install`` to
 use in your current session. But these installed libraries won't persist across sessions
-if your server is restarted. 
+if your server is restarted.
 
+Since conda's dependency concretizer has sometimes problems to extend existing environments with new
+libraries, you can also use the `mamba <https://github.com/mamba-org/mamba>`__ package manager. Just
+install it with ``conda install -c conda-forge mamba`` and replace ``conda`` with ``mamba`` calls.
 
 
 Creating your own Conda environment and notebook entry
