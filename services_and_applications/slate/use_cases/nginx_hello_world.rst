@@ -157,7 +157,7 @@ logs. Once the build completes then we should have an image pushed to our ImageS
 
    oc get imagestream nginx-hello-world
    NAME                DOCKER REPO                                                         TAGS      UPDATED
-   nginx-hello-world   docker-registry.default.svc:5000/YOUR_NAMESPACE/nginx-hello-world   latest    3 minutes ago
+   nginx-hello-world   image-registry.openshift-image-registry.svc:5000/YOUR_NAMESPACE/nginx-hello-world   latest    3 minutes ago
 
 If all goes well it is time to create the Deployment:
 
@@ -181,7 +181,7 @@ If all goes well it is time to create the Deployment:
        spec:
          containers:
            - name: nginx
-             image: "docker-registry.default.svc:5000/YOUR_NAMESPACE/nginx-hello-world"
+             image: "image-registry.openshift-image-registry:5000/YOUR_NAMESPACE/nginx-hello-world"
              terminationMessagePath: /dev/termination-log
              terminationMessagePolicy: File
              tty: true

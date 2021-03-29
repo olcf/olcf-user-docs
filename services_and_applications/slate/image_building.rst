@@ -240,16 +240,16 @@ Then you can push and pull from the integrated registry. In the following exampl
    Status: Downloaded newer image for busybox:latest
    docker.io/library/busybox:latest
 
-   $ docker tag busybox:latest registry.marble.ccs.ornl.gov/stf002platform/busybox:latest
+   $ docker tag busybox:latest registry.apps.marble.ccs.ornl.gov/stf002platform/busybox:latest
 
-   $ docker push registry.marble.ccs.ornl.gov/stf002platform/busybox:latest
-   The push refers to repository [registry.marble.ccs.ornl.gov/stf002platform/busybox]
+   $ docker push registry.apps.marble.ccs.ornl.gov/stf002platform/busybox:latest
+   The push refers to repository [registry.apps.marble.ccs.ornl.gov/stf002platform/busybox]
    0d315111b484: Pushed
    latest: digest: sha256:895ab622e92e18d6b461d671081757af7dbaa3b00e3e28e12505af7817f73649 size: 527
 
    $ oc get is busybox
    NAME      DOCKER REPO                                               TAGS     UPDATED
-   busybox   docker-registry.default.svc:5000/stf002platform/busybox   latest   5 seconds ago
+   busybox   image-registry.openshift-image-registry.svc:5000/stf002platform/busybox   latest   5 seconds ago
 
 .. note::
   When tagging an image, you must use the format ``registry.apps.<cluster>.ccs.ornl.gov/<namespace>/<image>`` where:
