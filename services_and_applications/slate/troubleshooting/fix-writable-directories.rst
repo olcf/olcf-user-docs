@@ -82,13 +82,13 @@ The build should start automatically, monitor it with ``oc logs bc/my-image -f``
 Now that we have a new image with our /opt/application-data directory owned by the right user we can either update an existing
 deployment or create a new one with the image.
 
-Note that in this example, I am updating the DeploymentConfig and setting the image of the container named ``containername`` and
+Note that in this example, I am updating the Deployment and setting the image of the container named ``containername`` and
 ``--source=istag`` says I am using a ImageStream tag. The ImageStream in my OpenShift project stf002 is ``stf002/my-image:mytag``.
 
 .. code-block::
 
    # Update an existing deployment called my-application
-   oc set image dc/my-application containername=stf002/my-image:mytag --source=istag
+   oc set image deploy/my-application containername=stf002/my-image:mytag --source=istag
 
    # Create a new deployment with the container
    oc new-app -i my-image

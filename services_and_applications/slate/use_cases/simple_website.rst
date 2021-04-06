@@ -129,7 +129,7 @@ Now let's create a Build from the BuildConfig and upload our current directory a
    Uploading directory "." as binary input for the build ...
    ...
    Successfully built fe3e487fffe5
-   Pushing image docker-registry.default.svc:5000/stf002platform/local-image:latest ...
+   Pushing image image-registry.openshift-image-registry.svc:5000/stf002platform/local-image:latest ...
    Push successful
 
 Once that is complete, we can see that the image was uploaded to the integrated registry by getting the ImageStream object
@@ -138,7 +138,7 @@ Once that is complete, we can see that the image was uploaded to the integrated 
 
    $ oc get imagestream local-image
    NAME          DOCKER REPO                                                   TAGS     UPDATED
-   local-image   docker-registry.default.svc:5000/stf002platform/local-image   latest   5 minutes ago
+   local-image   image-registry.openshift-image-registry.svc:5000/stf002platform/local-image   latest   5 minutes ago
 
 Deploy the Image
 ^^^^^^^^^^^^^^^^
@@ -167,7 +167,7 @@ Now that we have built a container image we can deploy it with a Deployment obje
            app: local-image
        spec:
          containers:
-         - image: "docker-registry.default.svc:5000/stf002platform/local-image:latest"
+         - image: "image-registry.openshift-image-registry.svc:5000/stf002platform/local-image:latest"
            imagePullPolicy: Always
            name: local-image
            resources: {}
@@ -180,7 +180,7 @@ Create a file with the above contents and instantiate the objects in Kubernetes
    oc apply -f deployment.yaml
 
 .. note:: 
-   Snippet created with ``oc create deployment local-image --image docker-registry.default.svc:5000/stf002platform/local-image --dry-run -o yaml``
+   Snippet created with ``oc create deployment local-image --image image-registry.openshift-image-registry.svc:5000/stf002platform/local-image --dry-run -o yaml``
 
 Now once the Deployment controller creates a pod we should be able to do a port forward and test that our web server is serving our index.html file
 

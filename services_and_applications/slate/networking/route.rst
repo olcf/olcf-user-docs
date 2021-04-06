@@ -304,7 +304,7 @@ Here is an example route which points to 3 services:
      - kind: Service
        name: service-name2
        weight: 10
-       kind: Service
+     - kind: Service
        name: service-name3
        weight: 10
 

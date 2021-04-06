@@ -34,6 +34,17 @@ or DeploymentConfig.
 
 .. code:: yaml
 
+  kind: Deployment
+  metadata:
+    annotations:
+      ccs.ornl.gov/fs: olcf
+  ---
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      ccs.ornl.gov/fs: olcf
+  ---
+  kind: Pod
   metadata:
     annotations:
       ccs.ornl.gov/fs: olcf
