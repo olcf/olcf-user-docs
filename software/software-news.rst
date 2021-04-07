@@ -8,6 +8,53 @@ most recent changes are listed first.
 
 .. raw:: html
 
+   <p style="font-size:20px"><b>Summit: Software Installation/Default Software Changes (April 7, 2021)</b></p>
+
+The following modules were installed as default on April 7, 2021.
+
+.. csv-table::
+    :header: "Package", "Current Default", "New Default"
+
+    "open-ce", "0.1-0", "1.1.3-py38-0"
+
+In addition, open-ce 1.1.3 is also available for python versions 3.6 and 3.7. These builds can be accessed by
+loading the ``open-ce/1.1.3-py36-0`` and ``open-ce/1.1.3-py37-0`` modules, respectively.
+
+The following packages are available in this release of open-ce.
+
+.. csv-table::
+    :header: "Package", "Version"
+
+    "Tensorflow", "2.4.1"
+    "TensorFlow Serving", "2.4.1"
+    "TensorFlow Estimators", "2.4.0"
+    "TensorFlow Probability", "0.12.1"
+    "TensorBoard", "2.4.1"
+    "TensorFlow Text", "2.4.1"
+    "TensorFlow Model Optimizations", "0.5.0"
+    "TensorFlow Addons", "0.11.2"
+    "TensorFlow Datasets", "4.1.0"
+    "TensorFlow Hub", "0.10.0"
+    "TensorFlow MetaData", "0.26.0"
+    "PyTorch", "1.7.1"
+    "TorchText", "0.8.1"
+    "TorchVision", "0.8.2"
+    "PyTorch Lightning", "1.1.0"
+    "PyTorch Lightning Bolts", "0.2.5"
+    "XGBoost", "1.3.3"
+    "Transformers", "3.5.1"
+    "Tokenizers", "0.9.3"
+    "SentencePiece", "0.1.91"
+    "Spacy", "2.3.4"
+    "Thinc", "7.4.1"
+    "DALI", "0.28.0"
+    "OpenCV", "3.4.10"
+    "Horovod", "0.21.0"
+
+----
+
+.. raw:: html
+
    <p style="font-size:20px"><b>Summit: Software Installation/Default Software Changes (April 8, 2020)</b></p>
 
 The following modules were installed as default on April 8, 2020.
