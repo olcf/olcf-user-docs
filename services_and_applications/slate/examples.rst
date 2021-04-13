@@ -326,3 +326,20 @@ Basic PVC
        # the amount of storage being requested
        requests:
          storage: 1Gi
+
+
+Basic VolumeSnapshot
+^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: yaml
+
+    apiVersion: snapshot.storage.k8s.io/v1beta1
+    kind: VolumeSnapshot
+    metadata:
+    # Snapshot name
+      name: pvc1-snap
+    spec:
+      source:
+      # Persistent Volume to snapshot
+        persistentVolumeClaimName: test-pod-pvc
+      volumeSnapshotClassName: csi-snapclass

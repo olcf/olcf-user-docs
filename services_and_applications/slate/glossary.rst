@@ -64,6 +64,9 @@ This is a glossary of terms that will become second nature to you after you have
   Volume
     External storage to a Pod that is mounted into a Pod and accessible by all containers in the Pod. Data stored here will persist Pod restarts where as data on the Pod will be lost in a Pod restart. Assuming there are enough resources, a Volume is created when a PVC is created.
 
+  VolumeSnapshot
+    A snapshot of the contents of a Volume from when the VolumeSnapshot object was created. 
+    
   Role
     A namespaced grouping of Policy Rules that can be referenced by a Rolebinding
 

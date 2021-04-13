@@ -186,32 +186,19 @@ Adding PVC To Pod Using Web GUI
 Backups
 -------
 
-There are two methods for backing up your persistent volume. The first, **snapshots**\ , is an
-automated method with backups taking place at set intervals. The second methods is **cloning** the
-volume into another volume. This is an imperative way to backup your data that you might use right
-before an upgrade.
+A **PersistentVolume** is backed up by creating a **VolumeSnapshot** object. The **VolumeSnapshot** will create a point in time backup of your **PersistentVolume**
+and is something that you would likely do before an upgrade. 
 
-Snapshots
-^^^^^^^^^
+VolumeSnapshots
+^^^^^^^^^^^^^^^
 
-Since we use Trident to provision our volumes enabling snapshots is as simple as adding two
-annotations. The annotations are ``trident.netapp.io/snapshotDirectory: "true"`` and
-``trident.netapp.io/snapshotPolicy: "default"``. The first annotation will tell Trident that you
-would like it to make snapshots, or copies, of your data and place them in the ``.snapshot``
-directory. The second allows you to access the ``.snapshot`` directory; located where you mounted
-your Persistent Volume.
-
-An example Persistent Volume Claim that implements snapshots would look similar to this:
+A Volume Snapshot will bind to a **PersistentVolumeClaim**. An example **PersistentVolumeClaim** to bind a **VolumeSnapshot** to follows:
 
 .. code-block:: yaml
 
    apiVersion: v1
    kind: PersistentVolumeClaim
    metadata:
-     annotations:
-       trident.netapp.io/snapshotDirectory: "true"
-       trident.netapp.io/snapshotPolicy: "default"
-       volume.beta.kubernetes.io/storage-class: "basic"
      name: snapshot-pvc
    spec:
      accessModes:
@@ -219,6 +206,23 @@ An example Persistent Volume Claim that implements snapshots would look similar 
      resources:
        requests:
          storage: 1Gi
+
+We can now create a **VolumeSnapshot**, which will capture the data in the **PersistentVolume** that was provisioned by the named **PersistentVolumeClaim** at the time
+the **VolumeSnapshot** is created, to backup our data. 
+
+.. code-block:: yaml
+
+    apiVersion: snapshot.storage.k8s.io/v1beta1
+    kind: VolumeSnapshot
+    metadata:
+    # Name of VolumeSnapshot
+      name: pvc1-snap
+    spec:
+      source:
+      # Name of persistentVolumeClaim to snapshot
+        persistentVolumeClaimName: snapshot-pvc
+      volumeSnapshotClassName: csi-snapclass
+
 
 Cloning
 ^^^^^^^
