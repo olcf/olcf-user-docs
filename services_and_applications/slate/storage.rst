@@ -208,20 +208,48 @@ A Volume Snapshot will bind to a **PersistentVolumeClaim**. An example **Persist
          storage: 1Gi
 
 We can now create a **VolumeSnapshot**, which will capture the data in the **PersistentVolume** that was provisioned by the named **PersistentVolumeClaim** at the time
-the **VolumeSnapshot** is created, to backup our data. 
+the **VolumeSnapshot** is created, to backup the data. 
 
 .. code-block:: yaml
 
     apiVersion: snapshot.storage.k8s.io/v1beta1
     kind: VolumeSnapshot
     metadata:
-    # Name of VolumeSnapshot
-      name: pvc1-snap
+      # Name of VolumeSnapshot
+      name: pvc-snap
     spec:
       source:
-      # Name of persistentVolumeClaim to snapshot
+        # Name of persistentVolumeClaim to snapshot
         persistentVolumeClaimName: snapshot-pvc
       volumeSnapshotClassName: csi-snapclass
+
+
+Now, if the data in the **PersistentVolume** becomes corrupted or lost in some way, we can create a new **PersistentVolume** that is identical to the original 
+**PersistentVolume** at the time the **VolumeSnapshot** was created.
+
+To do this, create a **PersistentVolumeClaim** that contains a ``dataSource`` field in the Pod's spec. An example follows:
+
+.. code-block:: yaml
+
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      # The name of the new Persistent Volume
+      name: restore-pvc
+    spec:
+      dataSource:
+        # The name of the Volume Snapshot to retrieve data from
+        name: pvc-snap
+        kind: VolumeSnapshot
+        apiGroup: snapshot.storage.k8s.io
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1Gi
+
+Once the **PersistentVolume** has been created from the above **PersistentVolumeClaim** it will contain the data from the original **PersistentVolume** at the time the
+referenced **VolumeSnapshot** was created. 
 
 
 Cloning

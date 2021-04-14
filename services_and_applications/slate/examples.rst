@@ -336,10 +336,10 @@ Basic VolumeSnapshot
     apiVersion: snapshot.storage.k8s.io/v1beta1
     kind: VolumeSnapshot
     metadata:
-    # Snapshot name
+      # Snapshot name
       name: pvc1-snap
     spec:
       source:
-      # Persistent Volume to snapshot
+        # Persistent Volume to snapshot
         persistentVolumeClaimName: test-pod-pvc
       volumeSnapshotClassName: csi-snapclass
