@@ -9,7 +9,7 @@ and data analytics tasks on OLCF systems.
 .. toctree::
    :maxdepth: 2
 
-   ibm-wml-ce
+   distributed-dl-env
    pbdR
    nvidia-rapids
    blazingsql
