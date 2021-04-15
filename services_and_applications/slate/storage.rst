@@ -221,7 +221,6 @@ the **VolumeSnapshot** is created, to backup the data.
       source:
         # Name of persistentVolumeClaim to snapshot
         persistentVolumeClaimName: snapshot-pvc
-      volumeSnapshotClassName: csi-snapclass
 
 
 Now, if the data in the **PersistentVolume** becomes corrupted or lost in some way, we can create a new **PersistentVolume** that is identical to the original 

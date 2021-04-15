@@ -342,4 +342,3 @@ Basic VolumeSnapshot
       source:
         # Persistent Volume to snapshot
         persistentVolumeClaimName: test-pod-pvc
-      volumeSnapshotClassName: csi-snapclass
