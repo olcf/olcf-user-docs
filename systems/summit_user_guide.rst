@@ -1101,7 +1101,7 @@ following policies:
 -  Jobs in excess of the per user limit above will be placed into a
    *held* state, but will change to eligible-to-run at the appropriate
    time.
--  Users may have only (100) jobs queued at any state at any time.
+-  Users may have only (100) jobs queued in the ``batch`` queue at any state at any time.
    Additional jobs will be rejected at submit time.
 
 .. note::
@@ -1119,7 +1119,7 @@ Jobs may use all 54 nodes. It enforces the following policies:
 -  Jobs in excess of the per user limit above will be placed into a
    *held* state, but will change to eligible-to-run at the appropriate
    time.
--  Users may have only (100) jobs queued at any state at any time.
+-  Users may have only (25) jobs queued in the ``batch-hm`` queue at any state at any time.
    Additional jobs will be rejected at submit time.
 
 **batch-hm job limits:**
