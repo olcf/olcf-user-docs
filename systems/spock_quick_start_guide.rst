@@ -441,7 +441,7 @@ script:
    #SBATCH -J <job_name>
    #SBATCH -o %x-%j.out
    #SBATCH -t 00:05:00
-   #SBATCH -p mi100
+   #SBATCH -p <partition> 
    #SBATCH -N 2
  
    srun -n4 --ntasks-per-node=2 ./a.out 
@@ -485,7 +485,7 @@ command can be used:
 
 .. code-block:: bash
    
-   $ salloc -A <project_id> -J <job_name> -t 00:05:00 -p mi100 -N 2
+   $ salloc -A <project_id> -J <job_name> -t 00:05:00 -p <partition> -N 2
    salloc: Granted job allocation 4258
    salloc: Waiting for resource configuration
    salloc: Nodes spock[10-11] are ready for job
@@ -508,7 +508,7 @@ Single Command (non-interactive)
 
 .. code-block:: bash
 
-   $ srun -A <project_id> -t 00:05:00 -p mi100 -N 2 -n 4 --ntasks-per-node=2 ./a.out
+   $ srun -A <project_id> -t 00:05:00 -p <partition> -N 2 -n 4 --ntasks-per-node=2 ./a.out
    <output printed to terminal>
 
 The job name and output options have been removed since stdout/stderr are
