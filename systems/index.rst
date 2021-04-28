@@ -13,3 +13,4 @@ Systems
    dtn_user_guide
    hpss_user_guide
    ascent_user_guide
+   spock_quick_start_guide
