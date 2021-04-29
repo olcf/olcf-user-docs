@@ -56,7 +56,9 @@ Setup authoring environment
 
    or a python webserver (from inside the document root, i.e., ``_build`` directory)::
 
+        $ cd _build
         $ python3 -m http.server 8080
+        ## you may add the option --bind 127.0.0.1 to bind only on the localhost address 
 
    Open a broswer and type ``localhost:8080`` into the address bar to view the web pages.
 
@@ -75,8 +77,12 @@ local environment to make multiple changes.
 
       $ git checkout -b my-edits-branch
       ## (Please edit *.rst files, and commit them to your branch.)
+      ## after my-edits-branch is created, omit the -b flag to switch to it from the master
 
 #. Preview your edits
+
+    Follow the steps in the previous section to rebuild and locally view changes
+
 #. Push your edits to your GitHub fork::
 
       $ git push -u origin my-edits-branch
