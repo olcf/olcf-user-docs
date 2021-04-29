@@ -48,7 +48,7 @@ the table below:
 
 | **Area -** The general name of the storage area.
 | **Path -** The path (symlink) to the storage area's directory.
-| **Enclave -** The security enclave where the path is available. There are 3 primary security enclaves:
+| **Enclave -** The security enclave where the path is available. There are several security enclaves:
 |      - *Open (O) -* Ascent and other OLCF machines accessible with a username/password
 |      - *Moderate Projects not subject to export control (M1)* - These are projects on machines such as Summit or Andes that require 2-factor authentication but are not subject to export controll restrictions.
 |      - *Moderate Projects subject to export control (M2) -* Same as M1, but projects that are subject to export control restrictions.
