@@ -76,12 +76,18 @@ local environment to make multiple changes.
 #. Make your edits in a new git branch::
 
       $ git checkout -b my-edits-branch
-      ## (Please edit *.rst files, and commit them to your branch.)
+      ## make edits to *.rst files, using an editor like vi
       ## after my-edits-branch is created, omit the -b flag to switch to it from the master
 
 #. Preview your edits
 
     Follow the steps in the previous section to rebuild and locally view changes
+
+#. Add and commit your edits to your branch::
+
+      $ git add edited_file1.rst edited_file2.rst 
+      $ git commit -m "message summarizing your edits"
+
 
 #. Push your edits to your GitHub fork::
 
