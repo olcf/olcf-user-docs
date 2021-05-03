@@ -624,7 +624,7 @@ The ``srun`` options used in this section are (see ``man srun`` for more informa
 |                                  | | (``ncpus`` refers to hardware threads)                                                              |
 +----------------------------------+-------------------------------------------------------------------------------------------------------+
 | ``--threads-per-core=<threads>`` | | In task layout, use the specified maximum number of threads per core                                |
-|                                  | | (default is 2; there are 2 hardware threads per physical CPU core).                                 |
+|                                  | | (default is 1; there are 2 hardware threads per physical CPU core).                                 |
 +----------------------------------+-------------------------------------------------------------------------------------------------------+
 |  ``--cpu-bind=threads``          | | Bind tasks to CPUs.                                                                                 |
 |                                  | | ``threads`` - Automatically generate masks binding tasks to threads.                                |
@@ -667,34 +667,20 @@ The first thing to notice here is the ``WARNING`` about oversubscribing the avai
 
 **Second (CORRECT) attempt**
 
-By default, each MPI rank is allocated only 1 hardware thread, so both OpenMP threads only have that 1 hardware thread to run on - hence the WARNING and undesired behavior. In order for each OpenMP thread to run on its own physical CPU core, each MPI rank should be given 4 hardware thread (``-c 4``) - since each physical CPU core has 2 hardware threads. The OpenMP threads will be mapped to unique physical CPU cores unless there are not enough physical CPU cores available, in  which case the remaining OpenMP threads will share physical CPU cores with other OpenMP threads. If there are not enough hardware threads available, the OpenMP threads will share hardware threads and a WARNING will be issued as shown in the previous example.
+By default, each MPI rank is allocated only 1 hardware thread, so both OpenMP threads only have that 1 hardware thread to run on - hence the WARNING and undesired behavior. In order for each OpenMP thread to run on its own physical CPU core, each MPI rank should be given 2 hardware thread (``-c 2``) - since, by default, only 1 hardware thread per physical CPU core is enabled (this would need to be ``-c 4`` if ``--threads-per-core=2`` instead of the default of ``1``. The OpenMP threads will be mapped to unique physical CPU cores unless there are not enough physical CPU cores available, in which case the remaining OpenMP threads will share hardware threads and a WARNING will be issued as shown in the previous example.
 
 .. code-block:: bash
 
     $ export OMP_NUM_THREADS=2
-    $ srun -n2 -c4 ./hello_mpi_omp | sort
+    $ srun -n2 -c2 ./hello_mpi_omp | sort
 
-    MPI 000 - OMP 000 - HWT 064 - Node spock01
-    MPI 000 - OMP 001 - HWT 001 - Node spock01
-    MPI 001 - OMP 000 - HWT 080 - Node spock01
-    MPI 001 - OMP 001 - HWT 081 - Node spock01
+    MPI 000 - OMP 000 - HWT 000 - Node spock13
+    MPI 000 - OMP 001 - HWT 001 - Node spock13
+    MPI 001 - OMP 000 - HWT 016 - Node spock13
+    MPI 001 - OMP 001 - HWT 017 - Node spock13
 
-Now the output shows that each OpenMP thread ran on (one of the hardware threads of) its own physical CPU cores. More specifically (see the Spock Compute Node diagram), OpenMP thread 000 of MPI rank 000 ran on hardware thread 064 (i.e., physical CPU core 00), OpenMP thread 001 of MPI rank 000 ran on hardware thread 001 (i.e., physical CPU core 01), OpenMP thread 000 of MPI rank 001 ran on hardware thread 080 (i.e., physical CPU core 16), and OpenMP thread 001 of MPI rank 001 ran on hardware thread 081 (i.e., physical CPU core 17) - as expected.
 
-**Third (CORRECT) attempt**
-
-It is possible to run with only 1 hardware thread per physical CPU core using the ``srun`` option ``--threads-per-core=1``. In this case, specifying ``-c 2`` would allocate 2 physical CPU cores per MPI rank - since the ``-c`` flag specifies the number of hardware threads allocated to each MPI rank and each physical CPU core only has 1 hardware thread available to it when using ``--threads-per-core=1`` 
-
-.. code-block:: bash
-
-    $ export OMP_NUM_THREADS=2
-    $ srun -n2 -c2 --threads-per-core=1 ./hello_mpi_omp | sort
-    MPI 000 - OMP 000 - HWT 000 - Node spock01
-    MPI 000 - OMP 001 - HWT 001 - Node spock01
-    MPI 001 - OMP 000 - HWT 016 - Node spock01
-    MPI 001 - OMP 001 - HWT 017 - Node spock01
-
-As the output shows, using ``--threads-per-core=1`` has the side-benefit of making the results easier to read because the first hardware thread on each physical CPU core is numbered the same as the physical CPU core. I.e., hardware thread 000 is on physical CPU core 00, hardware thread 016 is on physical CPU core 16, etc.
+Now the output shows that each OpenMP thread ran on (one of the hardware threads of) its own physical CPU cores. More specifically (see the Spock Compute Node diagram), OpenMP thread 000 of MPI rank 000 ran on hardware thread 000 (i.e., physical CPU core 00), OpenMP thread 001 of MPI rank 000 ran on hardware thread 001 (i.e., physical CPU core 01), OpenMP thread 000 of MPI rank 001 ran on hardware thread 016 (i.e., physical CPU core 16), and OpenMP thread 001 of MPI rank 001 ran on hardware thread 017 (i.e., physical CPU core 17) - as expected.
 
 .. note::
 
@@ -725,23 +711,23 @@ In this example, the intent is to launch 4 MPI ranks, each of which spawn 2 Open
 
 The CPU mapping part of this example is very similar to the example used above in the CPU Mapping sub-section, so the focus here is on the GPU mapping part. The GPU mapping can, of course, be done in different ways. For example, an application might map MPI ranks to GPUs programmatically within the code using, say, ``hipSetDevice``. In this case, since all GPUs on a node are available to all MPI ranks on that node by default, there might not be a need to map to GPUs using Slurm (just do it in the code). However, in another application, there might be a reason to make only a subset of GPUs available to the MPI ranks on a node. It is this latter case that the following examples refer to.
 
-Similar to the CPU Mapping example, this example uses 4 MPI ranks (``-n 4``), each with 2 physical CPU cores (``-c 4``) to launch 2 OpenMP threads (``OMP_NUM_THREADS=2``) on. There are multiple combinations of ``srun`` options that could be used to map MPI ranks to a single GPU, but only the ``--ntasks-per-gpu`` and ``--gpu-bind=map_gpu`` options will be used here. Without additional flags, all MPI ranks would have access to all GPUs (which is the default behavior).
+Similar to the CPU Mapping example, this example uses 4 MPI ranks (``-n 4``), each with 2 physical CPU cores (``-c 2``, again, since by default, only 1 of the 2 hardware threads per physical CPU core is enabled) to launch 2 OpenMP threads (``OMP_NUM_THREADS=2``) on. There are multiple combinations of ``srun`` options that could be used to map MPI ranks to a single GPU, but only the ``--ntasks-per-gpu`` and ``--gpu-bind=map_gpu`` options will be used here. Without additional flags, all MPI ranks would have access to all GPUs (which is the default behavior).
 
 **Example 1: Map 1 task per GPU**
 
 .. code-block:: bash
 
     $ export OMP_NUM_THREADS=2
-    $ srun -n4 -c4 --ntasks-per-gpu=1 ./hello_jobstep | sort
-    
-    MPI 000 - OMP 000 - HWT 000 - Node spock01 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
-    MPI 000 - OMP 001 - HWT 001 - Node spock01 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
-    MPI 001 - OMP 000 - HWT 080 - Node spock01 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
-    MPI 001 - OMP 001 - HWT 081 - Node spock01 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
-    MPI 002 - OMP 000 - HWT 032 - Node spock01 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID 48
-    MPI 002 - OMP 001 - HWT 033 - Node spock01 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID 48
-    MPI 003 - OMP 000 - HWT 048 - Node spock01 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
-    MPI 003 - OMP 001 - HWT 049 - Node spock01 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
+    $ srun -n4 -c2 --ntasks-per-gpu=1 ./hello_jobstep | sort
+
+    MPI 000 - OMP 000 - HWT 000 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
+    MPI 000 - OMP 001 - HWT 001 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
+    MPI 001 - OMP 000 - HWT 016 - Node spock13 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
+    MPI 001 - OMP 001 - HWT 017 - Node spock13 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
+    MPI 002 - OMP 000 - HWT 032 - Node spock13 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID 48
+    MPI 002 - OMP 001 - HWT 033 - Node spock13 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID 48
+    MPI 003 - OMP 000 - HWT 048 - Node spock13 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
+    MPI 003 - OMP 001 - HWT 049 - Node spock13 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
 
 The output contains different IDs associated with the GPUs so it is important to describe these IDs before moving on. ``GPU_ID`` is the node-level (or global) GPU ID, which is labeled as one might expect from looking at a node diagram: 0, 1, 2, 3. ``RT_GPU_ID`` is the HIP runtime GPU ID, which can be thought of as each MPI rank's local GPU ID numbering (with zero-based indexing). So in the output above, each MPI rank has access to 1 unique GPU - where MPI 000 has access to GPU 0, MPI 001 has access to GPU 1, etc., but all MPI ranks show a HIP runtime GPU ID of 0. The reason is that each MPI rank only "sees" one GPU and so the HIP runtime labels it as "0", even though it might be global GPU ID 0, 1, 2, or 3. The GPU's bus ID is included to definitively show that different GPUs are being used. 
 
@@ -758,16 +744,16 @@ It is also possible to map MPI ranks to specific GPUs using the ``--gpu-bind=map
 .. code:: bash
 
     $ export OMP_NUM_THREADS=2
-    $ srun -n4 -c4 --ntasks-per-gpu=1 --gpu-bind=map_gpu:0,1,2,3 ./hello_jobstep | sort
+    $ srun -n4 -c2 --ntasks-per-gpu=1 --gpu-bind=map_gpu:0,1,2,3 ./hello_jobstep | sort
 
-    MPI 000 - OMP 000 - HWT 000 - Node spock01 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
-    MPI 000 - OMP 001 - HWT 065 - Node spock01 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
-    MPI 001 - OMP 000 - HWT 016 - Node spock01 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
-    MPI 001 - OMP 001 - HWT 081 - Node spock01 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
-    MPI 002 - OMP 000 - HWT 096 - Node spock01 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID 48
-    MPI 002 - OMP 001 - HWT 033 - Node spock01 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID 48
-    MPI 003 - OMP 000 - HWT 048 - Node spock01 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
-    MPI 003 - OMP 001 - HWT 113 - Node spock01 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
+    MPI 000 - OMP 000 - HWT 000 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
+    MPI 000 - OMP 001 - HWT 001 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
+    MPI 001 - OMP 000 - HWT 016 - Node spock13 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
+    MPI 001 - OMP 001 - HWT 017 - Node spock13 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
+    MPI 002 - OMP 000 - HWT 032 - Node spock13 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID 48
+    MPI 002 - OMP 001 - HWT 033 - Node spock13 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID 48
+    MPI 003 - OMP 000 - HWT 048 - Node spock13 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
+    MPI 003 - OMP 001 - HWT 049 - Node spock13 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
 
 In the ``--gpu_bind=map_gpu`` option, the comma-separated list of GPU IDs specifies how the MPI ranks are mapped to GPUs. In this case, MPI ranks would be mapped as MPI 000 to GPU 0, MPI 001 to GPU 1, MPI 002 to GPU 2, MPI 003 to GPU 3. 
 
@@ -780,16 +766,17 @@ The ordering of the GPU mapping can also be changed with ``--gpu-bind=map_gpu`` 
 .. code:: bash
 
     $ export OMP_NUM_THREADS=2
-    $ srun -n4 -c4 --ntasks-per-gpu=1 --gpu-bind=map_gpu:3,2,1,0 ./hello_jobstep | sort
+    $ srun -n4 -c2 --ntasks-per-gpu=1 --gpu-bind=map_gpu:3,2,1,0 ./hello_jobstep | sort
 
-    MPI 000 - OMP 000 - HWT 064 - Node spock01 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
-    MPI 000 - OMP 001 - HWT 065 - Node spock01 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
-    MPI 001 - OMP 000 - HWT 080 - Node spock01 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID 48
-    MPI 001 - OMP 001 - HWT 017 - Node spock01 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID 48
-    MPI 002 - OMP 000 - HWT 032 - Node spock01 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
-    MPI 002 - OMP 001 - HWT 033 - Node spock01 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
-    MPI 003 - OMP 000 - HWT 048 - Node spock01 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
-    MPI 003 - OMP 001 - HWT 049 - Node spock01 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
+    MPI 000 - OMP 000 - HWT 000 - Node spock13 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
+    MPI 000 - OMP 001 - HWT 001 - Node spock13 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
+    MPI 001 - OMP 000 - HWT 016 - Node spock13 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID 48
+    MPI 001 - OMP 001 - HWT 017 - Node spock13 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID 48
+    MPI 002 - OMP 000 - HWT 032 - Node spock13 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
+    MPI 002 - OMP 001 - HWT 033 - Node spock13 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
+    MPI 003 - OMP 000 - HWT 048 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
+    MPI 003 - OMP 001 - HWT 049 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
+
 
 Here, notice that MPI 000 now maps to GPU 3, MPI 001 maps to GPU 2, etc.
 
@@ -801,16 +788,17 @@ It is also possible to use the ``--ntasks-per-gpu`` and the ``--gpu-bind=map_gpu
 .. code:: bash
 
     $ export OMP_NUM_THREADS=2
-    $ srun -n4 -c4 --ntasks-per-gpu=2 --gpu-bind=map_gpu:0*2,1*2 ./hello_jobstep | sort
+    $ srun -n4 -c2 --ntasks-per-gpu=2 --gpu-bind=map_gpu:0*2,1*2 ./hello_jobstep | sort
 
-    MPI 000 - OMP 000 - HWT 064 - Node spock01 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
-    MPI 000 - OMP 001 - HWT 065 - Node spock01 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
-    MPI 001 - OMP 000 - HWT 016 - Node spock01 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
-    MPI 001 - OMP 001 - HWT 081 - Node spock01 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
-    MPI 002 - OMP 000 - HWT 032 - Node spock01 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
-    MPI 002 - OMP 001 - HWT 033 - Node spock01 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
-    MPI 003 - OMP 000 - HWT 112 - Node spock01 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
-    MPI 003 - OMP 001 - HWT 113 - Node spock01 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
+    MPI 000 - OMP 000 - HWT 000 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
+    MPI 000 - OMP 001 - HWT 001 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
+    MPI 001 - OMP 000 - HWT 016 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
+    MPI 001 - OMP 001 - HWT 017 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
+    MPI 002 - OMP 000 - HWT 032 - Node spock13 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
+    MPI 002 - OMP 001 - HWT 033 - Node spock13 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
+    MPI 003 - OMP 000 - HWT 048 - Node spock13 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
+    MPI 003 - OMP 001 - HWT 049 - Node spock13 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
+
 
 Here, the option ``--gpu-bind=map_gpu:0*2,1*2`` specifies that GPU 0 should be assigned to the first two MPI ranks and GPU 1 should be assigned to the next two MPI ranks.
 
@@ -819,24 +807,25 @@ If 8 MPI ranks are used instead, the next 2 MPI ranks would wrap back around to 
 .. code:: bash
 
     $ export OMP_NUM_THREADS=2
-    $ srun -n8 -c4 --ntasks-per-gpu=4 --gpu-bind=map_gpu:0*2,1*2 ./hello_jobstep | sort
+    $ srun -n8 -c2 --ntasks-per-gpu=4 --gpu-bind=map_gpu:0*2,1*2 ./hello_jobstep | sort
 
-    MPI 000 - OMP 000 - HWT 000 - Node spock01 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
-    MPI 000 - OMP 001 - HWT 065 - Node spock01 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
-    MPI 001 - OMP 000 - HWT 080 - Node spock01 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
-    MPI 001 - OMP 001 - HWT 081 - Node spock01 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
-    MPI 002 - OMP 000 - HWT 032 - Node spock01 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
-    MPI 002 - OMP 001 - HWT 033 - Node spock01 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
-    MPI 003 - OMP 000 - HWT 112 - Node spock01 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
-    MPI 003 - OMP 001 - HWT 113 - Node spock01 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
-    MPI 004 - OMP 000 - HWT 066 - Node spock01 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
-    MPI 004 - OMP 001 - HWT 067 - Node spock01 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
-    MPI 005 - OMP 000 - HWT 018 - Node spock01 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
-    MPI 005 - OMP 001 - HWT 019 - Node spock01 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
-    MPI 006 - OMP 000 - HWT 034 - Node spock01 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
-    MPI 006 - OMP 001 - HWT 099 - Node spock01 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
-    MPI 007 - OMP 000 - HWT 050 - Node spock01 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
-    MPI 007 - OMP 001 - HWT 051 - Node spock01 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
+    MPI 000 - OMP 000 - HWT 000 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
+    MPI 000 - OMP 001 - HWT 001 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
+    MPI 001 - OMP 000 - HWT 016 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
+    MPI 001 - OMP 001 - HWT 017 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
+    MPI 002 - OMP 000 - HWT 032 - Node spock13 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
+    MPI 002 - OMP 001 - HWT 033 - Node spock13 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
+    MPI 003 - OMP 000 - HWT 048 - Node spock13 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
+    MPI 003 - OMP 001 - HWT 049 - Node spock13 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
+    MPI 004 - OMP 000 - HWT 002 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
+    MPI 004 - OMP 001 - HWT 003 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
+    MPI 005 - OMP 000 - HWT 018 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
+    MPI 005 - OMP 001 - HWT 019 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
+    MPI 006 - OMP 000 - HWT 034 - Node spock13 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
+    MPI 006 - OMP 001 - HWT 035 - Node spock13 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
+    MPI 007 - OMP 000 - HWT 050 - Node spock13 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
+    MPI 007 - OMP 001 - HWT 051 - Node spock13 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
+
 
 .. note::
 
