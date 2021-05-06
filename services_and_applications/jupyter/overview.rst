@@ -234,6 +234,7 @@ The below steps apply for either the CPU or GPU lab.
 #. From the Launcher page in JupyterLab, click on Terminal.
 #. See available environments in the JupyterLab by opening a Terminal and typing ``conda
    env list``.
+
      * In the CPU lab, clone the base Conda environment with ``conda create -p
        /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_UID>/yourenvname --clone base``.
      * For the GPU lab, use the same command but replace the ``--clone`` flag with
@@ -245,17 +246,20 @@ The below steps apply for either the CPU or GPU lab.
        by your user.
 #. Activate the environment ``source activate
    /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_UID>/yourenvname``.
+
      * **NOTE**: It is **recommended to use** ``source activate`` instead of ``conda
        activate``, even though the ``conda create`` process recommends ``conda activate``
        at its completion. Using ``conda activate`` requires modification of the
        ``.bashrc`` file, which is not covered here.
 #. After activating, you can install additional packages with ``conda install`` or ``pip
    install``.
+
      * For example ``conda install toml``.
 #. To make your created environment visible in JupyterLab, run ``python -m ipykernel
    install --user --name yourenvname --display-name yourenvname``. A kernelspec is created
    in your ``/ccs/home/<YOUR_UID>/.local/share/jupyter`` directory which JupyterLab reads
    to see which custom environments are available for it to use.
+
      * When you refresh the page and look at the Launcher, you will see buttons labelled
        ``yourenvname``. Clicking it will start a Notebook or Console running in your
        ``yourenvname`` environment.
