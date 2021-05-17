@@ -279,7 +279,7 @@ To use GPU-aware Cray MPICH with the Cray compiler wrappers, users must load spe
 
 .. note:: 
 
-    Setting ``MPICH_SMP_SINGLE_COPY_MODE=CMA`` is required as a temporary workaround due to a known issue. Users should make a note of where they set this environment variable (if e.g., set in a script) since it should NOT be set once the known issue has been resolved.
+    Setting ``MPICH_SMP_SINGLE_COPY_MODE=CMA`` is required as a temporary workaround due to a `known issue <https://docs.olcf.ornl.gov/systems/spock_quick_start_guide.html#olcfdev-138-gpu-aware-cray-mpich-can-cause-hang-in-some-codes>`__. Users should make a note of where they set this environment variable (if e.g., set in a script) since it should NOT be set once the known issue has been resolved.
 
 .. code:: bash
 
