@@ -277,6 +277,10 @@ To use GPU-aware Cray MPICH, there are currently some extra steps needed in addi
 
 To use GPU-aware Cray MPICH with the Cray compiler wrappers, users must load specific modules, set some environment variables, and include appropriate headers and libraries. The following modules and environment variables must be set:
 
+.. note:: 
+
+    Setting ``MPICH_SMP_SINGLE_COPY_MODE=CMA`` is required as a temporary workaround due to a known issue. Users should make a note of where they set this environment variable (if e.g., set in a script) since it should NOT be set once the known issue has been resolved.
+
 .. code:: bash
 
     module load craype-accel-amd-gfx908
@@ -896,7 +900,7 @@ This example is an extension of Example 5 to run on 2 nodes.
 
 .. warning::
 
-    This example requires a work around to run as expected. ``--ntasks-per-gpu=2`` does not force MPI ranks 008-015 to run on the second node, so the number of physical CPU cores per MPI rank is increased to 8 (``-c8``) to force the desired behavior due to the constraint of the number of physical CPU cores (64) on a node.
+    This example requires a workaround to run as expected. ``--ntasks-per-gpu=2`` does not force MPI ranks 008-015 to run on the second node, so the number of physical CPU cores per MPI rank is increased to 8 (``-c8``) to force the desired behavior due to the constraint of the number of physical CPU cores (64) on a node.
 
 .. code:: bash
 
@@ -934,7 +938,7 @@ This example launches 8 MPI ranks (``-n8``), each with 8 physical CPU cores (``-
 
     Because the distribution across NUMA domains has been changed to a "packed" (``block``) configuration, caution must be taken to ensure MPI ranks end up in the NUMA domains where the GPUs they intend to be mapped to are located. To accomplish this, the number of physical CPU cores assigned to an MPI rank was increased - in this case to 8. Doing so ensures that only 2 MPI ranks can fit into a single NUMA domain. If the value of ``-c`` was left at ``1``, all 8 MPI ranks would be "packed" into the first NUMA domain, where the "closest" GPU would be GPU 0 - the only GPU in that NUMA domain. 
 
-    Notice that this is not a work around like in Example 6, but a requirement due to the ``block`` distribution of MPI ranks across NUMA domains.
+    Notice that this is not a workaround like in Example 6, but a requirement due to the ``block`` distribution of MPI ranks across NUMA domains.
 
 .. code:: bash
 
