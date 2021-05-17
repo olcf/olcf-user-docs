@@ -21,13 +21,14 @@ nodes.
 Spock Compute Nodes
 -------------------
 
-Each Spock node consists of [1x] 64-core AMD EPYC 7662 "Rome" CPU (with 2
-hardware threads per physical core) with access to 256 GB of DDR4 memory and
+Each Spock compute node consists of [1x] 64-core AMD EPYC 7662 "Rome" CPU (with
+2 hardware threads per physical core) with access to 256 GB of DDR4 memory and
 connected to [4x] AMD MI100 GPUs. The CPU is connected to all GPUs via PCIe
 Gen4, allowing peak host-to-device (H2D) and device-to-host (D2H) data
 transfers of 32+32 GB/s. The GPUs are connected in an all-to-all arrangement
 via Infinity Fabric (xGMI), allowing for a peak device-to-device bandwidth of
-46+46 GB/s. 
+46+46 GB/s. Each compute node also has [2x] 3.2 TB NVMe devices (SSDs) with
+sequential read and write speeds of 6900 MB/s and 4200 MB/s, respectively.
 
 .. note::
     The X+X GB/s values for bandwidths above represent bi-directional bandwidths. So, for example, the Infinity Fabric connecting any two GPUs allows peak data transfers of 46 GB/s *in both directions simultaneously*.
