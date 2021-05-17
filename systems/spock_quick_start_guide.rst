@@ -37,6 +37,14 @@ via Infinity Fabric (xGMI), allowing for a peak device-to-device bandwidth of
    :width: 100%
    :alt: Spock node architecture diagram
 
+.. note::
+    There are 4 NUMA domains per node, that are defined as follows:
+
+    * NUMA 0: hardware threads 000-015, 064-079 | GPU 0
+    * NUMA 1: hardware threads 016-031, 080-095 | GPU 1
+    * NUMA 2: hardware threads 032-047, 096-111 | GPU 2
+    * NUMA 3: hardware threads 048-063, 112-127 | GPU 3
+
 System Interconnect
 -------------------
 
@@ -269,6 +277,10 @@ To use GPU-aware Cray MPICH, there are currently some extra steps needed in addi
 
 To use GPU-aware Cray MPICH with the Cray compiler wrappers, users must load specific modules, set some environment variables, and include appropriate headers and libraries. The following modules and environment variables must be set:
 
+.. note:: 
+
+    Setting ``MPICH_SMP_SINGLE_COPY_MODE=CMA`` is required as a temporary workaround due to a `known issue <https://docs.olcf.ornl.gov/systems/spock_quick_start_guide.html#olcfdev-138-gpu-aware-cray-mpich-can-cause-hang-in-some-codes>`__. Users should make a note of where they set this environment variable (if e.g., set in a script) since it should NOT be set once the known issue has been resolved.
+
 .. code:: bash
 
     module load craype-accel-amd-gfx908
@@ -282,6 +294,7 @@ To use GPU-aware Cray MPICH with the Cray compiler wrappers, users must load spe
     ## These must be set before running
     export MPIR_CVAR_GPU_EAGER_DEVICE_MEM=0
     export MPICH_GPU_SUPPORT_ENABLED=1
+    export MPICH_SMP_SINGLE_COPY_MODE=CMA
 
 In addition, the following header files and libraries must be included:
 
@@ -689,36 +702,53 @@ Now the output shows that each OpenMP thread ran on (one of the hardware threads
 GPU Mapping
 ^^^^^^^^^^^
 
-In this sub-section, an MPI+OpenMP+CUDA "Hello, World" program (`hello_jobstep <https://code.ornl.gov/olcf/hello_jobstep>`__) will be used to clarify the GPU mappings. Again, Slurm's :ref:`interactive` method was used to request an allocation of 1 compute node for these examples: ``salloc -A <project_id> -t 30 -p <parition> -N 1``
+In this sub-section, an MPI+OpenMP+CUDA "Hello, World" program (`hello_jobstep <https://code.ornl.gov/olcf/hello_jobstep>`__) will be used to clarify the GPU mappings. Again, Slurm's :ref:`interactive` method was used to request an allocation of 2 compute node for these examples: ``salloc -A <project_id> -t 30 -p <parition> -N 2``. The CPU mapping part of this example is very similar to the example used above in the CPU Mapping sub-section, so the focus here will be on the GPU mapping part.
 
-There are many combinations of ``srun`` options that could be used to map MPI ranks to GPUs, but only the ones listed in the table below will be used in these examples. See ``man srun`` for more information.
+The following ``srun`` options will be used in the examples below. See ``man srun`` for a complete list of options and more information.
 
-+-------------------------------+---------------------------------------------------------------------------------------------+
-| ``--ntasks-per-gpu=<ntasks>`` | Request that there are ntasks tasks invoked for every GPU.                                  |
-+-------------------------------+---------------------------------------------------------------------------------------------+
-| ``--gpu-bind=map_gpu:<list>`` | Bind tasks to specific GPUs by setting GPU masks on tasks (or ranks) as specified where     |
-|                               | ``<list>`` is ``<gpu_id_for_task_0>,<gpu_id_for_task_1>,...``. If the number of tasks (or   |
-|                               | ranks) exceeds the number of elements in this list, elements in the list will be reused as  |
-|                               | needed starting from the beginning of the list. To simplify support for large task          |
-|                               | counts, the lists may follow a map with an asterisk and repetition count. (For example      |
-|                               | ``map_gpu:0*4,1*4``)                                                                        |
-+-------------------------------+---------------------------------------------------------------------------------------------+
++------------------------------------------------+--------------------------------------------------------------------------------------------------------------+
+| ``--gpus-per-task``                            | Specify the number of GPUs required for the job on each task to be spawned in the job's resource allocation. |
++------------------------------------------------+--------------------------------------------------------------------------------------------------------------+
+| ``--gpu-bind=closest``                         | Binds each task to the GPU which is on the same NUMA domain as the CPU core the MPI rank is running on.      |
++------------------------------------------------+--------------------------------------------------------------------------------------------------------------+
+| ``--gpu-bind=map_gpu:<list>``                  | Bind tasks to specific GPUs by setting GPU masks on tasks (or ranks) as specified where                      |
+|                                                | ``<list>`` is ``<gpu_id_for_task_0>,<gpu_id_for_task_1>,...``. If the number of tasks (or                    |
+|                                                | ranks) exceeds the number of elements in this list, elements in the list will be reused as                   |
+|                                                | needed starting from the beginning of the list. To simplify support for large task                           |
+|                                                | counts, the lists may follow a map with an asterisk and repetition count. (For example                       |
+|                                                | ``map_gpu:0*4,1*4``)                                                                                         |
++------------------------------------------------+--------------------------------------------------------------------------------------------------------------+
+| ``--ntasks-per-gpu=<ntasks>``                  | Request that there are ntasks tasks invoked for every GPU.                                                   |
++------------------------------------------------+--------------------------------------------------------------------------------------------------------------+
+| ``--distribution=<value>[:<value>][:<value>]`` | Specifies the distribution of MPI ranks across compute nodes, sockets (NUMA domains on Spock), and cores,    |
+|                                                | respectively. The default values are ``block:cyclic:cyclic``                                                 |
++------------------------------------------------+--------------------------------------------------------------------------------------------------------------+
 
-4 MPI ranks - each with 2 OpenMP threads and 1 GPU
-""""""""""""""""""""""""""""""""""""""""""""""""""
+.. note::
+    In general, GPU mapping can be accomplished in different ways. For example, an application might map MPI ranks to GPUs programmatically within the code using, say, ``hipSetDevice``. In this case, since all GPUs on a node are available to all MPI ranks on that node by default, there might not be a need to map to GPUs using Slurm (just do it in the code). However, in another application, there might be a reason to make only a subset of GPUs available to the MPI ranks on a node. It is this latter case that the following examples refer to.
 
-In this example, the intent is to launch 4 MPI ranks, each of which spawn 2 OpenMP threads, and have all of the 8 OpenMP threads run on different physical CPU cores. In addition, each MPI rank (and its 2 OpenMP threads) should have access to only 1 GPU.
+Mapping 1 task per GPU
+""""""""""""""""""""""
 
-The CPU mapping part of this example is very similar to the example used above in the CPU Mapping sub-section, so the focus here is on the GPU mapping part. The GPU mapping can, of course, be done in different ways. For example, an application might map MPI ranks to GPUs programmatically within the code using, say, ``hipSetDevice``. In this case, since all GPUs on a node are available to all MPI ranks on that node by default, there might not be a need to map to GPUs using Slurm (just do it in the code). However, in another application, there might be a reason to make only a subset of GPUs available to the MPI ranks on a node. It is this latter case that the following examples refer to.
+In the following examples, each MPI rank (and its OpenMP threads) will be mapped to a single GPU.
 
-Similar to the CPU Mapping example, this example uses 4 MPI ranks (``-n 4``), each with 2 physical CPU cores (``-c 2``, again, since by default, only 1 of the 2 hardware threads per physical CPU core is enabled) to launch 2 OpenMP threads (``OMP_NUM_THREADS=2``) on. There are multiple combinations of ``srun`` options that could be used to map MPI ranks to a single GPU, but only the ``--ntasks-per-gpu`` and ``--gpu-bind=map_gpu`` options will be used here. Without additional flags, all MPI ranks would have access to all GPUs (which is the default behavior).
+**Example 1: 4 MPI ranks - each with 2 OpenMP threads and 1 GPU (single-node)**
 
-**Example 1: Map 1 task per GPU**
+This example launches 4 MPI ranks (``-n4``), each with 2 physical CPU cores (``-c2``) to launch 2 OpenMP threads (``OMP_NUM_THREADS=2``) on. In addition, each MPI rank (and its 2 OpenMP threads) should have access to only 1 GPU. To accomplish the GPU mapping, two new ``srun`` options will be used:
+
+* ``--gpus-per-task`` specifies the number of GPUs required for the job on each task
+* ``--gpu-bind=closest`` binds each task to the GPU which is closest.
+
+.. note::
+    To further clarify, ``--gpus-per-task`` does not actually bind GPUs to MPI ranks. It allocates GPUs to the job step. The ``--gpu-bind=closest`` is what actually maps a specific GPU to each rank; namely, the "closest" one, which is the GPU on the same NUMA domain as the CPU core the MPI rank is running on (see the :ref:`spock-compute-nodes` section).
+
+.. note::
+    Without these additional flags, all MPI ranks would have access to all GPUs (which is the default behavior).
 
 .. code-block:: bash
 
     $ export OMP_NUM_THREADS=2
-    $ srun -n4 -c2 --ntasks-per-gpu=1 ./hello_jobstep | sort
+    $ srun -N1 -n4 -c2 --gpus-per-task=1 --gpu-bind=closest ./hello_jobstep | sort
 
     MPI 000 - OMP 000 - HWT 000 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
     MPI 000 - OMP 001 - HWT 001 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
@@ -729,22 +759,50 @@ Similar to the CPU Mapping example, this example uses 4 MPI ranks (``-n 4``), ea
     MPI 003 - OMP 000 - HWT 048 - Node spock13 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
     MPI 003 - OMP 001 - HWT 049 - Node spock13 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
 
-The output contains different IDs associated with the GPUs so it is important to describe these IDs before moving on. ``GPU_ID`` is the node-level (or global) GPU ID, which is labeled as one might expect from looking at a node diagram: 0, 1, 2, 3. ``RT_GPU_ID`` is the HIP runtime GPU ID, which can be thought of as each MPI rank's local GPU ID numbering (with zero-based indexing). So in the output above, each MPI rank has access to 1 unique GPU - where MPI 000 has access to GPU 0, MPI 001 has access to GPU 1, etc., but all MPI ranks show a HIP runtime GPU ID of 0. The reason is that each MPI rank only "sees" one GPU and so the HIP runtime labels it as "0", even though it might be global GPU ID 0, 1, 2, or 3. The GPU's bus ID is included to definitively show that different GPUs are being used. 
+The output contains different IDs associated with the GPUs so it is important to first describe these IDs before moving on. ``GPU_ID`` is the node-level (or global) GPU ID, which is labeled as one might expect from looking at a node diagram: 0, 1, 2, 3. ``RT_GPU_ID`` is the HIP runtime GPU ID, which can be thought of as each MPI rank's local GPU ID numbering (with zero-based indexing). So in the output above, each MPI rank has access to 1 unique GPU - where MPI 000 has access to GPU 0, MPI 001 has access to GPU 1, etc., but all MPI ranks show a HIP runtime GPU ID of 0. The reason is that each MPI rank only "sees" one GPU and so the HIP runtime labels it as "0", even though it might be global GPU ID 0, 1, 2, or 3. The GPU's bus ID is included to definitively show that different GPUs are being used. 
 
-The different GPU IDs reported by the example program are:
+Here is a summary of the different GPU IDs reported by the example program:
 
-* ``GPU_ID`` is the node-level (or global) GPU ID read from ``ROCR_VISIBLE_DEVICES``. If this environment variable is not set (either by the user or by Slurm), the value of ``GPU_ID`` will be set to N/A.
+* ``GPU_ID`` is the node-level (or global) GPU ID read from ``ROCR_VISIBLE_DEVICES``. If this environment variable is not set (either by the user or by Slurm), the value of ``GPU_ID`` will be set to ``N/A``.
 * ``RT_GPU_ID`` is the HIP runtime GPU ID (as reported from, say ``hipGetDevice``).
 * ``Bus_ID`` is the physical bus ID associated with the GPUs. Comparing the bus IDs is meant to definitively show that different GPUs are being used.
 
-**Example 2: Map 1 task to a specific GPU**
+So the job step (i.e., ``srun`` command) used above gave the desired output. Each MPI rank spawned 2 OpenMP threads and had access to a unique GPU. The ``--gpus-per-task=1`` allocated 1 GPU for each MPI rank and the ``--gpu-bind=closest`` ensured that the closest GPU to each rank was the one used.
 
-It is also possible to map MPI ranks to specific GPUs using the ``--gpu-bind=map_gpu`` option. The following job step would give the same results as Example 1 above:
+**Example 2: 8 MPI ranks - each with 2 OpenMP threads and 1 GPU (multi-node)**
+
+This example will extend Example 1 to run on 2 nodes. As the output shows, it is a very straightforward exercise of changing the number of nodes to 2 (``-N2``) and the number of MPI ranks to 8 (``-n8``).
+
+.. code-block:: bash
+
+    $ export OMP_NUM_THREADS=2
+    $ srun -N2 -n8 -c2 --gpus-per-task=1 --gpu-bind=closest ./hello_jobstep | sort
+
+    MPI 000 - OMP 000 - HWT 000 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
+    MPI 000 - OMP 001 - HWT 001 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
+    MPI 001 - OMP 000 - HWT 016 - Node spock13 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
+    MPI 001 - OMP 001 - HWT 017 - Node spock13 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
+    MPI 002 - OMP 000 - HWT 032 - Node spock13 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID 48
+    MPI 002 - OMP 001 - HWT 033 - Node spock13 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID 48
+    MPI 003 - OMP 000 - HWT 048 - Node spock13 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
+    MPI 003 - OMP 001 - HWT 049 - Node spock13 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
+    MPI 004 - OMP 000 - HWT 000 - Node spock14 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
+    MPI 004 - OMP 001 - HWT 001 - Node spock14 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
+    MPI 005 - OMP 000 - HWT 016 - Node spock14 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
+    MPI 005 - OMP 001 - HWT 017 - Node spock14 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
+    MPI 006 - OMP 000 - HWT 032 - Node spock14 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID 48
+    MPI 006 - OMP 001 - HWT 033 - Node spock14 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID 48
+    MPI 007 - OMP 000 - HWT 048 - Node spock14 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
+    MPI 007 - OMP 001 - HWT 049 - Node spock14 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
+
+**Example 3: 4 MPI ranks - each with 2 OpenMP threads and 1 *specific* GPU (single-node)**
+
+This example will be very similar to Example 1, but instead of using ``--gpu-bind=closest`` to map each MPI rank to the closest GPU, ``--gpu-bind=map_gpu`` will be used to map each MPI rank to a *specific* GPU. The ``map_gpu`` option takes a comma-separated list of GPU IDs to specify how the MPI ranks are mapped to GPUs, where the form of the comma-separated list is ``<gpu_id_for_task_0>, <gpu_id_for_task_1>,...``.
 
 .. code:: bash
 
     $ export OMP_NUM_THREADS=2
-    $ srun -n4 -c2 --ntasks-per-gpu=1 --gpu-bind=map_gpu:0,1,2,3 ./hello_jobstep | sort
+    $ srun -N1 -n4 -c2 --gpus-per-task=1 --gpu-bind=map_gpu:0,1,2,3 ./hello_jobstep | sort
 
     MPI 000 - OMP 000 - HWT 000 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
     MPI 000 - OMP 001 - HWT 001 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
@@ -755,18 +813,15 @@ It is also possible to map MPI ranks to specific GPUs using the ``--gpu-bind=map
     MPI 003 - OMP 000 - HWT 048 - Node spock13 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
     MPI 003 - OMP 001 - HWT 049 - Node spock13 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
 
-In the ``--gpu_bind=map_gpu`` option, the comma-separated list of GPU IDs specifies how the MPI ranks are mapped to GPUs. In this case, MPI ranks would be mapped as MPI 000 to GPU 0, MPI 001 to GPU 1, MPI 002 to GPU 2, MPI 003 to GPU 3. 
 
-.. note::
+Here, the output is the same as the results from Example 1. This is because the 4 GPU IDs in the comma-separated list happen to specify the GPUs within the same NUMA domains that the MPI ranks are in. So MPI 000 is mapped to GPU 0, MPI 001 is mapped to GPU 1, etc.
 
-    If there were 8 MPI ranks instead of 4, then the additional MPI ranks would wrap back around to map MPI 004 to GPU 0, MPI 005 to GPU 1, MPI 006 to GPU 2, and MPI 007 to GPU 3. However ``--ntasks-per-gpu=2`` would be needed since there would be 2 MPI ranks assigned to each GPU.
-
-The ordering of the GPU mapping can also be changed with ``--gpu-bind=map_gpu`` to give results that could not be accomplished with ``--ntasks-per-gpu`` alone. For example:
+While this level of control over mapping MPI ranks to GPUs might be useful for some applications, it is always important to consider the implication of the mapping. For example, if the order of the GPU IDs in the ``map_gpu`` option is reversed, the MPI ranks and the GPUs they are mapped to would be in different NUMA domains, which could potentially lead to poorer performance.
 
 .. code:: bash
 
     $ export OMP_NUM_THREADS=2
-    $ srun -n4 -c2 --ntasks-per-gpu=1 --gpu-bind=map_gpu:3,2,1,0 ./hello_jobstep | sort
+    $ srun -N1 -n4 -c2 --gpus-per-task=1 --gpu-bind=map_gpu:3,2,1,0 ./hello_jobstep | sort
 
     MPI 000 - OMP 000 - HWT 000 - Node spock13 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
     MPI 000 - OMP 001 - HWT 001 - Node spock13 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
@@ -777,59 +832,155 @@ The ordering of the GPU mapping can also be changed with ``--gpu-bind=map_gpu`` 
     MPI 003 - OMP 000 - HWT 048 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
     MPI 003 - OMP 001 - HWT 049 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
 
+Here, notice that MPI 000 now maps to GPU 3, MPI 001 maps to GPU 2, etc., so the MPI ranks are not in the same NUMA domains as the GPUs they are mapped to.
 
-Here, notice that MPI 000 now maps to GPU 3, MPI 001 maps to GPU 2, etc.
+.. note::
+    Again, this particular example would NOT be a very good mapping of GPUs to MPI ranks though. E.g., notice that MPI rank 000 is running on NUMA node 0, whereas GPU 3 is on NUMA node 3. Again, see the :ref:`spock-compute-nodes` section for NUMA descriptions.
 
-Mapping multiple MPI ranks to a GPU
-"""""""""""""""""""""""""""""""""""
+**Example 4: 8 MPI ranks - each with 2 OpenMP threads and 1 *specific* GPU (multi-node)**
 
-It is also possible to use the ``--ntasks-per-gpu`` and the ``--gpu-bind=map_gpu`` options to map multiple MPI ranks to a single GPU.
-
-.. code:: bash
-
-    $ export OMP_NUM_THREADS=2
-    $ srun -n4 -c2 --ntasks-per-gpu=2 --gpu-bind=map_gpu:0*2,1*2 ./hello_jobstep | sort
-
-    MPI 000 - OMP 000 - HWT 000 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
-    MPI 000 - OMP 001 - HWT 001 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
-    MPI 001 - OMP 000 - HWT 016 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
-    MPI 001 - OMP 001 - HWT 017 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
-    MPI 002 - OMP 000 - HWT 032 - Node spock13 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
-    MPI 002 - OMP 001 - HWT 033 - Node spock13 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
-    MPI 003 - OMP 000 - HWT 048 - Node spock13 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
-    MPI 003 - OMP 001 - HWT 049 - Node spock13 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
-
-
-Here, the option ``--gpu-bind=map_gpu:0*2,1*2`` specifies that GPU 0 should be assigned to the first two MPI ranks and GPU 1 should be assigned to the next two MPI ranks.
-
-If 8 MPI ranks are used instead, the next 2 MPI ranks would wrap back around to use GPU 0, and so on (and ``--ntasks-per-gpu`` would need to be set to ``4``):
+Extending Examples 2 and 3 to run on 2 nodes is also a straightforward exercise by changing the number of nodes to 2 (``-N2``) and the number of MPI ranks to 8 (``-n8``).
 
 .. code:: bash
 
     $ export OMP_NUM_THREADS=2
-    $ srun -n8 -c2 --ntasks-per-gpu=4 --gpu-bind=map_gpu:0*2,1*2 ./hello_jobstep | sort
+    $ srun -N2 -n8 -c2 --gpus-per-task=1 --gpu-bind=map_gpu:0,1,2,3 ./hello_jobstep | sort
 
     MPI 000 - OMP 000 - HWT 000 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
     MPI 000 - OMP 001 - HWT 001 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
-    MPI 001 - OMP 000 - HWT 016 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
-    MPI 001 - OMP 001 - HWT 017 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
-    MPI 002 - OMP 000 - HWT 032 - Node spock13 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
-    MPI 002 - OMP 001 - HWT 033 - Node spock13 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
-    MPI 003 - OMP 000 - HWT 048 - Node spock13 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
-    MPI 003 - OMP 001 - HWT 049 - Node spock13 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
-    MPI 004 - OMP 000 - HWT 002 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
-    MPI 004 - OMP 001 - HWT 003 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
-    MPI 005 - OMP 000 - HWT 018 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
-    MPI 005 - OMP 001 - HWT 019 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
-    MPI 006 - OMP 000 - HWT 034 - Node spock13 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
-    MPI 006 - OMP 001 - HWT 035 - Node spock13 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
-    MPI 007 - OMP 000 - HWT 050 - Node spock13 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
-    MPI 007 - OMP 001 - HWT 051 - Node spock13 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
+    MPI 001 - OMP 000 - HWT 016 - Node spock13 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
+    MPI 001 - OMP 001 - HWT 017 - Node spock13 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
+    MPI 002 - OMP 000 - HWT 032 - Node spock13 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID 48
+    MPI 002 - OMP 001 - HWT 033 - Node spock13 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID 48
+    MPI 003 - OMP 000 - HWT 048 - Node spock13 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
+    MPI 003 - OMP 001 - HWT 049 - Node spock13 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
+    MPI 004 - OMP 000 - HWT 000 - Node spock14 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
+    MPI 004 - OMP 001 - HWT 001 - Node spock14 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
+    MPI 005 - OMP 000 - HWT 016 - Node spock14 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
+    MPI 005 - OMP 001 - HWT 017 - Node spock14 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
+    MPI 006 - OMP 000 - HWT 032 - Node spock14 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID 48
+    MPI 006 - OMP 001 - HWT 033 - Node spock14 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID 48
+    MPI 007 - OMP 000 - HWT 048 - Node spock14 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
+    MPI 007 - OMP 001 - HWT 049 - Node spock14 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
 
+Mapping multiple MPI ranks to a single GPU
+""""""""""""""""""""""""""""""""""""""""""
+
+In the following examples, 2 MPI ranks will be mapped to 1 GPU. For the sake of brevity, ``OMP_NUM_THREADS`` will be set to ``1``, so ``-c1`` will be used unless otherwise specified.
 
 .. note::
 
     On AMD's MI100 GPUs, multi-process service (MPS) is not needed since multiple MPI ranks per GPU is supported natively.
+
+**Example 5: 8 MPI ranks - where 2 ranks share a GPU (round-robin, single-node)**
+
+This example launches 8 MPI ranks (``-n8``), each with 1 physical CPU core (``-c1``) to launch 1 OpenMP thread (``OMP_NUM_THREADS=1``) on. The MPI ranks will be assigned to GPUs in a round-robin fashion so that each of the 4 GPUs on the node are shared by 2 MPI ranks. To accomplish this GPU mapping, a new ``srun`` option will be used:
+
+* ``--ntasks-per-gpu`` specifies the number of MPI ranks that will share access to a GPU.
+
+.. code:: bash
+
+    $ export OMP_NUM_THREADS=1
+    $ srun -N1 -n8 -c1 --ntasks-per-gpu=2 --gpu-bind=closest ./hello_jobstep | sort
+
+    MPI 000 - OMP 000 - HWT 000 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
+    MPI 001 - OMP 000 - HWT 016 - Node spock13 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
+    MPI 002 - OMP 000 - HWT 032 - Node spock13 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID 48
+    MPI 003 - OMP 000 - HWT 048 - Node spock13 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
+    MPI 004 - OMP 000 - HWT 001 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
+    MPI 005 - OMP 000 - HWT 017 - Node spock13 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
+    MPI 006 - OMP 000 - HWT 033 - Node spock13 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID 48
+    MPI 007 - OMP 000 - HWT 049 - Node spock13 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
+
+The output shows the round-robin (``cyclic``) distribution of MPI ranks to GPUs. In fact, it is a round-robin distribution of MPI ranks *to NUMA domains* (the default distribution). The GPU mapping is a consequence of where the MPI ranks are distributed; ``--gpu-bind=closest`` simply maps the GPU in a NUMA domain to the MPI ranks in the same NUMA domain.
+
+**Example 6: 16 MPI ranks - where 2 ranks share a GPU (round-robin, multi-node)**
+
+This example is an extension of Example 5 to run on 2 nodes.
+
+.. warning::
+
+    This example requires a workaround to run as expected. ``--ntasks-per-gpu=2`` does not force MPI ranks 008-015 to run on the second node, so the number of physical CPU cores per MPI rank is increased to 8 (``-c8``) to force the desired behavior due to the constraint of the number of physical CPU cores (64) on a node.
+
+.. code:: bash
+
+    $ export OMP_NUM_THREADS=1
+    $ srun -N2 -n16 -c8 --ntasks-per-gpu=2 --gpu-bind=closest ./hello_jobstep | sort
+
+    MPI 000 - OMP 000 - HWT 005 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
+    MPI 001 - OMP 000 - HWT 018 - Node spock13 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
+    MPI 002 - OMP 000 - HWT 032 - Node spock13 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID 48
+    MPI 003 - OMP 000 - HWT 050 - Node spock13 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
+    MPI 004 - OMP 000 - HWT 010 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
+    MPI 005 - OMP 000 - HWT 026 - Node spock13 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
+    MPI 006 - OMP 000 - HWT 040 - Node spock13 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID 48
+    MPI 007 - OMP 000 - HWT 059 - Node spock13 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
+    MPI 008 - OMP 000 - HWT 003 - Node spock14 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
+    MPI 009 - OMP 000 - HWT 016 - Node spock14 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
+    MPI 010 - OMP 000 - HWT 032 - Node spock14 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID 48
+    MPI 011 - OMP 000 - HWT 048 - Node spock14 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
+    MPI 012 - OMP 000 - HWT 008 - Node spock14 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
+    MPI 013 - OMP 000 - HWT 024 - Node spock14 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
+    MPI 014 - OMP 000 - HWT 042 - Node spock14 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID 48
+    MPI 015 - OMP 000 - HWT 056 - Node spock14 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
+
+**Example 7: 8 MPI ranks - where 2 ranks share a GPU (packed, single-node)**
+
+This example launches 8 MPI ranks (``-n8``), each with 8 physical CPU cores (``-c8``) to launch 1 OpenMP thread (``OMP_NUM_THREADS=1``) on. The MPI ranks will be assigned to GPUs in a packed fashion so that each of the 4 GPUs on the node are shared by 2 MPI ranks. Similar to Example 5, ``-ntasks-per-gpu=2`` will be used, but a new ``srun`` flag will be used to change the default round-robin (``cyclic``) distribution of MPI ranks across NUMA domains:
+
+* ``--distribution=<value>:[<value>]:[<value>]`` specifies the distribution of MPI ranks across compute nodes, sockets (NUMA domains on Spock), and cores, respectively. The default values are ``block:cyclic:cyclic``, which is where the ``cyclic`` assignment comes from in the previous examples.
+
+.. note::
+
+    In the job step for this example, ``--distribution=*:block`` is used, where ``*`` represents the default value of ``block`` for the distribution of MPI ranks across compute nodes and the distribution of MPI ranks across NUMA domains has been changed to ``block`` from its default value of ``cyclic``.
+
+.. note:: 
+
+    Because the distribution across NUMA domains has been changed to a "packed" (``block``) configuration, caution must be taken to ensure MPI ranks end up in the NUMA domains where the GPUs they intend to be mapped to are located. To accomplish this, the number of physical CPU cores assigned to an MPI rank was increased - in this case to 8. Doing so ensures that only 2 MPI ranks can fit into a single NUMA domain. If the value of ``-c`` was left at ``1``, all 8 MPI ranks would be "packed" into the first NUMA domain, where the "closest" GPU would be GPU 0 - the only GPU in that NUMA domain. 
+
+    Notice that this is not a workaround like in Example 6, but a requirement due to the ``block`` distribution of MPI ranks across NUMA domains.
+
+.. code:: bash
+
+    $ export OMP_NUM_THREADS=1
+    $ srun -N1 -n8 -c8 --ntasks-per-gpu=2 --gpu-bind=closest --distribution=*:block ./hello_jobstep | sort
+
+    MPI 000 - OMP 000 - HWT 001 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
+    MPI 001 - OMP 000 - HWT 008 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
+    MPI 002 - OMP 000 - HWT 016 - Node spock13 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
+    MPI 003 - OMP 000 - HWT 024 - Node spock13 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
+    MPI 004 - OMP 000 - HWT 035 - Node spock13 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID 48
+    MPI 005 - OMP 000 - HWT 043 - Node spock13 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID 48
+    MPI 006 - OMP 000 - HWT 049 - Node spock13 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
+    MPI 007 - OMP 000 - HWT 057 - Node spock13 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
+
+The overall effect of using ``--distribution=*:block`` and increasing the number of physical CPU cores available to each MPI rank is to place the first two MPI ranks in NUMA 0 with GPU 0, the next two MPI ranks in NUMA 1 with GPU 1, and so on.
+
+**Example 8: 16 MPI ranks - where 2 ranks share a GPU (packed, multi-node)**
+
+This example is an extension of Example 7 to use 2 compute nodes. With the appropriate changes put in place in Example 7, it is a straightforward exercise to change to using 2 nodes (``-N2``) and 16 MPI ranks (``-n16``).
+
+.. code:: bash
+
+    $ export OMP_NUM_THREADS=1
+    $ srun -N2 -n16 -c8 --ntasks-per-gpu=2 --gpu-bind=closest --distribution=*:block ./hello_jobstep | sort
+
+    MPI 000 - OMP 000 - HWT 005 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
+    MPI 001 - OMP 000 - HWT 008 - Node spock13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
+    MPI 002 - OMP 000 - HWT 017 - Node spock13 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
+    MPI 003 - OMP 000 - HWT 026 - Node spock13 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
+    MPI 004 - OMP 000 - HWT 033 - Node spock13 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID 48
+    MPI 005 - OMP 000 - HWT 041 - Node spock13 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID 48
+    MPI 006 - OMP 000 - HWT 048 - Node spock13 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
+    MPI 007 - OMP 000 - HWT 057 - Node spock13 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
+    MPI 008 - OMP 000 - HWT 002 - Node spock14 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
+    MPI 009 - OMP 000 - HWT 011 - Node spock14 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
+    MPI 010 - OMP 000 - HWT 016 - Node spock14 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
+    MPI 011 - OMP 000 - HWT 026 - Node spock14 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
+    MPI 012 - OMP 000 - HWT 033 - Node spock14 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID 48
+    MPI 013 - OMP 000 - HWT 041 - Node spock14 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID 48
+    MPI 014 - OMP 000 - HWT 054 - Node spock14 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
+    MPI 015 - OMP 000 - HWT 063 - Node spock14 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
 
 Multiple GPUs per MPI rank
 """"""""""""""""""""""""""
