@@ -290,6 +290,7 @@ To use GPU-aware Cray MPICH with the Cray compiler wrappers, users must load spe
     ## These must be set before running
     export MPIR_CVAR_GPU_EAGER_DEVICE_MEM=0
     export MPICH_GPU_SUPPORT_ENABLED=1
+    export MPICH_SMP_SINGLE_COPY_MODE=CMA
 
 In addition, the following header files and libraries must be included:
 
