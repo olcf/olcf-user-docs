@@ -21,13 +21,14 @@ nodes.
 Spock Compute Nodes
 -------------------
 
-Each Spock node consists of [1x] 64-core AMD EPYC 7662 "Rome" CPU (with 2
-hardware threads per physical core) with access to 256 GB of DDR4 memory and
+Each Spock compute node consists of [1x] 64-core AMD EPYC 7662 "Rome" CPU (with
+2 hardware threads per physical core) with access to 256 GB of DDR4 memory and
 connected to [4x] AMD MI100 GPUs. The CPU is connected to all GPUs via PCIe
 Gen4, allowing peak host-to-device (H2D) and device-to-host (D2H) data
 transfers of 32+32 GB/s. The GPUs are connected in an all-to-all arrangement
 via Infinity Fabric (xGMI), allowing for a peak device-to-device bandwidth of
-46+46 GB/s. 
+46+46 GB/s. Each compute node also has [2x] 3.2 TB NVMe devices (SSDs) with
+sequential read and write speeds of 6900 MB/s and 4200 MB/s, respectively.
 
 .. note::
     The X+X GB/s values for bandwidths above represent bi-directional bandwidths. So, for example, the Infinity Fabric connecting any two GPUs allows peak data transfers of 46 GB/s *in both directions simultaneously*.
@@ -991,6 +992,62 @@ As mentioned previously, all GPUs are accessible by all MPI ranks by default, so
 .. note::
 
     There are many different ways users might choose to perform these mappings, so users are encouraged to clone the ``hello_jobstep`` program and test whether or not processes and threads are running where intended.
+
+NVMe Usage
+----------
+
+Each Spock compute node has [2x] 3.2 TB NVMe devices (SSDs) with a peak sequential performance of 6900 MB/s (read) and 4200 MB/s (write). To use the NVMe, users must request access during job allocation using the ``-C nvme`` option to ``sbatch``, ``salloc``, or ``srun``. Once the devices have been granted to a job, users can access them at ``/mnt/bb/<userid>``. Users are responsible for moving data to/from the NVMe before/after their jobs. Here is a simple example script:
+
+.. code:: bash
+
+    #!/bin/bash
+    #SBATCH -A <projid>
+    #SBATCH -J nvme_test
+    #SBATCH -o %x-%j.out
+    #SBATCH -t 00:05:00
+    #SBATCH -p batch
+    #SBATCH -N 1
+    #SBATCH -C nvme
+    
+    date
+    
+    # Change directory to user scratch space (GPFS)
+    cd /gpfs/alpine/<projid>/scratch/<userid>
+    
+    echo " "
+    echo "*****ORIGINAL FILE*****"
+    cat test.txt
+    echo "***********************"
+    
+    # Move file from GPFS to SSD
+    mv test.txt /mnt/bb/<userid>
+    
+    # Edit file from compute node
+    srun -n1 hostname >> /mnt/bb/<userid>/test.txt
+    
+    # Move file from SSD back to GPFS
+    mv /mnt/bb/<userid>/test.txt .
+    
+    echo " "
+    echo "*****UPDATED FILE******"
+    cat test.txt
+    echo "***********************"
+
+And here is the output from the script:
+
+.. code:: bash
+
+    $ cat nvme_test-<jobid>.out
+    Mon May 17 12:28:18 EDT 2021
+    
+    *****ORIGINAL FILE*****
+    This is my file. There are many like it but this one is mine.
+    ***********************
+    
+    *****UPDATED FILE******
+    This is my file. There are many like it but this one is mine.
+    spock25
+    ***********************
 
 ----
 
