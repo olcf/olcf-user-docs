@@ -25,11 +25,11 @@ In addition, the following packages will be removed from the system. If you need
 .. csv-table::
     :header: "Package", "Versions"    
     
-    "adios", "   1.11.1, 1.13.1"
-    "adios2", "   2.2.0, 2.4.0, 2.5.0"
-    "amgx", "   2.0.0.130.0, 2.0.0.130.1, 2.0.0.130.2"
-    "apr", "   1.6.2"
-    "apr-util", "   1.6.0"
+    "adios", "1.11.1, 1.13.1"
+    "adios2", "2.2.0, 2.4.0, 2.5.0"
+    "amgx", "2.0.0.130.0, 2.0.0.130.1, 2.0.0.130.2"
+    "apr", "1.6.2"
+    "apr-util", "1.6.0"
     "automake", "   1.16.1"
     "binutils", "   2.31.1"
     "bison", "   3.0.5"
