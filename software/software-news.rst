@@ -15,9 +15,9 @@ Summit's operating system will be upgraded to Red Hat Enterprise Linux 8 (RHEL 8
 .. csv-table::
     :header: "Package", "Current Default", "New Default"
 
-    "cuda", "10.1.243", "11.0.3"
-    "spectrum-mpi", "10.3.1.2-20200121", "10.4.0.3-20210112"
-    "xl", "16.1.1-5", "16.1.1-9-1"
+    "CUDA Toolkit", "10.1.243", "11.0.3"
+    "IBM Spectrum MPI", "10.3.1.2-20200121", "10.4.0.3-20210112"
+    "IBM XL", "16.1.1-5", "16.1.1-10"
     "IBM ESSL", "6.1.0-2", "6.3.0"
 
 In addition, the following packages will be upgraded to newer versions and the specific versions listed below will be removed from the system. If you need any of the specific versions scheduled to be removed, please contact help@olcf.ornl.gov.
@@ -108,7 +108,7 @@ In addition, the following packages will be upgraded to newer versions and the s
     "nco", "4.6.9, 4.8.1, 4.9.1", "4.9.3"
     "ncurses", "6.1", "6.2"
     "netcdf-c (renamed from netcdf)", "4.6.1, 4.6.2", "4.7.4"
-    "netcdf-cxx (renamed from netcdf-cxx4)", "4.3.0", "4.2"
+    "netcdf-cxx (renamed to netcdf-cxx4)", "4.2", "4.3.1"
     "netcdf-fortran", "4.4.4", "4.4.5"
     "netlib-scalapack", "2.0.2", "2.1.0"
     "npth", "1.5", "1.6"
@@ -160,7 +160,7 @@ In addition, the following packages will be upgraded to newer versions and the s
     "udunits (renamed from udunits2)", "2.2.24", "None"
     "valgrind", "3.11.0, 3.14.0", "3.15.0"
     "vim", "7.4.2367, 8.1.0338", "8.2.1201"
-    "xl", "16.1.1-4, 16.1.1-5, 16.1.1-6, 16.1.1-7, 16.1.1-9", "16.1.1-8, 16.1.1-9-1, 16.1.1-10"
+    "xl", "16.1.1-4, 16.1.1-5, 16.1.1-6, 16.1.1-7, 16.1.1-9", "16.1.1-8, 16.1.1-10"
     "xz", "5.2.4", "5.2.5"
     "zfp", "0.5.0, 0.5.2", "0.5.5"
     "zstd", "1.3.0", "1.4.5"
