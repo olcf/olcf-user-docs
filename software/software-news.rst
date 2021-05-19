@@ -20,7 +20,7 @@ Summit's operating system will be upgraded to Red Hat Enterprise Linux 8 (RHEL 8
     "xl", "16.1.1-5", "16.1.1-9-1"
     "IBM ESSL", "6.1.0-2", "6.3.0"
 
-In addition, the following packages will be removed from the system. If you need the specific versions of the packages listed below, please contact help@olcf.ornl.gov.
+In addition, the following packages will be upgraded to newer versions and the specific versions listed below will be removed from the system. If you need the specific older versions of the packages listed, please contact help@olcf.ornl.gov.
 
 .. csv-table::
     :header: "Package", "Versions"    
