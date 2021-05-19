@@ -24,7 +24,8 @@ In addition, the following packages will be removed from the system. If you need
 
 .. csv-table::
     :header: "Package", "Versions"    
-        "adios", "   1.11.1, 1.13.1"
+    
+    "adios", "   1.11.1, 1.13.1"
     "adios2", "   2.2.0, 2.4.0, 2.5.0"
     "amgx", "   2.0.0.130.0, 2.0.0.130.1, 2.0.0.130.2"
     "apr", "   1.6.2"
