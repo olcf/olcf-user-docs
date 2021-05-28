@@ -12,11 +12,11 @@ For information about the software packages included in the E4S project,
 visit https://e4s-project.github.io/Resources/ProductInfo.html
 
 .. note::
-  The packages installed on this system include only those that meet OLCF policy
-  requirements for facility-provided software; build successfully on this system's
+  The packages installed on Summit include only those that meet OLCF policy
+  requirements for facility-provided software; build successfully on Summit's
   hardware architectures for a given toolchain and runtime environment; and are
   otherwise appropriate for use with the resource scheduler and communication
-  fabrics supported by the OLCF on this system.
+  fabrics supported by the OLCF.
 
   Therefore, not all the packages in the E4S project collection are necessarily
   provided by the OLCF nor are these packages necessarily configured the same way
@@ -25,7 +25,7 @@ visit https://e4s-project.github.io/Resources/ProductInfo.html
 Access via modules
 ---------------------
 
-To load the currently installed E4S stack:
+To load the currently installed E4S stack on Summit:
 
 ::
 
