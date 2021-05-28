@@ -15,3 +15,4 @@ Software
    profiling/index
    UMS/index
    workflows/index
+   e4s
