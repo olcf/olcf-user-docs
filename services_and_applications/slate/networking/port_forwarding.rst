@@ -17,13 +17,14 @@ However, for testing and development, ``oc port-forward`` can be a powerful tool
 
 This tool will forward a local port on your system to a pod inside the cluster.
 
-For example, if you have an nginx deployment running on port 8080 inside the container, you can view this nginx instance locally by running ``oc port-forward ${pod_name} 7777:8080``
+For example, if you have an nginx deployment running on port 8080 inside the container, you can view this nginx instance locally by running:
 
-The first port is the local port you want forwarded, and the second port is the port exposed by the pod.
+.. code-block::
+   oc port-forward ${pod_name} 7777:8080
 
-After running this command, you can go into your browser (or ``curl`` on the command line) and connect to ``http://localhost:7777``.
+The first port is the local port you want forwarded, and the second port is the port exposed by the pod. After running this command, you can go into your browser (or use ``curl`` in a second terminal) and connect to ``http://localhost:7777``.
 
-``oc port-forward`` doesn't have to be given a pod name, however. This tool is aware of services and deployments as well. If you had a service called ``nginx-svc`` and a deployment called ``nginx``\ , for example, the following commands would achieve the same result:
+Additionally, ``oc port-forward`` doesn't have to be given a pod name. This tool is aware of services and deployments as well. If you had a service called ``nginx-svc`` and a deployment called ``nginx``\ , for example, the following commands would achieve the same result:
 
 .. code-block::
 
