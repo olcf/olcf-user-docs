@@ -52,13 +52,13 @@ Get more information on our pod:
 
    oc describe pod hello-world-pod
 
-Once we see ``Status: Running`` (near the top of the output, not the bottom) we can interact with the container:
+Once we see ``Status: Running`` (near the top of the output, not the bottom) we can interact with the container by first setting up port forwarding:
 
 .. code-block:: text
 
    oc port-forward hello-world-pod 8080:8080
 
-And in another terminal run ``curl http://localhost:8080``
+Then, since ``oc port-forward`` stays in the foreground, we run ``curl http://localhost:8080`` in a second terminal.
 
 The initial port in the port pair references a non-allocated port on our local system similar to how SSH
 port forwarding works.

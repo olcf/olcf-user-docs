@@ -138,6 +138,10 @@ Run some commands to check on the Deployment
 * ``oc logs deployment/mongoku``
 * ``oc port-forward deployment/mongoku 3100:3100``
 
+.. note::
+   The ``oc port-forward`` command runs in the foreground. To test connectivity, one would need to
+   use the MongoDB CLI from a second terminal.
+
 Since we created the ``mongo`` service with the StatefulSet, all pods in our namespace will be able
 to resolve that ClusterIP so we can add a server to mongoku with just the service name.
 

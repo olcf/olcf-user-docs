@@ -193,8 +193,14 @@ Now once the Deployment controller creates a pod we should be able to do a port 
    $ oc port-forward deployment/local-image 8080:8080
    Forwarding from [::1]:8080 -> 8080
    Forwarding from 127.0.0.1:8080 -> 8080
+
+Since this is running the foreground, in a second terminal use curl to run the test:
+
+.. code-block:: text
    $ curl localhost:8080
    Hello World!
+
+or one could also use you web browser to verify the content.
 
 Next Steps
 ^^^^^^^^^^
