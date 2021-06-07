@@ -81,5 +81,5 @@ Note that a ``NodePort`` value will automatically be given by the service contro
 
 Your service can then be accessed by the scheme ``apps.{cluster}.ccs.ornl.gov:{nodePort}``.
 
-In this example, if the service was running on marble, I could access it with ``apps.marble.ccs.ornl.gov:32399``
+In this example, if the service was running on marble, I could access it with ``apps.marble.ccs.ornl.gov:30298``
 
