@@ -597,7 +597,7 @@ CUDA compilation
 NVIDIA
 """"""
 
-CUDA C/C++ support is provided through the ``cuda`` module.
+CUDA C/C++ support is provided through the ``cuda`` module or throught the ``nvhpc`` module.
 
 ``nvcc`` : Primary CUDA C/C++ compiler
 
