@@ -65,6 +65,7 @@ Full example of a deployment mounting the OLCF shared filesystems:
       matchLabels:
         app: test-fs
     template:
+      metadata:
         labels:
           app: test-fs
       spec:
