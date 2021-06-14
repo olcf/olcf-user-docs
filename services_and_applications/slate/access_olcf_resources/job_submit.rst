@@ -47,6 +47,7 @@ Full example of a deployment using a base image provided by OLCF.
       matchLabels:
         app: test-jobsubmit
     template:
+      metadata:
         labels:
           app: test-jobsubmit
       spec:
