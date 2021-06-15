@@ -312,4 +312,28 @@ Using UCX requires the use of the ``--protocol ucx`` option in the dask-schedule
 
     echo "Done!"
 
+Setting up Custom Environments
+==============================
+
+The RAPIDS environment is read-only. Therefore, users cannot install any additional packages that may be needed. If users need any additional conda or pip packages, they can clone the RAPIDS environment into their preferred directory and then add any packages they need.
+
+Cloning the RAPIDS environment can be done with the next commands:
+
+.. code-block:: bash
+
+    module load ums
+    module load ums-gen119
+    module load nvidia-rapids/0.18
+
+    conda create --clone /sw/summit/ums/gen119/nvrapids_0.18_gcc_7.4.0 -p <my_environment_path>
+
+To activate the new environment you should still load the RAPIDS module first. This will ensure that all of the conda settings remain the same.
+
+.. code-block:: bash
+
+    module load ums
+    module load ums-gen119
+    module load nvidia-rapids/0.18
+
+    source activate <my_environment_path>
 
