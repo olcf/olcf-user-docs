@@ -22,8 +22,31 @@ visit https://e4s-project.github.io/Resources/ProductInfo.html
   provided by the OLCF nor are these packages necessarily configured the same way
   for each toolchain and runtime environment
 
-Access via modules
----------------------
+Summit
+######
+
+The E4S software list is installed along side the existing software on Summit and
+can be access via ``lmod`` modulefiles.  There is also a metamodule file to load the
+entire available subset of the 20.10 and 21.02 (in development) release for GCC 6.4.0.
+
+Access via modulefiles
+----------------------
+
+To access the installed software, load the desired compiler via:
+
+::
+
+  module load < compiler/version >
+  .. ie ..
+  module load gcc/9.3.0
+  .. or ..
+  module load gcc/6.4.0
+
+Then use ``module avail`` to see the installed list of packages.
+
+
+Access via metamodules
+----------------------
 
 To load the currently installed E4S stack on Summit:
 
@@ -31,8 +54,11 @@ To load the currently installed E4S stack on Summit:
 
   module load gcc/6.4.0
   module load e4s/20.10
+  .. or ..
+  module load e4s/21.02  ## in development
 
-List of installed packages:
+
+List of installed packages for the E4S 20.10 metamodule:
 
 .. csv-table::
   :header: "Software Name", "Loaded Version", "Module Name"
@@ -86,3 +112,79 @@ List of installed packages:
   upcxx, 2020.3.0, upcxx/2020.3.0-py3
   veloc, 1.4, veloc/1.4
   zfp, 0.5.5, zfp/0.5.5
+
+Spock
+#####
+
+The E4S software list is installed along side the existing software on Spock and
+can be access via ``lmod`` modulefiles.
+
+.. note::
+  Currently on Spock it is require to reload the DefApps module when changing
+  compilers or programming environments.  Do so by executing ``module load DefApps/alt``.
+
+Access via modulefiles
+----------------------
+
+To access the installed software, load the desired compiler via:
+
+::
+
+  module load < compiler/version >
+  module load DefApps/alt  # currently required following a compiler change
+  .. ie ..
+  module load gcc/9.3.0
+  module load DefApps/alt  # currently required following a compiler change
+  .. or ..
+  module load gcc/6.4.0
+  module load DefApps/alt  # currently required following a compiler change
+
+Then use ``module avail`` to see the installed list of packages.
+
+As an example for GCC 10.2.0, the following modules are available.
+
+.. csv-table::
+  :header: "Software Module Name"
+  :widths: 20
+
+  adios2/2.7.1
+  aml/0.1.0
+  amrex/21.04
+  bolt/2.0
+  caliper/2.5.0
+  dyninst/10.2.1
+  faodel/1.1906.1
+  flecsi/1.4
+  flit/2.1.0
+  gasnet/2020.3.0
+  ginkgo/1.3.0
+  globalarrays/5.8
+  gotcha/1.0.3
+  hdf5/1.10.7
+  hpx/1.6.0
+  kokkos-kernels/3.2.00
+  legion/20.03.0
+  libquo/1.3.1
+  mercury/2.0.0
+  mfem/4.2.0
+  ninja/1.10.2
+  openpmd-api/0.13.2
+  papi/6.0.0.1
+  papyrus/1.0.1
+  pdt/3.25.1
+  precice/2.2.0
+  pumi/2.2.5
+  qthreads/1.16
+  raja/0.13.0
+  slate/2020.10.00
+  slepc/3.15.0
+  sundials/5.7.0
+  superlu/5.2.1
+  superlu-dist/6.4.0
+  swig/4.0.2-fortran
+  sz/2.1.11.1
+  tasmanian/7.3
+  umap/2.1.0
+  umpire/4.1.2
+  zfp/0.5.5
+
