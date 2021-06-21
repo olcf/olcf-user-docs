@@ -13,3 +13,4 @@ container orchestration service.
    :maxdepth: 2
 
    entk
+   swift_t
