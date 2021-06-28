@@ -11,7 +11,7 @@ The Ensemble Toolkit (EnTK) is a Python library developed by the RADICAL
 Research Group at Rutgers University for developing and executing large-scale
 ensemble-based workflows. This tutorial shows how to get up and running with
 EnTK on Summit specifically. For in-depth information about EnTK itself, please
-refer to their `documentation <https://radicalentk.readthedocs.io/en/stable/>`_.
+refer to its `documentation <https://radicalentk.readthedocs.io/en/stable/>`_.
 
 
 Prerequisites

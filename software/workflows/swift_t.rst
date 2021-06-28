@@ -11,7 +11,7 @@ Swift/T is a completely new implementation of the Swift language for
 high-performance computing which translates Swift scripts into MPI programs
 that use the Turbine (hence, /T) and ADLB runtime libraries. This tutorial
 shows how to get up and running with Swift/T on Summit specifically. For more
-information about Swift/T, please refer to their
+information about Swift/T, please refer to its
 `documentation <http://swift-lang.org/Swift-T/>`_.
 
 
