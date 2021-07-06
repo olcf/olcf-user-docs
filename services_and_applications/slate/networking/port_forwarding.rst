@@ -20,6 +20,7 @@ This tool will forward a local port on your system to a pod inside the cluster.
 For example, if you have an nginx deployment running on port 8080 inside the container, you can view this nginx instance locally by running:
 
 .. code-block::
+   
    oc port-forward ${pod_name} 7777:8080
 
 The first port is the local port you want forwarded, and the second port is the port exposed by the pod. After running this command, you can go into your browser (or use ``curl`` in a second terminal) and connect to ``http://localhost:7777``.
