@@ -10,4 +10,5 @@ Application Deployment Examples
    mongodb_service
    nginx_hello_world
    helm_example
+   helm_prerequisite
    minio

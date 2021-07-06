@@ -10,7 +10,7 @@ Overview
 Getting Started
 ===============
 
-BlazingSQL is available at OLCF via `Jupyter <https://docs.olcf.ornl.gov/services_and_applications/jupyter/overview.html#example-creating-a-conda-environment-for-rapids>`_ and via ``module load`` command in Summit. 
+BlazingSQL is available at OLCF via `Jupyter <https://docs.olcf.ornl.gov/services_and_applications/jupyter/overview.html#example-creating-a-conda-environment-for-rapids>`__ and via ``module load`` command in Summit. 
 
 We recommend the use of Jupyter in example situations like:
 

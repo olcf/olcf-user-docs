@@ -25,6 +25,7 @@ If you run ``oc get services``\ , you should see your service in the list.
 
 
 .. code-block:: text
+   
    $ oc get services
    NAME                  TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)     AGE
    my-service            ClusterIP   172.25.170.246   <none>        8080/TCP    8s
