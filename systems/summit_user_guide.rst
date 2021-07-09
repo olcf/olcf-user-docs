@@ -1739,16 +1739,39 @@ specify the number of resource sets needed.
 | 1               | 1           | 21        | 21               | 3      | jsrun -n1 -a1 -c21 -g3 -bpacked:21    |
 +-----------------+-------------+-----------+------------------+--------+---------------------------------------+
 
+Launching Multiple Jsruns
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Concurrent Job Steps
+Jsrun provides the ability to launch multiple ``jsrun`` job launches within a
+single batch job allocation. This can be done within a single node, or across
+multiple nodes.
+
+Sequential Job Steps
 """"""""""""""""""""
+By default, multiple invocations of ``jsrun`` in a job script will execute 
+serially in order. In this configuration, jobs will launch one at a time and
+the next one will not start until the previous is complete. The batch node
+allocation is equal to the largest jsrun submitted, and the total walltime
+must be equal to or greater then the *sum* of all jsruns issued.
+ 
+.. image:: /images/summit-multi-jsrun-example-sequential.png
+   :align: center
 
-By default, multiple invocations of ``jsrun`` in a job script will execute
-serially. To execute multiple job steps concurrently, standard UNIX process
+Simultaneous Job Steps
+""""""""""""""""""""""
+To execute multiple job steps concurrently, standard UNIX process
 backgrounding can be used by adding a ``&`` at the end of the command. This
-will return control to the job script and execute the next command immediately.
+will return control to the job script and execute the next command immediately,
+allowing multiple job launches to start at the same time. The jsruns will not
+share core/gpu resources in this configuration. The batch node allocation is 
+equal to the *sum* of those of each jsrun, and the total walltime must be equal
+to or greater than that of the longest running jsrun task.
+
 A ``wait`` command must follow all backgrounded processes to prevent the job
 from appearing completed and exiting prematurely.
+
+.. image:: /images/summit-multi-jsrun-example-simultaneous.png
+   :align: center
 
 The following example executes three backgrounded job steps and waits for them
 to finish before the job ends.
@@ -1802,6 +1825,30 @@ If JSM or PMIX errors occur as the result of backgrounding many job steps, using
     ``stderr``. To capture ``stdout`` and/or ``stderr`` when using this option,
     additionally include ``--stdio_stdout``/``-o`` and/or
     ``--stdio_stderr``/``-k``.
+
+Using `jslist`
+""""""""""""""
+To view the status of multiple jobs launched sequentially or concurrently within a 
+batch script, you can use `jslist` to see which are completed, running, or still
+queued. If you are using it outside of an interactive batch job, use the `-c` option
+to specify the CSM allocation ID number. The following example shows how to obtain the
+CSM allocation number for a non interactive job and then check its status. 
+
+::
+
+    $ bsub test.lsf
+    Job <26238> is submitted to default queue <batch>.
+
+    $ bjobs -l 26238 | grep CSM_ALLOCATION_ID
+    Sun Feb 16 19:01:18: CSM_ALLOCATION_ID=34435
+
+    $ jslist -c 34435
+      parent         cpus     gpus     exit
+      ID  ID    nrs  per RS  per RS   status    status
+     ===========================================================
+       1   0    12     4       1        0       Running
+
+
 
 Explicit Resource Files (ERF)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
