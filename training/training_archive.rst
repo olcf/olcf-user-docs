@@ -11,7 +11,8 @@ The table below lists presentations given at previous OLCF training events. For 
 
 .. csv-table::
    :header: "Date", "Title", "Speaker", "Event", "Presentation"
-
+   
+   "2021-07-16", "CUDA Multithreading", "Robert Searles (NVIDIA)", `CUDA Training Series <https://www.olcf.ornl.gov/calendar/cuda-multithreading/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2021/05/10-Multithreading-and-CUDA-Concurrency.pdf>`__ | `recording <https://vimeo.com/575930839>`__)
    "2021-05-21", "GPU Concurrency", "Robert Searles (NVIDIA)", `May 2021 OLCF User Conference Call <https://www.olcf.ornl.gov/calendar/userconcall-may2021/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2021/05/GPU-Concurrency-Overview.pdf>`__ | `recording <https://vimeo.com/558811623>`__)
    "2021-05-20", "Spock System Architecture", "Joe Glenski (HPE)", `Spock Training <https://www.olcf.ornl.gov/spock-training/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2021/04/Glenski-Spock-Architecture-public-v4.pdf>`__ | `recording <https://vimeo.com/554875266>`__)
    "2021-05-20", "MI100 GPU", "Nick Malaya (AMD)", `Spock Training <https://www.olcf.ornl.gov/spock-training/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2021/04/Spock-MI100-Update-5.20.21.pdf>`__ | `recording <https://vimeo.com/554871957>`__)

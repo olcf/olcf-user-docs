@@ -37,7 +37,7 @@ Complete documentation is available at the `official RAPIDS documentation <https
 Getting Started
 ===============
 
-RAPIDS is available at OLCF via `Jupyter <https://docs.olcf.ornl.gov/services_and_applications/jupyter/overview.html#example-creating-a-conda-environment-for-rapids>`_ and via ``module load`` command in Summit. 
+RAPIDS is available at OLCF via `Jupyter <https://docs.olcf.ornl.gov/services_and_applications/jupyter/overview.html#example-creating-a-conda-environment-for-rapids>`__ and via ``module load`` command in Summit. 
 
 We recommend the use of Jupyter in example situations like:
 
@@ -98,7 +98,7 @@ As an example, the following LSF script will run a single-GPU RAPIDS script in o
 
 From the ``jsrun`` options, note the ``--smpiargs="-disable_gpu_hooks"`` flag is being used. Disabling gpu hooks allows non Spectrum MPI codes run with CUDA.
 
-Note the "RAPIDS basic execution" option is for illustrative purposes and not recommended to run RAPIDS on Summit since it underutilizes resources. If your RAPIDS code is single GPU, consider `Jupyter <https://docs.olcf.ornl.gov/services_and_applications/jupyter/overview.html#example-creating-a-conda-environment-for-rapids>`_ or the concurrent job steps option.
+Note the "RAPIDS basic execution" option is for illustrative purposes and not recommended to run RAPIDS on Summit since it underutilizes resources. If your RAPIDS code is single GPU, consider `Jupyter <https://docs.olcf.ornl.gov/services_and_applications/jupyter/overview.html#example-creating-a-conda-environment-for-rapids>`__ or the concurrent job steps option.
 
 Concurrent job steps with RAPIDS
 --------------------------------
@@ -312,4 +312,28 @@ Using UCX requires the use of the ``--protocol ucx`` option in the dask-schedule
 
     echo "Done!"
 
+Setting up Custom Environments
+==============================
+
+The RAPIDS environment is read-only. Therefore, users cannot install any additional packages that may be needed. If users need any additional conda or pip packages, they can clone the RAPIDS environment into their preferred directory and then add any packages they need.
+
+Cloning the RAPIDS environment can be done with the next commands:
+
+.. code-block:: bash
+
+    module load ums
+    module load ums-gen119
+    module load nvidia-rapids/0.18
+
+    conda create --clone /sw/summit/ums/gen119/nvrapids_0.18_gcc_7.4.0 -p <my_environment_path>
+
+To activate the new environment you should still load the RAPIDS module first. This will ensure that all of the conda settings remain the same.
+
+.. code-block:: bash
+
+    module load ums
+    module load ums-gen119
+    module load nvidia-rapids/0.18
+
+    source activate <my_environment_path>
 
