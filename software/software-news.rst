@@ -113,6 +113,7 @@ In addition, the following packages will be upgraded to newer versions and the s
     "npth", "1.5", "1.6"
     "numactl", "2.0.11", "2.0.14"
     "openblas", "0.3.5, 0.3.6, 0.3.9", "0.3.12"
+    "open-ce", "1.1.3", "1.2.0"
     "openmpi", "4.0.3", "4.0.5"
     "papi", "5.5.1, 5.6.0, 5.7.0", "6.0.0.1"
     "parallel-netcdf", "1.8.0, 1.8.1", "1.12.1"
