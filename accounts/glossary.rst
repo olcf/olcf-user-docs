@@ -82,17 +82,20 @@ Glossary
   Sensitive or Restricted Information
     Principal Investigators are responsible for knowing whether their project
     uses or generates sensitive or restricted information. Department of Energy
-    systems contain data only related to scientific research and do not contain
-    personally identifiable information. Therefore, you should answer "Yes" if
-    your project uses or generates data that falls under the Privacy Act of 1974
-    U.S.C. 552a.
+    systems contain data only related to scientific research.
 
-    Use of OLCF resources to store, manipulate, or remotely access any national
-    security information is prohibited. This includes, but is not limited to,
-    classified information, unclassified controlled nuclear information (UCNI),
-    naval nuclear propulsion information (NNPI), the design or development of
-    nuclear, biological, or chemical weapons or of any weapons of mass
-    destruction. For more information contact the DOE at:
+    Sensitive Information: This includes, but is not limited to, personally-identifiable
+    information (PII). PII is information that can be used to distinguish or trace an
+    individual's identity, either alone or when combined with other information
+    that is linked or linkable to a specific individual.
+
+    Restricted Information: This includes, but is not limited to, classified information,
+    unclassified controlled nuclear information (UCNI), naval nuclear propulsion
+    information (NNPI), the design or development of nuclear, biological, or
+    chemical weapons or of any weapons of mass destruction. Use of OLCF resources to
+    store, manipulate, or remotely access classified information is prohibited.
+
+    For more information contact the DOE at:
 
     | Office of Domestic and International Energy Policy
     | US Department of Energy
