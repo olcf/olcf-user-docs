@@ -11,6 +11,9 @@ provided files as a template.
 
 .. warning::
 
+  This guide is not intended to be a guide for a new Spack user.  Please see the `Spack 101 tutorial <https://spack-tutorial.readthedocs.io/en/latest/>`_ 
+  if you need assistance starting out with Spack.
+
   The provided ``spack.yaml`` files are templates for a user to use as an example.  The software environment is 
   under active development.
 

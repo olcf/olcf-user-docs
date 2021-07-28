@@ -13,6 +13,9 @@ provided files as a template.
 
   The provided ``spack.yaml`` files are templates for a user to use as an example.
 
+  This not intended as a guide for a new Spack user.  Please see `the Spack 101 tutorial <https://spack-tutorial.readthedocs.io/en/latest>`_
+  if you need assistance starting out with Spack.
+
 The provided Spack environment files are intended to assist OLCF users in setup their development environment at the 
 OLCF.  The base environment file includes the compilers and packages that are installed at the system level.
 
