@@ -58,7 +58,7 @@ Add Dependencies to the environment
 Adding OLCF Installed Dependencies as External Packages
 -------------------------------------------------------
 
-If an OLCF installed package is available, these can be added via the ``spack.yaml`` file by adding to the ``packages``
+If an OLCF installed package is available, these can be added via the uncluded ``spack.yaml`` file by adding to the ``packages``
 section.  For this example, CMake was found on Summit by finding a modulefile for the installed CMake package.
 
 By marking the CMake package as ``buildable: false`` it will force Spack to use the externally installed CMake with the 
