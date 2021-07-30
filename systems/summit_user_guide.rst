@@ -3589,7 +3589,7 @@ Bash sources different files based on two attributes of the shell: whether or no
 
 In any case, if the files listed above that should be sourced in a particular situation do not exist, it is not an error. 
 
-On Summit and Andes, batch-interactive jobs using bash (i.e. those submitted with ``bsub -Is`` or ``salloc``) run as interactive, non-login shells (and therefore source ``~/.bashrc``, if it exists). Regular batch jobs using bash on those systems are non-interactive, non-login shells and source the file defined by the variable ``$BASH_ENV`` in the shell from which you submitted the job.
+On Summit and Andes, batch-interactive jobs using bash (i.e. those submitted with ``bsub -Is`` or ``salloc``) run as interactive, non-login shells (and therefore source ``~/.bashrc``, if it exists). Regular batch jobs using bash on those systems are non-interactive, non-login shells and source the file defined by the variable ``$BASH_ENV`` in the shell from which you submitted the job. This variable is not set by default, so this means that none of these files will be sourced for a regular batch job unless you explicitly set that variable.
 
 Some systems are configured to have additional files in ``/etc`` sourced, and sometimes the files in ``/etc`` look for and source files in your home directory such as ``~/.bashrc``, so the behavior on any given system may seem to deviate a bit from the information above (which is from the bash manpage). This can explain why jobs (or other shells) on other systems you've used have sourced your ``.bashrc`` file on login.
 
