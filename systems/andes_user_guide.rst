@@ -1216,114 +1216,131 @@ methods may be used the one described should work in most cases.
 
 .. code::
 
-    <Servers>
-     <Server name="Andes@ORNL" resource="csrc://localhost:11111">
-      <CommandStartup>
-       <Options>
-        <Option name="XTERM_EXE" label="Xterm executable" save="true">
-          <File default="/usr/bin/xterm"/>
-        </Option>
-        <Option name="SSH_EXE" label="SSH executable" save="true">
-          <File default="ssh"/>
-        </Option>
-        <Option name="MACHINE" label="Remote machine" save="true">
-          <String default="andes-login3.olcf.ornl.gov"/>
-        </Option>
-        <Option name="VERSION" label="ParaView version" save="true">
-          <String default="5.8.1"/>
-        </Option>
-        <Option name="USER" label="Username" save="true">
-          <String default="YOURUSERNAME"/>
-        </Option>
-        <Option name="CLIENT_PORT" label="Client port">
-          <Range type="int" min="1025" max="65535" step="1" default="11111"/>
-        </Option>
-        <Option name="SERVER_PORT" label="Server port">
-          <Range type="int" min="1025" max="65535" step="1" default="random"/>
-        </Option>
-        <Option name="NUMNODES" label="Number of nodes to reserve" save="true">
-          <Range type="int" min="1" max="1024" step="4" default="2"/>
-        </Option>
-        <Option name="CPUSPERNODE" label="Number of cpus to use on each node" save="true"> 
-          <Range type="int" min="1" max="32" step="1" default="8"/>
-        </Option>
-        <Option name="NUMMINUTES" label="Number of minutes to reserve" save="true"> 
-          <Range type="int" min="5" max="1000" step="5" default="20"/>
-        </Option>
-        <Option name="ACCOUNT" label="Account" save="true">
-          <String default="YOURPROJECT"/>
-        </Option>
-        <Option name="QUEUE" label="Queue" save="true">
-          <String default="batch"/>
-        </Option>
-        <Option name="JOBNAME" label="Job name" save="true">
-          <String default="paraview_interactive"/>
-        </Option>
-       </Options>
-      <Command exec="$XTERM_EXE$" timeout="0" delay="2">
-        <Arguments>
-          <Argument value="-T"/>
-          <Argument value="&#x22;ParaView_$VERSION$"/>
-          <Argument value="$USER$@$MACHINE$&#x22;"/>
-          <Argument value="-hold"/>
-          <Argument value="-e"/>
-          <Argument value="$SSH_EXE$"/>
-          <Argument value="-R"/>
-          <Argument value="$SERVER_PORT$:localhost:$CLIENT_PORT$"/>
-          <Argument value="$USER$@$MACHINE$"/>
-          <Argument value="/sw/andes/paraview/connect/launch.sh"/>
-          <Argument value="$NUMNODES$"/>
-          <Argument value="$NUMMINUTES$"/>
-          <Argument value="$ACCOUNT$"/>
-          <Argument value="$QUEUE$"/>
-          <Argument value="$JOBNAME$"/>
-          <Argument value="$SERVER_PORT$"/>
-          <Argument value="pvserver"/>
-          <Argument value="$VERSION$"/>
-          <Argument value="$CPUSPERNODE$"/>
-        </Arguments>
-       </Command>
-      </CommandStartup>
+   <Servers>
+     <Server name="ORNL andes" resource="csrc://localhost">
+       <CommandStartup>
+         <Options>
+           <Option name="HOST" label="Server host" save="true">
+             <String default="andes.olcf.ornl.gov"/>
+           </Option>
+           <Option name="HEADLESS_API" label="Server headless API" save="true">
+             <Enumeration default="osmesa">
+               <Entry value="osmesa" label= "OSMesa" />
+               <Entry value="egl" label= "EGL" />
+             </Enumeration>
+           </Option>
+           <Option name="USER" label="Server username" save="true">
+             <String default="YOURUSERNAME"/>
+           </Option>
+           <Switch name="PV_CLIENT_PLATFORM">
+             <Case value="Apple">
+               <Set name="TERM_PATH" value="/opt/X11/bin/xterm" />
+               <Set name="TERM_ARG1" value="-T" />
+               <Set name="TERM_ARG2" value="ParaView" />
+               <Set name="TERM_ARG3" value="-e" />
+               <Set name="SSH_PATH" value="ssh" />
+             </Case>
+             <Case value="Linux">
+               <Set name="TERM_PATH" value="xterm" />
+               <Set name="TERM_ARG1" value="-T" />
+               <Set name="TERM_ARG2" value="ParaView" />
+               <Set name="TERM_ARG3" value="-e" />
+               <Set name="SSH_PATH" value="ssh" />
+             </Case>
+             <Case value="Windows">
+               <Set name="TERM_PATH" value="cmd" />
+               <Set name="TERM_ARG1" value="/C" />
+               <Set name="TERM_ARG2" value="start" />
+               <Set name="TERM_ARG3" value="" />
+               <Set name="SSH_PATH" value="plink.exe" />
+             </Case>
+             <Case value="Unix">
+               <Set name="TERM_PATH" value="xterm" />
+               <Set name="TERM_ARG1" value="-T" />
+               <Set name="TERM_ARG2" value="ParaView" />
+               <Set name="TERM_ARG3" value="-e" />
+               <Set name="SSH_PATH" value="ssh" />
+             </Case>
+           </Switch>
+           <Option name="PV_SERVER_PORT" label="Server port ">
+             <Range type="int" min="1025" max="65535" step="1" default="random"/>
+           </Option>
+           <Option name="NUM_NODES" label="Number of compute nodes" save="true">
+             <Range type="int" min="1" max="512" step="1" default="2"/>
+           </Option>
+           <Option name="NUM_MPI_TASKS" label="Total number of MPI tasks" save="true">
+             <Range type="int" min="1" max="16384" step="1" default="2"/>
+           </Option>
+           <Option name="NUM_CORES_PER_MPI_TASK" label="Number of cores per MPI task" save="true">
+             <Range type="int" min="1" max="28" step="1" default="1"/>
+           </Option>
+           <Option name="PROJECT" label="Project to charge" save="true">
+             <String default="cscXXX"/>
+           </Option>
+           <Option name="MINUTES" label="Number of minutes to reserve" save="true">
+             <Range type="int" min="1" max="240" step="1" default="30"/>
+           </Option>
+         </Options>
+         <Command exec="$TERM_PATH$" delay="5">
+           <Arguments>
+             <Argument value="$TERM_ARG1$"/>
+             <Argument value="$TERM_ARG2$"/>
+             <Argument value="$TERM_ARG3$"/>
+             <Argument value="$SSH_PATH$"/>
+             <Argument value="-t"/>
+             <Argument value="-R"/>
+             <Argument value="$PV_SERVER_PORT$:localhost:$PV_SERVER_PORT$"/>
+             <Argument value="$USER$@$HOST$"/>
+             <Argument value="/sw/andes/paraview/pvsc/ORNL/login_node.sh"/>
+             <Argument value="$NUM_NODES$"/>
+             <Argument value="$MINUTES$"/>
+             <Argument value="$PV_SERVER_PORT$"/>
+             <Argument value="$PV_VERSION_FULL$"/>
+             <Argument value="$HEADLESS_API$"/>
+             <Argument value="/sw/andes/paraview/pvsc/ORNL/andes.cfg"/>
+             <Argument value="PROJECT=$PROJECT$"/>
+             <Argument value="NUM_MPI_TASKS=$NUM_MPI_TASKS$"/>
+             <Argument value="NUM_CORES_PER_MPI_TASK=$NUM_CORES_PER_MPI_TASK$"/>
+           </Arguments>
+         </Command>
+       </CommandStartup>
      </Server>
-     # ...
-    </Servers>
+   </Servers>
 
 **Step 2: Launch ParaView on your Desktop and Click on File -> Connect**
 
 Start ParaView and then select ``File/Connect`` to begin.
 
-.. image:: /images/paraview_step1a_Andes.jpg
+.. image:: /images/paraview_step1a_Andes.png
    :align: center
 
 Click Load Servers button and find the servers.pvsc file
 
-.. image:: /images/paraview_step2a_Andes.jpg
+.. image:: /images/paraview_step2a_Andes.png
    :align: center
 
 **Step 3: Establish a connection to Andes**
 
-Select Andes@ORNL, click on Connect and change the values in the Connection Options box.
+Select ORNL Andes, click on Connect and change the values in the Connection Options box.
 
-.. image:: /images/paraview_step2a_Andes_2.jpg
+.. image:: /images/paraview_step2a_Andes_2.png
    :align: center
 
 A dialog box follows, in which you must enter in your username and project
 allocation, the number of nodes to reserve and a duration to reserve them for.
-Please make sure to check the correct path of the xterm on your local computer
-and add the path to the option box.
 
 
-.. image:: /images/paraview_step2b_Andes.jpg
+.. image:: /images/paraview_step2b_Andes.png
    :align: center
 
 When you click OK, a windows command prompt or ``xterm`` pops up. In this
 window enter your credentials at the OLCF login prompt.
 
-.. image:: /images/paraview_step2c_Andes.jpg
+.. image:: /images/paraview_step2c_Andes.png
    :align: center
 
-When your job reaches the top of the queue, the ``RenderView1`` view window
-will return. At this point you are connected to Andes and can open files that
+When your job reaches the top of the queue, the main window will be returned to your
+control. At this point you are connected to Andes and can open files that
 reside there and visualize them interactively.
 
 VisIt
