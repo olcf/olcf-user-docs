@@ -1152,3 +1152,54 @@ changes on the project.
 If you have security-related questions, contact us via email at: security-admins@ccs.ornl.gov.
 Other questions can be sent to help@olcf.ornl.gov.
 
+User-Managed Software Policy
+===========================================
+
+.. note::
+    This details an official policy of the OLCF, and must be
+    agreed to by the following persons as a condition of access to and use
+    of OLCF computational resources:
+
+    -  Principal Investigators of UMS Projects
+    -  Points of Contact for UMS Projects
+
+    **Title:** UMS Project Policies **Version:** 21.08
+
+Purpose
+-------
+
+This document is intended to describe the agreement between the OLCF and the providers of user-managed
+software installations. User-managed software is built, maintained, and supported by facility users
+rather than as official offerings of the facility, but exposed to all users through the common tool of
+the module system.
+
+Policies
+--------
+
+Order is for convenience and no implication of priority is implied.
+
+- Products must provide appropriate modules for their software
+- Product modules will be grouped under project-level modules. 
+
+..
+  Rationale: This provides both control over visibility and “branding” to the project. So users would be advised to do a “module load project”, which will expose modules for the individual products associated with that project, accessed by a second “module load product”. 
+
+- Products must provide a statement of support, to be displayed via the module system  and in other appropriate contexts/locations.
+
+..
+  The statement should clearly indicate that the product is not supported or maintained by the facility
+  The statement should clearly indicate the organization that is providing support and maintenance, and clearly indicate the preferred method(s) of reporting issues or requesting support.
+
+- Project PI must ensure that support is provided for users of the product, as documented
+- Project PI must ensure that the product is timely updated in response to changes in the system software environment (e.g. updates to OS, compiler, library, or other key tools).  If this commitment is not met, the Facility may remove the software from UMS.
+- Project PI must ensure that installations are tested to ensure basic functionality before being released to users. These are expected to be basic “sanity tests” to ensure that the build/install was successful.  UMS projects are not intended to support regular CI testing.
+
+..
+  The allocation provided by the facility for UMS shall not be used for software development or for routine testing purposes beyond the basic installation testing, described above.
+
+- Products may be removed from UMS at the request of the Project PI by notifying the UMS POC of their intent and cleaning up their directory space.
+- If a product is judged to be problematic for the Facility, it may be removed by the UMS POC, who will also notify the Project PI.  
+
+..
+  Rationale: This is intended to be a measure of last resort.  The UMS concept is designed so that use of the software is opt-in and there should be no problems for users who do not opt in, or for the facility at large.  However in the rare case where something is really wrong, the facility needs a way out. Presumably, everything possible will be done to avoid this situation
+
