@@ -1153,6 +1153,78 @@ please contact the OLCF User Assistance Center.
 
 --------------
 
+.. _andes-debugging:
+
+Debugging
+=========
+
+Arm DDT
+-------
+
+Arm DDT is an advanced debugging tool used for scalar, multi-threaded,
+and large-scale parallel applications. In addition to traditional
+debugging features (setting breakpoints, stepping through code,
+examining variables), DDT also supports attaching to already-running
+processes and memory debugging. In-depth details of DDT can be found in
+the `Official DDT User
+Guide <https://www.allinea.com/user-guide/forge/userguide.html>`__, and
+instructions for how to use it on OLCF systems can be found on the
+`Forge (DDT/MAP) Software Page <https://www.olcf.ornl.gov/software_package/forge/>`__. DDT is the
+OLCF's recommended debugging software for large parallel applications.
+
+One of the most useful features of DDT is its remote debugging feature. This allows you to connect to a debugging session on Andes from a client running on your workstation. The local client provides much faster interaction than you would have if using the graphical client on Andes. For guidance in setting up the remote client see `this tutorial <https://www.olcf.ornl.gov/tutorials/forge-remote-client-setup-and-usage/>`__. While that tutorial uses Summit as an example, it should be easily adaptable to Andes.
+
+GDB
+---
+
+`GDB <https://www.gnu.org/software/gdb/>`__, the GNU Project Debugger,
+is a command-line debugger useful for traditional debugging and
+investigating code crashes. GDB lets you debug programs written in Ada,
+C, C++, Objective-C, Pascal (and many other languages). GDB is available
+on andes via the ``gdb`` module:
+
+.. code::
+
+    module load gdb
+
+
+Valgrind
+--------
+
+`Valgrind <http://valgrind.org>`__ is an instrumentation framework for
+building dynamic analysis tools. There are Valgrind tools that can
+automatically detect many memory management and threading bugs, and
+profile your programs in detail. You can also use Valgrind to build new
+tools.
+
+The Valgrind distribution currently includes five production-quality
+tools: a memory error detector, a thread error detector, a cache and
+branch-prediction profiler, a call-graph generating cache profiler,
+and a heap profiler. It also includes two experimental tools: a data
+race detector, and an instant memory leak detector.
+
+The Valgrind tool suite provides a number of debugging and
+profiling tools. The most popular is Memcheck, a memory checking tool
+which can detect many common memory errors such as:
+
+- Touching memory you shouldn’t (eg. overrunning heap block boundaries,
+  or reading/writing freed memory).
+- Using values before they have been initialized.
+- Incorrect freeing of memory, such as double-freeing heap blocks.
+- Memory leaks.
+
+Valgrind is available on Andes via the ``valgrind`` module:
+
+.. code::
+
+    module load valgrind
+
+Additional information about Valgrind usage and OLCF-provided builds can
+be found on the `Valgrind Software
+Page <https://www.olcf.ornl.gov/software_package/valgrind/>`__.
+
+
+
 .. _visualization-tools:
 
 Visualization tools
