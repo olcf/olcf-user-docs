@@ -3572,10 +3572,26 @@ created with information on the files that were copied.
 Known Issues
 ============
 
-Last Updated: 8 March 2021
+Last Updated: 30 July 2021
 
 Open Issues
 -----------
+
+System not sourcing ``.bashrc``, ``.profile``, etc. files as expected
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Some users have noticed that their login shells, batch jobs, etc. are not sourcing shell run control files as expected. This is related to the way bash is initialized. The initialization process is discussed in the INVOCATION section of the bash manpage, but is summarized here.
+
+Bash sources different files based on two attributes of the shell: whether or not it's a login shell, and whether or not it's an interactive shell. These attributes are not mutually exclusive (so a shell can be "interactive login", "interactive non-login", etc.):
+
+#. If a shell is an interactive login shell (i.e. an ssh to the system) or a non-interactive shell started with the ``--login`` option (say, a batch script with ``#!/bin/bash --login`` as the first line), it will source ``/etc/profile`` and will then search your home directory for ``~/.bash_profile``, ``~/.bash_login``, and ``~/.profile``. It will source the first of those that it finds (once it sources one, it stops looking for the others).
+#. If a shell is an interactive, non-login shell (say, if you run 'bash' in your login session to start a subshell), it will source ``~/.bashrc``
+#. If a shell is a non-interactive, non-login shell, it will source whatever file is defined by the ``$BASH_ENV`` variable in the shell from which it was invoked. 
+
+In any case, if the files listed above that should be sourced in a particular situation do not exist, it is not an error. 
+
+On Summit and Andes, batch-interactive jobs using bash (i.e. those submitted with ``bsub -Is`` or ``salloc``) run as interactive, non-login shells (and therefore source ``~/.bashrc``, if it exists). Regular batch jobs using bash on those systems are non-interactive, non-login shells and source the file defined by the variable ``$BASH_ENV`` in the shell from which you submitted the job. This variable is not set by default, so this means that none of these files will be sourced for a regular batch job unless you explicitly set that variable.
+
+Some systems are configured to have additional files in ``/etc`` sourced, and sometimes the files in ``/etc`` look for and source files in your home directory such as ``~/.bashrc``, so the behavior on any given system may seem to deviate a bit from the information above (which is from the bash manpage). This can explain why jobs (or other shells) on other systems you've used have sourced your ``.bashrc`` file on login.
 
 Improper permissions on ``~/.ssh/config`` cause job state flip-flop/jobs ending in suspended state
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
