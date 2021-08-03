@@ -8,9 +8,9 @@ most recent changes are listed first.
 
 .. raw:: html
 
-   <p style="font-size:20px"><b>Summit: Software Installation/Default Software Changes (June 8-9, 2021)</b></p>
+   <p style="font-size:20px"><b>Summit: Software Installation/Default Software Changes (August 17-19, 2021)</b></p>
 
-Summit's operating system will be upgraded to Red Hat Enterprise Linux 8 (RHEL 8) on June 8-9, 2021. As a result, the following new packages will become available:
+Summit's operating system will be upgraded to Red Hat Enterprise Linux 8 (RHEL 8) on August 17-19, 2021. As a result, the following new packages will become available:
 
 .. csv-table::
     :header: "Package", "Current Default", "New Default"
