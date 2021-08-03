@@ -2356,6 +2356,8 @@ instructions for how to use it on OLCF systems can be found on the
 `Forge (DDT/MAP) Software Page <https://www.olcf.ornl.gov/software_package/forge/>`__. DDT is the
 OLCF's recommended debugging software for large parallel applications.
 
+One of the most useful features of DDT is its remote debugging feature. This allows you to connect to a debugging session on Summit from a client running on your workstation. The local client provides much faster interaction than you would have if using the graphical client on Summit. For guidance in setting up the remote client see `this tutorial <https://www.olcf.ornl.gov/tutorials/forge-remote-client-setup-and-usage/>`__.
+
 
 GDB
 ---
