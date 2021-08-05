@@ -1155,6 +1155,10 @@ Other questions can be sent to help@olcf.ornl.gov.
 User-Managed Software Policy
 ===========================================
 
+
+For more information about the UMS program see the Software section of this documentation
+`here </software/UMS/index.html>`_.
+
 .. note::
     This details an official policy of the OLCF, and must be
     agreed to by the following persons as a condition of access to and use
