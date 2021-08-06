@@ -4,15 +4,710 @@
 Data Storage and Transfers
 ############################
 
-.. toctree::
-   :maxdepth: 2
+OLCF users have many options for data storage. Each user has multiple user-affiliated storage spaces, and each project has multiple project-affiliated storage spaces where data can be shared for collaboration.  Below we give an overview and explain where each storage area is mounted.
 
-   storage_overview
-   policies
-   user_centric
-   project_centric
-   transferring
-   archiving
+************************
+Summary of Storage Areas
+************************
+
+The storage area to use in any given situation depends upon the activity you wish to carry out. Storage areas are either user-centric or project-centric, and are further divided by the underlying storage type (e.g., Network File System (NFS), High Performance Storage System (HPSS), IBM Spectrum Scale). Each storage type has a different intended use as described below.
+
+Each user has a User Home area on NFS, and a User Archive area on HPSS. For newer users, the User Archive area is not writable and is only a "link farm" to a user's project areas on HPSS. For legacy users, the directory remains writable until files have been migrated to an appropriate project area.
+Each project has a Project Home area on NFS, multiple Work areas on Spectrum Scale, and multiple Archive areas on HPSS. The different storage areas are summarized in the list and table below.
+
+- **User Home:** Long-term data for routine access that is unrelated to a project. It is mounted on compute nodes of Summit as read only
+- **User Archive:** A "link farm" with symbolic links to a user's project directories on HPSS. (Previously this was for non-project data on HPSS; such use is now deprecated)
+- **Project Home:** Long-term project data for routine access that's shared with other project members. It is mounted on compute nodes of Summit as read only
+- **Member Work:** Short-term user data for fast, batch-job access that is not shared with other project members.
+- **Project Work:** Short-term project data for fast, batch-job access that's shared with other project members.
+- **World Work:** Short-term project data for fast, batch-job access that's shared with users outside your project.
+- **Member Archive:** Long-term project data for archival access that is not shared with other project members.
+- **Project Archive:** Long-term project data for archival access that's shared with other project members.
+- **World Archive:** Long-term project data for archival access that's shared with users outside your project.
+
+.. _data-filesystem-summary:
+
++-----------------------------------+---------------------------------------------+-----------+----------------+-------------+--------+---------+---------+------------+------------------+
+| Area                              | Path                                        | Enclave   | Type           | Permissions |  Quota | Backups | Purged  | Retention  | On Compute Nodes |
++===================================+=============================================+===========+================+=============+========+=========+=========+============+==================+
+| User Home                         | ``/ccs/home/[userid]``                      | O, M1, M2 | NFS            | User set    |  50 GB | Yes     | No      | 90 days    | Read-only        |
++-----------------------------------+---------------------------------------------+-----------+----------------+-------------+--------+---------+---------+------------+------------------+
+| User Archive [#f1]_               | ``/home/[userid]``                          | O, M1     | HPSS           | User set    |  2TB   | No      | No      | 90 days    | No               |
++-----------------------------------+---------------------------------------------+-----------+----------------+-------------+--------+---------+---------+------------+------------------+
+| User Archive [#f2]_               | ``/home/[userid]``                          | O, M1     | HPSS           | 700         |  N/A   | N/A     | N/A     | N/A        | No               |
++-----------------------------------+---------------------------------------------+-----------+----------------+-------------+--------+---------+---------+------------+------------------+
+| Project Home                      | ``/ccs/proj/[projid]``                      | O, M1, M2 | NFS            | 770         |  50 GB | Yes     | No      | 90 days    | Read-only        |
++-----------------------------------+---------------------------------------------+-----------+----------------+-------------+--------+---------+---------+------------+------------------+
+| Member Work                       | ``/gpfs/alpine/[projid]/scratch/[userid]``  | M1, M2    | Spectrum Scale | 700 [#f3]_  |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write       |
++-----------------------------------+---------------------------------------------+-----------+----------------+-------------+--------+---------+---------+------------+------------------+
+| Project Work                      | ``/gpfs/alpine/[projid]/proj-shared``       | M1, M2    | Spectrum Scale | 770         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write       |
++-----------------------------------+---------------------------------------------+-----------+----------------+-------------+--------+---------+---------+------------+------------------+
+| World Work                        | ``/gpfs/alpine/[projid]/world-shared``      | M1        | Spectrum Scale | 775         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write       |
++-----------------------------------+---------------------------------------------+-----------+----------------+-------------+--------+---------+---------+------------+------------------+
+| Open Member Work                  | ``/gpfs/wolf/[projid]/scratch/[userid]``    | Open      | Spectrum Scale | 700 [#f3]_  |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write       |
++-----------------------------------+---------------------------------------------+-----------+----------------+-------------+--------+---------+---------+------------+------------------+
+| Open Project Work                 | ``/gpfs/wolf/[projid]/proj-shared``         | Open      | Spectrum Scale | 770         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write       |
++-----------------------------------+---------------------------------------------+-----------+----------------+-------------+--------+---------+---------+------------+------------------+
+| Open World Work                   | ``/gpfs/wolf/[projid]/world-shared``        | Open      | Spectrum Scale | 775         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write       |
++-----------------------------------+---------------------------------------------+-----------+----------------+-------------+--------+---------+---------+------------+------------------+
+| Member Archive                    | ``/hpss/prod/[projid]/users/$USER``         | M1        | HPSS           | 700         | 100 TB | No      | No      | 90 days    | No               |
++-----------------------------------+---------------------------------------------+-----------+----------------+-------------+--------+---------+---------+------------+------------------+
+| Project Archive                   | ``/hpss/prod/[projid]/proj-shared``         | M1        | HPSS           | 770         | 100 TB | No      | No      | 90 days    | No               |
++-----------------------------------+---------------------------------------------+-----------+----------------+-------------+--------+---------+---------+------------+------------------+
+| World Archive                     | ``/hpss/prod/[projid]/world-shared``        | M1        | HPSS           | 775         | 100 TB | No      | No      | 90 days    | No               |
++-----------------------------------+---------------------------------------------+-----------+----------------+-------------+--------+---------+---------+------------+------------------+
+| Moderate Enhanced User Home       | ``/gpfs/arx/[projid]/home/[userid]``        | ME        | Spectrum Scale | 700         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write       |
++-----------------------------------+---------------------------------------------+-----------+----------------+-------------+--------+---------+---------+------------+------------------+
+| Moderate Enhanced Member Work     | ``/gpfs/arx/[projid]/scratch/[userid]``     | ME        | Spectrum Scale | 700         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write       |
++-----------------------------------+---------------------------------------------+-----------+----------------+-------------+--------+---------+---------+------------+------------------+
+| Moderate Enhanced Project Work    | ``/gpfs/arx/[projid]/proj-shared/[userid]`` | ME        | Spectrum Scale | 770         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write       |
++-----------------------------------+---------------------------------------------+-----------+----------------+-------------+--------+---------+---------+------------+------------------+
+
+| **Area -** The general name of the storage area.
+| **Path -** The path (symlink) to the storage area's directory.
+| **Enclave -** The security enclave where the path is available. There are several security enclaves:
+|      - *Open (O) -* Ascent and other OLCF machines accessible with a username/password
+|      - *Moderate Projects not subject to export control (M1)* - These are projects on machines such as Summit or Andes that require 2-factor authentication but are not subject to export control restrictions.
+|      - *Moderate Projects subject to export control (M2) -* Same as M1, but projects that are subject to export control restrictions.
+|      - *Moderated Enhanced (ME) -* These are projects that might involve HIPAA or ITAR regulations. These projects utilize Summit compute resources but have extra security precautions and separate file systems.
+| **Type -** The underlying software technology supporting the storage area.
+| **Permissions -** UNIX Permissions enforced on the storage area's top-level directory.
+| **Quota -** The limits placed on total number of bytes and/or files in the storage area.
+| **Backups -** States if the data is automatically duplicated for disaster recovery purposes.
+| **Purged -** Period of time, post-file-access, after which a file will be marked as eligible for permanent deletion.
+| **Retention -** Period of time, post-account-deactivation or post-project-end, after which data will be marked as eligible for permanent deletion.
+| **On Compute Nodes -** Is this filesystem available on compute nodes (no, available but read-only, and available read/write)
+
+.. important::
+    Files within "Work" directories (i.e., Member Work, Project Work, World Work) are *not* backed up and are *purged* on a regular basis according to the timeframes listed above.
+
+.. note::
+    Moderate Enhanced projects do not have access to HPSS.
+
+.. tip::
+    If your home directory reaches its quota, your batch jobs might fail with the error ``cat: write error: Disk quota exceeded``. This error may not be intuitive, especially if your job exclusively uses work areas that are well under quota. The error is actually related to your home directory quota. Sometimes, batch systems write temporary files to the home directory (for example, on Summit LSF writes temporary data in ``~/.lsbatch``), so if the home directory is over quota and that file creation fails, the job will fail with the quota error.
+
+    You can check your home directory quota with the ``quota`` command. If it is over quota, you need to bring usage under the quota and then your jobs should run without encountering the ``Disk quota exceeded`` error.
+
+.. rubric:: Footnotes
+
+.. [#f1] This entry is for legacy User Archive directories which contained user data on January 14, 2020.
+
+.. [#f2] User Archive directories that were created (or had no user data) after January 14, 2020. Settings other than permissions are not applicable because directories are root-owned and contain no user files.
+
+.. [#f3] Permissions on Member Work directories can be controlled to an extent by project members. By default, only the project member has any accesses, but accesses can be granted to other project members by setting group permissions accordingly on the Member Work directory. The parent directory of the Member Work directory prevents accesses by "UNIX-others" and cannot be changed.
+
+.. [#f4] Retention is not applicable as files will follow purge cycle.
+
+
+On Summit, Andes, and the DTNs, additional paths to the various project-centric work areas are available via the following symbolic links and/or environment variables:
+
+- Member Work Directory:  ``/gpfs/alpine/scratch/[userid]/[projid]`` or ``$MEMBERWORK/[projid]``
+- Project Work Directory: ``/gpfs/alpine/proj-shared/[projid]`` or ``$PROJWORK/[projid]``
+- World Work Directory: ``/gpfs/alpine/world-shared/[projid]`` or ``$WORLDWORK/[projid]``
+
+.. _data-user-centric-areas:
+
+==================================
+Notes on User-Centric Data Storage
+==================================
+
+.. _data-user-home-directories-nfs:
+
+User Home Directories (NFS)
+===========================
+
+The environment variable ``$HOME`` will always point to your current home directory. It is recommended, where possible, that you use this variable to reference your home directory. In cases in which using ``$HOME`` is not feasible, it is recommended that you use ``/ccs/home/$USER``.
+
+Users should note that since this is an NFS-mounted filesystem, its performance will not be as high as other filesystems.
+
+User Home Quotas
+----------------
+
+Quotas are enforced on user home directories. To request an increased quota, contact the OLCF User Assistance Center. To view your current quota and usage, use the ``quota`` command:
+
+
+.. code::
+
+    $ quota -Qs
+    Disk quotas for user usrid (uid 12345):
+         Filesystem  blocks   quota   limit   grace   files   quota   limit   grace
+    nccsfiler1a.ccs.ornl.gov:/vol/home
+                      4858M   5000M   5000M           29379   4295m   4295m
+
+.. note::
+   Moderate enhanced projects home directores are located in GPFS. There is no enforced quota, but it is recommended that users not exceed 50 TB. These directories are subject to the 90 day purge.
+
+User Home Permissions
+---------------------
+
+The default permissions for user home directories is shown in the :ref:`Filesystem Summary Table <data-filesystem-summary>`. Users have the ability to change permissions on their home directories, although it is recommended that permissions be set to as restrictive as possible (without interfering with your work).
+
+.. note::
+   Moderate enhanced projects have home directory permissions set to ``0700`` and are automatically reset to that if changed by the user.
+
+User Home Backups
+-----------------
+
+If you accidentally delete files from your home directory, you may be able to retrieve them. Online backups are performed at regular intervals. Hourly backups for the past 24 hours, daily backups for the last 7 days, and once-weekly backups are available. It is possible that the deleted files are available in one of those backups. The backup directories are named ``hourly.*``, ``daily.*``, and ``weekly.*`` where ``*`` is the date/time stamp of backup creation. For example, ``hourly.2020-01-01-0905`` is an hourly backup made on January 1st, 2020 at 9:05 AM.
+
+The backups are accessed via the ``.snapshot`` subdirectory. Note that ``ls`` alone (or even ``ls -a``) will not show the ``.snapshot`` subdirectory exists, though ``ls .snapshot`` will show its contents. The ``.snapshot`` feature is available in any subdirectory of your home directory and will show the online backups available for that subdirectory. 
+
+To retrieve a backup, simply copy it into your desired destination with the ``cp`` command.
+
+.. note::
+   There are no backups for moderate enhanced project home directories.
+
+User Website Directory
+----------------------
+
+Users interested in sharing files publicly via the World Wide Web can request a user website directory be created for their account. User website directories (``~/www``) have a 5GB storage quota and allow access to files at ``http://users.nccs.gov/~user`` (where ``user`` is your userid). If you are interested in having a user website directory created, please contact the User Assistance Center at help@olcf.ornl.gov.
+
+User Archive Directories (HPSS)
+===============================
+
+.. note::
+    Use of User Archive areas for data storage is deprecated as of January 14, 2020.
+    The user archive area for any user account created after that date (or for any
+    user archive directory that is empty of user files after that date) will contain
+    only symlinks to the top-level directories for each of the user's projects on
+    HPSS. Users with existing data in a User Archive directory are encouraged to
+    move that data to an appropriate project-based directory as soon as possible.
+    
+    The information below is simply for reference for those users with existing 
+    data in User Archive directories.
+
+
+The High Performance Storage System (HPSS) at the OLCF provides longer-term storage for the large amounts of data created on the OLCF compute systems. The mass storage facility consists of tape and disk storage components, servers, and the HPSS software. After data is uploaded, it persists on disk for some period of time. The length of its life on disk is determined by how full the disk caches become. When data is migrated to tape, it is done so in a first-in, first-out fashion.
+
+User archive areas on HPSS are intended for storage of data not immediately needed in either User Home directories (NFS) or User Work directories (GPFS).  User Archive directories should not be used to store project-related data.  Rather, Project Archive directories should be used for project data. 
+
+User Archive Access
+-------------------
+
+Users are granted HPSS access if they are members of projects with Project Archive areas.  Users can transfer data to HPSS from any OLCF system using the HSI or HTAR utilities. For more information on using HSI or HTAR, see the :ref:`data-hpss` section.
+
+
+User Archive Accounting
+-----------------------
+
+Each file and directory on HPSS is associated with an HPSS storage allocation. Storage allocations are normally associated with one of the user's projects; however, legacy usage (from files stored to User Archive areas prior to January 14, 2020) may instead be associated with the user or a 'legacy' project. To check storage allocation usage, use the comand ``showusage -s hpss`` from an OLCF resource such as Summit or Andes. 
+
+For information on usage and best practices for HPSS, please see the :ref:`data-hpss` section.
+
+
+.. _data-project-centric-areas:
+
+=====================================
+Notes on Project-Centric Data Storage
+=====================================
+
+
+Project directories provide members of a project with a common place to store code, data, and other files related to their project.
+
+.. _data-project-home-directories-nfs:
+
+Project Home Directories (NFS)
+==============================
+
+Open and Moderate Projects are provided with a Project Home storage area in the NFS-mounted filesystem. This area is intended for storage of data, code, and other files that are of interest to all members of a project. Since Project Home is an NFS-mounted filesystem, its performance will not be as high as other filesystems. 
+
+.. note::
+   Moderate Enhanced projects are not provided with Project Home spaces, just Project Work spaces.
+
+
+Project Home Path, Quota, and Permissions
+-----------------------------------------
+
+The path, quota, and permissions for Project Home directories are summarized in the :ref:`Filesystem Summary Table <data-filesystem-summary>`.
+
+Quotas are enforced on Project Home directories. To check a Project Home directory’s usage, run ``df -h /ccs/proj/[projid]`` (where ``[projid]`` is the project ID). Note, however, that permission settings on some subdirectories may prevent you from accessing them, and in that case you will not be able to obtain the correct usage. If this is the case, contact help@olcf.ornl.gov for the usage information.
+
+Project Home directories are root-owned and are associated with the project's Unix group. Default permissions are set such that only members of the project can access the directory, and project members are not able to change permissions of the top-level directory.
+
+Project Home Backups
+--------------------
+
+If you accidentally delete files from your project home directory, you may be able to retrieve them. Online backups are performed at regular intervals.  Hourly backups for the past 24 hours, daily backups for the last 7 days, and once-weekly backups are available. It is possible that the deleted files are available in one of those backups. The backup directories are named ``hourly.*``, ``daily.*``, and ``weekly.*`` where ``*`` is the date/time stamp of backup creation. For example, ``hourly.2020-01-01-0905`` is an hourly backup made on January 1st, 2020 at
+9:05 AM.
+
+The backups are accessed via the ``.snapshot`` subdirectory. Note that ``ls`` alone (or even ``ls -a``) will not show the ``.snapshot`` subdirectory exists, though ``ls .snapshot`` will show its contents. The ``.snapshot`` feature is available in any subdirectory of your project home directory and will show the online backups available for that subdirectory.
+
+To retrieve a backup, simply copy it into your desired destination with the ``cp`` command.
+
+Project Work Areas
+==================
+
+Three Project Work Areas to Facilitate Collaboration
+----------------------------------------------------
+
+To facilitate collaboration among researchers, the OLCF provides (3) distinct types of project-centric work storage areas: *Member Work* directories, *Project Work* directories, and *World Work* directories.  Each directory should be used for storing files generated by computationally-intensive HPC jobs related to a project.
+
+.. note::
+   Moderate enhanced projects do not have World Work directories and the filesystem is called "arx" rather than "alpine"
+
+The difference between the three lies in the accessibility of the data to project members and to researchers outside of the project. Member Work directories are accessible only by an individual project member by default. Project Work directories are accessible by all project members.  World Work directories are readable by any user on the system.
+
+Permissions
+-----------
+
+UNIX Permissions on each project-centric work storage area differ according to the area’s intended collaborative use. Under this setup, the process of sharing data with other researchers amounts to simply ensuring that the data resides in the proper work directory.
+
+-  Member Work Directory: ``700``
+-  Project Work Directory: ``770``
+-  World Work Directory: ``775``
+
+For example, if you have data that must be restricted only to yourself, keep them in your Member Work directory for that project (and leave the default permissions unchanged). If you have data that you intend to share with researchers within your project, keep them in the project’s Project Work directory. If you have data that you intend to share with researchers outside of a project, keep them in the project’s World Work directory.
+
+Backups
+-------
+
+Member Work, Project Work, and World Work directories **are not backed up**. Project members are responsible for backing up these files, either to Project Archive areas (HPSS) or to an off-site location.
+
+Project Archive Directories
+===========================
+
+Moderate projects without export control restrictions are also allocated project-specific archival space on the High Performance Storage System (HPSS). The default quota is shown on the table at the top of this page. If a higher quota is needed, contact the User Assistance Center.
+
+.. note::
+    There is no HPSS storage for Moderate Enhanced Projects, Moderate Projects subject to export control, or Open projects.
+
+Three Project Archive Areas Facilitae Collaboration on Archival Data
+--------------------------------------------------------------------
+
+To facilitate collaboration among researchers, the OLCF provides (3) distinct types of project-centric archival storage areas: *Member Archive* directories, *Project Archive* directories, and *World Archive* directories.  These directories should be used for storage of data not immediately needed in either the Project Home (NFS) areas or Project Work (Alpine) areas and to serve as a location to store backup copies of project-related files.
+
+As with the three project work areas, the difference between these three areas lies in the accessibility of data to project members and to researchers outside of the project. Member Archive directories are accessible only by an individual project member by default, Project Archive directories are accessible by all project members, and World Archive directories are readable by any user on the system.
+
+Permissions
+-----------
+
+UNIX Permissions on each project-centric archive storage area differ according to the area’s intended collaborative use. Under this setup, the process of sharing data with other researchers amounts to simply ensuring that the data resides in the proper archive directory.
+
+-  Member Archive Directory: ``700``
+-  Project Archive Directory: ``770``
+-  World Archive Directory: ``775``
+
+For example, if you have data that must be restricted only to yourself, keep them in your Member Archive directory for that project (and leave the default permissions unchanged). If you have data that you intend to share with researchers within your project, keep them in the project’s Project Archive directory. If you have data that you intend to share with researchers outside of a project, keep them in the project’s World Archive directory.
+
+Project Archive Access
+----------------------
+
+Project Archive directories may only be accessed via utilities called HSI and HTAR. For more information on using HSI or HTAR, see the :ref:`data-hpss` section.
+
+
+
+.. _data-policy:
+
+*************
+Data Policies
+*************
+
+===========
+Information
+===========
+
+Although there are no hard quota limits for project storage, an upper storage limit should be reported in the project request. The available space of a project can be modified upon request.
+
+=====
+Purge
+=====
+
+To keep the Spectrum Scale file system exceptionally performant, files that have not been accessed (e.g. read) or modified in the project and user areas are purged at the intervals shown in the :ref:`Filesystem Summary Table <data-filesystem-summary>` above. Please make sure that valuable data is moved off of these systems regularly. See :ref:`data-hpss` for information about using the HSI and HTAR utilities to archive data on HPSS. 
+
+================
+Special Requests
+================
+
+If you need an exception to the limits listed in the table above, such as a higher quota in your User/Project Home or a purge exemption in a Member/Project/World Work area, contact help@olcf.ornl.gov with a summary of the exception that you need.
+
+==============
+Data Retention
+==============
+
+By default, the OLCF does not guarantee lifetime data retention on any OLCF resources. Following a user account deactivation or project end, user and project data in non-purged areas will be retained for 90 days. After this timeframe, the OLCF retains the right to delete data. Data in purged areas remains subject to normal purge policies.
+
+
+
+.. _data-alpine-ibm-spectrum-scale-filesystem:
+
+************************************
+Alpine IBM Spectrum Scale Filesystem
+************************************
+
+Summit mounts a POSIX-based IBM Spectrum Scale parallel filesystem called Alpine. Alpine's maximum capacity is 250 PB. It is consisted of 77 IBM Elastic Storage Server (ESS) GL4 nodes running IBM Spectrum Scale 5.x which are called Network Shared Disk (NSD) servers. Each IBM ESS GL4 node, is a scalable storage unit (SSU), constituted by two dual-socket IBM POWER9 storage servers, and a 4X EDR InfiniBand network for up to 100Gbit/sec of networking bandwidth.  The maximum performance of the final production system will be about 2.5 TB/s for sequential I/O and 2.2 TB/s for random I/O under FPP mode, which means each process, writes its own file. Metada operations are improved with around to minimum 50,000 file access per sec and aggregated up to 2.6 million accesses of 32KB small files.  
+
+
+.. figure:: /images/summit_nds_final.png
+   :align: center
+
+   Figure 1. An example of the NDS servers on Summit
+
+=====================================
+Performance under non-ideal workloads
+=====================================
+
+The I/O performance can be lower than the optimal one when you save one single shared file with non-optimal I/O pattern. Moreover, the previous performance results are achieved under an ideal system, the system is dedicated, and a specific number of compute nodes are used. The file system is shared across many users; the I/O performance can vary because other users that perform heavy I/O as also executing large scale jobs and stress the interconnection network.  Finally, if the I/O pattern is not aligned, then the I/O performance can be significantly lower than the ideal one.  Similar, related to the number of the concurrent users, is applied for the metadata operations, they can be lower than the expected performance.
+
+====
+Tips
+====
+
+- For best performance on the IBM Spectrum Scale filesystem, use large page aligned I/O and asynchronous reads and writes. The filesystem blocksize is 16MB, the minimum fragment size is 16K so when a file under 16K is stored, it will still use 16K of the disk. Writing files of 16 MB or larger, will achieve better performance. All files are striped across LUNs which are distributed across all IO servers.
+
+- If your application occupies up to two compute nodes and it requires a significant number of I/O operations, you could try to add the following flag in your job script  file and investigate if the total execution time is decreased. This flag could cause worse results, it depends on the application.
+
+                   ``#BSUB -alloc_flags maximizegpfs``
+
+======================================================
+Major difference between Lustre and IBM Spectrum Scale
+======================================================
+
+The file systems have many technical differences, but we will mention only what a user needs to be familiar with:
+
+- On Summit, there is no concept of striping from the user point of view, the user uses the Alpine storage without the need to declare the striping for files/directories. The GPFS will handle the workload, the file system was tuned during the installation.
+
+
+
+.. _data-hpss:
+
+**************************
+HPSS Data Archival System
+**************************
+
+There are two methods of moving data to/from HPSS. The more traditional method is via the command-line utilities ``hsi`` and ``htar``. These commands are available from most OLCF systems. Recently, we added the capability of using Globus to move data to/from HPSS. HPSS is available via the "OLCF HPSS" Globus endpoint. By connecting to that endpoint and the "OLCF DTN" endpoint, you can transfer files between HPSS and other OLCF filesystems. By connecting to "OLCF HPSS" and some other endpoint, you can transfer files to/from an offsite location to HPSS. More details on various transfer methods are available in the :ref:`data-transferring-data` section.
+
+HPSS is optimized for large files. Ideally, we recommend sending files 768GB or larger to HPSS. HPSS will handle small files, but write and read performance will be negatively affected with files smaller than 512 MB. We recommend combining small files prior to tranfer. Alternatively you can use ``htar`` to combine them and create the ``.tar`` file directly on HPSS.
+
+
+.. _data-transferring-data:
+
+******************
+Transferring Data
+******************
+
+============
+Globus
+============
+
+Two Globus Endpoints have been established for OLCF resources. These are "OLCF DTN" and "OLCF HPSS". The "OLCF DTN" endpoint provides access to User/Project Home areas as well as the Alpine filesystem. The "OLCF HPSS" endpoint provides access to HPSS. By selecting one of these endpoints and some offsite endpoint, you can use Globus to transfer data to/from that storage area at OLCF. By selecting both of those endpoints, you can transfer data between HPSS and one of our other filesystems. The example below shows the latter, although it should be relatively easy to adapt this example to a transfer from some other endpoint to "OLCF DTN" or "OLCF HPSS".
+
+Globus has restriction of 8 active transfers across all the users. Each user has a limit of 3 active transfers, so it is required to transfer a lot of data on each transfer than less data across many transfers. If a folder is constituted with mixed files including thousands of small files (less than 1MB each one), it would be better to tar the small files.  Otherwise, if the files are larger, Globus will handle them. 
+
+Globus Example
+==============
+
+- Visit www.globus.org and login
+
+.. image:: /images/globus_first_page.png
+   :align: center
+
+- Then select the organization that you belong, if you don't work for ORNL, do
+  not select ORNL. If your organization is not in the list, create a Globus
+  account
+
+.. image:: /images/globus_organization.png
+   :align: center
+
+- Search for the endpoint **OLCF DTN**
+
+.. image:: /images/search_endpoint1.png
+   :align: center
+
+.. image:: /images/search_endpoint2.png
+   :align: center
+
+- Declare path
+
+.. image:: /images/globus_first_endpoint.png
+   :align: center
+
+- Open a second panel to declare the new endpoint called **OLCF HPSS** and use
+  the appropriate path for HPSS
+
+.. image:: /images/globus_second_endpoint_hpss.png
+   :align: center
+
+.. image:: /images/globus_second_endpoint_hpss2.png
+   :align: center
+
+- Select your file/folder and click start. hen an activity report will appear
+  and you can click on it to see the status. When the transfer is finished or
+  failed, you will receive an email
+
+.. image:: /images/globus_select_start.png
+   :align: center
+
+.. image:: /images/globus_activity.png
+   :align: center
+
+.. image:: /images/globus_activity_information.png
+   :align: center
+
+.. image:: /images/globus_activity_done.png
+   :align: center
+
+
+Using Globus From Your Local Workstation
+========================================
+
+Globus is most frequently used to facilitate data transfer between two institutional filesystems. However, it can also be used to facilitate data transfer involving an individual workstation or laptop. The following instructions demonstrate creating a local Globus endpoint, and initiating a transfer from it to the OLCF's Alpine GPFS filesystem.
+
+- Visit https://www.globus.org/globus-connect-personal and Install Globus Connect Personal, it is available for Windows, Mac, and Linux.
+
+- Make note of the endpoint name given during setup. In this example, the endpoint is *laptop_gmarkom*.
+
+- When the installation has finished, click on the Globus icon and select *Web: Transfer Files* as below
+
+.. image:: /images/globus_personal1.png
+   :align: center
+
+- Globus will ask you to login. If your institution does not have an organizational login, you may choose to either *Sign in with Google* or *Sign in with ORCiD iD*.
+
+.. image:: /images/globus_google.png
+   :align: center
+
+- In the main Globus web page, select the two-panel view, then set the source and destination endpoints. (Left/Right order does not matter)
+
+.. image:: /images/globus_laptop_summit.png
+   :align: center
+
+- Next, navigate to the appropriate source and destination paths to select the files you want to transfer. Click the "Start" button to begin the transfer.
+
+.. image:: /images/globus_laptop_transfer.png
+   :align: center
+
+- An activity report will appear, and you can click on it to see the status of the transfer.
+
+.. image:: /images/globus_laptop_activity.png
+   :align: center
+
+
+-  Various information about the transfer is shown in the activity report. You will receive an email once the transfer is finished, including if it fails for any reason.
+
+.. image:: /images/globus_laptop_activity_done.png
+   :align: center
+
+
+==========
+HSI
+==========
+
+HSI (Hierarchial Storage Interface) is sued to transfer data to/from OLCF systems and HPSS. When retrieving data from a tar archive larger than 1 TB, we recommend that you pull only the files that you need rather than the full archive.  Examples of this will be given in the htar section below. Issuing the command ``hsi`` will start HSI in interactive mode. Alternatively, you can use:
+
+     ``hsi [options] command(s)``
+
+...to execute a set of HSI commands and then return. To list you files on the HPSS, you might use:
+
+     ``hsi ls``
+
+``hsi`` commands are similar to ``ftp`` commands. For example, ``hsi get`` and ``hsi put`` are used to retrieve and store individual files, and ``hsi mget`` and ``hsi mput`` can be used to retrieve multiple files. To send a file to HPSS, you might use:
+
+     ``hsi put a.out : /hpss/prod/[projid]/users/[userid]/a.out``
+
+To retrieve one, you might use:
+
+     ``hsi get /hpss/prod/[projid]/proj-shared/a.out``
+
+Here is a list of commonly used hsi commands.
+
+========== ====================================================================
+Command    Function
+========== ====================================================================
+cd         Change current directory
+get, mget  Copy one or more HPSS-resident files to local files
+cget       Conditional get - get the file only if it doesn't already exist
+cp         Copy a file within HPSS
+rm mdelete Remove one or more files from HPSS
+ls         List a directory
+put, mput  Copy one or more local files to HPSS
+cput       Conditional put - copy the file into HPSS unless it is already there
+pwd        Print current directory
+mv         Rename an HPSS file
+mkdir      Create an HPSS directory
+rmdir      Delete an HPSS directory
+========== ====================================================================
+
+ 
+Additional HSI Documentation
+============================
+
+There is interactive documentation on the ``hsi`` command available by running:
+
+     ``hsi help``
+
+Additional documentation can be found on the `HPSS Collaboration website <http://www.hpss-collaboration.org/user_doc.shtml>`__.
+
+
+===========
+HTAR
+===========
+
+HTAR is another utility to transfer data between OLCF systems and HPSS.  The ``htar`` command provides an interface very similar to the traditional ``tar`` command found on UNIX systems. The primary difference is instead of creating a .tar file on the local filesystem, it creates that file directly on HPSS. It is used as a command-line interface.  The basic syntax of ``htar`` is:
+
+   ``htar -{c|K|t|x|X} -f tarfile [directories] [files]``
+
+As with the standard Unix ``tar`` utility the ``-c``, ``-x``, and ``-t`` options, respectively, function to create, extract, and list tar archive files.  The ``-K`` option verifies an existing tarfile in HPSS and the ``-X`` option can be used to re-create the index file for an existing archive. For example, to store all files in the directory ``dir1`` to a file named ``/hpss/prod/[projid]/users/[userid]/allfiles.tar`` on HPSS, use the command:
+
+     ``htar -cvf /hpss/prod/[projid]/users/[userid]/allfiles.tar dir1/*``
+
+To retrieve these files:
+
+     ``htar -xvf  /hpss/prod/[projid]/users/[userid]/allfiles.tar``
+
+``htar`` will overwrite files of the same name in the target directory.  **When possible, extract only the files you need from large archives.** To display the names of the files in the ``project1.tar`` archive file within the HPSS home directory:
+
+     ``htar -vtf  /hpss/prod/[projid]/users/[userid]/project1.tar``
+
+To extract only one file, ``executable.out``, from the ``project1`` directory in the Archive file called `` /hpss/prod/[projid]/users/[userid]/project1.tar``:
+
+     ``htar -xm -f project1.tar project1/ executable.out``
+
+To extract all files from the ``project1/src`` directory in the archive file called ``project1.tar``, and use the time of extraction as the modification time, use the following command:
+
+     ``htar -xm -f  /hpss/prod/[projid]/users/[userid]/project1.tar project1/src``
+
+HTAR Limitations
+================
+
+The ``htar`` utility has several limitations.
+
+Apending data
+-------------
+
+You cannot add or append files to an existing archive.
+
+File Path Length
+----------------
+
+File path names within an ``htar`` archive of the form prefix/name are limited to 154 characters for the prefix and 99 characters for the file name. Link names cannot exceed 99 characters.
+
+Size
+----
+
+There are limits to the size and number of files that can be placed in an HTAR archive.
+
+=================================== ========================
+Individual File Size Maximum        68GB, due to POSIX limit
+Maximum Number of Files per Archive 1 million
+=================================== ========================
+
+For example, when attempting to HTAR a directory with one member file larger that 64GB, the following error message will appear:
+
+.. code::
+
+   $ htar -cvf  /hpss/prod/[projid]/users/[userid]/hpss_test.tar hpss_test/
+
+   INFO: File too large for htar to handle: hpss_test/75GB.dat (75161927680 bytes)
+   ERROR: 1 oversize member files found - please correct and retry
+   ERROR: [FATAL] error(s) generating filename list
+   HTAR: HTAR FAILED
+
+Additional HTAR Documentation
+=============================
+
+For more information about ``htar``, execute ``man htar``. 
+
+
+
+========================================
+Command-Line/Terminal Tools
+========================================
+
+Command-line tools such as ``scp`` and ``rsync`` can be used to transfer data from outside OLCF.  In general, when transferring data into or out of OLCF from the command line, it's best to initiate the transfer from outside OLCF. If moving many small files, it can be beneficial to compress them into a single archive file, then transfer just the one archive file. 
+
+* ``scp`` - secure copy (remote file copy program)
+
+	* Sending a file to OLCF
+
+	.. code::
+
+   	   scp yourfile $USER@dtn.ccs.ornl.gov:/path/
+
+
+	* Retrieving a file from OLCF
+
+	.. code::
+
+   	   scp $USER@dtn.ccs.ornl.gov:/path/yourfile .
+
+
+	* Sending a directory to OLCF
+
+	.. code::
+
+   	   scp -r yourdirectory $USER@dtn.ccs.ornl.gov:/path/
+
+
+* ``rsync`` - a fast, versatile, remote (and local) file-copying tool
+
+
+	* Sync a directory named ``mydir`` from your local system to the OLCF
+
+	.. code::
+
+   	   rsync -avz mydir/ $USER@dtn.ccs.ornl.gov:/path/
+
+
+	where:
+  		* ``a`` is for archive mode\
+  		* ``v`` is for verbose mode\
+  		* ``z`` is for compressed mode\
+
+
+	* Sync a directory from the OLCF to a local directory
+
+	.. code::
+
+   	   rsync -avz  $USER@dtn.ccs.ornl.gov:/path/dir/ mydir/
+
+        * Transfer data and show progress while transferring
+
+        .. code::
+
+           rsync -avz --progress mydir/ $USER@dtn.ccs.ornl.gov:/path/
+
+	* Include files or directories starting with T and exclude all others
+
+        .. code::
+
+           rsync -avz --progress --include 'T*' --exclude '*' mydir/ $USER@dtn.ccs.ornl.gov:/path/
+
+	* If the file or directory exists at the target but not on the source, then delete it
+
+        .. code::
+
+           rsync -avz --delete $USER@dtn.ccs.ornl.gov:/path/ .
+
+	* Transfer only the files that are smaller than 1MB
+
+        .. code::
+
+           rsync -avz --max-size='1m' mydir/ $USER@dtn.ccs.ornl.gov:/path/
+
+	* If you want to verify the behavior is as intended, execute a dry-run
+
+        .. code::
+
+           rsync -avz --dry-run mydir/ $USER@dtn.ccs.ornl.gov:/path/
+
+See the manual pages for more information:
+
+.. code::
+
+    $ man scp
+    $ man rsync
+
+
+* Differences:
+	* ``scp`` cannot continue if it is interrupted. ``rsync`` can.
+	* ``rsync`` is optimized for performance.
+	* By default, ``rsync`` checks if the transfer of the data was successful.
+
+
+.. note::
+    Standard file transfer protocol (FTP) and remote copy (RCP) should not be used to transfer files to the NCCS high-performance computing (HPC) systems due to security concerns.
+
 
 **********************************
 Burst Buffer and Spectral Library
@@ -20,4 +715,13 @@ Burst Buffer and Spectral Library
 
 Summit has node-local NVMe devices that can be used as :ref:`burst-buffer` by
 jobs, and the :ref:`spectral-library` can help with some of these use cases.
+
+
+
+
+
+
+
+
+
 

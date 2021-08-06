@@ -108,10 +108,10 @@ For more information on connecting to OLCF resources, see :ref:`connecting-to-ol
 File systems
 ------------
 
-The OLCF's center-wide :ref:`alpine-ibm-spectrum-scale-filesystem` name Alpine
+The OLCF's center-wide :ref:`data-alpine-ibm-spectrum-scale-filesystem` name Alpine
 is available on Andes for computational work.  An NFS-based file system provides
-:ref:`user-home-directories-nfs` and :ref:`project-home-directories-nfs`.
-Additionally, the OLCF's :ref:`hpss` provides archival spaces.
+:ref:`data-user-home-directories-nfs` and :ref:`data-project-home-directories-nfs`.
+Additionally, the OLCF's :ref:`data-hpss` provides archival spaces.
 
 Shell and programming environments
 ==================================

@@ -1,4 +1,7 @@
-.. _policy:
+
+.. warning::
+   This page has been deprecated, and relevant information is now available on :ref:`data-storage-and-transfers`. Please update any bookmarks to use that page.
+
 
 *******
 Policy
@@ -101,7 +104,7 @@ Purge
 To keep the Spectrum Scale file system exceptionally performant, files that have
 not been accessed in the project and user areas are purged at the intervals
 shown in the table above. Please make sure that valuable data is moved off of
-these systems regularly. See :ref:`hpss`. for information about using the HSI
+these systems regularly. See :ref:`data-hpss`. for information about using the HSI
 and HTAR utilities to archive data on HPSS. Just to note that when you read a
 file, then the 90 days counter restarts.
 

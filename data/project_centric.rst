@@ -2,11 +2,14 @@
 Project-Centric Data Storage
 *****************************
 
+.. warning::
+   This page has been deprecated, and relevant information is now available on :ref:`data-storage-and-transfers`. Please update any bookmarks to use that page.
+
+
 
 Project directories provide members of a project with a common place to
 store code, data, and other files related to their project.
 
-.. _project-home-directories-nfs:
 
 Project Home Directories (NFS)
 ===============================
@@ -211,5 +214,5 @@ Project Archive Access
 -----------------------
 
 Project Archive directories may only be accessed via utilities called
-HSI and HTAR. For more information on using HSI or HTAR, see the :ref:`hpss` section.
+HSI and HTAR. For more information on using HSI or HTAR, see the :ref:`data-hpss` section.
 
