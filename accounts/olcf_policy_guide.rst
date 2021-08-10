@@ -1156,8 +1156,8 @@ User-Managed Software Policy
 ===========================================
 
 
-For more information about the UMS program see the Software section of this documentation
-`here </software/UMS/index.html>`_.
+For more information about the UMS program see the 
+`Software documentation section </software/UMS/index.html>`_.
 
 .. note::
     This details an official policy of the OLCF, and must be
@@ -1187,28 +1187,36 @@ Order is for convenience and no implication of priority is implied.
   appropriate contexts/locations.
 
   - The statement should clearly indicate that the product is not supported or maintained by the Facility, 
-    but is supported by the Product team.  The statement should clearly indicate the organization that is 
-    providing support and maintenance, and clearly indicate the preferred method(s) of reporting issues or 
-    requesting support.
+    but is supported by the UMS project applicant and/or the UMS project team.  The statement should clearly 
+    indicate the organization that is providing support and maintenance, and clearly indicate the preferred 
+    method(s) of reporting issues or requesting support.
 
 - Product modules will be grouped under project-level modules. 
 
-  - Users would be advised to do a ``module load project``, which will expose modules for the 
+  - Users will be advised to do a ``module load ums-<project>``, which will expose modules for the 
     individual products associated with that project, accessed by a second “module load product”. 
 
 - Project PI must ensure that support is provided for users of the product, as documented in the statement of support.
+
 - Project PI must ensure that the product is timely updated in response to changes in the system software environment
   (e.g. updates to OS, compiler, library, or other key tools).  If this commitment is not met, the Facility may remove
   the software from UMS.
+
 - Project PI must ensure that installations are tested to ensure basic functionality before being released to users.
-  These are expected to be basic “sanity tests” to ensure that the build/install was successful.
+  These are expected to be at minimum basic function/unit tests to ensure that the build/install was successful.
 
-  - The allocation provided by the facility for UMS shall not be used for software development or for routine testing purposes beyond the basic installation testing, described above.
+  - The resources provided by the Facility for UMS shall not be used for software development or for routine
+    testing purposes beyond the installation testing, described above.
 
-- Products may be removed from UMS at the request of the Project PI by notifying the UMS POC of their intent and cleaning up their directory space.
+- Products may be removed from UMS at the request of the Project PI by notifying the Facility (help@olcf.ornl.gov) of their intent and
+  cleaning up their directory space.
 
-- If a product is judged to be problematic for the Facility, it may be removed by the UMS POC, who will also notify the Project PI.  
+- If a product is judged to be problematic for the Facility, it may be removed by the Facility, who will also notify the Project PI.  
 
 ..
   Rationale: This is intended to be a measure of last resort.  The UMS concept is designed so that use of the software is opt-in and there should be no problems for users who do not opt in, or for the facility at large.  However in the rare case where something is really wrong, the facility needs a way out. Presumably, everything possible will be done to avoid this situation
 
+  Will undergo Export Control Review.  Need enough information to pass ECR in the application.
+  Will be given "modest" allocation of hours.  Monitored but not explicit.
+  Added to RUC for approval.
+  Quota in RATS?
