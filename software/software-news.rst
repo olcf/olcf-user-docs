@@ -10,7 +10,11 @@ most recent changes are listed first.
 
    <p style="font-size:20px"><b>Summit: Software Installation/Default Software Changes (August 17-19, 2021)</b></p>
 
-Summit's operating system will be upgraded to Red Hat Enterprise Linux 8 (RHEL 8) on August 17-19, 2021. As a result, the following new packages will become available:
+Summit's operating system will be upgraded to Red Hat Enterprise Linux 8 (RHEL 8) on August 17-19, 2021.  
+
+.. warning:: **Codes should be rebuilt** prior to running following the upgrade due to the OS and software changes.
+
+As a result of the upgrade, the following new packages will become available:
 
 .. csv-table::
     :header: "Package", "Current Default", "New Default"
@@ -19,6 +23,8 @@ Summit's operating system will be upgraded to Red Hat Enterprise Linux 8 (RHEL 8
     "IBM Spectrum MPI", "10.3.1.2-20200121", "10.4.0.3-20210112"
     "IBM XL", "16.1.1-5", "16.1.1-10"
     "IBM ESSL", "6.1.0-2", "6.3.0"
+
+.. note::  The **OS-provided Python will no longer be accessible as python** (including variations like */usr/bin/python* or */usr/bin/env python*); rather, you must specify it as *python2* or *python3*. If you are using python from one of the modulefiles rather than the version in */usr/bin*, this change should not affect how you invoke python in your scripts, although we encourage specifying *python2* or *python3* as a best practice.
 
 In addition, the following packages will be upgraded to newer versions and the specific versions listed below will be removed from the system. If you need any of the specific versions scheduled to be removed, please contact help@olcf.ornl.gov.
 
