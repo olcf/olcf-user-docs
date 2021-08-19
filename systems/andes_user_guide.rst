@@ -1073,13 +1073,7 @@ allocated to multiple jobs. Because the OLCF charges based on what a job makes
 uses only one core on a node. To simplify the process, users are given a
 multiples of entire nodes through Slurm.
 
-Viewing Allocation Utilization
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Projects are allocated time on Andes in units of *node-hours*. This is separate
-from a project's Summit allocation, and usage of Andes does not count against
-that allocation. This page describes how such units are calculated, and how
-users can access more detailed information on their relevant allocations.
+Allocations on Andes are separate from those on Summit and other OLCF resources.
 
 Node-Hour Calculation
 ^^^^^^^^^^^^^^^^^^^^^
@@ -1113,7 +1107,7 @@ of run-time errors (e.g. the user's application causes a segmentation fault) are
 counted against the allocation.
 
 Each user may view usage for projects on which they are members from the command
-line tool ``showusage`` and the `My OLCF site <https://users.nccs.gov>`__.
+line tool ``showusage`` and the `myOLCF site <https://my.olcf.ornl.gov>`__.
 
 On the Command Line via ``showusage``
 """""""""""""""""""""""""""""""""""""
@@ -1132,11 +1126,11 @@ through midnight of the previous day. For example:
 
 The ``-h`` option will list more usage details.
 
-On the Web via My OLCF
+On the Web via myOLCF
 """"""""""""""""""""""
 
-More detailed metrics may be found on each project's usage section of the `My
-OLCF site <https://users.nccs.gov>`__. The following information is available
+More detailed metrics may be found on each project's usage section of the `myOLCF
+site <https://my.olcf.ornl.gov>`__. The following information is available
 for each project:
 
 -  YTD usage by system, subproject, and project member
@@ -1147,8 +1141,10 @@ for each project:
 -  Batch system priorities by project and subproject
 -  Project members
 
-The My OLCF site is provided to aid in the utilization and management of OLCF
-allocations. If you have any questions or have a request for additional data,
+The myOLCF site is provided to aid in the utilization and management of OLCF
+allocations. See the :doc:`myOLCF Documentation </services_and_applications/myolcf/index>` for more information. 
+
+If you have any questions or have a request for additional data,
 please contact the OLCF User Assistance Center.
 
 --------------
