@@ -2309,30 +2309,58 @@ compute node. This may be beneficial because it provides more resources
 for GPFS service tasks, but it may also cause resource contention for
 the jsrun compute job.
 
-Resource Accounting
--------------------
 
-While logged into Summit, users can show their YTD usage and allocation
-by project using the ``showusage`` command. System specific details can
-be obtained with the ``-s`` flag. For example,
+Viewing Usage
+-------------
+
+Utilization is calculated daily using batch jobs which complete between 00:00
+and 23:59 of the previous day. For example, if a job moves into a run state on
+Tuesday and completes Wednesday, the job's utilization will be recorded
+Thursday. Only batch jobs which write an end record are used to calculate
+utilization. Batch jobs which do not write end records due to system failure or
+other reasons are not used when calculating utilization. Jobs which fail because
+of run-time errors (e.g. the user's application causes a segmentation fault) are
+counted against the allocation.
+
+Each user may view usage for projects on which they are members from the command
+line tool ``showusage`` and the `My OLCF site <https://users.nccs.gov>`__.
+
+On the Command Line via ``showusage``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The ``showusage`` utility can be used to view your usage from January 01
+through midnight of the previous day. For example:
 
 .. code::
 
-    $ showusage -s summit
+      $ showusage
+        Usage:
+                                 Project Totals
+        Project             Allocation      Usage      Remaining     Usage
+        _________________|______________|___________|____________|______________
+        abc123           |  20000       |   126.3   |  19873.7   |   1560.80
 
-    summit usage for the project's current allocation period:
-                                      Project Totals          [USERID]
-     Project      Allocation        Usage    Remaining          Usage
-    __________________________|____________________________|_____________
-     [PROJID1]        50000   |      15728        34272    |         65
-     [PROJID2]        20000   |       1234        18766    |          0
+The ``-h`` option will list more usage details.
 
-For additional details, please see the help message printed when using
-the ``-h`` flag:
+On the Web via My OLCF
+^^^^^^^^^^^^^^^^^^^^^^
 
-.. code::
+More detailed metrics may be found on each project's usage section of the `My
+OLCF site <https://users.nccs.gov>`__. The following information is available
+for each project:
 
-     $ showusage -h
+-  YTD usage by system, subproject, and project member
+-  Monthly usage by system, subproject, and project member
+-  YTD usage by job size groupings for each system, subproject, and
+   project member
+-  Weekly usage by job size groupings for each system, and subproject
+-  Batch system priorities by project and subproject
+-  Project members
+
+The My OLCF site is provided to aid in the utilization and management of OLCF
+allocations. If you have any questions or have a request for additional data,
+please contact the OLCF User Assistance Center.
+
 
 Other Notes
 -----------
