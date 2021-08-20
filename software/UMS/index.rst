@@ -16,31 +16,32 @@ currently in a pilot study phase in order to establish viable policies for long-
 
   UMS is currently supported on Summit and Andes.
 
-To apply to the UMS program, fill out the application here: 
+To apply to the UMS program, fill out the application at: 
 `https://my.olcf.ornl.gov/project-application-new <https://my.olcf.ornl.gov/project-application-new>`_.
 
-Currently Available Software
-----------------------------
+..
+  Currently Available Software
+  ----------------------------
 
-+------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
-| Project    | Packages       | Point of Contact                           | Information                                                                    |
-+------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
-| csc143     | Adios v2.x     | William Godoy (godoywf@ornl.gov)           | https://csmd.ornl.gov/adios2                                                   |
-|            |                |                                            | https://adios2.readthedocs.io/en/latest/index.html                             |
-+------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
-| gen007flux | Flux           | Stephen Herbein (herbein1@llnl.gov)        | https://github.com/flux-framework                                              |
-+------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
-| stf010     | flang          | Fady Ghanim (ghanimfa@ornl.gov)            |                                                                                |
-+------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
-| aph114     | openPMD-api    | Axel Huebl (axelhuebl@lbl.gov)             | https://github.com/openPMD/openPMD-api; Complex compiled python extension.     |
-|            | WarpX          |                                            | Might be best to treat as a discrete python environment similar to IBM-WML-CE. |
-|            | libEnsemble    |                                            |                                                                                |
-|            | Ascent/Conduit |                                            |                                                                                |
-|            | Adios2 dev     |                                            |                                                                                |
-+------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
-| gen119     | NVIDIA RAPIDS  | Benjamin Hernandez (hernandezarb@ornl.gov) | https://developer.nvidia.com/rapids                                            |
-|            | BlazingSQL     |                                            | https://blazingsql.com/                                                        |
-+------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
+  +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
+  | Project    | Packages       | Point of Contact                           | Information                                                                    |
+  +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
+  | csc143     | Adios v2.x     | William Godoy (godoywf@ornl.gov)           | https://csmd.ornl.gov/adios2                                                   |
+  |            |                |                                            | https://adios2.readthedocs.io/en/latest/index.html                             |
+  +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
+  | gen007flux | Flux           | Stephen Herbein (herbein1@llnl.gov)        | https://github.com/flux-framework                                              |
+  +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
+  | stf010     | flang          | Fady Ghanim (ghanimfa@ornl.gov)            |                                                                                |
+  +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
+  | aph114     | openPMD-api    | Axel Huebl (axelhuebl@lbl.gov)             | https://github.com/openPMD/openPMD-api; Complex compiled python extension.     |
+  |            | WarpX          |                                            | Might be best to treat as a discrete python environment similar to IBM-WML-CE. |
+  |            | libEnsemble    |                                            |                                                                                |
+  |            | Ascent/Conduit |                                            |                                                                                |
+  |            | Adios2 dev     |                                            |                                                                                |
+  +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
+  | gen119     | NVIDIA RAPIDS  | Benjamin Hernandez (hernandezarb@ornl.gov) | https://developer.nvidia.com/rapids                                            |
+  |            | BlazingSQL     |                                            | https://blazingsql.com/                                                        |
+  +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
 
 Usage
 -----
