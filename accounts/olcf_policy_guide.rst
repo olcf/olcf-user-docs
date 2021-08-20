@@ -1156,8 +1156,8 @@ User-Managed Software Policy
 ===========================================
 
 
-For more information about the UMS program see the 
-`Software documentation section </software/UMS/index.html>`_.
+More information about the UMS program can be found in the Software section 
+`here </software/UMS/index.html>`_.
 
 .. note::
     This details an official policy of the OLCF, and must be
@@ -1194,7 +1194,7 @@ Order is for convenience and no implication of priority is implied.
 - Product modules will be grouped under project-level modules. 
 
   - Users will be advised to do a ``module load ums-<project>``, which will expose modules for the 
-    individual products associated with that project, accessed by a second “module load product”. 
+    individual products associated with that project, accessed by a second ``module load product``. 
 
 - Project PI must ensure that support is provided for users of the product, as documented in the statement of support.
 
