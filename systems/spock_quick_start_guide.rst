@@ -289,7 +289,7 @@ To use GPU-aware Cray MPICH with the Cray compiler wrappers, users must load spe
     module load rocm
 
     ## These must be set before compiling so the executable picks up GTL
-    export PE_MPICH_GTL_DIR_amd_gfx908="-L/opt/cray/pe/mpich/8.1.4/gtl/lib"
+    export PE_MPICH_GTL_DIR_amd_gfx908="-L$CRAY_MPICH_ROOTDIR/gtl/lib"
     export PE_MPICH_GTL_LIBS_amd_gfx908="-lmpi_gtl_hsa"
 
     ## These must be set before running
@@ -326,7 +326,7 @@ In addition, the following header files and libraries must be included:
 .. code:: bash
 
     -I${MPICH_DIR}/include
-    -L${MPICH_DIR}/lib -lmpi -L/opt/cray/pe/mpich/8.1.4/gtl/lib -lmpi_gtl_hsa
+    -L${MPICH_DIR}/lib -lmpi -L$CRAY_MPICH_ROOTDIR/gtl/lib -lmpi_gtl_hsa
     
 OpenMP
 ------
