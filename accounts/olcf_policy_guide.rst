@@ -1152,3 +1152,78 @@ changes on the project.
 If you have security-related questions, contact us via email at: security-admins@ccs.ornl.gov.
 Other questions can be sent to help@olcf.ornl.gov.
 
+User-Managed Software (UMS) Policy
+===========================================
+
+
+More information about the UMS program can be found in the `Software </software/UMS/index.html>`_ 
+section.
+
+.. note::
+    This details an official policy of the OLCF, and must be
+    agreed to by the following persons as a condition of access to and use
+    of OLCF computational resources:
+
+    -  Principal Investigators of UMS Projects
+    -  Points of Contact for UMS Projects
+
+    **Title:** UMS Project Policies **Version:** 21.08
+
+Purpose
+-------
+
+This document is intended to describe the agreement between the OLCF and the providers of user-managed
+software installations. User-managed software is built, maintained, and supported by OLCF users
+rather than as official offerings of the OLCF, but is exposed to all users through the module system.
+
+Policies
+--------
+
+Order is for convenience and no implication of priority is implied.
+
+- Products installed should be limited to those explicitly listed in the project application 
+  and approved by the OLCF.
+  
+  - The project application is reviewed by the Export Control Office. If you would like to 
+    install additional packages not listed in your original application, the Project PI must 
+    contact the OLCF at help@olcf.ornl.gov before making changes.
+    
+- Products must provide appropriate modules for their software.
+
+- Products must provide a statement of support, to be displayed via the module system and in other 
+  appropriate contexts/locations.
+
+  - The statement should clearly indicate that the product is not supported or maintained by the OLCF, 
+    but is supported by the UMS project applicant and/or the UMS project team.  
+  - The statement should clearly indicate the organization that is providing support and maintenance, 
+    and clearly indicate the preferred method(s) of reporting issues or requesting support.
+
+- Product modules will be grouped under project-level modules. 
+
+  - Users will be advised to do a ``module load <UMS project>``, which will expose modules for the 
+    individual products associated with that project, accessed by a second ``module load <product>``. 
+
+- Project PI must ensure that support is provided for users of the product, as documented in the statement of support.
+
+- Project PI must ensure that the product is updated in response to changes in the system software environment
+  (e.g. updates to OS, compiler, library, or other key tools) and in a timely fashion.  If this commitment is 
+  not met, the OLCF may remove the software from UMS.
+
+- Project PI must ensure that installations are tested to ensure basic functionality before being released to users.
+  These are expected to be at minimum basic function/unit tests to ensure that the build/install was successful.
+
+  - The resources provided by the OLCF for UMS shall not be used for software development or for routine
+    testing purposes beyond the installation testing as described above.
+
+- Products may be removed from UMS at the request of the Project PI by notifying the OLCF (help@olcf.ornl.gov) of their intent and
+  cleaning up their directory space.
+
+- If a product is judged to be problematic for the OLCF, it may be removed by the OLCF staff, who will also notify the Project PI.  
+
+..
+  Rationale: This is intended to be a measure of last resort.  The UMS concept is designed so that use of the software is opt-in and there should be no problems for users who do not opt in, or for the facility at large.  However in the rare case where something is really wrong, the facility needs a way out. Presumably, everything possible will be done to avoid this situation
+
+  Will undergo Export Control Review.  Need enough information to pass ECR in the application.
+  Will be given "modest" allocation of hours.  Monitored but not explicit.
+  Added to RUC for approval.
+  Quota in RATS?
