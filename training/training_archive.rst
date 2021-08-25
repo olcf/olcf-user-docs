@@ -11,7 +11,8 @@ The table below lists presentations given at previous OLCF training events. For 
 
 .. csv-table::
    :header: "Date", "Title", "Speaker", "Event", "Presentation"
-   "2021-08-17", "CUDA Multi Process Service", "Max Katz (NVIDIA)", `CUDA Training Series <https://www.olcf.ornl.gov/calendar/cuda-multithreading/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2021/06/MPS_ORNL_20210817.pdf>`__ | `recording <https://vimeo.com/589019347>`__)
+   
+   "2021-08-17", "CUDA Multi Process Service", "Max Katz (NVIDIA)", `CUDA Training Series <https://www.olcf.ornl.gov/calendar/cuda-multi-process-service/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2021/06/MPS_ORNL_20210817.pdf>`__ | `recording <https://vimeo.com/589019347>`__)
    "2021-07-28", "NVIDIA HPC SDK", "Robert Searles (NVIDIA)", `July 2021 OLCF User Conference Call <https://www.olcf.ornl.gov/calendar/userconcall-jul2021/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2021/06/OLCF_User_Call_July_2021_HPC-SDK.pdf>`__ | `recording <https://vimeo.com/582093007>`__)
    "2021-07-16", "CUDA Multithreading with Streams", "Robert Searles (NVIDIA)", `CUDA Training Series <https://www.olcf.ornl.gov/calendar/cuda-multithreading/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2021/05/10-Multithreading-and-CUDA-Concurrency.pdf>`__ | `recording <https://vimeo.com/575930839>`__)
    "2021-05-21", "GPU Concurrency", "Robert Searles (NVIDIA)", `May 2021 OLCF User Conference Call <https://www.olcf.ornl.gov/calendar/userconcall-may2021/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2021/05/GPU-Concurrency-Overview.pdf>`__ | `recording <https://vimeo.com/558811623>`__)
