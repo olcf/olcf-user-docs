@@ -126,7 +126,7 @@ Storage System (HPSS) for user and project archival storage.
 Operating System
 ----------------
 
-Summit is running Red Hat Enterprise Linux (RHEL) version 7.5.
+Summit is running Red Hat Enterprise Linux (RHEL) version 8.2.
 
 .. _hardware-threads:
 
@@ -1165,13 +1165,14 @@ using the modules system:
 
 ::
 
-    summit$ module -t avail pgi
-    /sw/summit/modulefiles/site/linux-rhel7-ppc64le/Core:
-    pgi/17.10-patched
-    pgi/18.3
-    pgi/18.4
-    pgi/18.5
-    pgi/18.7
+    summit$ module -t avail gcc
+    /sw/summit/spack-envs/base/modules/site/Core:
+   gcc/7.5.0
+   gcc/9.1.0
+   gcc/9.3.0
+   gcc/10.2.0
+   gcc/11.1.0
+
 
 C compilation
 ^^^^^^^^^^^^^
@@ -1251,7 +1252,7 @@ flag will display the full link lines, without actually compiling:
 ::
 
     summit$ mpicc --showme
-    /sw/summit/xl/16.1.1-beta6/xlC/16.1.1/bin/xlc -I/autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20171006/linux-rhel7-ppc64le/xl-16.1.1-beta6/spectrum-mpi-10.2.0.7-20180830-eyo7zxm2piusmyffr3iytmgwdacl67ju/include -pthread -L/autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20171006/linux-rhel7-ppc64le/xl-16.1.1-beta6/spectrum-mpi-10.2.0.7-20180830-eyo7zxm2piusmyffr3iytmgwdacl67ju/lib -lmpiprofilesupport -lmpi_ibm
+    /sw/summit/xl/16.1.1-10/xlC/16.1.1/bin/xlc_r -I/sw/summit/spack-envs/base/opt/linux-rhel8-ppc64le/xl-16.1.1-10/spectrum-mpi-10.4.0.3-20210112-v7qymniwgi6mtxqsjd7p5jxinxzdkhn3/include -pthread -L/sw/summit/spack-envs/base/opt/linux-rhel8-ppc64le/xl-16.1.1-10/spectrum-mpi-10.4.0.3-20210112-v7qymniwgi6mtxqsjd7p5jxinxzdkhn3/lib -lmpiprofilesupport -lmpi_ibm
 
 OpenMP
 ^^^^^^
