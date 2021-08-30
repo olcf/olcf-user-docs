@@ -4,6 +4,16 @@
 Summit User Guide
 ******************
 
+.. warning:: 
+    Summit's OS was upgraded to RHEL8 on August 17-19, 2021. You should be aware of several changes resulting from this upgrade:
+    
+    * **You should recompile your codes** prior to running on the upgraded system.
+    
+    * **The OS-provided Python is no longer accessible as** ``python`` (including variations like ``/usr/bin/python`` or ``/usr/bin/env python``); rather, you must specify it as ``python2`` or ``python3``. If you are using python from one of the modulefiles rather than the version in ``/usr/bin``, this change should not affect how you invoke python in your scripts, although we encourage specifying ``python2`` or ``python3`` as a best practice.
+    
+    * A list of **default version changess**. including XL, CUDA, Spectrum, and ESSL as well as older versions scheduled for removal can be found on the :doc:`Software News </software/software-news>` page.
+
+
 .. _summit-documentation-resources:
 
 Summit Documentation Resources
@@ -13,13 +23,12 @@ In addition to this Summit User Guide, there are other sources of
 documentation, instruction, and tutorials that could be useful for
 Summit users.
 
-The `OLCF Training
-Archive <https://www.olcf.ornl.gov/for-users/training/training-archive/>`__
-provides a list of previous training events, including multi-day Summit
-Workshops. Some examples of topics addressed during these workshops
-include using Summit's NVME burst buffers, CUDA-aware MPI, advanced
-networking and MPI, and multiple ways of programming multiple GPUs per
-node.
+The :ref:`OLCF Training Archive<training-archive>` provides a list of previous training
+events, including multi-day Summit Workshops. Some examples of topics addressed during
+these workshops include using Summit's NVME burst buffers, CUDA-aware MPI, advanced
+networking and MPI, and multiple ways of programming multiple GPUs per node. You can also
+find simple tutorials and code examples for some common programming and running tasks in
+our `Github tutorial page <https://github.com/olcf-tutorials>`_ .
 
 .. _system-overview:
 
@@ -38,16 +47,22 @@ applications with a mixed-precision capability in excess of 3 EF.
 Summit Nodes
 ------------
 
+.. image:: /images/summit_node_architecture.png
+   :align: center
+   :alt: Summit node architecture diagram
+
 The basic building block of Summit is the IBM Power System AC922 node.
 Each of the approximately 4,600 compute nodes on Summit contains two IBM
-POWER9 processors and six `NVIDIA Volta V100`_ accelerators and provides 
+POWER9 processors and six `NVIDIA Tesla V100`_ accelerators and provides
 a theoretical double-precision capability of
 approximately 40 TF. Each POWER9 processor is connected via dual NVLINK
-bricks, each capable of a 25GB/s transfer rate in each direction. Nodes
-contain 512 GB of DDR4 memory for use by the POWER9 processors and 96 GB
-of High Bandwidth Memory (HBM2) for use by the accelerators.
-Additionally, each node has 1.6TB of non-volatile memory that can be
-used as a burst buffer.
+bricks, each capable of a 25GB/s transfer rate in each direction.
+
+Most Summit nodes contain 512 GB of DDR4 memory for use by the POWER9
+processors, 96 GB of High Bandwidth Memory (HBM2) for use by the accelerators,
+and 1.6TB of non-volatile memory that can be used as a burst buffer. A small
+number of nodes (54) are configured as "high memory" nodes. These nodes contain 2TB of 
+DDR4 memory, 192GB of HBM2, and 6.4TB of non-volatile memory.
 
 The POWER9 processor is built around IBM’s SIMD
 Multi-Core (SMC). The processor provides 22 SMCs with separate 32kB L1
@@ -81,7 +96,7 @@ use.
 |             | users simultaneously.                                                            |
 +-------------+----------------------------------------------------------------------------------+
 | Launch      | When your batch script (or interactive batch job) starts                         |
-|             | running, it will execute on a Launch Node. (If you are/were a user of Titan,     |
+|             | running, it will execute on a Launch Node. (If you were a user of Titan,         |
 |             | these are similar in function to service nodes on that system). All commands     |
 |             | within your job script (or the commands you run in an interactive job) will run  |
 |             | on a launch node. Like login nodes, these are shared resources so you should not |
@@ -101,7 +116,8 @@ utilities such as ``autoconf`` and ``cmake``) will have access to the
 same type of hardware that is on compute nodes and should not require
 intervention that might be required on non-homogeneous systems.
 
-    **NOTE:** Login nodes have (2) 16-core Power9 CPUs and (4) V100 GPUs.
+.. note::
+    Login nodes have (2) 16-core Power9 CPUs and (4) V100 GPUs.
     Compute nodes have (2) 22-core Power9 CPUs and (6) V100 GPUs.
 
 System Interconnect
@@ -126,7 +142,9 @@ Storage System (HPSS) for user and project archival storage.
 Operating System
 ----------------
 
+
 Summit is running Red Hat Enterprise Linux (RHEL) version 8.2.
+
 
 .. _hardware-threads:
 
@@ -145,847 +163,72 @@ assigned to the physical core. Regardless of the SMT mode used, the four
 slices share the physical core’s L1 instruction & data caches.
 https://vimeo.com/283756938
 
-.. _nvidia-v100-gpus:
-.. _NVIDIA Volta V100:
 
-NVIDIA V100 GPUs
-================
+.. _gpus:
 
-The NVIDIA Tesla V100 accelerator has a peak performance of 7.8 TFLOP/s
-(double-precision) and contributes to a majority of the computational
-work performed on Summit. Each V100 contains 80 streaming
-multiprocessors (SMs), 16 GB of high-bandwidth memory (HBM2), and a 6 MB
-L2 cache that is available to the SMs. The GigaThread Engine is
-responsible for distributing work among the SMs and (8) 512-bit memory
-controllers control access to the 16 GB of HBM2 memory. The V100 uses
-NVIDIA's NVLink interconnect to pass data between GPUs as well as from
-CPU-to-GPU.
-
-.. image:: /images/GV100_FullChip_Diagram_FINAL2_a.png
-   :align: center
-
-NVIDIA V100 SM
---------------
-
-Each SM on the V100 contains 32 FP64 (double-precision) cores, 64 FP32
-(single-precision) cores, 64 INT32 cores, and 8 tensor cores. A 128-KB
-combined memory block for shared memory and L1 cache can be configured
-to allow up to 96 KB of shared memory. In addition, each SM has 4
-texture units which use the (configured size of the) L1 cache.
-
-.. image:: /images/GV100_SM_Diagram-FINAL2.png
-   :align: center
-
-HBM2
+GPUs
 ----
 
-Each V100 has access to 16 GB of high-bandwidth memory (HBM2), which can
-be accessed at speeds of up to 900 GB/s. Access to this memory is
-controlled by (8) 512-bit memory controllers, and all accesses to the
-high-bandwidth memory go through the 6 MB L2 cache.
+Each Summit Compute node has 6 NVIDIA V100 GPUs.  The NVIDIA Tesla V100
+accelerator has a peak performance of 7.8 TFLOP/s (double-precision) and
+contributes to a majority of the computational work performed on Summit. Each
+V100 contains 80 streaming multiprocessors (SMs), 16 GB (32 GB on high-memory
+nodes) of high-bandwidth memory (HBM2), and a 6 MB L2 cache that is available to
+the SMs. The GigaThread Engine is responsible for distributing work among the
+SMs and (8) 512-bit memory controllers control access to the 16 GB (32 GB on
+high-memory nodes) of HBM2 memory. The V100 uses NVIDIA's NVLink interconnect
+to pass data between GPUs as well as from CPU-to-GPU. We provide a more in-depth
+look into the `NVIDIA Tesla V100`_ later in the Summit Guide.
 
-NVIDIA NVLink
--------------
 
-The processors within a node are connected by NVIDIA's NVLink
-interconnect. Each link has a peak bandwidth of 25 GB/s (in each
-direction), and since there are 2 links between processors, data can be
-transferred from GPU-to-GPU and CPU-to-GPU at a peak rate of 50 GB/s.
 
-    **NOTE:** The 50-GB/s peak bandwidth stated above is for data transfers
-    in a single direction. However, this bandwidth can be achieved in both
-    directions simultaneously, giving a peak "bi-directional" bandwidth of
-    100 GB/s between processors.
 
-The figure below shows a schematic of the NVLink connections between the
-CPU and GPUs on a single socket of a Summit node.
-
-.. image:: /images/NVLink2.png
-   :align: center
-
-Tensor Cores
-------------
-
-The Tesla V100 contains 640 tensor cores (8 per SM) intended to enable
-faster training of large neural networks. Each tensor core performs a
-``D = AB + C`` operation on 4x4 matrices. A and B are FP16 matrices,
-while C and D can be either FP16 or FP32:
-
-.. image:: /images/nv_tensor_core_1.png
-   :width: 85.0%
-   :align: center
-
-Each of the 16 elements that result from the AB matrix multiplication
-come from 4 floating-point fused-multiply-add (FMA) operations
-(basically a dot product between a row of A and a column of B). Each
-FP16 multiply yields a full-precision product which is accumulated in a
-FP32 result:
-
-.. image:: /images/nv_tensor_core_2.png
-   :width: 85.0%
-   :align: center
-
-Each tensor core performs 64 of these FMA operations per clock. The 4x4
-matrix operations outlined here can be combined to perform matrix
-operations on larger (and higher dimensional) matrices.
-
-Volta Multi-Process Service
----------------------------
-
-When a CUDA program begins, each MPI rank creates a separate CUDA
-context on the GPU, but the scheduler on the GPU only allows one CUDA
-context (and so one MPI rank) at a time to launch on the GPU. This means
-that multiple MPI ranks can share access to the same GPU, but each rank
-gets exclusive access while the other ranks wait (time-slicing). This
-can cause the GPU to become underutilized if a rank (that has exclusive
-access) does not perform enough work to saturate the resources of the
-GPU. The following figure depicts such time-sliced access to a pre-Volta
-GPU.
-
-.. image:: /images/nv_mps_1.png
-   :align: center
-
-The Multi-Process Service (MPS) enables multiple processes (e.g. MPI ranks) to
-*concurrently* share the resources on a single GPU. This is accomplished by
-starting an MPS server process, which funnels the work from multiple CUDA
-contexts (e.g. from multiple MPI ranks) into a single CUDA context. In some
-cases, this can increase performance due to better utilization of the resources.
-The figure below illustrates MPS on a pre-Volta GPU.
-
-.. image:: /images/nv_mps_2.png
-   :width: 65.0%
-   :align: center
-
-Volta GPUs improve MPS with new capabilities. For instance, each Volta
-MPS client (MPI rank) is assigned a "subcontext" that has its own GPU
-address space, instead of sharing the address space with other clients.
-This isolation helps protect MPI ranks from out-of-range reads/writes
-performed by other ranks within CUDA kernels. Because each subcontext
-manages its own GPU resources, it can submit work directly to the GPU
-without the need to first pass through the MPS server. In addition,
-Volta GPUs support up to 48 MPS clients (up from 16 MPS clients on
-Pascal).
-
-.. image:: /images/nv_mps_3.png
-   :width: 65.0%
-   :align: center
-
-  For more information, please see the following document from NVIDIA:
-https://docs.nvidia.com/deploy/pdf/CUDA_Multi_Process_Service_Overview.pdf
-
-Unified Memory
---------------
-
-Unified memory is a single virtual address space that is accessible to
-any processor in a system (within a node). This means that programmers
-only need to allocate a single unified-memory pointer (e.g. using
-cudaMallocManaged) that can be accessed by both the CPU and GPU, instead
-of requiring separate allocations for each processor. This "managed
-memory" is automatically migrated to the accessing processor, which
-eliminates the need for explicit data transfers.
-
-.. image:: /images/nv_um_1.png
-   :width: 60.0%
-   :align: center
-
-  On Pascal-generation GPUs and later, this automatic migration is
-enhanced with hardware support. A page migration engine enables GPU page
-faulting, which allows the desired pages to be migrated to the GPU "on
-demand" instead of the entire "managed" allocation. In addition, 49-bit
-virtual addressing allows programs using unified memory to access the
-full system memory size. The combination of GPU page faulting and larger
-virtual addressing allows programs to oversubscribe the system memory,
-so very large data sets can be processed. In addition, new CUDA API
-functions introduced in CUDA8 allow users to fine tune the use of
-unified memory. Unified memory is further improved on Volta GPUs through
-the use of access counters that can be used to automatically tune
-unified memory by determining where a page is most often accessed. For
-more information, please see the following section of NVIDIA's CUDA
-Programming Guide:
-http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#um-unified-memory-programming-hd
-
-Independent Thread Scheduling
------------------------------
-
-The V100 supports independent thread scheduling, which allows threads to
-synchronize and cooperate at sub-warp scales. Pre-Volta GPUs implemented
-warps (groups of 32 threads which execute instructions in
-single-instruction, multiple thread - SIMT - mode) with a single call
-stack and program counter for a warp as a whole.
-
-.. image:: /images/nv_ind_threads_1.png
-   :align: center
-
-Within a warp, a mask is used to specify which threads are currently
-active when divergent branches of code are encountered. The (active)
-threads within each branch execute their statements serially before
-threads in the next branch execute theirs. This means that programs on
-pre-Volta GPUs should avoid sub-warp synchronization; a sync point in
-the branches could cause a deadlock if all threads in a warp do not
-reach the synchronization point.
-
-.. image:: /images/nv_ind_threads_2.png
-   :align: center
-
-The Volta V100 introduces warp-level synchronization by implementing warps with
-a program counter and call stack for each individual thread (i.e.  independent
-thread scheduling).
-
-.. image:: /images/nv_ind_threads_3.png
-   :align: center
-
-This implementation allows threads to diverge and synchronize at the sub-warp
-level using the \_\_syncwarp() function. The independent thread scheduling
-enables the thread scheduler to stall execution of any thread, allowing other
-threads in the warp to execute different statements. This means that threads in
-one branch can stall at a sync point and wait for the threads in the other
-branch to reach their sync point.
-
-.. image:: /images/nv_ind_threads_4.png
-   :align: center
-
-For more information, please see the following section of NVIDIA's CUDA
-Programming Guide:
-http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#independent-thread-scheduling-7-x
-
-Tesla V100 Specifications
--------------------------
-
-+----------------------------------------------------+----------------------------+
-| Compute Capability                                 | 7.0                        |
-+----------------------------------------------------+----------------------------+
-| Peak double precision floating point performance   | 7.8 TFLOP/s                |
-+----------------------------------------------------+----------------------------+
-| Peak single precision floating point performance   | 15.7 TFLOP/s               |
-+----------------------------------------------------+----------------------------+
-| Single precision CUDA cores                        | 5120                       |
-+----------------------------------------------------+----------------------------+
-| Double precision CUDA cores                        | 2560                       |
-+----------------------------------------------------+----------------------------+
-| Tensor cores                                       | 640                        |
-+----------------------------------------------------+----------------------------+
-| Clock frequency                                    | 1530 MHz                   |
-+----------------------------------------------------+----------------------------+
-| Memory Bandwidth                                   | 900 GB/s                   |
-+----------------------------------------------------+----------------------------+
-| Memory size (HBM2)                                 | 16 GB                      |
-+----------------------------------------------------+----------------------------+
-| L2 cache                                           | 6 MB                       |
-+----------------------------------------------------+----------------------------+
-| Shared memory size / SM                            | Configurable up to 96 KB   |
-+----------------------------------------------------+----------------------------+
-| Constant memory                                    | 64 KB                      |
-+----------------------------------------------------+----------------------------+
-| Register File Size                                 | 256 KB (per SM)            |
-+----------------------------------------------------+----------------------------+
-| 32-bit Registers                                   | 65536 (per SM)             |
-+----------------------------------------------------+----------------------------+
-| Max registers per thread                           | 255                        |
-+----------------------------------------------------+----------------------------+
-| Number of multiprocessors (SMs)                    | 80                         |
-+----------------------------------------------------+----------------------------+
-| Warp size                                          | 32 threads                 |
-+----------------------------------------------------+----------------------------+
-| Maximum resident warps per SM                      | 64                         |
-+----------------------------------------------------+----------------------------+
-| Maximum resident blocks per SM                     | 32                         |
-+----------------------------------------------------+----------------------------+
-| Maximum resident threads per SM                    | 2048                       |
-+----------------------------------------------------+----------------------------+
-| Maximum threads per block                          | 1024                       |
-+----------------------------------------------------+----------------------------+
-| Maximum block dimensions                           | 1024, 1024, 64             |
-+----------------------------------------------------+----------------------------+
-| Maximum grid dimensions                            | 2147483647, 65535, 65535   |
-+----------------------------------------------------+----------------------------+
-| Maximum number of MPS clients                      | 48                         |
-+----------------------------------------------------+----------------------------+
-
- 
-
-Further Reading
----------------
-
-For more information on the NVIDIA Volta architecture, please visit the
-following (outside) links.
-
-* `NVIDIA Volta Architecture White Paper <http://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf>`_
-* `NVIDIA PARALLEL FORALL blog article <https://devblogs.nvidia.com/parallelforall/inside-volta/>`_
 
 .. _connecting:
 
 Connecting
 ==========
 
-FIXME
+To connect to Summit, ssh to summit.olcf.ornl.gov. For example:
 
-.. _data-storage-transfers:
+::
 
-Data Storage & Transfers
-========================
+    ssh username@summit.olcf.ornl.gov
 
-Storage Overview
-----------------
+For more information on connecting to OLCF resources, see :ref:`connecting-to-olcf`.
 
-OLCF users have many options for data storage. Each user has multiple
-user-affiliated storage spaces, and each project has multiple
-project-affiliated storage spaces where data can be shared for
-collaboration. Below we give an overview and explain where each storage
-area is mounted.
+Data and Storage
+==================
 
-Alpine IBM Spectrum Scale Filesystem
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+For more information about center-wide file systems and data archiving available
+on Summit, please refer to the pages on :ref:`data-storage-and-transfers`.
 
-Summit mounts a POSIX-based IBM Spectrum Scale parallel filesystem
-called Alpine. Alpine's maximum capacity is 250 PB. It is consisted of
-77 IBM Elastic Storage Server (ESS) GL4 nodes running IBM Spectrum Scale
-5.x which are called Network Shared Disk (NSD) servers. Each IBM ESS GL4
-node, is a scalable storage unit (SSU), constituted by two dual-socket
-IBM POWER9 storage servers, and a 4X EDR InfiniBand network for up to
-100Gbit/sec of networking bandwidth. The maximum performance of the
-final production system will be about 2.5 TB/s for sequential I/O and
-2.2 TB/s for random I/O under FPP mode, which means each process, writes
-its own file. Metada operations are improved with around to minimum
-50,000 file access per sec and aggregated up to 2.6 million accesses of
-32KB small files.
+Each compute node on Summit has a 1.6TB \ **N**\ on-\ **V**\ olatile **Me**\
+mory (NVMe) storage device (high-memory nodes have a 6.4TB NVMe storage device), colloquially known as a "Burst Buffer" with
+theoretical performance peak of 2.1 GB/s for writing and 5.5 GB/s for reading.
+The NVMes could be used to reduce the time that applications wait for
+I/O.  More information can be found later in the `Burst Buffer`_ section.
 
-.. figure:: /images/summit_nds_final.png
-   :class: normal aligncenter wp-image-5726545 size-full
-   :width: 779px
-   :height: 462px
-   :align: center
 
-   Figure 1. An example of the NDS servers on Summit
-
-Performance under not ideal workload
-""""""""""""""""""""""""""""""""""""
-
-The I/O performance can be lower than the optimal one when you save one
-single shared file with non-optimal I/O pattern. Moreover, the previous
-performance results are achieved under an ideal system, the system is
-dedicated, and a specific number of compute nodes are used. The file
-system is shared across many users; the I/O performance can vary because
-other users that perform heavy I/O as also executing large scale jobs
-and stress the interconnection network. Finally, if the I/O pattern is
-not aligned, then the I/O performance can be significantly lower than
-the ideal one. Similar, related to the number of the concurrent users,
-is applied for the metadata operations, they can be lower than the
-expected performance.
-
-Tips
-""""
-
--  For best performance on the IBM Spectrum Scale filesystem, use large
-   page aligned I/O and asynchronous reads and writes. The filesystem
-   blocksize is 16MB, the minimum fragment size is 16K so when a file
-   under 16K is stored, it will still use 16K of the disk. Writing files
-   of 16 MB or larger, will achieve better performance. All files are
-   striped across LUNs which are distributed across all IO servers.
--  If your application occupies up to two compute nodes and it requires
-   a significant number of I/O operations, you could try to add the
-   following flag in your job script file and investigate if the total
-   execution time is decreased. This flag could cause worse results, it
-   depends on the application.
-
-``#BSUB -alloc_flags maximizegpfs``
-
-Major difference between Titan (Lustre) and Summit (IBM Spectrum Scale)
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-The file systems have many technical differences, but we will mention
-only what a user needs to be familiar with:
-
--  On Summit, there is no concept of striping from the user point of
-   view, the user uses the Alpine storage without the need to declare
-   the striping for files/directories. The GPFS will handle the
-   workload, the file system was tuned during the installation.
-
-Storage Areas
----------------
-
-The storage area to use in any given situation depends upon the activity
-you wish to carry out. Each user has a User Home area on a Network File
-System (NFS) and a User Archive area on the archival High Performance
-Storage System (HPSS). These user storage areas are intended to house
-user-specific files. Each project has a Project Home area on NFS,
-multiple Project Work areas on Lustre and Spectrum Scale, and a Project
-Archive area on HPSS. These project storage areas are intended to house
-project-centric files. We have defined several areas as listed below by
-function:
-
-*  **User Home:** Long-term data for routine access that is unrelated to
-   a project. It is mounted on compute nodes of Summit as read only
-*  **User Archive:** Long-term data for archival access that is
-   unrelated to a project.
-*  **Project Home:** Long-term project data for routine access that's
-   shared with other project members. It is mounted on compute nodes of
-   Summit as read only
-*  **Member Work:** Short-term user data for fast, batch-job access that
-   is not shared with other project members. There are versions of this
-   on both the Atlas Lustre filesystem and the Alpine Spectrum Scale
-   filesystem.
-*  **Project Work:** Short-term project data for fast, batch-job access
-   that's shared with other project members. There are versions of this
-   on both the Atlas Lustre filesystem and the Alpine Spectrum Scale
-   filesystem.
-*  **World Work:** Short-term project data for fast, batch-job access
-   that's shared with OLCF users outside your project. There are
-   versions of this on both the Atlas Lustre filesystem and the Alpine
-   Spectrum Scale filesystem.
-*  **Project Archive:** Long-term project data for archival access
-   that's shared with other project members.
-
-Storage policy
------------------
-
-A brief description of each area and basic guidelines to follow are
-provided in the table below:
-
-+---------------------+-----------------------------------------------+------------------+---------------+-----------+-----------+---------+----------------------------+
-| *Name*              | Path                                          | Type             | Permissions   | Backups   | Purged    | Quota   | Mounted on Compute nodes   |
-+=====================+===============================================+==================+===============+===========+===========+=========+============================+
-| *User Home*         | ``$HOME``                                     | NFS              | User Set      | yes       | no        | 50GB    | Read-only                  |
-+---------------------+-----------------------------------------------+------------------+---------------+-----------+-----------+---------+----------------------------+
-| *User Archive*      | ``/home/$USER``                               | HPSS             | User Set      | no        | no        | 2TB     | No                         |
-+---------------------+-----------------------------------------------+------------------+---------------+-----------+-----------+---------+----------------------------+
-| *Project Home*      | ``/ccs/proj/[projid]``                        | NFS              | 770           | yes       | no        | 50GB    | Read-only                  |
-+---------------------+-----------------------------------------------+------------------+---------------+-----------+-----------+---------+----------------------------+
-| *Member Work*       | ``/gpfs/alpine/scratch/[userid]/[projid]/``   | Spectrum Scale   | 700           | no        | 90 days   | 50TB    | Yes                        |
-+---------------------+-----------------------------------------------+------------------+---------------+-----------+-----------+---------+----------------------------+
-| *Project Work*      | ``/gpfs/alpine/proj-shared/[projid]``         | Spectrum Scale   | 770           | no        | 90 days   | 50TB    | Yes                        |
-+---------------------+-----------------------------------------------+------------------+---------------+-----------+-----------+---------+----------------------------+
-| *World Work*        | ``/gpfs/alpine/world-shared/[projid]``        | Spectrum Scale   | 775           | no        | 90 days   | 50TB    | Yes                        |
-+---------------------+-----------------------------------------------+------------------+---------------+-----------+-----------+---------+----------------------------+
-| *Project Archive*   | ``/proj/[projid]``                            | HPSS             | 770           | no        | no        | 100TB   | No                         |
-+---------------------+-----------------------------------------------+------------------+---------------+-----------+-----------+---------+----------------------------+
-
-For storage policy on TITAN, click here
-
-On Summit paths to the various project-centric work storage areas are
-simplified by the use of environment variables that point to the proper
-directory on a per-user basis:
-
--  Member Work Directory: ``$MEMBERWORK/[projid]``
--  Project Work Directory: ``$PROJWORK/[projid]``
--  World Work Directory: ``$WORLDWORK/[projid]``
-
-These environment variables are not set on the data transfer nodes.
-
-Information
-^^^^^^^^^^^
-
--  Although there are no hard quota limits, an upper storage limit
-   should be reported in the project request. The available space of a
-   project can be modified upon request.
--  The user will be informed when the project reaches 90% of the
-   requested storage utilization.
-
-Purge
-^^^^^
-
-To keep the Lustre and Spectrum Scale file systems exceptionally
-performant, untouched files in the project and user areas are purged at
-the intervals shown in the table above. Please make sure that valuable
-data is moved off of these systems regularly. See `HPSS Best
-Practices <./#hpss-best-practices>`__ for information about using the
-HSI and HTAR utilities to archive data on HPSS.
-
-Retention
-^^^^^^^^^
-
-At the completion of a project or at the end of a member's association
-with the project, data will be available for 90 days, except in areas
-that are purged, in that case, the data will be retained according to
-the purge policy. After 90 days, the data will not be available but not
-purged for another 60 days, where the data will be removed if it not
-requested otherwise.
-
-Other OLCF Storage Systems
-----------------------------
-
-The High Performance Storage System (HPSS) at the OLCF provides
-longer-term storage for the large amounts of data created on the OLCF
-compute systems. The HPSS is accessible from all OLCF Filesystems
-through utilities called HSI and HTAR. For more information on using HSI
-or HTAR, see the `HPSS Best Practices <./#hpss-best-practices>`__
-documentation. OLCF also has a Network File System, referred to as NFS,
-and Lustre filesystems called Atlas. Summit does not mount Lustre.
-However, during the early use of Summit, users may need to use Lustre in
-a multi-stage process with HPSS for larger data transfer with Alpine. To
-learn more about this please see `Data Transfer and
-Summit <./#data-transfer-and-summit>`__ section below. The following
-shows the availability of each of the filesystems on primary OLCF
-clusters and supercomputers.
-
-+------------------------------------+------------+-------------+------------+-----------------------+------------+------------+
-| Area                               | Summit     | Summitdev   | Titan      | Data Transfer Nodes   | Rhea       | Eos        |
-+====================================+============+=============+============+=======================+============+============+
-| Atlas Lustre Filesystem            | no         | no          | yes        | yes                   | yes        | yes        |
-+------------------------------------+------------+-------------+------------+-----------------------+------------+------------+
-| Alpine Spectrum Scale Filesystem   | yes        | yes         | no         | yes                   | no         | no         |
-+------------------------------------+------------+-------------+------------+-----------------------+------------+------------+
-| NFS Network Filesystem             | yes        | yes         | yes        | yes                   | yes        | yes        |
-+------------------------------------+------------+-------------+------------+-----------------------+------------+------------+
-| HPSS                               | HSI/Htar   | HSI/Htar    | HSI/Htar   | HSI/Htar              | HSI/Htar   | HSI/Htar   |
-+------------------------------------+------------+-------------+------------+-----------------------+------------+------------+
-
-Guidelines
------------
-
-A brief description of each area and basic guidelines to follow are
-provided in the table below:
-
-+-------------------+-------------------+---------------------------------------------+----------------+-------------+---------+------------+-------+
-| *System*          | *Name*            | Path                                        | Type           | Permissions | Backups | Purged     | Quota |
-+===================+===================+=============================================+================+=============+=========+============+=======+
-| *User Home*       | *User Home*       | ``$HOME``                                   | NFS            | User Set    | yes     | no         | 50GB  |
-+-------------------+-------------------+---------------------------------------------+----------------+-------------+---------+------------+-------+
-| *User Archive*    | *User Archive*    | ``/home/$USER``                             | HPSS           | User Set    | no      | no         | 2TB   |
-+-------------------+-------------------+---------------------------------------------+----------------+-------------+---------+------------+-------+
-| *Project Home*    | *Project Home*    | ``/ccs/proj/[projid]``                      | NFS            | 770         | yes     | no         | 50GB  |
-+-------------------+-------------------+---------------------------------------------+----------------+-------------+---------+------------+-------+
-| **Alpine**        | *Member Work*     | ``/gpfs/alpine/scratch/[userid]/[projid]/`` | Spectrum Scale | 700         | no      | 90 days    | 50TB  |
-+                   +-------------------+---------------------------------------------+----------------+-------------+---------+------------+-------+
-|                   | *Project Work*    | ``/gpfs/alpine/proj-shared/[projid]/``      | Spectrum Scale | 770         | no      | 90 days    | 50TB  |
-+                   +-------------------+---------------------------------------------+----------------+-------------+---------+------------+-------+
-|                   | *World Work*      | ``/gpfs/alpine/world-shared/[projid]/``     | Spectrum Scale | 775         | no      | 90 days    | 50TB  |
-+-------------------+-------------------+---------------------------------------------+----------------+-------------+---------+------------+-------+
-| **Atlas**         | *Member Work*     | ``/lustre/atlas/scratch/[userid]/[projid]`` | Lustre         | 700         | no      | 14 days    | 10TB  |
-+                   +-------------------+---------------------------------------------+----------------+-------------+---------+------------+-------+
-|                   | *Project Work*    | ``/lustre/atlas/proj-shared/[projid]``      | Lustre         | 770         | no      | 90 days    | 100TB |
-+                   +-------------------+---------------------------------------------+----------------+-------------+---------+------------+-------+
-|                   | *World Work*      | ``/lustre/atlas/world-shared/[projid]``     | Lustre         | 775         | no      | 90 days    | 10TB  |
-+-------------------+-------------------+---------------------------------------------+----------------+-------------+---------+------------+-------+
-| *Project Archive* | *Project Archive* | ``/proj/[projid]``                          | HPSS           | 770         | no      | no         | 100TB |
-+-------------------+-------------------+---------------------------------------------+----------------+-------------+---------+------------+-------+
-
-
-Backups for Files on NFS
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-Online backups are performed at regular intervals for your files in
-project home and user home. Hourly backups for the past 24 hours, daily
-backups for the last 7 days, and 1 weekly backup are available. The
-backup directories are named ``hourly.*``, ``daily.* ``, and
-``weekly.* `` where ``*`` is the date/time stamp of the backup. For
-example, ``hourly.2016-12-01-0905`` is an hourly backup made on December
-1, 2016 at 9:05 AM. The backups are accessed via the ``.snapshot``
-subdirectory. You may list your available hourly/daily/weekly backups by
-doing “\ ``ls .snapshot``\ ”. The ``.snapshot`` feature is available in
-any subdirectory of your home directory and will show the online backup
-of that subdirectory. In other words, you don’t have to start at
-``/ccs/home/$USER`` and navigate the full directory structure; if you’re
-in a /ccs/home subdirectory several “levels” deep, an
-“\ ``ls .snapshot``\ ” will access the available backups of that
-subdirectory. To retrieve a backup, simply copy it into your desired
-destination with the ``cp`` command.
-
-Retention
-^^^^^^^^^
-
-At the completion of a project or at the end of a member's association
-with the project, data will be retained for 90 days, except in areas
-that are purged, in that case the data will be retained according the
-purge policy. A more detailed description of each storage area is given
-below. [ls\_content\_block id="26702"]
-
-User-Centric Data Storage
--------------------------
-
-Users are provided with several storage areas, each of which serve
-different purposes. These areas are intended for storage of user data,
-not for storage of project data.
-
-The following table summarizes user-centric storage areas available on
-OLCF resources and lists relevant polices.
-
-**User-Centric Storage Areas**
-
-+--------------+-----------------+------+-----------------+-------------+---------+--------+-----------+
-| Area         | Path            | Type | Permissions     | Quota       | Backups | Purged | Retention |
-+==============+=================+======+=================+=============+=========+========+===========+
-| User Home    | ``$HOME``       | NFS  | User-controlled | 50 GB       | Yes     | No     | 90 days   |
-+--------------+-----------------+------+-----------------+-------------+---------+--------+-----------+
-| User Archive | ``/home/$USER`` | HPSS | User-controlled | 2 TB [#f1]_ | **No**  | No     | 90 days   |
-+--------------+-----------------+------+-----------------+-------------+---------+--------+-----------+
-
-.. rubric:: footnotes
-
-.. [#f1] In addition, there is a quota/limit of 2,000 files on this directory.
-
-User Home Directories (NFS)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Each user is provided a home directory to store frequently used items
-such as source code, binaries, and scripts.
-
-User Home Path
-""""""""""""""
-
-Home directories are located in a Network File System (NFS) that is
-accessible from all OLCF resources as ``/ccs/home/$USER``.
-
-The environment variable ``$HOME`` will always point to your current
-home directory. It is recommended, where possible, that you use this
-variable to reference your home directory. In cases in which using
-``$HOME`` is not feasible, it is recommended that you use
-``/ccs/home/$USER``.
-
-Users should note that since this is an NFS-mounted filesystem, its
-performance will not be as high as other filesystems.
-
-User Home Quotas
-""""""""""""""""
-
-Quotas are enforced on user home directories. To request an increased
-quota, contact the OLCF User Assistance Center. To view your current
-quota and usage, use the ``quota`` command:
-
-.. code::
-
-    $ quota -Qs
-    Disk quotas for user usrid (uid 12345):
-         Filesystem  blocks   quota   limit   grace   files   quota   limit   grace
-    nccsfiler1a.ccs.ornl.gov:/vol/home
-                      4858M   5000M   5000M           29379   4295m   4295m
-
-User Home Backups
-"""""""""""""""""
-
-If you accidentally delete files from your home directory, you may be
-able to retrieve them. Online backups are performed at regular
-intervals. Hourly backups for the past 24 hours, daily backups for the
-last 7 days, and 1 weekly backup are available. It is possible that the
-deleted files are available in one of those backups. The backup
-directories are named ``hourly.*``, ``daily.* ``, and ``weekly.* ``
-where ``*`` is the date/time stamp of the backup. For example,
-``hourly.2016-12-01-0905`` is an hourly backup made on December 1, 2016
-at 9:05 AM.
-
-The backups are accessed via the ``.snapshot`` subdirectory. Note that
-if you do an ``ls`` (even with the ``-a`` option) of any directory you
-won’t see a ``.snapshot`` subdirectory, but you’ll be able to do
-“\ ``ls .snapshot``\ ” nonetheless. This will show you the
-hourly/daily/weekly backups available. The ``.snapshot`` feature is
-available in any subdirectory of your home directory and will show the
-online backup of that subdirectory. In other words, you don’t have to
-start at ``/ccs/home/$USER`` and navigate the full directory structure;
-if you’re in a /ccs/home subdirectory several “levels” deep, an
-“\ ``ls .snapshot``\ ” will access the available backups of that
-subdirectory.
-
-To retrieve a backup, simply copy it into your desired destination with
-the ``cp`` command.
-
-User Home Permissions
-"""""""""""""""""""""
-
-The default permissions for user home directories are ``0750`` (full
-access to the user, read and execute for the group). Users have the
-ability to change permissions on their home directories, although it is
-recommended that permissions be set to as restrictive as possible
-(without interfering with your work).
-
-User Website Directory
-""""""""""""""""""""""
-
-Users interested in sharing files publicly via the World Wide Web can
-request a user website directory be created for their account. User
-website directories (``~/www``) have a 5GB storage quota and allow
-access to files at ``http://users.nccs.gov/~user`` (where ``user`` is
-your userid). If you are interested in having a user website directory
-created, please contact the User Assistance Center at
-help@olcf.ornl.gov.
-
-User Archive Directories (HPSS)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-The High Performance Storage System (HPSS) at the OLCF provides
-longer-term storage for the large amounts of data created on the OLCF
-compute systems. The mass storage facility consists of tape and disk
-storage components, servers, and the HPSS software. After data is
-uploaded, it persists on disk for some period of time. The length of its
-life on disk is determined by how full the disk caches become. When data
-is migrated to tape, it is done so in a first-in, first-out fashion.
-
-User archive areas on HPSS are intended for storage of data not
-immediately needed in either User Home directories (NFS) or User Work
-directories (Lustre®). User Archive areas also serve as a location for
-users to store backup copies of user files. User Archive directories
-should not be used to store project-related data. Rather, Project
-Archive directories should be used for project data.
-
-User archive directories are located at ``/home/$USER``.
-
-User Archive Access
-"""""""""""""""""""
-
-Each OLCF user receives an HPSS account automatically. Users can
-transfer data to HPSS from any OLCF system using the HSI or HTAR
-utilities. For more information on using HSI or HTAR, see the `HPSS Best
-Practices <./#hpss-best-practices>`__ section.
-
-User Archive Accounting
-"""""""""""""""""""""""
-
-Each file and directory on HPSS is associated with an HPSS storage
-allocation. For information on HPSS storage allocations, please visit
-the `HPSS Archive Accounting <./#hpss-archive-accounting>`__ section.
-
-For information on usage and best practices for HPSS, please see the
-section `HPSS - High Performance Storage
-System <./#hpss-high-performance-storage-system>`__ below.
-
---------------
-
-
-Project-Centric Data Storage
-----------------------------
-
-Project directories provide members of a project with a common place to
-store code, data, and other files related to their project.
-
-Project Home Directories (NFS)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-+------------------+--------------------------+--------+---------------+-----------+----------+---------+
-| *Name*           | Path                     | Type   | Permissions   | Backups   | Purged   | Quota   |
-+==================+==========================+========+===============+===========+==========+=========+
-| *Project Home*   | ``/ccs/proj/[projid]``   | NFS    | 770           | yes       | no       | 50GB    |
-+------------------+--------------------------+--------+---------------+-----------+----------+---------+
-
-Projects are provided with a Project Home storage area in the
-NFS-mounted filesystem. This area is intended for storage of data, code,
-and other files that are of interest to all members of a project. Since
-Project Home is an NFS-mounted filesystem, its performance will not be
-as high as other filesystems.
-
-Project Home Path
-"""""""""""""""""
-
-Project Home area is accessible at ``/ccs/proj/abc123`` (where
-``abc123`` is your project ID).
-
-Project Home Quotas
-"""""""""""""""""""
-
-To check your project's current usage, run ``df -h /ccs/proj/abc123``
-(where ``abc123`` is your project ID). Quotas are enforced on project
-home directories. The current limit is shown in the table above.
-
-Project Home Permissions
-""""""""""""""""""""""""
-
-The default permissions for project home directories are ``0770`` (full
-access to the user and group). The directory is owned by root and the
-group includes the project's group members. All members of a project
-should also be members of that group-specific project. For example, all
-members of project "ABC123" should be members of the "abc123" UNIX
-group.
-
-Three Project Work Areas to Facilitate Collaboration
-""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-To facilitate collaboration among researchers, the OLCF provides (3)
-distinct types of project-centric work storage areas: *Member Work*
-directories, *Project Work* directories, and *World Work* directories.
-Each directory should be used for storing files generated by
-computationally-intensive HPC jobs related to a project.
-
-+----------------+--------------------------------------------+-----------------+-------------+---------+-----------+-------+
-| *Name*         | Path                                       | Type            | Permissions | Backups | Purged    | Quota |
-+================+============================================+=================+=============+=========+===========+=======+
-| *Member Work*  | ``/lustre/atlas/scratch/[projid]``         | Lustre          | 700         | no      | 14 days   | 10TB  |
-+                +--------------------------------------------+-----------------+-------------+---------+-----------+-------+
-|                | ``/gpfs/alpine/scratch/[userid]/[projid]`` | Spectrum Scale  | 700         | no      | 90 days   | 50TB  |
-+----------------+--------------------------------------------+-----------------+-------------+---------+-----------+-------+
-| *Project Work* | ``/lustre/atlas/proj-shared/[projid]``     | Lustre          | 770         | no      | 90 days   | 100TB |
-+                +--------------------------------------------+-----------------+-------------+---------+-----------+-------+
-|                | ``/gpfs/alpine/proj-shared/[projid]``      | Spectrum Scale  | 770         | no      | 90 days   | 50TB  |
-+----------------+--------------------------------------------+-----------------+-------------+---------+-----------+-------+
-| *World Work*   | ``/lustre/atlas/world-shared/[projid]``    | Lustre          | 775         | no      | 90 days   | 10TB  |
-+                +--------------------------------------------+-----------------+-------------+---------+-----------+-------+
-|                | ``/gpfs/alpine/world-shared/[projid]``     | Spectrum Scale  | 775         | no      | 90 days   | 50TB  |
-+----------------+--------------------------------------------+-----------------+-------------+---------+-----------+-------+
-
-The difference between the three lies in the accessibility of the data
-to project members and to researchers outside of the project. Member
-Work directories are accessible only by an individual project member by
-default. Project Work directories are accessible by all project members.
-World Work directories are readable by any user on the system.
-
-Permissions
-''''''''''''
-
-UNIX Permissions on each project-centric work storage area differ
-according to the area's intended collaborative use. Under this setup,
-the process of sharing data with other researchers amounts to simply
-ensuring that the data resides in the proper work directory.
-
--  Member Work Directory: ``700``
--  Project Work Directory: ``770``
--  World Work Directory: ``775``
-
-For example, if you have data that must be restricted only to yourself,
-keep them in your Member Work directory for that project (and leave the
-default permissions unchanged). If you have data that you intend to
-share with researchers within your project, keep them in the project's
-Project Work directory. If you have data that you intend to share with
-researchers outside of a project, keep them in the project's World Work
-directory.
-
-Backups
-"""""""
-
-Member Work, Project Work, and World Work directories **are not backed
-up**. Project members are responsible for backing up these files, either
-to Project Archive areas (HPSS) or to an off-site location.
-
-Project Archive Directories
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-+---------------------+----------------------+--------+---------------+-----------+----------+---------+
-| *Name*              | Path                 | Type   | Permissions   | Backups   | Purged   | Quota   |
-+=====================+======================+========+===============+===========+==========+=========+
-| *Project Archive*   | ``/proj/[projid]``   | HPSS   | 770           | no        | no       | 100TB   |
-+---------------------+----------------------+--------+---------------+-----------+----------+---------+
-
-Projects are also allocated project-specific archival space on the High
-Performance Storage System (HPSS). The default quota is shown on the
-table above. If a higher quota is needed, contact the User Assistance
-Center. The Project Archive space on HPSS is intended for storage of
-data not immediately needed in either Project Home (NFS) areas nor
-Project Work (Alpine) areas, and to serve as a location to store backup
-copies of project-related files.
-
-Project Archive Path
-""""""""""""""""""""
-
-The project archive directories are located at ``/proj/pjt000`` (where
-``pjt000`` is your Project ID).
-
-Project Archive Access
-""""""""""""""""""""""
-
-Project Archive directories may only be accessed via utilities called
-HSI and HTAR. For more information on using HSI or HTAR, see the `HPSS
-Best Practices <./#hpss-best-practices>`__ section. [ls\_content\_block
-id="7126959"] [ls\_content\_block id="5798390"]
 
 .. _software:
 
 Software
 ========
 
+Visualization and analysis tasks should be done on the Andes cluster. There are a
+few tools provided for various visualization tasks, as described in the
+:ref:`visualization-tools` section of the :ref:`andes-user-guide`.
+
 For a full list of software available at the OLCF, please see the
-`Software </for-users/software/>`__ section.
+Software section (coming soon).
 
 .. _shell-programming-environments:
 
 Shell & Programming Environments
 ================================
 
-OLCF systems provide hundreds of software packages and scientific
+OLCF systems provide many software packages and scientific
 libraries pre-installed at the system-level for users to take advantage
 of. To facilitate this, environment management tools are employed to
 handle necessary changes to the shell. The sections below provide
@@ -1000,7 +243,7 @@ the shell interface a user will be presented with upon login to any OLCF
 system. Currently, supported shells include:
 
 -  bash
--  tsch
+-  tcsh
 -  csh
 -  ksh
 
@@ -1008,27 +251,38 @@ If you would like to have your default shell changed, please contact the
 `OLCF User Assistance Center <https://www.olcf.ornl.gov/for-users/user-assistance/>`__ at
 help@nccs.gov.
 
+.. _environment-management-with-lmod:
+
 Environment Management with Lmod
 --------------------------------
 
-Environment modules are provided through
-`Lmod <https://lmod.readthedocs.io/en/latest/>`__, a Lua-based module
-system for dynamically altering shell environments. By managing changes
-to the shell’s environment variables (such as ``PATH``,
-``LD_LIBRARY_PATH``, and ``PKG_CONFIG_PATH``), Lmod allows you to alter
-the software available in your shell environment without the risk of
-creating package and version combinations that cannot coexist in a
-single environment. Lmod is a recursive environment module system,
-meaning it is aware of module compatibility and actively alters the
-environment to protect against conflicts. Messages to stderr are issued
-upon Lmod implicitly altering the environment. Environment modules are
-structured hierarchically by compiler family such that packages built
-with a given compiler will only be accessible if the compiler family is
-first present in the environment.
+Environment modules are provided through `Lmod
+<https://lmod.readthedocs.io/en/latest/>`__, a Lua-based module system for
+dynamically altering shell environments. By managing changes to the shell’s
+environment variables (such as ``PATH``, ``LD_LIBRARY_PATH``, and
+``PKG_CONFIG_PATH``), Lmod allows you to alter the software available in your
+shell environment without the risk of creating package and version combinations
+that cannot coexist in a single environment.
 
-    **Note:** Lmod can interpret both Lua modulefiles and legacy Tcl
+Lmod is a recursive environment module system, meaning it is aware of module
+compatibility and actively alters the environment to protect against conflicts.
+Messages to stderr are issued upon Lmod implicitly altering the environment.
+Environment modules are structured hierarchically by compiler family such that
+packages built with a given compiler will only be accessible if the compiler
+family is first present in the environment.
+
+.. note::
+    Lmod can interpret both Lua modulefiles and legacy Tcl
     modulefiles. However, long and logic-heavy Tcl modulefiles may require
     porting to Lua.
+
+.. note::
+    Because of the mismatched operating system versions between the Moderate Enhanced login node and the Summit
+    compute nodes, the ``module`` command is not available on the Moderate Enhanced login node. Similar to how
+    users need to compile on a batch node, the module system is also only available on the batch nodes. For
+    more information see :ref:`compiling-mod-enhanced` .
+    Eventually, the Summit login nodes will be upgraded to match the Moderate Enhanced login node and this
+    will no longer be necessary
 
 General Usage
 ^^^^^^^^^^^^^
@@ -1063,7 +317,8 @@ the ``module`` command:
 | module update                    | Reloads all currently loaded modules                                  |
 +----------------------------------+-----------------------------------------------------------------------+
 
-    **Note:** Modules are changed recursively. Some commands, such as
+.. note::
+    Modules are changed recursively. Some commands, such as
     ``module swap``, are available to maintain compatibility with scripts
     using Tcl Environment Modules, but are not necessary since Lmod
     recursively processes loaded modules and automatically resolves
@@ -1072,12 +327,11 @@ the ``module`` command:
 Searching for modules
 ^^^^^^^^^^^^^^^^^^^^^
 
-Modules with dependencies are only available when the underlying
-dependencies, such as compiler families, are loaded. Thus,
-``module avail`` will only display modules that are compatible with the
-current state of the environment. To search the entire hierarchy across
-all possible dependencies, the ``spider`` sub-command can be used as
-summarized in the following table.
+Modules with dependencies are only available when the underlying dependencies,
+such as compiler families, are loaded. Thus, ``module avail`` will only display
+modules that are compatible with the current state of the environment. To search
+the entire hierarchy across all possible dependencies, the ``spider``
+sub-command can be used as summarized in the following table.
 
 +----------------------------------------+------------------------------------------------------------------------------------+
 | Command                                | Description                                                                        |
@@ -1096,12 +350,11 @@ summarized in the following table.
 Defining custom module collections
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Lmod supports caching commonly used collections of environment modules
-on a per-user basis in ``$HOME/.lmod.d``. To create a collection called
-"NAME" from the currently loaded modules, simply call
-``module save NAME``. Omitting "NAME" will set the user’s default
-collection. Saved collections can be recalled and examined with the
-commands summarized in the following table.
+Lmod supports caching commonly used collections of environment modules on a
+per-user basis in ``$HOME/.lmod.d``. To create a collection called "NAME" from
+the currently loaded modules, simply call ``module save NAME``. Omitting "NAME"
+will set the user’s default collection. Saved collections can be recalled and
+examined with the commands summarized in the following table.
 
 +-------------------------+----------------------------------------------------------+
 | Command                 | Description                                              |
@@ -1117,16 +370,18 @@ commands summarized in the following table.
 | module savelist         | Shows the list user-defined saved collections            |
 +-------------------------+----------------------------------------------------------+
 
-    **Note:** You should use unique names when creating collections to
+.. note::
+    You should use unique names when creating collections to
     specify the application (and possibly branch) you are working on. For
-    example, \`app1-development\`, \`app1-production\`, and
-    \`app2-production\`.
+    example, ``app1-development``, ``app1-production``, and
+    ``app2-production``.
 
-    **Note:** In order to avoid conflicts between user-defined collections
+.. note::
+    In order to avoid conflicts between user-defined collections
     on multiple compute systems that share a home file system (e.g.
-    /ccs/home/[userid]), lmod appends the hostname of each system to the
-    files saved in in your ~/.lmod.d directory (using the environment
-    variable LMOD\_SYSTEM\_NAME). This ensures that only collections
+    ``/ccs/home/[userid]``), lmod appends the hostname of each system to the
+    files saved in in your ``~/.lmod.d`` directory (using the environment
+    variable ``LMOD_SYSTEM_NAME``). This ensures that only collections
     appended with the name of the current system are visible.
 
 The following screencast shows an example of setting up user-defined
@@ -1155,18 +410,18 @@ The following compilers are available on Summit:
 
 **NVCC**: CUDA C compiler
 
-Upon login, the default versions of the XL
-compiler suite and Spectrum Message Passing Interface (MPI) are added to
-each user's environment through the modules system. No changes to the
-environment are needed to make use of the defaults.
+Upon login, the default versions of the XL compiler suite and Spectrum Message
+Passing Interface (MPI) are added to each user's environment through the modules
+system. No changes to the environment are needed to make use of the defaults.
 
 Multiple versions of each compiler family are provided, and can be inspected
 using the modules system:
 
 ::
 
-    summit$ module -t avail gcc
-    /sw/summit/spack-envs/base/modules/site/Core:
+
+   summit$ module -t avail gcc
+   /sw/summit/spack-envs/base/modules/site/Core:
    gcc/7.5.0
    gcc/9.1.0
    gcc/9.3.0
@@ -1174,79 +429,119 @@ using the modules system:
    gcc/11.1.0
 
 
+
+.. _compiling-mod-enhanced:
+
+Compiling for Projects in the Moderate Enhanced Security Enclave 
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Moderate Enhanced projects need to compile code on a batch node rather than the moderate-enhanced login node because the
+login node has a newer version of the operating system than standard Summit login nodes and compute nodes. 
+To do this requires submitting an interactive batch job and then compiling the code on the batch node. Additionally, users need
+to "relogin" on the batch node to setup the environment properly. The easiest way to do this is to add ``-l`` (dash "ell") to the $SHELL argument as
+shown below. To facilitate the requirement to compile on batch nodes, users can 
+submit to the ``debug-spi`` queue for a slight priority boost. Note that machine load on Summit can still delay
+startup of the interactive job unfortunately. Typical work flow would be:
+
+::
+   
+   user@citadel > bsub -q debug-spi -nnodes 1  -P ABC123_MDE -W 2:00 -Is $SHELL -l
+   Job <XXXXXX> is submitted to queue <debug-spi>
+   <<Waiting for dispatch ....>>
+   [Possible delay here until a node is available]
+   <<Starting on batchX>>
+   prompt > cd /path/to/the/code
+   prompt > cmake or ./configure or whatever is needed to configure and prepare the code for compiling
+   prompt > make  or whatever is needed to compile the code
+
+At this point, it is possible to run a quick test job using jsrun or fix any compilation issues which may have occured.
+
+
+.. note:: 
+
+    Eventually, the Summit compute nodes will be upgraded to match the Moderate Enhanced login node and this will no longer be necessary
+
+    
 C compilation
 ^^^^^^^^^^^^^
 
-    **Note:** type char is unsigned by default
+.. note::
+    type char is unsigned by default
 
-+--------------+------------------+----------------+---------------+------------------+------------------+---------------------------+--------------------+
-| **Vendor**   | **Module**       | **Compiler**   | **Version**   | **Enable C99**   | **Enable C11**   | **Default signed char**   | **Define macro**   |
-+==============+==================+================+===============+==================+==================+===========================+====================+
-| **IBM**      | xl               | xlc xlc\_r     | 13.1.6        | -std=gnu99       | -std=gnu11       | -qchar=signed             | -WF,-D             |
-+--------------+------------------+----------------+---------------+------------------+------------------+---------------------------+--------------------+
-| **GNU**      | system default   | gcc            | 4.8.5         | -std=gnu99       | -std=gnu11       | -fsigned-char             | -D                 |
-+--------------+------------------+----------------+---------------+------------------+------------------+---------------------------+--------------------+
-| **GNU**      | gcc              | gcc            | 6.4.0         | -std=gnu99       | -std=gnu11       | -fsigned-char             | -D                 |
-+--------------+------------------+----------------+---------------+------------------+------------------+---------------------------+--------------------+
-| **LLVM**     | llvm             | clang          | 3.8.0         | default          | -std=gnu11       | -fsigned-char             | -D                 |
-+--------------+------------------+----------------+---------------+------------------+------------------+---------------------------+--------------------+
-| **PGI**      | pgi              | pgcc           | 17.10         | -c99             | -c11             | -Mschar                   | -D                 |
-+--------------+------------------+----------------+---------------+------------------+------------------+---------------------------+--------------------+
++--------------+------------------+----------------+------------------+------------------+---------------------------+--------------------+
+| **Vendor**   | **Module**       | **Compiler**   |  **Enable C99**  | **Enable C11**   | **Default signed char**   | **Define macro**   |
+|              |                  |                |                  |                  |                           |                    |
++==============+==================+================+==================+==================+===========================+====================+
+| **IBM**      | ``xl``           | xlc xlc\_r     | ``-std=gnu99``   | ``-std=gnu11``   | ``-qchar=signed``         | ``-WF,-D``         |
++--------------+------------------+----------------+------------------+------------------+---------------------------+--------------------+
+| **GNU**      | system default   | gcc            | ``-std=gnu99``   | ``-std=gnu11``   | ``-fsigned-char``         | ``-D``             |
++--------------+------------------+----------------+------------------+------------------+---------------------------+--------------------+
+| **GNU**      | ``gcc``          | gcc            | ``-std=gnu99``   | ``-std=gnu11``   | ``-fsigned-char``         | ``-D``             |
++--------------+------------------+----------------+------------------+------------------+---------------------------+--------------------+
+| **LLVM**     | ``llvm``         | clang          | default          | ``-std=gnu11``   | ``-fsigned-char``         | ``-D``             |
++--------------+------------------+----------------+------------------+------------------+---------------------------+--------------------+
+| **PGI**      | ``pgi``          | pgcc           | ``-c99``         | ``-c11``         | ``-Mschar``               | ``-D``             |
++--------------+------------------+----------------+------------------+------------------+---------------------------+--------------------+
 
 C++ compilations
 ^^^^^^^^^^^^^^^^
 
-    **Note:** type char is unsigned by default
+.. note::
+    type char is unsigned by default
 
-+--------------+------------------+-------------------+---------------+--------------------------------+--------------------------------+---------------------------+--------------------+
-| **Vendor**   | **Module**       | **Compiler**      | **Version**   | **Enable C++11**               | **Enable C++14**               | **Default signed char**   | **Define macro**   |
-+==============+==================+===================+===============+================================+================================+===========================+====================+
-| **IBM**      | xl               | xlc++, xlc++\_r   | 13.1.6        | -std=gnu++11                   | -std=gnu++1y *(PARTIAL)*       | -qchar=signed             | -WF,-D             |
-+--------------+------------------+-------------------+---------------+--------------------------------+--------------------------------+---------------------------+--------------------+
-| **GNU**      | system default   | g++               | 4.8.5         | -std=gnu++11                   | -std=gnu++1y                   | -fsigned-char             | -D                 |
-+--------------+------------------+-------------------+---------------+--------------------------------+--------------------------------+---------------------------+--------------------+
-| **GNU**      | gcc              | g++               | 6.4.0         | -std=gnu++11                   | -std=gnu++1y                   | -fsigned-char             | -D                 |
-+--------------+------------------+-------------------+---------------+--------------------------------+--------------------------------+---------------------------+--------------------+
-| **LLVM**     | llvm             | clang++           | 3.8.0         | -std=gnu++11                   | -std=gnu++1y                   | -fsigned-char             | -D                 |
-+--------------+------------------+-------------------+---------------+--------------------------------+--------------------------------+---------------------------+--------------------+
-| **PGI**      | pgi              | pgc++             | 17.10         | -std=c++11 --gnu\_extensions   | -std=c++14 --gnu\_extensions   | -Mschar                   | -D                 |
-+--------------+------------------+-------------------+---------------+--------------------------------+--------------------------------+---------------------------+--------------------+
++--------------+------------------+-------------------+--------------------------------+--------------------------------+---------------------------+--------------------+
+| **Vendor**   | **Module**       | **Compiler**      | **Enable C++11**               | **Enable C++14**               | **Default signed char**   | **Define macro**   |
+|              |                  |                   |                                |                                |                           |                    |
++==============+==================+===================+================================+================================+===========================+====================+
+| **IBM**      | ``xl``           | xlc++, xlc++\_r   | ``-std=gnu++11``               | ``-std=gnu++1y`` (PARTIAL)*    | ``-qchar=signed``         | ``-WF,-D``         |
++--------------+------------------+-------------------+--------------------------------+--------------------------------+---------------------------+--------------------+
+| **GNU**      | system default   | g++               | ``-std=gnu++11``               | ``-std=gnu++1y``               | ``-fsigned-char``         | ``-D``             |
++--------------+------------------+-------------------+--------------------------------+--------------------------------+---------------------------+--------------------+
+| **GNU**      | ``gcc``          | g++               | ``-std=gnu++11``               | ``-std=gnu++1y``               | ``-fsigned-char``         | ``-D``             |
++--------------+------------------+-------------------+--------------------------------+--------------------------------+---------------------------+--------------------+
+| **LLVM**     | ``llvm``         | clang++           | ``-std=gnu++11``               | ``-std=gnu++1y``               | ``-fsigned-char``         | ``-D``             |
++--------------+------------------+-------------------+--------------------------------+--------------------------------+---------------------------+--------------------+
+| **PGI**      | ``pgi``          | pgc++             | ``-std=c++11 -gnu_extensions`` | ``-std=c++14 -gnu_extensions`` | ``-Mschar``               | ``-D``             |
++--------------+------------------+-------------------+--------------------------------+--------------------------------+---------------------------+--------------------+
 
 Fortran compilation
 ^^^^^^^^^^^^^^^^^^^
 
-+--------------+------------------+-----------------------------------+----------------+-------------------------------+-------------------------------+-------------------------------+--------------------+
-| **Vendor**   | **Module**       | **Compiler**                      | **Version**    | **Enable F90**                | **Enable F2003**              | **Enable F2008**              | **Define macro**   |
-+==============+==================+===================================+================+===============================+===============================+===============================+====================+
-| **IBM**      | xl               | xlf xlf90 xlf95 xlf2003 xlf2008   | 15.1.6         | -qlanglvl=90std               | -qlanglvl=2003std             | -qlanglvl=2008std             | -WF,-D             |
-+--------------+------------------+-----------------------------------+----------------+-------------------------------+-------------------------------+-------------------------------+--------------------+
-| **GNU**      | system default   | gfortran                          | 4.8.5, 6.4.0   | -std=f90                      | -std=f2003                    | -std=f2008                    | -D                 |
-+--------------+------------------+-----------------------------------+----------------+-------------------------------+-------------------------------+-------------------------------+--------------------+
-| **LLVM**     | llvm             | xlflang                           | 3.8.0          | n/a                           | n/a                           | n/a                           | -D                 |
-+--------------+------------------+-----------------------------------+----------------+-------------------------------+-------------------------------+-------------------------------+--------------------+
-| **PGI**      | pgi              | pgfortran                         | 17.10          | use .F90 source file suffix   | use .F03 source file suffix   | use .F08 source file suffix   | -D                 |
-+--------------+------------------+-----------------------------------+----------------+-------------------------------+-------------------------------+-------------------------------+--------------------+
++--------------+------------------+-----------------------------------+--------------------------+---------------------------+--------------------------+--------------------+
+| **Vendor**   | **Module**       | **Compiler**                      | **Enable F90**           | **Enable F2003**          | **Enable F2008**         | **Define macro**   |
+|              |                  |                                   |                          |                           |                          |                    |
++==============+==================+===================================+==========================+===========================+==========================+====================+
+| **IBM**      | ``xl``           | xlf xlf90 xlf95 xlf2003 xlf2008   | ``-qlanglvl=90std``      | ``-qlanglvl=2003std``     | ``-qlanglvl=2008std``    | ``-WF,-D``         |
++--------------+------------------+-----------------------------------+--------------------------+---------------------------+--------------------------+--------------------+
+| **GNU**      | system default   | gfortran                          | ``-std=f90``             | ``-std=f2003``            | ``-std=f2008``           | ``-D``             |
++--------------+------------------+-----------------------------------+--------------------------+---------------------------+--------------------------+--------------------+
+| **LLVM**     | ``llvm``         | xlflang                           | n/a                      | n/a                       | n/a                      | ``-D``             |
++--------------+------------------+-----------------------------------+--------------------------+---------------------------+--------------------------+--------------------+
+| **PGI**      | ``pgi``          | pgfortran                         | use ``.F90`` source file |  use ``.F03`` source file | use ``.F08`` source file | ``-D``             |
+|              |                  |                                   | suffix                   |  suffix                   | suffix                   |                    |
++--------------+------------------+-----------------------------------+--------------------------+---------------------------+--------------------------+--------------------+
 
-    **Note:** \* The xlflang module currently conflicts with the clang
+.. note::
+    The xlflang module currently conflicts with the clang
     module. This restriction is expected to be lifted in future releases.
 
 MPI
 ^^^
 
-MPI on Summit is provided by IBM Spectrum MPI. Spectrum MPI provides
-compiler wrappers that automatically choose the proper compiler to build
-your application.
+MPI on Summit is provided by IBM Spectrum MPI. Spectrum MPI provides compiler
+wrappers that automatically choose the proper compiler to build your
+application.
 
-The following compiler wrappers are available: 
+The following compiler wrappers are available:
 
-**C**: ``mpicc`` 
+**C**: ``mpicc``
 
-**C++**: ``mpic++``, ``mpiCC`` 
+**C++**: ``mpic++``, ``mpiCC``
 
-**Fortran**: ``mpifort``, ``mpif77``, ``mpif90`` 
+**Fortran**: ``mpifort``, ``mpif77``, ``mpif90``
 
-While these wrappers conveniently abstract away linking of Spectrum MPI, it's 
-sometimes helpful to see exactly what's happening when invoked. The ``--showme`` 
+While these wrappers conveniently abstract away linking of Spectrum MPI, it's
+sometimes helpful to see exactly what's happening when invoked. The ``--showme``
 flag will display the full link lines, without actually compiling:
 
 ::
@@ -1257,45 +552,48 @@ flag will display the full link lines, without actually compiling:
 OpenMP
 ^^^^^^
 
-    **Note:** When using OpenMP with IBM XL compilers, the thread-safe
+.. note::
+    When using OpenMP with IBM XL compilers, the thread-safe
     compiler variant is required; These variants have the same name as the
     non-thread-safe compilers with an additional ``_r`` suffix. e.g. to
     compile OpenMPI C code one would use ``xlc_r``
 
-    **Note:** OpenMP offloading support is still under active development.
+.. note::
+    OpenMP offloading support is still under active development.
     Performance and debugging capabilities in particular are expected to
     improve as the implementations mature.
 
 +---------------+-------------------+---------------------+-------------------+---------------------------------------------------------------------------------+
 | **Vendor**    | **3.1 Support**   | **Enable OpenMP**   | **4.x Support**   | **Enable OpenMP 4.x Offload**                                                   |
 +===============+===================+=====================+===================+=================================================================================+
-| **IBM**       | FULL              | -qsmp=omp           | PARTIAL           | -qsmp=omp -qoffload                                                             |
+| **IBM**       | FULL              | ``-qsmp=omp``       | FULL              | ``-qsmp=omp -qoffload``                                                         |
 +---------------+-------------------+---------------------+-------------------+---------------------------------------------------------------------------------+
-| **GNU**       | FULL              | -fopenmp            | PARTIAL           | -fopenmp                                                                        |
+| **GNU**       | FULL              | ``-fopenmp``        | PARTIAL           | ``-fopenmp``                                                                    |
 +---------------+-------------------+---------------------+-------------------+---------------------------------------------------------------------------------+
-| **clang**     | FULL              | -fopenmp            | PARTIAL           | -fopenmp -fopenmp-targets=nvptx64-nvidia-cuda --cuda-path=${OLCF\_CUDA\_ROOT}   |
+| **clang**     | FULL              | ``-fopenmp``        | PARTIAL           | ``-fopenmp -fopenmp-targets=nvptx64-nvidia-cuda --cuda-path=${OLCF_CUDA_ROOT}`` |
 +---------------+-------------------+---------------------+-------------------+---------------------------------------------------------------------------------+
-| **xlflang**   | FULL              | -fopenmp            | PARTIAL           | -fopenmp -fopenmp-targets=nvptx64-nvidia-cuda                                   |
+| **xlflang**   | FULL              | ``-fopenmp``        | PARTIAL           | ``-fopenmp -fopenmp-targets=nvptx64-nvidia-cuda``                               |
 +---------------+-------------------+---------------------+-------------------+---------------------------------------------------------------------------------+
-| **PGI**       | FULL              | -mp                 | NONE              | NONE                                                                            |
+| **PGI**       | FULL              | ``-mp``             | NONE              | NONE                                                                            |
 +---------------+-------------------+---------------------+-------------------+---------------------------------------------------------------------------------+
 
 OpenACC
 ^^^^^^^
 
-+--------------+--------------------+-----------------------+-------------------------+
-| **Vendor**   | **Module**         | **OpenACC Support**   | **Enable OpenACC**      |
-+==============+====================+=======================+=========================+
-| **IBM**      | xl                 | NONE                  | NONE                    |
-+--------------+--------------------+-----------------------+-------------------------+
-| **GNU**      | system default     | NONE                  | NONE                    |
-+--------------+--------------------+-----------------------+-------------------------+
-| **GNU**      | gcc                | 2.5                   | -fopenacc               |
-+--------------+--------------------+-----------------------+-------------------------+
-| **LLVM**     | clang or xlflang   | NONE                  | NONE                    |
-+--------------+--------------------+-----------------------+-------------------------+
-| **PGI**      | pgi                | 2.5                   | -acc, -ta=nvidia:cc70   |
-+--------------+--------------------+-----------------------+-------------------------+
++--------------+--------------------+-----------------------+---------------------------+
+| **Vendor**   | **Module**         | **OpenACC Support**   | **Enable OpenACC**        |
++==============+====================+=======================+===========================+
+| **IBM**      | ``xl``             | NONE                  | NONE                      |
++--------------+--------------------+-----------------------+---------------------------+
+| **GNU**      | system default     | NONE                  | NONE                      |
++--------------+--------------------+-----------------------+---------------------------+
+| **GNU**      | ``gcc``            | 2.5                   | ``-fopenacc``             |
++--------------+--------------------+-----------------------+---------------------------+
+| **LLVM**     | ``clang`` or       |                       |                           |
+|              | ``xlflang``        | NONE                  | NONE                      |
++--------------+--------------------+-----------------------+---------------------------+
+| **PGI**      | ``pgi``            | 2.5                   | ``-acc, -ta=nvidia:cc70`` |
++--------------+--------------------+-----------------------+---------------------------+
 
 CUDA compilation
 ^^^^^^^^^^^^^^^^
@@ -1305,23 +603,21 @@ NVIDIA
 
 CUDA C/C++ support is provided through the ``cuda`` module.
 
-**nvcc** : Primary CUDA C/C++ compiler
+``nvcc`` : Primary CUDA C/C++ compiler
 
 **Language support**
 
+``-std=c++11`` : provide C++11 support
 
-**-std=c++11** : provide C++11 support
+``--expt-extended-lambda`` : provide experimental host/device lambda support
 
-**--expt-extended-lambda** : provide experimental host/device lambda support
-
-**--expt-relaxed-constexpr** : provide experimental host/device constexpr
-support
+``--expt-relaxed-constexpr`` : provide experimental host/device constexpr support
 
 **Compiler support**
 
 NVCC currently supports XL, GCC, and PGI C++ backends.
 
-**--ccbin** : set to host compiler location
+``--ccbin`` : set to host compiler location
 
 CUDA Fortran compilation
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1332,39 +628,38 @@ IBM
 The IBM compiler suite is made available through the default loaded xl
 module, the cuda module is also required.
 
-xlcuf : primary Cuda fortran compiler, thread safe
+``xlcuf`` : primary Cuda fortran compiler, thread safe
 
 **Language support flags**
 
--qlanglvl=90std : provide Fortran90 support
+``-qlanglvl=90std`` : provide Fortran90 support
 
--qlanglvl=95std : provide Fortran95 support
+``-qlanglvl=95std`` : provide Fortran95 support
 
--qlanglvl=2003std : provide Fortran2003 support
+``-qlanglvl=2003std`` : provide Fortran2003 support
 
--qlanglvl=2008std :provide Fortran2003 support
+``-qlanglvl=2008std`` : provide Fortran2003 support
 
 PGI
 """
 
-The PGI compiler suite is available through the pgi module.
+The PGI compiler suite is available through the ``pgi`` module.
 
-pgfortran : Primary fortran compiler with CUDA Fortran support
+``pgfortran`` : Primary fortran compiler with CUDA Fortran support
 
 **Language support:**
 
-
-Files with .cuf suffix automatically compiled with cuda fortran support
+Files with ``.cuf`` suffix automatically compiled with cuda fortran support
 
 Standard fortran suffixed source files determines the standard involved,
 see the man page for full details
 
--Mcuda : Enable CUDA Fortran on provided source file
+``-Mcuda`` : Enable CUDA Fortran on provided source file
 
 Linking in Libraries
 --------------------
 
-OLCF systems provide hundreds of software packages and scientific
+OLCF systems provide many software packages and scientific
 libraries pre-installed at the system-level for users to take advantage
 of. In order to link these libraries into an application, users must
 direct the compiler to their location. The ``module show`` command can
@@ -1424,6 +719,8 @@ The following sections will provide more information regarding running
 jobs on Summit. Summit uses IBM Spectrum Load Sharing Facility (LSF) as
 the batch scheduling system.
 
+.. _login-launch-and-compute-nodes:
+
 Login, Launch, and Compute Nodes
 --------------------------------
 
@@ -1434,9 +731,30 @@ When your :ref:`batch-scripts` or :ref:`interactive-jobs` run,
 the resulting shell will run on a launch node. Compute nodes are accessed
 via the ``jsrun`` command. The ``jsrun`` command should only be issued
 from within an LSF job (either batch or interactive) on a launch node.
-Othewise, you will not have any compute nodes allocated and your parallel
+Otherwise, you will not have any compute nodes allocated and your parallel
 job will run on the login node. If this happens, your job will interfere with
-(and be interfered with by) other users' login node tasks.
+(and be interfered with by) other users' login node tasks. ``jsrun`` is covered
+in-depth in the `Job Launcher (jsrun)`_ section.
+
+Per-User Login Node Resource Limits
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Because the login nodes are resources shared by all Summit users, we utilize
+``cgroups`` to help better ensure resource availability for all users of the
+shared nodes. By default each user is limited to **16 hardware-threads**, **16GB
+of memory**, and **1 GPU**.  Please note that limits are set per user and not
+individual login sessions. All user processes on a node are contained within a
+single cgroup and share the cgroup's limits.
+
+If a process from any of a user’s login sessions reaches 4 hours of CPU-time,
+all login sessions will be limited to **.5 hardware-thread**. After 8 hours of
+CPU-time, the process is automatically killed. To reset the cgroup limits on a
+node to default once the 4 hour CPU-time reduction has been reached, kill the
+offending process and start a new login session to the node.
+
+    .. note:: Login node limits are set per user and not per individual login
+        session.  All user processes on a node are contained within a single cgroup
+        and will share the cgroup's limits.
 
 
 .. _batch-scripts:
@@ -1459,28 +777,33 @@ with input redirection (i.e. ``bsub < myjob.lsf``). This is not needed
 
 As an example, consider the following batch script:
 
-.. code::
+.. code-block:: bash
+   :linenos:
 
-    1.   #!/bin/bash
-    2.  # Begin LSF Directives
-    3.  #BSUB -P ABC123
-    4.  #BSUB -W 3:00
-    5.  #BSUB -nnodes 2048
-    6.  #BSUB -alloc_flags gpumps
-    7.  #BSUB -J RunSim123
-    8.  #BSUB -o RunSim123.%J
-    9.  #BSUB -e RunSim123.%J
-    10.
-    11. cd $MEMBERWORK/abc123
-    12. cp $PROJWORK/abc123/RunData/Input.123 ./Input.123
-    13. date
-    14. jsrun -n 4092 -r 2 -a 12 -g 3 ./a.out
-    15. cp my_output_file /ccs/proj/abc123/Output.123
+    #!/bin/bash
+    # Begin LSF Directives
+    #BSUB -P ABC123
+    #BSUB -W 3:00
+    #BSUB -nnodes 2048
+    #BSUB -alloc_flags gpumps
+    #BSUB -J RunSim123
+    #BSUB -o RunSim123.%J
+    #BSUB -e RunSim123.%J
+
+    cd $MEMBERWORK/abc123
+    cp $PROJWORK/abc123/RunData/Input.123 ./Input.123
+    date
+    jsrun -n 4092 -r 2 -a 12 -g 3 ./a.out
+    cp my_output_file /ccs/proj/abc123/Output.123
+
+.. note:: 
+   For Moderate Enhanced Projects, job scripts need to add "-l" ("ell") to the shell specification, similar to interactive usage.
 
 +----------+------------+--------------------------------------------------------------------------------------------+
 | Line #   | Option     | Description                                                                                |
 +==========+============+============================================================================================+
-| 1        |            | Shell specification. This script will run under with bash as the shell                     |
+| 1        |            | Shell specification. This script will run under with bash as the shell. Moderate enhanced  |
+|          |            | projects should add ``-l`` ("ell") to the shell specification.                             |
 +----------+------------+--------------------------------------------------------------------------------------------+
 | 2        |            | Comment line                                                                               |
 +----------+------------+--------------------------------------------------------------------------------------------+
@@ -1488,7 +811,7 @@ As an example, consider the following batch script:
 +----------+------------+--------------------------------------------------------------------------------------------+
 | 4        | Required   | Maximum walltime for the job is 3 hours                                                    |
 +----------+------------+--------------------------------------------------------------------------------------------+
-| 5        | Required   | The job will use 2,048 nodes                                                               |
+| 5        | Required   | The job will use 2,048 compute nodes                                                       |
 +----------+------------+--------------------------------------------------------------------------------------------+
 | 6        | Optional   | Enable GPU Multi-Process Service                                                           |
 +----------+------------+--------------------------------------------------------------------------------------------+
@@ -1506,7 +829,7 @@ As an example, consider the following batch script:
 +----------+------------+--------------------------------------------------------------------------------------------+
 | 13       | -          | Run the ``date`` command to write a timestamp to the standard output file                  |
 +----------+------------+--------------------------------------------------------------------------------------------+
-| 14       | -          | Run the executable                                                                         |
+| 14       | -          | Run the executable on the allocated compute nodes                                          |
 +----------+------------+--------------------------------------------------------------------------------------------+
 | 15       | -          | Copy output files from the scratch area into a more permanent location                     |
 +----------+------------+--------------------------------------------------------------------------------------------+
@@ -1533,6 +856,24 @@ job “interactive batch”: ``-Is`` followed by a shell name. For example,
 to request an interactive batch job (with bash as the shell) equivalent
 to the sample batch script above, you would use the command:
 ``bsub -W 3:00 -nnodes 2048 -P ABC123 -Is /bin/bash``
+
+
+As pointed out in :ref:`login-launch-and-compute-nodes`, you will be placed on
+a launch (a.k.a. "batch") node upon launching an interactive job and as usual
+need to use ``jsrun`` to access the compute node(s):
+
+.. code::
+
+    $ bsub -Is -W 0:10 -nnodes 1 -P STF007 $SHELL
+    Job <779469> is submitted to default queue <batch>.
+    <<Waiting for dispatch ...>>
+    <<Starting on batch2>>
+
+    $ hostname
+    batch2
+
+    $ jsrun -n1 hostname
+    a35n03
 
 Common bsub Options
 -------------------
@@ -1589,6 +930,69 @@ about other LSF options, see the ``bsub`` man page.
 |                    |                                        | use smt2. The default level is smt4.                                             |
 +--------------------+----------------------------------------+----------------------------------------------------------------------------------+
 
+Allocation-wide Options
+^^^^^^^^^^^^^^^^^^^^^^^
+
+The ``-alloc_flags`` option to ``bsub`` is used to set allocation-wide options.
+These settings are applied to every compute node in a job. Only one instance of
+the flag is accepted, and multiple ``alloc_flags`` values should be enclosed in
+quotes and space-separated. For example, ``-alloc_flags "gpumps smt1``.
+
+The most common values (``smt{1,2,4}``, ``gpumps``, ``gpudefault``) are detailed in
+the following sections. 
+
+This option can also be used to provide additional resources to GPFS service
+processes, described in the `GPFS System Service Isolation
+<#gpfs-system-service-isolation>`__ section.
+
+Hardware Threads
+""""""""""""""""
+
+Hardware threads are a feature of the POWER9 processor through which
+individual physical cores can support multiple execution streams,
+essentially looking like one or more virtual cores (similar to
+hyperthreading on some Intel\ |R| microprocessors). This feature is often
+called Simultaneous Multithreading or SMT. The POWER9 processor on
+Summit supports SMT levels of 1, 2, or 4, meaning (respectively) each
+physical core looks like 1, 2, or 4 virtual cores. The SMT level is
+controlled by the ``-alloc_flags`` option to ``bsub``. For example, to
+set the SMT level to 2, add the line ``#BSUB –alloc_flags smt2`` to your
+batch script or add the option ``-alloc_flags smt2`` to you ``bsub``
+command line.
+
+The default SMT level is 4.
+
+MPS
+"""
+
+The Multi-Process Service (MPS) enables multiple processes (e.g. MPI
+ranks) to concurrently share the resources on a single GPU. This is
+accomplished by starting an MPS server process, which funnels the work
+from multiple CUDA contexts (e.g. from multiple MPI ranks) into a single
+CUDA context. In some cases, this can increase performance due to better
+utilization of the resources. As mentioned in the `Common bsub Options <#common-bsub-options>`__
+section above, MPS can be enabled with the ``-alloc_flags "gpumps"`` option to
+``bsub``. The following screencast shows an example of how to start an MPS
+server process for a job: https://vimeo.com/292016149
+
+GPU Compute Modes
+"""""""""""""""""
+
+Summit's V100 GPUs are configured to have a default compute mode of
+``EXCLUSIVE_PROCESS``. In this mode, the GPU is assigned to only a single
+process at a time, and can accept work from multiple process threads
+concurrently.
+
+
+It may be desirable to change the GPU's compute mode to ``DEFAULT``, which
+enables multiple processes and their threads to share and submit work to it
+simultaneously. To change the compute mode to ``DEFAULT``, use the
+``-alloc_flags gpudefault`` option.
+
+NVIDIA recommends using the ``EXCLUSIVE_PROCESS`` compute mode (the default on
+Summit) when using the Multi-Process Service, but both MPS and the compute mode
+can be changed by providing both values: ``-alloc_flags "gpumps gpudefault"``. 
+
 Batch Environment Variables
 ---------------------------
 
@@ -1642,6 +1046,11 @@ states you’re most likely to see are:
 | SSUSP   | Job was suspended by the system after starting                              |
 +---------+-----------------------------------------------------------------------------+
 
+.. note::
+    Jobs may end up in the PSUSP state for a number of reasons. Two common reasons for PSUSP jobs include jobs that have been held by the user or jobs with unresolved dependencies. 
+    
+    Another common reason that jobs end up in a PSUSP state is a job that the system is unable to start. You may notice a job alternating between PEND and RUN states a few times and ultimately ends up as PSUSP. In this case, the system attempted to start the job but failed for some reason. This can be due to a system issue, but we have also seen this casued by improper settings on user ``~/.ssh/config`` files. (The batch system uses SSH, and the improper settings cause SSH to fail.) If you notice your jobs alternating between PEND and RUN, you might want to check permissions of your ``~/.ssh/config`` file to make sure it does not have write permission for "group" or "other". (A setting of read/write for the user and no other permissions, which can be set with ``chmod 600 ~/.ssh/config``, is recommended.)
+
 Scheduling Policy
 -----------------
 
@@ -1664,18 +1073,15 @@ strongly encourage users to run jobs on Summit that are as large as
 their code will warrant. To that end, the OLCF implements queue policies
 that enable large jobs to run in a timely fashion.
 
-    **Note:** The OLCF implements queue policies that encourage the
+.. note::
+    The OLCF implements queue policies that encourage the
     submission and timely execution of large, leadership-class jobs on
     Summit.
 
 The basic priority-setting mechanism for jobs waiting in the queue is
-the time a job has been waiting relative to other jobs in the queue. 
+the time a job has been waiting relative to other jobs in the queue.
 
-If your jobs require resources outside these queue policies, please
-complete the relevant request form on the `Special
-Requests <https://www.olcf.ornl.gov/for-users/documents-forms/special-request-form/>`__ page. If
-you have any questions or comments on the queue policies below, please
-direct them to the User Assistance Center.
+If your jobs require resources outside these queue policies such as higher priority or longer walltimes, please contact help@olcf.ornl.gov. 
 
 Job Priority by Processor Count
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1710,12 +1116,117 @@ following policies:
 -  Jobs in excess of the per user limit above will be placed into a
    *held* state, but will change to eligible-to-run at the appropriate
    time.
--  Users may have only (100) jobs queued at any state at any time.
+-  Users may have only (100) jobs queued in the ``batch`` queue at any state at any time.
    Additional jobs will be rejected at submit time.
 
-    **Note:** The *eligible-to-run* state is not the *running* state.
+.. note::
+    The *eligible-to-run* state is not the *running* state.
     Eligible-to-run jobs have not started and are waiting for resources.
     Running jobs are actually executing.
+
+``batch-hm`` Queue Policy
+"""""""""""""""""""""""""
+
+The ``batch-hm`` queue is used to access Summit's high-memory nodes.
+Jobs may use all 54 nodes. It enforces the following policies:
+
+-  Limit of (4) *eligible-to-run* jobs per user.
+-  Jobs in excess of the per user limit above will be placed into a
+   *held* state, but will change to eligible-to-run at the appropriate
+   time.
+-  Users may have only (25) jobs queued in the ``batch-hm`` queue at any state at any time.
+   Additional jobs will be rejected at submit time.
+
+**batch-hm job limits:**
+
++-------------+-------------+------------------------+
+| Min Nodes   | Max Nodes   | Max Walltime (Hours)   |
++=============+=============+========================+
+| 1           | 54          | 24.0                   |
++-------------+-------------+------------------------+
+
+To submit a job to the ``batch-hm`` queue, add the ``-q batch-hm`` option to your
+``bsub`` command or ``#BSUB -q batch-hm`` to your job script.
+
+
+Moderate Enhanced Projects ``batch-spi`` Queue Policy
+"""""""""""""""""""""""""""""""""""""""""""""""""""""
+The ``batch-spi`` queue is used by Summit's "Moderate Enhanced Enclave" projects. Projects in
+this enclave will be required to add ``-q batch-spi`` to their ``bsub`` command, or ``#BSUB -q batch-spi`` to
+their job scripts. Except for the enhanced security policies for jobs in these queues, all other queue properties are
+the same as the regular batch queue, including walltime limits based on node count, job aging priorities based on node
+count, and maximum number of jobs per user.
+
+Moderate Enhanced Projects ``batch-hm-spi`` Queue Policy
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+The ``batch-hm-spi`` queue is used by Summit's "Moderate Enhanced Enclave" projects that also want to
+take advantage of Summit's high-memory nodes. Projects in this enclave that want to use the Summit
+high-memory nodes will need to add ``-q batch-hm-spi`` to their ``bsub`` command, or ``#BSUB -q batch-hm-spi`` to
+their job scripts. Except for the enhanced security policies for jobs in these queues, all other queue properties are the same 
+as the ``batch-hm`` queue, such as maximum walltime and number of eligible running jobs.
+
+
+``killable`` Queue Policy
+""""""""""""""""""""""""""
+
+The ``killable`` queue is a preemptable queue that allows jobs in bins 4 and 5
+to request walltimes up to 24 hours. Jobs submitted to the killable queue will
+be preemptable once the job reaches the guaranteed runtime limit as shown in the
+table below. For example, a job in bin 5 submitted to the killable queue can
+request a walltime of 24 hours. The job will be preemptable after two hours of
+run time. Similarly, a job in bin 4 will be preemptable after six hours of run
+time. Once a job is preempted, the job will be resubmitted by default with the
+original limits as requested in the job script and will have the same ``JOBID``.
+
+**Preemptable job limits:**
+
++-------+-------------+-------------+------------------------+----------------------+
+| Bin   | Min Nodes   | Max Nodes   | Max Walltime (Hours)   | Guaranteed Walltime  |
++=======+=============+=============+========================+======================+
+| 4     | 46          | 91          | 24.0                   |  6.0 (hours)         |
++-------+-------------+-------------+------------------------+----------------------+
+| 5     | 1           | 45          | 24.0                   |  2.0 (hours)         |
++-------+-------------+-------------+------------------------+----------------------+
+
+.. warning:: If a job in the ``killable`` queue does not reach its requested
+    walltime, it will continue to use allocation time with each automatic
+    resubmission until it either reaches the requested walltime during a single
+    continuous run, or is manually killed by the user. Allocations are always
+    charged based on actual compute time used by all jobs.
+
+To submit a job to the ``killable`` queue, add the ``-q killable`` option to your
+``bsub`` command or ``#BSUB -q killable`` to your job script.
+
+To prevent a preempted job from being automatically requeued, the ``BSUB -rn``
+flag can be used at submit time.
+
+
+``debug`` Queue Policy
+""""""""""""""""""""""""""
+
+The ``debug`` queue (and the ``debug-spi`` queue for Moderate Enhanced security enclave projects)
+can be used to access Summit's compute resources for short 
+non-production debug tasks.  The queue provides a higher priority compared
+to jobs of the same job size bin in production queues.  Production work and 
+job chaining in the debug queue is prohibited.  Each user is limited to one 
+job in any state in the debug queue at any one point. Attempts to submit multiple
+jobs to the debug queue will be rejected upon job submission.
+
+**debug job limits:**
+
++-------------+--------------+------------------------+---------------------------------+--------------------+
+| Min Nodes   | Max Nodes    | Max Walltime (Hours)   | Max queued any state (per user) | Aging Boost (Days) |
++=============+==============+========================+=================================+====================+
+| 1           | unlimited    | 2.0                    | 1                               | 2                  |
++-------------+--------------+------------------------+---------------------------------+--------------------+
+
+To submit a job to the ``debug`` queue, add the ``-q debug`` option to your
+``bsub`` command or ``#BSUB -q debug`` to your job script. Moderate Enhanced projects would add ``-q debug-spi``
+to the ``bsub`` command or ``#BSUB -q debug-spi`` to job scripts.
+
+
+.. note::
+    Production work and job chaining in the ``debug`` queue is prohibited.
 
 Allocation Overuse Policy
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1732,7 +1243,7 @@ time as ``job2``. The project associated with ``job1`` is over its
 allocation, while the project for ``job2`` is not. The batch system will
 consider ``job2`` to have been waiting for a longer time than ``job1``.
 Additionally, projects that are at 125% of their allocated time will be
-limited to only one running job at a time. The adjustment to the
+limited to only 3 running jobs at a time. The adjustment to the
 apparent submit time depends upon the percentage that the project is
 over its allocation, as shown in the table below:
 
@@ -1749,12 +1260,11 @@ over its allocation, as shown in the table below:
 System Reservation Policy
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Projects may request to reserve a set of processors for a period of time
-through the reservation request form, which can be found on the `Special
-Requests <http://www.olcf.ornl.gov/support/getting-started/special-request-form/>`__
-page. If the reservation is granted, the reserved processors will be
+Projects may request to reserve a set of nodes for a period of time
+by contacting help@olcf.ornl.gov. If the reservation is granted, the reserved nodes will be
 blocked from general use for a given period of time. Only users that
 have been authorized to use the reservation can utilize those resources.
+To access the reservation, please add -U {reservation name} to bsub or job script.
 Since no other users can access the reserved resources, it is crucial
 that groups given reservations take care to ensure the utilization on
 those resources remains high. To prevent reserved resources from
@@ -1801,6 +1311,665 @@ described in the table below:
 Dependency expressions can be combined with logical operators. For
 example, if you want a job held until job 12345 is DONE and job 12346
 has started, you can use ``#BSUB -w "done(12345) && started(12346)"``
+
+
+
+.. _job-launcher-jsrun:
+
+Job Launcher (jsrun)
+--------------------
+
+The default job launcher for Summit is ``jsrun``. jsrun was developed by
+IBM for the Oak Ridge and Livermore Power systems. The tool will execute
+a given program on resources allocated through the LSF batch scheduler;
+similar to ``mpirun`` and ``aprun`` functionality.
+
+Compute Node Description
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+The following compute node image will be used to discuss jsrun resource
+sets and layout.
+
+
+.. image:: /images/summit-node-description-1.png
+   :width: 85%
+   :align: center
+
+-  1 node
+-  2 sockets (grey)
+-  42 physical cores\* (dark blue)
+-  168 hardware cores (light blue)
+-  6 GPUs (orange)
+-  2 Memory blocks (yellow)
+
+**\*Core Isolation:** 1 core on each socket has been set aside for
+overhead and is not available for allocation through jsrun. The core has
+been omitted and is not shown in the above image.
+
+Resource Sets
+^^^^^^^^^^^^^
+
+While jsrun performs similar job launching functions as aprun and
+mpirun, its syntax is very different. A large reason for syntax
+differences is the introduction of the ``resource set`` concept. Through
+resource sets, jsrun can control how a node appears to each job. Users
+can, through jsrun command line flags, control which resources on a node
+are visible to a job. Resource sets also allow the ability to run
+multiple jsruns simultaneously within a node. Under the covers, a
+resource set is a cgroup.
+
+At a high level, a resource set allows users to configure what a node
+look like to their job.
+
+jsrun will create one or more resource sets within a node. Each resource
+set will contain 1 or more cores and 0 or more GPUs. A resource set can
+span sockets, but it may not span a node. While a resource set can span
+sockets within a node, consideration should be given to the cost of
+cross-socket communication. By creating resource sets only within
+sockets, costly communication between sockets can be prevented.
+
+Subdividing a Node with Resource Sets
+"""""""""""""""""""""""""""""""""""""
+
+Resource sets provides the ability to subdivide node’s resources into
+smaller groups. The following examples show how a node can be subdivided
+and how many resource set could fit on a node.
+
+.. image:: /images/summit-resource-set-subdivide.png
+   :align: center
+
+Multiple Methods to Creating Resource Sets
+""""""""""""""""""""""""""""""""""""""""""
+
+Resource sets should be created to fit code requirements. The following
+examples show multiple ways to create resource sets that allow two MPI
+tasks access to a single GPU.
+
+#. 6 resource sets per node: 1 GPU, 2 cores per (Titan)
+
+   .. image:: https://www.olcf.ornl.gov/wp-content/uploads/2018/03/RS-summit-example-1GPU-2Cores.png
+      :align: center
+
+   In this case, CPUs can only see single assigned GPU.
+
+#. 2 resource sets per node: 3 GPUs and 6 cores per socket
+
+   .. image:: https://www.olcf.ornl.gov/wp-content/uploads/2018/03/RS-summit-example-3GPU-6Cores.png
+      :align: center
+
+   In this case, all 6 CPUs can see 3 GPUs. Code must manage CPU -> GPU
+   communication. CPUs on socket0 can not access GPUs or Memory on socket1.
+
+#. Single resource set per node: 6 GPUs, 12 cores
+
+   .. image:: https://www.olcf.ornl.gov/wp-content/uploads/2018/03/RS-summit-example-6GPU-12Core.png
+      :align: center
+
+   In this case, all 12 CPUs can see all node’s 6 GPUs. Code must manage CPU to
+   GPU communication. CPUs on socket0 can access GPUs and Memory on socket1.
+   Code must manage cross socket communication.
+
+Designing a Resource Set
+""""""""""""""""""""""""
+
+Resource sets allow each jsrun to control how the node appears to a
+code. This method is unique to jsrun, and requires thinking of each job
+launch differently than aprun or mpirun. While the method is unique, the
+method is not complicated and can be reasoned in a few basic steps.
+
+The first step to creating resource sets is understanding how a code would
+like the node to appear. For example, the number of tasks/threads per
+GPU. Once this is understood, the next step is to simply calculate the
+number of resource sets that can fit on a node. From here, the number of
+needed nodes can be calculated and passed to the batch job request.
+
+The basic steps to creating resource sets:
+
+1) Understand how your code expects to interact with the system.
+    How many tasks/threads per GPU?
+
+    Does each task expect to see a single GPU? Do multiple tasks expect
+    to share a GPU? Is the code written to internally manage task to GPU
+    workload based on the number of available cores and GPUs?
+2) Create resource sets containing the needed GPU to task binding
+    Based on how your code expects to interact with the system, you can
+    create resource sets containing the needed GPU and core resources.
+    If a code expects to utilize one GPU per task, a resource set would
+    contain one core and one GPU. If a code expects to pass work to a
+    single GPU from two tasks, a resource set would contain two cores
+    and one GPU.
+3) Decide on the number of resource sets needed
+    Once you understand tasks, threads, and GPUs in a resource set, you
+    simply need to decide the number of resource sets needed.
+
+As on any system, it is useful to keep in mind the hardware underneath every
+execution. This is particularly true when laying out resource sets.
+
+Launching a Job with jsrun
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+jsrun Format
+""""""""""""
+
+::
+
+      jsrun    [ -n #resource sets ]   [tasks, threads, and GPUs within each resource set]   program [ program args ]
+
+Common jsrun Options
+""""""""""""""""""""
+
+Below are common jsrun options. More flags and details can be found in the jsrun
+man page. The defaults listed in the table below are the OLCF defaults and take
+precedence over those mentioned in the man page.
+
+
++---------------------------+--------+------------------------------------------------------+------------------------------+
+| Flags                              |                                                      |                              |
++---------------------------+--------+  Description                                         + Default Value                +
+| Long                      | Short  |                                                      |                              |
++===========================+========+======================================================+==============================+
+| ``--nrs``                 | ``-n`` | Number of resource sets                              | All available physical cores |
++---------------------------+--------+------------------------------------------------------+------------------------------+
+| ``--tasks_per_rs``        | ``-a`` | Number of MPI tasks (ranks) per resource set         | Not set by default, instead  |
+|                           |        |                                                      | total tasks (-p) set         |
++---------------------------+--------+------------------------------------------------------+------------------------------+
+| ``--cpu_per_rs``          | ``-c`` | Number of CPUs (cores) per resource set.             | 1                            |
++---------------------------+--------+------------------------------------------------------+------------------------------+
+| ``--gpu_per_rs``          | ``-g`` | Number of GPUs per resource set                      | 0                            |
++---------------------------+--------+------------------------------------------------------+------------------------------+
+| ``--bind``                | ``-b`` | Binding of tasks within a resource set. Can be none, | packed:1                     |
+|                           |        | rs, or packed:#                                      |                              |
++---------------------------+--------+------------------------------------------------------+------------------------------+
+| ``--rs_per_host``         | ``-r`` | Number of resource sets per host                     | No default                   |
++---------------------------+--------+------------------------------------------------------+------------------------------+
+| ``--latency_priority``    | ``-l`` | Latency Priority. Controls layout                    | gpu-cpu,cpu-mem,cpu-cpu      |
+|                           |        | priorities. Can currently be cpu-cpu or gpu-cpu      |                              |
++---------------------------+--------+------------------------------------------------------+------------------------------+
+| ``--launch_distribution`` | ``-d`` | How tasks are started on resource sets               | packed                       |
++---------------------------+--------+------------------------------------------------------+------------------------------+
+
+It's recommended to explicitly specify ``jsrun`` options and not rely on the
+default values. This most often includes ``--nrs``,\ ``--cpu_per_rs``,
+``--gpu_per_rs``, ``--tasks_per_rs``, ``--bind``, and ``--launch_distribution``.
+
+jsrun Examples
+^^^^^^^^^^^^^^
+
+The below examples were launched in the following 2 node interactive
+batch job:
+
+::
+
+    summit> bsub -nnodes 2 -Pprj123 -W02:00 -Is $SHELL
+
+Single MPI Task, single GPU per RS
+""""""""""""""""""""""""""""""""""
+
+The following example will create 12 resource sets each with 1 MPI task
+and 1 GPU. Each MPI task will have access to a single GPU.
+
+Rank 0 will have access to GPU 0 on the first node ( red resource set).
+Rank 1 will have access to GPU 1 on the first node ( green resource set).
+This pattern will continue until 12 resources sets have been created.
+
+The following jsrun command will request 12 resource sets (``-n12``) 6
+per node (``-r6``). Each resource set will contain 1 MPI task (``-a1``),
+1 GPU (``-g1``), and 1 core (``-c1``).
+
+.. image:: /images/summit-jsrun-example-1Core-1GPU.png
+   :align: center
+
+::
+
+    summit> jsrun -n12 -r6 -a1 -g1 -c1 ./a.out
+    Rank:    0; NumRanks: 12; RankCore:   0; Hostname: h41n04; GPU: 0
+    Rank:    1; NumRanks: 12; RankCore:   4; Hostname: h41n04; GPU: 1
+    Rank:    2; NumRanks: 12; RankCore:   8; Hostname: h41n04; GPU: 2
+    Rank:    3; NumRanks: 12; RankCore:  88; Hostname: h41n04; GPU: 3
+    Rank:    4; NumRanks: 12; RankCore:  92; Hostname: h41n04; GPU: 4
+    Rank:    5; NumRanks: 12; RankCore:  96; Hostname: h41n04; GPU: 5
+
+    Rank:    6; NumRanks: 12; RankCore:   0; Hostname: h41n03; GPU: 0
+    Rank:    7; NumRanks: 12; RankCore:   4; Hostname: h41n03; GPU: 1
+    Rank:    8; NumRanks: 12; RankCore:   8; Hostname: h41n03; GPU: 2
+    Rank:    9; NumRanks: 12; RankCore:  88; Hostname: h41n03; GPU: 3
+    Rank:   10; NumRanks: 12; RankCore:  92; Hostname: h41n03; GPU: 4
+    Rank:   11; NumRanks: 12; RankCore:  96; Hostname: h41n03; GPU: 5
+
+Multiple tasks, single GPU per RS
+"""""""""""""""""""""""""""""""""
+
+The following jsrun command will request 12 resource sets (``-n12``).
+Each resource set will contain 2 MPI tasks (``-a2``), 1 GPU
+(``-g1``), and 2 cores (``-c2``). 2 MPI tasks will have access to a
+single GPU. Ranks 0 - 1 will have access to GPU 0 on the first node (
+red resource set). Ranks 2 - 3 will have access to GPU 1 on the first
+node ( green resource set). This pattern will continue until 12 resource
+sets have been created.
+
+.. image:: /images/summit-jsrun-example-2taskperGPU.png
+   :align: center
+
+
+**Adding cores to the RS:** The ``-c`` flag should be used to request
+the needed cores for tasks and treads. The default -c core count is 1.
+In the above example, if -c is not specified both tasks will run on a
+single core.
+
+::
+
+    summit> jsrun -n12 -a2 -g1 -c2 -dpacked ./a.out | sort
+    Rank:    0; NumRanks: 24; RankCore:   0; Hostname: a01n05; GPU: 0
+    Rank:    1; NumRanks: 24; RankCore:   4; Hostname: a01n05; GPU: 0
+
+    Rank:    2; NumRanks: 24; RankCore:   8; Hostname: a01n05; GPU: 1
+    Rank:    3; NumRanks: 24; RankCore:  12; Hostname: a01n05; GPU: 1
+
+    Rank:    4; NumRanks: 24; RankCore:  16; Hostname: a01n05; GPU: 2
+    Rank:    5; NumRanks: 24; RankCore:  20; Hostname: a01n05; GPU: 2
+
+    Rank:    6; NumRanks: 24; RankCore:  88; Hostname: a01n05; GPU: 3
+    Rank:    7; NumRanks: 24; RankCore:  92; Hostname: a01n05; GPU: 3
+
+    Rank:    8; NumRanks: 24; RankCore:  96; Hostname: a01n05; GPU: 4
+    Rank:    9; NumRanks: 24; RankCore: 100; Hostname: a01n05; GPU: 4
+
+    Rank:   10; NumRanks: 24; RankCore: 104; Hostname: a01n05; GPU: 5
+    Rank:   11; NumRanks: 24; RankCore: 108; Hostname: a01n05; GPU: 5
+
+    Rank:   12; NumRanks: 24; RankCore:   0; Hostname: a01n01; GPU: 0
+    Rank:   13; NumRanks: 24; RankCore:   4; Hostname: a01n01; GPU: 0
+
+    Rank:   14; NumRanks: 24; RankCore:   8; Hostname: a01n01; GPU: 1
+    Rank:   15; NumRanks: 24; RankCore:  12; Hostname: a01n01; GPU: 1
+
+    Rank:   16; NumRanks: 24; RankCore:  16; Hostname: a01n01; GPU: 2
+    Rank:   17; NumRanks: 24; RankCore:  20; Hostname: a01n01; GPU: 2
+
+    Rank:   18; NumRanks: 24; RankCore:  88; Hostname: a01n01; GPU: 3
+    Rank:   19; NumRanks: 24; RankCore:  92; Hostname: a01n01; GPU: 3
+
+    Rank:   20; NumRanks: 24; RankCore:  96; Hostname: a01n01; GPU: 4
+    Rank:   21; NumRanks: 24; RankCore: 100; Hostname: a01n01; GPU: 4
+
+    Rank:   22; NumRanks: 24; RankCore: 104; Hostname: a01n01; GPU: 5
+    Rank:   23; NumRanks: 24; RankCore: 108; Hostname: a01n01; GPU: 5
+
+    summit>
+
+Multiple Task, Multiple GPU per RS
+""""""""""""""""""""""""""""""""""
+
+The following example will create 4 resource sets each with 6 tasks and
+3 GPUs. Each set of 6 MPI tasks will have access to 3 GPUs. Ranks 0 - 5
+will have access to GPUs 0 - 2 on the first socket of the first node (
+red resource set). Ranks 6 - 11 will have access to GPUs 3 - 5 on the
+second socket of the first node ( green resource set). This pattern will
+continue until 4 resource sets have been created. The following jsrun
+command will request 4 resource sets (``-n4``). Each resource set will
+contain 6 MPI tasks (``-a6``), 3 GPUs (``-g3``), and 6 cores
+(``-c6``).
+
+.. image:: /images/RS-summit-example-24Tasks-3GPU-6Cores.png
+   :align: center
+
+::
+
+    summit> jsrun -n 4 -a 6 -c 6 -g 3 -d packed -l GPU-CPU ./a.out
+    Rank:    0; NumRanks: 24; RankCore:   0; Hostname: a33n06; GPU: 0, 1, 2
+    Rank:    1; NumRanks: 24; RankCore:   4; Hostname: a33n06; GPU: 0, 1, 2
+    Rank:    2; NumRanks: 24; RankCore:   8; Hostname: a33n06; GPU: 0, 1, 2
+    Rank:    3; NumRanks: 24; RankCore:  12; Hostname: a33n06; GPU: 0, 1, 2
+    Rank:    4; NumRanks: 24; RankCore:  16; Hostname: a33n06; GPU: 0, 1, 2
+    Rank:    5; NumRanks: 24; RankCore:  20; Hostname: a33n06; GPU: 0, 1, 2
+
+    Rank:    6; NumRanks: 24; RankCore:  88; Hostname: a33n06; GPU: 3, 4, 5
+    Rank:    7; NumRanks: 24; RankCore:  92; Hostname: a33n06; GPU: 3, 4, 5
+    Rank:    8; NumRanks: 24; RankCore:  96; Hostname: a33n06; GPU: 3, 4, 5
+    Rank:    9; NumRanks: 24; RankCore: 100; Hostname: a33n06; GPU: 3, 4, 5
+    Rank:   10; NumRanks: 24; RankCore: 104; Hostname: a33n06; GPU: 3, 4, 5
+    Rank:   11; NumRanks: 24; RankCore: 108; Hostname: a33n06; GPU: 3, 4, 5
+
+    Rank:   12; NumRanks: 24; RankCore:   0; Hostname: a33n05; GPU: 0, 1, 2
+    Rank:   13; NumRanks: 24; RankCore:   4; Hostname: a33n05; GPU: 0, 1, 2
+    Rank:   14; NumRanks: 24; RankCore:   8; Hostname: a33n05; GPU: 0, 1, 2
+    Rank:   15; NumRanks: 24; RankCore:  12; Hostname: a33n05; GPU: 0, 1, 2
+    Rank:   16; NumRanks: 24; RankCore:  16; Hostname: a33n05; GPU: 0, 1, 2
+    Rank:   17; NumRanks: 24; RankCore:  20; Hostname: a33n05; GPU: 0, 1, 2
+
+    Rank:   18; NumRanks: 24; RankCore:  88; Hostname: a33n05; GPU: 3, 4, 5
+    Rank:   19; NumRanks: 24; RankCore:  92; Hostname: a33n05; GPU: 3, 4, 5
+    Rank:   20; NumRanks: 24; RankCore:  96; Hostname: a33n05; GPU: 3, 4, 5
+    Rank:   21; NumRanks: 24; RankCore: 100; Hostname: a33n05; GPU: 3, 4, 5
+    Rank:   22; NumRanks: 24; RankCore: 104; Hostname: a33n05; GPU: 3, 4, 5
+    Rank:   23; NumRanks: 24; RankCore: 108; Hostname: a33n05; GPU: 3, 4, 5
+    summit>
+
+Single Task, Multiple GPUs, Multiple Threads per RS
+"""""""""""""""""""""""""""""""""""""""""""""""""""
+
+The following example will create 12 resource sets each with 1 task, 4
+threads, and 1 GPU. Each MPI task will start 4 threads and have access
+to 1 GPU. Rank 0 will have access to GPU 0 and start 4 threads on the
+first socket of the first node ( red resource set). Rank 2 will have
+access to GPU 1 and start 4 threads on the second socket of the first
+node ( green resource set). This pattern will continue until 12 resource
+sets have been created. The following jsrun command will create 12
+resource sets (``-n12``). Each resource set will contain 1 MPI task
+(``-a1``), 1 GPU (``-g1``), and 4 cores (``-c4``). Notice that
+more cores are requested than MPI tasks; the extra cores will be needed
+to place threads. Without requesting additional cores, threads will be
+placed on a single core.
+
+.. image:: /images/RS-summit-example-4Threads-4Core-1GPU.png
+   :align: center
+
+**Requesting Cores for Threads:** The ``-c`` flag should be used to
+request additional cores for thread placement. Without requesting
+additional cores, threads will be placed on a single core.
+
+**Binding Cores to Tasks:** The ``-b`` binding flag should be used to
+bind cores to tasks. Without specifying binding, all threads will be
+bound to the first core.
+
+::
+
+    summit> setenv OMP_NUM_THREADS 4
+    summit> jsrun -n12 -a1 -c4 -g1 -b packed:4 -d packed ./a.out
+    Rank: 0; RankCore: 0; Thread: 0; ThreadCore: 0; Hostname: a33n06; OMP_NUM_PLACES: {0},{4},{8},{12}
+    Rank: 0; RankCore: 0; Thread: 1; ThreadCore: 4; Hostname: a33n06; OMP_NUM_PLACES: {0},{4},{8},{12}
+    Rank: 0; RankCore: 0; Thread: 2; ThreadCore: 8; Hostname: a33n06; OMP_NUM_PLACES: {0},{4},{8},{12}
+    Rank: 0; RankCore: 0; Thread: 3; ThreadCore: 12; Hostname: a33n06; OMP_NUM_PLACES: {0},{4},{8},{12}
+
+    Rank: 1; RankCore: 16; Thread: 0; ThreadCore: 16; Hostname: a33n06; OMP_NUM_PLACES: {16},{20},{24},{28}
+    Rank: 1; RankCore: 16; Thread: 1; ThreadCore: 20; Hostname: a33n06; OMP_NUM_PLACES: {16},{20},{24},{28}
+    Rank: 1; RankCore: 16; Thread: 2; ThreadCore: 24; Hostname: a33n06; OMP_NUM_PLACES: {16},{20},{24},{28}
+    Rank: 1; RankCore: 16; Thread: 3; ThreadCore: 28; Hostname: a33n06; OMP_NUM_PLACES: {16},{20},{24},{28}
+
+    ...
+
+    Rank: 10; RankCore: 104; Thread: 0; ThreadCore: 104; Hostname: a33n05; OMP_NUM_PLACES: {104},{108},{112},{116}
+    Rank: 10; RankCore: 104; Thread: 1; ThreadCore: 108; Hostname: a33n05; OMP_NUM_PLACES: {104},{108},{112},{116}
+    Rank: 10; RankCore: 104; Thread: 2; ThreadCore: 112; Hostname: a33n05; OMP_NUM_PLACES: {104},{108},{112},{116}
+    Rank: 10; RankCore: 104; Thread: 3; ThreadCore: 116; Hostname: a33n05; OMP_NUM_PLACES: {104},{108},{112},{116}
+
+    Rank: 11; RankCore: 120; Thread: 0; ThreadCore: 120; Hostname: a33n05; OMP_NUM_PLACES: {120},{124},{128},{132}
+    Rank: 11; RankCore: 120; Thread: 1; ThreadCore: 124; Hostname: a33n05; OMP_NUM_PLACES: {120},{124},{128},{132}
+    Rank: 11; RankCore: 120; Thread: 2; ThreadCore: 128; Hostname: a33n05; OMP_NUM_PLACES: {120},{124},{128},{132}
+    Rank: 11; RankCore: 120; Thread: 3; ThreadCore: 132; Hostname: a33n05; OMP_NUM_PLACES: {120},{124},{128},{132}
+
+    summit>
+
+Hardware Threads: Multiple Threads per Core
+"""""""""""""""""""""""""""""""""""""""""""
+
+Each physical core on Summit contains 4 hardware threads. The SMT level
+can be set using LSF flags:
+
+SMT1
+
+::
+
+    #BSUB -alloc_flags smt1
+    jsrun -n1 -c1 -a1 -bpacked:4 csh -c 'echo $OMP_PLACES’
+    0
+
+SMT2
+
+::
+
+    #BSUB -alloc_flags smt2
+    jsrun -n1 -c1 -a1 -bpacked:4 csh -c 'echo $OMP_PLACES’
+    {0:2}
+
+SMT4
+
+::
+
+    #BSUB -alloc_flags smt4
+    jsrun -n1 -c1 -a1 -bpacked:4 csh -c 'echo $OMP_PLACES’
+    {0:4}
+
+.. image:: /images/FS-summit-example-MultiThreadPerCore.png
+   :align: center
+
+Common Use Cases
+""""""""""""""""
+
+The following table provides a quick reference for creating resource
+sets of various common use cases. The ``-n`` flag can be altered to
+specify the number of resource sets needed.
+
++-----------------+-------------+-----------+------------------+--------+---------------------------------------+
+| Resource Sets   | MPI Tasks   | Threads   | Physical Cores   | GPUs   | jsrun Command                         |
++=================+=============+===========+==================+========+=======================================+
+| 1               | 42          | 0         | 42               | 0      | jsrun -n1 -a42 -c42 -g0               |
++-----------------+-------------+-----------+------------------+--------+---------------------------------------+
+| 1               | 1           | 0         | 1                | 1      | jsrun -n1 -a1 -c1 -g1                 |
++-----------------+-------------+-----------+------------------+--------+---------------------------------------+
+| 1               | 2           | 0         | 2                | 1      | jsrun -n1 -a2 -c2 -g1                 |
++-----------------+-------------+-----------+------------------+--------+---------------------------------------+
+| 1               | 1           | 0         | 1                | 2      | jsrun -n1 -a1 -c1 -g2                 |
++-----------------+-------------+-----------+------------------+--------+---------------------------------------+
+| 1               | 1           | 21        | 21               | 3      | jsrun -n1 -a1 -c21 -g3 -bpacked:21    |
++-----------------+-------------+-----------+------------------+--------+---------------------------------------+
+
+Launching Multiple Jsruns
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Jsrun provides the ability to launch multiple ``jsrun`` job launches within a
+single batch job allocation. This can be done within a single node, or across
+multiple nodes.
+
+Sequential Job Steps
+""""""""""""""""""""
+By default, multiple invocations of ``jsrun`` in a job script will execute 
+serially in order. In this configuration, jobs will launch one at a time and
+the next one will not start until the previous is complete. The batch node
+allocation is equal to the largest jsrun submitted, and the total walltime
+must be equal to or greater then the *sum* of all jsruns issued.
+ 
+.. image:: /images/summit-multi-jsrun-example-sequential.png
+   :align: center
+
+Simultaneous Job Steps
+""""""""""""""""""""""
+To execute multiple job steps concurrently, standard UNIX process
+backgrounding can be used by adding a ``&`` at the end of the command. This
+will return control to the job script and execute the next command immediately,
+allowing multiple job launches to start at the same time. The jsruns will not
+share core/gpu resources in this configuration. The batch node allocation is 
+equal to the *sum* of those of each jsrun, and the total walltime must be equal
+to or greater than that of the longest running jsrun task.
+
+A ``wait`` command must follow all backgrounded processes to prevent the job
+from appearing completed and exiting prematurely.
+
+.. image:: /images/summit-multi-jsrun-example-simultaneous.png
+   :align: center
+
+The following example executes three backgrounded job steps and waits for them
+to finish before the job ends.
+
+::
+
+    #!/bin/bash
+    #BSUB -P ABC123
+    #BSUB -W 3:00
+    #BSUB -nnodes 1
+    #BSUB -J RunSim123
+    #BSUB -o RunSim123.%J
+    #BSUB -e RunSim123.%J
+    
+    cd $MEMBERWORK/abc123
+    jsrun <options> ./a.out &
+    jsrun <options> ./a.out &
+    jsrun <options> ./a.out &
+    wait
+
+
+As submission scripts (and interactive sessions) are executed on batch nodes,
+the number of concurrent job steps is limited by the per-user process limit on
+a batch node, where a single user is only permitted 4096 simultaneous
+processes. This limit is per user on each batch node, not per batch job.
+
+Each job step will create 3 processes, and JSM management may create up to ~23
+processes. This creates an upper-limit of ~1350 simultaneous job steps. 
+
+If JSM or PMIX errors occur as the result of backgrounding many job steps, using the
+``--immediate`` option to ``jsrun`` may help, as shown in the following example.
+
+::
+
+    #!/bin/bash
+    #BSUB -P ABC123
+    #BSUB -W 3:00
+    #BSUB -nnodes 1
+    #BSUB -J RunSim123
+    #BSUB -o RunSim123.%J
+    #BSUB -e RunSim123.%J
+    
+    cd $MEMBERWORK/abc123
+    jsrun <options> --immediate ./a.out
+    jsrun <options> --immediate ./a.out 
+    jsrun <options> --immediate ./a.out
+
+
+.. note::
+    By default, ``jsrun --immediate`` does not produce ``stdout`` or
+    ``stderr``. To capture ``stdout`` and/or ``stderr`` when using this option,
+    additionally include ``--stdio_stdout``/``-o`` and/or
+    ``--stdio_stderr``/``-k``.
+
+Using `jslist`
+""""""""""""""
+To view the status of multiple jobs launched sequentially or concurrently within a 
+batch script, you can use `jslist` to see which are completed, running, or still
+queued. If you are using it outside of an interactive batch job, use the `-c` option
+to specify the CSM allocation ID number. The following example shows how to obtain the
+CSM allocation number for a non interactive job and then check its status. 
+
+::
+
+    $ bsub test.lsf
+    Job <26238> is submitted to default queue <batch>.
+
+    $ bjobs -l 26238 | grep CSM_ALLOCATION_ID
+    Sun Feb 16 19:01:18: CSM_ALLOCATION_ID=34435
+
+    $ jslist -c 34435
+      parent         cpus     gpus     exit
+      ID  ID    nrs  per RS  per RS   status    status
+     ===========================================================
+       1   0    12     4       1        0       Running
+
+
+
+Explicit Resource Files (ERF)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+`Explicit Resource Files
+<https://www.ibm.com/support/knowledgecenter/en/SSWRJV_10.1.0/jsm/10.3/base/erf_format.html>`__
+provide even more fine-granied control over how processes are mapped onto
+compute nodes. ERFs can define job step options such as rank placement/binding,
+SMT/CPU/GPU resources, compute hosts, among many others. If you find that the
+most common jsrun options do not readily provide the resource layout you need,
+we recommend considering ERF files.
+
+A common source of confusion when using ERFs is how physical cores are
+enumerated. See the tutorial on `ERF CPU
+Indexing <https://github.com/olcf-tutorials/ERF-CPU-Indexing>`__ for a
+discussion of the ``cpu_index_using`` control and its interaction with various
+SMT modes.
+
+
+jsrun Tools
+^^^^^^^^^^^
+
+This section describes tools that users might find helpful to better
+understand the jsrun job launcher.
+
+Hello\_jsrun
+""""""""""""
+
+Hello\_jsrun is a "Hello World"-type program that users can run on
+Summit nodes to better understand how MPI ranks and OpenMP threads are
+mapped to the hardware. https://code.ornl.gov/t4p/Hello_jsrun A
+screencast showing how to use Hello\_jsrun is also available:
+https://vimeo.com/261038849
+
+Job Step Viewer
+"""""""""""""""
+
+`Job Step Viewer <https://jobstepviewer.olcf.ornl.gov/>`__ provides a graphical view of an application's runtime layout on Summit.
+It allows users to preview and quickly iterate with multiple ``jsrun`` options to 
+understand and optimize job launch.
+
+For bug reports or suggestions, please email help@olcf.ornl.gov.
+
+Usage
+_____
+
+1. Request a Summit allocation
+    * ``bsub -W 10 -nnodes 2 -P $OLCF_PROJECT_ID -Is $SHELL``
+2. Load the ``job-step-viewer`` module
+    * ``module load job-step-viewer``
+3. Test out a ``jsrun`` line by itself, or provide an executable as normal
+    * ``jsrun -n12 -r6 -c7 -g1 -a1 EOMP_NUM_THREADS=7 -brs``
+4. Visit the provided URL
+    * https://jobstepviewer.olcf.ornl.gov/summit/871957-1
+
+.. note::
+    Most Terminal applications have built-in shortcuts to directly open
+    web addresses in the default browser.
+
+    * MacOS Terminal.app: hold Command (⌘) and double-click on the URL
+    * iTerm2: hold Command (⌘) and single-click on the URL
+
+Limitations
+___________
+
+* (currently) Compiled with GCC toolchain only
+* Does not support MPMD-mode via ERF
+* OpenMP only supported with use of the ``OMP_NUM_THREADS`` environment variable.
+
+
+More Information
+^^^^^^^^^^^^^^^^
+
+This section provides some of the most commonly used LSF commands as
+well as some of the most useful options to those commands and
+information on ``jsrun``, Summit's job launch command. Many commands
+have much more information than can be easily presented here. More
+information about these commands is available via the online manual
+(i.e. ``man jsrun``). Additional LSF information can be found on `IBM’s
+website <https://www.ibm.com/support/knowledgecenter/en/SSWRJV/product_welcome_spectrum_lsf.html>`__.
+
+CUDA-Aware MPI
+--------------
+
+CUDA-Aware MPI and GPUDirect are often used interchangeably, but they
+are distinct topics.
+
+CUDA-Aware MPI allows GPU buffers (e.g., GPU memory allocated with
+``cudaMalloc``) to be used directly in MPI calls rather than requiring
+data to be manually transferred to/from a CPU buffer (e.g., using
+``cudaMemcpy``) before/after passing data in MPI calls. By itself,
+CUDA-Aware MPI does not specify whether data is staged through
+CPU memory or, for example, transferred directly between GPUs when
+passing GPU buffers to MPI calls. That is where GPUDirect comes in.
+
+GPUDirect is a technology that can be implemented on a system to enhance
+CUDA-Aware MPI by allowing data transfers directly between GPUs on the
+same node (peer-to-peer) and/or directly between GPUs on different nodes
+(with RDMA support) without the need to stage data through CPU memory.
+On Summit, both peer-to-peer and RDMA support are implemented. To enable
+CUDA-Aware MPI in a job, use the following argument to ``jsrun``:
+
+.. code::
+
+    jsrun --smpiargs="-gpu" ...
+
 
 Monitoring Jobs
 ---------------
@@ -2090,6 +2259,8 @@ functionality.
 | ``#BSUB -alloc_flags gpumps``   | No equivalent (set via environment variable)   | Enable multiple MPI tasks to simultaneously access a GPU   |
 +---------------------------------+------------------------------------------------+------------------------------------------------------------+
 
+.. _easy_mode_v_expert_mode:
+
 Easy Mode vs. Expert Mode
 -------------------------
 
@@ -2114,22 +2285,6 @@ of) specific nodes, you will need to use expert mode. To use expert
 mode, add ``#BSUB -csm y`` to your batch script (or ``-csm y`` to
 your ``bsub`` command line).
 
-Hardware Threads
-----------------
-
-Hardware threads are a feature of the POWER9 processor through which
-individual physical cores can support multiple execution streams,
-essentially looking like one or more virtual cores (similar to
-hyperthreading on some Intel® microprocessors). This feature is often
-called Simultaneous Multithreading or SMT. The POWER9 processor on
-Summit supports SMT levels of 1, 2, or 4, meaning (respectively) each
-physical core looks like 1, 2, or 4 virtual cores. The SMT level is
-controlled by the ``-alloc_flags`` option to ``bsub``. For example, to
-set the SMT level to 2, add the line ``#BSUB –alloc_flags smt2`` to your
-batch script or add the option ``-alloc_flags smt2`` to you ``bsub``
-command line.
-
-The default SMT level is 4.
 
 System Service Core Isolation
 -----------------------------
@@ -2159,43 +2314,90 @@ compute node. This may be beneficial because it provides more resources
 for GPFS service tasks, but it may also cause resource contention for
 the jsrun compute job.
 
-MPS
----
+Job Accounting on Summit
+------------------------
 
-The Multi-Process Service (MPS) enables multiple processes (e.g. MPI
-ranks) to concurrently share the resources on a single GPU. This is
-accomplished by starting an MPS server process, which funnels the work
-from multiple CUDA contexts (e.g. from multiple MPI ranks) into a single
-CUDA context. In some cases, this can increase performance due to better
-utilization of the resources. As mentioned in the `Common bsub Options <#common-bsub-options>`__
-section above, MPS can be enabled with the ``-alloc_flags "gpumps"``
-option to bsub. The screencast below shows an example of how to start an
-MPS server process for a job. https://vimeo.com/292016149
+Jobs on Summit are scheduled in full node increments; a node's cores cannot be
+allocated to multiple jobs. Because the OLCF charges based on what a job makes
+*unavailable* to other users, a job is charged for an entire node even if it
+uses only one core on a node. To simplify the process, users request and are allocated
+multiples of entire nodes through LSF.
 
-Resource Accounting
--------------------
+Allocations on Summit are separate from those on Andes and other OLCF resources.
 
-While logged into Summit, users can show their YTD usage and allocation
-by project using the ``showusage`` command. System specific details can
-be obtained with the ``-s`` flag. For example,
+Node-Hour Calculation
+^^^^^^^^^^^^^^^^^^^^^
+
+The *node-hour* charge for each batch job will be calculated as follows:
 
 .. code::
 
-    $ showusage -s summit
+    node-hours = nodes requested * ( batch job endtime - batch job starttime )
 
-    summit usage for the project's current allocation period:
-                                      Project Totals          [USERID]
-     Project      Allocation        Usage    Remaining          Usage
-    __________________________|____________________________|_____________
-     [PROJID1]        50000   |      15728        34272    |         65
-     [PROJID2]        20000   |       1234        18766    |          0
+Where *batch job starttime* is the time the job moves into a running state, and
+*batch job endtime* is the time the job exits a running state.
 
-For additional details, please see the help message printed when using
-the ``-h`` flag:
+A batch job's usage is calculated solely on requested nodes and the batch job's
+start and end time. The number of cores actually used within any particular node
+within the batch job is not used in the calculation. For example, if a job
+requests (6) nodes through the batch script, runs for (1) hour, uses only (2)
+CPU cores per node, the job will still be charged for 6 nodes \* 1 hour = *6
+node-hours*.
+
+Viewing Usage
+^^^^^^^^^^^^^
+
+Utilization is calculated daily using batch jobs which complete between 00:00
+and 23:59 of the previous day. For example, if a job moves into a run state on
+Tuesday and completes Wednesday, the job's utilization will be recorded
+Thursday. Only batch jobs which write an end record are used to calculate
+utilization. Batch jobs which do not write end records due to system failure or
+other reasons are not used when calculating utilization. Jobs which fail because
+of run-time errors (e.g. the user's application causes a segmentation fault) are
+counted against the allocation.
+
+Each user may view usage for projects on which they are members from the command
+line tool ``showusage`` and the `myOLCF site <https://my.olcf.ornl.gov>`__.
+
+On the Command Line via ``showusage``
+"""""""""""""""""""""""""""""""""""""
+
+The ``showusage`` utility can be used to view your usage from January 01
+through midnight of the previous day. For example:
 
 .. code::
 
-     $ showusage -h
+      $ showusage
+        Usage:
+                                 Project Totals
+        Project             Allocation      Usage      Remaining     Usage
+        _________________|______________|___________|____________|______________
+        abc123           |  20000       |   126.3   |  19873.7   |   1560.80
+
+The ``-h`` option will list more usage details.
+
+On the Web via myOLCF
+""""""""""""""""""""""
+
+More detailed metrics may be found on each project's usage section of the `myOLCF
+site <https://my.olcf.ornl.gov>`__. The following information is available
+for each project:
+
+-  YTD usage by system, subproject, and project member
+-  Monthly usage by system, subproject, and project member
+-  YTD usage by job size groupings for each system, subproject, and
+   project member
+-  Weekly usage by job size groupings for each system, and subproject
+-  Batch system priorities by project and subproject
+-  Project members
+
+The myOLCF site is provided to aid in the utilization and management of OLCF
+allocations. See the :doc:`myOLCF Documentation </services_and_applications/myolcf/index>` for more information.
+
+If you have any questions or have a request for additional data,
+please contact the OLCF User Assistance Center.
+
+
 
 Other Notes
 -----------
@@ -2208,611 +2410,7 @@ for which they were allocated. Thus, a job using only 1 core on each of
 its nodes is charged the same as a job using every core and every GPU on
 each of its nodes.
 
-.. _job-launcher-jsrun:
 
-Job Launcher (jsrun)
---------------------
-
-The default job launcher for Summit is ``jsrun``. jsrun was developed by
-IBM for the Oak Ridge and Livermore Power systems. The tool will execute
-a given program on resources allocated through the LSF batch scheduler;
-similar to ``mpirun`` and ``aprun`` functionality.
-
-Compute Node Description
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-The following compute node image will be used to discuss jsrun resource
-sets and layout.
-
-
-.. image:: /images/summit-node-description-1.png
-   :class: normal aligncenter wp-image-775250
-   :width: 85%
-   :align: center
-
--  1 node
--  2 sockets (grey)
--  42 physical cores\* (dark blue)
--  168 hardware cores (light blue)
--  6 GPUs (orange)
--  2 Memory blocks (yellow)
-
-**\*Core Isolation:** 1 core on each socket has been set aside for
-overhead and is not available for allocation through jsrun. The core has
-been omitted and is not shown in the above image.
-
-Resource Sets
-^^^^^^^^^^^^^
-
-While jsrun performs similar job launching functions as aprun and
-mpirun, its syntax is very different. A large reason for syntax
-differences is the introduction of the ``resource set`` concept. Through
-resource sets, jsrun can control how a node appears to each job. Users
-can, through jsrun command line flags, control which resources on a node
-are visible to a job. Resource sets also allow the ability to run
-multiple jsruns simultaneously within a node. Under the covers, a
-resource set is a cgroup.
-
-At a high level, a resource set allows users to configure what a node
-look like to their job.
-
-Jsrun will create one or more resource sets within a node. Each resource
-set will contain 1 or more cores and 0 or more GPUs. A resource set can
-span sockets, but it may not span a node. While a resource set can span
-sockets within a node, consideration should be given to the cost of
-cross-socket communication. By creating resource sets only within
-sockets, costly communication between sockets can be prevented.
-
-One or more resource sets can be created on a single node and can span
-sockets. But, a resource set can not span nodes.
-
-While a resource set can span sockets within a node, consideration
-should be given to the cost of cross-socket communication. Creating
-resource sets within sockets will prevent cross-socket communication.
-
-Subdividing a Node with Resource Sets
-"""""""""""""""""""""""""""""""""""""
-
-Resource sets provides the ability to subdivide node’s resources into
-smaller groups. The following examples show how a node can be subdivided
-and how many resource set could fit on a node.
-
-.. image:: /images/summit-resource-set-subdivide.png
-   :class: normal aligncenter size-full wp-image-775849
-   :width: 780px
-   :height: 360px
-   :align: center
-
-Multiple Methods to Creating Resource Sets
-""""""""""""""""""""""""""""""""""""""""""
-
-Resource sets should be created to fit code requirements. The following
-examples show multiple ways to create resource sets that allow two MPI
-tasks access to a single GPU.
-
-#. 6 resource sets per node: 1 GPU, 2 cores per (Titan)
-
-   .. image:: https://www.olcf.ornl.gov/wp-content/uploads/2018/03/RS-summit-example-1GPU-2Cores.png
-      :class: normal aligncenter size-full wp-image-775999
-      :width: 500px
-      :height: 300px
-
-   In this case, CPUs can only see single assigned GPU.
-
-#. 2 resource sets per node: 3 GPUs and 6 cores per socket
-
-   .. image:: https://www.olcf.ornl.gov/wp-content/uploads/2018/03/RS-summit-example-3GPU-6Cores.png
-      :class: normal aligncenter size-full wp-image-776000
-      :width: 600px
-      :height: 360px
-
-   In this case, all 6 CPUs can see 3 GPUs. Code must manage CPU -> GPU
-   communication. CPUs on socket0 can not access GPUs or Memory on socket1.
-
-#. Single resource set per node: 6 GPUs, 12 cores
-
-   .. image:: https://www.olcf.ornl.gov/wp-content/uploads/2018/03/RS-summit-example-6GPU-12Core.png
-      :class: normal aligncenter size-full wp-image-776142
-      :width: 600px
-      :height: 360px
-
-   In this case, all 12 CPUs can see all node’s 6 GPUs. Code must manage CPU to
-   GPU communication. CPUs on socket0 can access GPUs and Memory on socket1.
-   Code must manage cross socket communication.
-
-Designing a Resource Set
-""""""""""""""""""""""""
-
-Resource sets allow each jsrun to control how the node appears to a
-code. This method is unique to jsrun, and requires thinking of each job
-launch differently than aprun or mpirun. While the method is unique, the
-method is not complicated and can be reasoned in a few basic steps.
-
-The first step to creating resource sets is understanding how a code would
-like the node to appear. For example, the number of tasks/threads per
-GPU. Once this is understood, the next step is to simply calculate the
-number of resource sets that can fit on a node. From here, the number of
-needed nodes can be calculated and passed to the batch job request.
-
-The basic steps to creating resource sets:
-
-1) Understand how your code expects to interact with the system.
-    How many tasks/threads per GPU?
-
-    Does each task expect to see a single GPU? Do multiple tasks expect
-    to share a GPU? Is the code written to internally manage task to GPU
-    workload based on the number of available cores and GPUs?
-2) Create resource sets containing the needed GPU to task binding
-    Based on how your code expects to interact with the system, you can
-    create resource sets containing the needed GPU and core resources.
-    If a code expects to utilize one GPU per task, a resource set would
-    contain one core and one GPU. If a code expects to pass work to a
-    single GPU from two tasks, a resource set would contain two cores
-    and one GPU.
-3) Decide on the number of resource sets needed
-    Once you understand tasks, threads, and GPUs in a resource set, you
-    simply need to decide the number of resource sets needed.
-
-As on Titan it is useful to keep the general layout of a node in mind
-when laying out resource sets.
-
-Launching a Job with jsrun
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-jsrun Format
-""""""""""""
-
-::
-
-      jsrun    [ -n #resource sets ]   [tasks, threads, and GPUs within each resource set]   program [ program args ]
-
-Common jsrun Options
-""""""""""""""""""""
-
-Below are common jsrun options. More flags and details can be found in
-the jsrun man page.
-
-
-+---------------------------+--------+------------------------------------------------------+------------------------------+
-| Flags                              |                                                      |                              |
-+---------------------------+--------+  Description                                         + Default Value                +
-| Long                      | Short  |                                                      |                              |
-+===========================+========+======================================================+==============================+
-| ``--nrs``                 | ``-n`` | Number of resource sets                              | All available physical cores |
-+---------------------------+--------+------------------------------------------------------+------------------------------+
-| ``--tasks_per_rs``        | ``-a`` | Number of MPI tasks (ranks) per resource set         | Not set by default, instead  |
-|                           |        |                                                      | total tasks (-p) set         |
-+---------------------------+--------+------------------------------------------------------+------------------------------+
-| ``--cpu_per_rs``          | ``-c`` | Number of CPUs (cores) per resource set.             | 1                            |
-+---------------------------+--------+------------------------------------------------------+------------------------------+
-| ``--gpu_per_rs``          | ``-g`` | Number of GPUs per resource set                      | 0                            |
-+---------------------------+--------+------------------------------------------------------+------------------------------+
-| ``--bind``                | ``-b`` | Binding of tasks within a resource set. Can be none, | packed:1                     |
-|                           |        | rs, or packed:#                                      |                              |
-+---------------------------+--------+------------------------------------------------------+------------------------------+
-| ``--rs_per_host``         | ``-r`` | Number of resource sets per host                     | No default                   |
-+---------------------------+--------+------------------------------------------------------+------------------------------+
-| ``--latency_priority``    | ``-l`` | Latency Priority. Controls layout                    | gpu-cpu,cpu-mem,cpu-cpu      |
-|                           |        | priorities. Can currently be cpu-cpu or gpu-cpu      |                              |
-+---------------------------+--------+------------------------------------------------------+------------------------------+
-| ``--launch_distribution`` | ``-d`` | How tasks are started on resource sets               | packed                       |
-+---------------------------+--------+------------------------------------------------------+------------------------------+
-
-It's recommended to explicitly specify ``jsrun`` options. This most
-often includes ``--nrs``,\ ``--cpu_per_rs``, ``--gpu_per_rs``,
-``--tasks_per_rs``, ``--bind``, and ``--launch_distribution``.
-
-Aprun to jsrun
-""""""""""""""
-
-Mapping aprun commands used on Titan to Summit's jsrun is only possible
-in simple single GPU cases. The following table shows some basic single
-GPU examples that could be executed on Titan or Summit. In the single
-node examples, each resource set will resemble a Titan node containing a
-single GPU and one or more cores. Although not required in each case,
-common jsrun flags (resource set count, GPUs per resource set, tasks per
-resource set, cores per resource set, binding) are included in each
-example for reference. The jsrun ``-n`` flag can be used to increase the
-number of resource sets needed. Multiple resource sets can be created on
-a single node. If each MPI task requires a single GPU, up to 6 resource
-sets could be created on a single node.
-
-+-------------------------+-------------+--------------------+-----------------+-------------------------------------+
-| GPUs per Resource Set   | MPI Tasks   | Threads per Task   | aprun           | jsrun                               |
-+=========================+=============+====================+=================+=====================================+
-| 1                       | 1           | 0                  | aprun -n1       | jsrun -n1 -g1 -a1 -c1               |
-+-------------------------+-------------+--------------------+-----------------+-------------------------------------+
-| 1                       | 2           | 0                  | aprun -n2       | jsrun -n1 -g1 -a2 -c1               |
-+-------------------------+-------------+--------------------+-----------------+-------------------------------------+
-| 1                       | 1           | 4                  | aprun -n1 -d4   | jsrun -n1 -g1 -a1 -c4 -bpacked:4    |
-+-------------------------+-------------+--------------------+-----------------+-------------------------------------+
-| 1                       | 2           | 8                  | aprun -n2 -d8   | jsrun -n1 -g1 -a2 -c16 -bpacked:8   |
-+-------------------------+-------------+--------------------+-----------------+-------------------------------------+
-
-The jsrun ``-n`` flag can be used to increase the number of resource
-sets needed. Multiple resource sets can be created on a single node. If
-each MPI task requires a single GPU, up to 6 resource sets could be
-created on a single node.
-
-For cases when the number of tasks per resource set (i.e. the ``-a``
-flag) is greater than one, the job must use ``-alloc_flags "gpumps"``.
-This allows multiple tasks to share the same GPU.
-
-The following example images show how a single-gpu/single-task job
-would be placed on a single Titan and Summit node. On Summit, the red
-box represents a resource set created by jsrun. The resource set looks
-similar to a Titan node, containing a single GPU, a single core, and
-memory.
-
-+--------------+-------------------------+
-| Titan Node   | Summit Node             |
-+==============+=========================+
-| aprun -n1    | jsrun -n1 -g1 -a1 -c1   |
-+--------------+-------------------------+
-| |image18|    | |image19|               |
-+--------------+-------------------------+
-
-.. |image18| image:: /images/titan-node-1task-1gpu.png
-   :class: normal aligncenter
-.. |image19| image:: /images/summit-node-1rs-1task-1gpu-example.png
-   :class: normal aligncenter
-
-Because Summit's nodes are much larger than Titan's, 6 single-gpu
-resource sets can be created on a single Summit node. The following
-image shows how six single-gpu, single-task resource sets would be
-placed on a node by default. In the example, the command
-``jsrun -n6 -g1 -a1 -c1`` is used to create six single-gpu resource sets
-on the node. Each resource set is indicated by differing colors. Notice,
-the ``-n`` flag is all that changed between the above single resource
-set example. The ``-n`` flag tells jsrun to create six resource sets.
-
-.. figure:: https://www.olcf.ornl.gov/wp-content/uploads/2018/03/summit-2node-1taskpergpu.png
-   :class: normal aligncenter size-full wp-image-776599
-   :width: 1318px
-   :height: 520px
- 
-   ``jsrun -n 6 -g 1 -a 1 -c 1`` starts 6 resource sets, each indicated by
-   differing colors.  Each resource contains 1 GPU, 1 Core, and memory.  The
-   red resource set contains GPU 0 and Core 0.  The purple resource set
-   contains GPU 3 and Core 84.  ``-n 6`` tells jsrun how many resource sets to
-   create.  In this example, each resource set is similar to a single Titan
-   node.
-
-
-jsrun Examples
-^^^^^^^^^^^^^^
-
-The below examples were launched in the following 2 node interactive
-batch job:
-
-::
-
-    summit> bsub -nnodes 2 -Pprj123 -W02:00 -Is $SHELL
-
-Single MPI Task, single GPU per RS
-""""""""""""""""""""""""""""""""""
-
-The following example will create 12 resource sets each with 1 MPI task
-and 1 GPU. Each MPI task will have access to a single GPU.
-
-Rank 0 will have access to GPU 0 on the first node ( red resource set).
-Rank 1 will have access to GPU 1 on the first node ( green resource set).
-This pattern will continue until 12 resources sets have been created.
-
-The following jsrun command will request 12 resource sets (``-n12``) 6
-per node (``-r6``). Each resource set will contain 1 MPI task (``-a1``),
-1 GPU (``-g1``), and 1 core (``-c1``).
-
-.. image:: /images/summit-jsrun-example-1Core-1GPU.png
-   :class: normal aligncenter size-full wp-image-776751
-   :width: 600px
-   :height: 300px
-
-::
-
-    summit> jsrun -n12 -r6 -a1 -g1 -c1 ./a.out
-    Rank:    0; NumRanks: 12; RankCore:   0; Hostname: h41n04; GPU: 0
-    Rank:    1; NumRanks: 12; RankCore:   4; Hostname: h41n04; GPU: 1
-    Rank:    2; NumRanks: 12; RankCore:   8; Hostname: h41n04; GPU: 2
-    Rank:    3; NumRanks: 12; RankCore:  84; Hostname: h41n04; GPU: 3
-    Rank:    4; NumRanks: 12; RankCore:  89; Hostname: h41n04; GPU: 4
-    Rank:    5; NumRanks: 12; RankCore:  92; Hostname: h41n04; GPU: 5
-
-    Rank:    6; NumRanks: 12; RankCore:   0; Hostname: h41n03; GPU: 0
-    Rank:    7; NumRanks: 12; RankCore:   4; Hostname: h41n03; GPU: 1
-    Rank:    8; NumRanks: 12; RankCore:   8; Hostname: h41n03; GPU: 2
-    Rank:    9; NumRanks: 12; RankCore:  84; Hostname: h41n03; GPU: 3
-    Rank:   10; NumRanks: 12; RankCore:  89; Hostname: h41n03; GPU: 4
-    Rank:   11; NumRanks: 12; RankCore:  92; Hostname: h41n03; GPU: 5
-
-Multiple tasks, single GPU per RS
-"""""""""""""""""""""""""""""""""
-
-The following jsrun command will request 12 resource sets (``-n12``).
-Each resource set will contain 2 MPI tasks (``-a2``), 1 GPU
-(``-g1``), and 2 cores (``-c2``). 2 MPI tasks will have access to a
-single GPU. Ranks 0 - 1 will have access to GPU 0 on the first node (
-red resource set). Ranks 2 - 3 will have access to GPU 1 on the first
-node ( green resource set). This pattern will continue until 12 resource
-sets have been created.
-
-.. image:: /images/summit-jsrun-example-2taskperGPU.png
-   :class: normal aligncenter size-full wp-image-777053
-   :width: 600px
-   :height: 300px
-
-**Adding cores to the RS:** The ``-c`` flag should be used to request
-the needed cores for tasks and treads. The default -c core count is 1.
-In the above example, if -c is not specified both tasks will run on a
-single core.
-
-::
-
-    summit> jsrun -n12 -a2 -g1 -c2 -dpacked ./a.out | sort
-    Rank:    0; NumRanks: 24; RankCore:   0; Hostname: a01n05; GPU: 0
-    Rank:    1; NumRanks: 24; RankCore:   4; Hostname: a01n05; GPU: 0
-
-    Rank:    2; NumRanks: 24; RankCore:   8; Hostname: a01n05; GPU: 1
-    Rank:    3; NumRanks: 24; RankCore:  12; Hostname: a01n05; GPU: 1
-
-    Rank:    4; NumRanks: 24; RankCore:  16; Hostname: a01n05; GPU: 2
-    Rank:    5; NumRanks: 24; RankCore:  20; Hostname: a01n05; GPU: 2
-
-    Rank:    6; NumRanks: 24; RankCore:  88; Hostname: a01n05; GPU: 3
-    Rank:    7; NumRanks: 24; RankCore:  92; Hostname: a01n05; GPU: 3
-
-    Rank:    8; NumRanks: 24; RankCore:  96; Hostname: a01n05; GPU: 4
-    Rank:    9; NumRanks: 24; RankCore: 100; Hostname: a01n05; GPU: 4
-
-    Rank:   10; NumRanks: 24; RankCore: 104; Hostname: a01n05; GPU: 5
-    Rank:   11; NumRanks: 24; RankCore: 108; Hostname: a01n05; GPU: 5
-
-    Rank:   12; NumRanks: 24; RankCore:   0; Hostname: a01n01; GPU: 0
-    Rank:   13; NumRanks: 24; RankCore:   4; Hostname: a01n01; GPU: 0
-
-    Rank:   14; NumRanks: 24; RankCore:   8; Hostname: a01n01; GPU: 1
-    Rank:   15; NumRanks: 24; RankCore:  12; Hostname: a01n01; GPU: 1
-
-    Rank:   16; NumRanks: 24; RankCore:  16; Hostname: a01n01; GPU: 2
-    Rank:   17; NumRanks: 24; RankCore:  20; Hostname: a01n01; GPU: 2
-
-    Rank:   18; NumRanks: 24; RankCore:  88; Hostname: a01n01; GPU: 3
-    Rank:   19; NumRanks: 24; RankCore:  92; Hostname: a01n01; GPU: 3
-
-    Rank:   20; NumRanks: 24; RankCore:  96; Hostname: a01n01; GPU: 4
-    Rank:   21; NumRanks: 24; RankCore: 100; Hostname: a01n01; GPU: 4
-
-    Rank:   22; NumRanks: 24; RankCore: 104; Hostname: a01n01; GPU: 5
-    Rank:   23; NumRanks: 24; RankCore: 108; Hostname: a01n01; GPU: 5
-
-    summit>
-
-Multiple Task, Multiple GPU per RS
-""""""""""""""""""""""""""""""""""
-
-The following example will create 4 resource sets each with 6 tasks and
-3 GPUs. Each set of 6 MPI tasks will have access to 3 GPUs. Ranks 0 - 5
-will have access to GPUs 0 - 2 on the first socket of the first node (
-red resource set). Ranks 6 - 11 will have access to GPUs 3 - 5 on the
-second socket of the first node ( green resource set). This pattern will
-continue until 4 resource sets have been created. The following jsrun
-command will request 4 resource sets (``-n4``). Each resource set will
-contain 6 MPI tasks (``-a6``), 3 GPUs (``-g3``), and 6 cores
-(``-c6``).
-
-.. image:: /images/RS-summit-example-24Tasks-3GPU-6Cores.png
-   :class: normal aligncenter size-full wp-image-792423
-   :width: 600px
-   :height: 300px
-
-::
-
-    summit> jsrun -n 4 -a 6 -c 6 -g 3 -d packed -l GPU-CPU ./a.out
-    Rank:    0; NumRanks: 24; RankCore:   0; Hostname: a33n06; GPU: 0, 1, 2
-    Rank:    1; NumRanks: 24; RankCore:   4; Hostname: a33n06; GPU: 0, 1, 2
-    Rank:    2; NumRanks: 24; RankCore:   8; Hostname: a33n06; GPU: 0, 1, 2
-    Rank:    3; NumRanks: 24; RankCore:  12; Hostname: a33n06; GPU: 0, 1, 2
-    Rank:    4; NumRanks: 24; RankCore:  16; Hostname: a33n06; GPU: 0, 1, 2
-    Rank:    5; NumRanks: 24; RankCore:  20; Hostname: a33n06; GPU: 0, 1, 2
-
-    Rank:    6; NumRanks: 24; RankCore:  88; Hostname: a33n06; GPU: 3, 4, 5
-    Rank:    7; NumRanks: 24; RankCore:  92; Hostname: a33n06; GPU: 3, 4, 5
-    Rank:    8; NumRanks: 24; RankCore:  96; Hostname: a33n06; GPU: 3, 4, 5
-    Rank:    9; NumRanks: 24; RankCore: 100; Hostname: a33n06; GPU: 3, 4, 5
-    Rank:   10; NumRanks: 24; RankCore: 104; Hostname: a33n06; GPU: 3, 4, 5
-    Rank:   11; NumRanks: 24; RankCore: 108; Hostname: a33n06; GPU: 3, 4, 5
-
-    Rank:   12; NumRanks: 24; RankCore:   0; Hostname: a33n05; GPU: 0, 1, 2
-    Rank:   13; NumRanks: 24; RankCore:   4; Hostname: a33n05; GPU: 0, 1, 2
-    Rank:   14; NumRanks: 24; RankCore:   8; Hostname: a33n05; GPU: 0, 1, 2
-    Rank:   15; NumRanks: 24; RankCore:  12; Hostname: a33n05; GPU: 0, 1, 2
-    Rank:   16; NumRanks: 24; RankCore:  16; Hostname: a33n05; GPU: 0, 1, 2
-    Rank:   17; NumRanks: 24; RankCore:  20; Hostname: a33n05; GPU: 0, 1, 2
-
-    Rank:   18; NumRanks: 24; RankCore:  88; Hostname: a33n05; GPU: 3, 4, 5
-    Rank:   19; NumRanks: 24; RankCore:  92; Hostname: a33n05; GPU: 3, 4, 5
-    Rank:   20; NumRanks: 24; RankCore:  96; Hostname: a33n05; GPU: 3, 4, 5
-    Rank:   21; NumRanks: 24; RankCore: 100; Hostname: a33n05; GPU: 3, 4, 5
-    Rank:   22; NumRanks: 24; RankCore: 104; Hostname: a33n05; GPU: 3, 4, 5
-    Rank:   23; NumRanks: 24; RankCore: 108; Hostname: a33n05; GPU: 3, 4, 5
-    summit>
-
-Single Task, Multiple GPUs, Multiple Threads per RS
-"""""""""""""""""""""""""""""""""""""""""""""""""""
-
-The following example will create 12 resource sets each with 1 task, 4
-threads, and 1 GPU. Each MPI task will start 4 threads and have access
-to 1 GPU. Rank 0 will have access to GPU 0 and start 4 threads on the
-first socket of the first node ( red resource set). Rank 2 will have
-access to GPU 1 and start 4 threads on the second socket of the first
-node ( green resource set). This pattern will continue until 12 resource
-sets have been created. The following jsrun command will create 12
-resource sets (``-n12``). Each resource set will contain 1 MPI task
-(``-a1``), 1 GPU (``-g1``), and 4 cores (``-c4``). Notice that
-more cores are requested than MPI tasks; the extra cores will be needed
-to place threads. Without requesting additional cores, threads will be
-placed on a single core.
-
-.. image:: /images/RS-summit-example-4Threads-4Core-1GPU.png
-   :class: normal aligncenter size-full wp-image-792873
-   :width: 600px
-   :height: 300px
-
-**Requesting Cores for Threads:** The ``-c`` flag should be used to
-request additional cores for thread placement. Without requesting
-additional cores, threads will be placed on a single core.
-
-**Binding Cores to Tasks:** The ``-b`` binding flag should be used to
-bind cores to tasks. Without specifying binding, all threads will be
-bound to the first core.
-
-::
-
-    summit> setenv OMP_NUM_THREADS 4
-    summit> jsrun -n12 -a1 -c4 -g1 -b packed:4 -d packed ./a.out
-    Rank: 0; RankCore: 0; Thread: 0; ThreadCore: 0; Hostname: a33n06; OMP_NUM_PLACES: {0},{4},{8},{12}
-    Rank: 0; RankCore: 0; Thread: 1; ThreadCore: 4; Hostname: a33n06; OMP_NUM_PLACES: {0},{4},{8},{12}
-    Rank: 0; RankCore: 0; Thread: 2; ThreadCore: 8; Hostname: a33n06; OMP_NUM_PLACES: {0},{4},{8},{12}
-    Rank: 0; RankCore: 0; Thread: 3; ThreadCore: 12; Hostname: a33n06; OMP_NUM_PLACES: {0},{4},{8},{12}
-
-    Rank: 1; RankCore: 16; Thread: 0; ThreadCore: 16; Hostname: a33n06; OMP_NUM_PLACES: {16},{20},{24},{28}
-    Rank: 1; RankCore: 16; Thread: 1; ThreadCore: 20; Hostname: a33n06; OMP_NUM_PLACES: {16},{20},{24},{28}
-    Rank: 1; RankCore: 16; Thread: 2; ThreadCore: 24; Hostname: a33n06; OMP_NUM_PLACES: {16},{20},{24},{28}
-    Rank: 1; RankCore: 16; Thread: 3; ThreadCore: 28; Hostname: a33n06; OMP_NUM_PLACES: {16},{20},{24},{28}
-
-    ...
-
-    Rank: 10; RankCore: 104; Thread: 0; ThreadCore: 104; Hostname: a33n05; OMP_NUM_PLACES: {104},{108},{112},{116}
-    Rank: 10; RankCore: 104; Thread: 1; ThreadCore: 108; Hostname: a33n05; OMP_NUM_PLACES: {104},{108},{112},{116}
-    Rank: 10; RankCore: 104; Thread: 2; ThreadCore: 112; Hostname: a33n05; OMP_NUM_PLACES: {104},{108},{112},{116}
-    Rank: 10; RankCore: 104; Thread: 3; ThreadCore: 116; Hostname: a33n05; OMP_NUM_PLACES: {104},{108},{112},{116}
-
-    Rank: 11; RankCore: 120; Thread: 0; ThreadCore: 120; Hostname: a33n05; OMP_NUM_PLACES: {120},{124},{128},{132}
-    Rank: 11; RankCore: 120; Thread: 1; ThreadCore: 124; Hostname: a33n05; OMP_NUM_PLACES: {120},{124},{128},{132}
-    Rank: 11; RankCore: 120; Thread: 2; ThreadCore: 128; Hostname: a33n05; OMP_NUM_PLACES: {120},{124},{128},{132}
-    Rank: 11; RankCore: 120; Thread: 3; ThreadCore: 132; Hostname: a33n05; OMP_NUM_PLACES: {120},{124},{128},{132}
-
-    summit>
-
-Hardware Threads: Multiple Threads per Core
-"""""""""""""""""""""""""""""""""""""""""""
-
-Each physical core on Summit contains 4 hardware threads. The SMT level
-can be set using LSF flags:
-
-SMT1
-
-::
-
-    #BSUB -alloc_flags smt1
-    jsrun -n1 -c1 -a1 -bpacked:4 csh -c 'echo $OMP_PLACES’
-    0
-
-SMT2
-
-::
-
-    #BSUB -alloc_flags smt2
-    jsrun -n1 -c1 -a1 -bpacked:4 csh -c 'echo $OMP_PLACES’
-    {0:2}
-
-SMT4
-
-::
-
-    #BSUB -alloc_flags smt4
-    jsrun -n1 -c1 -a1 -bpacked:4 csh -c 'echo $OMP_PLACES’
-    {0:4}
-
-.. image:: /images/FS-summit-example-MultiThreadPerCore.png
-   :class: normal aligncenter size-full wp-image-797960
-   :width: 600px
-   :height: 300px
-
-Common Use Cases
-""""""""""""""""
-
-The following table provides a quick reference for creating resource
-sets of various common use cases. The ``-n`` flag can be altered to
-specify the number of resource sets needed.
-
-+-----------------+-------------+-----------+------------------+--------+---------------------------------------+
-| Resource Sets   | MPI Tasks   | Threads   | Physical Cores   | GPUs   | jsrun Command                         |
-+=================+=============+===========+==================+========+=======================================+
-| 1               | 42          | 0         | 42               | 0      | jsrun -n1 -a42 -c42 -g0               |
-+-----------------+-------------+-----------+------------------+--------+---------------------------------------+
-| 1               | 1           | 0         | 1                | 1      | jsrun -n1 -a1 -c1 -g1                 |
-+-----------------+-------------+-----------+------------------+--------+---------------------------------------+
-| 1               | 2           | 0         | 2                | 1      | jsrun -n1 -a2 -c2 -g1                 |
-+-----------------+-------------+-----------+------------------+--------+---------------------------------------+
-| 1               | 1           | 0         | 1                | 2      | jsrun -n1 -a1 -c1 -g2                 |
-+-----------------+-------------+-----------+------------------+--------+---------------------------------------+
-| 1               | 1           | 21        | 21               | 3      | jsrun -n1 -a1 -c21 -g3 -bpacked:21    |
-+-----------------+-------------+-----------+------------------+--------+---------------------------------------+
-
- 
-
-jsrun Tools
-^^^^^^^^^^^
-
-This section describes tools that users might find helpful to better
-understand the jsrun job launcher.
-
-Hello\_jsrun
-""""""""""""
-
-Hello\_jsrun is a "Hello World"-type program that users can run on
-Summit nodes to better understand how MPI ranks and OpenMP threads are
-mapped to the hardware. https://code.ornl.gov/t4p/Hello_jsrun A
-screencast showing how to use Hello\_jsrun is also available:
-https://vimeo.com/261038849
-
-jsrunVisualizer
-"""""""""""""""
-
-jsrunVisualizer is a web-application that mimics basic jsrun behavior
-locally in your browser. It's an easy way to get familiar with jsrun
-options for Summit, understand how multiple flags interact, and share
-your layout ideas with others. Once you've crafted your per-node
-resource sets, you can take the job script it generates and run the same
-layout on Summit itself! https://jsrunvisualizer.olcf.ornl.gov/
-https://vimeo.com/299079999
-
-More Information
-^^^^^^^^^^^^^^^^
-
-This section provides some of the most commonly used LSF commands as
-well as some of the most useful options to those commands and
-information on ``jsrun``, Summit's job launch command. Many commands
-have much more information than can be easily presented here. More
-information about these commands is available via the online manual
-(i.e. ``man jsrun``). Additional LSF information can be found on `IBM’s
-website <https://www.ibm.com/support/knowledgecenter/en/SSWRJV/product_welcome_spectrum_lsf.html>`__.
-
-CUDA-Aware MPI
---------------
-
-CUDA-Aware MPI and GPUDirect are often used interchangeably, but they
-are distinct topics.
-
-CUDA-Aware MPI allows GPU buffers (e.g., GPU memory allocated with
-``cudaMalloc``) to be used directly in MPI calls rather than requiring
-data to be manually transferred to/from a CPU buffer (e.g., using
-``cudaMemcpy``) before/after passing data in MPI calls. By itself,
-CUDA-Aware MPI does not specify whether data is staged through
-CPU memory or, for example, transferred directly between GPUs when
-passing GPU buffers to MPI calls. That is where GPUDirect comes in.
-
-GPUDirect is a technology that can be implemented on a system to enhance
-CUDA-Aware MPI by allowing data transfers directly between GPUs on the
-same node (peer-to-peer) and/or directly between GPUs on different nodes
-(with RDMA support) without the need to stage data through CPU memory.
-On Summit, both peer-to-peer and RDMA support are implemented. To enable
-CUDA-Aware MPI in a job, use the following argument to ``jsrun``:
-
-.. code::
-
-    jsrun --smpiargs="-gpu" ...
 
 .. _debugging:
 
@@ -2828,7 +2426,13 @@ debugging features (setting breakpoints, stepping through code,
 examining variables), DDT also supports attaching to already-running
 processes and memory debugging. In-depth details of DDT can be found in
 the `Official DDT User
-Guide <https://www.allinea.com/user-guide/forge/userguide.html>`__.
+Guide <https://www.allinea.com/user-guide/forge/userguide.html>`__, and
+instructions for how to use it on OLCF systems can be found on the
+`Forge (DDT/MAP) Software Page <https://www.olcf.ornl.gov/software_package/forge/>`__. DDT is the
+OLCF's recommended debugging software for large parallel applications.
+
+One of the most useful features of DDT is its remote debugging feature. This allows you to connect to a debugging session on Summit from a client running on your workstation. The local client provides much faster interaction than you would have if using the graphical client on Summit. For guidance in setting up the remote client see `this tutorial <https://www.olcf.ornl.gov/tutorials/forge-remote-client-setup-and-usage/>`__.
+
 
 GDB
 ---
@@ -2843,6 +2447,9 @@ on Summit under all compiler families:
 
     module load gdb
 
+Additional information about GDB usage and OLCF-provided builds can be
+found on the `GDB Software Page <https://www.olcf.ornl.gov/software_package/gdb/>`__.
+
 
 Valgrind
 --------
@@ -2851,12 +2458,15 @@ Valgrind
 building dynamic analysis tools. There are Valgrind tools that can
 automatically detect many memory management and threading bugs, and
 profile your programs in detail. You can also use Valgrind to build new
-tools. The Valgrind distribution currently includes five
-production-quality tools: a memory error detector, a thread error
-detector, a cache and branch-prediction profiler, a call-graph
-generating cache profiler, and a heap profiler. It also includes two
-experimental tools: a data race detector, and an instant memory leak
-detector. The Valgrind tool suite provides a number of debugging and
+tools.
+
+The Valgrind distribution currently includes five production-quality
+tools: a memory error detector, a thread error detector, a cache and
+branch-prediction profiler, a call-graph generating cache profiler,
+and a heap profiler. It also includes two experimental tools: a data
+race detector, and an instant memory leak detector.
+
+The Valgrind tool suite provides a number of debugging and
 profiling tools. The most popular is Memcheck, a memory checking tool
 which can detect many common memory errors such as:
 
@@ -2872,20 +2482,190 @@ Valgrind is available on Summit under all compiler families:
 
     module load valgrind
 
+Additional information about Valgrind usage and OLCF-provided builds can
+be found on the `Valgrind Software
+Page <https://www.olcf.ornl.gov/software_package/valgrind/>`__.
+
 .. _optimizing-and-profiling:
 
 Optimizing and Profiling
 ========================
 
-Profiling CUDA Code with NVPROF
--------------------------------
+Profiling GPU Code with NVIDIA Developer Tools
+-----------------------------------------------------
 
-NVIDIA's command-line profiler, ``nvprof``, provides profiling for CUDA
-codes. No extra compiling steps are required to use ``nvprof``. The
-profiler includes tracing capability as well as the ability to gather
-many performance metrics, including FLOPS. The profiler data output can
-be saved and imported into the NVIDIA Visual Profiler for additional
-graphical analysis.
+NVIDIA provides developer tools for profiling any code that runs on NVIDIA
+GPUs. These are the `Nsight suite of developer tools
+<https://developer.nvidia.com/tools-overview>`__: NVIDIA Nsight Systems for
+collecting a timeline of your application, and NVIDIA Nsight Compute for
+collecting detailed performance information about specific GPU kernels.
+
+NVIDIA Nsight Systems
+^^^^^^^^^^^^^^^^^^^^^
+
+The first step to GPU profiling is collecting a timeline of your application.
+(This operation is also sometimes called "tracing," that is, finding
+the start and stop timestamps of all activities that occurred on the GPU
+or involved the GPU, such as copying data back and forth.) To do this, we
+can collect a timeline using the command-line interface, ``nsys``. To use
+this tool, load the ``nsight-systems`` module.
+
+::
+
+    summit> module load nsight-systems
+
+For example, we can profile the ``vectorAdd`` CUDA sample (the CUDA samples
+can be found in ``$OLCF_CUDA_ROOT/samples`` if the ``cuda`` module is loaded.)
+
+::
+
+    summit> jsrun -n1 -a1 -g1 nsys profile -o vectorAdd --stats=true ./vectorAdd
+
+(Note that even if you do not ask for Nsight Systems to create an output file,
+but just ask it to print summary statistics with ``--stats=true``, it will create
+a temporary file for storing the profiling data, so you will need to work on a
+file system that can be written to from a compute node such as GPFS.)
+
+The profiler will print several sections including information about the
+CUDA API calls made by the application, as well as any GPU kernels that were
+launched. Nsight Systems can be used for CUDA C++, CUDA Fortran, OpenACC,
+OpenMP offload, and other programming models that target NVIDIA GPUs, because
+under the hood they all ultimately take the same path for generating the binary
+code that runs on the GPU.
+
+If you add the ``-o`` option, as above, the report will be saved to file
+with the extension ``.qdrep``. That report file can later be analyzed in
+the Nsight Systems UI by selecting File > Open and locating the ``vectorAdd.qdrep``
+file on your filesystem. Nsight Systems does not currently have a Power9
+version of the UI, so you will need to `download the UI for your local system
+<https://developer.nvidia.com/nsight-systems>`__, which is supported on
+Windows, Mac, and Linux (x86). Then use ``scp`` or some other file transfer
+utility for copying the report file from Summit to your local machine.
+
+Nsight Systems can be used for MPI runs with multiple ranks, but it is
+not a parallel profiler and cannot combine output from multiple ranks.
+Instead, each rank must be profiled and analyzed independently. The file
+name should be unique for every rank. Nsight Systems knows how to parse
+environment variables with the syntax ``%q{ENV_VAR}``, and since Spectrum
+MPI provides an environment variable for every process with its MPI rank,
+you can do
+
+::
+
+    summit> jsrun -n6 -a1 -g1 nsys profile -o vectorAdd_%q{OMPI_COMM_WORLD_RANK} ./vectorAdd
+
+Then you will have ``vectorAdd_0.qdrep`` through ``vectorAdd_5.qdrep``.
+(Of course, in this case each rank does the same thing as this is not
+an MPI application, but it works the same way for an MPI code.)
+
+For more details about Nsight Systems, consult the `product page
+<https://developer.nvidia.com/nsight-systems>`__ and the `documentation
+<https://docs.nvidia.com/nsight-systems/index.html>`__. If you previously
+used ``nvprof`` and would like to start using the Nsight Developer Tools,
+check out `this transition guide
+<https://devblogs.nvidia.com/migrating-nvidia-nsight-tools-nvvp-nvprof/>`__.
+Also, in March 2020 NVIDIA presented a webinar on Nsight Systems which you
+can `watch on demand <https://www.olcf.ornl.gov/calendar/nvidia-profiling-tools-nsight-systems/>`__.
+
+NVIDIA Nsight Compute
+^^^^^^^^^^^^^^^^^^^^^
+
+Individual GPU kernels (the discrete chunks of work that are launched by
+programming languages such as CUDA and OpenACC) can be profiled in detail
+with NVIDIA Nsight Compute. The typical workflow is to profile your code
+with Nsight Systems and identify the major performance bottleneck in your
+application. If that performance bottleneck is on the CPU, it means more
+code should be ported to the GPU; or, if that bottleneck is in memory
+management, such as copying data back and forth between the CPU and GPU,
+you should look for opportunities to reduce that data motion. But if that
+bottleneck is a GPU kernel, then Nsight Compute can be used to collect
+performance counters to understand whether the kernel is running efficiently
+and if there's anything you can do to improve.
+
+The Nsight Compute command-line interface, ``nv-nsight-cu-cli``, can be
+prefixed to your application to collect a report.
+
+::
+
+    summit> module load nsight-compute
+
+::
+
+    summit> jsrun -n1 -a1 -g1 nv-nsight-cu-cli ./vectorAdd
+
+Similar to Nsight Systems, Nsight Compute will create a temporary report file,
+even when ``-o`` is not specified.
+
+The most important output to look at is the "GPU Speed of Light" section,
+which tells you what fraction of peak memory throughput and what fraction
+of peak compute throughput you achieved. Typically if you have achieved
+higher than 60% of the peak of either subsystem, your kernel would be
+considered memory-bound or compute-bound (respectively), and if you have
+not achieved 60% of either this is often a latency-bound kernel. (A common
+cause of latency issues is not exposing enough parallelism to saturate
+the GPU's compute capacity -- peak GPU performance can only be achieved when
+there is enough work to hide the latency of memory accesses and to keep all
+compute pipelines busy.)
+
+
+By default, Nsight Compute will collect this performance data for every kernel
+in your application. This will take a long time in a real-world application.
+It is recommended that you identify a specific kernel to profile and then use
+the ``-k`` argument to just profile that kernel. (If you don't know the name of
+your kernel, use ``nsys`` to obtain that. The flag will pattern match on any
+substring of the kernel name.) You can also use the ``-s`` option to skip some
+number of kernel calls and the ``-c`` option to specify how many invocations of
+that kernel you want to profile.
+
+If you want to collect information on just a specific performance measurement,
+for example the number of bytes written to DRAM, you can do so with the
+``--metrics`` option:
+
+::
+
+    summit> jsrun -n1 -a1 -g1 nv-nsight-cu-cli -k vectorAdd --metrics dram__bytes_write.sum ./vectorAdd
+
+The list of available metrics can be obtained with ``nv-nsight-cu-cli
+--query-metrics``. Most metrics have both a base name and suffix. Together
+these  make up the full metric name to pass to ``nv-nsight-cu-cli``. To list
+the full names for a collection of metrics, use ``--query-metrics-mode suffix
+--metrics <metrics list>``.
+
+
+As with Nsight Systems, there is a graphical user interface you can load a
+report file into (The GUI is only available for Windows, x86_64 Linux and Mac).
+Use the ``-o`` flag to create a file (the added report extension will be
+``.nsight-cuprof-report``), copy it to your local system, and use the File >
+Open File menu item. If you are using multiple MPI ranks, make sure you name
+each one independently. Nsight Compute does not yet support the ``%q`` syntax
+(this will come in a future release), so your job script will have to do the
+naming manually; for example, you can create a simple shell script:
+
+::
+
+    $ cat run.sh
+    #!/bin/bash
+
+    nv-nsight-cu-cli -o vectorAdd_$OMPI_COMM_WORLD_RANK ./vectorAdd
+
+For more details on Nsight Compute, check out the `product page
+<https://developer.nvidia.com/nsight-compute>`__ and the `documentation
+<https://docs.nvidia.com/nsight-compute/index.html>`__. If you previously used
+``nvprof`` and would like to start using Nsight Compute, check out `this transition
+guide <https://docs.nvidia.com/nsight-compute/NsightComputeCli/index.html#nvprof-guide>`__.
+Also, in March 2020 NVIDIA presented a webinar on Nsight Compute which you can `watch on
+demand <https://www.olcf.ornl.gov/calendar/nvidia-profiling-tools-nsight-compute/>`__.
+
+nvprof and nvvp
+^^^^^^^^^^^^^^^
+
+Prior to Nsight Systems and Nsight Compute, the NVIDIA command line profiling
+tool was ``nvprof``, which provides both tracing and kernel profiling
+capabilities. Like with Nsight Systems and Nsight Compute, the profiler data
+output can be saved and imported into the NVIDIA Visual Profiler for additional
+graphical analysis. ``nvprof`` is in maintenance mode now: it still works on
+Summit and significant bugs will be fixed, but no new feature development is
+occurring on this tool.
 
 To use ``nvprof``, the ``cuda`` module must be loaded.
 
@@ -2968,21 +2748,1051 @@ trace files for Vampir to visualize.
 For detailed information about using Vampir on Summit and the builds available,
 please see the `Vampir Software Page <https://www.olcf.ornl.gov/software_package/vampir/>`__.
 
+
+.. _nvidia-v100-gpus:
+.. _NVIDIA Tesla V100:
+
+NVIDIA V100 GPUs
+================
+
+The NVIDIA Tesla V100 accelerator has a peak performance of 7.8 TFLOP/s
+(double-precision) and contributes to a majority of the computational
+work performed on Summit. Each V100 contains 80 streaming
+multiprocessors (SMs), 16 GB (32 GB on high-memory nodes) of high-bandwidth
+memory (HBM2), and a 6 MB L2 cache that is available to the SMs. The
+GigaThread Engine is responsible for distributing work among the SMs and
+(8) 512-bit memory controllers control access to the 16 GB (32 GB on
+high-memory nodes) of HBM2 memory. The V100 uses NVIDIA's NVLink interconnect
+to pass data between GPUs as well as from CPU-to-GPU.
+
+.. image:: /images/GV100_FullChip_Diagram_FINAL2_a.png
+   :align: center
+
+NVIDIA V100 SM
+--------------
+
+Each SM on the V100 contains 32 FP64 (double-precision) cores, 64 FP32
+(single-precision) cores, 64 INT32 cores, and 8 tensor cores. A 128-KB
+combined memory block for shared memory and L1 cache can be configured
+to allow up to 96 KB of shared memory. In addition, each SM has 4
+texture units which use the (configured size of the) L1 cache.
+
+.. image:: /images/GV100_SM_Diagram-FINAL2.png
+   :align: center
+
+HBM2
+----
+
+Each V100 has access to 16 GB (32GB for high-memory nodes) of
+high-bandwidth memory (HBM2), which can be accessed at speeds of 
+up to 900 GB/s. Access to this memory is controlled by (8) 512-bit
+memory controllers, and all accesses to the high-bandwidth memory
+go through the 6 MB L2 cache.
+
+NVIDIA NVLink
+-------------
+
+The processors within a node are connected by NVIDIA's NVLink
+interconnect. Each link has a peak bandwidth of 25 GB/s (in each
+direction), and since there are 2 links between processors, data can be
+transferred from GPU-to-GPU and CPU-to-GPU at a peak rate of 50 GB/s.
+
+.. note::
+    The 50-GB/s peak bandwidth stated above is for data transfers
+    in a single direction. However, this bandwidth can be achieved in both
+    directions simultaneously, giving a peak "bi-directional" bandwidth of
+    100 GB/s between processors.
+
+The figure below shows a schematic of the NVLink connections between the
+CPU and GPUs on a single socket of a Summit node.
+
+.. image:: /images/NVLink2.png
+   :align: center
+
+Volta Multi-Process Service
+---------------------------
+
+When a CUDA program begins, each MPI rank creates a separate CUDA
+context on the GPU, but the scheduler on the GPU only allows one CUDA
+context (and so one MPI rank) at a time to launch on the GPU. This means
+that multiple MPI ranks can share access to the same GPU, but each rank
+gets exclusive access while the other ranks wait (time-slicing). This
+can cause the GPU to become underutilized if a rank (that has exclusive
+access) does not perform enough work to saturate the resources of the
+GPU. The following figure depicts such time-sliced access to a pre-Volta
+GPU.
+
+.. image:: /images/nv_mps_1.png
+   :align: center
+
+The Multi-Process Service (MPS) enables multiple processes (e.g. MPI ranks) to
+*concurrently* share the resources on a single GPU. This is accomplished by
+starting an MPS server process, which funnels the work from multiple CUDA
+contexts (e.g. from multiple MPI ranks) into a single CUDA context. In some
+cases, this can increase performance due to better utilization of the resources.
+The figure below illustrates MPS on a pre-Volta GPU.
+
+.. image:: /images/nv_mps_2.png
+   :width: 65.0%
+   :align: center
+
+Volta GPUs improve MPS with new capabilities. For instance, each Volta
+MPS client (MPI rank) is assigned a "subcontext" that has its own GPU
+address space, instead of sharing the address space with other clients.
+This isolation helps protect MPI ranks from out-of-range reads/writes
+performed by other ranks within CUDA kernels. Because each subcontext
+manages its own GPU resources, it can submit work directly to the GPU
+without the need to first pass through the MPS server. In addition,
+Volta GPUs support up to 48 MPS clients (up from 16 MPS clients on
+Pascal).
+
+.. image:: /images/nv_mps_3.png
+   :width: 65.0%
+   :align: center
+
+For more information, please see the following document from NVIDIA:
+https://docs.nvidia.com/deploy/pdf/CUDA_Multi_Process_Service_Overview.pdf
+
+Unified Memory
+--------------
+
+Unified memory is a single virtual address space that is accessible to
+any processor in a system (within a node). This means that programmers
+only need to allocate a single unified-memory pointer (e.g. using
+cudaMallocManaged) that can be accessed by both the CPU and GPU, instead
+of requiring separate allocations for each processor. This "managed
+memory" is automatically migrated to the accessing processor, which
+eliminates the need for explicit data transfers.
+
+.. image:: /images/nv_um_1.png
+   :width: 60.0%
+   :align: center
+
+On Pascal-generation GPUs and later, this automatic migration is
+enhanced with hardware support. A page migration engine enables GPU page
+faulting, which allows the desired pages to be migrated to the GPU "on
+demand" instead of the entire "managed" allocation. In addition, 49-bit
+virtual addressing allows programs using unified memory to access the
+full system memory size. The combination of GPU page faulting and larger
+virtual addressing allows programs to oversubscribe the system memory,
+so very large data sets can be processed. In addition, new CUDA API
+functions introduced in CUDA8 allow users to fine tune the use of
+unified memory.
+
+Unified memory is further improved on Volta GPUs through
+the use of access counters that can be used to automatically tune
+unified memory by determining where a page is most often accessed.
+
+For more information, please see the following section of NVIDIA's
+CUDA Programming Guide:
+http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#um-unified-memory-programming-hd
+
+Independent Thread Scheduling
+-----------------------------
+
+The V100 supports independent thread scheduling, which allows threads to
+synchronize and cooperate at sub-warp scales. Pre-Volta GPUs implemented
+warps (groups of 32 threads which execute instructions in
+single-instruction, multiple thread - SIMT - mode) with a single call
+stack and program counter for a warp as a whole.
+
+.. image:: /images/nv_ind_threads_1.png
+   :align: center
+
+Within a warp, a mask is used to specify which threads are currently
+active when divergent branches of code are encountered. The (active)
+threads within each branch execute their statements serially before
+threads in the next branch execute theirs. This means that programs on
+pre-Volta GPUs should avoid sub-warp synchronization; a sync point in
+the branches could cause a deadlock if all threads in a warp do not
+reach the synchronization point.
+
+.. image:: /images/nv_ind_threads_2.png
+   :align: center
+
+The Tesla V100 introduces warp-level synchronization by implementing warps with
+a program counter and call stack for each individual thread (i.e.  independent
+thread scheduling).
+
+.. image:: /images/nv_ind_threads_3.png
+   :align: center
+
+This implementation allows threads to diverge and synchronize at the sub-warp
+level using the \_\_syncwarp() function. The independent thread scheduling
+enables the thread scheduler to stall execution of any thread, allowing other
+threads in the warp to execute different statements. This means that threads in
+one branch can stall at a sync point and wait for the threads in the other
+branch to reach their sync point.
+
+.. image:: /images/nv_ind_threads_4.png
+   :align: center
+
+For more information, please see the following section of NVIDIA's CUDA
+Programming Guide:
+http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#independent-thread-scheduling-7-x
+
+Tensor Cores
+------------
+
+The Tesla V100 contains 640 tensor cores (8 per SM) intended to enable
+faster training of large neural networks. Each tensor core performs a
+``D = AB + C`` operation on 4x4 matrices. A and B are FP16 matrices,
+while C and D can be either FP16 or FP32:
+
+.. image:: /images/nv_tensor_core_1.png
+   :width: 85.0%
+   :align: center
+
+Each of the 16 elements that result from the AB matrix multiplication
+come from 4 floating-point fused-multiply-add (FMA) operations
+(basically a dot product between a row of A and a column of B). Each
+FP16 multiply yields a full-precision product which is accumulated in a
+FP32 result:
+
+.. image:: /images/nv_tc_1.png
+   :width: 85.0%
+   :align: center
+
+Each tensor core performs 64 of these FMA operations per clock. The 4x4
+matrix operations outlined here can be combined to perform matrix
+operations on larger (and higher dimensional) matrices.
+
+Using the Tensor Cores on Summit
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The NVIDIA Tesla V100 GPUs in Summit are capable of over 7TF/s of
+double-precision and 15 TF/s of single-precision floating point performance.
+Additionally, the V100 is capable of over 120 TF/s of half-precision floating
+point performance when using its Tensor Core feature. The Tensor Cores are
+purpose-built accelerators for half-precision matrix multiplication operations.
+While they were designed especially to accelerate machine learning workflows,
+they are exposed through several other APIs that are useful to other HPC
+applications. This section provides information for using the V100 Tensor
+Cores.
+
+The V100 Tensor Cores perform a warp-synchronous multiply and accumulate of
+16-bit matrices in the form of D = A * B + C. The operands of this matrix
+multiplication are 16-bit A and B matrices, while the C and D accumulation
+matrices may be 16 or 32-bit matrices with comparable performance for either
+precision.
+
+.. image:: /images/nv_tc_2.png
+   :width: 85.0%
+   :align: center
+
+Half precision floating point representation has a dramatically lower range of
+numbers than Double or Single precision. Half precision representation consists
+of 1 sign bit, a 5-bit exponent, and a 10-bit mantissa. This results in a
+dynamic range of 5.96e-8 to 65,504
+
+Tensor Core Programming Models
+""""""""""""""""""""""""""""""
+
+This section details a variety of high and low-level Tensor Core programming
+models. Which programming model is appropriate to a given application is highly
+situational, so this document will present multiple programming models to allow
+the reader to evaluate each for their merits within the needs of the
+application.
+
+cuBLAS Library
+______________
+
+cuBLAS is NVIDIA’s implementation of the Basic Linear Algebra Subroutines
+library for GPUs. It contains not only the Level 1, 2, and 3 BLAS routines, but
+several extensions to these routines that add important capabilities to the
+library, such as the ability to batch operations and work with varying
+precisions.
+
+The cuBLAS libraries provides access to the TensorCores using 3 different
+routines, depending on the application needs. The `cublasHgemm
+<https://docs.nvidia.com/cuda/cublas/index.html#cublas-lt-t-gt-gemm>`_ routine
+performs a general matrix multiplication of half-precision matrices. The
+numerical operands to this routine must be of type half and math mode must be
+set to CUBLAS_TENSOR_OP_MATH to enable Tensor Core use. Additionally, if the
+`cublasSgemm
+<https://docs.nvidia.com/cuda/cublas/index.html#cublas-lt-t-gt-gemm>`_ routine
+will down-convert from single precision to half precision when the math mode is
+set to CUBLAS_TENSOR_OP_MATH, enabling simple conversion from SGEMM to HGEMM
+using Tensor Cores. For either of these two methods the `cublasSetMathMode
+<https://docs.nvidia.com/cuda/cublas/index.html#cublassetmathmode>`_ function
+must be used to change from CUBLAS_DEFAULT_MATH to CUBLAS_TENSOR_OP_MATH mode.
+
+cuBLAS provides a non-standard extension of GEMM with the `cublasGemmEx
+<https://docs.nvidia.com/cuda/cublas/index.html#cublas-GemmEx>`_ routine, which
+provides additional flexibility about the data types of the operands. In
+particular, the A, B, and C matrices can be of arbitrary and different types,
+with the types of each declared using the Atype, Btype, and Ctype parameters.
+The algo parameter works similar to the math mode above. If the math mode is
+set to CUBLAS_TESNOR_OP_MATH and the algo parameter is set to
+CUBLAS_GEMM_DEFAULT, then the Tensor Cores will be used. If algo is
+CUBLAS_GEMM_DEFAULT_TENSOR_OP or CUBLAS_GEMM_ALGO{0-15}_TENSOR_OP, then the
+Tensor Cores will be used regardless of the math setting. The table below
+outlines the rules stated in the past two paragraphs.
+
++----------------------------------------------------------+------------------------------------+--------------------------------------+
+|                                                          | ``mathMode = CUBLAS_DEFAULT_MATH`` | ``mathMode = CUBLAS_TENSOR_OP_MATH`` |
++==========================================================+====================================+======================================+
+| ``cublasHgemm, cublasSgemm, cublasGemmEx(algo=DEFAULT)`` | Disallowed                         | Allowed                              |
++----------------------------------------------------------+------------------------------------+--------------------------------------+
+| ``cublasGemmEx(algo=*_TENSOR_OP)``                       | Allowed                            | Allowed                              |
++----------------------------------------------------------+------------------------------------+--------------------------------------+
+
+
+When using any of these methods to access the Tensor Cores, the M, N, K, LDA,
+LDB, LDC, and A, B, and C pointers must all be aligned to 8 bytes due to the
+high bandwidth necessary to utilize the Tensor Cores effective.
+
+Many of the routines listed above are also available in batched form, see the
+`cuBLAS documentation <https://docs.nvidia.com/cuda/cublas/index.html>`_ for
+more information. Advanced users wishing to have increased control over the
+specifics of data layout, type, and underlying algorithms may wish to use the
+more advanced `cuBLAS-Lt interface
+<https://docs.nvidia.com/cuda/cublas/index.html#using-the-cublasLt-api>`_. This
+interface uses the same underlying GPU kernels, but provides developers with a
+higher degree of control.
+
+Iterative Refinement of Linear Solvers
+______________________________________
+
+Iterative Refinement is a technique for performing linear algebra solvers in a
+reduced precision, then iterating to improve the results and return them to
+full precision. This technique has been used for several years to use 32-bit
+math operations and achieve 64-bit results, which often results in a speed-up
+due to single precision math often have a 2X performance advantage on modern
+CPUs and many GPUs. NVIDIA and the University of Tennessee have been working to
+extend this technique to perform operations in half-precision and obtain higher
+precision results. One such place where this technique has been applied is in
+calculating an LU factorization of the linear system Ax = B. This operation is
+dominated by a matrix multiplication operation, which is illustrated in green
+in the image below. It is possible to perform the GEMM operations at a reduced
+precision, while leaving the panel and trailing matrices in a higher precision.
+This technique allows for the majority of the math operations to be done at the
+higher FP16 throughput. The matrix used in the GEMM is generally not square,
+which is often the best performing GEMM operation, but is referred to as rank-k
+and generally still very fast when using matrix multiplication libraries.
+
+.. image:: /images/nv_tc_3.png
+   :width: 85.0%
+   :align: center
+
+A summary of the algorithm used for calculating in mixed precision is in the
+following image.
+
+.. image:: /images/nv_tc_4.png
+   :width: 85.0%
+   :align: center
+
+We see in the graph below that it is possible to achieved a 3-4X performance
+improvement over the double-precision solver, while achieving the same level of
+accuracy. It has also been observed that the use of Tensor Cores makes the
+problem more likely to converge than strict half-precision GEMMs due to the
+ability to accumulate into 32-bit results.
+
+.. image:: /images/nv_tc_5.png
+   :width: 85.0%
+   :align: center
+
+NVIDIA will be shipping official support for IR solvers in their cuSOLVER
+library in the latter half of 2019. The image below provides estimated release
+dates, which are subject to change.
+
+.. image:: /images/nv_tc_6.png
+   :width: 85.0%
+   :align: center
+
+Automatic Mixed Precision (AMP) in Machine Learning Frameworks
+______________________________________________________________
+
+NVIDIA has a Training With Mixed Precision guide available for developers
+wishing to explicitly use mixed precision and Tensor Cores in their training of
+neural networks. This is a good place to start when investigating Tensor Cores
+for machine learning applications. Developers should specifically read the
+Optimizing For Tensor Cores section.
+
+NVIDIA has also integrated a technology called Automatic Mixed Precision (AMP)
+into several common frameworks, TensorFlow, PyTorch, and MXNet at time of
+writing. In most cases AMP can be enabled via a small code change or via
+setting and environment variable. AMP does not strictly replace all matrix
+multiplication operations with half precision, but uses graph optimization
+techniques to determine whether a given layer is best run in full or half
+precision.
+
+Examples are provided for using AMP, but the following sections summarize the
+usage in the three supported frameworks.
+
+TensorFlow
+..........
+
+With TensorFlow AMP can be enabled using one of the following techniques.
+
+::
+
+  os.environ['TF_ENABLE_AUTO_MIXED_PRECISION'] = '1'
+
+OR
+
+::
+
+  export TF_ENABLE_AUTO_MIXED_PRECISION=1
+
+Explicit optimizer wrapper available in NVIDIA Container 19.07+, TF 1.14+, TF
+2.0:
+
+::
+
+  opt = tf.train.experimental.enable_mixed_precision_graph_rewrite(opt)
+
+
+PyTorch
+.......
+
+Adding the following to a PyTorch model will enable AMP:
+
+::
+
+  model, optimizer = amp.initialize(model, optimizer, opt_level="O1")
+  with amp.scale_loss(loss, optimizer) as scaled_loss:
+    scaled_loss.backward()
+
+MXNet
+.....
+
+The code below will enable AMP for MXNet:
+
+::
+
+  amp.init()
+  amp.init_trainer(trainer)
+  with amp.scale_loss(loss, trainer) as scaled_loss:
+    autograd.backward(scaled_loss)
+
+
+WMMA
+____
+
+The Warp Matrix Multiply and Accumulate (WMMA) API was introduced in CUDA 9
+explicitly for programming the Tesla V100 Tensor Cores. This is a low-level API
+that supports loading matrix data into fragments within the threads of a warp,
+applying a Tensor Core multiplication on that data, and then restoring it to
+the main GPU memory. This API is called within CUDA kernels and all WMMA
+operations are warp-synchronous, meaning the threads in a warp will leave the
+operation synchronously. Examples are available for using the WMMA instructions
+in C++ and CUDA Fortran. The image below demonstrates the general pattern for
+WMMA usage.
+
+.. image:: /images/nv_tc_7.png
+   :width: 85.0%
+   :align: center
+
+The example above performs a 16-bit accumulate operation, but 32-bit is also
+supported. Please see the provided samples and the `WMMA documentation
+<https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#wmma>`_ for
+more details.
+
+CUDA 10 introduced a lower-level alternative to WMMA with the mma.sync()
+instruction. This is a very low-level instruction that requires the programmer
+handle the data movement provided by WMMA explicitly, but is capable of higher
+performance. Details of `mma.sync
+<https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#warp-level-matrix-instructions-wmma-mma>`_
+can be found in the PTX documentation and examples for using this feature via
+CUTLASS cane be found in the second half of this `GTC presentation
+<https://on-demand-gtc.gputechconf.com/gtcnew/sessionview.php?sessionName=s9593-cutensor%3a+high-performance+tensor+operations+in+cuda>`_.
+
+CUTLASS
+_______
+
+`CUTLASS <https://github.com/nvidia/cutlass/>`_ is an open-source library
+provided by NVIDIA for building matrix multiplication operations using C++
+templates. The goal is to provide performance that is nearly as good as the
+hand-tuned cuBLAS library, but in a more expressive, composible manner.
+
+The CUTLASS library provides a variety of primitives that are optimized for
+proper data layout and movement to achieve the maximum possible performance of
+a matrix multiplation on an NVIDIA GPU. These include iterators for blocking,
+loading, and storing matrix tiles, plus optimized classes for transforming the
+data and performing the actual multiplication. CUTLASS provides `extensive
+documentation <https://github.com/NVIDIA/cutlass/blob/master/CUTLASS.md>`_ of
+these features and examples have been provided. Interested developers are also
+encouraged to watch the `CUTLASS introduction video
+<https://on-demand-gtc.gputechconf.com/gtcnew/sessionview.php?sessionName=s8854-cutlass%3a+software+primitives+for+dense+linear+algebra+at+all+levels+and+scales+within+cuda>`_
+from GTC2018.
+
+Measuring Tensor Core Utilization
+"""""""""""""""""""""""""""""""""
+
+When attempting to use Tensor Cores it is useful to measure and confirm that
+the Tensor Cores are being used within your code. For implicit use via a
+library like cuBLAS, the Tensor Cores will only be used above a certain
+threshold, so Tensor Core use should not be assumed. The NVIDIA Tools provide a
+performance metric to measure Tensor Core utilization on a scale from 0 (Idle)
+to 10 (Max) utilization.
+
+When using NVIDIA’s nvprof profiler, one should add the `-m
+tensor_precision_fu_utilization` option to measure Tensor Core utilization.
+Below is the output from measuring this metric on one of the example programs.
+
+::
+
+  $ nvprof -m tensor_precision_fu_utilization ./simpleCUBLAS
+  ==43727== NVPROF is profiling process 43727, command: ./simpleCUBLAS
+  GPU Device 0: "Tesla V100-SXM2-16GB" with compute capability 7.0
+
+  simpleCUBLAS test running..
+  simpleCUBLAS test passed.
+  ==43727== Profiling application: ./simpleCUBLAS
+  ==43727== Profiling result:
+  ==43727== Metric result:
+  Invocations                               Metric Name                           Metric Description         Min         Max         Avg
+  Device "Tesla V100-SXM2-16GB (0)"
+      Kernel: volta_h884gemm_128x64_ldg8_nn
+            1           tensor_precision_fu_utilization   Tensor-Precision Function Unit Utilization     Low (3)     Low (3)     Low (3)
+
+
+NVIDIA’s Nsight Compute may also be used to measure tensor core utilization via
+the sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_active metric, as
+follows:
+
+::
+
+  $ nv-nsight-cu-cli --metrics sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_active ./cudaTensorCoreGemm
+
+  [  compute_gemm, 2019-Aug-08 12:48:39, Context 1, Stream 7
+        Section: Command line profiler metrics
+        ---------------------------------------------------------------------- 
+        sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_active                    %                       43.44
+        ----------------------------------------------------------------------
+
+
+When to Try Tensor Cores
+""""""""""""""""""""""""
+
+Tensor Cores provide the potential for an enormous performance boost over
+full-precision operations, but when their use is appropriate is highly
+application and even problem independent. Iterative Refinement techniques can
+suffer from slow or possible a complete lack of convergence if the condition
+number of the matrix is very large. By using Tensor Cores, which support 32-bit
+accumulation, rather than strict 16-bit math operations, iterative refinement
+becomes a viable option in a much larger number of cases, so it should be
+attempted when an application is already using a supported solver.
+
+Even if iterative techniques are not available for an application, direct use
+of Tensor Cores may be beneficial if at least the A and B matrices can be
+constructed from the input data without significant loss of precision. Since
+the C and D matrices may be 32-bit, the output may have a higher degree of
+precision than the input. It may be possible to try these operations
+automatically by setting the math mode in cuBLAS, as detailed above, to
+determine whether the loss of precision is an acceptable trade-off for
+increased performance in a given application. If it is, the cublasGemmEx API
+allows the programmer to control when the conversion to 16-bit occurs, which
+may result in higher throughput than allowing the cuBLAS library to do the
+conversion at call time.
+
+Some non-traditional uses of Tensor Cores can come from places where integers
+that fall within the FP16 range are used in an application. For instance, in
+“Attacking the Opioid Epidemic: Determining the Epistatic and Pleiotropic
+Genetic Architectures for Chronic Pain and Opioid Addiction,” a 2018 Gordon
+Bell Prize-winning paper, the authors used Tensor Cores in place of small
+integers, allowing them very high performance over performing the same
+calculation in integer space. This technique is certainly not applicable to all
+applications, but does show that Tensor Cores may be used in algorithms that
+might not have been represented by a floating point matrix multiplication
+otherwise.
+
+Lastly, when performing the training step of a deep learning application it is
+often beneficial to do at least some of the layer calculations in reduced
+precision. The AMP technique described above can be tried with little to know
+code changes, making it highly advisable to attempt in any machine learning
+application.
+
+Tensor Core Examples and Other Materials
+""""""""""""""""""""""""""""""""""""""""
+
+NVIDIA has provided several example codes for using Tensor Cores from a variety
+of the APIs listed above. These examples can be found on `GitHub
+<https://github.com/olcf/NVIDIA-tensor-core-examples>`_.
+
+NVIDIA Tensor Core Workshop (August 2018): `slides
+<https://www.olcf.ornl.gov/wp-content/uploads/2019/11/ORNL_Tensor_Core_Training_Aug2019.pdf>`_,
+recording (coming soon)
+
+
+Tesla V100 Specifications
+-------------------------
+
++----------------------------------------------------+----------------------------+
+| Compute Capability                                 | 7.0                        |
++----------------------------------------------------+----------------------------+
+| Peak double precision floating point performance   | 7.8 TFLOP/s                |
++----------------------------------------------------+----------------------------+
+| Peak single precision floating point performance   | 15.7 TFLOP/s               |
++----------------------------------------------------+----------------------------+
+| Single precision CUDA cores                        | 5120                       |
++----------------------------------------------------+----------------------------+
+| Double precision CUDA cores                        | 2560                       |
++----------------------------------------------------+----------------------------+
+| Tensor cores                                       | 640                        |
++----------------------------------------------------+----------------------------+
+| Clock frequency                                    | 1530 MHz                   |
++----------------------------------------------------+----------------------------+
+| Memory Bandwidth                                   | 900 GB/s                   |
++----------------------------------------------------+----------------------------+
+| Memory size (HBM2)                                 | 16 or 32 GB                |
++----------------------------------------------------+----------------------------+
+| L2 cache                                           | 6 MB                       |
++----------------------------------------------------+----------------------------+
+| Shared memory size / SM                            | Configurable up to 96 KB   |
++----------------------------------------------------+----------------------------+
+| Constant memory                                    | 64 KB                      |
++----------------------------------------------------+----------------------------+
+| Register File Size                                 | 256 KB (per SM)            |
++----------------------------------------------------+----------------------------+
+| 32-bit Registers                                   | 65536 (per SM)             |
++----------------------------------------------------+----------------------------+
+| Max registers per thread                           | 255                        |
++----------------------------------------------------+----------------------------+
+| Number of multiprocessors (SMs)                    | 80                         |
++----------------------------------------------------+----------------------------+
+| Warp size                                          | 32 threads                 |
++----------------------------------------------------+----------------------------+
+| Maximum resident warps per SM                      | 64                         |
++----------------------------------------------------+----------------------------+
+| Maximum resident blocks per SM                     | 32                         |
++----------------------------------------------------+----------------------------+
+| Maximum resident threads per SM                    | 2048                       |
++----------------------------------------------------+----------------------------+
+| Maximum threads per block                          | 1024                       |
++----------------------------------------------------+----------------------------+
+| Maximum block dimensions                           | 1024, 1024, 64             |
++----------------------------------------------------+----------------------------+
+| Maximum grid dimensions                            | 2147483647, 65535, 65535   |
++----------------------------------------------------+----------------------------+
+| Maximum number of MPS clients                      | 48                         |
++----------------------------------------------------+----------------------------+
+
+ 
+
+Further Reading
+---------------
+
+For more information on the NVIDIA Volta architecture, please visit the
+following (outside) links.
+
+* `NVIDIA Volta Architecture White Paper <http://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf>`_
+* `NVIDIA PARALLEL FORALL blog article <https://devblogs.nvidia.com/parallelforall/inside-volta/>`_
+
+
+.. _burst-buffer:
+
+Burst Buffer
+=============
+
+NVMe (XFS)
+----------
+
+Each compute node on Summit has a 1.6TB \ **N**\ on-\ **V**\ olatile **Me**\
+mory (NVMe) storage device (high-memory nodes have a 6.4TB NVMe storage device), colloquially known as a "Burst Buffer" with
+theoretical performance peak of 2.1 GB/s for writing and 5.5 GB/s for reading.
+100GB of each NVMe is reserved for NFS cache to help speed access to common
+libraries. When calculating maximum usable storage size, this cache and
+formatting overhead should be considered; We recommend a maximum storage of
+1.4TB (6TB for high-memory nodes). The NVMes could be used to reduce the time that applications wait for
+I/O. Using an SSD drive per compute node, the burst buffer will be used to
+transfer data to or from the drive before the application reads a file or
+after it writes a file.  The result will be that the application benefits from
+native SSD performance for a portion of its I/O requests. Users are not
+required to use the NVMes.  Data can also be written directly to the parallel
+filesystem.
+
+.. figure:: /images/nvme_arch.jpg
+   :align: center
+
+   The NVMes on Summit are local to each node.
+
+Current NVMe Usage
+-------------------
+
+Tools for using the burst buffers are still under development.  Currently, the
+user will have access to a writeable directory on each node's NVMe and then
+explicitly move data to and from the NVMes with posix commands during a job.
+This mode of usage only supports writing file-per-process or file-per-node.
+It does not support automatic "n to 1" file writing, writing from multiple nodes
+to a single file.  After a job completes the NVMes are trimmed, a process
+that irreversibly deletes data from the devices, so all desired data from the
+NVMes will need to be copied back to the parallel filesystem before the job
+ends. This largely manual mode of usage will not be the recommended way to use
+the burst buffer for most applications because tools are actively being
+developed to automate and improve the NVMe transfer and data management process.
+Here are the basic steps for using the BurstBuffers in their current limited
+mode of usage:
+
+
+#. Modify your application to write to /mnt/bb/$USER, a directory that will be
+   created on each NVMe.
+
+#. Modify either your application or your job submission script to copy the
+   desired data from /mnt/bb/$USER back to the parallel filesystem before the
+   job ends.
+
+#. Modify your job submission script to include the ``-alloc_flags NVME``  bsub
+   option. Then on each reserved Burst Buffer node will be available a directory
+   called /mnt/bb/$USER.
+
+#. Submit your bash script or run the application.
+
+#. Assemble the resulting data as needed.
+
+Interactive Jobs Using the NVMe
+--------------------------------
+
+The NVMe can be setup for test usage within an interactive job as follows:
+
+.. code::
+
+    bsub -W 30 -nnodes 1 -alloc_flags "NVME" -P project123 -Is bash
+
+The ``-alloc_flags NVME`` option will create a directory called /mnt/bb/$USER on
+each requested node's NVMe. The ``/mnt/bb/$USER`` directories will be writeable
+and readable until the interactive job ends. Outside of a job ``/mnt/bb/`` will
+be empty and you will not be able to write to it.
+
+NVMe Usage Example
+-------------------
+
+The following example illustrates how to use the burst buffers (NVMes) by
+default on Summit. This example uses a submission script, check_nvme.lsf. It is
+assumed that the files are saved in the user's GPFS scratch area,
+/gpfs/alpine/scratch/$USER/projid, and that the user is operating from there as
+well. Do not forget that for all the commands on NVMe, it is required to use
+jsrun. This will submit a job to run on one node.
+
+**Job submssion script: check_nvme.lsf.** 
+
+.. code::
+
+   #!/bin/bash
+   #BSUB -P project123
+   #BSUB -J name_test
+   #BSUB -o nvme_test.o%J
+   #BSUB -W 2
+   #BSUB -nnodes 1
+   #BSUB -alloc_flags NVME
+
+   #Declare your project in the variable
+   projid=xxxxx
+   cd /gpfs/alpine/scratch/$USER/$projid
+
+   #Save the hostname of the compute node in a file
+   jsrun -n 1 echo $HOSTNAME > test_file
+
+   #Check what files are saved on the NVMe, always use jsrun to access the NVMe devices
+   jsrun -n 1 ls -l /mnt/bb/$USER/
+
+   #Copy the test_file in your NVMe
+   jsrun -n 1 cp test_file /mnt/bb/$USER/
+
+   #Delete the test_file from your local space
+   rm test_file
+
+   #Check again what the NVMe folder contains
+   jsrun -n 1 ls -l /mnt/bb/$USER/
+
+   #Output of the test_file contents
+   jsrun -n 1 cat /mnt/bb/$USER/test_file
+
+   #Copy the file from the NVMe to your local space
+   jsrun -n 1 cp /mnt/bb/$USER/test_file .
+
+   #Check the file locally
+   ls -l test_file
+
+To run this example: ``bsub ./check_nvme.lsf``.   We could include all the
+commands in a script and call this file as a jsrun argument in an interactive
+job, in order to avoid changing numbers of processes for all the jsrun
+calls. You can see in the table below an example of the differences in a
+submission script for executing an application on GPFS and NVMe. In the example,
+a binary ``./btio`` reads input from an input file and generates output files.
+In this particular case we copy the binary and the input file onto the NVMe, but
+this depends on the application as it is not always necessary, we can execute
+the binary on the GPFS and write/read the data from NVMe if it is supported by
+the application.
+
+.. role:: raw-html(raw)
+    :format: html
+
++----------------------------------------+------------------------------------------------+
+| *Using GPFS*          		 | *Using NVMe*         			  |
++----------------------------------------+------------------------------------------------+
+|               	``#!/bin/bash``  | ``#!/bin/bash`` 	     			  |
++----------------------------------------+------------------------------------------------+
+| 	 	       ``#BSUB -P xxx``  | ``#BSUB -P xxx``  		   	          |
++----------------------------------------+------------------------------------------------+
+|	  	  ``#BSUB -J NAS-BTIO``  | ``#BSUB -J NAS-BTIO``  			  |
++----------------------------------------+--------------+---------------------------------+
+|   	       ``#BSUB -o nasbtio.o%J``  | ``#BSUB -o nasbtio.o%J`` 	                  |
++----------------------------------------+---------------+--------------------------------+
+|              ``#BSUB -e nasbtio.e%J``  | ``#BSUB -e nasbtio.e%J``   			  |
++----------------------------------------+------------------------------------------------+
+|			``#BSUB -W 10``  | ``#BSUB -W 10``    		 	          |
++----------------------------------------+------------------------------------------------+
+|	     ``#BSUB -nnodes 1``         | ``#BSUB -nnodes 1``  	 		  |
++----------------------------------------+------------------------------------------------+
+| 		    			 | ``#BSUB -alloc_flags nvme`` 			  |
+|					 +------------------------------------------------+
+| 	            			 | ``export BBPATH=/mnt/bb/$USER/``		  |
+|					 +------------------------------------------------+
+| 		    			 | ``jsrun -n 1 cp btio ${BBPATH}``		  |
+|					 +------------------------------------------------+
+| 		    			 | ``jsrun -n 1 cp input* ${BBPATH}``		  |
+|					 +------------------------------------------------+
+| ``jsrun -n 1 -a 16 -c 16 -r 1 ./btio`` | ``jsrun -n 1 -a 16 -c 16 -r 1 ${BBPATH}/btio`` |
+|					 +------------------------------------------------+
+| ``ls -l``		`		 | ``jsrun -n 1 ls -l ${BBPATH}/``		  |
+|					 +------------------------------------------------+
+|					 | ``jsrun -n 1 cp ${BBPATH}/* .``		  |
++----------------------------------------+------------------------------------------------+
+
+When a user occupies more than one compute node, then they are using more NVMes
+and the I/O can scale linearly. For example in the following plot you can observe
+the scalability of the IOR benchmark on 2048 compute nodes on Summit where the
+write performance achieves 4TB/s and the read 11.3 TB/s
+
+
+.. image:: /images/nvme_ior_summit.png
+   :align: center
+
+Remember that by default NVMe support one file per MPI process up to one file
+per compute node. If users desire a single file as output from data staged on
+the NVMe they will need to construct it.  Tools to save automatically checkpoint
+files from NVMe to GPFS as also methods that allow automatic n to 1 file writing
+with NVMe staging are under development.   Tutorials about NVME:   Burst Buffer
+on Summit (`slides
+<https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_BB_markomanolis.pdf>`__,
+`video <https://vimeo.com/306890779>`__) Summit Burst Buffer Libraries (`slides
+<https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_BB_zimmer.pdf>`__,
+`video <https://vimeo.com/306891012>`__). 
+
+.. _spectral-library:
+
+Spectral Library
+----------------
+
+Spectral is a portable and transparent middleware library to enable use of the
+node-local burst buffers for accelerated application output on Summit. It is
+used to transfer files from node-local NVMe back to the parallel GPFS file
+system without the need of the user to interact during the job execution.
+Spectral runs on the isolated core of each reserved node, so it does not occupy
+resources and based on some parameters the user could define which folder to be
+copied to the GPFS. In order to use Spectral, the user has to do the following
+steps in the submission script:
+
+#. Request Spectral resources instead of NVMe
+#. Declare the path where the files will be saved in the node-local NVMe
+   (PERSIST_DIR)
+#. Declare the path on GPFS where the files will be copied (PFS_DIR)
+#. Execute the script spectral_wait.py when the application is finished in order
+   to copy the files from NVMe to GPFS
+
+The following table shows the differences of executing an application on GPFS,
+NVMe, and NVMe with Spectral. This example is using one compute node. We copy
+the executable and input file for the NVMe cases but this is not always
+necessary. Depending on the application, you could execute the binary from the
+GPFS and save the output files on NVMe. Adjust your parameters to copy, if
+necessary, the executable and input files onto all the NVMe devices.
+
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| *Using GPFS* 			         | *Using NVMe*                                   | *Using NVME with Spectral library*             |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``#!/bin/bash``		         | ``#!/bin/bash``                                | ``#!/bin/bash``                                |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``#BSUB -P xxx``		         | ``#BSUB -P xxx``                               | ``#BSUB -P xxx``                               |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``#BSUB -J NAS-BTIO``		         | ``#BSUB -J NAS-BTIO``                          | ``#BSUB -J NAS-BTIO``                          |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``#BSUB -o nasbtio.o%J``	         | ``#BSUB -o nasbtio.o%J``                       | ``#BSUB -o nasbtio.o%J``                       |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``#BSUB -e nasbtio.e%J``	         | ``#BSUB -e nasbtio.e%J``                       | ``#BSUB -e nasbtio.e%J``                       |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``#BSUB -W 10``		         | ``#BSUB -W 10``                                | ``#BSUB -W 10``                                |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``#BSUB -nnodes 1``		         | ``#BSUB -nnodes 1``                            | ``#BSUB -nnodes 1``                            |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| 				         | ``#BSUB -alloc_flags nvme``                    | ``#BSUB -alloc_flags spectral``                |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| 				         |                                                | ``module load spectral``                       |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| 				         | ``export BBPATH=/mnt/bb/$USER``                | ``export BBPATH=/mnt/bb/$USER``                |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| 				         |                                                | ``export PERSIST_DIR=${BBPATH}``               |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| 				         |                                                | ``export PFS_DIR=$PWD/spect/``                 |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| 				         | ``jsrun -n 1 cp btio ${BBPATH}``               | ``jsrun -n 1 cp btio ${BBPATH}``               |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| 				         | ``jsrun -n 1 cp input* ${BBPATH}``             | ``jsrun -n 1 cp input* ${BBPATH}``             |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``jsrun -n 1 -a 16 -c 16 -r 1 ./btio`` | ``jsrun -n 1 -a 16 -c 16 -r 1 ${BBPATH}/btio`` | ``jsrun -n 1 -a 16 -c 16 -r 1 ${BBPATH}/btio`` |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| ``ls -l``			         | ``jsrun -n 1 ls -l ${BBPATH}/``	          | ``jsrun -n 1 ls -l ${BBPATH}/``	           |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+| 				         | ``jsrun -n 1 cp ${BBPATH}/* .``                | ``spectral_wait.py``                           |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
+
+
+When the Spectral library is not used, any output data produced has to be copied
+back from NVMe.  You can observe that with the Spectral library there is no reason
+to explicitly ask for the data to be copied to GPFS as it is done automatically
+through the spectral_wait.py script. Also a log file called spectral.log will be
+created with information on the files that were copied.
+
 .. _known-issues:
 
 Known Issues
 ============
 
+Last Updated: 30 July 2021
+
 Open Issues
 -----------
 
-JSM Fault Tolerance causes jobs to fail to start
+System not sourcing ``.bashrc``, ``.profile``, etc. files as expected
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Some users have noticed that their login shells, batch jobs, etc. are not sourcing shell run control files as expected. This is related to the way bash is initialized. The initialization process is discussed in the INVOCATION section of the bash manpage, but is summarized here.
+
+Bash sources different files based on two attributes of the shell: whether or not it's a login shell, and whether or not it's an interactive shell. These attributes are not mutually exclusive (so a shell can be "interactive login", "interactive non-login", etc.):
+
+#. If a shell is an interactive login shell (i.e. an ssh to the system) or a non-interactive shell started with the ``--login`` option (say, a batch script with ``#!/bin/bash --login`` as the first line), it will source ``/etc/profile`` and will then search your home directory for ``~/.bash_profile``, ``~/.bash_login``, and ``~/.profile``. It will source the first of those that it finds (once it sources one, it stops looking for the others).
+#. If a shell is an interactive, non-login shell (say, if you run 'bash' in your login session to start a subshell), it will source ``~/.bashrc``
+#. If a shell is a non-interactive, non-login shell, it will source whatever file is defined by the ``$BASH_ENV`` variable in the shell from which it was invoked. 
+
+In any case, if the files listed above that should be sourced in a particular situation do not exist, it is not an error. 
+
+On Summit and Andes, batch-interactive jobs using bash (i.e. those submitted with ``bsub -Is`` or ``salloc``) run as interactive, non-login shells (and therefore source ``~/.bashrc``, if it exists). Regular batch jobs using bash on those systems are non-interactive, non-login shells and source the file defined by the variable ``$BASH_ENV`` in the shell from which you submitted the job. This variable is not set by default, so this means that none of these files will be sourced for a regular batch job unless you explicitly set that variable.
+
+Some systems are configured to have additional files in ``/etc`` sourced, and sometimes the files in ``/etc`` look for and source files in your home directory such as ``~/.bashrc``, so the behavior on any given system may seem to deviate a bit from the information above (which is from the bash manpage). This can explain why jobs (or other shells) on other systems you've used have sourced your ``.bashrc`` file on login.
+
+Improper permissions on ``~/.ssh/config`` cause job state flip-flop/jobs ending in suspended state
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Improper permissions on your SSH configuration file (``~/.ssh/config``) will cause jobs to alternate between pending & running states until the job ultimately ends up in a PSUSP state.
+
+LSF uses SSH to communicate with nodes allocated to your job, and in this case the improper permissions (i.e. write permission for anyone other than the user) cause SSH to fail, which in turn causes the job launch to fail. Note that SSH only checks the permissions of the configuration file itself. Thus, even if the ``~/.ssh/`` directory itself grants no group or other permissions, SSH will fail due to permissions on the configuration file.
+
+To fix this, use a more secure permission setting on the configuration file. An appropriate setting would be read and write permission for the user and no other permissions. You can set this with the command ``chmod 600 ~/.ssh/config``.
+
+Setting ``TMPDIR`` causes JSM (``jsrun``) errors / job state flip-flop
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Setting the ``TMPDIR`` environment variable causes jobs to fail with JSM
+(``jsrun``) errors and can also cause jobs to bounce back and forth between
+eligible and running states until a retry limit has been reached and the job is
+placed in a blocked state (NOTE: This "bouncing" of job state can be caused for
+multiple reasons. Please see the known issue `Jobs suspended due to retry limit
+/ Queued job flip-flops between queued/running states`_ if you are not setting
+``TMPDIR``). A bug has been filed with IBM to address this issue.
+
+When ``TMPDIR`` is set within a running job (i.e., in an interactive session or
+within a batch script), any attempt to call ``jsrun`` will lead to a job
+failure with the following error message:
+
+::
+
+	Error: Remote JSM server is not responding on host batch503-25-2020 15:29:45:920 90012 main: Error initializing RM connection. Exiting.
+
+When ``TMPDIR`` is set before submitting a job (i.e., in the shell/environment
+where a job is submitted from), the job will bounce back and forth between a
+running and eligible state until its retry limit has been reached and the job
+will end up in a blocked state. This is true for both interactive jobs and jobs
+submitted with a batch script, but interactive jobs will hang without dropping
+you into your interactive shell. In both cases, JSM log files (e.g.,
+``jsm-lsf-wait.username.1004985.log``) will be created in the location set for
+``TMPDIR`` containing the same error message as shown above. 
+
+Segfault when running executables on login nodes
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Executing a parallel binary on the login node or a batch node without using the
+job step launcher ``jsrun`` will result in a segfault. 
 
-Adding ``FAULT_TOLERANCE=1`` in your individual ``~/.jsm.conf`` file,
-will result in LSF jobs failing to successfully start. A bug has been
-filed with IBM to address this issue.
+This also can be encountered when importing parallel Python libraries like
+``mpi4py`` and ``h5py`` directly on these nodes.
 
+The issue has been reported to IBM. The current workaround is to run the binary
+inside an interactive or batch job via ``jsrun``.
+
+Nsight Compute cannot be used with MPI programs
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+When profiling an MPI application using NVIDIA Nsight Compute, like the following,
+you may see an error message in Spectrum MPI that aborts the program:
+
+::
+
+   jsrun -n 1 -a 1 -g 1 nv-nsight-cu-cli ./a.out
+   
+   Error: common_pami.c:1049 - ompi_common_pami_init() Unable to create PAMI client (rc=1)
+   --------------------------------------------------------------------------
+   No components were able to be opened in the pml framework.
+
+   This typically means that either no components of this type were
+   installed, or none of the installed components can be loaded.
+   Sometimes this means that shared libraries required by these
+   components are unable to be found/loaded.
+
+   Host:      <host>
+   Framework: pml
+   --------------------------------------------------------------------------
+   PML pami cannot be selected
+
+This is due to an incompatibility in the 2019.x versions of Nsight Compute with
+Spectrum MPI. As a workaround, you can disable CUDA hooks in Spectrum MPI using
+
+::
+   
+   jsrun -n 1 -a 1 -g 1 --smpiargs="-disable_gpu_hooks" nv-nsight-cu-cli ./a.out
+
+Unfortunately, this is incompatible with using CUDA-aware MPI in your application.
+
+This will be resolved in a future release of CUDA.
+
+CUDA hook error when program uses CUDA without first calling MPI_Init()
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Serial applications, that are not MPI enabled, often face the following
+issue when compiled with Spectrum MPI's wrappers and run with jsrun:
+
+::
+
+   CUDA Hook Library: Failed to find symbol mem_find_dreg_entries, ./a.out: undefined symbol: __PAMI_Invalidate_region
+
+The same issue can occur if CUDA API calls that interact with the GPU
+(e.g. allocating memory) are called before MPI_Init() in an MPI enabled
+application. Depending on context, this error can either be harmless or
+it can be fatal.
+
+The reason this occurs is that the PAMI messaging backend, used by Spectrum
+MPI by default, has a "CUDA hook" that records GPU memory allocations.
+This record is used later during CUDA-aware MPI calls to efficiently detect
+whether a given message is sent from the CPU or the GPU. This is done by
+design in the IBM implementation and is unlikely to be changed.
+
+There are two main ways to work around this problem. If CUDA-aware MPI is
+not a relevant factor for your work (which is naturally true for serial
+applications) then you can simply disable the CUDA hook with:
+
+::
+
+   --smpiargs="-disable_gpu_hooks"
+
+as an argument to jsrun. Note that this is not compatible with the ``-gpu``
+argument to ``--smpiargs``, since that is what enables CUDA-aware MPI and
+the CUDA-aware MPI functionality depends on the CUDA hook.
+
+If you do need CUDA-aware MPI functionality, then the only known working
+solution to this problem is to refactor your code so that no CUDA calls
+occur before MPI_Init(). (This includes any libraries or programming models
+such as OpenACC or OpenMP that would use CUDA behind the scenes.) While it
+is not explicitly codified in the standard, it is worth noting that the major
+MPI implementations all recommend doing as little as possible before MPI_Init(),
+and this recommendation is consistent with that.
 
 Spindle is not currently supported
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -3037,12 +3847,6 @@ been reported to IBM and they are investigating. It is generally
 recommended to use jsrun explicit resource files (ERF) with
 ``--erf_input`` and ``--erf_output`` instead of ``-U``.
 
--g flag causes internal compiler error with XL compiler
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Some users have reported an internal compiler error when compiling their
-code with XL with the \`-g\` flag. This has been reported to IBM and
-they are investigating.
 
 Jobs suspended due to retry limit / Queued job flip-flops between queued/running states
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -3051,11 +3855,11 @@ Some users have reported seeing their jobs transition from the normal
 queued state, into a running state, and then back again to queued.
 Sometimes this can happen multiple times. Eventually, internal limits in
 the LSF scheduler will be reached, at which point the job will no longer
-be eligible for running. The bhist command can be used to see if a job
+be eligible for running. The ``bhist`` command can be used to see if a job
 is cycling between running and eligible states. The pending reason given
-by bhist can also be useful to debug. This can happen due to
+by ``bhist`` can also be useful to debug. This can happen due to
 modifications that the user has made to their environment on the system,
-incorrect ssh key setup, attempting to load unavailable/broken modules.
+incorrect SSH key setup, attempting to load unavailable/broken modules.
 or system problems with individual nodes. When jobs are observed to
 flip-flop between running and queued, and/or become ineligible without
 explanation, then deeper investigation is required and the user should
@@ -3064,38 +3868,12 @@ write to help@olcf.ornl.gov.
 jsrun explicit resource file (ERF) output format error
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-jsrun's option to create an explicit resource file (--erf\_output) will
+jsrun's option to create an explicit resource file (``--erf_output``) will
 incorrectly create a file with one line per rank. When reading the file
-in with (--erf\_input) you will see warnings for overlapping resource
-sets. This issue has been reported. The work around is to manually
-update the created erf file to contain a single line per resource set
+in with (``--erf_input``) you will see warnings for overlapping resource
+sets. This issue has been reported. The workaround is to manually
+update the created ERF file to contain a single line per resource set
 with multiple ranks per line.
-
-jsrun explicit resource file (ERF) allocates incorrect resources
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-When using an ERF that requests cores on a compute node’s second socket
-(hardware threads 88-171), the set of cores allocated on the second
-socket are shifted upwards by (1) physical core.
-
-For example:
-
-The following ERF requests the first physical core on each socket:
-
-::
-
-    2 : {host: * ; cpu: {0-3},{88-91}}
-
-``jsrun`` currently shifts the second socket’s allocation by (1)
-physical core, allocating 92-95 instead of the specified 88-91.
-
-::
-
-    $ jsrun --erf_input ERF_filename js_task_info | sort
-
-    Task 0 ( 0/2, 0/2 ) is bound to cpu[s] 0-3 on host h36n03 with OMP_NUM_THREADS=1 and with OMP_PLACES={0:4}
-
-    Task 1 ( 1/2, 1/2 ) is bound to cpu[s] 92-95 on host h36n03 with OMP_NUM_THREADS=1 and with OMP_PLACES={92:4}
 
 
 jsrun latency priority capitalization allocates incorrect resources
@@ -3121,9 +3899,9 @@ jsrun's latency priority (``-l``) flag can be given lowercase values
 
 **Recommendation**:
 
-    It is currently recommended to only use the lowercase values to (-l /
-    --latency\_priority). The system default is: gpu-cpu,cpu-mem,cpu-cpu.
-    Since this ordering is used implicitly when the -l flag is omitted, this
+    It is currently recommended to only use the lowercase values to (``-l`` /
+    ``--latency_priority``). The system default is: gpu-cpu,cpu-mem,cpu-cpu.
+    Since this ordering is used implicitly when the ``-l`` flag is omitted, this
     issue only impacts submissions which explicitly include a latency
     priority in the jsrun command.
 
@@ -3158,6 +3936,13 @@ following option to your jsrun command line:
 
 Resolved Issues
 ---------------
+
+JSM Fault Tolerance causes jobs to fail to start
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Adding ``FAULT_TOLERANCE=1`` in your individual ``~/.jsm.conf`` file,
+will result in LSF jobs failing to successfully start.
+
 
 The following issues were resolved with the July 16, 2019 software upgrade:
 
@@ -3212,6 +3997,16 @@ significant more amount of memory.
 The following issues were resolved
 with the May 21, 2019 upgrade:
 
+-g flag causes internal compiler error with XL compiler (Resolved: May 21, 2019)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Some users have reported an internal compiler error when compiling their
+code with XL with the \`-g\` flag. This has been reported to IBM and
+they are investigating.
+
+.. note::
+		This bug was fixed in xl/16.1.1-3
+
 Issue with CUDA Aware MPI with >1 resource set per node (Resolved: May 21, 2019)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -3245,8 +4040,7 @@ Simultaneous backgrounded jsruns (Resolved: May 21, 2019)
 
 We have seen occasional errors from batch jobs with multiple
 simultaneous backgrounded jsrun commands. Jobs may see pmix errors
-during the noted failures. <!–– Since the issue is occasional, multiple
-resubmits can be a workaround at this point. -->
+during the noted failures. 
 
 --------------
 
@@ -3427,9 +4221,10 @@ active threads can be more pleasant.
 Training System (Ascent)
 ========================
 
-**NOTE:** Ascent is a training system that is not intended to be used as
-an OLCF user resource. Access to the system is only obtained through
-OLCF training events.
+.. note::
+    Ascent is a training system that is not intended to be used as
+    an OLCF user resource. Access to the system is only obtained through
+    OLCF training events.
 
 Ascent is an 18-node stand-alone system with the same architecture as
 Summit (see :ref:`summit-nodes` section above), so most of this Summit User Guide can be referenced for
@@ -3482,9 +4277,10 @@ nodes. Under ``/gpfs/wolf/[projid]``, there are 3 directories:
 Obtaining Access to Ascent
 --------------------------
 
-**NOTE:** Ascent is a training system that is not intended to be used as
-an OLCF user resource. Access to the system is only obtained through
-OLCF training events.
+.. note::
+    Ascent is a training system that is not intended to be used as
+    an OLCF user resource. Access to the system is only obtained through
+    OLCF training events.
 
 This sub-section describes the process of obtaining access to Ascent for
 an OLCF training event. Please follow the steps below to request access.
@@ -3496,18 +4292,23 @@ Enter the requested information into the form. For "Project
 Information", enter the following:
 
 .. image:: /images/Ascent_Account_Application_1.png
+   :align: center
 
 For "Project Information", enter the following:
 
 .. image:: /images/Ascent_Account_Application_2.png
+   :align: center
 
 For "Account Information", enter the following:
 
 .. image:: /images/Ascent_Account_Application_3.png
+   :align: center
 
-**NOTE:** After submitting your application, it will need to pass
-through the approval process. Depending on when you submit, approval
-might not occur until the next business day.
+
+.. note::
+    After submitting your application, it will need to pass
+    through the approval process. Depending on when you submit, approval
+    might not occur until the next business day.
 
 Step 2: Set Your XCAMS/UCAMS Password
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -3526,11 +4327,96 @@ To log in to Ascent, please use your XCAMS/UCAMS username and password:
 
 ``$ ssh USERNAME@login1.ascent.olcf.ornl.gov``
 
-**NOTE:** You do not need to use an RSA token to log in to Ascent.
-Please use your XCAMS/UCAMS username and password (which is different
-from the username and PIN + RSA token code used to log in to other OLCF
-systems such as Summit).
+.. note::
+    You do not need to use an RSA token to log in to Ascent.
+    Please use your XCAMS/UCAMS username and password (which is different
+    from the username and PIN + RSA token code used to log in to other OLCF
+    systems such as Summit).
 
-**NOTE:** It will take ~5 minutes for your directories to be created, so
-if your account was just created and you log in and you do not have a
-home directory, this is likely the reason.
+.. note::
+    It will take ~5 minutes for your directories to be created, so
+    if your account was just created and you log in and you do not have a
+    home directory, this is likely the reason.
+
+Preparing For Frontier
+======================
+
+This section of the Summit User Guide is intended to show current OLCF
+users how to start preparing their applications to run on the upcoming
+Frontier system. We will continue to add more topics to this section in
+the coming months. Please see the topics below to get started.
+
+HIP
+---
+
+HIP (Heterogeneous-Compute Interface for Portability) is a C++ runtime
+API that allows developers to write portable code to run on AMD and NVIDIA
+GPUs. It is an interface that uses the underlying Radeon Open Compute (ROCm)
+or CUDA platform that is installed on a system. The API is similar to CUDA
+so porting existing codes from CUDA to HIP should be fairly straightforward
+in most cases. In addition, HIP provides porting tools which can be used to
+help port CUDA codes to the HIP layer, with no overhead compared to the
+original CUDA application. HIP is not intended to be a drop-in replacement
+for CUDA, so some manual coding and performance tuning work should be
+expected to complete the port.
+
+Key features include:
+
+- HIP is a thin layer and has little or no performance impact over
+  coding directly in CUDA.
+
+- HIP allows coding in a single-source C++ programming language including
+  features such as templates, C++11 lambdas, classes, namespaces, and more.
+
+- The “hipify” tools automatically convert source from CUDA to HIP.
+
+- Developers can specialize for the platform (CUDA or HIP) to tune for
+  performance or handle tricky cases.
+
+Using HIP on Summit
+-------------------
+
+As mentioned above, HIP can be used on systems running on either the ROCm
+or CUDA platform, so OLCF users can start preparing their applications for
+Frontier today on Summit. To use HIP on Summit, you must load the HIP module:
+
+::
+
+    $ module load hip
+
+This will automatically load the appropriate CUDA module as well.
+
+Learning to Program with HIP
+----------------------------
+
+The HIP API is very similar to CUDA, so if you are already familiar with
+using CUDA, the transition to using HIP should be fairly straightforward.
+Whether you are already familiar with CUDA or not, the best place to start
+learning about HIP is this Introduction to HIP webinar that was recently
+given by AMD:
+
+- **Introduction to AMD GPU Programming with HIP**:
+  (`slides <https://www.exascaleproject.org/wp-content/uploads/2017/05/ORNL_HIP_webinar_20190606_final.pdf>`__ | `recording <https://youtu.be/3ZXbRJVvgJs>`__)
+
+
+More useful resources, provided by AMD, can be found here:
+
+- `HIP Programming Guide <https://rocm-documentation.readthedocs.io/en/latest/Programming_Guides/HIP-GUIDE.html>`__
+
+- `HIP API Documentation <https://rocm-documentation.readthedocs.io/en/latest/ROCm_API_References/HIP-API.html>`__
+
+- `HIP Porting Guide <https://github.com/ROCm-Developer-Tools/HIP/blob/master/docs/markdown/hip_porting_guide.md>`__
+
+The OLCF is currently adding some simple HIP tutorials here as well:
+
+- OLCF Tutorials – `Simple HIP Examples <https://github.com/olcf-tutorials/simple_HIP_examples>`__
+
+Previous Frontier Training Events
+---------------------------------
+
+The links below point to event pages from previous Frontier training events. Under the "Presentations" tab on each event page, you will find the presentations given during the event.
+
+`Frontier Application Readiness Kick-Off Workshop (October 2019) <https://www.olcf.ornl.gov/frontier-application-readiness-kick-off-workshop/>`__
+
+Please check back to this section regularly as we will continue
+to add new content for our users.
