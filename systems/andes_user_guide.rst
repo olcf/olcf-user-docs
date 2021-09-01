@@ -1073,13 +1073,7 @@ allocated to multiple jobs. Because the OLCF charges based on what a job makes
 uses only one core on a node. To simplify the process, users are given a
 multiples of entire nodes through Slurm.
 
-Viewing Allocation Utilization
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Projects are allocated time on Andes in units of *node-hours*. This is separate
-from a project's Summit allocation, and usage of Andes does not count against
-that allocation. This page describes how such units are calculated, and how
-users can access more detailed information on their relevant allocations.
+Allocations on Andes are separate from those on Summit and other OLCF resources.
 
 Node-Hour Calculation
 ^^^^^^^^^^^^^^^^^^^^^
@@ -1113,7 +1107,7 @@ of run-time errors (e.g. the user's application causes a segmentation fault) are
 counted against the allocation.
 
 Each user may view usage for projects on which they are members from the command
-line tool ``showusage`` and the `My OLCF site <https://users.nccs.gov>`__.
+line tool ``showusage`` and the `myOLCF site <https://my.olcf.ornl.gov>`__.
 
 On the Command Line via ``showusage``
 """""""""""""""""""""""""""""""""""""
@@ -1132,11 +1126,11 @@ through midnight of the previous day. For example:
 
 The ``-h`` option will list more usage details.
 
-On the Web via My OLCF
+On the Web via myOLCF
 """"""""""""""""""""""
 
-More detailed metrics may be found on each project's usage section of the `My
-OLCF site <https://users.nccs.gov>`__. The following information is available
+More detailed metrics may be found on each project's usage section of the `myOLCF
+site <https://my.olcf.ornl.gov>`__. The following information is available
 for each project:
 
 -  YTD usage by system, subproject, and project member
@@ -1147,11 +1141,85 @@ for each project:
 -  Batch system priorities by project and subproject
 -  Project members
 
-The My OLCF site is provided to aid in the utilization and management of OLCF
-allocations. If you have any questions or have a request for additional data,
+The myOLCF site is provided to aid in the utilization and management of OLCF
+allocations. See the :doc:`myOLCF Documentation </services_and_applications/myolcf/index>` for more information. 
+
+If you have any questions or have a request for additional data,
 please contact the OLCF User Assistance Center.
 
 --------------
+
+.. _andes-debugging:
+
+Debugging
+=========
+
+Arm DDT
+-------
+
+Arm DDT is an advanced debugging tool used for scalar, multi-threaded,
+and large-scale parallel applications. In addition to traditional
+debugging features (setting breakpoints, stepping through code,
+examining variables), DDT also supports attaching to already-running
+processes and memory debugging. In-depth details of DDT can be found in
+the `Official DDT User
+Guide <https://www.allinea.com/user-guide/forge/userguide.html>`__, and
+instructions for how to use it on OLCF systems can be found on the
+`Forge (DDT/MAP) Software Page <https://www.olcf.ornl.gov/software_package/forge/>`__. DDT is the
+OLCF's recommended debugging software for large parallel applications.
+
+One of the most useful features of DDT is its remote debugging feature. This allows you to connect to a debugging session on Andes from a client running on your workstation. The local client provides much faster interaction than you would have if using the graphical client on Andes. For guidance in setting up the remote client see `this tutorial <https://www.olcf.ornl.gov/tutorials/forge-remote-client-setup-and-usage/>`__. While that tutorial uses Summit as an example, it should be easily adaptable to Andes.
+
+GDB
+---
+
+`GDB <https://www.gnu.org/software/gdb/>`__, the GNU Project Debugger,
+is a command-line debugger useful for traditional debugging and
+investigating code crashes. GDB lets you debug programs written in Ada,
+C, C++, Objective-C, Pascal (and many other languages). GDB is available
+on andes via the ``gdb`` module:
+
+.. code::
+
+    module load gdb
+
+
+Valgrind
+--------
+
+`Valgrind <http://valgrind.org>`__ is an instrumentation framework for
+building dynamic analysis tools. There are Valgrind tools that can
+automatically detect many memory management and threading bugs, and
+profile your programs in detail. You can also use Valgrind to build new
+tools.
+
+The Valgrind distribution currently includes five production-quality
+tools: a memory error detector, a thread error detector, a cache and
+branch-prediction profiler, a call-graph generating cache profiler,
+and a heap profiler. It also includes two experimental tools: a data
+race detector, and an instant memory leak detector.
+
+The Valgrind tool suite provides a number of debugging and
+profiling tools. The most popular is Memcheck, a memory checking tool
+which can detect many common memory errors such as:
+
+- Touching memory you shouldn’t (eg. overrunning heap block boundaries,
+  or reading/writing freed memory).
+- Using values before they have been initialized.
+- Incorrect freeing of memory, such as double-freeing heap blocks.
+- Memory leaks.
+
+Valgrind is available on Andes via the ``valgrind`` module:
+
+.. code::
+
+    module load valgrind
+
+Additional information about Valgrind usage and OLCF-provided builds can
+be found on the `Valgrind Software
+Page <https://www.olcf.ornl.gov/software_package/valgrind/>`__.
+
+
 
 .. _visualization-tools:
 
@@ -1216,114 +1284,131 @@ methods may be used the one described should work in most cases.
 
 .. code::
 
-    <Servers>
-     <Server name="Andes@ORNL" resource="csrc://localhost:11111">
-      <CommandStartup>
-       <Options>
-        <Option name="XTERM_EXE" label="Xterm executable" save="true">
-          <File default="/usr/bin/xterm"/>
-        </Option>
-        <Option name="SSH_EXE" label="SSH executable" save="true">
-          <File default="ssh"/>
-        </Option>
-        <Option name="MACHINE" label="Remote machine" save="true">
-          <String default="andes-login3.olcf.ornl.gov"/>
-        </Option>
-        <Option name="VERSION" label="ParaView version" save="true">
-          <String default="5.8.1"/>
-        </Option>
-        <Option name="USER" label="Username" save="true">
-          <String default="YOURUSERNAME"/>
-        </Option>
-        <Option name="CLIENT_PORT" label="Client port">
-          <Range type="int" min="1025" max="65535" step="1" default="11111"/>
-        </Option>
-        <Option name="SERVER_PORT" label="Server port">
-          <Range type="int" min="1025" max="65535" step="1" default="random"/>
-        </Option>
-        <Option name="NUMNODES" label="Number of nodes to reserve" save="true">
-          <Range type="int" min="1" max="1024" step="4" default="2"/>
-        </Option>
-        <Option name="CPUSPERNODE" label="Number of cpus to use on each node" save="true"> 
-          <Range type="int" min="1" max="32" step="1" default="8"/>
-        </Option>
-        <Option name="NUMMINUTES" label="Number of minutes to reserve" save="true"> 
-          <Range type="int" min="5" max="1000" step="5" default="20"/>
-        </Option>
-        <Option name="ACCOUNT" label="Account" save="true">
-          <String default="YOURPROJECT"/>
-        </Option>
-        <Option name="QUEUE" label="Queue" save="true">
-          <String default="batch"/>
-        </Option>
-        <Option name="JOBNAME" label="Job name" save="true">
-          <String default="paraview_interactive"/>
-        </Option>
-       </Options>
-      <Command exec="$XTERM_EXE$" timeout="0" delay="2">
-        <Arguments>
-          <Argument value="-T"/>
-          <Argument value="&#x22;ParaView_$VERSION$"/>
-          <Argument value="$USER$@$MACHINE$&#x22;"/>
-          <Argument value="-hold"/>
-          <Argument value="-e"/>
-          <Argument value="$SSH_EXE$"/>
-          <Argument value="-R"/>
-          <Argument value="$SERVER_PORT$:localhost:$CLIENT_PORT$"/>
-          <Argument value="$USER$@$MACHINE$"/>
-          <Argument value="/sw/andes/paraview/connect/launch.sh"/>
-          <Argument value="$NUMNODES$"/>
-          <Argument value="$NUMMINUTES$"/>
-          <Argument value="$ACCOUNT$"/>
-          <Argument value="$QUEUE$"/>
-          <Argument value="$JOBNAME$"/>
-          <Argument value="$SERVER_PORT$"/>
-          <Argument value="pvserver"/>
-          <Argument value="$VERSION$"/>
-          <Argument value="$CPUSPERNODE$"/>
-        </Arguments>
-       </Command>
-      </CommandStartup>
+   <Servers>
+     <Server name="ORNL andes" resource="csrc://localhost">
+       <CommandStartup>
+         <Options>
+           <Option name="HOST" label="Server host" save="true">
+             <String default="andes.olcf.ornl.gov"/>
+           </Option>
+           <Option name="HEADLESS_API" label="Server headless API" save="true">
+             <Enumeration default="osmesa">
+               <Entry value="osmesa" label= "OSMesa" />
+               <Entry value="egl" label= "EGL" />
+             </Enumeration>
+           </Option>
+           <Option name="USER" label="Server username" save="true">
+             <String default="YOURUSERNAME"/>
+           </Option>
+           <Switch name="PV_CLIENT_PLATFORM">
+             <Case value="Apple">
+               <Set name="TERM_PATH" value="/opt/X11/bin/xterm" />
+               <Set name="TERM_ARG1" value="-T" />
+               <Set name="TERM_ARG2" value="ParaView" />
+               <Set name="TERM_ARG3" value="-e" />
+               <Set name="SSH_PATH" value="ssh" />
+             </Case>
+             <Case value="Linux">
+               <Set name="TERM_PATH" value="xterm" />
+               <Set name="TERM_ARG1" value="-T" />
+               <Set name="TERM_ARG2" value="ParaView" />
+               <Set name="TERM_ARG3" value="-e" />
+               <Set name="SSH_PATH" value="ssh" />
+             </Case>
+             <Case value="Windows">
+               <Set name="TERM_PATH" value="cmd" />
+               <Set name="TERM_ARG1" value="/C" />
+               <Set name="TERM_ARG2" value="start" />
+               <Set name="TERM_ARG3" value="" />
+               <Set name="SSH_PATH" value="plink.exe" />
+             </Case>
+             <Case value="Unix">
+               <Set name="TERM_PATH" value="xterm" />
+               <Set name="TERM_ARG1" value="-T" />
+               <Set name="TERM_ARG2" value="ParaView" />
+               <Set name="TERM_ARG3" value="-e" />
+               <Set name="SSH_PATH" value="ssh" />
+             </Case>
+           </Switch>
+           <Option name="PV_SERVER_PORT" label="Server port ">
+             <Range type="int" min="1025" max="65535" step="1" default="random"/>
+           </Option>
+           <Option name="NUM_NODES" label="Number of compute nodes" save="true">
+             <Range type="int" min="1" max="512" step="1" default="2"/>
+           </Option>
+           <Option name="NUM_MPI_TASKS" label="Total number of MPI tasks" save="true">
+             <Range type="int" min="1" max="16384" step="1" default="2"/>
+           </Option>
+           <Option name="NUM_CORES_PER_MPI_TASK" label="Number of cores per MPI task" save="true">
+             <Range type="int" min="1" max="28" step="1" default="1"/>
+           </Option>
+           <Option name="PROJECT" label="Project to charge" save="true">
+             <String default="cscXXX"/>
+           </Option>
+           <Option name="MINUTES" label="Number of minutes to reserve" save="true">
+             <Range type="int" min="1" max="240" step="1" default="30"/>
+           </Option>
+         </Options>
+         <Command exec="$TERM_PATH$" delay="5">
+           <Arguments>
+             <Argument value="$TERM_ARG1$"/>
+             <Argument value="$TERM_ARG2$"/>
+             <Argument value="$TERM_ARG3$"/>
+             <Argument value="$SSH_PATH$"/>
+             <Argument value="-t"/>
+             <Argument value="-R"/>
+             <Argument value="$PV_SERVER_PORT$:localhost:$PV_SERVER_PORT$"/>
+             <Argument value="$USER$@$HOST$"/>
+             <Argument value="/sw/andes/paraview/pvsc/ORNL/login_node.sh"/>
+             <Argument value="$NUM_NODES$"/>
+             <Argument value="$MINUTES$"/>
+             <Argument value="$PV_SERVER_PORT$"/>
+             <Argument value="$PV_VERSION_FULL$"/>
+             <Argument value="$HEADLESS_API$"/>
+             <Argument value="/sw/andes/paraview/pvsc/ORNL/andes.cfg"/>
+             <Argument value="PROJECT=$PROJECT$"/>
+             <Argument value="NUM_MPI_TASKS=$NUM_MPI_TASKS$"/>
+             <Argument value="NUM_CORES_PER_MPI_TASK=$NUM_CORES_PER_MPI_TASK$"/>
+           </Arguments>
+         </Command>
+       </CommandStartup>
      </Server>
-     # ...
-    </Servers>
+   </Servers>
 
 **Step 2: Launch ParaView on your Desktop and Click on File -> Connect**
 
 Start ParaView and then select ``File/Connect`` to begin.
 
-.. image:: /images/paraview_step1a_Andes.jpg
+.. image:: /images/paraview_step1a_Andes.png
    :align: center
 
 Click Load Servers button and find the servers.pvsc file
 
-.. image:: /images/paraview_step2a_Andes.jpg
+.. image:: /images/paraview_step2a_Andes.png
    :align: center
 
 **Step 3: Establish a connection to Andes**
 
-Select Andes@ORNL, click on Connect and change the values in the Connection Options box.
+Select ORNL Andes, click on Connect and change the values in the Connection Options box.
 
-.. image:: /images/paraview_step2a_Andes_2.jpg
+.. image:: /images/paraview_step2a_Andes_2.png
    :align: center
 
 A dialog box follows, in which you must enter in your username and project
 allocation, the number of nodes to reserve and a duration to reserve them for.
-Please make sure to check the correct path of the xterm on your local computer
-and add the path to the option box.
 
 
-.. image:: /images/paraview_step2b_Andes.jpg
+.. image:: /images/paraview_step2b_Andes.png
    :align: center
 
 When you click OK, a windows command prompt or ``xterm`` pops up. In this
 window enter your credentials at the OLCF login prompt.
 
-.. image:: /images/paraview_step2c_Andes.jpg
+.. image:: /images/paraview_step2c_Andes.png
    :align: center
 
-When your job reaches the top of the queue, the ``RenderView1`` view window
-will return. At this point you are connected to Andes and can open files that
+When your job reaches the top of the queue, the main window will be returned to your
+control. At this point you are connected to Andes and can open files that
 reside there and visualize them interactively.
 
 VisIt

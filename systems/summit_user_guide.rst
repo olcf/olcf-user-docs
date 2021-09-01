@@ -4,6 +4,16 @@
 Summit User Guide
 ******************
 
+.. warning:: 
+    Summit's OS was upgraded to RHEL8 on August 17-19, 2021. You should be aware of several changes resulting from this upgrade:
+    
+    * **You should recompile your codes** prior to running on the upgraded system.
+    
+    * **The OS-provided Python is no longer accessible as** ``python`` (including variations like ``/usr/bin/python`` or ``/usr/bin/env python``); rather, you must specify it as ``python2`` or ``python3``. If you are using python from one of the modulefiles rather than the version in ``/usr/bin``, this change should not affect how you invoke python in your scripts, although we encourage specifying ``python2`` or ``python3`` as a best practice.
+    
+    * A list of **default version changess**. including XL, CUDA, Spectrum, and ESSL as well as older versions scheduled for removal can be found on the :doc:`Software News </software/software-news>` page.
+
+
 .. _summit-documentation-resources:
 
 Summit Documentation Resources
@@ -132,7 +142,9 @@ Storage System (HPSS) for user and project archival storage.
 Operating System
 ----------------
 
-Summit is running Red Hat Enterprise Linux (RHEL) version 7.6.
+
+Summit is running Red Hat Enterprise Linux (RHEL) version 8.2.
+
 
 .. _hardware-threads:
 
@@ -407,14 +419,16 @@ using the modules system:
 
 ::
 
-    summit$ module -t avail pgi
-    /sw/summit/modulefiles/site/linux-rhel7-ppc64le/Core:
-    pgi/18.7
-    pgi/18.10
-    pgi/19.1
-    pgi/19.4
-    pgi/19.5
-    pgi/19.7
+
+   summit$ module -t avail gcc
+   /sw/summit/spack-envs/base/modules/site/Core:
+   gcc/7.5.0
+   gcc/9.1.0
+   gcc/9.3.0
+   gcc/10.2.0
+   gcc/11.1.0
+
+
 
 .. _compiling-mod-enhanced:
 
@@ -441,6 +455,7 @@ startup of the interactive job unfortunately. Typical work flow would be:
    prompt > make  or whatever is needed to compile the code
 
 At this point, it is possible to run a quick test job using jsrun or fix any compilation issues which may have occured.
+
 
 .. note:: 
 
@@ -532,7 +547,7 @@ flag will display the full link lines, without actually compiling:
 ::
 
     summit$ mpicc --showme
-    /sw/summit/xl/16.1.1-beta6/xlC/16.1.1/bin/xlc -I/autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20171006/linux-rhel7-ppc64le/xl-16.1.1-beta6/spectrum-mpi-10.2.0.7-20180830-eyo7zxm2piusmyffr3iytmgwdacl67ju/include -pthread -L/autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20171006/linux-rhel7-ppc64le/xl-16.1.1-beta6/spectrum-mpi-10.2.0.7-20180830-eyo7zxm2piusmyffr3iytmgwdacl67ju/lib -lmpiprofilesupport -lmpi_ibm
+    /sw/summit/xl/16.1.1-10/xlC/16.1.1/bin/xlc_r -I/sw/summit/spack-envs/base/opt/linux-rhel8-ppc64le/xl-16.1.1-10/spectrum-mpi-10.4.0.3-20210112-v7qymniwgi6mtxqsjd7p5jxinxzdkhn3/include -pthread -L/sw/summit/spack-envs/base/opt/linux-rhel8-ppc64le/xl-16.1.1-10/spectrum-mpi-10.4.0.3-20210112-v7qymniwgi6mtxqsjd7p5jxinxzdkhn3/lib -lmpiprofilesupport -lmpi_ibm
 
 OpenMP
 ^^^^^^
@@ -1739,16 +1754,39 @@ specify the number of resource sets needed.
 | 1               | 1           | 21        | 21               | 3      | jsrun -n1 -a1 -c21 -g3 -bpacked:21    |
 +-----------------+-------------+-----------+------------------+--------+---------------------------------------+
 
+Launching Multiple Jsruns
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Concurrent Job Steps
+Jsrun provides the ability to launch multiple ``jsrun`` job launches within a
+single batch job allocation. This can be done within a single node, or across
+multiple nodes.
+
+Sequential Job Steps
 """"""""""""""""""""
+By default, multiple invocations of ``jsrun`` in a job script will execute 
+serially in order. In this configuration, jobs will launch one at a time and
+the next one will not start until the previous is complete. The batch node
+allocation is equal to the largest jsrun submitted, and the total walltime
+must be equal to or greater then the *sum* of all jsruns issued.
+ 
+.. image:: /images/summit-multi-jsrun-example-sequential.png
+   :align: center
 
-By default, multiple invocations of ``jsrun`` in a job script will execute
-serially. To execute multiple job steps concurrently, standard UNIX process
+Simultaneous Job Steps
+""""""""""""""""""""""
+To execute multiple job steps concurrently, standard UNIX process
 backgrounding can be used by adding a ``&`` at the end of the command. This
-will return control to the job script and execute the next command immediately.
+will return control to the job script and execute the next command immediately,
+allowing multiple job launches to start at the same time. The jsruns will not
+share core/gpu resources in this configuration. The batch node allocation is 
+equal to the *sum* of those of each jsrun, and the total walltime must be equal
+to or greater than that of the longest running jsrun task.
+
 A ``wait`` command must follow all backgrounded processes to prevent the job
 from appearing completed and exiting prematurely.
+
+.. image:: /images/summit-multi-jsrun-example-simultaneous.png
+   :align: center
 
 The following example executes three backgrounded job steps and waits for them
 to finish before the job ends.
@@ -1802,6 +1840,30 @@ If JSM or PMIX errors occur as the result of backgrounding many job steps, using
     ``stderr``. To capture ``stdout`` and/or ``stderr`` when using this option,
     additionally include ``--stdio_stdout``/``-o`` and/or
     ``--stdio_stderr``/``-k``.
+
+Using `jslist`
+""""""""""""""
+To view the status of multiple jobs launched sequentially or concurrently within a 
+batch script, you can use `jslist` to see which are completed, running, or still
+queued. If you are using it outside of an interactive batch job, use the `-c` option
+to specify the CSM allocation ID number. The following example shows how to obtain the
+CSM allocation number for a non interactive job and then check its status. 
+
+::
+
+    $ bsub test.lsf
+    Job <26238> is submitted to default queue <batch>.
+
+    $ bjobs -l 26238 | grep CSM_ALLOCATION_ID
+    Sun Feb 16 19:01:18: CSM_ALLOCATION_ID=34435
+
+    $ jslist -c 34435
+      parent         cpus     gpus     exit
+      ID  ID    nrs  per RS  per RS   status    status
+     ===========================================================
+       1   0    12     4       1        0       Running
+
+
 
 Explicit Resource Files (ERF)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -2252,30 +2314,90 @@ compute node. This may be beneficial because it provides more resources
 for GPFS service tasks, but it may also cause resource contention for
 the jsrun compute job.
 
-Resource Accounting
--------------------
+Job Accounting on Summit
+------------------------
 
-While logged into Summit, users can show their YTD usage and allocation
-by project using the ``showusage`` command. System specific details can
-be obtained with the ``-s`` flag. For example,
+Jobs on Summit are scheduled in full node increments; a node's cores cannot be
+allocated to multiple jobs. Because the OLCF charges based on what a job makes
+*unavailable* to other users, a job is charged for an entire node even if it
+uses only one core on a node. To simplify the process, users request and are allocated
+multiples of entire nodes through LSF.
 
-.. code::
+Allocations on Summit are separate from those on Andes and other OLCF resources.
 
-    $ showusage -s summit
+Node-Hour Calculation
+^^^^^^^^^^^^^^^^^^^^^
 
-    summit usage for the project's current allocation period:
-                                      Project Totals          [USERID]
-     Project      Allocation        Usage    Remaining          Usage
-    __________________________|____________________________|_____________
-     [PROJID1]        50000   |      15728        34272    |         65
-     [PROJID2]        20000   |       1234        18766    |          0
-
-For additional details, please see the help message printed when using
-the ``-h`` flag:
+The *node-hour* charge for each batch job will be calculated as follows:
 
 .. code::
 
-     $ showusage -h
+    node-hours = nodes requested * ( batch job endtime - batch job starttime )
+
+Where *batch job starttime* is the time the job moves into a running state, and
+*batch job endtime* is the time the job exits a running state.
+
+A batch job's usage is calculated solely on requested nodes and the batch job's
+start and end time. The number of cores actually used within any particular node
+within the batch job is not used in the calculation. For example, if a job
+requests (6) nodes through the batch script, runs for (1) hour, uses only (2)
+CPU cores per node, the job will still be charged for 6 nodes \* 1 hour = *6
+node-hours*.
+
+Viewing Usage
+^^^^^^^^^^^^^
+
+Utilization is calculated daily using batch jobs which complete between 00:00
+and 23:59 of the previous day. For example, if a job moves into a run state on
+Tuesday and completes Wednesday, the job's utilization will be recorded
+Thursday. Only batch jobs which write an end record are used to calculate
+utilization. Batch jobs which do not write end records due to system failure or
+other reasons are not used when calculating utilization. Jobs which fail because
+of run-time errors (e.g. the user's application causes a segmentation fault) are
+counted against the allocation.
+
+Each user may view usage for projects on which they are members from the command
+line tool ``showusage`` and the `myOLCF site <https://my.olcf.ornl.gov>`__.
+
+On the Command Line via ``showusage``
+"""""""""""""""""""""""""""""""""""""
+
+The ``showusage`` utility can be used to view your usage from January 01
+through midnight of the previous day. For example:
+
+.. code::
+
+      $ showusage
+        Usage:
+                                 Project Totals
+        Project             Allocation      Usage      Remaining     Usage
+        _________________|______________|___________|____________|______________
+        abc123           |  20000       |   126.3   |  19873.7   |   1560.80
+
+The ``-h`` option will list more usage details.
+
+On the Web via myOLCF
+""""""""""""""""""""""
+
+More detailed metrics may be found on each project's usage section of the `myOLCF
+site <https://my.olcf.ornl.gov>`__. The following information is available
+for each project:
+
+-  YTD usage by system, subproject, and project member
+-  Monthly usage by system, subproject, and project member
+-  YTD usage by job size groupings for each system, subproject, and
+   project member
+-  Weekly usage by job size groupings for each system, and subproject
+-  Batch system priorities by project and subproject
+-  Project members
+
+The myOLCF site is provided to aid in the utilization and management of OLCF
+allocations. See the :doc:`myOLCF Documentation </services_and_applications/myolcf/index>` for more information.
+
+If you have any questions or have a request for additional data,
+please contact the OLCF User Assistance Center.
+
+
 
 Other Notes
 -----------
@@ -2308,6 +2430,8 @@ Guide <https://www.allinea.com/user-guide/forge/userguide.html>`__, and
 instructions for how to use it on OLCF systems can be found on the
 `Forge (DDT/MAP) Software Page <https://www.olcf.ornl.gov/software_package/forge/>`__. DDT is the
 OLCF's recommended debugging software for large parallel applications.
+
+One of the most useful features of DDT is its remote debugging feature. This allows you to connect to a debugging session on Summit from a client running on your workstation. The local client provides much faster interaction than you would have if using the graphical client on Summit. For guidance in setting up the remote client see `this tutorial <https://www.olcf.ornl.gov/tutorials/forge-remote-client-setup-and-usage/>`__.
 
 
 GDB
@@ -3525,10 +3649,26 @@ created with information on the files that were copied.
 Known Issues
 ============
 
-Last Updated: 8 March 2021
+Last Updated: 30 July 2021
 
 Open Issues
 -----------
+
+System not sourcing ``.bashrc``, ``.profile``, etc. files as expected
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Some users have noticed that their login shells, batch jobs, etc. are not sourcing shell run control files as expected. This is related to the way bash is initialized. The initialization process is discussed in the INVOCATION section of the bash manpage, but is summarized here.
+
+Bash sources different files based on two attributes of the shell: whether or not it's a login shell, and whether or not it's an interactive shell. These attributes are not mutually exclusive (so a shell can be "interactive login", "interactive non-login", etc.):
+
+#. If a shell is an interactive login shell (i.e. an ssh to the system) or a non-interactive shell started with the ``--login`` option (say, a batch script with ``#!/bin/bash --login`` as the first line), it will source ``/etc/profile`` and will then search your home directory for ``~/.bash_profile``, ``~/.bash_login``, and ``~/.profile``. It will source the first of those that it finds (once it sources one, it stops looking for the others).
+#. If a shell is an interactive, non-login shell (say, if you run 'bash' in your login session to start a subshell), it will source ``~/.bashrc``
+#. If a shell is a non-interactive, non-login shell, it will source whatever file is defined by the ``$BASH_ENV`` variable in the shell from which it was invoked. 
+
+In any case, if the files listed above that should be sourced in a particular situation do not exist, it is not an error. 
+
+On Summit and Andes, batch-interactive jobs using bash (i.e. those submitted with ``bsub -Is`` or ``salloc``) run as interactive, non-login shells (and therefore source ``~/.bashrc``, if it exists). Regular batch jobs using bash on those systems are non-interactive, non-login shells and source the file defined by the variable ``$BASH_ENV`` in the shell from which you submitted the job. This variable is not set by default, so this means that none of these files will be sourced for a regular batch job unless you explicitly set that variable.
+
+Some systems are configured to have additional files in ``/etc`` sourced, and sometimes the files in ``/etc`` look for and source files in your home directory such as ``~/.bashrc``, so the behavior on any given system may seem to deviate a bit from the information above (which is from the bash manpage). This can explain why jobs (or other shells) on other systems you've used have sourced your ``.bashrc`` file on login.
 
 Improper permissions on ``~/.ssh/config`` cause job state flip-flop/jobs ending in suspended state
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

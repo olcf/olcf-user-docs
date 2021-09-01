@@ -12,4 +12,3 @@ and data analytics tasks on OLCF systems.
    ibm-wml-ce
    pbdR
    nvidia-rapids
-   blazingsql
