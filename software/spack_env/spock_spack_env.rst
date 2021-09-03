@@ -44,8 +44,8 @@ Clone the OLCF User Environment repo and the Spack repo, start a new Spack insta
 
   ## From a Spock login
 
-  > git clone https://code.ornl.gov/2ff/olcf-user-environments.git
-  > cd olcf-user-environments
+  > git clone https://github.com/olcf/spack-environments.git
+  > cd spack-environments
 
   > git clone https://github.com/spack/spack.git
   > source spack/share/spack/setup-env.sh
@@ -55,7 +55,7 @@ Clone the OLCF User Environment repo and the Spack repo, start a new Spack insta
 
 Now a user can add and install their dependencies with Spack and proceed with developing their application.
 
-Chained Spock Instances
+Chained Spack Instances
 ------------------------------------------------
 
 The Spock Spack environment includes this configuration addition:

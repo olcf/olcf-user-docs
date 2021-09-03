@@ -1,7 +1,7 @@
 Summit
 ############################################
 
-This example is intended for use on Summit with RHEL 7 as the OS.
+This example is intended for use on Summit with RHEL 8 as the OS.
 
 Purpose
 --------------------------------------------
@@ -41,16 +41,46 @@ Clone the OLCF User Environment repo and the Spack repo, start a new Spack insta
 
   ## From a Summit login
 
-  > git clone https://code.ornl.gov/2ff/olcf-user-environments.git
-  > cd olcf-user-environments
+  > git clone https://github.com/olcf/spack-environments.git
+  > cd spack-environments
 
   > git clone https://github.com/spack/spack.git
   > source spack/share/spack/setup-env.sh
 
-  > spack env create my_env linux-rhel7-ppc64le/summit/spack.yaml
+  > spack env create my_env linux-rhel8-ppc64le/summit/spack.yaml
   > spack env activate my_env
 
 Now a user can add and install their dependencies with Spack and proceed with developing their application.
+
+Chained Spack Instances
+--------------------------------------------
+
+The Summit Spack environment includes this configuration addition:
+
+.. code-block:: none
+
+  upstreams:
+    olcf:
+      install_tree: /sw/summit/spack-envs/base/opt
+
+This allows the user's newly created instance to use any package installed into the above directory as if it was
+installed by the user.
+
+.. note::
+
+  NOTE ABOUT UPSTREAM SPACK INSTALLATIONS
+
+  This other instance of Spack has no knowledge of the local Spack instance and may not have the same permissions
+  or ownership as the local Spack instance. This has the following consequences:
+
+  - Upstream Spack instances are not locked. Therefore it is up to users to make sure that the local instance is not
+    using an upstream instance when it is being modified.
+
+  - Users should not uninstall packages from the upstream instance. Since the upstream instance doesn’t know about
+    the local instance, it cannot prevent the uninstallation of packages which the local instance depends on.
+
+  See `here <https://spack.readthedocs.io/en/latest/chain.html#chaining-spack-installations>`_ for more information
+  regarding chained Spack instances.
 
 Add Dependencies to the environment
 --------------------------------------------
