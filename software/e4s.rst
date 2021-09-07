@@ -166,6 +166,7 @@ To access the installed software, load the desired compiler via:
 Then use ``module avail`` to see the installed list of packages.
 
 As an example for GCC 10.2.0, the following modules are available.
+List of currently installed E4S packages on Spock (E4S release 21.05):
 
 .. csv-table::
   :header: "Software Name", "Loaded Version", "Module Name"
