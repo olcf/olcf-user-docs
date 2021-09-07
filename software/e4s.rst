@@ -166,11 +166,76 @@ To access the installed software, load the desired compiler via:
 Then use ``module avail`` to see the installed list of packages.
 
 As an example for GCC 10.2.0, the following modules are available.
+List of currently installed E4S packages on Spock (E4S release 21.05):
 
 .. csv-table::
-  :header: "Software Module Name"
-  :widths: 20
+  :header: "Software Name", "Loaded Version", "Module Name"
+  :widths: 20, 20, 20
 
+  adios2, 2.7.1, adios2/2.7.1
+  arborx, 1.0, arborx/1.0
+  cabana, 0.3.0, cabana/0.3.0
+  caliper, 2.5.0, caliper/2.5.0
+  conduit, 0.7.2, conduit/0.7.2
+  faodel, 1.1906.1, faodel/1.1906.1
+  flecsi, 1.4, flecsi/1.4
+  globalarrays, 5.8, globalarrays/5.8
+  hdf5, 1.10.7, hdf5/1.10.7
+  heffte, 2.0.0, heffte/2.0.0
+  hypre, 2.20.0, hypre/2.20.0
+  libquo, 1.3.1, libquo/1.3.1
+  mfem, 4.2.0, mfem/4.2.0
+  omega-h, 9.32.5, omega-h/9.32.5
+  openpmd-api, 0.13.4, openpmd-api/0.13.4
+  papyrus, 1.0.1, papyrus/1.0.1
+  parallel-netcdf, 1.12.2, parallel-netcdf/1.12.2
+  petsc, 3.15.0, petsc/3.15.0
+  precice, 2.2.1, precice/2.2.1
+  pumi, 2.2.5, pumi/2.2.5
+  slate, 2021.05.02, slate/2021.05.02
+  slepc, 3.15.0, slepc/3.15.0
+  stc, 0.9.0, stc/0.9.0
+  superlu-dist, 6.4.0, superlu-dist/6.4.0
+  trilinos, 13.0.1, trilinos/13.0.1
+  turbine, 1.3.0, turbine/1.3.0
+  aml, 0.1.0, aml/0.1.0
+  argobots, 1.1, argobots/1.1
+  bolt, 2.0, bolt/2.0
+  chai, 2.3.0, chai/2.3.0
+  darshan-util, 3.3.0, darshan-util/3.3.0
+  dyninst, 11.0.0, dyninst/11.0.0
+  flit, 2.1.0, flit/2.1.0
+  gmp, 6.2.1, gmp/6.2.1
+  gotcha, 1.0.3, gotcha/1.0.3
+  hpctoolkit, 2021.03.01, hpctoolkit/2021.03.01
+  hpx, 1.6.0, hpx/1.6.0
+  kokkos-kernels, 3.2.00, kokkos-kernels/3.2.00
+  kokkos, 3.4.00, kokkos/3.4.00
+  legion, 21.03.0, legion/21.03.0
+  libunwind, 1.5.0, libunwind/1.5.0
+  mercury, 2.0.1, mercury/2.0.1
+  mpark-variant, 1.4.0, mpark-variant/1.4.0
+  ninja, 1.10.2, ninja/1.10.2
+  papi, 6.0.0.1, papi/6.0.0.1
+  pdt, 3.25.1, pdt/3.25.1
+  qthreads, 1.16, qthreads/1.16
+  raja, 0.13.0, raja/0.13.0
+  superlu, 5.2.1, superlu/5.2.1
+  swig, 4.0.2-fortran, swig/4.0.2-fortran
+  swig, 4.0.2, swig/4.0.2
+  sz, 2.1.11.1, sz/2.1.11.1
+  tasmanian, 7.5, tasmanian/7.5
+  umap, 2.1.0, umap/2.1.0
+  umpire, 4.1.2, umpire/4.1.2
+  zfp, 0.5.5, zfp/0.5.5
+  darshan-util, 3.3.0, darshan-util/3.3.0
+  gmp, 6.2.1, gmp/6.2.1
+  libunwind, 1.5.0, libunwind/1.5.0
+  ninja, 1.10.2, ninja/1.10.2
+  papi, 6.0.0.1, papi/6.0.0.1
+  swig, 4.0.2, swig/4.0.2
+
+..
   adios2/2.7.1
   aml/0.1.0
   amrex/21.04
