@@ -17,3 +17,4 @@ Software
    workflows/index
    e4s
    spack_env/index
+   viz_tools/index
