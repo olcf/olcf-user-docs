@@ -394,9 +394,15 @@ The following compilers are available on Summit:
 
 **PGI:** Portland Group compiler suite
 
+**NVHPC:** Nvidia HPC SDK compiler suite
+
 **GNU:** GNU Compiler Collection
 
 **NVCC**: CUDA C compiler
+
+PGI was bought out by Nvidia and have rebranded their compilers, incorporating
+them into the NVHPC compiler suite. There will be no more new releases of the 
+PGI compilers.
 
 Upon login, the default versions of the XL compiler suite and Spectrum Message
 Passing Interface (MPI) are added to each user's environment through the modules
