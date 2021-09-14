@@ -2,6 +2,10 @@
 Storage Overview
 ******************
 
+.. warning::
+   This page has been deprecated, and relevant information is now available on :ref:`data-storage-and-transfers`. Please update any bookmarks to use that page.
+
+
 
 OLCF users have many options for data storage. Each user has multiple
 user-affiliated storage spaces, and each project has multiple project-affiliated
@@ -51,7 +55,6 @@ function:
   with users outside your project.
 
 
-.. _alpine-ibm-spectrum-scale-filesystem:
 
 Alpine IBM Spectrum Scale Filesystem
 =====================================

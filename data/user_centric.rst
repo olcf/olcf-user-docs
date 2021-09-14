@@ -2,6 +2,10 @@
 User-Centric Data Storage
 ***************************
 
+.. warning::
+   This page has been deprecated, and relevant information is now available on :ref:`data-storage-and-transfers`. Please update any bookmarks to use that page.
+
+
 
 The following table summarizes user-centric storage areas available on OLCF
 resources and lists relevant polices.
@@ -32,7 +36,6 @@ resources and lists relevant polices.
 .. note::
     Moderate Enhanced projects do not have HPSS storage
 
-.. _user-home-directories-nfs:
 
 User Home Directories (NFS)
 ============================
@@ -147,15 +150,15 @@ User Archive Access
 
 Each OLCF user receives an HPSS account automatically. Users can transfer data
 to HPSS from any OLCF system using the HSI or HTAR utilities. For more
-information on using HSI or HTAR, see the :ref:`hpss` .
+information on using HSI or HTAR, see the :ref:`data-hpss` .
 
 
 User Archive Accounting
 ------------------------
 
 Each file and directory on HPSS is associated with an HPSS storage allocation.
-For information on HPSS storage allocations, please visit the :ref:`policy`
+For information on HPSS storage allocations, please visit the :ref:`data-policy`
 section.
 
-For information on usage and best practices for HPSS, please see the :ref:`hpss`
+For information on usage and best practices for HPSS, please see the :ref:`data-hpss`
 documentation.
