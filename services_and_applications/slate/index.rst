@@ -14,6 +14,7 @@ Slate
    workloads/index.rst
    networking/index.rst
    storage
+   workflows/index.rst
    use_cases/index.rst
    access_olcf_resources/index.rst
    other_resources.rst
