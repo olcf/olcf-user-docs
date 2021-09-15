@@ -4,7 +4,9 @@
 GitLab Runners
 **************
 
-GitLab CI/CD jobs may be accomplished using the GitLab Runner application. An open-source application written in Go, a GitLab Runner may be installed with a variety of executors. This documentation focuses on the installation and configuration for use of the GitLab Runner Kubernetes Executor on Slate.
+GitLab CI/CD jobs may be accomplished using the GitLab Runner application. An open-source application written in Go, a GitLab Runner
+may be installed with a variety of executors. This documentation focuses on the installation and configuration for use of the
+GitLab Runner Kubernetes Executor on Slate.
 
 References
 ^^^^^^^^^^
@@ -13,35 +15,54 @@ References
 * `<https://docs.gitlab.com/runner/executors/kubernetes.html>`_
 * `<https://docs.gitlab.com/runner/install/kubernetes.html>`_
 
-Registrtion Token
-^^^^^^^^^^^^^^^^^
+Registration Token
+^^^^^^^^^^^^^^^^^^
 
-Prior to installation of the GitLab Runner, a registration token for the runner is needed from the GitLab server. This token will allow a GitLab runner to register to the server in the needed location for running CI/CD jobs. Runners themselves may be registered to either a group as a shared runner or a project as a repository specific runner.
+Prior to installation of the GitLab Runner, a registration token for the runner is needed from the GitLab server. This token will
+allow a GitLab runner to register to the server in the needed location for running CI/CD jobs. Runners themselves may be registered
+to either a group as a shared runner or a project as a repository specific runner.
 
-If the runner is to be a group shared runner, navigate to the group in GitLab and then go to Settings -> CI/CD. Expand the Runners section of the CI/CD Settings panel. Ensure that the "Enable shared runners for this group" toggle is enabled. The registration token should also be available for retrieval from "Group Runners" area.
+If the runner is to be a group shared runner, navigate to the group in GitLab and then go to Settings -> CI/CD. Expand the Runners
+section of the CI/CD Settings panel. Ensure that the "Enable shared runners for this group" toggle is enabled. The
+registration token should also be available for retrieval from "Group Runners" area.
 
-If the runner is to be registered to a specific project, first ensure that the project is enabled for pipelines by navigating to the project in GitLab. In the Settings for the project, select General. Expand the "Visibility, project features, and permissions" section and locate the "Pipelines" option. If it is currently disabled, enable the "Pipelines" option and then "Save Changes". Once saved, refresh the project General Settings page, and locate the newly available "CI/CD Settings" option. Select "CI/CD", and expand the "Runners" section of the CI/CD settings. In the "Specific Runners" area, the registration token should be available for retrieval.
+If the runner is to be registered to a specific project, first ensure that the project is enabled for pipelines by navigating to
+the project in GitLab. In the Settings for the project, select General. Expand the "Visibility, project features, and permissions"
+section and locate the "Pipelines" option. If it is currently disabled, enable the "Pipelines" option and then "Save Changes".
+Once saved, refresh the project General Settings page, and locate the newly available "CI/CD Settings" option. Select "CI/CD", and
+expand the "Runners" section of the CI/CD settings. In the "Specific Runners" area, the registration token should be available for retrieval.
 
 Installation and Configuration
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Upon login to the web UI for Marble or Onyx, you will be on a projects page. In the navigtion bar in the upper left corner, you should see either the "Developer" or "Administrator" perspective indicated. These two perspectives present two different ways of viewing resources deployed to the cluster. The Developer Perspective focuses on a Topology overview for the resources and will be used for the deployment of a GitLab Runner.
+Upon login to the web UI for Marble or Onyx, you will be on a projects page. In the navigation bar in the upper left corner, you should see
+either the "Developer" or "Administrator" perspective indicated. These two perspectives present two different ways of viewing resources
+deployed to the cluster. The Developer Perspective focuses on a Topology overview for the resources and will be used for the deployment
+of a GitLab Runner.
 
-To deploy a GitLab Runner from the Developer Perspective, navigate to "Topology" -> "Helm Chart" and select "GitLab Runner vX.X.X Provided by Slate Helm Charts". From the new window, select "Install Helm Chart".
+To deploy a GitLab Runner from the Developer Perspective, navigate to "Topology" -> "Helm Chart" and select
+"GitLab Runner vX.X.X Provided by Slate Helm Charts". From the new window, select "Install Helm Chart".
 
-On the resulting screen, one can customize the installation of the GitLab Runner helm chart. The chart has been forked from upstream to allow for customized deployment to Slate. From the Form View, expand the "GitLab Runner" fields. Using the registration token retrieved in the prior section, enter token for adding the runner to the GitLab server in the empty field.
+On the resulting screen, one can customize the installation of the GitLab Runner helm chart. The chart has been forked from upstream to
+allow for customized deployment to Slate. From the Form View, expand the "GitLab Runner" fields. Using the registration token retrieved
+in the prior section, enter token for adding the runner to the GitLab server in the empty field.
 
 .. note::
 
    If the Registration Token is left blank, the runner installation will not succeed.
 
-If the GitLab Runner needs to be able to use batch scheduler command, toggle the "Enable Batch Scheduler" option to true.
+If the GitLab Runner needs to be able to use batch scheduler command, toggle the "Enable Batch Scheduler" option to true. Then, select the
+necessary filesystem annotation to use for the cluster the chart is being deployed. For Marble, the "olcf" annotation would be used whereas
+whereas for Onyx the "ccsopen" annotation would be used.
 
-The Resources requests and limits are setup to match the namespace default limits. If more resources are anticipated for the deployment, modify the requests and limits as needed.
+The Resources requests and limits are setup to match the namespace default limits. If more resources are anticipated for the deployment,
+modify the requests and limits as needed.
 
-This helm chart was forked from the the upstream GitLab Runner helm chart. As such, nearly all of the parameters documented in the upstream chart could be provided here as well.
+This helm chart was forked from the the upstream GitLab Runner helm chart. As such, nearly all of the parameters documented in the
+upstream chart could be provided here as well.
 
-To verify that the GitLab runner was properly deployed, one could explore the deployed resources from the Topology view from the Slate web console. Or, from the command line:
+To verify that the GitLab runner was properly deployed, one could explore the deployed resources from the Topology view from the
+Slate web console. Or, from the command line:
 
 .. code-block:: bash
 
@@ -66,7 +87,8 @@ Finally, if batch scheduler integration was enabled, one can verify functionalit
 Removing a GitLab Runner
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-To remove a namespace installed GitLab runner, login to the cluster, change to the appropriate contect, and use the helm command line to uninstall the instance. This would look similar to:
+To remove a namespace installed GitLab runner, login to the cluster, change to the appropriate contact, and use the helm command line to
+uninstall the instance. This would look similar to:
 
 .. code-block:: bash
 
@@ -83,7 +105,8 @@ To remove a namespace installed GitLab runner, login to the cluster, change to t
    $ helm uninstall gitlab-runner
    release "gitlab-runner" uninstalled
 
-Verify that the runner has been unregistered from the GitLab project (GitLab->Settings->CI/CD->Runners) and check that all the pods have been removed from the namespace:
+Verify that the runner has been unregistered from the GitLab project (GitLab->Settings->CI/CD->Runners) and check that all the pods have
+been removed from the namespace:
 
 .. code-block:: bash
 
@@ -91,7 +114,9 @@ Verify that the runner has been unregistered from the GitLab project (GitLab->Se
    NAME                                          READY   STATUS        RESTARTS   AGE
    gitlab-runner-gitlab-runner-687486d94-lkcbk   0/1     Terminating   0          24h
 
-Notice, in this instance, a pod remains after the runner has been registered and the termination grace period (34600 seconds by default) has passed. To remove the pod in this instance, a force deletion may be needed:
+Notice, in this instance, a pod remains after the runner has been registered and the termination grace
+period (34600 seconds by default) has passed. To remove the pod in this instance, a force deletion may
+be needed:
 
 .. code-block:: bash
 
