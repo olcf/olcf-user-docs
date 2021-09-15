@@ -12,6 +12,7 @@ The table below lists presentations given at previous OLCF training events. For 
 .. csv-table::
    :header: "Date", "Title", "Speaker", "Event", "Presentation"
 
+   "2021-09-14", "CUDA Debugging", "Robert Crovella (NVIDIA)", `CUDA Training Series <https://www.olcf.ornl.gov/calendar/cuda-debugging/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2021/06/cuda_training_series_cuda_debugging.pdf>`__ | `recording <https://vimeo.com/605842702>`__)
    "2021-08-25", "NVIDIA RAPIDS Updates at OLCF", "Benjamin Hernandez (OLCF)", `August 2021 OLCF User Conference Call <https://www.olcf.ornl.gov/calendar/userconcall-aug2021/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2021/06/August_2021_NVIDIA_RAPIDS_update.pdf>`__ | `recording <https://vimeo.com/593301463>`__)
    "2021-08-25", "Slate Hackathon", "Jason Kincl (OLCF)", `Slate Hackathon <https://www.olcf.ornl.gov/calendar/olcf-slate-hackathon/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2021/07/2021-08-25-slate-hackathon-slides.pptx>`__ | `recording <https://vimeo.com/592862993>`__)
    "2021-08-17", "CUDA Multi Process Service", "Max Katz (NVIDIA)", `CUDA Training Series <https://www.olcf.ornl.gov/calendar/cuda-multi-process-service/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2021/06/MPS_ORNL_20210817.pdf>`__ | `recording <https://vimeo.com/589019347>`__)
