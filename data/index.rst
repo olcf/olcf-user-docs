@@ -386,6 +386,8 @@ HPSS is optimized for large files. Ideally, we recommend sending files 768GB or 
 Transferring Data
 ******************
 
+.. _data-transferring-data-globus:
+
 ============
 Globus
 ============
