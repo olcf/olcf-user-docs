@@ -87,42 +87,16 @@ Finally, if batch scheduler integration was enabled, one can verify functionalit
 Removing a GitLab Runner
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-To remove a namespace installed GitLab runner, login to the cluster, change to the appropriate contact, and use the helm command line to
-uninstall the instance. This would look similar to:
+To remove a namespace installed GitLab runner, login to the web UI for the cluster and switch to the "Developer" perspective as before. In the 
+navigation panel on the left select "Helm". The deployment should be displayed as one of the "Helm Releases". Click on the vertical 
+ellipses located at the right side of the deployment, and select "Uninstall Helm Release". A confirmation dialog box will be displayed.
+Type the information as requested and click "Uninstall".
 
-.. code-block:: bash
+.. note::
 
-   $ oc login
-   Authentication required for https://api.marble.ccs.ornl.gov:443 (openshift)
-   Username: millerjl
-   Password:
-   Login successful.
+   When clicking the uninstall, it may appear that the UI hangs and nothing is happening. It may take some time to remove all of the resources.
 
-   Using project "myproject".
-   $ helm ls
-   NAME         	NAMESPACE    	REVISION	UPDATED                                	STATUS  	CHART              	APP VERSION
-   gitlab-runner	myproject   	1       	2021-09-13 16:52:27.938127657 +0000 UTC	deployed	gitlab-runner-1.0.0	14.2.0
-   $ helm uninstall gitlab-runner
-   release "gitlab-runner" uninstalled
+Once the installation is complete, the UI will refresh and the deployment will no longer be listed.
 
-Verify that the runner has been unregistered from the GitLab project (GitLab->Settings->CI/CD->Runners) and check that all the pods have
-been removed from the namespace:
-
-.. code-block:: bash
-
-   $ oc get pods
-   NAME                                          READY   STATUS        RESTARTS   AGE
-   gitlab-runner-gitlab-runner-687486d94-lkcbk   0/1     Terminating   0          24h
-
-Notice, in this instance, a pod remains after the runner has been registered and the termination grace
-period (34600 seconds by default) has passed. To remove the pod in this instance, a force deletion may
-be needed:
-
-.. code-block:: bash
-
-   $ oc delete pod gitlab-runner-gitlab-runner-687486d94-lkcbk --force
-   warning: Immediate deletion does not wait for confirmation that the running resource has been terminated. The resource may continue to run on the cluster indefinitely.
-   pod "gitlab-runner-gitlab-runner-687486d94-lkcbk" force deleted
-   $ oc get pods
-   No resources found in myproject namespace.
-
+Verify that the runner has been unregistered from the GitLab project (GitLab->Settings->CI/CD->Runners). One could also check
+to ensure that all the pods were deleted by changing over to the "Administrator" perspective and selecting Workloads -> Pods from the navigation.
