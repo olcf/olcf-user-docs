@@ -288,10 +288,6 @@ To use GPU-aware Cray MPICH with the Cray compiler wrappers, users must load spe
     module load PrgEnv-cray
     module load rocm
 
-    ## These must be set before compiling so the executable picks up GTL
-    export PE_MPICH_GTL_DIR_amd_gfx908="-L/opt/cray/pe/mpich/8.1.4/gtl/lib"
-    export PE_MPICH_GTL_LIBS_amd_gfx908="-lmpi_gtl_hsa"
-
     ## These must be set before running
     export MPIR_CVAR_GPU_EAGER_DEVICE_MEM=0
     export MPICH_GPU_SUPPORT_ENABLED=1
@@ -320,14 +316,8 @@ To use GPU-aware Cray MPICH with ``hipcc``, users must load specific modules, se
     ## These must be set before running
     export MPIR_CVAR_GPU_EAGER_DEVICE_MEM=0
     export MPICH_GPU_SUPPORT_ENABLED=1
+    export MPICH_SMP_SINGLE_COPY_MODE=CMA
 
-In addition, the following header files and libraries must be included:
-
-.. code:: bash
-
-    -I${MPICH_DIR}/include
-    -L${MPICH_DIR}/lib -lmpi -L/opt/cray/pe/mpich/8.1.4/gtl/lib -lmpi_gtl_hsa
-    
 OpenMP
 ------
 
