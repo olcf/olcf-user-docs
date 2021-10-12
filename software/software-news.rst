@@ -6,6 +6,46 @@ Software News
 This page lists significant changes to software provided on OLCF systems. The
 most recent changes are listed first.
 
+----
+
+.. raw:: html
+
+   <p style="font-size:20px"><b>Summit: OpenCE 1.4.0 (October 13, 2021)</b></p>
+
+OpenCE 1.4.0 is now available on Summit. OpenCE 1.4.0 is available for python versions 3.7, 3.8, and 3.9. These builds can be accessed by
+loading the ``open-ce/1.4.0-py37-0``, ``open-ce/1.4.0-py38-0``, and ``open-ce/1.4.0-py39-0`` modules, respectively.
+
+The following packages are available in this release of OpenCE:
+
+.. csv-table::
+    :header: "Package", "Version"
+
+    "Tensorflow", "2.6.0"
+    "TensorFlow Estimators", "2.6.0"
+    "TensorFlow Probability", "0.14.0"
+    "TensorBoard", "2.6.0"
+    "TensorFlow Text", "2.6.0"
+    "TensorFlow Model Optimizations", "0.6.0"
+    "TensorFlow Addons", "0.14.0"
+    "TensorFlow Datasets", "4.4.0"
+    "TensorFlow Hub", "0.12.0"
+    "TensorFlow MetaData", "1.0.0"
+    "PyTorch", "1.9.0"
+    "TorchText", "0.10.0"
+    "TorchVision", "0.10.0"
+    "PyTorch Lightning", "1.4.4"
+    "PyTorch Lightning Bolts", "0.3.4"
+    "XGBoost", "1.4.2"
+    "Transformers", "4.9.2"
+    "Tokenizers", "0.10.3"
+    "SentencePiece", "0.1.91"
+    "Spacy", "3.1.2"
+    "Thinc", "8.0.8"
+    "OpenCV", "3.4.14"
+    "Horovod", "0.22.1"
+
+----
+
 .. raw:: html
 
    <p style="font-size:20px"><b>Summit: Software Installation/Default Software Changes (August 17-19, 2021)</b></p>
