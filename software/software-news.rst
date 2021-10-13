@@ -47,6 +47,8 @@ The following packages are available in this release of OpenCE:
     "OpenCV", "3.4.14"
     "Horovod", "0.22.1"
     
+.. raw:: html
+    
     Please note that DALI and Tensorflow Serving are currently unavailable on ppc64le. We are working with IBM to
     resolve the issue and will publish and update once available.
 
