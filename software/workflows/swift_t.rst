@@ -83,6 +83,7 @@ data to produce some output. The Swift source file ``workflow.swift`` looks as f
     
     app (void v) processdata(file f)
     {
+     // change path per your location
      "/gpfs/alpine/scratch/ketan2/stf019/swift-work/cross-facility/processdata.sh" f ;
     }
 
@@ -102,6 +103,7 @@ data to produce some output. The Swift source file ``workflow.swift`` looks as f
 In order to demonstrate the data generation, we have a script that downloads image data from the NOAA website periodically. The image is a geographical image showing current cloud cover over south-east US. The code ``gendata.sh`` looks like so:
 
 .. code-block:: bash
+   
    #!/bin/bash
    set -eu
 
@@ -120,6 +122,7 @@ In order to demonstrate the data generation, we have a script that downloads ima
 Next, we have the data processing script called ``processdata.sh`` that looks as follows:
 
 .. code-block:: bash
+   
    #!/bin/bash
    set -eu
 
@@ -145,6 +148,9 @@ In the second terminal, we will run the swift workflow as follows (make sure to 
 
     $ module load  gcc/11.1.0  spectrum-mpi/10.4.0.3-20210112 stc/0.9.0 # to load swift
     $ module load imagemagick # for convert utility
-    $ WALLTIME=00:10:00 PROJECT=STF019 TURBINE_OUTPUT=/gpfs/alpine/scratch/ketan2/stf019/swift-work/cross-facility/data swift-t -O0 -m lsf workflow.swift
+    $ export WALLTIME=00:10:00 
+    $ export PROJECT=STF019 
+    $ export TURBINE_OUTPUT=/gpfs/alpine/scratch/ketan2/stf019/swift-work/cross-facility/data 
+    $ swift-t -O0 -m lsf workflow.swift
 
 If all goes well, and when the job starts running, the output will be produced in the ``data`` directory ``output.txt`` file.
