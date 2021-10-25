@@ -1463,17 +1463,17 @@ As on any system, it is useful to keep in mind the hardware underneath every
 execution. This is particularly true when laying out resource sets.
 
 Launching a Job with jsrun
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+--------------------------
 
 jsrun Format
-""""""""""""
+^^^^^^^^^^^^
 
 ::
 
       jsrun    [ -n #resource sets ]   [tasks, threads, and GPUs within each resource set]   program [ program args ]
 
 Common jsrun Options
-""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^
 
 Below are common jsrun options. More flags and details can be found in the jsrun
 man page. The defaults listed in the table below are the OLCF defaults and take
@@ -1509,8 +1509,8 @@ It's recommended to explicitly specify ``jsrun`` options and not rely on the
 default values. This most often includes ``--nrs``,\ ``--cpu_per_rs``,
 ``--gpu_per_rs``, ``--tasks_per_rs``, ``--bind``, and ``--launch_distribution``.
 
-jsrun Examples
-^^^^^^^^^^^^^^
+Jsrun Examples
+--------------
 
 The below examples were launched in the following 2 node interactive
 batch job:
@@ -1520,7 +1520,7 @@ batch job:
     summit> bsub -nnodes 2 -Pprj123 -W02:00 -Is $SHELL
 
 Single MPI Task, single GPU per RS
-""""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The following example will create 12 resource sets each with 1 MPI task
 and 1 GPU. Each MPI task will have access to a single GPU.
@@ -1554,7 +1554,7 @@ per node (``-r6``). Each resource set will contain 1 MPI task (``-a1``),
     Rank:   11; NumRanks: 12; RankCore:  96; Hostname: h41n03; GPU: 5
 
 Multiple tasks, single GPU per RS
-"""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The following jsrun command will request 12 resource sets (``-n12``).
 Each resource set will contain 2 MPI tasks (``-a2``), 1 GPU
@@ -1615,7 +1615,7 @@ single core.
     summit>
 
 Multiple Task, Multiple GPU per RS
-""""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The following example will create 4 resource sets each with 6 tasks and
 3 GPUs. Each set of 6 MPI tasks will have access to 3 GPUs. Ranks 0 - 5
@@ -1662,8 +1662,196 @@ contain 6 MPI tasks (``-a6``), 3 GPUs (``-g3``), and 6 cores
     Rank:   23; NumRanks: 24; RankCore: 108; Hostname: a33n05; GPU: 3, 4, 5
     summit>
 
-Single Task, Multiple GPUs, Multiple Threads per RS
-"""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Common Use Cases
+^^^^^^^^^^^^^^^^
+
+The following table provides a quick reference for creating resource
+sets of various common use cases. The ``-n`` flag can be altered to
+specify the number of resource sets needed.
+
++-----------------+-------------+-----------+------------------+--------+---------------------------------------+
+| Resource Sets   | MPI Tasks   | Threads   | Physical Cores   | GPUs   | jsrun Command                         |
++=================+=============+===========+==================+========+=======================================+
+| 1               | 42          | 0         | 42               | 0      | jsrun -n1 -a42 -c42 -g0               |
++-----------------+-------------+-----------+------------------+--------+---------------------------------------+
+| 1               | 1           | 0         | 1                | 1      | jsrun -n1 -a1 -c1 -g1                 |
++-----------------+-------------+-----------+------------------+--------+---------------------------------------+
+| 1               | 2           | 0         | 2                | 1      | jsrun -n1 -a2 -c2 -g1                 |
++-----------------+-------------+-----------+------------------+--------+---------------------------------------+
+| 1               | 1           | 0         | 1                | 2      | jsrun -n1 -a1 -c1 -g2                 |
++-----------------+-------------+-----------+------------------+--------+---------------------------------------+
+| 1               | 1           | 21        | 21               | 3      | jsrun -n1 -a1 -c21 -g3 -bpacked:21    |
++-----------------+-------------+-----------+------------------+--------+---------------------------------------+
+
+jsrun Tools
+^^^^^^^^^^^
+
+This section describes tools that users might find helpful to better
+understand the jsrun job launcher.
+
+hello\_jsrun
+""""""""""""
+
+hello\_jsrun is a "Hello World"-type program that users can run on
+Summit nodes to better understand how MPI ranks and OpenMP threads are
+mapped to the hardware. https://code.ornl.gov/t4p/Hello_jsrun A
+screencast showing how to use Hello\_jsrun is also available:
+https://vimeo.com/261038849
+
+Job Step Viewer
+"""""""""""""""
+
+`Job Step Viewer <https://jobstepviewer.olcf.ornl.gov/>`__ provides a graphical view of an application's runtime layout on Summit.
+It allows users to preview and quickly iterate with multiple ``jsrun`` options to 
+understand and optimize job launch.
+
+For bug reports or suggestions, please email help@olcf.ornl.gov.
+
+Usage
+_____
+
+1. Request a Summit allocation
+    * ``bsub -W 10 -nnodes 2 -P $OLCF_PROJECT_ID -Is $SHELL``
+2. Load the ``job-step-viewer`` module
+    * ``module load job-step-viewer``
+3. Test out a ``jsrun`` line by itself, or provide an executable as normal
+    * ``jsrun -n12 -r6 -c7 -g1 -a1 EOMP_NUM_THREADS=7 -brs``
+4. Visit the provided URL
+    * https://jobstepviewer.olcf.ornl.gov/summit/871957-1
+
+.. note::
+    Most Terminal applications have built-in shortcuts to directly open
+    web addresses in the default browser.
+
+    * MacOS Terminal.app: hold Command (⌘) and double-click on the URL
+    * iTerm2: hold Command (⌘) and single-click on the URL
+
+Limitations
+___________
+
+* (currently) Compiled with GCC toolchain only
+* Does not support MPMD-mode via ERF
+* OpenMP only supported with use of the ``OMP_NUM_THREADS`` environment variable.
+
+
+More Information
+^^^^^^^^^^^^^^^^
+
+This section provides some of the most commonly used LSF commands as
+well as some of the most useful options to those commands and
+information on ``jsrun``, Summit's job launch command. Many commands
+have much more information than can be easily presented here. More
+information about these commands is available via the online manual
+(i.e. ``man jsrun``). Additional LSF information can be found on `IBM’s
+website <https://www.ibm.com/support/knowledgecenter/en/SSWRJV/product_welcome_spectrum_lsf.html>`__.
+
+
+Using Multithreading in a Job
+-----------------------------
+
+
+Hardware Threads: Multiple Threads per Core
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Each physical core on Summit contains 4 hardware threads. The SMT level
+can be set using LSF flags (the default is smt4):
+
+SMT1
+
+::
+
+    #BSUB -alloc_flags smt1
+    jsrun -n1 -c1 -a1 -bpacked:1 csh -c 'echo $OMP_PLACES’
+    0
+
+SMT2
+
+::
+
+    #BSUB -alloc_flags smt2
+    jsrun -n1 -c1 -a1 -bpacked:1 csh -c 'echo $OMP_PLACES’
+    {0:2}
+
+SMT4
+
+::
+
+    #BSUB -alloc_flags smt4
+    jsrun -n1 -c1 -a1 -bpacked:1 csh -c 'echo $OMP_PLACES’
+    {0:4}
+
+
+
+
+
+Controlling Number of Threads for Tasks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+In addition to specifying the SMT level, you can also control the
+number of threads per MPI task by exporting the ``OMP_NUM_THREADS``
+environment variable. If you don't export it yourself, Jsrun will
+automatically set the number of threads based on the number of cores
+requested (``-c``) and the binding (``-b``) option. It is better to be
+explicit and set the ``OMP_NUM_THREADS`` value yourself rather than
+relying on Jsrun constructing it for you. Especially when you are
+using `Job Step Viewer`_ which relies on the presence of that
+environment variable to give you visual thread assignment information.
+
+In the below example, you could also do ``export OMP_NUM_THREADS=16`` in your
+job script instead of passing it as a ``-E`` flag to jsrun. The below example
+starts 1 resource set with 2 tasks and 8 cores, 4 cores bound to each task,
+16 threads for each task.
+
+::
+   
+   jsrun -n1 -a2 -c8 -g1 -bpacked:4 -dpacked -EOMP_NUM_THREADS=16 csh -c 'echo $OMP_NUM_THREADS $OMP_PLACES'
+
+   16 0:4,4:4,8:4,12:4
+   16 16:4,20:4,24:4,28:4
+
+
+Be careful with assigning threads to tasks, as you might end up
+oversubscribing your cores. For example
+
+::
+   
+   jsrun -n1 -a2 -c8 -g1 -bpacked:4 -dpacked -EOMP_NUM_THREADS=32 csh -c 'echo $OMP_NUM_THREADS $OMP_PLACES'
+
+   Warning: OMP_NUM_THREADS=32 is greater than available PU's
+   Warning: OMP_NUM_THREADS=32 is greater than available PU's
+   Warning: OMP_NUM_THREADS=32 is greater than available PU's
+   Warning: OMP_NUM_THREADS=32 is greater than available PU's
+   32 16:4,20:4,24:4,28:4
+   32 0:4,4:4,8:4,12:4
+
+You can use `hello\_jsrun`_ or `Job Step Viewer`_ to see how the cores
+are being oversubscribed.
+
+Because of how jsrun sets up ``OMP_NUM_THREADS`` based on ``-c`` and
+``-b`` options if you don't specify the environment variable yourself,
+you can accidentally end up oversubscribing your cores. For example
+
+::
+   
+   jsrun -n1 -a2 -c8 -g1 -brs -dpacked  csh -c 'echo $OMP_NUM_THREADS $OMP_PLACES'
+
+   Warning: more than 1 task/rank assigned to a core
+   Warning: more than 1 task/rank assigned to a core
+   32 0:4,4:4,8:4,12:4,16:4,20:4,24:4,28:4
+   32 0:4,4:4,8:4,12:4,16:4,20:4,24:4,28:4
+
+Because jsrun sees 8 cores and the ``-brs`` flag, it assigns all 8 cores to
+each of the 2 tasks in the resource set. Jsrun will set up ``OMP_NUM_THREADS``
+as 32 (8 cores with 4 threads per core) which will apply to all the
+tasks in the resource set. This means that each task sees that it can
+have 32 threads (which means 64 threads for the 2 tasks combined) which
+will oversubscribe the cores and may decrease efficiency as a result.
+
+
+
+Example: Single Task, Single GPU, Multiple Threads per RS
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The following example will create 12 resource sets each with 1 task, 4
 threads, and 1 GPU. Each MPI task will start 4 threads and have access
@@ -1678,8 +1866,6 @@ more cores are requested than MPI tasks; the extra cores will be needed
 to place threads. Without requesting additional cores, threads will be
 placed on a single core.
 
-.. image:: /images/RS-summit-example-4Threads-4Core-1GPU.png
-   :align: center
 
 **Requesting Cores for Threads:** The ``-c`` flag should be used to
 request additional cores for thread placement. Without requesting
@@ -1717,69 +1903,20 @@ bound to the first core.
 
     summit>
 
-Hardware Threads: Multiple Threads per Core
-"""""""""""""""""""""""""""""""""""""""""""
 
-Each physical core on Summit contains 4 hardware threads. The SMT level
-can be set using LSF flags:
-
-SMT1
-
-::
-
-    #BSUB -alloc_flags smt1
-    jsrun -n1 -c1 -a1 -bpacked:4 csh -c 'echo $OMP_PLACES’
-    0
-
-SMT2
-
-::
-
-    #BSUB -alloc_flags smt2
-    jsrun -n1 -c1 -a1 -bpacked:4 csh -c 'echo $OMP_PLACES’
-    {0:2}
-
-SMT4
-
-::
-
-    #BSUB -alloc_flags smt4
-    jsrun -n1 -c1 -a1 -bpacked:4 csh -c 'echo $OMP_PLACES’
-    {0:4}
-
-.. image:: /images/FS-summit-example-MultiThreadPerCore.png
+.. image:: /images/RS-summit-example-4Threads-4Core-1GPU.png
    :align: center
 
-Common Use Cases
-""""""""""""""""
-
-The following table provides a quick reference for creating resource
-sets of various common use cases. The ``-n`` flag can be altered to
-specify the number of resource sets needed.
-
-+-----------------+-------------+-----------+------------------+--------+---------------------------------------+
-| Resource Sets   | MPI Tasks   | Threads   | Physical Cores   | GPUs   | jsrun Command                         |
-+=================+=============+===========+==================+========+=======================================+
-| 1               | 42          | 0         | 42               | 0      | jsrun -n1 -a42 -c42 -g0               |
-+-----------------+-------------+-----------+------------------+--------+---------------------------------------+
-| 1               | 1           | 0         | 1                | 1      | jsrun -n1 -a1 -c1 -g1                 |
-+-----------------+-------------+-----------+------------------+--------+---------------------------------------+
-| 1               | 2           | 0         | 2                | 1      | jsrun -n1 -a2 -c2 -g1                 |
-+-----------------+-------------+-----------+------------------+--------+---------------------------------------+
-| 1               | 1           | 0         | 1                | 2      | jsrun -n1 -a1 -c1 -g2                 |
-+-----------------+-------------+-----------+------------------+--------+---------------------------------------+
-| 1               | 1           | 21        | 21               | 3      | jsrun -n1 -a1 -c21 -g3 -bpacked:21    |
-+-----------------+-------------+-----------+------------------+--------+---------------------------------------+
-
 Launching Multiple Jsruns
-^^^^^^^^^^^^^^^^^^^^^^^^^
+-------------------------
 
 Jsrun provides the ability to launch multiple ``jsrun`` job launches within a
 single batch job allocation. This can be done within a single node, or across
 multiple nodes.
 
 Sequential Job Steps
-""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^
+
 By default, multiple invocations of ``jsrun`` in a job script will execute 
 serially in order. In this configuration, jobs will launch one at a time and
 the next one will not start until the previous is complete. The batch node
@@ -1790,7 +1927,8 @@ must be equal to or greater then the *sum* of all jsruns issued.
    :align: center
 
 Simultaneous Job Steps
-""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^
+
 To execute multiple job steps concurrently, standard UNIX process
 backgrounding can be used by adding a ``&`` at the end of the command. This
 will return control to the job script and execute the next command immediately,
@@ -1859,7 +1997,7 @@ If JSM or PMIX errors occur as the result of backgrounding many job steps, using
     ``--stdio_stderr``/``-k``.
 
 Using `jslist`
-""""""""""""""
+^^^^^^^^^^^^^^
 To view the status of multiple jobs launched sequentially or concurrently within a 
 batch script, you can use `jslist` to see which are completed, running, or still
 queued. If you are using it outside of an interactive batch job, use the `-c` option
@@ -1900,67 +2038,6 @@ discussion of the ``cpu_index_using`` control and its interaction with various
 SMT modes.
 
 
-jsrun Tools
-^^^^^^^^^^^
-
-This section describes tools that users might find helpful to better
-understand the jsrun job launcher.
-
-Hello\_jsrun
-""""""""""""
-
-Hello\_jsrun is a "Hello World"-type program that users can run on
-Summit nodes to better understand how MPI ranks and OpenMP threads are
-mapped to the hardware. https://code.ornl.gov/t4p/Hello_jsrun A
-screencast showing how to use Hello\_jsrun is also available:
-https://vimeo.com/261038849
-
-Job Step Viewer
-"""""""""""""""
-
-`Job Step Viewer <https://jobstepviewer.olcf.ornl.gov/>`__ provides a graphical view of an application's runtime layout on Summit.
-It allows users to preview and quickly iterate with multiple ``jsrun`` options to 
-understand and optimize job launch.
-
-For bug reports or suggestions, please email help@olcf.ornl.gov.
-
-Usage
-_____
-
-1. Request a Summit allocation
-    * ``bsub -W 10 -nnodes 2 -P $OLCF_PROJECT_ID -Is $SHELL``
-2. Load the ``job-step-viewer`` module
-    * ``module load job-step-viewer``
-3. Test out a ``jsrun`` line by itself, or provide an executable as normal
-    * ``jsrun -n12 -r6 -c7 -g1 -a1 EOMP_NUM_THREADS=7 -brs``
-4. Visit the provided URL
-    * https://jobstepviewer.olcf.ornl.gov/summit/871957-1
-
-.. note::
-    Most Terminal applications have built-in shortcuts to directly open
-    web addresses in the default browser.
-
-    * MacOS Terminal.app: hold Command (⌘) and double-click on the URL
-    * iTerm2: hold Command (⌘) and single-click on the URL
-
-Limitations
-___________
-
-* (currently) Compiled with GCC toolchain only
-* Does not support MPMD-mode via ERF
-* OpenMP only supported with use of the ``OMP_NUM_THREADS`` environment variable.
-
-
-More Information
-^^^^^^^^^^^^^^^^
-
-This section provides some of the most commonly used LSF commands as
-well as some of the most useful options to those commands and
-information on ``jsrun``, Summit's job launch command. Many commands
-have much more information than can be easily presented here. More
-information about these commands is available via the online manual
-(i.e. ``man jsrun``). Additional LSF information can be found on `IBM’s
-website <https://www.ibm.com/support/knowledgecenter/en/SSWRJV/product_welcome_spectrum_lsf.html>`__.
 
 CUDA-Aware MPI
 --------------
