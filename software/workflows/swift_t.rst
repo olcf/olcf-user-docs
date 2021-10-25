@@ -148,9 +148,9 @@ In the second terminal, we will run the swift workflow as follows (make sure to 
 
     $ module load  gcc/11.1.0  spectrum-mpi/10.4.0.3-20210112 stc/0.9.0 # to load swift
     $ module load imagemagick # for convert utility
-    $ export WALLTIME=00:10:00 
-    $ export PROJECT=STF019 
-    $ export TURBINE_OUTPUT=/gpfs/alpine/scratch/ketan2/stf019/swift-work/cross-facility/data 
+    $ export WALLTIME=00:10:00
+    $ export PROJECT=STF019
+    $ export TURBINE_OUTPUT=/gpfs/alpine/scratch/ketan2/stf019/swift-work/cross-facility/data
     $ swift-t -O0 -m lsf workflow.swift
 
 If all goes well, and when the job starts running, the output will be produced in the ``data`` directory ``output.txt`` file.
