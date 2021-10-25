@@ -22,12 +22,13 @@ visit https://e4s-project.github.io/Resources/ProductInfo.html
   provided by the OLCF nor are these packages necessarily configured the same way
   for each toolchain and runtime environment
 
+  Not all packages are built for all compilers.
+
 Summit
 ######
 
 The E4S software list is installed along side the existing software on Summit and
-can be access via ``lmod`` modulefiles.  There is also a metamodule file to load the
-entire available subset of the 20.10 and 21.02 (in development) release for GCC 6.4.0.
+can be access via ``lmod`` modulefiles.
 
 Access via modulefiles
 ----------------------
@@ -44,23 +45,60 @@ To access the installed software, load the desired compiler via:
 
 Then use ``module avail`` to see the installed list of packages.
 
-..
-  Access via metamodules
-  ----------------------
+E4S 21.08 Packages
+------------------
 
-  To load the currently installed E4S stack on Summit:
+List of installed packages on Summit for E4S release 21.08:
 
-  ::
+.. csv-table::
+  :header: "Software Name", "Loaded Version", "Module Name"
+  :widths: 20, 20, 20
 
-  module load gcc/9.1.0
-  module load e4s/20.10
-  .. or ..
-  module load e4s/21.02  ## in development
+  adios2, 2.7.1, adios2/2.7.1
+  aml, 0.1.0, aml/0.1.0
+  argobots, 1.1, argobots/1.1
+  bolt, 2.0, bolt/2.0
+  chai, 2.3.0, chai/2.3.0
+  darshan-runtime, 3.3.1, darshan-runtime/3.3.1
+  darshan-util, 3.3.1, darshan-util/3.3.1
+  dyninst, 11.0.1, dyninst/11.0.1
+  flit, 2.1.0, flit/2.1.0
+  flux-core, 0.28.0, flux-core/0.28.0
+  gasnet, 2021.3.0, gasnet/2021.3.0
+  ginkgo, 1.3.0, ginkgo/1.3.0
+  gotcha, 1.0.3, gotcha/1.0.3
+  kokkos-kernels, 3.2.00, kokkos-kernels/3.2.00
+  legion, 21.03.0, legion/21.03.0
+  libunwind, 1.5.0, libunwind/1.5.0
+  loki, 0.1.7, loki/0.1.7
+  mercury, 2.0.1, mercury/2.0.1
+  metall, 0.15, metall/0.15
+  mpark-variant, 1.4.0, mpark-variant/1.4.0
+  netlib-scalapack, 2.1.0, netlib-scalapack/2.1.0
+  ninja, 1.10.2, ninja/1.10.2
+  nvhpc, 21.7, nvhpc/21.7
+  papi, 6.0.0.1, papi/6.0.0.1
+  parallel-netcdf, 1.12.2, parallel-netcdf/1.12.2
+  pdt, 3.25.1, pdt/3.25.1
+  plasma, 20.9.20, plasma/20.9.20
+  qt, 5.15.2, qt/5.15.2
+  raja, 0.13.0, raja/0.13.0
+  superlu, 5.2.2, superlu/5.2.2
+  swig, 4.0.2, swig/4.0.2
+  swig, 4.0.2-fortran, swig/4.0.2-fortran
+  sz, 2.1.12, sz/2.1.12
+  tasmanian, 7.5, tasmanian/7.5
+  tau, 2.30.1, tau/2.30.1
+  umap, 2.1.0, umap/2.1.0
+  umpire, 4.1.2, umpire/4.1.2
+  upcxx, 2021.3.0, upcxx/2021.3.0
+  vtk-m, 1.6.0, vtk-m/1.6.0
+  zfp, 0.5.5, zfp/0.5.5
 
 E4S 21.05 Packages
 ------------------
 
-List of installed packages on Summit for GCC 9.1.0 (E4S release 21.05):
+List of installed packages on Summit for E4S release 21.05:
 
 .. csv-table::
   :header: "Software Name", "Loaded Version", "Module Name"
