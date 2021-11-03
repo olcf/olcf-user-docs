@@ -11,7 +11,7 @@ Software
 
    software-news
    analytics/index
-   python
+   python/index
    profiling/index
    UMS/index
    workflows/index
