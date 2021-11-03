@@ -1801,7 +1801,8 @@ environment variable to give you visual thread assignment information.
 In the below example, you could also do ``export OMP_NUM_THREADS=16`` in your
 job script instead of passing it as a ``-E`` flag to jsrun. The below example
 starts 1 resource set with 2 tasks and 8 cores, 4 cores bound to each task,
-16 threads for each task.
+16 threads for each task. We can set 16 threads since there are 4 cores
+per task and the default is smt4 for each core (4 * 4 = 16 threads).
 
 ::
    
