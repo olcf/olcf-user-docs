@@ -22,8 +22,8 @@ domains.
  scales. Scientific workflows are typically described as Directed Acyclic 
  Graphs (DAGs) in which vertices represent tasks and edges represent 
  dependencies between tasks, as defined by application-specific semantics. 
- Workflows can also be composed of loops (e.g., iterative processes) and 
- dynamic behaviors (e.g., if-else).
+ Workflows can also be composed of dynamic behaviors (e.g., loops, 
+ conditionals, etc.).
  
 **What a workflow can do?**
  A workflow can analyze terabyte-scale data sets, be composed of million 
