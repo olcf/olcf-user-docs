@@ -42,8 +42,13 @@ domains.
  case, and how to design your workflow experiment. 
  
 **How can we help?**
- In addition to providing documentation, one of the goals of the OLCF's workflow
- team is to engage with users to 
+ In addition to providing documentation, one of the goals of the OLCF's 
+ workflow team is to engage with users to guide them on describing their 
+ workflow applications which may include (i) understanding the science use 
+ case, (ii) identifying the need for workflows, (iii) determining the most 
+ suited workflow system to describe and orchestrate your application as well 
+ as the most suited OLCF resource, and (iv) helping designing and executing 
+ the workflow on OLCF resources.
 
 .. note:: 
     If you want to learn the basics about workflows and distributed 
