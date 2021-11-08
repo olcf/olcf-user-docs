@@ -1,3 +1,4 @@
+.. _workflows-swiftt:
 
 *******
 Swift/T

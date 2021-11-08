@@ -1,3 +1,4 @@
+.. _workflows-entk:
 
 ***********************
 Ensemble Toolkit (EnTK)

@@ -43,10 +43,10 @@ domains.
  
 **How can we help?**
  In addition to providing documentation, one of the goals of the OLCF's 
- workflow team is to engage with users to guide them on describing their 
+ workflows team is to engage with users to guide them on describing their 
  workflow applications which may include (i) understanding the science use 
  case, (ii) identifying the need for workflows, (iii) determining the most 
- suited workflow system to describe and orchestrate your application as well 
+ suited workflow system to describe and orchestrate their application as well 
  as the most suited OLCF resource, and (iv) helping designing and executing 
  the workflow on OLCF resources.
 
@@ -61,14 +61,21 @@ domains.
 Running Workflows on OLCF Resources
 ***********************************
 
-Sometimes, assembling workflows requires dedicated software like workflow
-management systems, especially when the time comes to scale. OLCF supports a
-number of different packages, especially through our :ref:`Slate<slate>`
-container orchestration service.
+Due to the increasing need to support workflows, dedicated workflow systems 
+were developed to provide abstractions for creating, executing, and adapting 
+workflows conveniently and efficiently while ensuring portability. While 
+these efforts are all worthwhile individually, there are now hundreds of 
+independent workflow systems. At OLCF, we are constantly evaluating and 
+refining the selection of workflow systems made available to users. Below,
+you will find a list of current frameworks natively supported in our 
+:ref:`Systems<system-user-guides>`:
 
-.. toctree::
-   :maxdepth: 1
-
-   entk
-   parsl
-   swift_t
++------------------------------------------------+-------------+
+| Workflow System                                | OLCF System |
++================================================+=============+
+| :ref:`Ensemble Toolkit (EnTK)<workflows-entk>` | Summit      |
++------------------------------------------------+-------------+
+| :ref:`Parsl<workflows-parsl>`                  | Summit      | 
++------------------------------------------------+-------------+
+| :ref:`Swift/T<workflows-swiftt>`               | Summit      | 
++------------------------------------------------+-------------+
