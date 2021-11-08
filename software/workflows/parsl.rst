@@ -1,3 +1,4 @@
+.. _workflows-parsl:
 
 *****
 Parsl
