@@ -79,3 +79,16 @@ you will find a list of current frameworks natively supported in our
 +------------------------------------------------+-------------+
 | :ref:`Swift/T<workflows-swiftt>`               | Summit      | 
 +------------------------------------------------+-------------+
+
+---------
+
+****************
+Workflow Systems
+****************
+
+.. toctree::
+   :maxdepth: 1
+   
+   entk
+   parsl
+   swift_t
