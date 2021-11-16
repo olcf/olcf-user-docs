@@ -100,7 +100,7 @@ To make sure that you are building from source, and not a pre-compiled binary, u
 
    $ CUDA_PATH="${CUDAPATH}" CC=gcc NVCC=nvcc pip install --no-binary=cupy cupy
 
-The ``CUDA_PATH`` flag makes sure that you are using the correct path set by the ``cuda`` module, while the ``CC`` and ``NVCC`` flags ensure that you are passing the correct wrappers.
+The ``CUDA_PATH`` flag makes sure that you are using the correct path set by the ``cuda`` module, while the ``CC`` and ``NVCC`` flags ensure that you are passing the correct wrappers. Note that, if you modify these instructions to use the ``open-ce`` module instead, the ``cuda/11.0.3`` module will automatically be loaded but ``CUDA_PATH`` will not be set.
 This installation takes, on average, 20 minutes to complete (due to building everything from scratch), so don't panic if it looks like the install timed-out.
 Eventually you should see output similar to:
 
