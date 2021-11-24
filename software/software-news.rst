@@ -10,6 +10,22 @@ most recent changes are listed first.
 
 .. raw:: html
 
+   <p style="font-size:20px"><b>Andes: OS Upgrade (November 30, 2021)</b></p>
+
+On November 30, 2021, the Andes cluster will be upgraded to a newer (minor) version of the operating system. The table below summarizes the main changes. While recompiling is not required, it is recommended.   
+
+.. csv-table::
+    :header: "Component", "Old Version", "New Version"
+
+    "Red Hat Enterprise Linux", "8.3", "8.4"
+     "Mellanox InfiniBand Driver", "5.3-1.0.0.1", "5.4-1.0.3.0"
+     "NVIDIA driver", "450.36.06", "460.106.00-1"
+     "Slurm", "20.02.6", "20.02.7-1"
+
+----
+
+.. raw:: html
+
    <p style="font-size:20px"><b>Summit: OpenCE 1.4.0 (October 13, 2021)</b></p>
 
 OpenCE 1.4.0 is now available on Summit. OpenCE 1.4.0 is available for python versions 3.7, 3.8, and 3.9. These builds can be accessed by
