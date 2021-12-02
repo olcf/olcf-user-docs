@@ -79,7 +79,8 @@ Under the “Parallel” Tab:
 - GPU Acceleration
     - Use cluster’s graphics cards: Unchecked
 
-Click “Apply”. Exit and re-launch VisIt.
+Click “Apply” and make sure to save the settings (Options/Save Settings).
+Exit and re-launch VisIt.
 
 .. note::
     Users with large datasets may see a slight performance boost by
@@ -125,7 +126,8 @@ Under the “Parallel” Tab:
 - GPU Acceleration
     - Use cluster’s graphics cards: Unchecked
 
-Click “Apply”. Exit and re-launch VisIt.
+Click “Apply” and make sure to save the settings (Options/Save Settings).
+Exit and re-launch VisIt.
 
 .. _visit-host-profiles:
 
