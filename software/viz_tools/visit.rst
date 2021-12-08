@@ -17,6 +17,8 @@ vector fields defined on two- and three-dimensional (2D and 3D) structured and
 unstructured meshes. Further information regarding VisIt can be found at the
 links provided in the :ref:`visit-resources` section.
 
+.. _visit-setup:
+
 Installing and Setting Up Visit
 ===============================
 
@@ -385,6 +387,21 @@ capture".
 
 Using VisIt on Summit is also an option, as the scalable rendering problem is
 currently not an issue on Summit (as of Sept. 2021).
+
+VisIt launch continues indefinitely after entering passcode
+-----------------------------------------------------------
+
+If the pop-up box called "metadata server launch progress" never goes away
+after entering your passcode, you may need to check if you have enough storage
+space available in your home directory (``/ccs/home/[user id]``). When
+connecting to OLCF systems, VisIt creates some small temporary files in your
+home directory that are unable to be created if you are over your quota (50 GB
+is the default quota limit).
+
+If the above does not apply to you, double check that you set up your host
+profile exactly as how it is outlined in the :ref:`visit-setup` section.
+It may be helpful to delete and remake your host profile, but just remember
+to always save your settings via "Options/Save Settings".
 
 VisIt keeps asking for your password.
 -------------------------------------
