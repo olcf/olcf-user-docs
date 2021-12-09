@@ -12,6 +12,7 @@ The table below lists presentations given at previous OLCF training events. For 
 .. csv-table::
    :header: "Date", "Title", "Speaker", "Event", "Presentation"
 
+   "2021-12-08", "Analysis Tools at OLCF", "Benjamin Hernandez (OLCF)", `December 2021 OLCF User Conference Call <https://www.olcf.ornl.gov/calendar/userconcall-dec2021/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2021/08/Dec_2021_Analysis_Tools_at_OLCF.pdf>`__ | `recording <https://vimeo.com/654969964>`__)
    "2021-11-12", "Introduction to Leadership Computing","Bronson Messer, Tom Papatheodore",`Introduction to Leadership Computing <https://www.olcf.ornl.gov/introduction-to-leadership-computing/>`__,(`slides <https://www.olcf.ornl.gov/introduction-to-leadership-computing/>`__ | `recording <https://vimeo.com/manage/videos/645378867>`__)
    "2021-10-27", "Node Local Storage: Common Use Cases and Some Tools to Help", "Chris Zimmer (OLCF)", `October 2021 OLCF User Conference Call <https://www.olcf.ornl.gov/calendar/userconcall-oct2021/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2021/08/Users-NVMe.pdf>`__ | `recording <https://vimeo.com/640037283>`__)
    "2021-09-29", "OLCF's User Managed Software (UMS) Program", "Jamie Finney (OLCF)", `September 2021 OLCF User Conference Call <https://www.olcf.ornl.gov/calendar/userconcall-sep2021/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2021/08/UMS_con_call.pdf>`__)
