@@ -1,4 +1,4 @@
-
+.. _slate_gitlab_runners:
 
 **************
 GitLab Runners
