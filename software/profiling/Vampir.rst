@@ -31,35 +31,34 @@ Usage
 =======
 
 Vampir can be run a few different ways depending on a couple of factors. If you have a large trace file it
-would benefit from utilizing VampirServer to process the trace file with the systems compute power
-while reverse connected to the Vampir GUI. If the trace file is small enough, it would do just fine viewing on a
-login node or your local machine.
+would benefit from utilizing VampirServer to process the trace file with the system's compute power
+while reverse connected to the Vampir GUI. If the trace file is small enough (< ~1 Gb), it would do just fine viewing on a
+login node.
 
 .. _vamps:
 
-``Vampirserver`` is the backend software component that can run across multiple compute nodes taking advantage
-of the machines memory, this in turn provides a peak performance for viewing large trace files.
+``vampirserver`` is the backend software component that can run across multiple compute nodes taking advantage
+of the machine's memory, this in turn provides an increase in performance for viewing large trace files i.e. >1Gb.
 
-.. Note:: Vampirserver does not take advantage of GPU components
+.. Note:: VampirServer does not take advantage of GPU components
 
 
-This page will go through the 3 different types of connections available for using Vampir on Summit.
+The following sections will cover the 3 different methods for using Vampir on Summit.
+For each method, you will need to enable `X11 forwarding <https://docs.olcf.ornl.gov/connecting/index.html#x11-forwarding>`_
+when logging in to Summit to allow for launching a GUI from Summit.
+To do so, you can use the ``ssh`` option ``-X`` as shown below
 
-For logging onto Summit you will need to specify ``-X`` as part of your ``SSH`` command, this will
-activate the `x11 forwarding <https://docs.olcf.ornl.gov/connecting/index.html#x11-forwarding>`_ so you can launch a GUI on Summit. Please visit this link if you need more
-information for logging onto `Summit <https://docs.olcf.ornl.gov/systems/summit_user_guide.html#connecting>`_
+
 
 .. code::
 
    $ ssh -X <USERID>@summit.olcf.ornl.gov
 
+Please visit this link if you need more information for logging onto `Summit <https://docs.olcf.ornl.gov/systems/summit_user_guide.html#connecting>`_
 
 Vampir on a Login Node
 ======================
 
-.. Warning::
-
-   Running Vampir on a login node is best suited for small trace files.
 
 
 .. image:: /images/vampir_login_gui.png
@@ -72,9 +71,12 @@ Vampir on a Login Node
 |
 |
 |
-|
 
-After logging onto Summit, execute the series of commands below:
+.. Warning::
+
+   Do not run Vampir on a login node for trace files > 1 Gb! Please see the next 2 sections for running larger trace files.
+
+After logging onto `Summit <https://docs.olcf.ornl.gov/systems/summit_user_guide.html#connecting>`_ (with `X11 forwarding <https://docs.olcf.ornl.gov/connecting/index.html#x11-forwarding>`_), execute the series of commands below:
 
 .. code::
 
@@ -82,7 +84,9 @@ After logging onto Summit, execute the series of commands below:
 
    $ vampir &
 
-From here you can load a file resident on the file system.
+Once the GUI pops up (might take a few seconds), you can load a file resident on the file system by
+selecting ``Local File`` for file selection.
+
 
 .. image:: /images/vampir_splash_screen_file_selection.png
    :align: left
@@ -102,13 +106,8 @@ From here you can load a file resident on the file system.
 
 
 
-Vampir Using Vampirserver
+Vampir Using VampirServer
 =========================
-
-
-.. Tip::
-
-   This connection method is the better option for larger trace files
 
 
 .. image:: /images/vampir_login_node_connect_to_compute.png
@@ -121,10 +120,17 @@ Vampir Using Vampirserver
 |
 |
 |
-|
 
-After connecting to `Summit <https://docs.olcf.ornl.gov/systems/summit_user_guide.html#connecting>`_ you will need to load the Vampir module
-and start the :ref:`Vampirserver. `<vamps>`
+.. Note::
+
+   Please use this connection method for trace files larger than (> 1 Gb), and see the next section :ref:`Vampir Tunneling to VampirServer <vamptunnel>` for an even more optimal solution.
+   Attempting to visualize large trace files (> 1 Gb) will be very slow over X11 forwarding and can cause decreased performance on the shared
+   login nodes for other users
+
+
+
+After connecting to `Summit <https://docs.olcf.ornl.gov/systems/summit_user_guide.html#connecting>`_ using `X11 forwarding <https://docs.olcf.ornl.gov/connecting/index.html#x11-forwarding>`_
+you will need to load the Vampir module and start the :ref:`VampirServer. <vamps>`
 
 .. code::
 
@@ -136,18 +142,20 @@ and start the :ref:`Vampirserver. `<vamps>`
 
 .. _vampserpw:
 
-.. attention:: Successful Vampirserver startup message should appear in terminal window. You will need this information!
+Successful VampirServer startup message should appear in terminal window. You will need this information!
 
- | [Test@login5.summit ~]$ vampirserver start  - - -P 123456 -w 60 -q debug
- | Launching VampirServer...
- | Submitting LSF batch job (this might take a while)...
- | Warning: more than 1 task/rank assigned to a core
- | VampirServer 9.11.1 OLCF (4626dba5)
- | Licensed to ORNL
- | Running 4 analysis processes... (abort with vampirserver stop 10102)
- | User: Test
- | Password: XXXXXXXXXXXX
- | VampirServer <10102> listens on: h50n05:30040
+.. code::
+
+   [Test@login5.summit ~]$ vampirserver start  - - -P 123456 -w 60 -q debug
+   Launching VampirServer...
+   Submitting LSF batch job (this might take a while)...
+   Warning: more than 1 task/rank assigned to a core
+   VampirServer 9.11.1 OLCF (4626dba5)
+   Licensed to ORNL
+   Running 4 analysis processes... (abort with vampirserver stop 10102)
+   User: Test
+   Password: XXXXXXXXXXXX
+   VampirServer <10102> listens on: h50n05:30040
 
 ----------------------------------------------------------------------
 
@@ -160,9 +168,9 @@ Launch the Vampir GUI
 
 .. _vampauth:
 
-Once the GUI has opened, you will need to connect to the Vampirserver using the
-``Remote File`` option as shown below. **If there is a 'recent files' window open, select 'open other'.**
-Enter the ``node ID`` and the ``port`` number and press 'Connect'.
+Once the GUI has opened, you will need to connect to the :ref:`VampirServer <vamps>` using the
+**Remote File** option as shown below. **If there is a 'recent files' window open, select 'open other'.**
+Enter the ``node ID`` and the ``port`` number and press 'Connect'. Also, you will need to select **Encrypted password** from the **Authentication** dropdown option.
 
 
 .. image:: /images/vampir_open_remote_location.png
@@ -185,7 +193,8 @@ Enter the ``node ID`` and the ``port`` number and press 'Connect'.
 |
 
 When the server authentication window pops up, you will need to enter your ``USERID``
-& the :ref:`Vampirserver password <vampserpw>` that was printed on the terminal screen. Once authenticated, you will be able to navigate through the filesystem to your **.otf2** files
+& the :ref:`VampirServer password <vampserpw>` that was printed on the terminal screen.
+Once authenticated, you will be able to navigate through the filesystem to your **.otf2** files
 
 .. image:: /images/vampir_server_auth.png
    :align: left
@@ -208,7 +217,9 @@ When the server authentication window pops up, you will need to enter your ``USE
 |
 |
 
-Vampir Tunneling to Vampirserver
+.. _vamptunnel:
+
+Vampir Tunneling to VampirServer
 ===========================================
 
 .. image:: /images/vampir_reverse_connect_gui_to_compute.png
@@ -223,10 +234,8 @@ Vampir Tunneling to Vampirserver
 |
 |
 
-.. Tip::
 
-   This connection method is more complex than the other 2 methods, however it also can provide a more optimal experience for very large trace files.
-
+This connection method is more complex than the other 2 methods, however it also can provide a more optimal experience for very large trace files.
 
 
 .. attention::
@@ -236,7 +245,7 @@ Vampir Tunneling to Vampirserver
    If you do not have a local copy, please reach out to the help desk at help@olcf.ornl.gov for instructions on getting a local copy.
 
 Similar to the previous methods outlined above, you will start by connecting to `Summit <https://docs.olcf.ornl.gov/systems/summit_user_guide.html#connecting>`_.
-Once connected you will then need to start the :ref:`Vampirserver. <vamps>`
+Once connected you will then need to start the :ref:`VampirServer. <vamps>`
 
 .. code::
 
@@ -246,7 +255,7 @@ Once connected you will then need to start the :ref:`Vampirserver. <vamps>`
 
    $ vampirserver start -- -P <projectID> -w <walltime> -q <queue>
 
-After the Vampirserver is started successfully, you will need the information printed on the :ref:`terminal window. <vampserpw>`
+Once you have successfully authenticated, you will need the information printed on the :ref:`terminal window. <vampserpw>`
 That includes:
 
 * Node ID
@@ -254,18 +263,18 @@ That includes:
 * password
 
 
-Once the Vampirsever is started, in a **fresh** terminal window on your **Local** machine you can then initiate the
-port forward command. This will open a secure tunnel from your local machine to the backend server running Vampirserver.
+Once the VampirServer is started, in a **fresh** terminal window on your **Local** machine you can then initiate the
+port forward command. This will open a secure tunnel from your local machine to the backend server running VampirServer.
 
 **Port Forwarding**
 
 .. code::
 
-   SSH -L <localport>:<Node ID>:<Remote port>  <USERID>$summit.olcf.ornl.gov
+   ssh -L <localport>:<Node ID>:<Remote port>  <USERID>$summit.olcf.ornl.gov
 
-.. tip::
+.. Note::
 
-   The local port number can be any unused port number on your local machine...try a number between30000-30030.
+   The local port number can be any unused port number on your local machine...try a number between 30000-30030.
 
    To check if the port you picked is open run:
 
@@ -275,13 +284,13 @@ port forward command. This will open a secure tunnel from your local machine to 
 
     #This can take a minute to return anything. If nothing is returned, your selected port is open
 
-After submitting the port forward command, it will ask for your login password to access Summit. **Leave this terminal window open!**
+After submitting the port forward command as seen above, it will ask for your login password to access Summit. **Leave this terminal window open!**
 
 **Launch the Vampir GUI on your local machine**
 
-Similar to how we have connected Vampir to the Vampirserver in the :ref:`previous section, <vampauth>` you will follow the same steps
+Similar to how we have connected Vampir to the VampirServer in the :ref:`previous section, <vampauth>` you will follow the same steps
 **except** you will use ``localhost`` for the server name and your ``local machine port`` number you selected.
-Press 'Connect' and this should open the authentication window where you will enter your UserID and the :ref:`Vampirserver password <vampserpw>`
+Press 'Connect' and this should open the authentication window where you will enter your UserID and the :ref:`VampirServer password <vampserpw>`
 printed after a successful connection.
 
 .. image:: /images/vampir_remote_local.png
