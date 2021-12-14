@@ -32,13 +32,13 @@ Usage
 
 Vampir can be run a few different ways depending on a couple of factors. If you have a large trace file it
 would benefit from utilizing VampirServer to process the trace file with the system's compute power
-while reverse connected to the Vampir GUI. If the trace file is small enough (< ~1 Gb), it would do just fine viewing on a
+while reverse connected to the Vampir GUI. If the trace file is small enough (< ~1 GB), it would do just fine viewing on a
 login node.
 
 .. _vamps:
 
 ``vampirserver`` is the backend software component that can run across multiple compute nodes taking advantage
-of the machine's memory, this in turn provides an increase in performance for viewing large trace files i.e. >1Gb.
+of the machine's memory, this in turn provides an increase in performance for viewing large trace files i.e. >1GB.
 
 .. Note:: VampirServer does not take advantage of GPU components
 
@@ -72,9 +72,9 @@ Vampir on a Login Node
 |
 |
 
-.. Warning::
+.. Note::
 
-   Do not run Vampir on a login node for trace files > 1 Gb! Please see the next 2 sections for running larger trace files.
+   Do not run Vampir on a login node for trace files > 1 GB! Please see the next 2 sections for running larger trace files.
 
 After logging onto `Summit <https://docs.olcf.ornl.gov/systems/summit_user_guide.html#connecting>`_ (with `X11 forwarding <https://docs.olcf.ornl.gov/connecting/index.html#x11-forwarding>`_), execute the series of commands below:
 
@@ -123,8 +123,8 @@ Vampir Using VampirServer
 
 .. Note::
 
-   Please use this connection method for trace files larger than (> 1 Gb), and see the next section :ref:`Vampir Tunneling to VampirServer <vamptunnel>` for an even more optimal solution.
-   Attempting to visualize large trace files (> 1 Gb) will be very slow over X11 forwarding and can cause decreased performance on the shared
+   Please use this connection method for trace files larger than (> 1 GB), and see the next section :ref:`Vampir Tunneling to VampirServer <vamptunnel>` for an even more optimal solution.
+   Attempting to visualize large trace files (> 1 GB) will be very slow over X11 forwarding and can cause decreased performance on the shared
    login nodes for other users
 
 
@@ -238,7 +238,7 @@ Vampir Tunneling to VampirServer
 This connection method is more complex than the other 2 methods, however it also can provide a more optimal experience for very large trace files.
 
 
-.. attention::
+.. Note::
 
    ``This method will require you to have a local copy of the Vampir GUI already installed on your machine.``
 
@@ -320,7 +320,7 @@ Vampir GUI Demo
 
 Please see the provided video below to get a brief demo of the Vampir GUI provided by TU-Dresden and presented by Ronny Brendel.
 
-.. Tip:: You can skip ahead to around the 22 minute mark!
+.. Note:: You can skip ahead to around the 22 minute mark!
 
 .. raw:: html
 
