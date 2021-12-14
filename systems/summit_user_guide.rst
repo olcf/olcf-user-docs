@@ -4,13 +4,13 @@
 Summit User Guide
 ******************
 
-.. warning:: 
+.. warning::
     Summit's OS was upgraded to RHEL8 on August 17-19, 2021. You should be aware of several changes resulting from this upgrade:
-    
+
     * **You should recompile your codes** prior to running on the upgraded system.
-    
+
     * **The OS-provided Python is no longer accessible as** ``python`` (including variations like ``/usr/bin/python`` or ``/usr/bin/env python``); rather, you must specify it as ``python2`` or ``python3``. If you are using python from one of the modulefiles rather than the version in ``/usr/bin``, this change should not affect how you invoke python in your scripts, although we encourage specifying ``python2`` or ``python3`` as a best practice.
-    
+
     * A list of **default version changess**. including XL, CUDA, Spectrum, and ESSL as well as older versions scheduled for removal can be found on the :doc:`Software News </software/software-news>` page.
 
 
@@ -61,7 +61,7 @@ bricks, each capable of a 25GB/s transfer rate in each direction.
 Most Summit nodes contain 512 GB of DDR4 memory for use by the POWER9
 processors, 96 GB of High Bandwidth Memory (HBM2) for use by the accelerators,
 and 1.6TB of non-volatile memory that can be used as a burst buffer. A small
-number of nodes (54) are configured as "high memory" nodes. These nodes contain 2TB of 
+number of nodes (54) are configured as "high memory" nodes. These nodes contain 2TB of
 DDR4 memory, 192GB of HBM2, and 6.4TB of non-volatile memory.
 
 The POWER9 processor is built around IBM’s SIMD
@@ -413,7 +413,7 @@ The following compilers are available on Summit:
 **NVCC**: CUDA C compiler
 
 PGI was bought out by Nvidia and have rebranded their compilers, incorporating
-them into the NVHPC compiler suite. There will be no more new releases of the 
+them into the NVHPC compiler suite. There will be no more new releases of the
 PGI compilers.
 
 Upon login, the default versions of the XL compiler suite and Spectrum Message
@@ -438,19 +438,19 @@ using the modules system:
 
 .. _compiling-mod-enhanced:
 
-Compiling for Projects in the Moderate Enhanced Security Enclave 
+Compiling for Projects in the Moderate Enhanced Security Enclave
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Moderate Enhanced projects need to compile code on a batch node rather than the moderate-enhanced login node because the
-login node has a newer version of the operating system than standard Summit login nodes and compute nodes. 
+login node has a newer version of the operating system than standard Summit login nodes and compute nodes.
 To do this requires submitting an interactive batch job and then compiling the code on the batch node. Additionally, users need
 to "relogin" on the batch node to setup the environment properly. The easiest way to do this is to add ``-l`` (dash "ell") to the $SHELL argument as
-shown below. To facilitate the requirement to compile on batch nodes, users can 
+shown below. To facilitate the requirement to compile on batch nodes, users can
 submit to the ``debug-spi`` queue for a slight priority boost. Note that machine load on Summit can still delay
 startup of the interactive job unfortunately. Typical work flow would be:
 
 ::
-   
+
    user@citadel > bsub -q debug-spi -nnodes 1  -P ABC123_MDE -W 2:00 -Is $SHELL -l
    Job <XXXXXX> is submitted to queue <debug-spi>
    <<Waiting for dispatch ....>>
@@ -463,11 +463,11 @@ startup of the interactive job unfortunately. Typical work flow would be:
 At this point, it is possible to run a quick test job using jsrun or fix any compilation issues which may have occured.
 
 
-.. note:: 
+.. note::
 
     Eventually, the Summit compute nodes will be upgraded to match the Moderate Enhanced login node and this will no longer be necessary
 
-    
+
 C compilation
 ^^^^^^^^^^^^^
 
@@ -813,7 +813,7 @@ As an example, consider the following batch script:
     jsrun -n 4092 -r 2 -a 12 -g 3 ./a.out
     cp my_output_file /ccs/proj/abc123/Output.123
 
-.. note:: 
+.. note::
    For Moderate Enhanced Projects, job scripts need to add "-l" ("ell") to the shell specification, similar to interactive usage.
 
 +----------+------------+--------------------------------------------------------------------------------------------+
@@ -956,7 +956,7 @@ the flag is accepted, and multiple ``alloc_flags`` values should be enclosed in
 quotes and space-separated. For example, ``-alloc_flags "gpumps smt1``.
 
 The most common values (``smt{1,2,4}``, ``gpumps``, ``gpudefault``) are detailed in
-the following sections. 
+the following sections.
 
 This option can also be used to provide additional resources to GPFS service
 processes, described in the `GPFS System Service Isolation
@@ -1008,7 +1008,7 @@ simultaneously. To change the compute mode to ``DEFAULT``, use the
 
 NVIDIA recommends using the ``EXCLUSIVE_PROCESS`` compute mode (the default on
 Summit) when using the Multi-Process Service, but both MPS and the compute mode
-can be changed by providing both values: ``-alloc_flags "gpumps gpudefault"``. 
+can be changed by providing both values: ``-alloc_flags "gpumps gpudefault"``.
 
 Batch Environment Variables
 ---------------------------
@@ -1064,8 +1064,8 @@ states you’re most likely to see are:
 +---------+-----------------------------------------------------------------------------+
 
 .. note::
-    Jobs may end up in the PSUSP state for a number of reasons. Two common reasons for PSUSP jobs include jobs that have been held by the user or jobs with unresolved dependencies. 
-    
+    Jobs may end up in the PSUSP state for a number of reasons. Two common reasons for PSUSP jobs include jobs that have been held by the user or jobs with unresolved dependencies.
+
     Another common reason that jobs end up in a PSUSP state is a job that the system is unable to start. You may notice a job alternating between PEND and RUN states a few times and ultimately ends up as PSUSP. In this case, the system attempted to start the job but failed for some reason. This can be due to a system issue, but we have also seen this casued by improper settings on user ``~/.ssh/config`` files. (The batch system uses SSH, and the improper settings cause SSH to fail.) If you notice your jobs alternating between PEND and RUN, you might want to check permissions of your ``~/.ssh/config`` file to make sure it does not have write permission for "group" or "other". (A setting of read/write for the user and no other permissions, which can be set with ``chmod 600 ~/.ssh/config``, is recommended.)
 
 Scheduling Policy
@@ -1098,7 +1098,7 @@ that enable large jobs to run in a timely fashion.
 The basic priority-setting mechanism for jobs waiting in the queue is
 the time a job has been waiting relative to other jobs in the queue.
 
-If your jobs require resources outside these queue policies such as higher priority or longer walltimes, please contact help@olcf.ornl.gov. 
+If your jobs require resources outside these queue policies such as higher priority or longer walltimes, please contact help@olcf.ornl.gov.
 
 Job Priority by Processor Count
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1179,7 +1179,7 @@ Moderate Enhanced Projects ``batch-hm-spi`` Queue Policy
 The ``batch-hm-spi`` queue is used by Summit's "Moderate Enhanced Enclave" projects that also want to
 take advantage of Summit's high-memory nodes. Projects in this enclave that want to use the Summit
 high-memory nodes will need to add ``-q batch-hm-spi`` to their ``bsub`` command, or ``#BSUB -q batch-hm-spi`` to
-their job scripts. Except for the enhanced security policies for jobs in these queues, all other queue properties are the same 
+their job scripts. Except for the enhanced security policies for jobs in these queues, all other queue properties are the same
 as the ``batch-hm`` queue, such as maximum walltime and number of eligible running jobs.
 
 
@@ -1222,10 +1222,10 @@ flag can be used at submit time.
 """"""""""""""""""""""""""
 
 The ``debug`` queue (and the ``debug-spi`` queue for Moderate Enhanced security enclave projects)
-can be used to access Summit's compute resources for short 
+can be used to access Summit's compute resources for short
 non-production debug tasks.  The queue provides a higher priority compared
-to jobs of the same job size bin in production queues.  Production work and 
-job chaining in the debug queue is prohibited.  Each user is limited to one 
+to jobs of the same job size bin in production queues.  Production work and
+job chaining in the debug queue is prohibited.  Each user is limited to one
 job in any state in the debug queue at any one point. Attempts to submit multiple
 jobs to the debug queue will be rejected upon job submission.
 
@@ -1780,12 +1780,12 @@ multiple nodes.
 
 Sequential Job Steps
 """"""""""""""""""""
-By default, multiple invocations of ``jsrun`` in a job script will execute 
+By default, multiple invocations of ``jsrun`` in a job script will execute
 serially in order. In this configuration, jobs will launch one at a time and
 the next one will not start until the previous is complete. The batch node
 allocation is equal to the largest jsrun submitted, and the total walltime
 must be equal to or greater then the *sum* of all jsruns issued.
- 
+
 .. image:: /images/summit-multi-jsrun-example-sequential.png
    :align: center
 
@@ -1795,7 +1795,7 @@ To execute multiple job steps concurrently, standard UNIX process
 backgrounding can be used by adding a ``&`` at the end of the command. This
 will return control to the job script and execute the next command immediately,
 allowing multiple job launches to start at the same time. The jsruns will not
-share core/gpu resources in this configuration. The batch node allocation is 
+share core/gpu resources in this configuration. The batch node allocation is
 equal to the *sum* of those of each jsrun, and the total walltime must be equal
 to or greater than that of the longest running jsrun task.
 
@@ -1817,7 +1817,7 @@ to finish before the job ends.
     #BSUB -J RunSim123
     #BSUB -o RunSim123.%J
     #BSUB -e RunSim123.%J
-    
+
     cd $MEMBERWORK/abc123
     jsrun <options> ./a.out &
     jsrun <options> ./a.out &
@@ -1831,7 +1831,7 @@ a batch node, where a single user is only permitted 4096 simultaneous
 processes. This limit is per user on each batch node, not per batch job.
 
 Each job step will create 3 processes, and JSM management may create up to ~23
-processes. This creates an upper-limit of ~1350 simultaneous job steps. 
+processes. This creates an upper-limit of ~1350 simultaneous job steps.
 
 If JSM or PMIX errors occur as the result of backgrounding many job steps, using the
 ``--immediate`` option to ``jsrun`` may help, as shown in the following example.
@@ -1845,10 +1845,10 @@ If JSM or PMIX errors occur as the result of backgrounding many job steps, using
     #BSUB -J RunSim123
     #BSUB -o RunSim123.%J
     #BSUB -e RunSim123.%J
-    
+
     cd $MEMBERWORK/abc123
     jsrun <options> --immediate ./a.out
-    jsrun <options> --immediate ./a.out 
+    jsrun <options> --immediate ./a.out
     jsrun <options> --immediate ./a.out
 
 
@@ -1860,11 +1860,11 @@ If JSM or PMIX errors occur as the result of backgrounding many job steps, using
 
 Using `jslist`
 """"""""""""""
-To view the status of multiple jobs launched sequentially or concurrently within a 
+To view the status of multiple jobs launched sequentially or concurrently within a
 batch script, you can use `jslist` to see which are completed, running, or still
 queued. If you are using it outside of an interactive batch job, use the `-c` option
 to specify the CSM allocation ID number. The following example shows how to obtain the
-CSM allocation number for a non interactive job and then check its status. 
+CSM allocation number for a non interactive job and then check its status.
 
 ::
 
@@ -1919,7 +1919,7 @@ Job Step Viewer
 """""""""""""""
 
 `Job Step Viewer <https://jobstepviewer.olcf.ornl.gov/>`__ provides a graphical view of an application's runtime layout on Summit.
-It allows users to preview and quickly iterate with multiple ``jsrun`` options to 
+It allows users to preview and quickly iterate with multiple ``jsrun`` options to
 understand and optimize job launch.
 
 For bug reports or suggestions, please email help@olcf.ornl.gov.
@@ -2750,7 +2750,7 @@ builds available, please see the
 Vampir
 ------
 
-`Vampir <http://vampir.eu/>`__ is a software performance visualizer focused on highly
+`Vampir <https://docs.olcf.ornl.gov/software/profiling/Vampir.html>`__ is a software performance visualizer focused on highly
 parallel applications. It presents a unified view on an application
 run including the use of programming paradigms like MPI, OpenMP,
 PThreads, CUDA, OpenCL and OpenACC. It also incorporates file I/O,
@@ -2759,11 +2759,11 @@ Various interactive displays offer detailed insight into the performance
 behavior of the analyzed application. Vampir’s scalable analysis
 server and visualization engine enable interactive navigation of
 large amounts of performance data. `Score-P <https://olcf.ornl.gov/software_package/score-p>`__
-and `TAU <https://www.olcf.ornl.gov/software_package/tau>`__ generate OTF2
+and `TAU <https://docs.olcf.ornl.gov/software/profiling/TAU.html>`__ generate OTF2
 trace files for Vampir to visualize.
 
 For detailed information about using Vampir on Summit and the builds available,
-please see the `Vampir Software Page <https://www.olcf.ornl.gov/software_package/vampir/>`__.
+please see the `Vampir Software Page <https://docs.olcf.ornl.gov/software/profiling/Vampir.html#>`__.
 
 
 .. _nvidia-v100-gpus:
@@ -2801,7 +2801,7 @@ HBM2
 ----
 
 Each V100 has access to 16 GB (32GB for high-memory nodes) of
-high-bandwidth memory (HBM2), which can be accessed at speeds of 
+high-bandwidth memory (HBM2), which can be accessed at speeds of
 up to 900 GB/s. Access to this memory is controlled by (8) 512-bit
 memory controllers, and all accesses to the high-bandwidth memory
 go through the 6 MB L2 cache.
@@ -3275,7 +3275,7 @@ follows:
 
   [  compute_gemm, 2019-Aug-08 12:48:39, Context 1, Stream 7
         Section: Command line profiler metrics
-        ---------------------------------------------------------------------- 
+        ----------------------------------------------------------------------
         sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_active                    %                       43.44
         ----------------------------------------------------------------------
 
@@ -3482,7 +3482,7 @@ assumed that the files are saved in the user's GPFS scratch area,
 well. Do not forget that for all the commands on NVMe, it is required to use
 jsrun. This will submit a job to run on one node.
 
-**Job submssion script: check_nvme.lsf.** 
+**Job submssion script: check_nvme.lsf.**
 
 .. code::
 
@@ -3586,7 +3586,7 @@ on Summit (`slides
 <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_BB_markomanolis.pdf>`__,
 `video <https://vimeo.com/306890779>`__) Summit Burst Buffer Libraries (`slides
 <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_BB_zimmer.pdf>`__,
-`video <https://vimeo.com/306891012>`__). 
+`video <https://vimeo.com/306891012>`__).
 
 .. _spectral-library:
 
@@ -3679,9 +3679,9 @@ Bash sources different files based on two attributes of the shell: whether or no
 
 #. If a shell is an interactive login shell (i.e. an ssh to the system) or a non-interactive shell started with the ``--login`` option (say, a batch script with ``#!/bin/bash --login`` as the first line), it will source ``/etc/profile`` and will then search your home directory for ``~/.bash_profile``, ``~/.bash_login``, and ``~/.profile``. It will source the first of those that it finds (once it sources one, it stops looking for the others).
 #. If a shell is an interactive, non-login shell (say, if you run 'bash' in your login session to start a subshell), it will source ``~/.bashrc``
-#. If a shell is a non-interactive, non-login shell, it will source whatever file is defined by the ``$BASH_ENV`` variable in the shell from which it was invoked. 
+#. If a shell is a non-interactive, non-login shell, it will source whatever file is defined by the ``$BASH_ENV`` variable in the shell from which it was invoked.
 
-In any case, if the files listed above that should be sourced in a particular situation do not exist, it is not an error. 
+In any case, if the files listed above that should be sourced in a particular situation do not exist, it is not an error.
 
 On Summit and Andes, batch-interactive jobs using bash (i.e. those submitted with ``bsub -Is`` or ``salloc``) run as interactive, non-login shells (and therefore source ``~/.bashrc``, if it exists). Regular batch jobs using bash on those systems are non-interactive, non-login shells and source the file defined by the variable ``$BASH_ENV`` in the shell from which you submitted the job. This variable is not set by default, so this means that none of these files will be sourced for a regular batch job unless you explicitly set that variable.
 
@@ -3722,12 +3722,12 @@ will end up in a blocked state. This is true for both interactive jobs and jobs
 submitted with a batch script, but interactive jobs will hang without dropping
 you into your interactive shell. In both cases, JSM log files (e.g.,
 ``jsm-lsf-wait.username.1004985.log``) will be created in the location set for
-``TMPDIR`` containing the same error message as shown above. 
+``TMPDIR`` containing the same error message as shown above.
 
 Segfault when running executables on login nodes
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Executing a parallel binary on the login node or a batch node without using the
-job step launcher ``jsrun`` will result in a segfault. 
+job step launcher ``jsrun`` will result in a segfault.
 
 This also can be encountered when importing parallel Python libraries like
 ``mpi4py`` and ``h5py`` directly on these nodes.
@@ -3744,7 +3744,7 @@ you may see an error message in Spectrum MPI that aborts the program:
 ::
 
    jsrun -n 1 -a 1 -g 1 nv-nsight-cu-cli ./a.out
-   
+
    Error: common_pami.c:1049 - ompi_common_pami_init() Unable to create PAMI client (rc=1)
    --------------------------------------------------------------------------
    No components were able to be opened in the pml framework.
@@ -3763,7 +3763,7 @@ This is due to an incompatibility in the 2019.x versions of Nsight Compute with
 Spectrum MPI. As a workaround, you can disable CUDA hooks in Spectrum MPI using
 
 ::
-   
+
    jsrun -n 1 -a 1 -g 1 --smpiargs="-disable_gpu_hooks" nv-nsight-cu-cli ./a.out
 
 Unfortunately, this is incompatible with using CUDA-aware MPI in your application.
@@ -4057,7 +4057,7 @@ Simultaneous backgrounded jsruns (Resolved: May 21, 2019)
 
 We have seen occasional errors from batch jobs with multiple
 simultaneous backgrounded jsrun commands. Jobs may see pmix errors
-during the noted failures. 
+during the noted failures.
 
 --------------
 
