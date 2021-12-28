@@ -10,6 +10,53 @@ most recent changes are listed first.
 
 .. raw:: html
 
+   <p style="font-size:20px"><b>Summit: OpenCE 1.5.0 (December 29, 2021)</b></p>
+
+OpenCE 1.5.0 is now available on Summit. OpenCE 1.5.0 is available for python versions 3.7, 3.8, and 3.9. These builds can be accessed by
+loading the ``open-ce/1.5.0-py37-0``, ``open-ce/1.5.0-py38-0``, and ``open-ce/1.5.0-py39-0`` modules, respectively.
+
+The following packages are available in this release of OpenCE:
+
+.. csv-table::
+    :header: "Package", "Version"
+
+    "Tensorflow", "2.7.0"
+    "TensorFlow Estimators", "2.7.0"
+    "TensorFlow Probability", "0.15.0"
+    "TensorBoard", "2.7.0"
+    "TensorFlow Text", "2.7.0"
+    "TensorFlow Model Optimizations", "0.7.0"
+    "TensorFlow Addons", "0.15.0"
+    "TensorFlow Datasets", "4.4.0"
+    "TensorFlow Hub", "0.12.0"
+    "TensorFlow MetaData", "1.0.0"
+    "PyTorch", "1.10.0"
+    "TorchText", "0.11.0"
+    "TorchVision", "0.11.1"
+    "PyTorch Lightning", "1.5.4"
+    "PyTorch Lightning Bolts", "0.4.0"
+    "ONNX", "1.10.2"
+    "Keras", "2.7.0"
+    "Magma", "2.5.4"
+    "XGBoost", "1.5.1"
+    "Transformers", "4.11.3"
+    "Tokenizers", "0.10.3"
+    "SentencePiece", "0.1.96"
+    "Spacy", "3.2.0"
+    "Thinc", "8.0.13"
+    "OpenCV", "4.5.3"
+    "DALI", "1.9.0"
+    "Horovod", "0.23.0"
+
+.. raw:: html
+
+    Please note that Tensorflow Serving is currently unavailable. We are working with IBM to
+    resolve the issue and will publish and update once available.
+
+----
+
+.. raw:: html
+
    <p style="font-size:20px"><b>Andes: OS Upgrade (November 30, 2021)</b></p>
 
 On November 30, 2021, the Andes cluster will be upgraded to a newer (minor) version of the operating system. The table below summarizes the main changes. While recompiling is not required, it is recommended.   
