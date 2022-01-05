@@ -18,7 +18,13 @@ that speak to work performed on OLCF resources:
 Software Requests
 =================
 
-To request software installation, please submit the appropriate webform available on the :ref:`documents-and-forms` page.
+To request software installation, please contact help@olcf.ornl.gov with a description of the software, including the following details:
+
+- Software name.
+- Description of the software and its purpose. Is it export controlled?
+- How the software is obtained.
+- Explanation of why the software is needed. If OLCF provides equivalent software, what is different about this software? If requesting an upgrade, describe new features or bug fixes.
+- Who will be using this software? Approximately how many people will be using it? If possible, list individual users of this software.
 
 Special Requests and Policy Exemptions
 ======================================
