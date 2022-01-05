@@ -60,17 +60,13 @@ research and/or publicly available information.
 Forms to Request Changes to Computers, Jobs, or Accounts
 ========================================================
 
-`Software Installation Request
-Form <https://www.olcf.ornl.gov/support/software/software-request>`_
-Use this form to request
-a software/library/application installation on a center computer.
-
 You no longer need to use a special form for the following requests. If you need to request any of the following, please do so via email to help@olcf.ornl.gov.
 
 - Relaxed queue limits for one or more jobs (longer walltime, higher priority)
 - System reservation (a dedicated set of nodes at a specific date/time)
 - Increased disk quota
 - Purge exemption for User/Group/World Work areas
+- Software requests
 
 --------------
 
