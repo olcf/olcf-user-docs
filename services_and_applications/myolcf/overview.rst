@@ -25,6 +25,7 @@ As a current project member, myOLCF lets you:
 * Update your personal profile and contact information
 * Apply for annual membership renewal on your existing projects
 * Apply for additional project memberships
+* Check the status of your help tickets
 * Check the status of your project membership applications
 * View profiles for each of your projects
 * View contact information for your fellow project members
