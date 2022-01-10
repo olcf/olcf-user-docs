@@ -467,7 +467,7 @@ Common Slurm Submission Options
 The table below summarizes commonly-used Slurm job submission options:
 
 +--------------------------+--------------------------------+
-| ``-A <project_id>``       | Project ID to charge           |
+| ``-A <project_id>``      | Project ID to charge           |
 +--------------------------+--------------------------------+
 | ``-J <job_name>``        | Name of job                    |
 +--------------------------+--------------------------------+
