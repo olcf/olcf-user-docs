@@ -1,10 +1,19 @@
 
 *************************************************************************************
-IBM Watson Machine Learning CE -> Open CE 
+Distributed Deep Learning Environment 
 *************************************************************************************
 
 Getting Started
 ===============
+
+The deep learning frameworks, TensorFlow and PyTorch, are available
+on Summit in a conda environment via ``ibm-wml-ce`` or latest ``open-ce``
+module. In addition to framework's built-in data-parallel library, 
+such as `tf.distribute.Strategy` or `torch.nn.parallel`, Horovod 
+library is also available for distributed training. For performance 
+profiling, Nvidia deep learning profiler is provided via ``dlprof`` 
+module. For parallel hyperparameter search, ``ray-tune`` is also available 
+on Summit.       
 
 IBM Watson Machine Learning Community Edition is provided on Summit
 through the module ``ibm-wml-ce``, and after version ``1.7.0``, the 
@@ -71,6 +80,7 @@ Comparing to IBM WML CE, `Open-CE <https://github.com/open-ce/open-ce>`_ no long
     | WML-CE on Summit (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/10/DDLonSummit.pdf>`__ | `recording <https://vimeo.com/377551223>`__) 
     | Scaling up deep learning application on Summit (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/12/Scaling-DL-on-Summit.pdf>`__ | `recording <https://vimeo.com/391520479>`__) 
     | ML/DL on Summit (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2020/02/MLDL-on-Summit-June2020.pdf>`__ | `recording <https://vimeo.com/427791205>`__)
+    | OpenCE on Summit (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2020/09/open-ce.pdf>`__)
 
 Running Distributed Deep Learning Jobs
 ======================================
@@ -174,7 +184,8 @@ Performance Profiling
 
 There are several tools that can be used to profile the performance of a
 deep learning job. Below are links to several tools that are available
-as part of the ibm-wml-ce and open-ce modules.
+as part of the ibm-wml-ce and open-ce modules, or Nvidia deep learning
+profiler.
 
 NVIDIA Profiling Tools
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -184,6 +195,16 @@ profile work that is running on GPUs. It will give information about when
 different CUDA kernels are being launched and how long they take to complete.
 For more information on using the NVIDA profiling tools on Summit, please see
 these `slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/08/NVIDIA-Profilers.pdf>`_.
+
+The `Nvidia deep learning profiler <https://docs.nvidia.com/deeplearning/frameworks/dlprof-user-guide>`_ is also available on Summit via
+
+.. code-block:: console
+
+    $ module use /sw/aaims/summit/modulefiles
+    $ module load dlprof 
+
+Note that only PyTorch in ``open-ce`` module is currently supported, and usage 
+`examples <https://github.com/at-aaims/dlprof-examples>`_ are provided.    
 
 Horovod Timeline
 ^^^^^^^^^^^^^^^^
@@ -249,6 +270,11 @@ We can break the reservation string down to understand each piece.
     * Here the ``84`` slots represents 2 compute nodes. Each compute node has 42 compute slots.
 
     * The ``maxcus=1`` specifies that the nodes can come from at most 1 rack.
+
+
+Hyperparameter Search 
+==========================================
+(coming soon!)
 
 Example
 ===================
