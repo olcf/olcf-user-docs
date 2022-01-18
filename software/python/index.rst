@@ -28,8 +28,11 @@ Loading this distribution automatically puts you in a "base" conda environment,
 which already includes packages that one can use for simulation, analysis, and
 machine learning.
 
-For users interested in using Python with Jupyter, see :doc:`Jupyter at OLCF
-</services_and_applications/jupyter/overview>` instead.
+For users interested in using Python with Jupyter, see our :doc:`Jupyter at OLCF
+</services_and_applications/jupyter/overview>` page instead.
+
+For users interested in using the machine learning ``open-ce`` module (formerly
+``ibm-wml-ce``) on Summit, see our :doc:`/software/analytics/ibm-wml-ce` page.
 
 .. _python-guides:
 
