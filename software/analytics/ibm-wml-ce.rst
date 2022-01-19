@@ -6,10 +6,12 @@ IBM Watson Machine Learning CE -> Open CE
 Getting Started
 ===============
 
-IBM Watson Machine Learning Community Edition is provided on Summit
-through the module ``ibm-wml-ce``, and after version ``1.7.0``, the 
-module has been renamed to ``open-ce``, which is built based on the 
-`Open Cognitive Environment <https://github.com/open-ce/open-ce>`_.  
+IBM Watson Machine Learning Community Edition (ibm-wml-ce) has been replaced by
+Open-CE. The Open-CE environment is provided on Summit through the module
+``open-ce``, which is built based on the `Open Cognitive Environment
+<https://github.com/open-ce/open-ce>`_. Open-CE is a Python Anaconda
+environment that is pre-loaded with many popular machine learning frameworks
+and tuned to Summit's Power9+NVIDIA Volta hardware.
 
 To access the latest analytics packages use the ``module load`` command:
 
@@ -17,54 +19,53 @@ To access the latest analytics packages use the ``module load`` command:
 
     module load open-ce
 
-Loading a specific version of the module is recommended to future-proof
-scripts against software updates. The following commands can be used to
-find and load specific module versions:
+Loading a specific version of the module is recommended to future-proof scripts
+against software updates. The following commands can be used to find and load
+specific module versions:
 
 .. code-block:: bash
 
-    [user@login2.summit ~]$ module avail ibm-wml-ce
-
-    ------------------------- /sw/summit/modulefiles/core --------------------------
-    ibm-wml-ce/1.6.1-1    ibm-wml-ce/1.6.2-1    ibm-wml-ce/1.6.2-5    ibm-wml-ce/1.7.1.a0-0
-    ibm-wml-ce/1.6.1-2    ibm-wml-ce/1.6.2-2    ibm-wml-ce/1.7.0-1
-    ibm-wml-ce/1.6.1-3    ibm-wml-ce/1.6.2-3    ibm-wml-ce/1.7.0-2
-    ibm-wml-ce/1.6.2-0    ibm-wml-ce/1.6.2-4    ibm-wml-ce/1.7.0-3 (D)
-    ...
-    [user@login2.summit ~]$ module load ibm-wml-ce/1.7.0-3
-
     [user@login2.summit ~]$ module avail open-ce
-    ------------------------- /sw/summit/modulefiles/core --------------------------
-    open-ce/0.1-0    open-ce/1.1.3-py36-0    open-ce/1.1.3-py37-0    open-ce/1.1.3-py38-0 (D)
 
-    [user@login2.summit ~]$ module load open-ce/0.1-0
+    -------------------------- /sw/summit/modulefiles/core -------------------------
+    open-ce/1.2.0-py36-0        open-ce/1.4.0-py37-0    open-ce/1.5.0-py37-0
+    open-ce/1.2.0-py37-0        open-ce/1.4.0-py38-0    open-ce/1.5.0-py38-0
+    open-ce/1.2.0-py38-0 (D)    open-ce/1.4.0-py39-0    open-ce/1.5.0-py39-0
 
-For more information on loading modules, including loading specific verions,
-see: :ref:`environment-management-with-lmod`
+    [user@login2.summit ~]$ module load open-ce/1.5.0-py39-0
 
-This will activate a conda environment which is pre-loaded with the following
-packages, and their dependencies:
+As seen above, there are also different Python versions of each Open-CE release
+available on Summit (indicated by ``-pyXY-`` in the module name, where "X" and
+"Y" are the major and minor Python version numbers, respectively.)
+
+.. note::
+
+    For more information on loading modules, including loading specific verions,
+    see: :ref:`environment-management-with-lmod`
+
+Loading an Open-CE module will activate a conda environment which is pre-loaded
+with the following packages, and their dependencies:
 
 .. table::
-    :widths: 20 38 38 38 38
+    :widths: 20 38 38 38
 
-    +--------------------+--------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------+--------------------------------------------------------------------------+
-    | Environment        | ibm-wml-ce/1.6.1                                                                                                               | ibm-wml-ce/1.7.0                                                                                                                 | open-ce/0.1                                                              | open-ce/1.1.3                                                            |
-    +--------------------+--------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------+--------------------------------------------------------------------------+
-    | Package            | `IBM DDL 1.5.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.2/navigation/wmlce_getstarted_ddl.html>`_               | `IBM DDL 1.5.1 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.7.0/navigation/wmlce_getstarted_ddl.html>`_                 |                                                                          |                                                                          |
-    |                    +--------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------+--------------------------------------------------------------------------+
-    |                    | `Tensorflow 1.15 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.2/navigation/wmlce_getstarted_tensorflow.html>`_      | `Tensorflow 2.1  <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.7.0/navigation/wmlce_getstarted_tensorflow.html>`_        | `Tensorflow 2.3 <https://github.com/open-ce/tensorflow-feedstock>`_      | `Tensorflow 2.4.1 <https://github.com/open-ce/tensorflow-feedstock>`_    |
-    |                    +--------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------+--------------------------------------------------------------------------+
-    |                    | `Pytorch 1.2.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.2/navigation/wmlce_getstarted_pytorch.html>`_           | `Pytorch 1.3.1 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.7.0/navigation/wmlce_getstarted_pytorch.html>`_             | `Pytorch 1.6.0 <https://github.com/open-ce/pytorch-feedstock>`_          | `Pytorch 1.7.1 <https://github.com/open-ce/pytorch-feedstock>`_          |
-    |                    +--------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------+--------------------------------------------------------------------------+
-    |                    | `Caffe(IBM-enhanced) 1.0.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.1/navigation/wmlce_getstarted_caffe.html>`_ | `Caffe (IBM-enhanced) 1.0.0 <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.2/navigation/wmlce_getstarted_caffe.html>`__ |                                                                          |                                                                          |
-    |                    +--------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------+--------------------------------------------------------------------------+
-    |                    | `Horovod v0.18.2 (IBM-DDL Backend)  <https://github.com/horovod/horovod>`_                                                     | `Horovod v0.19 (NCCL Backend) <https://github.com/horovod/horovod>`_                                                             | `Horovod v0.19.5 (NCCL Backend) <https://github.com/horovod/horovod>`_   | `Horovod v0.21.0 (NCCL Backend) <https://github.com/horovod/horovod>`_   |
-    +--------------------+--------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------+--------------------------------------------------------------------------+
-    | Complete List      | `1.6.2 Software Packages <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.6.2/navigation/wmlce_software_pkgs.html>`_      | `1.7.0 Software Packages <https://www.ibm.com/support/knowledgecenter/SS5SF7_1.7.0/navigation/wmlce_software_pkgs.html>`_        | `Open-CE Software Packages <https://github.com/open-ce>`_                | `Open-CE Software Packages <https://github.com/open-ce>`_                |
-    +--------------------+--------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------+--------------------------------------------------------------------------+ 
+    +--------------------+---------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------+
+    | Environment        | open-ce/1.2.0                                                                               | open-ce/1.4.0                                                                               | open-ce/1.5.0                                                                               |
+    +--------------------+---------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------+
+    | Package            | `Tensorflow 2.4.1 <https://github.com/open-ce/tensorflow-feedstock>`_                       | `Tensorflow 2.6.0 <https://github.com/open-ce/tensorflow-feedstock>`_                       | `Tensorflow 2.7.0 <https://github.com/open-ce/tensorflow-feedstock>`_                       |
+    |                    +---------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------+
+    |                    | `Pytorch 1.7.1 <https://github.com/open-ce/pytorch-feedstock>`_                             | `Pytorch 1.9.0 <https://github.com/open-ce/pytorch-feedstock>`_                             | `Pytorch 1.10.0 <https://github.com/open-ce/pytorch-feedstock>`_                            |
+    |                    +---------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------+
+    |                    | `Horovod v0.21.0 (NCCL Backend) <https://github.com/horovod/horovod>`_                      | `Horovod v0.22.1 (NCCL Backend) <https://github.com/horovod/horovod>`_                      | `Horovod v0.23.0 (NCCL Backend) <https://github.com/horovod/horovod>`_                      |
+    +--------------------+---------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------+
+    | Complete List      | `1.2.0 Software Packages <https://github.com/open-ce/open-ce/releases/tag/open-ce-v1.2.0>`_ | `1.4.0 Software Packages <https://github.com/open-ce/open-ce/releases/tag/open-ce-v1.4.0>`_ | `1.5.0 Software Packages <https://github.com/open-ce/open-ce/releases/tag/open-ce-v1.5.0>`_ |
+    +--------------------+---------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------+
 
-Comparing to IBM WML CE, `Open-CE <https://github.com/open-ce/open-ce>`_ no longer has ``IBM DDL``, ``Caffe(IBM-enhanced)``, ``IBM SnapML``, ``Nvidia Rapids, Apex`` packages, and TensorFlow and PyTorch are not compiled with IBM Large Model Support (LMS). For standalone Keras users, please ``pip install keras`` after ``module load open-ce``.     
+Comparing to IBM WML CE, `Open-CE <https://github.com/open-ce/open-ce>`_ no
+longer has ``IBM DDL``, ``Caffe(IBM-enhanced)``, ``IBM SnapML``, ``Nvidia
+Rapids, Apex`` packages, and TensorFlow and PyTorch are not compiled with IBM
+Large Model Support (LMS). For standalone Keras users using Open-CE version
+1.2.0, please ``pip install keras`` after ``module load open-ce``.
 
 .. note::
 
@@ -134,36 +135,36 @@ For more information on ``jsrun`` please see:
 Setting up Custom Environments
 ==============================
 
-The IBM-WML-CE and Open-CE conda environments are read-only. Therefore, users
-cannot install any additional packages that may be needed. If users need
-any additional conda or pip packages, they can clone the IBM-WML-CE or Open-CE
-conda environment into their home directory and then add any packages they
-need.
+The Open-CE conda environments are read-only. Therefore, users cannot install
+any additional packages that may be needed. If users need any additional conda
+or pip packages, they can clone the Open-CE conda environment into their home
+directory and then add any packages they need.
 
 .. note::
 
-    The conda environment includes a module revision number, the 'X' in
-    ``ibm-wml-ce-1.7.0-X``. The name of the active environment can be found in
-    the prompt string, or ``conda env list`` can be used to see what conda
-    environments are available.
+    The conda environment includes a module revision number in its name, the
+    'X' in ``open-ce-1.2.0-py38-X``. The name of the active environment can be
+    found in the prompt string within the parentheses, or ``conda env list`` can be
+    used to see what conda environments are available.
 
 .. code-block:: console
 
-    $ module load ibm-wml-ce
-    (ibm-wml-ce-1.7.0-X) $ conda create --name cloned_env --clone ibm-wml-ce-1.7.0-X
-    (ibm-wml-ce-1.7.0-X) $ conda activate cloned_env
+    $ module load open-ce
+    (open-ce-1.2.0-py38-X) $ conda create --name cloned_env --clone open-ce-1.2.0-py38-X
+    (open-ce-1.2.0-py38-X) $ conda activate cloned_env
     (cloned_env) $
 
 By default this should create the cloned environment in
-``/ccs/home/${USER}/.conda/envs/cloned_env``.
+``/ccs/home/${USER}/.conda/envs/cloned_env`` (unless you changed it, as
+outlined in our :doc:`Python on OLCF Systems </software/python/index>` page).
 
 To activate the new environment you should still load the module first. This
 will ensure that all of the conda settings remain the same.
 
 .. code-block:: console
 
-    $ module load ibm-wml-ce
-    (ibm-wml-ce-1.7.0-X) $ conda activate cloned_env
+    $ module load open-ce
+    (open-ce-1.2.0-py38-X) $ conda activate cloned_env
     (cloned_env) $
 
 Best Distributed Deep Learning Performance
@@ -174,12 +175,12 @@ Performance Profiling
 
 There are several tools that can be used to profile the performance of a
 deep learning job. Below are links to several tools that are available
-as part of the ibm-wml-ce and open-ce modules.
+as part of the open-ce module.
 
 NVIDIA Profiling Tools
 ^^^^^^^^^^^^^^^^^^^^^^
 
-The ibm-wml-ce and open-ce modules contain the nvprof profiling tool. It can be used to
+The open-ce module contains the nvprof profiling tool. It can be used to
 profile work that is running on GPUs. It will give information about when
 different CUDA kernels are being launched and how long they take to complete.
 For more information on using the NVIDA profiling tools on Summit, please see
@@ -250,66 +251,8 @@ We can break the reservation string down to understand each piece.
 
     * The ``maxcus=1`` specifies that the nodes can come from at most 1 rack.
 
-Example
-===================
-
-The following graph shows the scaling performance of the
-``tf_cnn_benchmarks`` implementation of the Resnet50 model
-running on Summit during initial benchmark testing.
-
-.. figure:: /images/ibm_wml_ddl_resnet50.png
-   :align: center
-
-   Figure 1. Performance Scaling of IBM DDL on Summit
-
-The following LSF script can be used to reproduce the results for 144 nodes:
-
-.. code-block:: bash
-
-    #BSUB -P <PROJECT>
-    #BSUB -W 1:00
-    #BSUB -csm y
-    #BSUB -n 6049
-    #BSUB -R "1*{select[((LN) && (type == any))] order[r15s:pg] span[hosts=1] cu[type=rack:pref=config]}+6048*{select[((CN) && (type == any))] order[r15s:pg] span[ptile=42] cu[type=rack:maxcus=8]}"
-    #BSUB -q batch
-    #BSUB -J <PROJECT>
-    #BSUB -o /ccs/home/user/job%J.out
-    #BSUB -e /ccs/home/user/job%J.out
-
-    module load ibm-wml-ce/1.6.2-2
-
-    ddlrun --nodes 18 --racks 4 --aisles 2 python $CONDA_PREFIX/tf_cnn_benchmarks/tf_cnn_benchmarks.py \
-        --variable_update=horovod\
-        --model=resnet50 \
-        --num_gpus=1 \
-        --batch_size=256 \
-        --num_batches=100 \
-        --num_warmup_batches=10 \
-        --data_name=imagenet \
-        --allow_growth=True \
-        --use_fp16
-
 Troubleshooting Tips
---------------------
-
-Full command
-^^^^^^^^^^^^
-
-The output from ``ddlrun`` includes the exact command used to launch the
-distributed job. This is useful if a user wants to see exactly what ``ddlrun``
-is doing. The following is the first line of the output from the above script:
-
-.. code-block:: console
-
-    $ module load ibm-wml-ce
-    (ibm-wml-ce-1.6.1-1) $ ddlrun python $CONDA_PREFIX/tf_cnn_benchmarks/tf_cnn_benchmarks.py --variable_update=ddl --model=resnet50
-    + /autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20180914/linux-rhel7-ppc64le/xl-16.1.1-3/spectrum-mpi-10.3.0.1-20190611-aqjt3jo53mogrrhcrd2iufr435azcaha/bin/mpirun \
-      -x LSB_JOBID -x PATH -x PYTHONPATH -x LD_LIBRARY_PATH -x LSB_MCPU_HOSTS -x NCCL_LL_THRESHOLD=0 -x NCCL_TREE_THRESHOLD=0 \
-      -disable_gdr -gpu --rankfile /tmp/DDLRUN/DDLRUN.xoObgjtixZfp/RANKFILE -x "DDL_OPTIONS=-mode p:6x2x1x1 " -n 12 \
-      -mca plm_rsh_num_concurrent 12 -x DDL_HOST_PORT=2200 -x "DDL_HOST_LIST=g28n14:0,2,4,6,8,10;g28n15:1,3,5,7,9,11" bash \
-      -c 'source /sw/summit/ibm-wml-ce/anaconda-base/etc/profile.d/conda.sh && conda activate /sw/summit/ibm-wml-ce/anaconda-base/envs/ibm-wml-ce-1.6.1-1 \
-      > /dev/null 2>&1 && python /sw/summit/ibm-wml-ce/anaconda-base/envs/ibm-wml-ce-1.6.1-1/ddl-tensorflow/examples/mnist/mnist-env.py'
-    ...
+====================
 
 Problems Distributing Pytorch with Multiple Data Loader Workers
 ---------------------------------------------------------------
