@@ -323,7 +323,7 @@ In addition, the following header files and libraries must be included:
 .. code:: bash
 
     -I${MPICH_DIR}/include
-    -L${MPICH_DIR}/lib -lmpi -L${$CRAY_MPICH_ROOTDIR}/gtl/lib -lmpi_gtl_hsa
+    -L${MPICH_DIR}/lib -lmpi -L${CRAY_MPICH_ROOTDIR}/gtl/lib -lmpi_gtl_hsa
 
 
 OpenMP
