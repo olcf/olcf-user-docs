@@ -1558,6 +1558,9 @@ all login sessions will be limited to **.5 hardware-thread**.  To reset the
 cgroup limits on a node to default once the 4-hour CPU-time reduction has been
 reached, kill the offending process and start a new login session to the node.
 
+Users can run command ``check_cgroup_user`` on login nodes to check what processes 
+were recently killed by cgroup limits.
+
     .. note:: Login node limits are set per user and not per individual login
         session.  All user processes on a node are contained within a single cgroup
         and will share the cgroup's limits.
