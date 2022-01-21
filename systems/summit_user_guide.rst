@@ -772,6 +772,14 @@ offending process and start a new login session to the node.
     .. note:: Login node limits are set per user and not per individual login
         session.  All user processes on a node are contained within a single cgroup
         and will share the cgroup's limits.
+        
+
+Users can run command ``check_cgroup_user`` on login nodes to check what processes 
+were recently killed by cgroup limits.
+
+    .. note:: Login node limits are set per user and not per individual login
+        session.  All user processes on a node are contained within a single cgroup
+        and will share the cgroup's limits.
 
 
 .. _batch-scripts:
@@ -1780,8 +1788,6 @@ SMT4
     #BSUB -alloc_flags smt4
     jsrun -n1 -c1 -a1 -bpacked:1 csh -c 'echo $OMP_PLACES’
     {0:4}
-
-
 
 
 
