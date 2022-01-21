@@ -9,25 +9,37 @@ Data Transfer Nodes (DTNs)
 System Overview
 ===============
 
-The Data Transfer Nodes ("DTNs"; ``dtn.ccs.ornl.gov``) are hosts specifically
-designed to provide optimized data transfer between OLCF systems and systems
-outside of the OLCF network. These nodes perform well on local-area transfers
-as well as the wide-area data transfers for which they are tuned. The OLCF
-recommends that users use these nodes to improve transfer speed and reduce load
-on computational systems’ login and service nodes.
+The Data Transfer Nodes (DTNs) are hosts specifically designed to provide optimized data transfer between OLCF systems and systems outside of the OLCF network. These nodes perform well on local-area transfers as well as the wide-area data transfers for which they are tuned. The OLCF recommends that users use these nodes to improve transfer speed and reduce load on computational systems’ login and service nodes. OLCF provides two sets of DTNs: one for systems in our moderate enclave and a second for systems in the open enclave.
 
 .. _dtn-access-connecting:
 
-Access & Connecting
-===================
+Interactive Access
+==================
 
-DTN access is automatically granted to all enabled OLCF users.
-
-To connect to the DTNs, SSH to ``dtn.ccs.ornl.gov``. For example:
+DTN access is automatically granted to all enabled OLCF users. For interactive access to DTNs (``ssh``/``scp``/``sftp``), connect to ``dtn.ccs.ornl.gov`` (for the moderate enclave) or ``opendtn.ccs.ornl.gov`` (for the open enclave). For example:
 
 ::
 
     ssh username@dtn.ccs.ornl.gov
 
-For more information on connecting to OLCF resources, see
-:ref:`connecting-to-olcf`.
+For more information on connecting to OLCF resources, see :ref:`connecting-to-olcf`.
+
+Access From Globus Online
+=========================
+
+DTNs are also accessible via the "OLCF DTN" (for moderate) and "NCCS Open DTN" (for open) Globus endpoints. For more information on using Globus at OLCF see :ref:`data-transferring-data-globus`.
+
+
+Batch Queue
+===================
+
+The moderate DTNs also support batch jobs. The system contains 8 nodes accessible through the DTN batch system.
+
+Queue Policy
+^^^^^^^^^^^^^^^^^^^^
+
++------------+-------------+-------------------------------------------+
+| Node Count |  Duration   |  Policy                                   |
++============+=============+===========================================+
+| 1-4 Nodes  |  0 - 24 hrs |     max 1 job running **per user**        |
++------------+-------------+-------------------------------------------+

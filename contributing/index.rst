@@ -37,7 +37,7 @@ Setup authoring environment
     $ git clone https://github.com/<your-github-id>/olcf-user-docs.git
 
 #. Point your master branch to track upstream::
-    
+
     $ cd olcf-user-docs
     $ git remote add olcf https://github.com/olcf/olcf-user-docs.git
     $ git fetch olcf
@@ -45,17 +45,22 @@ Setup authoring environment
 
 #. Build the docs::
 
-    $ cd olcf-user-docs && sphinx-build -E . _build
+    $ sphinx-build -E . _build
 
 #. Locally preview the generated web pages
-   start a webserver on something like ``localhost:8080`` that points at
+
+   Start a webserver on something like ``localhost:8080`` that points at
    your ``olcf-user-docs/_build`` directory. For example, using busybox::
 
         $ busybox httpd -p 127.0.0.1:8080 -h /home/ubuntu/olcf-user-docs/_build
 
-   or a python webserver (from inside the document root)::
+   or a python webserver (from inside the document root, i.e., ``_build`` directory)::
 
+        $ cd _build
         $ python3 -m http.server 8080
+        ## you may add the option --bind 127.0.0.1 to bind only on the localhost address 
+
+   Open a broswer and type ``localhost:8080`` into the address bar to view the web pages.
 
 Edit the docs
 -------------------------
@@ -71,9 +76,19 @@ local environment to make multiple changes.
 #. Make your edits in a new git branch::
 
       $ git checkout -b my-edits-branch
-      (edit some files, commit them to your branch)
+      ## make edits to *.rst files, using an editor like vi
+      ## after my-edits-branch is created, omit the -b flag to switch to it from the master
 
 #. Preview your edits
+
+    Follow the steps in the previous section to rebuild and locally view changes
+
+#. Add and commit your edits to your branch::
+
+      $ git add edited_file1.rst edited_file2.rst 
+      $ git commit -m "message summarizing your edits"
+
+
 #. Push your edits to your GitHub fork::
 
       $ git push -u origin my-edits-branch

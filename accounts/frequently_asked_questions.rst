@@ -12,8 +12,9 @@ section of the :ref:`accounts-and-projects` page.
 What is the status of my application?
 =======================================
 
-You may submit an inquiry regarding your application status by emailing
-the Accounts Team at accounts@ccs.ornl.gov.
+Detailed instructions for checking the status of your account application
+can be found in the :ref:`checking-application-status` section of the
+:ref:`accounts-and-projects` page.
 
 How should I acknowledge the OLCF in my publications and presentations?
 ==========================================================================
@@ -68,7 +69,7 @@ I no longer need my account. Who should I inform and what should I do with my OL
 
 Please inform the Accounts Team via email at accounts@ccs.ornl.gov and
 return the RSA SecurID Token to the following address depending on the
-mail service: 
+mail service:
 
 For US Mail:
 
@@ -97,7 +98,7 @@ the User Assistance Team (help@olcf.ornl.gov) or the Accounts Team
 (`accounts@olcf.ornl.gov <mailto:accounts@ccs.ornl.gov>`__). You do not
 need to return the broken/expired RSA token to OLCF. Disposal and
 recycling information can be found in the vendor's `disposal
-statement <https://www.emc.com/collateral/legal/token-disposal-statement.pdf>`__.
+statement <https://community.rsa.com/t5/support-information/rsa-statement-on-safe-use-and-disposal-of-rsa-securid-tokens/ta-p/569883>`__.
 
 .. _getting-help:
 

@@ -11,26 +11,25 @@ OLCF GPU Hackathons
 Each year, the Oak Ridge Leadership Computing Facility (OLCF) works with our
 vendor partners to organize a series of GPU hackathons at a number of host
 locations around the world. The table below lists the OLCF-supported events
-scheduled for 2020.
+scheduled for 2021.
 
 .. table::
    :align: center
    :width: 80%
 
    +-------------------------------------------------+-------------------+-------------------------+
-   | Location                                        | Proposal Deadline | Event Dates             |
+   | Location (virtual)                              | Proposal Deadline | Event Dates             |
    +=================================================+===================+=========================+
-   | San Diego Supercomputing Center - San Diego, CA | March 11          | May 11 - 15             | 
+   | Argonne National Laboratory - Lemont, IL        | TBD               | April 20-29             | 
    +-------------------------------------------------+-------------------+-------------------------+
-   | Princeton University - Princeton, NJ            | March 2           | June 8 - 12             |
+   | San Diego Supercomputing Center - San Diego, CA | TBD               | May 4, May 11 - 13      | 
+   +-------------------------------------------------+-------------------+-------------------------+
+   | Princeton University - Princeton, NJ            | TBD               | June 2, 8 - 10          |
    +-------------------------------------------------+-------------------+-------------------------+ 
-   | NERSC - Oakland, CA                             | March 11          | July 13 - 17            |
+   | NERSC - Oakland, CA                             | TBD               | July  19 - 28           |
    +-------------------------------------------------+-------------------+-------------------------+ 
-   | Brookhaven National Laboratory - Upton, NY      | June 17           | August 17 - 21          |
+   | OLCF - Knoxville, TN                            | August 5          | October 11, 18-27       | 
    +-------------------------------------------------+-------------------+-------------------------+
-   | OLCF - Knoxville, TN                            | August 26         | October 26 - 30         | 
-   +-------------------------------------------------+-------------------+-------------------------+
-
 
 .. note::
 	 The OLCF-supported events are a subset of a larger number of GPU hackathons organized within the community. For the full list, please visit `gpuhackathons.org <https://gpuhackathons.org>`__
@@ -39,7 +38,7 @@ scheduled for 2020.
 
    <p style="font-size:20px"><b>What is a GPU hackathon?</b></p>
 
-A GPU hackathon is a 5-day coding event in which teams of developers port their
+A GPU hackathon is a multi-day coding event in which teams of developers port their
 own applications to run on GPUs, or optimize their applications that already
 run on GPUs. Each team consists of 3 or more developers who are intimately
 familiar with (some part of) their application, and they work alongside 1 or
@@ -52,13 +51,13 @@ partners.
 
 .. raw:: html
 
-   <p style="font-size:20px"><b>Why Participate?</b></p>
+   <p style="font-size:20px"><b>Why participate?</b></p>
 
 If you want/need to get your code running (or optimized) on a GPU-accelerated
-system, these hackathons offer a unique opportunity to set aside 5 days,
-surrounds yourself with experts in the field, and push toward your development
-goals. By the end of the event, each team should have their code running (or
-more optimized) on GPUs, or at least have a clear roadmap of how to get there.
+system, these hackathons offer a unique opportunity to set aside the time,
+surround yourself with experts in the field, and push toward your development
+goals. By the end of the event, each team should have part of their code running 
+(or more optimized) on GPUs, or at least have a clear roadmap of how to get there.
 
 .. raw:: html
 
@@ -77,6 +76,24 @@ codes on a single node during the events is encouraged whenever possible.]
 
 .. raw:: html
 
+   <p style="font-size:20px"><b>Virtual hackathon format</b></p>
+
+Typically, these hackathons are in-person events, where each team (app
+developers + mentors) sits at their own round table in a single large
+conference room. This structure allows teams to hack away on their own codes,
+but also to interact (ask questions, give advice, etc.) with members/mentors
+from other teams when needed.
+
+To recreate this environment in a virtual setting, we will be using Zoom +
+Slack. Zoom will be used as the main online tool due to its breakout room
+capabilities; there will be a single Zoom session, where the main room will be
+used for presentations, and breakout rooms will be used by individual teams
+(for screen sharing and verbal communication). We will also set up a Slack
+workspace for communication between all participants, and individual team
+channels for communication within teams (chat, sharing code snippets, etc.).
+
+.. raw:: html
+
    <p style="font-size:20px"><b>Ok, so how do I attend?</b></p>
 
 First, you must decide which event you'd like to attend (see table of events
@@ -91,13 +108,6 @@ and submit the form.
 
 .. raw:: html
 
-   <p style="font-size:20px"><b>Costs?</b></p>
-
-Events are free for the selected participants. The organizers will provide a
-meeting room, lunches, mentors, and access to compute resources. 
-
-.. raw:: html
-
    <p style="font-size:20px"><b>Want to be a mentor?</b></p>
 
 If you would like more information about how you can volunteer to mentor a team
@@ -106,7 +116,7 @@ at an upcoming GPU hackathon, please visit our `Become a Mentor
 
 .. raw:: html
 
-   <p style="font-size:20px"><b>Who can I contact with question??</b></p>
+   <p style="font-size:20px"><b>Who can I contact with questions?</b></p>
 
 If you have any questions about the OLCF GPU Hackathon Series, please contact
 Tom Papatheodore (`papatheodore@ornl.gov <mailto:papatheodore@ornl.gov>`__).

@@ -23,6 +23,15 @@ Have an idea to improve this documentation? See :doc:`contributing/index`.
 Have a question? Write to us at -- help\@olcf.ornl.gov -- and consider the
 guidelines for :ref:`getting-help`.
 
+
+New User Quick Start
+---------------------
+
+.. toctree::
+   :maxdepth: 2
+
+   quickstart/index
+
 Accounts
 ---------
 
@@ -47,6 +56,14 @@ Systems
 
    systems/index
 
+Services and Applications
+-------------------------
+
+.. toctree::
+   :maxdepth: 2
+
+   services_and_applications/index
+
 Data
 ------
 
@@ -59,7 +76,7 @@ Software
 ---------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
 
    software/index
 

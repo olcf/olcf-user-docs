@@ -13,6 +13,33 @@ that speak to work performed on OLCF resources:
     Office of Science of the U.S. Department of Energy under Contract No.
     DE-AC05-00OR22725.
 
+********
+
+Software Requests
+=================
+
+To request software installation, please contact help@olcf.ornl.gov with a description of the software, including the following details:
+
+- Software name.
+- Description of the software and its purpose. Is it export controlled?
+- How the software is obtained.
+- Explanation of why the software is needed. If OLCF provides equivalent software, what is different about this software? If requesting an upgrade, describe new features or bug fixes.
+- Who will be using this software? Approximately how many people will be using it? If possible, list individual users of this software.
+
+Special Requests and Policy Exemptions
+======================================
+
+To request exemption to certain system policies, contact help@olcf.ornl.gov with an overview of the exemption you need. Example requests include:
+
+- Relaxed queue limits for one or more jobs (longer walltime, higher priority)
+- System reservation (a dedicated set of nodes at a specific date/time)
+- Increased disk quota
+- Purge exemption for User/Group/World Work areas
+
+Special requests are reviewed weekly by the OLCF Resource Utilization
+Council. Please contact help@olcf.ornl.gov for more information.
+
+********
 
 Computing Policy
 ================
@@ -190,6 +217,8 @@ Denial of Service
 Users may not deliberately interfere with other users accessing system
 resources.  
 
+********
+
 Data Management Policy
 ======================
 
@@ -265,14 +294,14 @@ User Archive
 The High Performance Storage System (HPSS) is the tape-archive storage
 system at the OLCF and is the storage technology that supports the User
 Archive areas. HPSS is intended for data that do not require day-to-day
-access. 
+access.
 
 .. note::
     Use of this directory for data storage is deprecated in favor of storing
     data in the User, Project, and World Archive directories. For new users,
-    this directory is a "link farm" with symlinks to that user's /hpss/prod 
+    this directory is a "link farm" with symlinks to that user's /hpss/prod
     directories. Data for existing users remains in this directory but should
-    be moved into a User/Project/World Archive directory, at which time this 
+    be moved into a User/Project/World Archive directory, at which time this
     directory will automatically convert to a link farm.
 
 Project Home
@@ -501,7 +530,7 @@ Transfer of Member Work and Member Archive Data
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Although the Member Work and Member Archive directories are for storage
-of data a user does not want to make available to other users on the 
+of data a user does not want to make available to other users on the
 system, files in these directories are still considered project data
 and can be reassigned to another user at the PI's request.
 
@@ -627,6 +656,8 @@ they are not authorized. This includes but is not limited to any reverse
 engineering of copyrighted software or firmware present on OLCF
 computing resources.  
 
+********
+
 Security Policy
 ===============
 
@@ -719,7 +750,7 @@ apply to sensitive data:
 Data Transfer
 -------------
 
-The OLCF offers two dedicated data transfer nodes to users. The nodes have been
+The OLCF offers a number of dedicated data transfer nodes to users. The nodes have been
 tuned specifically for wide area data transfers, and also perform well on the
 local area. There are also several utilities that the OLCF recommends for data
 transfer. Please refer to our :ref:`system-user-guides` for information about
@@ -927,6 +958,8 @@ the DTNs and available utilities.
 .. CPU-time equivalent to
 .. ``(# of cores reserved) * (length of reservation in hours)``.
 
+********
+
 INCITE Allocation Under-utilization Policy
 ==========================================
 
@@ -963,6 +996,8 @@ For example, a 1,000,000 core-hour INCITE project that has utilized only
 50,000 core-hours (5% of the allocation) on May 1st would forfeit (0.30
 \* 950,000) = 285,000 core-hours from their remaining allocation.  
 
+********
+
 Project Reporting Policy
 ========================
 
@@ -990,7 +1025,7 @@ imposes the following penalties for late submission:
 | 3 Months Late   | Login privileges will be suspended for all OLCF resources for all users associated with offending project.   |
 +-----------------+--------------------------------------------------------------------------------------------------------------+
 
-  
+********
 
 Non-proprietary Institutional User Agreement Policy
 ===================================================
@@ -1064,17 +1099,137 @@ Intellectual Property
   title to the invention and the U.S. Government retains rights to the
   invention.
 
-Special Requests and Policy Exemptions
-======================================
+********
 
-To request policy exemptions, please submit the appropriate webform available on
-the :ref:`documents-and-forms` page. Special request forms allow a user to:
+HIPAA/ITAR Project Rules of Behavior Policy
+===========================================
 
--  Request Software installations
--  Request relaxed queue limits for a job
--  Request a system reservation
--  Request a disk quota increase
--  Request a User Work area purge exemption
+.. note::
+    This details an official policy of the OLCF, and must be
+    agreed to by the following persons as a condition of access to and use
+    of OLCF computational resources:
 
-Special requests are reviewed weekly by the OLCF Resource Utilization
-Council. Please contact help@olcf.ornl.gov for more information.
+    -  Principal Investigators of HIPAA/ITAR Projects
+    -  Users on HIPAA/ITAR Projects
+
+    **Title:** HIPAA/ITAR Project Rules of Behavior Policy **Version:** 21.01
+
+Portions of data and/or software used in your project require extra
+protections due to requirements for protecting HIPAA/ITAR or other sensitive
+or controlled information. There are countries from which citizens are
+restricted from accessing sensitive/controlled information and therefore
+cannot be a part of your project. When you request users to be added to
+your project, our user assistance center will check the nationality of
+those users for conflict.
+
+In addition, to protect sensitive data and code identified by these export
+control restrictions, data and code must be handled in accordance with the following rules:
+
+1. HIPAA/ITAR regulated data is **only allowed** within the following directory:
+
++---------------------+---------------------------------------------+----------------+
+| Area                | Path                                        | Type           |
++=====================+=============================================+================+
+| Project scratch     | ``/gpfs/arx/[projid]``                      | GPFS           |
++---------------------+---------------------------------------------+----------------+
+
+This is your project's scratch space on the "arx" filesystem. Only members of your project will have access.
+
+2. Filenames, application names, job names, environment variables, batch job scripts, or
+any other unencrypted text must never contain sensitive or controlled information.
+Transfer of sensitive or controlled information must only take place through designated
+Data Transfer Nodes (DTNs) over an encrypted transport protocol.
+
+3. Prior to your project being initialized, we must have source IP addresses for devices
+in your organization that are authorized to transfer sensitive/controlled information
+to/from your organization, or for use in accessing that information. Encryption is
+necessary for transferring sensitive and/or controlled information to and from the OLCF.
+
+4. For codes being used, please make sure that the proper number of licenses have been
+obtained from the vendors of the respective software. It is also the responsibility of
+the PI to ensure that all project members have the appropriate authorization to access
+any sensitive data and/or codes used as required by relevant data use agreements.
+
+5. The Principal Investigator (PI) has the responsibility to make sure that other project members
+follow the sensitive controls outlined in this policy and protect sensitive/controlled
+information. It is also the responsibility of the PI to alert us of any personnel
+changes on the project.
+
+If you have security-related questions, contact us via email at: security-admins@ccs.ornl.gov.
+Other questions can be sent to help@olcf.ornl.gov.
+
+User-Managed Software (UMS) Policy
+===========================================
+
+
+More information about the UMS program can be found in the `Software </software/UMS/index.html>`_ 
+section.
+
+.. note::
+    This details an official policy of the OLCF, and must be
+    agreed to by the following persons as a condition of access to and use
+    of OLCF computational resources:
+
+    -  Principal Investigators of UMS Projects
+    -  Points of Contact for UMS Projects
+
+    **Title:** UMS Project Policies **Version:** 21.08
+
+Purpose
+-------
+
+This document is intended to describe the agreement between the OLCF and the providers of user-managed
+software installations. User-managed software is built, maintained, and supported by OLCF users
+rather than as official offerings of the OLCF, but is exposed to all users through the module system.
+
+Policies
+--------
+
+Order is for convenience and no implication of priority is implied.
+
+- Products installed should be limited to those explicitly listed in the project application 
+  and approved by the OLCF.
+  
+  - The project application is reviewed by the Export Control Office. If you would like to 
+    install additional packages not listed in your original application, the Project PI must 
+    contact the OLCF at help@olcf.ornl.gov before making changes.
+    
+- Products must provide appropriate modules for their software.
+
+- Products must provide a statement of support, to be displayed via the module system and in other 
+  appropriate contexts/locations.
+
+  - The statement should clearly indicate that the product is not supported or maintained by the OLCF, 
+    but is supported by the UMS project applicant and/or the UMS project team.  
+  - The statement should clearly indicate the organization that is providing support and maintenance, 
+    and clearly indicate the preferred method(s) of reporting issues or requesting support.
+
+- Product modules will be grouped under project-level modules. 
+
+  - Users will be advised to do a ``module load <UMS project>``, which will expose modules for the 
+    individual products associated with that project, accessed by a second ``module load <product>``. 
+
+- Project PI must ensure that support is provided for users of the product, as documented in the statement of support.
+
+- Project PI must ensure that the product is updated in response to changes in the system software environment
+  (e.g. updates to OS, compiler, library, or other key tools) and in a timely fashion.  If this commitment is 
+  not met, the OLCF may remove the software from UMS.
+
+- Project PI must ensure that installations are tested to ensure basic functionality before being released to users.
+  These are expected to be at minimum basic function/unit tests to ensure that the build/install was successful.
+
+  - The resources provided by the OLCF for UMS shall not be used for software development or for routine
+    testing purposes beyond the installation testing as described above.
+
+- Products may be removed from UMS at the request of the Project PI by notifying the OLCF (help@olcf.ornl.gov) of their intent and
+  cleaning up their directory space.
+
+- If a product is judged to be problematic for the OLCF, it may be removed by the OLCF staff, who will also notify the Project PI.  
+
+..
+  Rationale: This is intended to be a measure of last resort.  The UMS concept is designed so that use of the software is opt-in and there should be no problems for users who do not opt in, or for the facility at large.  However in the rare case where something is really wrong, the facility needs a way out. Presumably, everything possible will be done to avoid this situation
+
+  Will undergo Export Control Review.  Need enough information to pass ECR in the application.
+  Will be given "modest" allocation of hours.  Monitored but not explicit.
+  Added to RUC for approval.
+  Quota in RATS?

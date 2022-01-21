@@ -2,6 +2,9 @@
 Transferring Data
 ******************
 
+.. warning::
+   This page has been deprecated, and relevant information is now available on :ref:`data-storage-and-transfers`. Please update any bookmarks to use that page.
+
 Using common terminal tools
 ============================
 

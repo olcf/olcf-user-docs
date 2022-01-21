@@ -8,7 +8,7 @@ Connecting
 Connecting for the first time
 *****************************
 
-All connections to OLCF resources are done via Secure Shell (ssh). SSH encrypts
+All connections to OLCF resources are done via Secure Shell (SSH). SSH encrypts
 the entire session between the user connecting and the OLCF systems and avoids
 risks associated with using plain-text communication.
 
@@ -47,6 +47,13 @@ With an active user account, you'll be able to log into any of the
 systems allocated to your project(s). All OLCF resources (except the Ascent
 training system) require two-factor authentication. This means you will need an
 OLCF-provided RSA SecurID fob to log into any of the systems.
+
+For Windows clients, `PuTTY
+<https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html>`_ and
+`MobaXterm <https://mobaxterm.mobatek.net/>`_ can also be used to provide SSH
+capability.  Recent updates to Windows 10 have added built-in support for SSH.
+If it is not installed on your version of Windows, please refer to Microsoft’s
+documentation on OpenSSH. 
 
 *****************************
 Activating a new SecurID fob
@@ -149,6 +156,11 @@ connection to the real X server will be made from the local machine.
 
 .. _systems-available-to-all-projects:
 
+On Windows, `PuTTY
+<https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html>`_ with `xming
+<https://sourceforge.net/projects/xming/>`_ support can be used to provide X11
+forwarding.
+
 **********************************
 Systems Available to All Projects
 **********************************
@@ -161,34 +173,34 @@ Systems Available to All Projects
 OLCF System Hostnames
 *****************************
 
-+---------------------+----------------------------+------------------------------------------------------------------+
-| System Name         | Full Hostname              | Hostkey Fingerprints                                             |
-+=====================+============================+==================================================================+
-| Home (machine)      | ``home.ccs.ornl.gov``      | - RSA MD5: ``ba:12:46:8d:23:e7:4d:37:92:39:94:82:91:ea:3d:e9``   |
-|                     |                            | - RSA SHA256: ``FjDs4sRAX8hglzA7TVkK22NzRKsjhDTTTdfeEAHwPEA``    |
-|                     |                            | - ECDSA MD5: ``8a:92:0f:31:4d:38:2d:2c:ec:7d:53:ce:8b:46:73:d6`` |
-|                     |                            | - ECDSA SHA256: ``0hc6SDou8vauFWgOaeXKUmhDSmKK8roj9jWpapV4qzc``  |
-+---------------------+----------------------------+------------------------------------------------------------------+
-| Data Transfer Nodes | ``dtn.ccs.ornl.gov``       | - RSA MD5: ``d1:c5:84:5b:88:d3:0e:81:33:a7:c2:5f:8a:09:b2:7f``   |
-|                     |                            | - RSA SHA256: ``xAIWJhey/RCjetTR4Hll2GNE9WwCNrMUEOdyDhIeHeE``    |
-|                     |                            | - ECDSA MD5: ``bd:52:af:c3:8b:ad:a3:30:4f:28:75:9c:79:84:68:cd`` |
-|                     |                            | - ECDSA SHA256: ``ITEbdZ0ddYNJJehefOh+/0JMgSvHwClpr+P+kak58Xc``  |
-+---------------------+----------------------------+------------------------------------------------------------------+
-| Summit              | ``summit.olcf.ornl.gov``   | - RSA MD5: ``08:d0:fe:3f:f3:41:96:9c:ae:73:73:a8:92:6c:79:34``   |
-|                     |                            | - RSA SHA256: ``nA7X4qyPvtEpXWxG5MDeXEC8xfpmm0UMiLq/LkgM33I``    |
-|                     |                            | - ECDSA MD5: ``cf:32:f9:35:fd:3f:2a:0f:ed:d3:84:b1:2d:f0:35:1b`` |
-|                     |                            | - ECDSA SHA256: ``m0iF9JJEoJu6jJGA8FFbSABlpKFYPGKbdmi25rFC1AI``  |
-+---------------------+----------------------------+------------------------------------------------------------------+
-| SummitDev           | ``summitdev.ccs.ornl.gov`` | - RSA MD5: ``47:4a:ae:30:be:ff:55:87:b8:c1:33:a2:34:3a:00:16``   |
-|                     |                            | - RSA SHA256: ``qlOwMg8uFFZqRYvrasGNHuutditwOFU/ydXcDNciJHs``    |
-|                     |                            | - ECDSA MD5: ``61:12:39:7d:3f:09:0e:d6:38:63:35:a2:cc:d0:f9:44`` |
-|                     |                            | - ECDSA SHA256: ``LFmcA7m6BIMjTyrNnQGkgwxTK9QQkjud20wVn4QNDlQ``  |
-+---------------------+----------------------------+------------------------------------------------------------------+
-| Rhea                | ``rhea.ccs.ornl.gov``      | - RSA MD5: ``17:4a:49:f8:37:e2:1b:7c:b5:23:b3:5c:64:3a:c5:07``   |
-|                     |                            | - RSA SHA256: ``R9/5L+ZQ9+pR/jThxbLmmmxBtxRfVt3MsEGPEhv1uTQ``    |
-|                     |                            | - ECDSA MD5: ``e4:a4:b4:4a:24:bf:53:e0:9a:c4:10:9f:9f:3a:ec:f4`` |
-|                     |                            | - ECDSA SHA256: ``F92QU1abt3tN2cgYwONJla0MoyV0srD3mNoyoFe5Cxo``  |
-+---------------------+----------------------------+------------------------------------------------------------------+
++----------------------+--------------------------+------------------------------------------------------------------+
+| System Name          | Full Hostname            | Hostkey Fingerprints                                             |
++======================+==========================+==================================================================+
+| Home (machine)       | ``home.ccs.ornl.gov``    | - RSA MD5: ``ba:12:46:8d:23:e7:4d:37:92:39:94:82:91:ea:3d:e9``   |
+|                      |                          | - RSA SHA256: ``FjDs4sRAX8hglzA7TVkK22NzRKsjhDTTTdfeEAHwPEA``    |
+|                      |                          | - ECDSA MD5: ``8a:92:0f:31:4d:38:2d:2c:ec:7d:53:ce:8b:46:73:d6`` |
+|                      |                          | - ECDSA SHA256: ``0hc6SDou8vauFWgOaeXKUmhDSmKK8roj9jWpapV4qzc``  |
++----------------------+--------------------------+------------------------------------------------------------------+
+| Data Transfer Nodes  | ``dtn.ccs.ornl.gov``     | - RSA MD5: ``d1:c5:84:5b:88:d3:0e:81:33:a7:c2:5f:8a:09:b2:7f``   |
+|                      |                          | - RSA SHA256: ``xAIWJhey/RCjetTR4Hll2GNE9WwCNrMUEOdyDhIeHeE``    |
+|                      |                          | - ECDSA MD5: ``bd:52:af:c3:8b:ad:a3:30:4f:28:75:9c:79:84:68:cd`` |
+|                      |                          | - ECDSA SHA256: ``ITEbdZ0ddYNJJehefOh+/0JMgSvHwClpr+P+kak58Xc``  |
++----------------------+--------------------------+------------------------------------------------------------------+
+| Summit               | ``summit.olcf.ornl.gov`` | - RSA MD5: ``08:d0:fe:3f:f3:41:96:9c:ae:73:73:a8:92:6c:79:34``   |
+|                      |                          | - RSA SHA256: ``nA7X4qyPvtEpXWxG5MDeXEC8xfpmm0UMiLq/LkgM33I``    |
+|                      |                          | - ECDSA MD5: ``cf:32:f9:35:fd:3f:2a:0f:ed:d3:84:b1:2d:f0:35:1b`` |
+|                      |                          | - ECDSA SHA256: ``m0iF9JJEoJu6jJGA8FFbSABlpKFYPGKbdmi25rFC1AI``  |
++----------------------+--------------------------+------------------------------------------------------------------+
+| Moderate-Enhanced    | ``citadel.ccs.ornl.gov`` | - RSA MD5: ``26:9d:38:64:57:73:3b:d3:0d:94:0d:ce:13:28:74:0a``   |
+| Enclave Login Node   |                          | - RSA SHA256: ``srq2/sRnB+U1PmmZXhk2Z/RnycgHbP7JCbu6hmFdWz4``    |
+|                      |                          | - ECDSA MD5: ``b3:7d:a1:cb:90:92:31:78:03:84:ab:f6:8c:f2:8b:18`` |
+|                      |                          | - ECDSA SHA256: ``yRbaOHLGto08TYCKy9R182rd0PK6smHBxaLdJtRxuF8``  |
++----------------------+--------------------------+------------------------------------------------------------------+
+| Andes                | ``andes.olcf.ornl.gov``  | - RSA MD5: ``17:4a:49:f8:37:e2:1b:7c:b5:23:b3:5c:64:3a:c5:07``   |
+|                      |                          | - RSA SHA256: ``R9/5L+ZQ9+pR/jThxbLmmmxBtxRfVt3MsEGPEhv1uTQ``    |
+|                      |                          | - ECDSA MD5: ``e4:a4:b4:4a:24:bf:53:e0:9a:c4:10:9f:9f:3a:ec:f4`` |
+|                      |                          | - ECDSA SHA256: ``F92QU1abt3tN2cgYwONJla0MoyV0srD3mNoyoFe5Cxo``  |
++----------------------+--------------------------+------------------------------------------------------------------+
 
 Occassionally, you may receive an error message upon logging in to a system such
 as the following:

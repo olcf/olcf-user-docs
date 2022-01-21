@@ -4,7 +4,10 @@
 Profiling Tools
 ############################
 
-.. toctree::
-   :maxdepth: 2
 
+.. toctree::
+   :maxdepth: 4
+
+   
    TAU
+   Vampir

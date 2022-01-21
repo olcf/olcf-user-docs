@@ -14,7 +14,7 @@ The OLCF provides training to our users in a variety of ways. By following the l
    :maxdepth: 1
 
    OLCF Training Calendar <https://www.olcf.ornl.gov/for-users/training/training-calendar>
-   Tutorials <https://github.com/olcf-tutorials>
+   OLCF Tutorials <https://github.com/olcf-tutorials>
    training_archive
    olcf_gpu_hackathons
    OLCF Vimeo Channel <https://vimeo.com/channels/olcftraining>

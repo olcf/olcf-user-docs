@@ -4,6 +4,16 @@
 Summit User Guide
 ******************
 
+.. warning:: 
+    Summit's OS was upgraded to RHEL8 on August 17-19, 2021. You should be aware of several changes resulting from this upgrade:
+    
+    * **You should recompile your codes** prior to running on the upgraded system.
+    
+    * **The OS-provided Python is no longer accessible as** ``python`` (including variations like ``/usr/bin/python`` or ``/usr/bin/env python``); rather, you must specify it as ``python2`` or ``python3``. If you are using python from one of the modulefiles rather than the version in ``/usr/bin``, this change should not affect how you invoke python in your scripts, although we encourage specifying ``python2`` or ``python3`` as a best practice.
+    
+    * A list of **default version changess**. including XL, CUDA, Spectrum, and ESSL as well as older versions scheduled for removal can be found on the :doc:`Software News </software/software-news>` page.
+
+
 .. _summit-documentation-resources:
 
 Summit Documentation Resources
@@ -13,13 +23,12 @@ In addition to this Summit User Guide, there are other sources of
 documentation, instruction, and tutorials that could be useful for
 Summit users.
 
-The `OLCF Training
-Archive <https://www.olcf.ornl.gov/for-users/training/training-archive/>`__
-provides a list of previous training events, including multi-day Summit
-Workshops. Some examples of topics addressed during these workshops
-include using Summit's NVME burst buffers, CUDA-aware MPI, advanced
-networking and MPI, and multiple ways of programming multiple GPUs per
-node.
+The :ref:`OLCF Training Archive<training-archive>` provides a list of previous training
+events, including multi-day Summit Workshops. Some examples of topics addressed during
+these workshops include using Summit's NVME burst buffers, CUDA-aware MPI, advanced
+networking and MPI, and multiple ways of programming multiple GPUs per node. You can also
+find simple tutorials and code examples for some common programming and running tasks in
+our `Github tutorial page <https://github.com/olcf-tutorials>`_ .
 
 .. _system-overview:
 
@@ -38,16 +47,22 @@ applications with a mixed-precision capability in excess of 3 EF.
 Summit Nodes
 ------------
 
+.. image:: /images/summit_node_architecture.png
+   :align: center
+   :alt: Summit node architecture diagram
+
 The basic building block of Summit is the IBM Power System AC922 node.
 Each of the approximately 4,600 compute nodes on Summit contains two IBM
-POWER9 processors and six `NVIDIA Volta V100`_ accelerators and provides
+POWER9 processors and six `NVIDIA Tesla V100`_ accelerators and provides
 a theoretical double-precision capability of
 approximately 40 TF. Each POWER9 processor is connected via dual NVLINK
-bricks, each capable of a 25GB/s transfer rate in each direction. Nodes
-contain 512 GB of DDR4 memory for use by the POWER9 processors and 96 GB
-of High Bandwidth Memory (HBM2) for use by the accelerators.
-Additionally, each node has 1.6TB of non-volatile memory that can be
-used as a burst buffer.
+bricks, each capable of a 25GB/s transfer rate in each direction.
+
+Most Summit nodes contain 512 GB of DDR4 memory for use by the POWER9
+processors, 96 GB of High Bandwidth Memory (HBM2) for use by the accelerators,
+and 1.6TB of non-volatile memory that can be used as a burst buffer. A small
+number of nodes (54) are configured as "high memory" nodes. These nodes contain 2TB of 
+DDR4 memory, 192GB of HBM2, and 6.4TB of non-volatile memory.
 
 The POWER9 processor is built around IBM’s SIMD
 Multi-Core (SMC). The processor provides 22 SMCs with separate 32kB L1
@@ -127,7 +142,9 @@ Storage System (HPSS) for user and project archival storage.
 Operating System
 ----------------
 
-Summit is running Red Hat Enterprise Linux (RHEL) version 7.6.
+
+Summit is running Red Hat Enterprise Linux (RHEL) version 8.2.
+
 
 .. _hardware-threads:
 
@@ -146,8 +163,2695 @@ assigned to the physical core. Regardless of the SMT mode used, the four
 slices share the physical core’s L1 instruction & data caches.
 https://vimeo.com/283756938
 
+
+.. _gpus:
+
+GPUs
+----
+
+Each Summit Compute node has 6 NVIDIA V100 GPUs.  The NVIDIA Tesla V100
+accelerator has a peak performance of 7.8 TFLOP/s (double-precision) and
+contributes to a majority of the computational work performed on Summit. Each
+V100 contains 80 streaming multiprocessors (SMs), 16 GB (32 GB on high-memory
+nodes) of high-bandwidth memory (HBM2), and a 6 MB L2 cache that is available to
+the SMs. The GigaThread Engine is responsible for distributing work among the
+SMs and (8) 512-bit memory controllers control access to the 16 GB (32 GB on
+high-memory nodes) of HBM2 memory. The V100 uses NVIDIA's NVLink interconnect
+to pass data between GPUs as well as from CPU-to-GPU. We provide a more in-depth
+look into the `NVIDIA Tesla V100`_ later in the Summit Guide.
+
+
+
+
+
+.. _connecting:
+
+Connecting
+==========
+
+To connect to Summit, ssh to summit.olcf.ornl.gov. For example:
+
+::
+
+    ssh username@summit.olcf.ornl.gov
+
+For more information on connecting to OLCF resources, see :ref:`connecting-to-olcf`.
+
+Data and Storage
+==================
+
+For more information about center-wide file systems and data archiving available
+on Summit, please refer to the pages on :ref:`data-storage-and-transfers`.
+
+Each compute node on Summit has a 1.6TB \ **N**\ on-\ **V**\ olatile **Me**\
+mory (NVMe) storage device (high-memory nodes have a 6.4TB NVMe storage device), colloquially known as a "Burst Buffer" with
+theoretical performance peak of 2.1 GB/s for writing and 5.5 GB/s for reading.
+The NVMes could be used to reduce the time that applications wait for
+I/O.  More information can be found later in the `Burst Buffer`_ section.
+
+
+
+.. _software:
+
+Software
+========
+
+Visualization and analysis tasks should be done on the Andes cluster. There are a
+few tools provided for various visualization tasks, as described in the
+:ref:`visualization-tools` section of the :ref:`andes-user-guide`.
+
+For a full list of software available at the OLCF, please see the
+Software section (coming soon).
+
+.. _shell-programming-environments:
+
+Shell & Programming Environments
+================================
+
+OLCF systems provide many software packages and scientific
+libraries pre-installed at the system-level for users to take advantage
+of. To facilitate this, environment management tools are employed to
+handle necessary changes to the shell. The sections below provide
+information about using these management tools on Summit.
+
+Default Shell
+-------------
+
+A user’s default shell is selected when completing the User Account
+Request form. The chosen shell is set across all OLCF resources, and is
+the shell interface a user will be presented with upon login to any OLCF
+system. Currently, supported shells include:
+
+-  bash
+-  tcsh
+-  csh
+-  ksh
+
+If you would like to have your default shell changed, please contact the
+`OLCF User Assistance Center <https://www.olcf.ornl.gov/for-users/user-assistance/>`__ at
+help@nccs.gov.
+
+.. _environment-management-with-lmod:
+
+Environment Management with Lmod
+--------------------------------
+
+Environment modules are provided through `Lmod
+<https://lmod.readthedocs.io/en/latest/>`__, a Lua-based module system for
+dynamically altering shell environments. By managing changes to the shell’s
+environment variables (such as ``PATH``, ``LD_LIBRARY_PATH``, and
+``PKG_CONFIG_PATH``), Lmod allows you to alter the software available in your
+shell environment without the risk of creating package and version combinations
+that cannot coexist in a single environment.
+
+Lmod is a recursive environment module system, meaning it is aware of module
+compatibility and actively alters the environment to protect against conflicts.
+Messages to stderr are issued upon Lmod implicitly altering the environment.
+Environment modules are structured hierarchically by compiler family such that
+packages built with a given compiler will only be accessible if the compiler
+family is first present in the environment.
+
+.. note::
+    Lmod can interpret both Lua modulefiles and legacy Tcl
+    modulefiles. However, long and logic-heavy Tcl modulefiles may require
+    porting to Lua.
+
+.. note::
+    Because of the mismatched operating system versions between the Moderate Enhanced login node and the Summit
+    compute nodes, the ``module`` command is not available on the Moderate Enhanced login node. Similar to how
+    users need to compile on a batch node, the module system is also only available on the batch nodes. For
+    more information see :ref:`compiling-mod-enhanced` .
+    Eventually, the Summit login nodes will be upgraded to match the Moderate Enhanced login node and this
+    will no longer be necessary
+
+General Usage
+^^^^^^^^^^^^^
+
+Typical use of Lmod is very similar to that of interacting with
+modulefiles on other OLCF systems. The interface to Lmod is provided by
+the ``module`` command:
+
++----------------------------------+-----------------------------------------------------------------------+
+| Command                          | Description                                                           |
++==================================+=======================================================================+
+| module -t list                   | Shows a terse list of the currently loaded modules.                   |
++----------------------------------+-----------------------------------------------------------------------+
+| module avail                     | Shows a table of the currently available modules                      |
++----------------------------------+-----------------------------------------------------------------------+
+| module help <modulename>         | Shows help information about <modulename>                             |
++----------------------------------+-----------------------------------------------------------------------+
+| module show <modulename>         | Shows the environment changes made by the <modulename> modulefile     |
++----------------------------------+-----------------------------------------------------------------------+
+| module spider <string>           | Searches all possible modules according to <string>                   |
++----------------------------------+-----------------------------------------------------------------------+
+| module load <modulename> [...]   | Loads the given <modulename>(s) into the current environment          |
++----------------------------------+-----------------------------------------------------------------------+
+| module use <path>                | Adds <path> to the modulefile search cache and ``MODULESPATH``        |
++----------------------------------+-----------------------------------------------------------------------+
+| module unuse <path>              | Removes <path> from the modulefile search cache and ``MODULESPATH``   |
++----------------------------------+-----------------------------------------------------------------------+
+| module purge                     | Unloads all modules                                                   |
++----------------------------------+-----------------------------------------------------------------------+
+| module reset                     | Resets loaded modules to system defaults                              |
++----------------------------------+-----------------------------------------------------------------------+
+| module update                    | Reloads all currently loaded modules                                  |
++----------------------------------+-----------------------------------------------------------------------+
+
+.. note::
+    Modules are changed recursively. Some commands, such as
+    ``module swap``, are available to maintain compatibility with scripts
+    using Tcl Environment Modules, but are not necessary since Lmod
+    recursively processes loaded modules and automatically resolves
+    conflicts.
+
+Searching for modules
+^^^^^^^^^^^^^^^^^^^^^
+
+Modules with dependencies are only available when the underlying dependencies,
+such as compiler families, are loaded. Thus, ``module avail`` will only display
+modules that are compatible with the current state of the environment. To search
+the entire hierarchy across all possible dependencies, the ``spider``
+sub-command can be used as summarized in the following table.
+
++----------------------------------------+------------------------------------------------------------------------------------+
+| Command                                | Description                                                                        |
++========================================+====================================================================================+
+| module spider                          | Shows the entire possible graph of modules                                         |
++----------------------------------------+------------------------------------------------------------------------------------+
+| module spider <modulename>             | Searches for modules named <modulename> in the graph of possible modules           |
++----------------------------------------+------------------------------------------------------------------------------------+
+| module spider <modulename>/<version>   | Searches for a specific version of <modulename> in the graph of possible modules   |
++----------------------------------------+------------------------------------------------------------------------------------+
+| module spider <string>                 | Searches for modulefiles containing <string>                                       |
++----------------------------------------+------------------------------------------------------------------------------------+
+
+ 
+
+Defining custom module collections
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Lmod supports caching commonly used collections of environment modules on a
+per-user basis in ``$HOME/.lmod.d``. To create a collection called "NAME" from
+the currently loaded modules, simply call ``module save NAME``. Omitting "NAME"
+will set the user’s default collection. Saved collections can be recalled and
+examined with the commands summarized in the following table.
+
++-------------------------+----------------------------------------------------------+
+| Command                 | Description                                              |
++=========================+==========================================================+
+| module restore NAME     | Recalls a specific saved user collection titled "NAME"   |
++-------------------------+----------------------------------------------------------+
+| module restore          | Recalls the user-defined defaults                        |
++-------------------------+----------------------------------------------------------+
+| module reset            | Resets loaded modules to system defaults                 |
++-------------------------+----------------------------------------------------------+
+| module restore system   | Recalls the system defaults                              |
++-------------------------+----------------------------------------------------------+
+| module savelist         | Shows the list user-defined saved collections            |
++-------------------------+----------------------------------------------------------+
+
+.. note::
+    You should use unique names when creating collections to
+    specify the application (and possibly branch) you are working on. For
+    example, ``app1-development``, ``app1-production``, and
+    ``app2-production``.
+
+.. note::
+    In order to avoid conflicts between user-defined collections
+    on multiple compute systems that share a home file system (e.g.
+    ``/ccs/home/[userid]``), lmod appends the hostname of each system to the
+    files saved in in your ``~/.lmod.d`` directory (using the environment
+    variable ``LMOD_SYSTEM_NAME``). This ensures that only collections
+    appended with the name of the current system are visible.
+
+The following screencast shows an example of setting up user-defined
+module collections on Summit. https://vimeo.com/293582400
+
+.. _compiling:
+
+Compiling
+=========
+
+Compilers
+---------
+
+Available Compilers
+^^^^^^^^^^^^^^^^^^^
+
+The following compilers are available on Summit:
+
+**XL:** IBM XL Compilers *(loaded by default)*
+
+**LLVM:** LLVM compiler infrastructure
+
+**PGI:** Portland Group compiler suite
+
+**NVHPC:** Nvidia HPC SDK compiler suite
+
+**GNU:** GNU Compiler Collection
+
+**NVCC**: CUDA C compiler
+
+PGI was bought out by Nvidia and have rebranded their compilers, incorporating
+them into the NVHPC compiler suite. There will be no more new releases of the 
+PGI compilers.
+
+Upon login, the default versions of the XL compiler suite and Spectrum Message
+Passing Interface (MPI) are added to each user's environment through the modules
+system. No changes to the environment are needed to make use of the defaults.
+
+Multiple versions of each compiler family are provided, and can be inspected
+using the modules system:
+
+::
+
+
+   summit$ module -t avail gcc
+   /sw/summit/spack-envs/base/modules/site/Core:
+   gcc/7.5.0
+   gcc/9.1.0
+   gcc/9.3.0
+   gcc/10.2.0
+   gcc/11.1.0
+
+
+
+.. _compiling-mod-enhanced:
+
+Compiling for Projects in the Moderate Enhanced Security Enclave 
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Moderate Enhanced projects need to compile code on a batch node rather than the moderate-enhanced login node because the
+login node has a newer version of the operating system than standard Summit login nodes and compute nodes. 
+To do this requires submitting an interactive batch job and then compiling the code on the batch node. Additionally, users need
+to "relogin" on the batch node to setup the environment properly. The easiest way to do this is to add ``-l`` (dash "ell") to the $SHELL argument as
+shown below. To facilitate the requirement to compile on batch nodes, users can 
+submit to the ``debug-spi`` queue for a slight priority boost. Note that machine load on Summit can still delay
+startup of the interactive job unfortunately. Typical work flow would be:
+
+::
+   
+   user@citadel > bsub -q debug-spi -nnodes 1  -P ABC123_MDE -W 2:00 -Is $SHELL -l
+   Job <XXXXXX> is submitted to queue <debug-spi>
+   <<Waiting for dispatch ....>>
+   [Possible delay here until a node is available]
+   <<Starting on batchX>>
+   prompt > cd /path/to/the/code
+   prompt > cmake or ./configure or whatever is needed to configure and prepare the code for compiling
+   prompt > make  or whatever is needed to compile the code
+
+At this point, it is possible to run a quick test job using jsrun or fix any compilation issues which may have occured.
+
+
+.. note:: 
+
+    Eventually, the Summit compute nodes will be upgraded to match the Moderate Enhanced login node and this will no longer be necessary
+
+    
+C compilation
+^^^^^^^^^^^^^
+
+.. note::
+    type char is unsigned by default
+
++--------------+------------------+----------------+------------------+------------------+---------------------------+--------------------+
+| **Vendor**   | **Module**       | **Compiler**   |  **Enable C99**  | **Enable C11**   | **Default signed char**   | **Define macro**   |
+|              |                  |                |                  |                  |                           |                    |
++==============+==================+================+==================+==================+===========================+====================+
+| **IBM**      | ``xl``           | xlc xlc\_r     | ``-std=gnu99``   | ``-std=gnu11``   | ``-qchar=signed``         | ``-WF,-D``         |
++--------------+------------------+----------------+------------------+------------------+---------------------------+--------------------+
+| **GNU**      | system default   | gcc            | ``-std=gnu99``   | ``-std=gnu11``   | ``-fsigned-char``         | ``-D``             |
++--------------+------------------+----------------+------------------+------------------+---------------------------+--------------------+
+| **GNU**      | ``gcc``          | gcc            | ``-std=gnu99``   | ``-std=gnu11``   | ``-fsigned-char``         | ``-D``             |
++--------------+------------------+----------------+------------------+------------------+---------------------------+--------------------+
+| **LLVM**     | ``llvm``         | clang          | default          | ``-std=gnu11``   | ``-fsigned-char``         | ``-D``             |
++--------------+------------------+----------------+------------------+------------------+---------------------------+--------------------+
+| **PGI**      | ``pgi``          | pgcc           | ``-c99``         | ``-c11``         | ``-Mschar``               | ``-D``             |
++--------------+------------------+----------------+------------------+------------------+---------------------------+--------------------+
+| **NVHPC**    | ``nvhpc``        | nvc            | ``-c99``         | ``-c11``         | ``-Mschar``               | ``-D``             |
++--------------+------------------+----------------+------------------+------------------+---------------------------+--------------------+
+
+C++ compilations
+^^^^^^^^^^^^^^^^
+
+.. note::
+    type char is unsigned by default
+
++--------------+------------------+-------------------+--------------------------------+--------------------------------+---------------------------+--------------------+
+| **Vendor**   | **Module**       | **Compiler**      | **Enable C++11**               | **Enable C++14**               | **Default signed char**   | **Define macro**   |
+|              |                  |                   |                                |                                |                           |                    |
++==============+==================+===================+================================+================================+===========================+====================+
+| **IBM**      | ``xl``           | xlc++, xlc++\_r   | ``-std=gnu++11``               | ``-std=gnu++1y`` (PARTIAL)*    | ``-qchar=signed``         | ``-WF,-D``         |
++--------------+------------------+-------------------+--------------------------------+--------------------------------+---------------------------+--------------------+
+| **GNU**      | system default   | g++               | ``-std=gnu++11``               | ``-std=gnu++1y``               | ``-fsigned-char``         | ``-D``             |
++--------------+------------------+-------------------+--------------------------------+--------------------------------+---------------------------+--------------------+
+| **GNU**      | ``gcc``          | g++               | ``-std=gnu++11``               | ``-std=gnu++1y``               | ``-fsigned-char``         | ``-D``             |
++--------------+------------------+-------------------+--------------------------------+--------------------------------+---------------------------+--------------------+
+| **LLVM**     | ``llvm``         | clang++           | ``-std=gnu++11``               | ``-std=gnu++1y``               | ``-fsigned-char``         | ``-D``             |
++--------------+------------------+-------------------+--------------------------------+--------------------------------+---------------------------+--------------------+
+| **PGI**      | ``pgi``          | pgc++             | ``-std=c++11 -gnu_extensions`` | ``-std=c++14 -gnu_extensions`` | ``-Mschar``               | ``-D``             |
++--------------+------------------+-------------------+--------------------------------+--------------------------------+---------------------------+--------------------+
+| **NVHPC**    | ``nvhpc``        | nvc++             | ``-std=c++11 -gnu_extensions`` | ``-std=c++14 -gnu_extensions`` | ``-Mschar``               | ``-D``             |
++--------------+------------------+-------------------+--------------------------------+--------------------------------+---------------------------+--------------------+
+
+Fortran compilation
+^^^^^^^^^^^^^^^^^^^
+
++--------------+------------------+-----------------------------------+--------------------------+---------------------------+--------------------------+--------------------+
+| **Vendor**   | **Module**       | **Compiler**                      | **Enable F90**           | **Enable F2003**          | **Enable F2008**         | **Define macro**   |
+|              |                  |                                   |                          |                           |                          |                    |
++==============+==================+===================================+==========================+===========================+==========================+====================+
+| **IBM**      | ``xl``           | xlf xlf90 xlf95 xlf2003 xlf2008   | ``-qlanglvl=90std``      | ``-qlanglvl=2003std``     | ``-qlanglvl=2008std``    | ``-WF,-D``         |
++--------------+------------------+-----------------------------------+--------------------------+---------------------------+--------------------------+--------------------+
+| **GNU**      | system default   | gfortran                          | ``-std=f90``             | ``-std=f2003``            | ``-std=f2008``           | ``-D``             |
++--------------+------------------+-----------------------------------+--------------------------+---------------------------+--------------------------+--------------------+
+| **LLVM**     | ``llvm``         | xlflang                           | n/a                      | n/a                       | n/a                      | ``-D``             |
++--------------+------------------+-----------------------------------+--------------------------+---------------------------+--------------------------+--------------------+
+| **PGI**      | ``pgi``          | pgfortran                         | use ``.F90`` source file |  use ``.F03`` source file | use ``.F08`` source file | ``-D``             |
+|              |                  |                                   | suffix                   |  suffix                   | suffix                   |                    |
++--------------+------------------+-----------------------------------+--------------------------+---------------------------+--------------------------+--------------------+
+| **NVHPC**    | ``nvhpc``        | nvfortran                         | use ``.F90`` source file |  use ``.F03`` source file | use ``.F08`` source file | ``-D``             |
+|              |                  |                                   | suffix                   |  suffix                   | suffix                   |                    |
++--------------+------------------+-----------------------------------+--------------------------+---------------------------+--------------------------+--------------------+
+
+.. note::
+    The xlflang module currently conflicts with the clang
+    module. This restriction is expected to be lifted in future releases.
+
+MPI
+^^^
+
+MPI on Summit is provided by IBM Spectrum MPI. Spectrum MPI provides compiler
+wrappers that automatically choose the proper compiler to build your
+application.
+
+The following compiler wrappers are available:
+
+**C**: ``mpicc``
+
+**C++**: ``mpic++``, ``mpiCC``
+
+**Fortran**: ``mpifort``, ``mpif77``, ``mpif90``
+
+While these wrappers conveniently abstract away linking of Spectrum MPI, it's
+sometimes helpful to see exactly what's happening when invoked. The ``--showme``
+flag will display the full link lines, without actually compiling:
+
+::
+
+    summit$ mpicc --showme
+    /sw/summit/xl/16.1.1-10/xlC/16.1.1/bin/xlc_r -I/sw/summit/spack-envs/base/opt/linux-rhel8-ppc64le/xl-16.1.1-10/spectrum-mpi-10.4.0.3-20210112-v7qymniwgi6mtxqsjd7p5jxinxzdkhn3/include -pthread -L/sw/summit/spack-envs/base/opt/linux-rhel8-ppc64le/xl-16.1.1-10/spectrum-mpi-10.4.0.3-20210112-v7qymniwgi6mtxqsjd7p5jxinxzdkhn3/lib -lmpiprofilesupport -lmpi_ibm
+
+OpenMP
+^^^^^^
+
+.. note::
+    When using OpenMP with IBM XL compilers, the thread-safe
+    compiler variant is required; These variants have the same name as the
+    non-thread-safe compilers with an additional ``_r`` suffix. e.g. to
+    compile OpenMPI C code one would use ``xlc_r``
+
+.. note::
+    OpenMP offloading support is still under active development.
+    Performance and debugging capabilities in particular are expected to
+    improve as the implementations mature.
+
++---------------+-------------------+---------------------+-------------------+---------------------------------------------------------------------------------+
+| **Vendor**    | **3.1 Support**   | **Enable OpenMP**   | **4.x Support**   | **Enable OpenMP 4.x Offload**                                                   |
++===============+===================+=====================+===================+=================================================================================+
+| **IBM**       | FULL              | ``-qsmp=omp``       | FULL              | ``-qsmp=omp -qoffload``                                                         |
++---------------+-------------------+---------------------+-------------------+---------------------------------------------------------------------------------+
+| **GNU**       | FULL              | ``-fopenmp``        | PARTIAL           | ``-fopenmp``                                                                    |
++---------------+-------------------+---------------------+-------------------+---------------------------------------------------------------------------------+
+| **clang**     | FULL              | ``-fopenmp``        | PARTIAL           | ``-fopenmp -fopenmp-targets=nvptx64-nvidia-cuda --cuda-path=${OLCF_CUDA_ROOT}`` |
++---------------+-------------------+---------------------+-------------------+---------------------------------------------------------------------------------+
+| **xlflang**   | FULL              | ``-fopenmp``        | PARTIAL           | ``-fopenmp -fopenmp-targets=nvptx64-nvidia-cuda``                               |
++---------------+-------------------+---------------------+-------------------+---------------------------------------------------------------------------------+
+| **PGI**       | FULL              | ``-mp``             | NONE              | NONE                                                                            |
++---------------+-------------------+---------------------+-------------------+---------------------------------------------------------------------------------+
+| **NVHPC**     | FULL              | ``-mp=gpu``         | NONE              | NONE                                                                            |
++---------------+-------------------+---------------------+-------------------+---------------------------------------------------------------------------------+
+
+OpenACC
+^^^^^^^
+
++--------------+--------------------+-----------------------+---------------------------+
+| **Vendor**   | **Module**         | **OpenACC Support**   | **Enable OpenACC**        |
++==============+====================+=======================+===========================+
+| **IBM**      | ``xl``             | NONE                  | NONE                      |
++--------------+--------------------+-----------------------+---------------------------+
+| **GNU**      | system default     | NONE                  | NONE                      |
++--------------+--------------------+-----------------------+---------------------------+
+| **GNU**      | ``gcc``            | 2.5                   | ``-fopenacc``             |
++--------------+--------------------+-----------------------+---------------------------+
+| **LLVM**     | ``clang`` or       |                       |                           |
+|              | ``xlflang``        | NONE                  | NONE                      |
++--------------+--------------------+-----------------------+---------------------------+
+| **PGI**      | ``pgi``            | 2.5                   | ``-acc, -ta=nvidia:cc70`` |
++--------------+--------------------+-----------------------+---------------------------+
+| **NVHPC**    | ``nvhpc``          | 2.5                   | ``-acc=gpu -gpu=cc70``    |
++--------------+--------------------+-----------------------+---------------------------+
+
+CUDA compilation
+^^^^^^^^^^^^^^^^
+
+NVIDIA
+""""""
+
+CUDA C/C++ support is provided through the ``cuda`` module or throught the ``nvhpc`` module.
+
+``nvcc`` : Primary CUDA C/C++ compiler
+
+**Language support**
+
+``-std=c++11`` : provide C++11 support
+
+``--expt-extended-lambda`` : provide experimental host/device lambda support
+
+``--expt-relaxed-constexpr`` : provide experimental host/device constexpr support
+
+**Compiler support**
+
+NVCC currently supports XL, GCC, and PGI C++ backends.
+
+``--ccbin`` : set to host compiler location
+
+CUDA Fortran compilation
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+IBM
+"""
+
+The IBM compiler suite is made available through the default loaded xl
+module, the cuda module is also required.
+
+``xlcuf`` : primary Cuda fortran compiler, thread safe
+
+**Language support flags**
+
+``-qlanglvl=90std`` : provide Fortran90 support
+
+``-qlanglvl=95std`` : provide Fortran95 support
+
+``-qlanglvl=2003std`` : provide Fortran2003 support
+
+``-qlanglvl=2008std`` : provide Fortran2003 support
+
+PGI
+"""
+
+The PGI compiler suite is available through the ``pgi`` module.
+
+``pgfortran`` : Primary fortran compiler with CUDA Fortran support
+
+**Language support:**
+
+Files with ``.cuf`` suffix automatically compiled with cuda fortran support
+
+Standard fortran suffixed source files determines the standard involved,
+see the man page for full details
+
+``-Mcuda`` : Enable CUDA Fortran on provided source file
+
+Linking in Libraries
+--------------------
+
+OLCF systems provide many software packages and scientific
+libraries pre-installed at the system-level for users to take advantage
+of. In order to link these libraries into an application, users must
+direct the compiler to their location. The ``module show`` command can
+be used to determine the location of a particular library. For example
+
+::
+
+    summit$ module show essl
+    ------------------------------------------------------------------------------------
+       /sw/summit/modulefiles/core/essl/6.1.0-1:
+    ------------------------------------------------------------------------------------
+    whatis("ESSL 6.1.0-1 ")
+    prepend_path("LD_LIBRARY_PATH","/sw/summit/essl/6.1.0-1/essl/6.1/lib64")
+    append_path("LD_LIBRARY_PATH","/sw/summit/xl/16.1.1-beta4/lib")
+    prepend_path("MANPATH","/sw/summit/essl/6.1.0-1/essl/6.1/man")
+    setenv("OLCF_ESSL_ROOT","/sw/summit/essl/6.1.0-1/essl/6.1")
+    help([[ESSL 6.1.0-1
+
+    ]])
+
+When this module is loaded, the ``$OLCF_ESSL_ROOT`` environment variable
+holds the path to the ESSL installation, which contains the lib64/ and
+include/ directories:
+
+::
+
+    summit$ module load essl
+    summit$ echo $OLCF_ESSL_ROOT
+    /sw/summit/essl/6.1.0-1/essl/6.1
+    summit$ ls $OLCF_ESSL_ROOT
+    FFTW3  READMES  REDIST.txt  include  iso-swid  ivps  lap  lib64  man  msg
+
+The following screencast shows an example of linking two libraries into
+a simple program on Summit. https://vimeo.com/292015868
+
+.. _running-jobs:
+
+Running Jobs
+============
+
+As is the case on other OLCF systems, computational work on Summit is
+performed within jobs. A typical job consists of several components:
+
+-  A submission script
+-  An executable
+-  Input files needed by the executable
+-  Output files created by the executable
+
+In general, the process for running a job is to:
+
+#. Prepare executables and input files
+#. Write the batch script
+#. Submit the batch script
+#. Monitor the job's progress before and during execution
+
+The following sections will provide more information regarding running
+jobs on Summit. Summit uses IBM Spectrum Load Sharing Facility (LSF) as
+the batch scheduling system.
+
+.. _login-launch-and-compute-nodes:
+
+Login, Launch, and Compute Nodes
+--------------------------------
+
+Recall from the :ref:`system-overview`
+section that Summit has three types of nodes: login, launch, and
+compute. When you log into the system, you are placed on a login node.
+When your :ref:`batch-scripts` or :ref:`interactive-jobs` run,
+the resulting shell will run on a launch node. Compute nodes are accessed
+via the ``jsrun`` command. The ``jsrun`` command should only be issued
+from within an LSF job (either batch or interactive) on a launch node.
+Otherwise, you will not have any compute nodes allocated and your parallel
+job will run on the login node. If this happens, your job will interfere with
+(and be interfered with by) other users' login node tasks. ``jsrun`` is covered
+in-depth in the `Job Launcher (jsrun)`_ section.
+
+Per-User Login Node Resource Limits
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Because the login nodes are resources shared by all Summit users, we utilize
+``cgroups`` to help better ensure resource availability for all users of the
+shared nodes. By default each user is limited to **16 hardware-threads**, **16GB
+of memory**, and **1 GPU**.  Please note that limits are set per user and not
+individual login sessions. All user processes on a node are contained within a
+single cgroup and share the cgroup's limits.
+
+If a process from any of a user’s login sessions reaches 4 hours of CPU-time,
+all login sessions will be limited to **.5 hardware-thread**. After 8 hours of
+CPU-time, the process is automatically killed. To reset the cgroup limits on a
+node to default once the 4 hour CPU-time reduction has been reached, kill the
+offending process and start a new login session to the node.
+
+    .. note:: Login node limits are set per user and not per individual login
+        session.  All user processes on a node are contained within a single cgroup
+        and will share the cgroup's limits.
+        
+
+Users can run command ``check_cgroup_user`` on login nodes to check what processes 
+were recently killed by cgroup limits.
+
+    .. note:: Login node limits are set per user and not per individual login
+        session.  All user processes on a node are contained within a single cgroup
+        and will share the cgroup's limits.
+
+
+.. _batch-scripts:
+
+Batch Scripts
+-------------
+
+The most common way to interact with the batch system is via batch jobs.
+A batch job is simply a shell script with added directives to request
+various resources from or provide certain information to the batch
+scheduling system. Aside from the lines containing LSF options, the
+batch script is simply the series commands needed to set up and run your
+job.
+
+To submit a batch script, use the bsub command: ``bsub myjob.lsf``
+
+If you’ve previously used LSF, you’re probably used to submitting a job
+with input redirection (i.e. ``bsub < myjob.lsf``). This is not needed
+(and will not work) on Summit.
+
+As an example, consider the following batch script:
+
+.. code-block:: bash
+   :linenos:
+
+    #!/bin/bash
+    # Begin LSF Directives
+    #BSUB -P ABC123
+    #BSUB -W 3:00
+    #BSUB -nnodes 2048
+    #BSUB -alloc_flags gpumps
+    #BSUB -J RunSim123
+    #BSUB -o RunSim123.%J
+    #BSUB -e RunSim123.%J
+
+    cd $MEMBERWORK/abc123
+    cp $PROJWORK/abc123/RunData/Input.123 ./Input.123
+    date
+    jsrun -n 4092 -r 2 -a 12 -g 3 ./a.out
+    cp my_output_file /ccs/proj/abc123/Output.123
+
+.. note:: 
+   For Moderate Enhanced Projects, job scripts need to add "-l" ("ell") to the shell specification, similar to interactive usage.
+
++----------+------------+--------------------------------------------------------------------------------------------+
+| Line #   | Option     | Description                                                                                |
++==========+============+============================================================================================+
+| 1        |            | Shell specification. This script will run under with bash as the shell. Moderate enhanced  |
+|          |            | projects should add ``-l`` ("ell") to the shell specification.                             |
++----------+------------+--------------------------------------------------------------------------------------------+
+| 2        |            | Comment line                                                                               |
++----------+------------+--------------------------------------------------------------------------------------------+
+| 3        | Required   | This job will charge to the ABC123 project                                                 |
++----------+------------+--------------------------------------------------------------------------------------------+
+| 4        | Required   | Maximum walltime for the job is 3 hours                                                    |
++----------+------------+--------------------------------------------------------------------------------------------+
+| 5        | Required   | The job will use 2,048 compute nodes                                                       |
++----------+------------+--------------------------------------------------------------------------------------------+
+| 6        | Optional   | Enable GPU Multi-Process Service                                                           |
++----------+------------+--------------------------------------------------------------------------------------------+
+| 7        | Optional   | The name of the job is RunSim123                                                           |
++----------+------------+--------------------------------------------------------------------------------------------+
+| 8        | Optional   | Write standard output to a file named RunSim123.#, where # is the job ID assigned by LSF   |
++----------+------------+--------------------------------------------------------------------------------------------+
+| 9        | Optional   | Write standard error to a file named RunSim123.#, where # is the job ID assigned by LSF    |
++----------+------------+--------------------------------------------------------------------------------------------+
+| 10       | -          | Blank line                                                                                 |
++----------+------------+--------------------------------------------------------------------------------------------+
+| 11       | -          | Change into one of the scratch filesystems                                                 |
++----------+------------+--------------------------------------------------------------------------------------------+
+| 12       | -          | Copy input files into place                                                                |
++----------+------------+--------------------------------------------------------------------------------------------+
+| 13       | -          | Run the ``date`` command to write a timestamp to the standard output file                  |
++----------+------------+--------------------------------------------------------------------------------------------+
+| 14       | -          | Run the executable on the allocated compute nodes                                          |
++----------+------------+--------------------------------------------------------------------------------------------+
+| 15       | -          | Copy output files from the scratch area into a more permanent location                     |
++----------+------------+--------------------------------------------------------------------------------------------+
+
+.. _interactive-jobs:
+
+Interactive Jobs
+----------------
+
+Most users will find batch jobs to be the easiest way to interact with
+the system, since they permit you to hand off a job to the scheduler and
+then work on other tasks; however, it is sometimes preferable to run
+interactively on the system. This is especially true when developing,
+modifying, or debugging a code.
+
+Since all compute resources are managed/scheduled by LSF, it is not possible
+to simply log into the system and begin running a parallel code interactively.
+You must request the appropriate resources from the system and, if necessary,
+wait until they are available. This is done with an “interactive batch” job.
+Interactive batch jobs are submitted via the command line, which
+supports the same options that are passed via ``#BSUB`` parameters in a
+batch script. The final options on the command line are what makes the
+job “interactive batch”: ``-Is`` followed by a shell name. For example,
+to request an interactive batch job (with bash as the shell) equivalent
+to the sample batch script above, you would use the command:
+``bsub -W 3:00 -nnodes 2048 -P ABC123 -Is /bin/bash``
+
+
+As pointed out in :ref:`login-launch-and-compute-nodes`, you will be placed on
+a launch (a.k.a. "batch") node upon launching an interactive job and as usual
+need to use ``jsrun`` to access the compute node(s):
+
+.. code::
+
+    $ bsub -Is -W 0:10 -nnodes 1 -P STF007 $SHELL
+    Job <779469> is submitted to default queue <batch>.
+    <<Waiting for dispatch ...>>
+    <<Starting on batch2>>
+
+    $ hostname
+    batch2
+
+    $ jsrun -n1 hostname
+    a35n03
+
+Common bsub Options
+-------------------
+
+The table below summarizes options for submitted jobs. Unless otherwise
+noted, these can be used from batch scripts or interactive jobs. For
+interactive jobs, the options are simply added to the ``bsub`` command
+line. For batch scripts, they can either be added on the ``bsub``
+command line or they can appear as a ``#BSUB`` directive in the batch
+script. If conflicting options are specified (i.e. different walltime
+specified on the command line versus in the script), the option on the
+command line takes precedence. Note that LSF has numerous options; only
+the most common ones are described here. For more in-depth information
+about other LSF options, see the ``bsub`` man page.
+
++--------------------+----------------------------------------+----------------------------------------------------------------------------------+
+| Option             | Example Usage                          | Description                                                                      |
++====================+========================================+==================================================================================+
+| ``-W``             | ``#BSUB -W 50``                        | Requested                                                                        |
+|                    |                                        | maximum walltime. NOTE: The format is [hours:]minutes, not                       |
+|                    |                                        | [[hours:]minutes:]seconds like PBS/Torque/Moab                                   |
++--------------------+----------------------------------------+----------------------------------------------------------------------------------+
+| ``-nnodes``        | ``#BSUB -nnodes 1024``                 | Number of nodes                                                                  |
+|                    |                                        | NOTE: There is specified with only one hyphen (i.e. -nnodes, not --nnodes)       |
++--------------------+----------------------------------------+----------------------------------------------------------------------------------+
+| ``-P``             | ``#BSUB -P ABC123``                    | Specifies the                                                                    |
+|                    |                                        | project to which the job should be charged                                       |
++--------------------+----------------------------------------+----------------------------------------------------------------------------------+
+| ``-o``             | ``#BSUB -o jobout.%J``                 | File into which                                                                  |
+|                    |                                        | job STDOUT should be directed (%J will be replaced with the job ID number) If    |
+|                    |                                        | you do not also specify a STDERR file with ``-e`` or ``-eo``, STDERR will also   |
+|                    |                                        | be written to this file.                                                         |
++--------------------+----------------------------------------+----------------------------------------------------------------------------------+
+| ``-e``             | ``#BSUB -e jobout.%J``                 | File into which                                                                  |
+|                    |                                        | job STDERR should be directed (%J will be replaced with the job ID number)       |
++--------------------+----------------------------------------+----------------------------------------------------------------------------------+
+| ``-J``             | ``#BSUB -J MyRun123``                  | Specifies the                                                                    |
+|                    |                                        | name of the job (if not present, LSF will use the name of the job script as the  |
+|                    |                                        | job’s name)                                                                      |
++--------------------+----------------------------------------+----------------------------------------------------------------------------------+
+| ``-w``             | ``#BSUB -w ended()``                   | Place a dependency on the job                                                    |
++--------------------+----------------------------------------+----------------------------------------------------------------------------------+
+| ``-N``             | ``#BSUB -N``                           | Send a job report via email when the job completes                               |
++--------------------+----------------------------------------+----------------------------------------------------------------------------------+
+| ``-XF``            | ``#BSUB -XF``                          | Use X11 forwarding                                                               |
++--------------------+----------------------------------------+----------------------------------------------------------------------------------+
+| ``-alloc_flags``   | ``#BSUB -alloc_flags "gpumps smt1"``   | Used to request                                                                  |
+|                    |                                        | GPU Multi-Process Service (MPS) and to set SMT (Simultaneous Multithreading)     |
+|                    |                                        | levels. Only one "#BSUB alloc\_flags" command is recognized so multiple          |
+|                    |                                        | alloc\_flags options need to be enclosed in quotes and space-separated. Setting  |
+|                    |                                        | gpumps enables NVIDIA’s Multi-Process Service, which allows multiple MPI ranks   |
+|                    |                                        | to simultaneously access a GPU. Setting smt\ *n* (where *n* is 1, 2, or 4) sets  |
+|                    |                                        | different SMT levels. To run with 2 hardware threads per physical core, you’d    |
+|                    |                                        | use smt2. The default level is smt4.                                             |
++--------------------+----------------------------------------+----------------------------------------------------------------------------------+
+
+Allocation-wide Options
+^^^^^^^^^^^^^^^^^^^^^^^
+
+The ``-alloc_flags`` option to ``bsub`` is used to set allocation-wide options.
+These settings are applied to every compute node in a job. Only one instance of
+the flag is accepted, and multiple ``alloc_flags`` values should be enclosed in
+quotes and space-separated. For example, ``-alloc_flags "gpumps smt1``.
+
+The most common values (``smt{1,2,4}``, ``gpumps``, ``gpudefault``) are detailed in
+the following sections. 
+
+This option can also be used to provide additional resources to GPFS service
+processes, described in the `GPFS System Service Isolation
+<#gpfs-system-service-isolation>`__ section.
+
+Hardware Threads
+""""""""""""""""
+
+Hardware threads are a feature of the POWER9 processor through which
+individual physical cores can support multiple execution streams,
+essentially looking like one or more virtual cores (similar to
+hyperthreading on some Intel\ |R| microprocessors). This feature is often
+called Simultaneous Multithreading or SMT. The POWER9 processor on
+Summit supports SMT levels of 1, 2, or 4, meaning (respectively) each
+physical core looks like 1, 2, or 4 virtual cores. The SMT level is
+controlled by the ``-alloc_flags`` option to ``bsub``. For example, to
+set the SMT level to 2, add the line ``#BSUB –alloc_flags smt2`` to your
+batch script or add the option ``-alloc_flags smt2`` to you ``bsub``
+command line.
+
+The default SMT level is 4.
+
+MPS
+"""
+
+The Multi-Process Service (MPS) enables multiple processes (e.g. MPI
+ranks) to concurrently share the resources on a single GPU. This is
+accomplished by starting an MPS server process, which funnels the work
+from multiple CUDA contexts (e.g. from multiple MPI ranks) into a single
+CUDA context. In some cases, this can increase performance due to better
+utilization of the resources. As mentioned in the `Common bsub Options <#common-bsub-options>`__
+section above, MPS can be enabled with the ``-alloc_flags "gpumps"`` option to
+``bsub``. The following screencast shows an example of how to start an MPS
+server process for a job: https://vimeo.com/292016149
+
+GPU Compute Modes
+"""""""""""""""""
+
+Summit's V100 GPUs are configured to have a default compute mode of
+``EXCLUSIVE_PROCESS``. In this mode, the GPU is assigned to only a single
+process at a time, and can accept work from multiple process threads
+concurrently.
+
+
+It may be desirable to change the GPU's compute mode to ``DEFAULT``, which
+enables multiple processes and their threads to share and submit work to it
+simultaneously. To change the compute mode to ``DEFAULT``, use the
+``-alloc_flags gpudefault`` option.
+
+NVIDIA recommends using the ``EXCLUSIVE_PROCESS`` compute mode (the default on
+Summit) when using the Multi-Process Service, but both MPS and the compute mode
+can be changed by providing both values: ``-alloc_flags "gpumps gpudefault"``. 
+
+Batch Environment Variables
+---------------------------
+
+LSF provides a number of environment variables in your job’s shell
+environment. Many job parameters are stored in environment variables and
+can be queried within the batch job. Several of these variables are
+summarized in the table below. This is not an all-inclusive list of
+variables available to your batch job; in particular only LSF variables
+are discussed, not the many “standard” environment variables that will
+be available (such as ``$PATH``).
+
++-----------------------+------------------------------------------------------+
+| Variable              | Description                                          |
++=======================+======================================================+
+| ``LSB_JOBID``         | The ID assigned to the job by LSF                    |
++-----------------------+------------------------------------------------------+
+| ``LS_JOBPID``         | The job’s process ID                                 |
++-----------------------+------------------------------------------------------+
+| ``LSB_JOBINDEX``      | The job’s index (if it belongs to a job array)       |
++-----------------------+------------------------------------------------------+
+| ``LSB_HOSTS``         | The hosts assigned to run the job                    |
++-----------------------+------------------------------------------------------+
+| ``LSB_QUEUE``         | The queue from which the job was dispatched          |
++-----------------------+------------------------------------------------------+
+| ``LSB_INTERACTIVE``   | Set to “Y” for an interactive job; otherwise unset   |
++-----------------------+------------------------------------------------------+
+| ``LS_SUBCWD``         | The directory from which the job was submitted       |
++-----------------------+------------------------------------------------------+
+
+Job States
+----------
+
+A job will progress through a number of states through its lifetime. The
+states you’re most likely to see are:
+
++---------+-----------------------------------------------------------------------------+
+| State   | Description                                                                 |
++=========+=============================================================================+
+| PEND    | Job is pending                                                              |
++---------+-----------------------------------------------------------------------------+
+| RUN     | Job is running                                                              |
++---------+-----------------------------------------------------------------------------+
+| DONE    | Job completed normally (with an exit code of 0)                             |
++---------+-----------------------------------------------------------------------------+
+| EXIT    | Job completed abnormally                                                    |
++---------+-----------------------------------------------------------------------------+
+| PSUSP   | Job was suspended (either by the user or an administrator) while pending    |
++---------+-----------------------------------------------------------------------------+
+| USUSP   | Job was suspended (either by the user or an administrator) after starting   |
++---------+-----------------------------------------------------------------------------+
+| SSUSP   | Job was suspended by the system after starting                              |
++---------+-----------------------------------------------------------------------------+
+
+.. note::
+    Jobs may end up in the PSUSP state for a number of reasons. Two common reasons for PSUSP jobs include jobs that have been held by the user or jobs with unresolved dependencies. 
+    
+    Another common reason that jobs end up in a PSUSP state is a job that the system is unable to start. You may notice a job alternating between PEND and RUN states a few times and ultimately ends up as PSUSP. In this case, the system attempted to start the job but failed for some reason. This can be due to a system issue, but we have also seen this casued by improper settings on user ``~/.ssh/config`` files. (The batch system uses SSH, and the improper settings cause SSH to fail.) If you notice your jobs alternating between PEND and RUN, you might want to check permissions of your ``~/.ssh/config`` file to make sure it does not have write permission for "group" or "other". (A setting of read/write for the user and no other permissions, which can be set with ``chmod 600 ~/.ssh/config``, is recommended.)
+
+Scheduling Policy
+-----------------
+
+In a simple batch queue system, jobs run in a first-in, first-out (FIFO)
+order. This often does not make effective use of the system. A large job
+may be next in line to run. If the system is using a strict FIFO queue,
+many processors sit idle while the large job waits to run. *Backfilling*
+would allow smaller, shorter jobs to use those otherwise idle resources,
+and with the proper algorithm, the start time of the large job would not
+be delayed. While this does make more effective use of the system, it
+indirectly encourages the submission of smaller jobs.
+
+The DOE Leadership-Class Job Mandate
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+As a DOE Leadership Computing Facility, the OLCF has a mandate that a
+large portion of Summit's usage come from large, *leadership-class* (aka
+*capability*) jobs. To ensure the OLCF complies with DOE directives, we
+strongly encourage users to run jobs on Summit that are as large as
+their code will warrant. To that end, the OLCF implements queue policies
+that enable large jobs to run in a timely fashion.
+
+.. note::
+    The OLCF implements queue policies that encourage the
+    submission and timely execution of large, leadership-class jobs on
+    Summit.
+
+The basic priority-setting mechanism for jobs waiting in the queue is
+the time a job has been waiting relative to other jobs in the queue.
+
+If your jobs require resources outside these queue policies such as higher priority or longer walltimes, please contact help@olcf.ornl.gov. 
+
+Job Priority by Processor Count
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Jobs are *aged* according to the job's requested processor count (older
+age equals higher queue priority). Each job's requested processor count
+places it into a specific *bin*. Each bin has a different aging
+parameter, which all jobs in the bin receive.
+
++-------+-------------+-------------+------------------------+----------------------+
+| Bin   | Min Nodes   | Max Nodes   | Max Walltime (Hours)   | Aging Boost (Days)   |
++=======+=============+=============+========================+======================+
+| 1     | 2,765       | 4,608       | 24.0                   | 15                   |
++-------+-------------+-------------+------------------------+----------------------+
+| 2     | 922         | 2,764       | 24.0                   | 10                   |
++-------+-------------+-------------+------------------------+----------------------+
+| 3     | 92          | 921         | 12.0                   | 0                    |
++-------+-------------+-------------+------------------------+----------------------+
+| 4     | 46          | 91          | 6.0                    | 0                    |
++-------+-------------+-------------+------------------------+----------------------+
+| 5     | 1           | 45          | 2.0                    | 0                    |
++-------+-------------+-------------+------------------------+----------------------+
+
+``batch`` Queue Policy
+"""""""""""""""""""""""
+
+The ``batch`` queue is the default queue for production work on Summit.
+Most work on Summit is handled through this queue. It enforces the
+following policies:
+
+-  Limit of (4) *eligible-to-run* jobs per user.
+-  Jobs in excess of the per user limit above will be placed into a
+   *held* state, but will change to eligible-to-run at the appropriate
+   time.
+-  Users may have only (100) jobs queued in the ``batch`` queue at any state at any time.
+   Additional jobs will be rejected at submit time.
+
+.. note::
+    The *eligible-to-run* state is not the *running* state.
+    Eligible-to-run jobs have not started and are waiting for resources.
+    Running jobs are actually executing.
+
+``batch-hm`` Queue Policy
+"""""""""""""""""""""""""
+
+The ``batch-hm`` queue is used to access Summit's high-memory nodes.
+Jobs may use all 54 nodes. It enforces the following policies:
+
+-  Limit of (4) *eligible-to-run* jobs per user.
+-  Jobs in excess of the per user limit above will be placed into a
+   *held* state, but will change to eligible-to-run at the appropriate
+   time.
+-  Users may have only (25) jobs queued in the ``batch-hm`` queue at any state at any time.
+   Additional jobs will be rejected at submit time.
+
+**batch-hm job limits:**
+
++-------------+-------------+------------------------+
+| Min Nodes   | Max Nodes   | Max Walltime (Hours)   |
++=============+=============+========================+
+| 1           | 54          | 24.0                   |
++-------------+-------------+------------------------+
+
+To submit a job to the ``batch-hm`` queue, add the ``-q batch-hm`` option to your
+``bsub`` command or ``#BSUB -q batch-hm`` to your job script.
+
+
+Moderate Enhanced Projects ``batch-spi`` Queue Policy
+"""""""""""""""""""""""""""""""""""""""""""""""""""""
+The ``batch-spi`` queue is used by Summit's "Moderate Enhanced Enclave" projects. Projects in
+this enclave will be required to add ``-q batch-spi`` to their ``bsub`` command, or ``#BSUB -q batch-spi`` to
+their job scripts. Except for the enhanced security policies for jobs in these queues, all other queue properties are
+the same as the regular batch queue, including walltime limits based on node count, job aging priorities based on node
+count, and maximum number of jobs per user.
+
+Moderate Enhanced Projects ``batch-hm-spi`` Queue Policy
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+The ``batch-hm-spi`` queue is used by Summit's "Moderate Enhanced Enclave" projects that also want to
+take advantage of Summit's high-memory nodes. Projects in this enclave that want to use the Summit
+high-memory nodes will need to add ``-q batch-hm-spi`` to their ``bsub`` command, or ``#BSUB -q batch-hm-spi`` to
+their job scripts. Except for the enhanced security policies for jobs in these queues, all other queue properties are the same 
+as the ``batch-hm`` queue, such as maximum walltime and number of eligible running jobs.
+
+
+``killable`` Queue Policy
+""""""""""""""""""""""""""
+
+The ``killable`` queue is a preemptable queue that allows jobs in bins 4 and 5
+to request walltimes up to 24 hours. Jobs submitted to the killable queue will
+be preemptable once the job reaches the guaranteed runtime limit as shown in the
+table below. For example, a job in bin 5 submitted to the killable queue can
+request a walltime of 24 hours. The job will be preemptable after two hours of
+run time. Similarly, a job in bin 4 will be preemptable after six hours of run
+time. Once a job is preempted, the job will be resubmitted by default with the
+original limits as requested in the job script and will have the same ``JOBID``.
+
+**Preemptable job limits:**
+
++-------+-------------+-------------+------------------------+----------------------+
+| Bin   | Min Nodes   | Max Nodes   | Max Walltime (Hours)   | Guaranteed Walltime  |
++=======+=============+=============+========================+======================+
+| 4     | 46          | 91          | 24.0                   |  6.0 (hours)         |
++-------+-------------+-------------+------------------------+----------------------+
+| 5     | 1           | 45          | 24.0                   |  2.0 (hours)         |
++-------+-------------+-------------+------------------------+----------------------+
+
+.. warning:: If a job in the ``killable`` queue does not reach its requested
+    walltime, it will continue to use allocation time with each automatic
+    resubmission until it either reaches the requested walltime during a single
+    continuous run, or is manually killed by the user. Allocations are always
+    charged based on actual compute time used by all jobs.
+
+To submit a job to the ``killable`` queue, add the ``-q killable`` option to your
+``bsub`` command or ``#BSUB -q killable`` to your job script.
+
+To prevent a preempted job from being automatically requeued, the ``BSUB -rn``
+flag can be used at submit time.
+
+
+``debug`` Queue Policy
+""""""""""""""""""""""""""
+
+The ``debug`` queue (and the ``debug-spi`` queue for Moderate Enhanced security enclave projects)
+can be used to access Summit's compute resources for short 
+non-production debug tasks.  The queue provides a higher priority compared
+to jobs of the same job size bin in production queues.  Production work and 
+job chaining in the debug queue is prohibited.  Each user is limited to one 
+job in any state in the debug queue at any one point. Attempts to submit multiple
+jobs to the debug queue will be rejected upon job submission.
+
+**debug job limits:**
+
++-------------+--------------+------------------------+---------------------------------+--------------------+
+| Min Nodes   | Max Nodes    | Max Walltime (Hours)   | Max queued any state (per user) | Aging Boost (Days) |
++=============+==============+========================+=================================+====================+
+| 1           | unlimited    | 2.0                    | 1                               | 2                  |
++-------------+--------------+------------------------+---------------------------------+--------------------+
+
+To submit a job to the ``debug`` queue, add the ``-q debug`` option to your
+``bsub`` command or ``#BSUB -q debug`` to your job script. Moderate Enhanced projects would add ``-q debug-spi``
+to the ``bsub`` command or ``#BSUB -q debug-spi`` to job scripts.
+
+
+.. note::
+    Production work and job chaining in the ``debug`` queue is prohibited.
+
+Allocation Overuse Policy
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Projects that overrun their allocation are still allowed to run on OLCF
+systems, although at a reduced priority. Like the adjustment for the
+number of processors requested above, this is an adjustment to the
+apparent submit time of the job. However, this adjustment has the effect
+of making jobs appear much younger than jobs submitted under projects
+that have not exceeded their allocation. In addition to the priority
+change, these jobs are also limited in the amount of wall time that can
+be used. For example, consider that ``job1`` is submitted at the same
+time as ``job2``. The project associated with ``job1`` is over its
+allocation, while the project for ``job2`` is not. The batch system will
+consider ``job2`` to have been waiting for a longer time than ``job1``.
+Additionally, projects that are at 125% of their allocated time will be
+limited to only 3 running jobs at a time. The adjustment to the
+apparent submit time depends upon the percentage that the project is
+over its allocation, as shown in the table below:
+
++------------------------+----------------------+
+| % Of Allocation Used   | Priority Reduction   |
++========================+======================+
+| < 100%                 | 0 days               |
++------------------------+----------------------+
+| 100% to 125%           | 30 days              |
++------------------------+----------------------+
+| > 125%                 | 365 days             |
++------------------------+----------------------+
+
+System Reservation Policy
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Projects may request to reserve a set of nodes for a period of time
+by contacting help@olcf.ornl.gov. If the reservation is granted, the reserved nodes will be
+blocked from general use for a given period of time. Only users that
+have been authorized to use the reservation can utilize those resources.
+To access the reservation, please add -U {reservation name} to bsub or job script.
+Since no other users can access the reserved resources, it is crucial
+that groups given reservations take care to ensure the utilization on
+those resources remains high. To prevent reserved resources from
+remaining idle for an extended period of time, reservations are
+monitored for inactivity. If activity falls below 50% of the reserved
+resources for more than (30) minutes, the reservation will be canceled
+and the system will be returned to normal scheduling. A new reservation
+must be requested if this occurs.
+
+The requesting project's allocation is charged according to the time window
+granted, regardless of actual utilization. For example, an 8-hour, 2,000
+node reservation on Summit would be equivalent to using 16,000 Summit
+node-hours of a project's allocation.
+
+--------------
+
+Job Dependencies
+----------------
+
+As is the case with many other queuing systems, it is possible to place
+dependencies on jobs to prevent them from running until other jobs have
+started/completed/etc. Several possible dependency settings are
+described in the table below:
+
++-----------------------------------------------+---------------------------------------------------------------------------------+
+| Expression                                    | Meaning                                                                         |
++===============================================+=================================================================================+
+| ``#BSUB -w started(12345)``                   | The job will not start until                                                    |
+|                                               | job 12345 starts. Job 12345 is considered to have started if is in any of the   |
+|                                               | following states: USUSP, SSUSP, DONE, EXIT or RUN (with any pre-execution       |
+|                                               | command specified by ``bsub -E`` completed)                                     |
++-----------------------------------------------+---------------------------------------------------------------------------------+
+| ``#BSUB -w done(12345)`` ``#BSUB -w 12345``   | The job will not start until                                                    |
+|                                               | job 12345 has a state of DONE (i.e. completed normally). If a job ID is given   |
+|                                               | with no condition, ``done()`` is assumed.                                       |
++-----------------------------------------------+---------------------------------------------------------------------------------+
+| ``#BSUB -w exit(12345)``                      | The job will not start until                                                    |
+|                                               | job 12345 has a state of EXIT (i.e. completed abnormally)                       |
++-----------------------------------------------+---------------------------------------------------------------------------------+
+| ``#BSUB -w ended(12345)``                     | The job will not start until                                                    |
+|                                               | job 12345 has a state of EXIT or DONE                                           |
++-----------------------------------------------+---------------------------------------------------------------------------------+
+
+Dependency expressions can be combined with logical operators. For
+example, if you want a job held until job 12345 is DONE and job 12346
+has started, you can use ``#BSUB -w "done(12345) && started(12346)"``
+
+
+
+.. _job-launcher-jsrun:
+
+Job Launcher (jsrun)
+--------------------
+
+The default job launcher for Summit is ``jsrun``. jsrun was developed by
+IBM for the Oak Ridge and Livermore Power systems. The tool will execute
+a given program on resources allocated through the LSF batch scheduler;
+similar to ``mpirun`` and ``aprun`` functionality.
+
+Compute Node Description
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+The following compute node image will be used to discuss jsrun resource
+sets and layout.
+
+
+.. image:: /images/summit-node-description-1.png
+   :width: 85%
+   :align: center
+
+-  1 node
+-  2 sockets (grey)
+-  42 physical cores\* (dark blue)
+-  168 hardware cores (light blue)
+-  6 GPUs (orange)
+-  2 Memory blocks (yellow)
+
+**\*Core Isolation:** 1 core on each socket has been set aside for
+overhead and is not available for allocation through jsrun. The core has
+been omitted and is not shown in the above image.
+
+Resource Sets
+^^^^^^^^^^^^^
+
+While jsrun performs similar job launching functions as aprun and
+mpirun, its syntax is very different. A large reason for syntax
+differences is the introduction of the ``resource set`` concept. Through
+resource sets, jsrun can control how a node appears to each job. Users
+can, through jsrun command line flags, control which resources on a node
+are visible to a job. Resource sets also allow the ability to run
+multiple jsruns simultaneously within a node. Under the covers, a
+resource set is a cgroup.
+
+At a high level, a resource set allows users to configure what a node
+look like to their job.
+
+jsrun will create one or more resource sets within a node. Each resource
+set will contain 1 or more cores and 0 or more GPUs. A resource set can
+span sockets, but it may not span a node. While a resource set can span
+sockets within a node, consideration should be given to the cost of
+cross-socket communication. By creating resource sets only within
+sockets, costly communication between sockets can be prevented.
+
+Subdividing a Node with Resource Sets
+"""""""""""""""""""""""""""""""""""""
+
+Resource sets provides the ability to subdivide node’s resources into
+smaller groups. The following examples show how a node can be subdivided
+and how many resource set could fit on a node.
+
+.. image:: /images/summit-resource-set-subdivide.png
+   :align: center
+
+Multiple Methods to Creating Resource Sets
+""""""""""""""""""""""""""""""""""""""""""
+
+Resource sets should be created to fit code requirements. The following
+examples show multiple ways to create resource sets that allow two MPI
+tasks access to a single GPU.
+
+#. 6 resource sets per node: 1 GPU, 2 cores per (Titan)
+
+   .. image:: https://www.olcf.ornl.gov/wp-content/uploads/2018/03/RS-summit-example-1GPU-2Cores.png
+      :align: center
+
+   In this case, CPUs can only see single assigned GPU.
+
+#. 2 resource sets per node: 3 GPUs and 6 cores per socket
+
+   .. image:: https://www.olcf.ornl.gov/wp-content/uploads/2018/03/RS-summit-example-3GPU-6Cores.png
+      :align: center
+
+   In this case, all 6 CPUs can see 3 GPUs. Code must manage CPU -> GPU
+   communication. CPUs on socket0 can not access GPUs or Memory on socket1.
+
+#. Single resource set per node: 6 GPUs, 12 cores
+
+   .. image:: https://www.olcf.ornl.gov/wp-content/uploads/2018/03/RS-summit-example-6GPU-12Core.png
+      :align: center
+
+   In this case, all 12 CPUs can see all node’s 6 GPUs. Code must manage CPU to
+   GPU communication. CPUs on socket0 can access GPUs and Memory on socket1.
+   Code must manage cross socket communication.
+
+Designing a Resource Set
+""""""""""""""""""""""""
+
+Resource sets allow each jsrun to control how the node appears to a
+code. This method is unique to jsrun, and requires thinking of each job
+launch differently than aprun or mpirun. While the method is unique, the
+method is not complicated and can be reasoned in a few basic steps.
+
+The first step to creating resource sets is understanding how a code would
+like the node to appear. For example, the number of tasks/threads per
+GPU. Once this is understood, the next step is to simply calculate the
+number of resource sets that can fit on a node. From here, the number of
+needed nodes can be calculated and passed to the batch job request.
+
+The basic steps to creating resource sets:
+
+1) Understand how your code expects to interact with the system.
+    How many tasks/threads per GPU?
+
+    Does each task expect to see a single GPU? Do multiple tasks expect
+    to share a GPU? Is the code written to internally manage task to GPU
+    workload based on the number of available cores and GPUs?
+2) Create resource sets containing the needed GPU to task binding
+    Based on how your code expects to interact with the system, you can
+    create resource sets containing the needed GPU and core resources.
+    If a code expects to utilize one GPU per task, a resource set would
+    contain one core and one GPU. If a code expects to pass work to a
+    single GPU from two tasks, a resource set would contain two cores
+    and one GPU.
+3) Decide on the number of resource sets needed
+    Once you understand tasks, threads, and GPUs in a resource set, you
+    simply need to decide the number of resource sets needed.
+
+As on any system, it is useful to keep in mind the hardware underneath every
+execution. This is particularly true when laying out resource sets.
+
+Launching a Job with jsrun
+--------------------------
+
+jsrun Format
+^^^^^^^^^^^^
+
+::
+
+      jsrun    [ -n #resource sets ]   [tasks, threads, and GPUs within each resource set]   program [ program args ]
+
+Common jsrun Options
+^^^^^^^^^^^^^^^^^^^^
+
+Below are common jsrun options. More flags and details can be found in the jsrun
+man page. The defaults listed in the table below are the OLCF defaults and take
+precedence over those mentioned in the man page.
+
+
++---------------------------+--------+------------------------------------------------------+------------------------------+
+| Flags                              |                                                      |                              |
++---------------------------+--------+  Description                                         + Default Value                +
+| Long                      | Short  |                                                      |                              |
++===========================+========+======================================================+==============================+
+| ``--nrs``                 | ``-n`` | Number of resource sets                              | All available physical cores |
++---------------------------+--------+------------------------------------------------------+------------------------------+
+| ``--tasks_per_rs``        | ``-a`` | Number of MPI tasks (ranks) per resource set         | Not set by default, instead  |
+|                           |        |                                                      | total tasks (-p) set         |
++---------------------------+--------+------------------------------------------------------+------------------------------+
+| ``--cpu_per_rs``          | ``-c`` | Number of CPUs (cores) per resource set.             | 1                            |
++---------------------------+--------+------------------------------------------------------+------------------------------+
+| ``--gpu_per_rs``          | ``-g`` | Number of GPUs per resource set                      | 0                            |
++---------------------------+--------+------------------------------------------------------+------------------------------+
+| ``--bind``                | ``-b`` | Binding of tasks within a resource set. Can be none, | packed:1                     |
+|                           |        | rs, or packed:#                                      |                              |
++---------------------------+--------+------------------------------------------------------+------------------------------+
+| ``--rs_per_host``         | ``-r`` | Number of resource sets per host                     | No default                   |
++---------------------------+--------+------------------------------------------------------+------------------------------+
+| ``--latency_priority``    | ``-l`` | Latency Priority. Controls layout                    | gpu-cpu,cpu-mem,cpu-cpu      |
+|                           |        | priorities. Can currently be cpu-cpu or gpu-cpu      |                              |
++---------------------------+--------+------------------------------------------------------+------------------------------+
+| ``--launch_distribution`` | ``-d`` | How tasks are started on resource sets               | packed                       |
++---------------------------+--------+------------------------------------------------------+------------------------------+
+
+It's recommended to explicitly specify ``jsrun`` options and not rely on the
+default values. This most often includes ``--nrs``,\ ``--cpu_per_rs``,
+``--gpu_per_rs``, ``--tasks_per_rs``, ``--bind``, and ``--launch_distribution``.
+
+Jsrun Examples
+--------------
+
+The below examples were launched in the following 2 node interactive
+batch job:
+
+::
+
+    summit> bsub -nnodes 2 -Pprj123 -W02:00 -Is $SHELL
+
+Single MPI Task, single GPU per RS
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The following example will create 12 resource sets each with 1 MPI task
+and 1 GPU. Each MPI task will have access to a single GPU.
+
+Rank 0 will have access to GPU 0 on the first node ( red resource set).
+Rank 1 will have access to GPU 1 on the first node ( green resource set).
+This pattern will continue until 12 resources sets have been created.
+
+The following jsrun command will request 12 resource sets (``-n12``) 6
+per node (``-r6``). Each resource set will contain 1 MPI task (``-a1``),
+1 GPU (``-g1``), and 1 core (``-c1``).
+
+.. image:: /images/summit-jsrun-example-1Core-1GPU.png
+   :align: center
+
+::
+
+    summit> jsrun -n12 -r6 -a1 -g1 -c1 ./a.out
+    Rank:    0; NumRanks: 12; RankCore:   0; Hostname: h41n04; GPU: 0
+    Rank:    1; NumRanks: 12; RankCore:   4; Hostname: h41n04; GPU: 1
+    Rank:    2; NumRanks: 12; RankCore:   8; Hostname: h41n04; GPU: 2
+    Rank:    3; NumRanks: 12; RankCore:  88; Hostname: h41n04; GPU: 3
+    Rank:    4; NumRanks: 12; RankCore:  92; Hostname: h41n04; GPU: 4
+    Rank:    5; NumRanks: 12; RankCore:  96; Hostname: h41n04; GPU: 5
+
+    Rank:    6; NumRanks: 12; RankCore:   0; Hostname: h41n03; GPU: 0
+    Rank:    7; NumRanks: 12; RankCore:   4; Hostname: h41n03; GPU: 1
+    Rank:    8; NumRanks: 12; RankCore:   8; Hostname: h41n03; GPU: 2
+    Rank:    9; NumRanks: 12; RankCore:  88; Hostname: h41n03; GPU: 3
+    Rank:   10; NumRanks: 12; RankCore:  92; Hostname: h41n03; GPU: 4
+    Rank:   11; NumRanks: 12; RankCore:  96; Hostname: h41n03; GPU: 5
+
+Multiple tasks, single GPU per RS
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The following jsrun command will request 12 resource sets (``-n12``).
+Each resource set will contain 2 MPI tasks (``-a2``), 1 GPU
+(``-g1``), and 2 cores (``-c2``). 2 MPI tasks will have access to a
+single GPU. Ranks 0 - 1 will have access to GPU 0 on the first node (
+red resource set). Ranks 2 - 3 will have access to GPU 1 on the first
+node ( green resource set). This pattern will continue until 12 resource
+sets have been created.
+
+.. image:: /images/summit-jsrun-example-2taskperGPU.png
+   :align: center
+
+
+**Adding cores to the RS:** The ``-c`` flag should be used to request
+the needed cores for tasks and treads. The default -c core count is 1.
+In the above example, if -c is not specified both tasks will run on a
+single core.
+
+::
+
+    summit> jsrun -n12 -a2 -g1 -c2 -dpacked ./a.out | sort
+    Rank:    0; NumRanks: 24; RankCore:   0; Hostname: a01n05; GPU: 0
+    Rank:    1; NumRanks: 24; RankCore:   4; Hostname: a01n05; GPU: 0
+
+    Rank:    2; NumRanks: 24; RankCore:   8; Hostname: a01n05; GPU: 1
+    Rank:    3; NumRanks: 24; RankCore:  12; Hostname: a01n05; GPU: 1
+
+    Rank:    4; NumRanks: 24; RankCore:  16; Hostname: a01n05; GPU: 2
+    Rank:    5; NumRanks: 24; RankCore:  20; Hostname: a01n05; GPU: 2
+
+    Rank:    6; NumRanks: 24; RankCore:  88; Hostname: a01n05; GPU: 3
+    Rank:    7; NumRanks: 24; RankCore:  92; Hostname: a01n05; GPU: 3
+
+    Rank:    8; NumRanks: 24; RankCore:  96; Hostname: a01n05; GPU: 4
+    Rank:    9; NumRanks: 24; RankCore: 100; Hostname: a01n05; GPU: 4
+
+    Rank:   10; NumRanks: 24; RankCore: 104; Hostname: a01n05; GPU: 5
+    Rank:   11; NumRanks: 24; RankCore: 108; Hostname: a01n05; GPU: 5
+
+    Rank:   12; NumRanks: 24; RankCore:   0; Hostname: a01n01; GPU: 0
+    Rank:   13; NumRanks: 24; RankCore:   4; Hostname: a01n01; GPU: 0
+
+    Rank:   14; NumRanks: 24; RankCore:   8; Hostname: a01n01; GPU: 1
+    Rank:   15; NumRanks: 24; RankCore:  12; Hostname: a01n01; GPU: 1
+
+    Rank:   16; NumRanks: 24; RankCore:  16; Hostname: a01n01; GPU: 2
+    Rank:   17; NumRanks: 24; RankCore:  20; Hostname: a01n01; GPU: 2
+
+    Rank:   18; NumRanks: 24; RankCore:  88; Hostname: a01n01; GPU: 3
+    Rank:   19; NumRanks: 24; RankCore:  92; Hostname: a01n01; GPU: 3
+
+    Rank:   20; NumRanks: 24; RankCore:  96; Hostname: a01n01; GPU: 4
+    Rank:   21; NumRanks: 24; RankCore: 100; Hostname: a01n01; GPU: 4
+
+    Rank:   22; NumRanks: 24; RankCore: 104; Hostname: a01n01; GPU: 5
+    Rank:   23; NumRanks: 24; RankCore: 108; Hostname: a01n01; GPU: 5
+
+    summit>
+
+Multiple Task, Multiple GPU per RS
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The following example will create 4 resource sets each with 6 tasks and
+3 GPUs. Each set of 6 MPI tasks will have access to 3 GPUs. Ranks 0 - 5
+will have access to GPUs 0 - 2 on the first socket of the first node (
+red resource set). Ranks 6 - 11 will have access to GPUs 3 - 5 on the
+second socket of the first node ( green resource set). This pattern will
+continue until 4 resource sets have been created. The following jsrun
+command will request 4 resource sets (``-n4``). Each resource set will
+contain 6 MPI tasks (``-a6``), 3 GPUs (``-g3``), and 6 cores
+(``-c6``).
+
+.. image:: /images/RS-summit-example-24Tasks-3GPU-6Cores.png
+   :align: center
+
+::
+
+    summit> jsrun -n 4 -a 6 -c 6 -g 3 -d packed -l GPU-CPU ./a.out
+    Rank:    0; NumRanks: 24; RankCore:   0; Hostname: a33n06; GPU: 0, 1, 2
+    Rank:    1; NumRanks: 24; RankCore:   4; Hostname: a33n06; GPU: 0, 1, 2
+    Rank:    2; NumRanks: 24; RankCore:   8; Hostname: a33n06; GPU: 0, 1, 2
+    Rank:    3; NumRanks: 24; RankCore:  12; Hostname: a33n06; GPU: 0, 1, 2
+    Rank:    4; NumRanks: 24; RankCore:  16; Hostname: a33n06; GPU: 0, 1, 2
+    Rank:    5; NumRanks: 24; RankCore:  20; Hostname: a33n06; GPU: 0, 1, 2
+
+    Rank:    6; NumRanks: 24; RankCore:  88; Hostname: a33n06; GPU: 3, 4, 5
+    Rank:    7; NumRanks: 24; RankCore:  92; Hostname: a33n06; GPU: 3, 4, 5
+    Rank:    8; NumRanks: 24; RankCore:  96; Hostname: a33n06; GPU: 3, 4, 5
+    Rank:    9; NumRanks: 24; RankCore: 100; Hostname: a33n06; GPU: 3, 4, 5
+    Rank:   10; NumRanks: 24; RankCore: 104; Hostname: a33n06; GPU: 3, 4, 5
+    Rank:   11; NumRanks: 24; RankCore: 108; Hostname: a33n06; GPU: 3, 4, 5
+
+    Rank:   12; NumRanks: 24; RankCore:   0; Hostname: a33n05; GPU: 0, 1, 2
+    Rank:   13; NumRanks: 24; RankCore:   4; Hostname: a33n05; GPU: 0, 1, 2
+    Rank:   14; NumRanks: 24; RankCore:   8; Hostname: a33n05; GPU: 0, 1, 2
+    Rank:   15; NumRanks: 24; RankCore:  12; Hostname: a33n05; GPU: 0, 1, 2
+    Rank:   16; NumRanks: 24; RankCore:  16; Hostname: a33n05; GPU: 0, 1, 2
+    Rank:   17; NumRanks: 24; RankCore:  20; Hostname: a33n05; GPU: 0, 1, 2
+
+    Rank:   18; NumRanks: 24; RankCore:  88; Hostname: a33n05; GPU: 3, 4, 5
+    Rank:   19; NumRanks: 24; RankCore:  92; Hostname: a33n05; GPU: 3, 4, 5
+    Rank:   20; NumRanks: 24; RankCore:  96; Hostname: a33n05; GPU: 3, 4, 5
+    Rank:   21; NumRanks: 24; RankCore: 100; Hostname: a33n05; GPU: 3, 4, 5
+    Rank:   22; NumRanks: 24; RankCore: 104; Hostname: a33n05; GPU: 3, 4, 5
+    Rank:   23; NumRanks: 24; RankCore: 108; Hostname: a33n05; GPU: 3, 4, 5
+    summit>
+
+
+Common Use Cases
+^^^^^^^^^^^^^^^^
+
+The following table provides a quick reference for creating resource
+sets of various common use cases. The ``-n`` flag can be altered to
+specify the number of resource sets needed.
+
++-----------------+-------------+-----------+------------------+--------+---------------------------------------+
+| Resource Sets   | MPI Tasks   | Threads   | Physical Cores   | GPUs   | jsrun Command                         |
++=================+=============+===========+==================+========+=======================================+
+| 1               | 42          | 0         | 42               | 0      | jsrun -n1 -a42 -c42 -g0               |
++-----------------+-------------+-----------+------------------+--------+---------------------------------------+
+| 1               | 1           | 0         | 1                | 1      | jsrun -n1 -a1 -c1 -g1                 |
++-----------------+-------------+-----------+------------------+--------+---------------------------------------+
+| 1               | 2           | 0         | 2                | 1      | jsrun -n1 -a2 -c2 -g1                 |
++-----------------+-------------+-----------+------------------+--------+---------------------------------------+
+| 1               | 1           | 0         | 1                | 2      | jsrun -n1 -a1 -c1 -g2                 |
++-----------------+-------------+-----------+------------------+--------+---------------------------------------+
+| 1               | 1           | 21        | 21               | 3      | jsrun -n1 -a1 -c21 -g3 -bpacked:21    |
++-----------------+-------------+-----------+------------------+--------+---------------------------------------+
+
+jsrun Tools
+^^^^^^^^^^^
+
+This section describes tools that users might find helpful to better
+understand the jsrun job launcher.
+
+hello\_jsrun
+""""""""""""
+
+hello\_jsrun is a "Hello World"-type program that users can run on
+Summit nodes to better understand how MPI ranks and OpenMP threads are
+mapped to the hardware. https://code.ornl.gov/t4p/Hello_jsrun A
+screencast showing how to use Hello\_jsrun is also available:
+https://vimeo.com/261038849
+
+Job Step Viewer
+"""""""""""""""
+
+`Job Step Viewer <https://jobstepviewer.olcf.ornl.gov/>`__ provides a graphical view of an application's runtime layout on Summit.
+It allows users to preview and quickly iterate with multiple ``jsrun`` options to 
+understand and optimize job launch.
+
+For bug reports or suggestions, please email help@olcf.ornl.gov.
+
+Usage
+_____
+
+1. Request a Summit allocation
+    * ``bsub -W 10 -nnodes 2 -P $OLCF_PROJECT_ID -Is $SHELL``
+2. Load the ``job-step-viewer`` module
+    * ``module load job-step-viewer``
+3. Test out a ``jsrun`` line by itself, or provide an executable as normal
+    * ``jsrun -n12 -r6 -c7 -g1 -a1 EOMP_NUM_THREADS=7 -brs``
+4. Visit the provided URL
+    * https://jobstepviewer.olcf.ornl.gov/summit/871957-1
+
+.. note::
+    Most Terminal applications have built-in shortcuts to directly open
+    web addresses in the default browser.
+
+    * MacOS Terminal.app: hold Command (⌘) and double-click on the URL
+    * iTerm2: hold Command (⌘) and single-click on the URL
+
+Limitations
+___________
+
+* (currently) Compiled with GCC toolchain only
+* Does not support MPMD-mode via ERF
+* OpenMP only supported with use of the ``OMP_NUM_THREADS`` environment variable.
+
+
+More Information
+^^^^^^^^^^^^^^^^
+
+This section provides some of the most commonly used LSF commands as
+well as some of the most useful options to those commands and
+information on ``jsrun``, Summit's job launch command. Many commands
+have much more information than can be easily presented here. More
+information about these commands is available via the online manual
+(i.e. ``man jsrun``). Additional LSF information can be found on `IBM’s
+website <https://www.ibm.com/support/knowledgecenter/en/SSWRJV/product_welcome_spectrum_lsf.html>`__.
+
+
+Using Multithreading in a Job
+-----------------------------
+
+
+Hardware Threads: Multiple Threads per Core
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Each physical core on Summit contains 4 hardware threads. The SMT level
+can be set using LSF flags (the default is smt4):
+
+SMT1
+
+::
+
+    #BSUB -alloc_flags smt1
+    jsrun -n1 -c1 -a1 -bpacked:1 csh -c 'echo $OMP_PLACES’
+    0
+
+SMT2
+
+::
+
+    #BSUB -alloc_flags smt2
+    jsrun -n1 -c1 -a1 -bpacked:1 csh -c 'echo $OMP_PLACES’
+    {0:2}
+
+SMT4
+
+::
+
+    #BSUB -alloc_flags smt4
+    jsrun -n1 -c1 -a1 -bpacked:1 csh -c 'echo $OMP_PLACES’
+    {0:4}
+
+
+
+Controlling Number of Threads for Tasks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+In addition to specifying the SMT level, you can also control the
+number of threads per MPI task by exporting the ``OMP_NUM_THREADS``
+environment variable. If you don't export it yourself, Jsrun will
+automatically set the number of threads based on the number of cores
+requested (``-c``) and the binding (``-b``) option. It is better to be
+explicit and set the ``OMP_NUM_THREADS`` value yourself rather than
+relying on Jsrun constructing it for you. Especially when you are
+using `Job Step Viewer`_ which relies on the presence of that
+environment variable to give you visual thread assignment information.
+
+In the below example, you could also do ``export OMP_NUM_THREADS=16`` in your
+job script instead of passing it as a ``-E`` flag to jsrun. The below example
+starts 1 resource set with 2 tasks and 8 cores, 4 cores bound to each task,
+16 threads for each task. We can set 16 threads since there are 4 cores
+per task and the default is smt4 for each core (4 * 4 = 16 threads).
+
+::
+   
+   jsrun -n1 -a2 -c8 -g1 -bpacked:4 -dpacked -EOMP_NUM_THREADS=16 csh -c 'echo $OMP_NUM_THREADS $OMP_PLACES'
+
+   16 0:4,4:4,8:4,12:4
+   16 16:4,20:4,24:4,28:4
+
+
+Be careful with assigning threads to tasks, as you might end up
+oversubscribing your cores. For example
+
+::
+   
+   jsrun -n1 -a2 -c8 -g1 -bpacked:4 -dpacked -EOMP_NUM_THREADS=32 csh -c 'echo $OMP_NUM_THREADS $OMP_PLACES'
+
+   Warning: OMP_NUM_THREADS=32 is greater than available PU's
+   Warning: OMP_NUM_THREADS=32 is greater than available PU's
+   Warning: OMP_NUM_THREADS=32 is greater than available PU's
+   Warning: OMP_NUM_THREADS=32 is greater than available PU's
+   32 16:4,20:4,24:4,28:4
+   32 0:4,4:4,8:4,12:4
+
+You can use `hello\_jsrun`_ or `Job Step Viewer`_ to see how the cores
+are being oversubscribed.
+
+Because of how jsrun sets up ``OMP_NUM_THREADS`` based on ``-c`` and
+``-b`` options if you don't specify the environment variable yourself,
+you can accidentally end up oversubscribing your cores. For example
+
+::
+   
+   jsrun -n1 -a2 -c8 -g1 -brs -dpacked  csh -c 'echo $OMP_NUM_THREADS $OMP_PLACES'
+
+   Warning: more than 1 task/rank assigned to a core
+   Warning: more than 1 task/rank assigned to a core
+   32 0:4,4:4,8:4,12:4,16:4,20:4,24:4,28:4
+   32 0:4,4:4,8:4,12:4,16:4,20:4,24:4,28:4
+
+Because jsrun sees 8 cores and the ``-brs`` flag, it assigns all 8 cores to
+each of the 2 tasks in the resource set. Jsrun will set up ``OMP_NUM_THREADS``
+as 32 (8 cores with 4 threads per core) which will apply to all the
+tasks in the resource set. This means that each task sees that it can
+have 32 threads (which means 64 threads for the 2 tasks combined) which
+will oversubscribe the cores and may decrease efficiency as a result.
+
+
+
+Example: Single Task, Single GPU, Multiple Threads per RS
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The following example will create 12 resource sets each with 1 task, 4
+threads, and 1 GPU. Each MPI task will start 4 threads and have access
+to 1 GPU. Rank 0 will have access to GPU 0 and start 4 threads on the
+first socket of the first node ( red resource set). Rank 2 will have
+access to GPU 1 and start 4 threads on the second socket of the first
+node ( green resource set). This pattern will continue until 12 resource
+sets have been created. The following jsrun command will create 12
+resource sets (``-n12``). Each resource set will contain 1 MPI task
+(``-a1``), 1 GPU (``-g1``), and 4 cores (``-c4``). Notice that
+more cores are requested than MPI tasks; the extra cores will be needed
+to place threads. Without requesting additional cores, threads will be
+placed on a single core.
+
+
+**Requesting Cores for Threads:** The ``-c`` flag should be used to
+request additional cores for thread placement. Without requesting
+additional cores, threads will be placed on a single core.
+
+**Binding Cores to Tasks:** The ``-b`` binding flag should be used to
+bind cores to tasks. Without specifying binding, all threads will be
+bound to the first core.
+
+::
+
+    summit> setenv OMP_NUM_THREADS 4
+    summit> jsrun -n12 -a1 -c4 -g1 -b packed:4 -d packed ./a.out
+    Rank: 0; RankCore: 0; Thread: 0; ThreadCore: 0; Hostname: a33n06; OMP_NUM_PLACES: {0},{4},{8},{12}
+    Rank: 0; RankCore: 0; Thread: 1; ThreadCore: 4; Hostname: a33n06; OMP_NUM_PLACES: {0},{4},{8},{12}
+    Rank: 0; RankCore: 0; Thread: 2; ThreadCore: 8; Hostname: a33n06; OMP_NUM_PLACES: {0},{4},{8},{12}
+    Rank: 0; RankCore: 0; Thread: 3; ThreadCore: 12; Hostname: a33n06; OMP_NUM_PLACES: {0},{4},{8},{12}
+
+    Rank: 1; RankCore: 16; Thread: 0; ThreadCore: 16; Hostname: a33n06; OMP_NUM_PLACES: {16},{20},{24},{28}
+    Rank: 1; RankCore: 16; Thread: 1; ThreadCore: 20; Hostname: a33n06; OMP_NUM_PLACES: {16},{20},{24},{28}
+    Rank: 1; RankCore: 16; Thread: 2; ThreadCore: 24; Hostname: a33n06; OMP_NUM_PLACES: {16},{20},{24},{28}
+    Rank: 1; RankCore: 16; Thread: 3; ThreadCore: 28; Hostname: a33n06; OMP_NUM_PLACES: {16},{20},{24},{28}
+
+    ...
+
+    Rank: 10; RankCore: 104; Thread: 0; ThreadCore: 104; Hostname: a33n05; OMP_NUM_PLACES: {104},{108},{112},{116}
+    Rank: 10; RankCore: 104; Thread: 1; ThreadCore: 108; Hostname: a33n05; OMP_NUM_PLACES: {104},{108},{112},{116}
+    Rank: 10; RankCore: 104; Thread: 2; ThreadCore: 112; Hostname: a33n05; OMP_NUM_PLACES: {104},{108},{112},{116}
+    Rank: 10; RankCore: 104; Thread: 3; ThreadCore: 116; Hostname: a33n05; OMP_NUM_PLACES: {104},{108},{112},{116}
+
+    Rank: 11; RankCore: 120; Thread: 0; ThreadCore: 120; Hostname: a33n05; OMP_NUM_PLACES: {120},{124},{128},{132}
+    Rank: 11; RankCore: 120; Thread: 1; ThreadCore: 124; Hostname: a33n05; OMP_NUM_PLACES: {120},{124},{128},{132}
+    Rank: 11; RankCore: 120; Thread: 2; ThreadCore: 128; Hostname: a33n05; OMP_NUM_PLACES: {120},{124},{128},{132}
+    Rank: 11; RankCore: 120; Thread: 3; ThreadCore: 132; Hostname: a33n05; OMP_NUM_PLACES: {120},{124},{128},{132}
+
+    summit>
+
+
+.. image:: /images/RS-summit-example-4Threads-4Core-1GPU.png
+   :align: center
+
+Launching Multiple Jsruns
+-------------------------
+
+Jsrun provides the ability to launch multiple ``jsrun`` job launches within a
+single batch job allocation. This can be done within a single node, or across
+multiple nodes.
+
+Sequential Job Steps
+^^^^^^^^^^^^^^^^^^^^
+
+By default, multiple invocations of ``jsrun`` in a job script will execute 
+serially in order. In this configuration, jobs will launch one at a time and
+the next one will not start until the previous is complete. The batch node
+allocation is equal to the largest jsrun submitted, and the total walltime
+must be equal to or greater then the *sum* of all jsruns issued.
+ 
+.. image:: /images/summit-multi-jsrun-example-sequential.png
+   :align: center
+
+Simultaneous Job Steps
+^^^^^^^^^^^^^^^^^^^^^^
+
+To execute multiple job steps concurrently, standard UNIX process
+backgrounding can be used by adding a ``&`` at the end of the command. This
+will return control to the job script and execute the next command immediately,
+allowing multiple job launches to start at the same time. The jsruns will not
+share core/gpu resources in this configuration. The batch node allocation is 
+equal to the *sum* of those of each jsrun, and the total walltime must be equal
+to or greater than that of the longest running jsrun task.
+
+A ``wait`` command must follow all backgrounded processes to prevent the job
+from appearing completed and exiting prematurely.
+
+.. image:: /images/summit-multi-jsrun-example-simultaneous.png
+   :align: center
+
+The following example executes three backgrounded job steps and waits for them
+to finish before the job ends.
+
+::
+
+    #!/bin/bash
+    #BSUB -P ABC123
+    #BSUB -W 3:00
+    #BSUB -nnodes 1
+    #BSUB -J RunSim123
+    #BSUB -o RunSim123.%J
+    #BSUB -e RunSim123.%J
+    
+    cd $MEMBERWORK/abc123
+    jsrun <options> ./a.out &
+    jsrun <options> ./a.out &
+    jsrun <options> ./a.out &
+    wait
+
+
+As submission scripts (and interactive sessions) are executed on batch nodes,
+the number of concurrent job steps is limited by the per-user process limit on
+a batch node, where a single user is only permitted 4096 simultaneous
+processes. This limit is per user on each batch node, not per batch job.
+
+Each job step will create 3 processes, and JSM management may create up to ~23
+processes. This creates an upper-limit of ~1350 simultaneous job steps. 
+
+If JSM or PMIX errors occur as the result of backgrounding many job steps, using the
+``--immediate`` option to ``jsrun`` may help, as shown in the following example.
+
+::
+
+    #!/bin/bash
+    #BSUB -P ABC123
+    #BSUB -W 3:00
+    #BSUB -nnodes 1
+    #BSUB -J RunSim123
+    #BSUB -o RunSim123.%J
+    #BSUB -e RunSim123.%J
+    
+    cd $MEMBERWORK/abc123
+    jsrun <options> --immediate ./a.out
+    jsrun <options> --immediate ./a.out 
+    jsrun <options> --immediate ./a.out
+
+
+.. note::
+    By default, ``jsrun --immediate`` does not produce ``stdout`` or
+    ``stderr``. To capture ``stdout`` and/or ``stderr`` when using this option,
+    additionally include ``--stdio_stdout``/``-o`` and/or
+    ``--stdio_stderr``/``-k``.
+
+Using `jslist`
+^^^^^^^^^^^^^^
+To view the status of multiple jobs launched sequentially or concurrently within a 
+batch script, you can use `jslist` to see which are completed, running, or still
+queued. If you are using it outside of an interactive batch job, use the `-c` option
+to specify the CSM allocation ID number. The following example shows how to obtain the
+CSM allocation number for a non interactive job and then check its status. 
+
+::
+
+    $ bsub test.lsf
+    Job <26238> is submitted to default queue <batch>.
+
+    $ bjobs -l 26238 | grep CSM_ALLOCATION_ID
+    Sun Feb 16 19:01:18: CSM_ALLOCATION_ID=34435
+
+    $ jslist -c 34435
+      parent         cpus     gpus     exit
+      ID  ID    nrs  per RS  per RS   status    status
+     ===========================================================
+       1   0    12     4       1        0       Running
+
+
+
+Explicit Resource Files (ERF)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+`Explicit Resource Files
+<https://www.ibm.com/support/knowledgecenter/en/SSWRJV_10.1.0/jsm/10.3/base/erf_format.html>`__
+provide even more fine-granied control over how processes are mapped onto
+compute nodes. ERFs can define job step options such as rank placement/binding,
+SMT/CPU/GPU resources, compute hosts, among many others. If you find that the
+most common jsrun options do not readily provide the resource layout you need,
+we recommend considering ERF files.
+
+A common source of confusion when using ERFs is how physical cores are
+enumerated. See the tutorial on `ERF CPU
+Indexing <https://github.com/olcf-tutorials/ERF-CPU-Indexing>`__ for a
+discussion of the ``cpu_index_using`` control and its interaction with various
+SMT modes.
+
+
+
+CUDA-Aware MPI
+--------------
+
+CUDA-Aware MPI and GPUDirect are often used interchangeably, but they
+are distinct topics.
+
+CUDA-Aware MPI allows GPU buffers (e.g., GPU memory allocated with
+``cudaMalloc``) to be used directly in MPI calls rather than requiring
+data to be manually transferred to/from a CPU buffer (e.g., using
+``cudaMemcpy``) before/after passing data in MPI calls. By itself,
+CUDA-Aware MPI does not specify whether data is staged through
+CPU memory or, for example, transferred directly between GPUs when
+passing GPU buffers to MPI calls. That is where GPUDirect comes in.
+
+GPUDirect is a technology that can be implemented on a system to enhance
+CUDA-Aware MPI by allowing data transfers directly between GPUs on the
+same node (peer-to-peer) and/or directly between GPUs on different nodes
+(with RDMA support) without the need to stage data through CPU memory.
+On Summit, both peer-to-peer and RDMA support are implemented. To enable
+CUDA-Aware MPI in a job, use the following argument to ``jsrun``:
+
+.. code::
+
+    jsrun --smpiargs="-gpu" ...
+
+
+Monitoring Jobs
+---------------
+
+LSF provides several utilities with which you can monitor jobs. These
+include monitoring the queue, getting details about a particular job,
+viewing STDOUT/STDERR of running jobs, and more.
+
+The most straightforward monitoring is with the ``bjobs`` command. This
+command will show the current queue, including both pending and running
+jobs. Running ``bjobs -l`` will provide much more detail about a job (or
+group of jobs). For detailed output of a single job, specify the job id
+after the ``-l``. For example, for detailed output of job 12345, you can
+run ``bjobs -l 12345`` . Other options to ``bjobs`` are shown below. In
+general, if the command is specified with ``-u all`` it will show
+information for all users/all jobs. Without that option, it only shows
+your jobs. Note that this is not an exhaustive list. See ``man bjobs``
+for more information.
+
++-----------------------+--------------------------------------------------------------------------------+
+| Command               | Description                                                                    |
++=======================+================================================================================+
+| ``bjobs``             | Show your current jobs in the queue                                            |
++-----------------------+--------------------------------------------------------------------------------+
+| ``bjobs -u all``      | Show currently queued jobs for all users                                       |
++-----------------------+--------------------------------------------------------------------------------+
+| ``bjobs -P ABC123``   | Shows currently-queued jobs for project ABC123                                 |
++-----------------------+--------------------------------------------------------------------------------+
+| ``bjobs -UF``         | Don't format output (might be useful if you're using the output in a script)   |
++-----------------------+--------------------------------------------------------------------------------+
+| ``bjobs -a``          | Show jobs in all states, including recently finished jobs                      |
++-----------------------+--------------------------------------------------------------------------------+
+| ``bjobs -l``          | Show long/detailed output                                                      |
++-----------------------+--------------------------------------------------------------------------------+
+| ``bjobs -l 12345``    | Show long/detailed output for jobs 12345                                       |
++-----------------------+--------------------------------------------------------------------------------+
+| ``bjobs -d``          | Show details for recently completed jobs                                       |
++-----------------------+--------------------------------------------------------------------------------+
+| ``bjobs -s``          | Show suspended jobs, including the reason(s) they're suspended                 |
++-----------------------+--------------------------------------------------------------------------------+
+| ``bjobs -r``          | Show running jobs                                                              |
++-----------------------+--------------------------------------------------------------------------------+
+| ``bjobs -p``          | Show pending jobs                                                              |
++-----------------------+--------------------------------------------------------------------------------+
+| ``bjobs -w``          | Use "wide" formatting for output                                               |
++-----------------------+--------------------------------------------------------------------------------+
+
+If you want to check the STDOUT/STDERR of a currently running job, you
+can do so with the ``bpeek`` command. The command supports several
+options:
+
++------------------------+---------------------------------------------------------------------------------------------+
+| Command                | Description                                                                                 |
++========================+=============================================================================================+
+| ``bpeek -J jobname``   | Show STDOUT/STDERR for the job you've most recently submitted with the name jobname         |
++------------------------+---------------------------------------------------------------------------------------------+
+| ``bpeek 12345``        | Show STDOUT/STDERR for job 12345                                                            |
++------------------------+---------------------------------------------------------------------------------------------+
+| ``bpeek -f ...``       | Used with other options. Makes ``bpeek`` use ``tail -f`` and exit once the job completes.   |
++------------------------+---------------------------------------------------------------------------------------------+
+
+The OLCF also provides ``jobstat``, which adds dividers in the queue to
+identify jobs as running, eligible, or blocked. Run without arguments,
+``jobstat`` provides a snapshot of the entire batch queue. Additional
+information, including the number of jobs in each state, total nodes
+available, and relative job priority are also included.
+
+``jobstat -u <username>`` restricts output to only the jobs of a
+specific user. See the ``jobstat`` man page for a full list of
+formatting arguments.
+
+::
+
+    $ jobstat -u <user>
+    --------------------------- Running Jobs: 2 (4544 of 4604 nodes, 98.70%) ---------------------------
+    JobId    Username   Project          Nodes Remain     StartTime       JobName
+    331590   user     project           2     57:06      04/09 10:06:23  Not_Specified
+    331707   user     project           40    39:47      04/09 11:04:04  runA
+    ----------------------------------------- Eligible Jobs: 3 -----------------------------------------
+    JobId    Username   Project          Nodes Walltime   QueueTime       Priority JobName
+    331712   user     project           80    45:00      04/09 11:06:23  501.00   runB
+    331713   user     project           90    45:00      04/09 11:07:19  501.00   runC
+    331714   user     project           100   45:00      04/09 11:07:49  501.00   runD
+    ----------------------------------------- Blocked Jobs: 1 ------------------------------------------
+    JobId    Username   Project          Nodes Walltime   BlockReason
+    331715   user        project           12    2:00:00    Job dependency condition not satisfied
+
+Inspecting Backfill
+^^^^^^^^^^^^^^^^^^^
+
+``bjobs`` and ``jobstat`` help to identify what’s currently running and
+scheduled to run, but sometimes it’s beneficial to know how much of the
+system is *not* currently in use or scheduled for use.
+
+The ``bslots`` command can be used to inspect backfill windows and answer
+the question “How many nodes are currently available, and for how long
+will they remain available?” This can be thought of as identifying gaps in
+the system’s current job schedule. By intentionally requesting resources
+within the parameters of a backfill window, one can potentially shorten
+their queued time and improve overall system utilization.
+
+LSF uses “slots” to describe allocatable resources. Summit compute nodes have 1
+slot per CPU core, for a total of 42 per node ([2x] Power9 CPUs, each
+with 21 cores). Since Summit nodes are scheduled in whole-node
+allocations, the output from ``bslots`` can be divided by 42 to see how
+many nodes are currently available.
+
+By default, ``bslots`` output includes launch node slots, which can
+cause unwanted and inflated fractional node values. The output can
+be adjusted to reflect only available compute node slots with the
+flag  ``-R”select[CN]”``. For example,
+
+::
+
+    $ bslots -R"select[CN]"
+    SLOTS          RUNTIME
+    42             25 hours 42 minutes 51 seconds
+    27384          1 hours 11 minutes 50 seconds
+
+27384 compute node slots / 42 slots per node = 652 compute nodes are
+available for 1 hour, 11 minutes, 50 seconds.
+
+A more specific ``bslots`` query could check for a backfill window with
+space to fit a 1000 node job for 10 minutes:
+
+::
+
+    $ bslots -R"select[CN]" -n $((1000*42)) -W10
+    SLOTS          RUNTIME
+    127764         22 minutes 55 seconds
+
+There is no guarantee that the slots reported by ``bslots`` will still
+be available at time of new job submission.
+
+Interacting With Jobs
+---------------------
+
+Sometimes it’s necessary to interact with a batch job after it has been
+submitted. LSF provides several commands for interacting with
+already-submitted jobs.
+
+Many of these commands can operate on either one job or a group of jobs.
+In general, they only operate on the most recently submitted job that
+matches other criteria provided unless “0” is specified as the job id.
+
+Suspending and Resuming Jobs
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+LSF supports user-level suspension and resumption of jobs. Jobs are
+suspended with the ``bstop`` command and resumed with the ``bresume``
+command. The simplest way to invoke these commands is to list the job id
+to be suspended/resumed:
+
+.. code::
+
+    bstop 12345
+    bresume 12345
+
+Instead of specifying a job id, you can specify other criteria that will
+allow you to suspend some/all jobs that meet other criteria such as a
+job name, a queue name, etc. These are described in the manpages for
+``bstop`` and ``bresume``.
+
+Signaling Jobs
+^^^^^^^^^^^^^^
+
+You can send signals to jobs with the ``bkill`` command. While the
+command name suggests its only purpose is to terminate jobs, this is not
+the case. Similar to the ``kill`` command found in Unix-like operating
+systems, this command can be used to send various signals (not just
+``SIGTERM`` and ``SIGKILL``) to jobs. The command can accept both
+numbers and names for signals. For a list of accepted signal names, run
+``bkill -l``. Common ways to invoke the command include:
+
++---------------------------+----------------------------------------------------------------------------------+
+| Command                   | Description                                                                      |
++===========================+==================================================================================+
+| ``bkill 12345``           | Force a job to stop by sending ``SIGINT``,                                       |
+|                           | ``SIGTERM``, and ``SIGKILL``. These signals are sent in that order, so users     |
+|                           | can write applications such that they will trap ``SIGINT`` and/or ``SIGTERM``    |
+|                           | and exit in a controlled manner.                                                 |
++---------------------------+----------------------------------------------------------------------------------+
+| ``bkill -s USR1 12345``   | Send ``SIGUSR1`` to job 12345 NOTE: When                                         |
+|                           | specifying a signal by name, omit SIG from the name. Thus, you specify ``USR1``  |
+|                           | and not ``SIGUSR1`` on the ``bkill`` command line.                               |
++---------------------------+----------------------------------------------------------------------------------+
+| ``bkill -s 9 12345``      | Send signal 9 to job 12345                                                       |
++---------------------------+----------------------------------------------------------------------------------+
+
+Like ``bstop`` and ``bresume``, ``bkill`` command also supports
+identifying the job(s) to be signaled by criteria other than the job id.
+These include some/all jobs with a given name, in a particular queue,
+etc. See ``man bkill`` for more information.
+
+Checkpointing Jobs
+^^^^^^^^^^^^^^^^^^
+
+LSF documentation mentions the ``bchkpnt`` and ``brestart`` commands for
+checkpointing and restarting jobs, as well as the ``-k`` option to
+``bsub`` for configuring checkpointing. Since checkpointing is very
+application specific and a wide range of applications run on OLCF
+resources, this type of checkpointing is not configured on Summit. If
+you wish to use checkpointing (which is highly encouraged), you’ll need
+to configure it within your application.
+
+If you wish to implement some form of on-demand checkpointing, keep in mind
+the ``bkill`` command is really a signaling command and you can have your
+job script/application checkpoint as a response to certain signals (such
+as ``SIGUSR1``).
+
+Other LSF Commands
+------------------
+
+The table below summarizes some additional LSF commands that might be
+useful.
+
++------------------+---------------------------------------------------------------------------+
+| Command          | Description                                                               |
++==================+===========================================================================+
+| ``bparams -a``   | Show current parameters for LSF. The behavior/available                   |
+|                  | options for some LSF commands depend on settings in various configuration |
+|                  | files. This command shows those settings without having to search for the |
+|                  | actual files.                                                             |
++------------------+---------------------------------------------------------------------------+
+| ``bjdepinfo``    | Show job dependency information (could be useful in                       |
+|                  | determining what job is keeping another job in a pending state)           |
++------------------+---------------------------------------------------------------------------+
+
+PBS/Torque/MOAB-to-LSF Translation
+----------------------------------
+
+More details about these commands are given elsewhere in this section;
+the table below is simply for your convenience in looking up various LSF
+commands.
+
+Users of other OLCF resources are likely familiar with
+PBS-like commands which are used by the Torque/Moab instances on other
+systems. The table below summarizes the equivalent LSF command for
+various PBS/Torque/Moab commands.
+
++--------------------------+----------------------------------+----------------------------------------------------+
+| LSF Command              | PBS/Torque/Moab Command          | Description                                        |
++==========================+==================================+====================================================+
+| ``bsub job.sh``          | ``qsub job.sh``                  | Submit the job script job.sh to the batch system   |
++--------------------------+----------------------------------+----------------------------------------------------+
+| ``bsub -Is /bin/bash``   | ``qsub -I``                      | Submit an interactive batch job                    |
++--------------------------+----------------------------------+----------------------------------------------------+
+| ``bjobs -u all``         | ``qstat showq``                  | Show jobs currently in the queue NOTE: without the |
+|                          |                                  | -u all argument, bjobs will only show your jobs    |
++--------------------------+----------------------------------+----------------------------------------------------+
+| ``bjobs -l``             | ``checkjob``                     | Get information about a specific job               |
++--------------------------+----------------------------------+----------------------------------------------------+
+| ``bjobs -d``             | ``showq -c``                     | Get information about completed jobs               |
++--------------------------+----------------------------------+----------------------------------------------------+
+| ``bjobs -p``             | ``showq -i``                     | Get information about pending jobs                 |
+|                          | ``showq -b``                     |                                                    |
+|                          | ``checkjob``                     |                                                    |
++--------------------------+----------------------------------+----------------------------------------------------+
+| ``bjobs -r``             | ``showq -r``                     | Get information about running jobs                 |
++--------------------------+----------------------------------+----------------------------------------------------+
+| ``bkill``                | ``qsig``                         | Send a signal to a job                             |
++--------------------------+----------------------------------+----------------------------------------------------+
+| ``bkill``                | ``qdel``                         | Terminate/Kill a job                               |
++--------------------------+----------------------------------+----------------------------------------------------+
+| ``bstop``                | ``qhold``                        | Hold a job/stop a job from running                 |
++--------------------------+----------------------------------+----------------------------------------------------+
+| ``bresume``              | ``qrls``                         | Release a held job                                 |
++--------------------------+----------------------------------+----------------------------------------------------+
+| ``bqueues``              | ``qstat -q``                     | Get information about queues                       |
++--------------------------+----------------------------------+----------------------------------------------------+
+| ``bjdepinfo``            | ``checkjob``                     | Get information about job dependencies             |
++--------------------------+----------------------------------+----------------------------------------------------+
+
+The table below shows shows LSF (bsub) command-line/batch script options
+and the PBS/Torque/Moab (qsub) options that provide similar
+functionality.
+
++---------------------------------+------------------------------------------------+------------------------------------------------------------+
+| LSF Option                      | PBS/Torque/Moab Option                         | Description                                                |
++=================================+================================================+============================================================+
+| ``#BSUB -W 60``                 | ``#PBS -l walltime=1:00:00``                   | Request a walltime of 1 hour                               |
++---------------------------------+------------------------------------------------+------------------------------------------------------------+
+| ``#BSUB -nnodes 1024``          | ``#PBS -l nodes=1024``                         | Request 1024 nodes                                         |
++---------------------------------+------------------------------------------------+------------------------------------------------------------+
+| ``#BSUB -P ABC123``             | ``#PBS -A ABC123``                             | Charge the job to project ABC123                           |
++---------------------------------+------------------------------------------------+------------------------------------------------------------+
+| ``#BSUB -alloc_flags gpumps``   | No equivalent (set via environment variable)   | Enable multiple MPI tasks to simultaneously access a GPU   |
++---------------------------------+------------------------------------------------+------------------------------------------------------------+
+
+.. _easy_mode_v_expert_mode:
+
+Easy Mode vs. Expert Mode
+-------------------------
+
+The Cluster System Management (CSM) component of the job launch
+environment supports two methods of job submission, termed “easy” mode
+and “expert” mode. The difference in the modes is where the
+responsibility for creating the LSF resource string is placed.
+
+In easy mode, the system software converts options such as -nnodes in
+a batch script into the resource string needed by the scheduling system.
+In expert mode, the user is responsible for creating this string and
+options such as -nnodes cannot be used. In easy mode, you will not be
+able to use ``bsub -R`` to create resource strings. The system will
+automatically create the resource string based on your other ``bsub``
+options. In expert mode, you will be able to use ``-R``, but you will
+not be able to use the following options to ``bsub``: ``-ln_slots``,
+``-ln_mem``, ``-cn_cu``, or ``-nnodes``.
+
+Most users will want to use easy mode. However, if you need precise
+control over your job’s resources, such as placement on (or avoidance
+of) specific nodes, you will need to use expert mode. To use expert
+mode, add ``#BSUB -csm y`` to your batch script (or ``-csm y`` to
+your ``bsub`` command line).
+
+
+System Service Core Isolation
+-----------------------------
+
+One core per socket is set aside for system service tasks. The cores are
+not available to jsrun. When listing available resources through jsrun,
+you will not see cores with hyperthreads 84-87 and 172-175. Isolating a
+socket's system services to a single core helps to reduce jitter and
+improve performance of tasks performed on the socket's remaining cores.
+
+The isolated core always operates at SMT4 regardless of the batch job's
+SMT level.
+
+GPFS System Service Isolation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+By default, GPFS system service tasks are forced onto only the isolated
+cores. This can be overridden at the batch job level using the
+``maximizegpfs`` argument to LSF's ``alloc_flags``. For example:
+
+::
+
+     #BSUB -alloc_flags maximizegpfs
+
+The maximizegpfs flag will allow GPFS tasks to utilize any core on the
+compute node. This may be beneficial because it provides more resources
+for GPFS service tasks, but it may also cause resource contention for
+the jsrun compute job.
+
+Job Accounting on Summit
+------------------------
+
+Jobs on Summit are scheduled in full node increments; a node's cores cannot be
+allocated to multiple jobs. Because the OLCF charges based on what a job makes
+*unavailable* to other users, a job is charged for an entire node even if it
+uses only one core on a node. To simplify the process, users request and are allocated
+multiples of entire nodes through LSF.
+
+Allocations on Summit are separate from those on Andes and other OLCF resources.
+
+Node-Hour Calculation
+^^^^^^^^^^^^^^^^^^^^^
+
+The *node-hour* charge for each batch job will be calculated as follows:
+
+.. code::
+
+    node-hours = nodes requested * ( batch job endtime - batch job starttime )
+
+Where *batch job starttime* is the time the job moves into a running state, and
+*batch job endtime* is the time the job exits a running state.
+
+A batch job's usage is calculated solely on requested nodes and the batch job's
+start and end time. The number of cores actually used within any particular node
+within the batch job is not used in the calculation. For example, if a job
+requests (6) nodes through the batch script, runs for (1) hour, uses only (2)
+CPU cores per node, the job will still be charged for 6 nodes \* 1 hour = *6
+node-hours*.
+
+Viewing Usage
+^^^^^^^^^^^^^
+
+Utilization is calculated daily using batch jobs which complete between 00:00
+and 23:59 of the previous day. For example, if a job moves into a run state on
+Tuesday and completes Wednesday, the job's utilization will be recorded
+Thursday. Only batch jobs which write an end record are used to calculate
+utilization. Batch jobs which do not write end records due to system failure or
+other reasons are not used when calculating utilization. Jobs which fail because
+of run-time errors (e.g. the user's application causes a segmentation fault) are
+counted against the allocation.
+
+Each user may view usage for projects on which they are members from the command
+line tool ``showusage`` and the `myOLCF site <https://my.olcf.ornl.gov>`__.
+
+On the Command Line via ``showusage``
+"""""""""""""""""""""""""""""""""""""
+
+The ``showusage`` utility can be used to view your usage from January 01
+through midnight of the previous day. For example:
+
+.. code::
+
+      $ showusage
+        Usage:
+                                 Project Totals
+        Project             Allocation      Usage      Remaining     Usage
+        _________________|______________|___________|____________|______________
+        abc123           |  20000       |   126.3   |  19873.7   |   1560.80
+
+The ``-h`` option will list more usage details.
+
+On the Web via myOLCF
+""""""""""""""""""""""
+
+More detailed metrics may be found on each project's usage section of the `myOLCF
+site <https://my.olcf.ornl.gov>`__. The following information is available
+for each project:
+
+-  YTD usage by system, subproject, and project member
+-  Monthly usage by system, subproject, and project member
+-  YTD usage by job size groupings for each system, subproject, and
+   project member
+-  Weekly usage by job size groupings for each system, and subproject
+-  Batch system priorities by project and subproject
+-  Project members
+
+The myOLCF site is provided to aid in the utilization and management of OLCF
+allocations. See the :doc:`myOLCF Documentation </services_and_applications/myolcf/index>` for more information.
+
+If you have any questions or have a request for additional data,
+please contact the OLCF User Assistance Center.
+
+
+
+Other Notes
+-----------
+
+Compute nodes are only allocated to one job at a time; they are not
+shared. This is why users request nodes (instead of some other resource
+such as cores or GPUs) in batch jobs and is why projects are charged
+based on the number of nodes allocated multiplied by the amount of time
+for which they were allocated. Thus, a job using only 1 core on each of
+its nodes is charged the same as a job using every core and every GPU on
+each of its nodes.
+
+
+
+.. _debugging:
+
+Debugging
+=========
+
+Arm DDT
+-------
+
+Arm DDT is an advanced debugging tool used for scalar, multi-threaded,
+and large-scale parallel applications. In addition to traditional
+debugging features (setting breakpoints, stepping through code,
+examining variables), DDT also supports attaching to already-running
+processes and memory debugging. In-depth details of DDT can be found in
+the `Official DDT User
+Guide <https://www.allinea.com/user-guide/forge/userguide.html>`__, and
+instructions for how to use it on OLCF systems can be found on the
+`Forge (DDT/MAP) Software Page <https://www.olcf.ornl.gov/software_package/forge/>`__. DDT is the
+OLCF's recommended debugging software for large parallel applications.
+
+One of the most useful features of DDT is its remote debugging feature. This allows you to connect to a debugging session on Summit from a client running on your workstation. The local client provides much faster interaction than you would have if using the graphical client on Summit. For guidance in setting up the remote client see `this tutorial <https://www.olcf.ornl.gov/tutorials/forge-remote-client-setup-and-usage/>`__.
+
+
+GDB
+---
+
+`GDB <https://www.gnu.org/software/gdb/>`__, the GNU Project Debugger,
+is a command-line debugger useful for traditional debugging and
+investigating code crashes. GDB lets you debug programs written in Ada,
+C, C++, Objective-C, Pascal (and many other languages). GDB is available
+on Summit under all compiler families:
+
+.. code::
+
+    module load gdb
+
+Additional information about GDB usage and OLCF-provided builds can be
+found on the `GDB Software Page <https://www.olcf.ornl.gov/software_package/gdb/>`__.
+
+
+Valgrind
+--------
+
+`Valgrind <http://valgrind.org>`__ is an instrumentation framework for
+building dynamic analysis tools. There are Valgrind tools that can
+automatically detect many memory management and threading bugs, and
+profile your programs in detail. You can also use Valgrind to build new
+tools.
+
+The Valgrind distribution currently includes five production-quality
+tools: a memory error detector, a thread error detector, a cache and
+branch-prediction profiler, a call-graph generating cache profiler,
+and a heap profiler. It also includes two experimental tools: a data
+race detector, and an instant memory leak detector.
+
+The Valgrind tool suite provides a number of debugging and
+profiling tools. The most popular is Memcheck, a memory checking tool
+which can detect many common memory errors such as:
+
+- Touching memory you shouldn’t (eg. overrunning heap block boundaries,
+  or reading/writing freed memory).
+- Using values before they have been initialized.
+- Incorrect freeing of memory, such as double-freeing heap blocks.
+- Memory leaks.
+
+Valgrind is available on Summit under all compiler families:
+
+.. code::
+
+    module load valgrind
+
+Additional information about Valgrind usage and OLCF-provided builds can
+be found on the `Valgrind Software
+Page <https://www.olcf.ornl.gov/software_package/valgrind/>`__.
+
+.. _optimizing-and-profiling:
+
+Optimizing and Profiling
+========================
+
+Profiling GPU Code with NVIDIA Developer Tools
+-----------------------------------------------------
+
+NVIDIA provides developer tools for profiling any code that runs on NVIDIA
+GPUs. These are the `Nsight suite of developer tools
+<https://developer.nvidia.com/tools-overview>`__: NVIDIA Nsight Systems for
+collecting a timeline of your application, and NVIDIA Nsight Compute for
+collecting detailed performance information about specific GPU kernels.
+
+NVIDIA Nsight Systems
+^^^^^^^^^^^^^^^^^^^^^
+
+The first step to GPU profiling is collecting a timeline of your application.
+(This operation is also sometimes called "tracing," that is, finding
+the start and stop timestamps of all activities that occurred on the GPU
+or involved the GPU, such as copying data back and forth.) To do this, we
+can collect a timeline using the command-line interface, ``nsys``. To use
+this tool, load the ``nsight-systems`` module.
+
+::
+
+    summit> module load nsight-systems
+
+For example, we can profile the ``vectorAdd`` CUDA sample (the CUDA samples
+can be found in ``$OLCF_CUDA_ROOT/samples`` if the ``cuda`` module is loaded.)
+
+::
+
+    summit> jsrun -n1 -a1 -g1 nsys profile -o vectorAdd --stats=true ./vectorAdd
+
+(Note that even if you do not ask for Nsight Systems to create an output file,
+but just ask it to print summary statistics with ``--stats=true``, it will create
+a temporary file for storing the profiling data, so you will need to work on a
+file system that can be written to from a compute node such as GPFS.)
+
+The profiler will print several sections including information about the
+CUDA API calls made by the application, as well as any GPU kernels that were
+launched. Nsight Systems can be used for CUDA C++, CUDA Fortran, OpenACC,
+OpenMP offload, and other programming models that target NVIDIA GPUs, because
+under the hood they all ultimately take the same path for generating the binary
+code that runs on the GPU.
+
+If you add the ``-o`` option, as above, the report will be saved to file
+with the extension ``.qdrep``. That report file can later be analyzed in
+the Nsight Systems UI by selecting File > Open and locating the ``vectorAdd.qdrep``
+file on your filesystem. Nsight Systems does not currently have a Power9
+version of the UI, so you will need to `download the UI for your local system
+<https://developer.nvidia.com/nsight-systems>`__, which is supported on
+Windows, Mac, and Linux (x86). Then use ``scp`` or some other file transfer
+utility for copying the report file from Summit to your local machine.
+
+Nsight Systems can be used for MPI runs with multiple ranks, but it is
+not a parallel profiler and cannot combine output from multiple ranks.
+Instead, each rank must be profiled and analyzed independently. The file
+name should be unique for every rank. Nsight Systems knows how to parse
+environment variables with the syntax ``%q{ENV_VAR}``, and since Spectrum
+MPI provides an environment variable for every process with its MPI rank,
+you can do
+
+::
+
+    summit> jsrun -n6 -a1 -g1 nsys profile -o vectorAdd_%q{OMPI_COMM_WORLD_RANK} ./vectorAdd
+
+Then you will have ``vectorAdd_0.qdrep`` through ``vectorAdd_5.qdrep``.
+(Of course, in this case each rank does the same thing as this is not
+an MPI application, but it works the same way for an MPI code.)
+
+For more details about Nsight Systems, consult the `product page
+<https://developer.nvidia.com/nsight-systems>`__ and the `documentation
+<https://docs.nvidia.com/nsight-systems/index.html>`__. If you previously
+used ``nvprof`` and would like to start using the Nsight Developer Tools,
+check out `this transition guide
+<https://devblogs.nvidia.com/migrating-nvidia-nsight-tools-nvvp-nvprof/>`__.
+Also, in March 2020 NVIDIA presented a webinar on Nsight Systems which you
+can `watch on demand <https://www.olcf.ornl.gov/calendar/nvidia-profiling-tools-nsight-systems/>`__.
+
+NVIDIA Nsight Compute
+^^^^^^^^^^^^^^^^^^^^^
+
+Individual GPU kernels (the discrete chunks of work that are launched by
+programming languages such as CUDA and OpenACC) can be profiled in detail
+with NVIDIA Nsight Compute. The typical workflow is to profile your code
+with Nsight Systems and identify the major performance bottleneck in your
+application. If that performance bottleneck is on the CPU, it means more
+code should be ported to the GPU; or, if that bottleneck is in memory
+management, such as copying data back and forth between the CPU and GPU,
+you should look for opportunities to reduce that data motion. But if that
+bottleneck is a GPU kernel, then Nsight Compute can be used to collect
+performance counters to understand whether the kernel is running efficiently
+and if there's anything you can do to improve.
+
+The Nsight Compute command-line interface, ``nv-nsight-cu-cli``, can be
+prefixed to your application to collect a report.
+
+::
+
+    summit> module load nsight-compute
+
+::
+
+    summit> jsrun -n1 -a1 -g1 nv-nsight-cu-cli ./vectorAdd
+
+Similar to Nsight Systems, Nsight Compute will create a temporary report file,
+even when ``-o`` is not specified.
+
+The most important output to look at is the "GPU Speed of Light" section,
+which tells you what fraction of peak memory throughput and what fraction
+of peak compute throughput you achieved. Typically if you have achieved
+higher than 60% of the peak of either subsystem, your kernel would be
+considered memory-bound or compute-bound (respectively), and if you have
+not achieved 60% of either this is often a latency-bound kernel. (A common
+cause of latency issues is not exposing enough parallelism to saturate
+the GPU's compute capacity -- peak GPU performance can only be achieved when
+there is enough work to hide the latency of memory accesses and to keep all
+compute pipelines busy.)
+
+
+By default, Nsight Compute will collect this performance data for every kernel
+in your application. This will take a long time in a real-world application.
+It is recommended that you identify a specific kernel to profile and then use
+the ``-k`` argument to just profile that kernel. (If you don't know the name of
+your kernel, use ``nsys`` to obtain that. The flag will pattern match on any
+substring of the kernel name.) You can also use the ``-s`` option to skip some
+number of kernel calls and the ``-c`` option to specify how many invocations of
+that kernel you want to profile.
+
+If you want to collect information on just a specific performance measurement,
+for example the number of bytes written to DRAM, you can do so with the
+``--metrics`` option:
+
+::
+
+    summit> jsrun -n1 -a1 -g1 nv-nsight-cu-cli -k vectorAdd --metrics dram__bytes_write.sum ./vectorAdd
+
+The list of available metrics can be obtained with ``nv-nsight-cu-cli
+--query-metrics``. Most metrics have both a base name and suffix. Together
+these  make up the full metric name to pass to ``nv-nsight-cu-cli``. To list
+the full names for a collection of metrics, use ``--query-metrics-mode suffix
+--metrics <metrics list>``.
+
+
+As with Nsight Systems, there is a graphical user interface you can load a
+report file into (The GUI is only available for Windows, x86_64 Linux and Mac).
+Use the ``-o`` flag to create a file (the added report extension will be
+``.nsight-cuprof-report``), copy it to your local system, and use the File >
+Open File menu item. If you are using multiple MPI ranks, make sure you name
+each one independently. Nsight Compute does not yet support the ``%q`` syntax
+(this will come in a future release), so your job script will have to do the
+naming manually; for example, you can create a simple shell script:
+
+::
+
+    $ cat run.sh
+    #!/bin/bash
+
+    nv-nsight-cu-cli -o vectorAdd_$OMPI_COMM_WORLD_RANK ./vectorAdd
+
+For more details on Nsight Compute, check out the `product page
+<https://developer.nvidia.com/nsight-compute>`__ and the `documentation
+<https://docs.nvidia.com/nsight-compute/index.html>`__. If you previously used
+``nvprof`` and would like to start using Nsight Compute, check out `this transition
+guide <https://docs.nvidia.com/nsight-compute/NsightComputeCli/index.html#nvprof-guide>`__.
+Also, in March 2020 NVIDIA presented a webinar on Nsight Compute which you can `watch on
+demand <https://www.olcf.ornl.gov/calendar/nvidia-profiling-tools-nsight-compute/>`__.
+
+nvprof and nvvp
+^^^^^^^^^^^^^^^
+
+Prior to Nsight Systems and Nsight Compute, the NVIDIA command line profiling
+tool was ``nvprof``, which provides both tracing and kernel profiling
+capabilities. Like with Nsight Systems and Nsight Compute, the profiler data
+output can be saved and imported into the NVIDIA Visual Profiler for additional
+graphical analysis. ``nvprof`` is in maintenance mode now: it still works on
+Summit and significant bugs will be fixed, but no new feature development is
+occurring on this tool.
+
+To use ``nvprof``, the ``cuda`` module must be loaded.
+
+::
+
+    summit> module load cuda
+
+A simple "Hello, World!" run using ``nvprof`` can be done by adding
+"nvprof" to the jsrun (see: :ref:`job-launcher-jsrun`)
+line in your batch script (see :ref:`batch-scripts`).
+
+::
+
+    ...
+    jsrun -n1 -a1 -g1 nvprof ./hello_world_gpu
+    ...
+
+Although ``nvprof`` doesn't provide aggregated MPI data, the ``%h`` and
+``%p`` output file modifiers can be used to create separate output files
+for each host and process.
+
+::
+
+    ...
+    jsrun -n1 -a1 -g1 nvprof -o output.%h.%p ./hello_world_gpu
+    ...
+
+There are many various metrics and events that the profiler can capture.
+For example, to output the number of double-precision FLOPS, you may use
+the following:
+
+::
+
+    ...
+    jsrun -n1 -a1 -g1 nvprof --metrics flops_dp -o output.%h.%p ./hello_world_gpu
+    ...
+
+To see a list of all available metrics and events, use the following:
+
+::
+
+    summit> nvprof --query-metrics
+    summit> nvprof --query-events
+
+While using ``nvprof`` on the command-line is a quick way to gain
+insight into your CUDA application, a full visual profile is often even
+more useful. For information on how to view the output of ``nvprof`` in
+the NVIDIA Visual Profiler, see the `NVIDIA
+Documentation <http://docs.nvidia.com/cuda/profiler-users-guide/#nvprof-overview>`__.
+
+Score-P
+-------
+
+The `Score-P <http://score-p.org/>`__ measurement infrastructure is a
+highly scalable and easy-to-use tool suite for profiling, event
+tracing, and online analysis of HPC applications. Score-P supports
+analyzing C, C++ and Fortran applications that make use of
+multi-processing (MPI, SHMEM), thread parallelism (OpenMP, PThreads) and
+accelerators (CUDA, OpenCL, OpenACC) and combinations.
+
+For detailed information about using Score-P on Summit and the
+builds available, please see the
+`Score-P Software Page. <https://www.olcf.ornl.gov/software_package/score-p/>`__
+
+Vampir
+------
+
+`Vampir <http://vampir.eu/>`__ is a software performance visualizer focused on highly
+parallel applications. It presents a unified view on an application
+run including the use of programming paradigms like MPI, OpenMP,
+PThreads, CUDA, OpenCL and OpenACC. It also incorporates file I/O,
+hardware performance counters and other performance data sources.
+Various interactive displays offer detailed insight into the performance
+behavior of the analyzed application. Vampir’s scalable analysis
+server and visualization engine enable interactive navigation of
+large amounts of performance data. `Score-P <https://olcf.ornl.gov/software_package/score-p>`__
+and `TAU <https://www.olcf.ornl.gov/software_package/tau>`__ generate OTF2
+trace files for Vampir to visualize.
+
+For detailed information about using Vampir on Summit and the builds available,
+please see the `Vampir Software Page <https://www.olcf.ornl.gov/software_package/vampir/>`__.
+
+
 .. _nvidia-v100-gpus:
-.. _NVIDIA Volta V100:
+.. _NVIDIA Tesla V100:
 
 NVIDIA V100 GPUs
 ================
@@ -155,12 +2859,12 @@ NVIDIA V100 GPUs
 The NVIDIA Tesla V100 accelerator has a peak performance of 7.8 TFLOP/s
 (double-precision) and contributes to a majority of the computational
 work performed on Summit. Each V100 contains 80 streaming
-multiprocessors (SMs), 16 GB of high-bandwidth memory (HBM2), and a 6 MB
-L2 cache that is available to the SMs. The GigaThread Engine is
-responsible for distributing work among the SMs and (8) 512-bit memory
-controllers control access to the 16 GB of HBM2 memory. The V100 uses
-NVIDIA's NVLink interconnect to pass data between GPUs as well as from
-CPU-to-GPU.
+multiprocessors (SMs), 16 GB (32 GB on high-memory nodes) of high-bandwidth
+memory (HBM2), and a 6 MB L2 cache that is available to the SMs. The
+GigaThread Engine is responsible for distributing work among the SMs and
+(8) 512-bit memory controllers control access to the 16 GB (32 GB on
+high-memory nodes) of HBM2 memory. The V100 uses NVIDIA's NVLink interconnect
+to pass data between GPUs as well as from CPU-to-GPU.
 
 .. image:: /images/GV100_FullChip_Diagram_FINAL2_a.png
    :align: center
@@ -180,10 +2884,11 @@ texture units which use the (configured size of the) L1 cache.
 HBM2
 ----
 
-Each V100 has access to 16 GB of high-bandwidth memory (HBM2), which can
-be accessed at speeds of up to 900 GB/s. Access to this memory is
-controlled by (8) 512-bit memory controllers, and all accesses to the
-high-bandwidth memory go through the 6 MB L2 cache.
+Each V100 has access to 16 GB (32GB for high-memory nodes) of
+high-bandwidth memory (HBM2), which can be accessed at speeds of 
+up to 900 GB/s. Access to this memory is controlled by (8) 512-bit
+memory controllers, and all accesses to the high-bandwidth memory
+go through the 6 MB L2 cache.
 
 NVIDIA NVLink
 -------------
@@ -306,7 +3011,7 @@ reach the synchronization point.
 .. image:: /images/nv_ind_threads_2.png
    :align: center
 
-The Volta V100 introduces warp-level synchronization by implementing warps with
+The Tesla V100 introduces warp-level synchronization by implementing warps with
 a program counter and call stack for each individual thread (i.e.  independent
 thread scheduling).
 
@@ -732,7 +3437,7 @@ Tesla V100 Specifications
 +----------------------------------------------------+----------------------------+
 | Memory Bandwidth                                   | 900 GB/s                   |
 +----------------------------------------------------+----------------------------+
-| Memory size (HBM2)                                 | 16 GB                      |
+| Memory size (HBM2)                                 | 16 or 32 GB                |
 +----------------------------------------------------+----------------------------+
 | L2 cache                                           | 6 MB                       |
 +----------------------------------------------------+----------------------------+
@@ -776,24 +3481,6 @@ following (outside) links.
 * `NVIDIA Volta Architecture White Paper <http://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf>`_
 * `NVIDIA PARALLEL FORALL blog article <https://devblogs.nvidia.com/parallelforall/inside-volta/>`_
 
-.. _connecting:
-
-Connecting
-==========
-
-To connect to Summit, ssh to summit.olcf.ornl.gov. For example:
-
-::
-
-    ssh username@summit.olcf.ornl.gov
-
-For more information on connecting to OLCF resources, see :ref:`connecting-to-olcf`.
-
-Data and Storage
-==================
-
-For more information about center-wide file systems and data archiving available
-on Summit, please refer to the pages on :ref:`data-storage-and-transfers`.
 
 .. _burst-buffer:
 
@@ -804,12 +3491,12 @@ NVMe (XFS)
 ----------
 
 Each compute node on Summit has a 1.6TB \ **N**\ on-\ **V**\ olatile **Me**\
-mory (NVMe) storage device, colloquially known as a "Burst Buffer" with
+mory (NVMe) storage device (high-memory nodes have a 6.4TB NVMe storage device), colloquially known as a "Burst Buffer" with
 theoretical performance peak of 2.1 GB/s for writing and 5.5 GB/s for reading.
 100GB of each NVMe is reserved for NFS cache to help speed access to common
 libraries. When calculating maximum usable storage size, this cache and
 formatting overhead should be considered; We recommend a maximum storage of
-1.4TB. The NVMes could be used to reduce the time that applications wait for
+1.4TB (6TB for high-memory nodes). The NVMes could be used to reduce the time that applications wait for
 I/O. Using an SSD drive per compute node, the burst buffer will be used to
 transfer data to or from the drive before the application reads a file or
 after it writes a file.  The result will be that the application benefits from
@@ -820,7 +3507,7 @@ filesystem.
 .. figure:: /images/nvme_arch.jpg
    :align: center
 
-   The NVMes on Summitdev are local to each node.
+   The NVMes on Summit are local to each node.
 
 Current NVMe Usage
 -------------------
@@ -873,27 +3560,27 @@ NVMe Usage Example
 -------------------
 
 The following example illustrates how to use the burst buffers (NVMes) by
-default on Summit. This example uses a hello_world bash script, called
-test_nvme.sh, and its submission script, check_nvme.lsf. It is assumed that the
-files are saved in the user's GPFS scratch area,
+default on Summit. This example uses a submission script, check_nvme.lsf. It is
+assumed that the files are saved in the user's GPFS scratch area,
 /gpfs/alpine/scratch/$USER/projid, and that the user is operating from there as
 well. Do not forget that for all the commands on NVMe, it is required to use
-jsrun. **Job submssion script: check_nvme.lsf.** This will submit a job to run
-on one node.
+jsrun. This will submit a job to run on one node.
+
+**Job submssion script: check_nvme.lsf.** 
 
 .. code::
 
-    #!/bin/bash
-    #BSUB -P project123
-    #BSUB -J name_test
-    #BSUB -o nvme_test.o%J
-    #BSUB -W 2
-    #BSUB -nnodes 1
-    #BSUB -alloc_flags NVME
+   #!/bin/bash
+   #BSUB -P project123
+   #BSUB -J name_test
+   #BSUB -o nvme_test.o%J
+   #BSUB -W 2
+   #BSUB -nnodes 1
+   #BSUB -alloc_flags NVME
 
-    #Declare your project in the variable
-    projid=xxxxx
-    cd /gpfs/alpine/scratch/$USER/$projid
+   #Declare your project in the variable
+   projid=xxxxx
+   cd /gpfs/alpine/scratch/$USER/$projid
 
    #Save the hostname of the compute node in a file
    jsrun -n 1 echo $HOSTNAME > test_file
@@ -920,18 +3607,18 @@ on one node.
    ls -l test_file
 
 To run this example: ``bsub ./check_nvme.lsf``.   We could include all the
-commands in a script and call this file as jsrun argument in order to avoid
-changing numbers of processes for all the jsrun calls. You can see in the table
-below the differences of a submission script for executing an application on
-GPFS and NVMe. In this case we copy the binary and the input file on NVMe, but
+commands in a script and call this file as a jsrun argument in an interactive
+job, in order to avoid changing numbers of processes for all the jsrun
+calls. You can see in the table below an example of the differences in a
+submission script for executing an application on GPFS and NVMe. In the example,
+a binary ``./btio`` reads input from an input file and generates output files.
+In this particular case we copy the binary and the input file onto the NVMe, but
 this depends on the application as it is not always necessary, we can execute
 the binary on the GPFS and write/read the data from NVMe if it is supported by
 the application.
 
 .. role:: raw-html(raw)
     :format: html
-
-
 
 +----------------------------------------+------------------------------------------------+
 | *Using GPFS*          		 | *Using NVMe*         			  |
@@ -965,10 +3652,10 @@ the application.
 |					 | ``jsrun -n 1 cp ${BBPATH}/* .``		  |
 +----------------------------------------+------------------------------------------------+
 
-When a user occupies more than one compute node, then is using more NVMe and the
-I/O can scale linear. For example in the following plot you can observe the
-scalability of the IOR benchmark on 2048 compute nodes on Summit where the write
-performance achieves 4TB/s and the read 11,3 TB/s
+When a user occupies more than one compute node, then they are using more NVMes
+and the I/O can scale linearly. For example in the following plot you can observe
+the scalability of the IOR benchmark on 2048 compute nodes on Summit where the
+write performance achieves 4TB/s and the read 11.3 TB/s
 
 
 .. image:: /images/nvme_ior_summit.png
@@ -976,15 +3663,14 @@ performance achieves 4TB/s and the read 11,3 TB/s
 
 Remember that by default NVMe support one file per MPI process up to one file
 per compute node. If users desire a single file as output from data staged on
-the NMVe they will need to construct it.  Tools to save automatically checkpoint
+the NVMe they will need to construct it.  Tools to save automatically checkpoint
 files from NVMe to GPFS as also methods that allow automatic n to 1 file writing
 with NVMe staging are under development.   Tutorials about NVME:   Burst Buffer
 on Summit (`slides
 <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_BB_markomanolis.pdf>`__,
 `video <https://vimeo.com/306890779>`__) Summit Burst Buffer Libraries (`slides
 <https://www.olcf.ornl.gov/wp-content/uploads/2018/12/summit_workshop_BB_zimmer.pdf>`__,
-`video <https://vimeo.com/306891012>`__). Below is presented the Spectral
-library.
+`video <https://vimeo.com/306891012>`__). 
 
 .. _spectral-library:
 
@@ -1010,11 +3696,9 @@ steps in the submission script:
 The following table shows the differences of executing an application on GPFS,
 NVMe, and NVMe with Spectral. This example is using one compute node. We copy
 the executable and input file for the NVMe cases but this is not always
-necessary, it depends on the application, you could execute the binary from the
-GPFS and save the output files on NVMe, In the table is the execution command of
-the binary and take the data back in case that the Spectral library is not used.
-Adjust your parameters to copy, if necessary, the executable and input files on
-all the NVMes devices.
+necessary. Depending on the application, you could execute the binary from the
+GPFS and save the output files on NVMe. Adjust your parameters to copy, if
+necessary, the executable and input files onto all the NVMe devices.
 
 +----------------------------------------+------------------------------------------------+------------------------------------------------+
 | *Using GPFS* 			         | *Using NVMe*                                   | *Using NVME with Spectral library*             |
@@ -1037,11 +3721,11 @@ all the NVMes devices.
 +----------------------------------------+------------------------------------------------+------------------------------------------------+
 | 				         |                                                | ``module load spectral``                       |
 +----------------------------------------+------------------------------------------------+------------------------------------------------+
+| 				         | ``export BBPATH=/mnt/bb/$USER``                | ``export BBPATH=/mnt/bb/$USER``                |
++----------------------------------------+------------------------------------------------+------------------------------------------------+
 | 				         |                                                | ``export PERSIST_DIR=${BBPATH}``               |
 +----------------------------------------+------------------------------------------------+------------------------------------------------+
 | 				         |                                                | ``export PFS_DIR=$PWD/spect/``                 |
-+----------------------------------------+------------------------------------------------+------------------------------------------------+
-| 				         | ``export BBPATH=/mnt/bb/$USER/``               | ``export BBPATH=/mnt/bb/$USER/``               |
 +----------------------------------------+------------------------------------------------+------------------------------------------------+
 | 				         | ``jsrun -n 1 cp btio ${BBPATH}``               | ``jsrun -n 1 cp btio ${BBPATH}``               |
 +----------------------------------------+------------------------------------------------+------------------------------------------------+
@@ -1055,2084 +3739,46 @@ all the NVMes devices.
 +----------------------------------------+------------------------------------------------+------------------------------------------------+
 
 
-You could observe that with Spectral library there is no reason to explicitly
-ask for the data to be copied to GPFS as it is done automatically through the
-spectral_wait.py script. Also a a log file called spectral.log will be created
-with information on the files that were copied.
-
-
-.. _software:
-
-Software
-========
-
-Visualization and analysis tasks should be done on the Rhea cluster. There are a
-few tools provided for various visualization tasks, as described in the
-:ref:`visualization-tools` section of the :ref:`rhea-user-guide`.
-
-For a full list of software available at the OLCF, please see the
-Software section (coming soon).
-
-.. _shell-programming-environments:
-
-Shell & Programming Environments
-================================
-
-OLCF systems provide many software packages and scientific
-libraries pre-installed at the system-level for users to take advantage
-of. To facilitate this, environment management tools are employed to
-handle necessary changes to the shell. The sections below provide
-information about using these management tools on Summit.
-
-Default Shell
--------------
-
-A user’s default shell is selected when completing the User Account
-Request form. The chosen shell is set across all OLCF resources, and is
-the shell interface a user will be presented with upon login to any OLCF
-system. Currently, supported shells include:
-
--  bash
--  tsch
--  csh
--  ksh
-
-If you would like to have your default shell changed, please contact the
-`OLCF User Assistance Center <https://www.olcf.ornl.gov/for-users/user-assistance/>`__ at
-help@nccs.gov.
-
-.. _environment-management-with-lmod:
-
-Environment Management with Lmod
---------------------------------
-
-Environment modules are provided through `Lmod
-<https://lmod.readthedocs.io/en/latest/>`__, a Lua-based module system for
-dynamically altering shell environments. By managing changes to the shell’s
-environment variables (such as ``PATH``, ``LD_LIBRARY_PATH``, and
-``PKG_CONFIG_PATH``), Lmod allows you to alter the software available in your
-shell environment without the risk of creating package and version combinations
-that cannot coexist in a single environment.
-
-Lmod is a recursive environment module system, meaning it is aware of module
-compatibility and actively alters the environment to protect against conflicts.
-Messages to stderr are issued upon Lmod implicitly altering the environment.
-Environment modules are structured hierarchically by compiler family such that
-packages built with a given compiler will only be accessible if the compiler
-family is first present in the environment.
-
-.. note::
-    Lmod can interpret both Lua modulefiles and legacy Tcl
-    modulefiles. However, long and logic-heavy Tcl modulefiles may require
-    porting to Lua.
-
-General Usage
-^^^^^^^^^^^^^
-
-Typical use of Lmod is very similar to that of interacting with
-modulefiles on other OLCF systems. The interface to Lmod is provided by
-the ``module`` command:
-
-+----------------------------------+-----------------------------------------------------------------------+
-| Command                          | Description                                                           |
-+==================================+=======================================================================+
-| module -t list                   | Shows a terse list of the currently loaded modules.                   |
-+----------------------------------+-----------------------------------------------------------------------+
-| module avail                     | Shows a table of the currently available modules                      |
-+----------------------------------+-----------------------------------------------------------------------+
-| module help <modulename>         | Shows help information about <modulename>                             |
-+----------------------------------+-----------------------------------------------------------------------+
-| module show <modulename>         | Shows the environment changes made by the <modulename> modulefile     |
-+----------------------------------+-----------------------------------------------------------------------+
-| module spider <string>           | Searches all possible modules according to <string>                   |
-+----------------------------------+-----------------------------------------------------------------------+
-| module load <modulename> [...]   | Loads the given <modulename>(s) into the current environment          |
-+----------------------------------+-----------------------------------------------------------------------+
-| module use <path>                | Adds <path> to the modulefile search cache and ``MODULESPATH``        |
-+----------------------------------+-----------------------------------------------------------------------+
-| module unuse <path>              | Removes <path> from the modulefile search cache and ``MODULESPATH``   |
-+----------------------------------+-----------------------------------------------------------------------+
-| module purge                     | Unloads all modules                                                   |
-+----------------------------------+-----------------------------------------------------------------------+
-| module reset                     | Resets loaded modules to system defaults                              |
-+----------------------------------+-----------------------------------------------------------------------+
-| module update                    | Reloads all currently loaded modules                                  |
-+----------------------------------+-----------------------------------------------------------------------+
-
-.. note::
-    Modules are changed recursively. Some commands, such as
-    ``module swap``, are available to maintain compatibility with scripts
-    using Tcl Environment Modules, but are not necessary since Lmod
-    recursively processes loaded modules and automatically resolves
-    conflicts.
-
-Searching for modules
-^^^^^^^^^^^^^^^^^^^^^
-
-Modules with dependencies are only available when the underlying dependencies,
-such as compiler families, are loaded. Thus, ``module avail`` will only display
-modules that are compatible with the current state of the environment. To search
-the entire hierarchy across all possible dependencies, the ``spider``
-sub-command can be used as summarized in the following table.
-
-+----------------------------------------+------------------------------------------------------------------------------------+
-| Command                                | Description                                                                        |
-+========================================+====================================================================================+
-| module spider                          | Shows the entire possible graph of modules                                         |
-+----------------------------------------+------------------------------------------------------------------------------------+
-| module spider <modulename>             | Searches for modules named <modulename> in the graph of possible modules           |
-+----------------------------------------+------------------------------------------------------------------------------------+
-| module spider <modulename>/<version>   | Searches for a specific version of <modulename> in the graph of possible modules   |
-+----------------------------------------+------------------------------------------------------------------------------------+
-| module spider <string>                 | Searches for modulefiles containing <string>                                       |
-+----------------------------------------+------------------------------------------------------------------------------------+
-
- 
-
-Defining custom module collections
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Lmod supports caching commonly used collections of environment modules on a
-per-user basis in ``$HOME/.lmod.d``. To create a collection called "NAME" from
-the currently loaded modules, simply call ``module save NAME``. Omitting "NAME"
-will set the user’s default collection. Saved collections can be recalled and
-examined with the commands summarized in the following table.
-
-+-------------------------+----------------------------------------------------------+
-| Command                 | Description                                              |
-+=========================+==========================================================+
-| module restore NAME     | Recalls a specific saved user collection titled "NAME"   |
-+-------------------------+----------------------------------------------------------+
-| module restore          | Recalls the user-defined defaults                        |
-+-------------------------+----------------------------------------------------------+
-| module reset            | Resets loaded modules to system defaults                 |
-+-------------------------+----------------------------------------------------------+
-| module restore system   | Recalls the system defaults                              |
-+-------------------------+----------------------------------------------------------+
-| module savelist         | Shows the list user-defined saved collections            |
-+-------------------------+----------------------------------------------------------+
-
-.. note::
-    You should use unique names when creating collections to
-    specify the application (and possibly branch) you are working on. For
-    example, ``app1-development``, ``app1-production``, and
-    ``app2-production``.
-
-.. note::
-    In order to avoid conflicts between user-defined collections
-    on multiple compute systems that share a home file system (e.g.
-    ``/ccs/home/[userid]``), lmod appends the hostname of each system to the
-    files saved in in your ``~/.lmod.d`` directory (using the environment
-    variable ``LMOD_SYSTEM_NAME``). This ensures that only collections
-    appended with the name of the current system are visible.
-
-The following screencast shows an example of setting up user-defined
-module collections on Summit. https://vimeo.com/293582400
-
-.. _compiling:
-
-Compiling
-=========
-
-Compilers
----------
-
-Available Compilers
-^^^^^^^^^^^^^^^^^^^
-
-The following compilers are available on Summit:
-
-**XL:** IBM XL Compilers *(loaded by default)*
-
-**LLVM:** LLVM compiler infrastructure
-
-**PGI:** Portland Group compiler suite
-
-**GNU:** GNU Compiler Collection
-
-**NVCC**: CUDA C compiler
-
-Upon login, the default versions of the XL compiler suite and Spectrum Message
-Passing Interface (MPI) are added to each user's environment through the modules
-system. No changes to the environment are needed to make use of the defaults.
-
-Multiple versions of each compiler family are provided, and can be inspected
-using the modules system:
-
-::
-
-    summit$ module -t avail pgi
-    /sw/summit/modulefiles/site/linux-rhel7-ppc64le/Core:
-    pgi/18.7
-    pgi/18.10
-    pgi/19.1
-    pgi/19.4
-    pgi/19.5
-    pgi/19.7
-
-C compilation
-^^^^^^^^^^^^^
-
-.. note::
-    type char is unsigned by default
-
-+--------------+------------------+----------------+------------------+------------------+---------------------------+--------------------+
-| **Vendor**   | **Module**       | **Compiler**   |  **Enable C99**  | **Enable C11**   | **Default signed char**   | **Define macro**   |
-|              |                  |                |                  |                  |                           |                    |
-+==============+==================+================+==================+==================+===========================+====================+
-| **IBM**      | ``xl``           | xlc xlc\_r     | ``-std=gnu99``   | ``-std=gnu11``   | ``-qchar=signed``         | ``-WF,-D``         |
-+--------------+------------------+----------------+------------------+------------------+---------------------------+--------------------+
-| **GNU**      | system default   | gcc            | ``-std=gnu99``   | ``-std=gnu11``   | ``-fsigned-char``         | ``-D``             |
-+--------------+------------------+----------------+------------------+------------------+---------------------------+--------------------+
-| **GNU**      | ``gcc``          | gcc            | ``-std=gnu99``   | ``-std=gnu11``   | ``-fsigned-char``         | ``-D``             |
-+--------------+------------------+----------------+------------------+------------------+---------------------------+--------------------+
-| **LLVM**     | ``llvm``         | clang          | default          | ``-std=gnu11``   | ``-fsigned-char``         | ``-D``             |
-+--------------+------------------+----------------+------------------+------------------+---------------------------+--------------------+
-| **PGI**      | ``pgi``          | pgcc           | ``-c99``         | ``-c11``         | ``-Mschar``               | ``-D``             |
-+--------------+------------------+----------------+------------------+------------------+---------------------------+--------------------+
-
-C++ compilations
-^^^^^^^^^^^^^^^^
-
-.. note::
-    type char is unsigned by default
-
-+--------------+------------------+-------------------+--------------------------------+--------------------------------+---------------------------+--------------------+
-| **Vendor**   | **Module**       | **Compiler**      | **Enable C++11**               | **Enable C++14**               | **Default signed char**   | **Define macro**   |
-|              |                  |                   |                                |                                |                           |                    |
-+==============+==================+===================+================================+================================+===========================+====================+
-| **IBM**      | ``xl``           | xlc++, xlc++\_r   | ``-std=gnu++11``               | ``-std=gnu++1y`` (PARTIAL)*    | ``-qchar=signed``         | ``-WF,-D``         |
-+--------------+------------------+-------------------+--------------------------------+--------------------------------+---------------------------+--------------------+
-| **GNU**      | system default   | g++               | ``-std=gnu++11``               | ``-std=gnu++1y``               | ``-fsigned-char``         | ``-D``             |
-+--------------+------------------+-------------------+--------------------------------+--------------------------------+---------------------------+--------------------+
-| **GNU**      | ``gcc``          | g++               | ``-std=gnu++11``               | ``-std=gnu++1y``               | ``-fsigned-char``         | ``-D``             |
-+--------------+------------------+-------------------+--------------------------------+--------------------------------+---------------------------+--------------------+
-| **LLVM**     | ``llvm``         | clang++           | ``-std=gnu++11``               | ``-std=gnu++1y``               | ``-fsigned-char``         | ``-D``             |
-+--------------+------------------+-------------------+--------------------------------+--------------------------------+---------------------------+--------------------+
-| **PGI**      | ``pgi``          | pgc++             | ``-std=c++11 -gnu_extensions`` | ``-std=c++14 -gnu_extensions`` | ``-Mschar``               | ``-D``             |
-+--------------+------------------+-------------------+--------------------------------+--------------------------------+---------------------------+--------------------+
-
-Fortran compilation
-^^^^^^^^^^^^^^^^^^^
-
-+--------------+------------------+-----------------------------------+--------------------------+---------------------------+--------------------------+--------------------+
-| **Vendor**   | **Module**       | **Compiler**                      | **Enable F90**           | **Enable F2003**          | **Enable F2008**         | **Define macro**   |
-|              |                  |                                   |                          |                           |                          |                    |
-+==============+==================+===================================+==========================+===========================+==========================+====================+
-| **IBM**      | ``xl``           | xlf xlf90 xlf95 xlf2003 xlf2008   | ``-qlanglvl=90std``      | ``-qlanglvl=2003std``     | ``-qlanglvl=2008std``    | ``-WF,-D``         |
-+--------------+------------------+-----------------------------------+--------------------------+---------------------------+--------------------------+--------------------+
-| **GNU**      | system default   | gfortran                          | ``-std=f90``             | ``-std=f2003``            | ``-std=f2008``           | ``-D``             |
-+--------------+------------------+-----------------------------------+--------------------------+---------------------------+--------------------------+--------------------+
-| **LLVM**     | ``llvm``         | xlflang                           | n/a                      | n/a                       | n/a                      | ``-D``             |
-+--------------+------------------+-----------------------------------+--------------------------+---------------------------+--------------------------+--------------------+
-| **PGI**      | ``pgi``          | pgfortran                         | use ``.F90`` source file |  use ``.F03`` source file | use ``.F08`` source file | ``-D``             |
-|              |                  |                                   | suffix                   |  suffix                   | suffix                   |                    |
-+--------------+------------------+-----------------------------------+--------------------------+---------------------------+--------------------------+--------------------+
-
-.. note::
-    The xlflang module currently conflicts with the clang
-    module. This restriction is expected to be lifted in future releases.
-
-MPI
-^^^
-
-MPI on Summit is provided by IBM Spectrum MPI. Spectrum MPI provides compiler
-wrappers that automatically choose the proper compiler to build your
-application.
-
-The following compiler wrappers are available:
-
-**C**: ``mpicc``
-
-**C++**: ``mpic++``, ``mpiCC``
-
-**Fortran**: ``mpifort``, ``mpif77``, ``mpif90``
-
-While these wrappers conveniently abstract away linking of Spectrum MPI, it's
-sometimes helpful to see exactly what's happening when invoked. The ``--showme``
-flag will display the full link lines, without actually compiling:
-
-::
-
-    summit$ mpicc --showme
-    /sw/summit/xl/16.1.1-beta6/xlC/16.1.1/bin/xlc -I/autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20171006/linux-rhel7-ppc64le/xl-16.1.1-beta6/spectrum-mpi-10.2.0.7-20180830-eyo7zxm2piusmyffr3iytmgwdacl67ju/include -pthread -L/autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20171006/linux-rhel7-ppc64le/xl-16.1.1-beta6/spectrum-mpi-10.2.0.7-20180830-eyo7zxm2piusmyffr3iytmgwdacl67ju/lib -lmpiprofilesupport -lmpi_ibm
-
-OpenMP
-^^^^^^
-
-.. note::
-    When using OpenMP with IBM XL compilers, the thread-safe
-    compiler variant is required; These variants have the same name as the
-    non-thread-safe compilers with an additional ``_r`` suffix. e.g. to
-    compile OpenMPI C code one would use ``xlc_r``
-
-.. note::
-    OpenMP offloading support is still under active development.
-    Performance and debugging capabilities in particular are expected to
-    improve as the implementations mature.
-
-+---------------+-------------------+---------------------+-------------------+---------------------------------------------------------------------------------+
-| **Vendor**    | **3.1 Support**   | **Enable OpenMP**   | **4.x Support**   | **Enable OpenMP 4.x Offload**                                                   |
-+===============+===================+=====================+===================+=================================================================================+
-| **IBM**       | FULL              | ``-qsmp=omp``       | PARTIAL           | ``-qsmp=omp -qoffload``                                                         |
-+---------------+-------------------+---------------------+-------------------+---------------------------------------------------------------------------------+
-| **GNU**       | FULL              | ``-fopenmp``        | PARTIAL           | ``-fopenmp``                                                                    |
-+---------------+-------------------+---------------------+-------------------+---------------------------------------------------------------------------------+
-| **clang**     | FULL              | ``-fopenmp``        | PARTIAL           | ``-fopenmp -fopenmp-targets=nvptx64-nvidia-cuda --cuda-path=${OLCF_CUDA_ROOT}`` |
-+---------------+-------------------+---------------------+-------------------+---------------------------------------------------------------------------------+
-| **xlflang**   | FULL              | ``-fopenmp``        | PARTIAL           | ``-fopenmp -fopenmp-targets=nvptx64-nvidia-cuda``                               |
-+---------------+-------------------+---------------------+-------------------+---------------------------------------------------------------------------------+
-| **PGI**       | FULL              | ``-mp``             | NONE              | NONE                                                                            |
-+---------------+-------------------+---------------------+-------------------+---------------------------------------------------------------------------------+
-
-OpenACC
-^^^^^^^
-
-+--------------+--------------------+-----------------------+---------------------------+
-| **Vendor**   | **Module**         | **OpenACC Support**   | **Enable OpenACC**        |
-+==============+====================+=======================+===========================+
-| **IBM**      | ``xl``             | NONE                  | NONE                      |
-+--------------+--------------------+-----------------------+---------------------------+
-| **GNU**      | system default     | NONE                  | NONE                      |
-+--------------+--------------------+-----------------------+---------------------------+
-| **GNU**      | ``gcc``            | 2.5                   | ``-fopenacc``             |
-+--------------+--------------------+-----------------------+---------------------------+
-| **LLVM**     | ``clang`` or       |                       |                           |
-|              | ``xlflang``        | NONE                  | NONE                      |
-+--------------+--------------------+-----------------------+---------------------------+
-| **PGI**      | ``pgi``            | 2.5                   | ``-acc, -ta=nvidia:cc70`` |
-+--------------+--------------------+-----------------------+---------------------------+
-
-CUDA compilation
-^^^^^^^^^^^^^^^^
-
-NVIDIA
-""""""
-
-CUDA C/C++ support is provided through the ``cuda`` module.
-
-``nvcc`` : Primary CUDA C/C++ compiler
-
-**Language support**
-
-``-std=c++11`` : provide C++11 support
-
-``--expt-extended-lambda`` : provide experimental host/device lambda support
-
-``--expt-relaxed-constexpr`` : provide experimental host/device constexpr support
-
-**Compiler support**
-
-NVCC currently supports XL, GCC, and PGI C++ backends.
-
-``--ccbin`` : set to host compiler location
-
-CUDA Fortran compilation
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-IBM
-"""
-
-The IBM compiler suite is made available through the default loaded xl
-module, the cuda module is also required.
-
-``xlcuf`` : primary Cuda fortran compiler, thread safe
-
-**Language support flags**
-
-``-qlanglvl=90std`` : provide Fortran90 support
-
-``-qlanglvl=95std`` : provide Fortran95 support
-
-``-qlanglvl=2003std`` : provide Fortran2003 support
-
-``-qlanglvl=2008std`` : provide Fortran2003 support
-
-PGI
-"""
-
-The PGI compiler suite is available through the ``pgi`` module.
-
-``pgfortran`` : Primary fortran compiler with CUDA Fortran support
-
-**Language support:**
-
-Files with ``.cuf`` suffix automatically compiled with cuda fortran support
-
-Standard fortran suffixed source files determines the standard involved,
-see the man page for full details
-
-``-Mcuda`` : Enable CUDA Fortran on provided source file
-
-Linking in Libraries
---------------------
-
-OLCF systems provide many software packages and scientific
-libraries pre-installed at the system-level for users to take advantage
-of. In order to link these libraries into an application, users must
-direct the compiler to their location. The ``module show`` command can
-be used to determine the location of a particular library. For example
-
-::
-
-    summit$ module show essl
-    ------------------------------------------------------------------------------------
-       /sw/summit/modulefiles/core/essl/6.1.0-1:
-    ------------------------------------------------------------------------------------
-    whatis("ESSL 6.1.0-1 ")
-    prepend_path("LD_LIBRARY_PATH","/sw/summit/essl/6.1.0-1/essl/6.1/lib64")
-    append_path("LD_LIBRARY_PATH","/sw/summit/xl/16.1.1-beta4/lib")
-    prepend_path("MANPATH","/sw/summit/essl/6.1.0-1/essl/6.1/man")
-    setenv("OLCF_ESSL_ROOT","/sw/summit/essl/6.1.0-1/essl/6.1")
-    help([[ESSL 6.1.0-1
-
-    ]])
-
-When this module is loaded, the ``$OLCF_ESSL_ROOT`` environment variable
-holds the path to the ESSL installation, which contains the lib64/ and
-include/ directories:
-
-::
-
-    summit$ module load essl
-    summit$ echo $OLCF_ESSL_ROOT
-    /sw/summit/essl/6.1.0-1/essl/6.1
-    summit$ ls $OLCF_ESSL_ROOT
-    FFTW3  READMES  REDIST.txt  include  iso-swid  ivps  lap  lib64  man  msg
-
-The following screencast shows an example of linking two libraries into
-a simple program on Summit. https://vimeo.com/292015868
-
-.. _running-jobs:
-
-Running Jobs
-============
-
-As is the case on other OLCF systems, computational work on Summit is
-performed within jobs. A typical job consists of several components:
-
--  A submission script
--  An executable
--  Input files needed by the executable
--  Output files created by the executable
-
-In general, the process for running a job is to:
-
-#. Prepare executables and input files
-#. Write the batch script
-#. Submit the batch script
-#. Monitor the job's progress before and during execution
-
-The following sections will provide more information regarding running
-jobs on Summit. Summit uses IBM Spectrum Load Sharing Facility (LSF) as
-the batch scheduling system.
-
-.. _login-launch-and-compute-nodes:
-
-Login, Launch, and Compute Nodes
---------------------------------
-
-Recall from the :ref:`system-overview`
-section that Summit has three types of nodes: login, launch, and
-compute. When you log into the system, you are placed on a login node.
-When your :ref:`batch-scripts` or :ref:`interactive-jobs` run,
-the resulting shell will run on a launch node. Compute nodes are accessed
-via the ``jsrun`` command. The ``jsrun`` command should only be issued
-from within an LSF job (either batch or interactive) on a launch node.
-Othewise, you will not have any compute nodes allocated and your parallel
-job will run on the login node. If this happens, your job will interfere with
-(and be interfered with by) other users' login node tasks.
-
-Per-User Login Node Resource Limits
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Because the login nodes are resources shared by all Summit users, we utilize
-``cgroups`` to help better ensure resource availability for all users of the
-shared nodes. By default each user is limited to **16 hardware-threads**, **16GB
-of memory**, and **1 GPU**.  Please note that limits are set per user and not
-individual login sessions. All user processes on a node are contained within a
-single cgroup and share the cgroup's limits.
-
-If a process from any of a user’s login sessions reaches 4-hours of CPU-time,
-all login sessions will be limited to **.5 hardware-thread**.  To reset the
-cgroup limits on a node to default once the 4-hour CPU-time reduction has been
-reached, kill the offending process and start a new login session to the node.
-
-Users can run command ``check_cgroup_user`` on login nodes to check what processes 
-were recently killed by cgroup limits.
-
-    .. note:: Login node limits are set per user and not per individual login
-        session.  All user processes on a node are contained within a single cgroup
-        and will share the cgroup's limits.
-
-
-.. _batch-scripts:
-
-Batch Scripts
--------------
-
-The most common way to interact with the batch system is via batch jobs.
-A batch job is simply a shell script with added directives to request
-various resources from or provide certain information to the batch
-scheduling system. Aside from the lines containing LSF options, the
-batch script is simply the series commands needed to set up and run your
-job.
-
-To submit a batch script, use the bsub command: ``bsub myjob.lsf``
-
-If you’ve previously used LSF, you’re probably used to submitting a job
-with input redirection (i.e. ``bsub < myjob.lsf``). This is not needed
-(and will not work) on Summit.
-
-As an example, consider the following batch script:
-
-.. code-block:: bash
-   :linenos:
-
-    #!/bin/bash
-    # Begin LSF Directives
-    #BSUB -P ABC123
-    #BSUB -W 3:00
-    #BSUB -nnodes 2048
-    #BSUB -alloc_flags gpumps
-    #BSUB -J RunSim123
-    #BSUB -o RunSim123.%J
-    #BSUB -e RunSim123.%J
-
-    cd $MEMBERWORK/abc123
-    cp $PROJWORK/abc123/RunData/Input.123 ./Input.123
-    date
-    jsrun -n 4092 -r 2 -a 12 -g 3 ./a.out
-    cp my_output_file /ccs/proj/abc123/Output.123
-
-+----------+------------+--------------------------------------------------------------------------------------------+
-| Line #   | Option     | Description                                                                                |
-+==========+============+============================================================================================+
-| 1        |            | Shell specification. This script will run under with bash as the shell                     |
-+----------+------------+--------------------------------------------------------------------------------------------+
-| 2        |            | Comment line                                                                               |
-+----------+------------+--------------------------------------------------------------------------------------------+
-| 3        | Required   | This job will charge to the ABC123 project                                                 |
-+----------+------------+--------------------------------------------------------------------------------------------+
-| 4        | Required   | Maximum walltime for the job is 3 hours                                                    |
-+----------+------------+--------------------------------------------------------------------------------------------+
-| 5        | Required   | The job will use 2,048 nodes                                                               |
-+----------+------------+--------------------------------------------------------------------------------------------+
-| 6        | Optional   | Enable GPU Multi-Process Service                                                           |
-+----------+------------+--------------------------------------------------------------------------------------------+
-| 7        | Optional   | The name of the job is RunSim123                                                           |
-+----------+------------+--------------------------------------------------------------------------------------------+
-| 8        | Optional   | Write standard output to a file named RunSim123.#, where # is the job ID assigned by LSF   |
-+----------+------------+--------------------------------------------------------------------------------------------+
-| 9        | Optional   | Write standard error to a file named RunSim123.#, where # is the job ID assigned by LSF    |
-+----------+------------+--------------------------------------------------------------------------------------------+
-| 10       | -          | Blank line                                                                                 |
-+----------+------------+--------------------------------------------------------------------------------------------+
-| 11       | -          | Change into one of the scratch filesystems                                                 |
-+----------+------------+--------------------------------------------------------------------------------------------+
-| 12       | -          | Copy input files into place                                                                |
-+----------+------------+--------------------------------------------------------------------------------------------+
-| 13       | -          | Run the ``date`` command to write a timestamp to the standard output file                  |
-+----------+------------+--------------------------------------------------------------------------------------------+
-| 14       | -          | Run the executable                                                                         |
-+----------+------------+--------------------------------------------------------------------------------------------+
-| 15       | -          | Copy output files from the scratch area into a more permanent location                     |
-+----------+------------+--------------------------------------------------------------------------------------------+
-
-.. _interactive-jobs:
-
-Interactive Jobs
-----------------
-
-Most users will find batch jobs to be the easiest way to interact with
-the system, since they permit you to hand off a job to the scheduler and
-then work on other tasks; however, it is sometimes preferable to run
-interactively on the system. This is especially true when developing,
-modifying, or debugging a code.
-
-Since all compute resources are managed/scheduled by LSF, it is not possible
-to simply log into the system and begin running a parallel code interactively.
-You must request the appropriate resources from the system and, if necessary,
-wait until they are available. This is done with an “interactive batch” job.
-Interactive batch jobs are submitted via the command line, which
-supports the same options that are passed via ``#BSUB`` parameters in a
-batch script. The final options on the command line are what makes the
-job “interactive batch”: ``-Is`` followed by a shell name. For example,
-to request an interactive batch job (with bash as the shell) equivalent
-to the sample batch script above, you would use the command:
-``bsub -W 3:00 -nnodes 2048 -P ABC123 -Is /bin/bash``
-
-
-As pointed out in :ref:`login-launch-and-compute-nodes`, you will be placed on
-a launch (a.k.a. "batch") node upon launching an interactive job and as usual
-need to use ``jsrun`` to access the compute node(s):
-
-.. code::
-
-    $ bsub -Is -W 0:10 -nnodes 1 -P STF007 $SHELL
-    Job <779469> is submitted to default queue <batch>.
-    <<Waiting for dispatch ...>>
-    <<Starting on batch2>>
-
-    $ hostname
-    batch2
-
-    $ jsrun -n1 hostname
-    a35n03
-
-Common bsub Options
--------------------
-
-The table below summarizes options for submitted jobs. Unless otherwise
-noted, these can be used from batch scripts or interactive jobs. For
-interactive jobs, the options are simply added to the ``bsub`` command
-line. For batch scripts, they can either be added on the ``bsub``
-command line or they can appear as a ``#BSUB`` directive in the batch
-script. If conflicting options are specified (i.e. different walltime
-specified on the command line versus in the script), the option on the
-command line takes precedence. Note that LSF has numerous options; only
-the most common ones are described here. For more in-depth information
-about other LSF options, see the ``bsub`` man page.
-
-+--------------------+----------------------------------------+----------------------------------------------------------------------------------+
-| Option             | Example Usage                          | Description                                                                      |
-+====================+========================================+==================================================================================+
-| ``-W``             | ``#BSUB -W 50``                        | Requested                                                                        |
-|                    |                                        | maximum walltime. NOTE: The format is [hours:]minutes, not                       |
-|                    |                                        | [[hours:]minutes:]seconds like PBS/Torque/Moab                                   |
-+--------------------+----------------------------------------+----------------------------------------------------------------------------------+
-| ``-nnodes``        | ``#BSUB -nnodes 1024``                 | Number of nodes                                                                  |
-|                    |                                        | NOTE: There is specified with only one hyphen (i.e. -nnodes, not --nnodes)       |
-+--------------------+----------------------------------------+----------------------------------------------------------------------------------+
-| ``-P``             | ``#BSUB -P ABC123``                    | Specifies the                                                                    |
-|                    |                                        | project to which the job should be charged                                       |
-+--------------------+----------------------------------------+----------------------------------------------------------------------------------+
-| ``-o``             | ``#BSUB -o jobout.%J``                 | File into which                                                                  |
-|                    |                                        | job STDOUT should be directed (%J will be replaced with the job ID number) If    |
-|                    |                                        | you do not also specify a STDERR file with ``-e`` or ``-eo``, STDERR will also   |
-|                    |                                        | be written to this file.                                                         |
-+--------------------+----------------------------------------+----------------------------------------------------------------------------------+
-| ``-e``             | ``#BSUB -e jobout.%J``                 | File into which                                                                  |
-|                    |                                        | job STDERR should be directed (%J will be replaced with the job ID number)       |
-+--------------------+----------------------------------------+----------------------------------------------------------------------------------+
-| ``-J``             | ``#BSUB -J MyRun123``                  | Specifies the                                                                    |
-|                    |                                        | name of the job (if not present, LSF will use the name of the job script as the  |
-|                    |                                        | job’s name)                                                                      |
-+--------------------+----------------------------------------+----------------------------------------------------------------------------------+
-| ``-w``             | ``#BSUB -w ended()``                   | Place a dependency on the job                                                    |
-+--------------------+----------------------------------------+----------------------------------------------------------------------------------+
-| ``-N``             | ``#BSUB -N``                           | Send a job report via email when the job completes                               |
-+--------------------+----------------------------------------+----------------------------------------------------------------------------------+
-| ``-XF``            | ``#BSUB -XF``                          | Use X11 forwarding                                                               |
-+--------------------+----------------------------------------+----------------------------------------------------------------------------------+
-| ``-alloc_flags``   | ``#BSUB -alloc_flags "gpumps smt1"``   | Used to request                                                                  |
-|                    |                                        | GPU Multi-Process Service (MPS) and to set SMT (Simultaneous Multithreading)     |
-|                    |                                        | levels. Only one "#BSUB alloc\_flags" command is recognized so multiple          |
-|                    |                                        | alloc\_flags options need to be enclosed in quotes and space-separated. Setting  |
-|                    |                                        | gpumps enables NVIDIA’s Multi-Process Service, which allows multiple MPI ranks   |
-|                    |                                        | to simultaneously access a GPU. Setting smt\ *n* (where *n* is 1, 2, or 4) sets  |
-|                    |                                        | different SMT levels. To run with 2 hardware threads per physical core, you’d    |
-|                    |                                        | use smt2. The default level is smt4.                                             |
-+--------------------+----------------------------------------+----------------------------------------------------------------------------------+
-
-Batch Environment Variables
----------------------------
-
-LSF provides a number of environment variables in your job’s shell
-environment. Many job parameters are stored in environment variables and
-can be queried within the batch job. Several of these variables are
-summarized in the table below. This is not an all-inclusive list of
-variables available to your batch job; in particular only LSF variables
-are discussed, not the many “standard” environment variables that will
-be available (such as ``$PATH``).
-
-+-----------------------+------------------------------------------------------+
-| Variable              | Description                                          |
-+=======================+======================================================+
-| ``LSB_JOBID``         | The ID assigned to the job by LSF                    |
-+-----------------------+------------------------------------------------------+
-| ``LS_JOBPID``         | The job’s process ID                                 |
-+-----------------------+------------------------------------------------------+
-| ``LSB_JOBINDEX``      | The job’s index (if it belongs to a job array)       |
-+-----------------------+------------------------------------------------------+
-| ``LSB_HOSTS``         | The hosts assigned to run the job                    |
-+-----------------------+------------------------------------------------------+
-| ``LSB_QUEUE``         | The queue from which the job was dispatched          |
-+-----------------------+------------------------------------------------------+
-| ``LSB_INTERACTIVE``   | Set to “Y” for an interactive job; otherwise unset   |
-+-----------------------+------------------------------------------------------+
-| ``LS_SUBCWD``         | The directory from which the job was submitted       |
-+-----------------------+------------------------------------------------------+
-
-Job States
-----------
-
-A job will progress through a number of states through its lifetime. The
-states you’re most likely to see are:
-
-+---------+-----------------------------------------------------------------------------+
-| State   | Description                                                                 |
-+=========+=============================================================================+
-| PEND    | Job is pending                                                              |
-+---------+-----------------------------------------------------------------------------+
-| RUN     | Job is running                                                              |
-+---------+-----------------------------------------------------------------------------+
-| DONE    | Job completed normally (with an exit code of 0)                             |
-+---------+-----------------------------------------------------------------------------+
-| EXIT    | Job completed abnormally                                                    |
-+---------+-----------------------------------------------------------------------------+
-| PSUSP   | Job was suspended (either by the user or an administrator) while pending    |
-+---------+-----------------------------------------------------------------------------+
-| USUSP   | Job was suspended (either by the user or an administrator) after starting   |
-+---------+-----------------------------------------------------------------------------+
-| SSUSP   | Job was suspended by the system after starting                              |
-+---------+-----------------------------------------------------------------------------+
-
-Scheduling Policy
------------------
-
-In a simple batch queue system, jobs run in a first-in, first-out (FIFO)
-order. This often does not make effective use of the system. A large job
-may be next in line to run. If the system is using a strict FIFO queue,
-many processors sit idle while the large job waits to run. *Backfilling*
-would allow smaller, shorter jobs to use those otherwise idle resources,
-and with the proper algorithm, the start time of the large job would not
-be delayed. While this does make more effective use of the system, it
-indirectly encourages the submission of smaller jobs.
-
-The DOE Leadership-Class Job Mandate
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-As a DOE Leadership Computing Facility, the OLCF has a mandate that a
-large portion of Summit's usage come from large, *leadership-class* (aka
-*capability*) jobs. To ensure the OLCF complies with DOE directives, we
-strongly encourage users to run jobs on Summit that are as large as
-their code will warrant. To that end, the OLCF implements queue policies
-that enable large jobs to run in a timely fashion.
-
-.. note::
-    The OLCF implements queue policies that encourage the
-    submission and timely execution of large, leadership-class jobs on
-    Summit.
-
-The basic priority-setting mechanism for jobs waiting in the queue is
-the time a job has been waiting relative to other jobs in the queue.
-
-If your jobs require resources outside these queue policies, please
-complete the relevant request form on the `Special
-Requests <https://www.olcf.ornl.gov/for-users/documents-forms/special-request-form/>`__ page. If
-you have any questions or comments on the queue policies below, please
-direct them to the User Assistance Center.
-
-Job Priority by Processor Count
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Jobs are *aged* according to the job's requested processor count (older
-age equals higher queue priority). Each job's requested processor count
-places it into a specific *bin*. Each bin has a different aging
-parameter, which all jobs in the bin receive.
-
-+-------+-------------+-------------+------------------------+----------------------+
-| Bin   | Min Nodes   | Max Nodes   | Max Walltime (Hours)   | Aging Boost (Days)   |
-+=======+=============+=============+========================+======================+
-| 1     | 2,765       | 4,608       | 24.0                   | 15                   |
-+-------+-------------+-------------+------------------------+----------------------+
-| 2     | 922         | 2,764       | 24.0                   | 10                   |
-+-------+-------------+-------------+------------------------+----------------------+
-| 3     | 92          | 921         | 12.0                   | 0                    |
-+-------+-------------+-------------+------------------------+----------------------+
-| 4     | 46          | 91          | 6.0                    | 0                    |
-+-------+-------------+-------------+------------------------+----------------------+
-| 5     | 1           | 45          | 2.0                    | 0                    |
-+-------+-------------+-------------+------------------------+----------------------+
-
-``batch`` Queue Policy
-"""""""""""""""""""""""
-
-The ``batch`` queue is the default queue for production work on Summit.
-Most work on Summit is handled through this queue. It enforces the
-following policies:
-
--  Limit of (4) *eligible-to-run* jobs per user.
--  Jobs in excess of the per user limit above will be placed into a
-   *held* state, but will change to eligible-to-run at the appropriate
-   time.
--  Users may have only (100) jobs queued at any state at any time.
-   Additional jobs will be rejected at submit time.
-
-.. note::
-    The *eligible-to-run* state is not the *running* state.
-    Eligible-to-run jobs have not started and are waiting for resources.
-    Running jobs are actually executing.
-
-``killable`` Queue Policy
-""""""""""""""""""""""""""
-
-The ``killable`` queue is a preemptable queue that allows jobs in bins 4 and 5
-to request walltimes up to 24 hours. Jobs submitted to the killable queue will
-be preemptable once the job reaches the guaranteed runtime limit as shown in the
-table below. For example, a job in bin 5 submitted to the killable queue can
-request a walltime of 24 hours. The job will be preemptable after two hours of
-run time. Similarly, a job in bin 4 will be preemptable after six hours of run
-time. Once a job is preempted, the job will be resubmitted by default with the
-original limits as requested in the job script and will have the same ``JOBID``.
-
-**Preemptable job limits:**
-
-+-------+-------------+-------------+------------------------+----------------------+
-| Bin   | Min Nodes   | Max Nodes   | Max Walltime (Hours)   | Guaranteed Walltime  |
-+=======+=============+=============+========================+======================+
-| 4     | 46          | 91          | 24.0                   |  6.0 (hours)         |
-+-------+-------------+-------------+------------------------+----------------------+
-| 5     | 1           | 45          | 24.0                   |  2.0 (hours)         |
-+-------+-------------+-------------+------------------------+----------------------+
-
-.. warning:: If a job in the ``killable`` queue does not reach its requested
-    walltime, it will continue to use allocation time with each automatic
-    resubmission until it either reaches the requested walltime during a single
-    continuous run, or is manually killed by the user. Allocations are always
-    charged based on actual compute time used by all jobs.
-
-To submit a job to the ``killable`` queue, add the ``-q killable`` option to your
-``bsub`` command or ``#BSUB -q killable`` to your job script.
-
-To prevent a preempted job from being automatically requeued, the ``BSUB -rn``
-flag can be used at submit time.
-
-Allocation Overuse Policy
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Projects that overrun their allocation are still allowed to run on OLCF
-systems, although at a reduced priority. Like the adjustment for the
-number of processors requested above, this is an adjustment to the
-apparent submit time of the job. However, this adjustment has the effect
-of making jobs appear much younger than jobs submitted under projects
-that have not exceeded their allocation. In addition to the priority
-change, these jobs are also limited in the amount of wall time that can
-be used. For example, consider that ``job1`` is submitted at the same
-time as ``job2``. The project associated with ``job1`` is over its
-allocation, while the project for ``job2`` is not. The batch system will
-consider ``job2`` to have been waiting for a longer time than ``job1``.
-Additionally, projects that are at 125% of their allocated time will be
-limited to only 3 running jobs at a time. The adjustment to the
-apparent submit time depends upon the percentage that the project is
-over its allocation, as shown in the table below:
-
-+------------------------+----------------------+
-| % Of Allocation Used   | Priority Reduction   |
-+========================+======================+
-| < 100%                 | 0 days               |
-+------------------------+----------------------+
-| 100% to 125%           | 30 days              |
-+------------------------+----------------------+
-| > 125%                 | 365 days             |
-+------------------------+----------------------+
-
-System Reservation Policy
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Projects may request to reserve a set of processors for a period of time
-through the reservation request form, which can be found on the `Special
-Requests <http://www.olcf.ornl.gov/support/getting-started/special-request-form/>`__
-page. If the reservation is granted, the reserved processors will be
-blocked from general use for a given period of time. Only users that
-have been authorized to use the reservation can utilize those resources.
-Since no other users can access the reserved resources, it is crucial
-that groups given reservations take care to ensure the utilization on
-those resources remains high. To prevent reserved resources from
-remaining idle for an extended period of time, reservations are
-monitored for inactivity. If activity falls below 50% of the reserved
-resources for more than (30) minutes, the reservation will be canceled
-and the system will be returned to normal scheduling. A new reservation
-must be requested if this occurs.
-
-The requesting project's allocation is charged according to the time window
-granted, regardless of actual utilization. For example, an 8-hour, 2,000
-node reservation on Summit would be equivalent to using 16,000 Summit
-node-hours of a project's allocation.
-
---------------
-
-Job Dependencies
-----------------
-
-As is the case with many other queuing systems, it is possible to place
-dependencies on jobs to prevent them from running until other jobs have
-started/completed/etc. Several possible dependency settings are
-described in the table below:
-
-+-----------------------------------------------+---------------------------------------------------------------------------------+
-| Expression                                    | Meaning                                                                         |
-+===============================================+=================================================================================+
-| ``#BSUB -w started(12345)``                   | The job will not start until                                                    |
-|                                               | job 12345 starts. Job 12345 is considered to have started if is in any of the   |
-|                                               | following states: USUSP, SSUSP, DONE, EXIT or RUN (with any pre-execution       |
-|                                               | command specified by ``bsub -E`` completed)                                     |
-+-----------------------------------------------+---------------------------------------------------------------------------------+
-| ``#BSUB -w done(12345)`` ``#BSUB -w 12345``   | The job will not start until                                                    |
-|                                               | job 12345 has a state of DONE (i.e. completed normally). If a job ID is given   |
-|                                               | with no condition, ``done()`` is assumed.                                       |
-+-----------------------------------------------+---------------------------------------------------------------------------------+
-| ``#BSUB -w exit(12345)``                      | The job will not start until                                                    |
-|                                               | job 12345 has a state of EXIT (i.e. completed abnormally)                       |
-+-----------------------------------------------+---------------------------------------------------------------------------------+
-| ``#BSUB -w ended(12345)``                     | The job will not start until                                                    |
-|                                               | job 12345 has a state of EXIT or DONE                                           |
-+-----------------------------------------------+---------------------------------------------------------------------------------+
-
-Dependency expressions can be combined with logical operators. For
-example, if you want a job held until job 12345 is DONE and job 12346
-has started, you can use ``#BSUB -w "done(12345) && started(12346)"``
-
-Monitoring Jobs
----------------
-
-LSF provides several utilities with which you can monitor jobs. These
-include monitoring the queue, getting details about a particular job,
-viewing STDOUT/STDERR of running jobs, and more.
-
-The most straightforward monitoring is with the ``bjobs`` command. This
-command will show the current queue, including both pending and running
-jobs. Running ``bjobs -l`` will provide much more detail about a job (or
-group of jobs). For detailed output of a single job, specify the job id
-after the ``-l``. For example, for detailed output of job 12345, you can
-run ``bjobs -l 12345`` . Other options to ``bjobs`` are shown below. In
-general, if the command is specified with ``-u all`` it will show
-information for all users/all jobs. Without that option, it only shows
-your jobs. Note that this is not an exhaustive list. See ``man bjobs``
-for more information.
-
-+-----------------------+--------------------------------------------------------------------------------+
-| Command               | Description                                                                    |
-+=======================+================================================================================+
-| ``bjobs``             | Show your current jobs in the queue                                            |
-+-----------------------+--------------------------------------------------------------------------------+
-| ``bjobs -u all``      | Show currently queued jobs for all users                                       |
-+-----------------------+--------------------------------------------------------------------------------+
-| ``bjobs -P ABC123``   | Shows currently-queued jobs for project ABC123                                 |
-+-----------------------+--------------------------------------------------------------------------------+
-| ``bjobs -UF``         | Don't format output (might be useful if you're using the output in a script)   |
-+-----------------------+--------------------------------------------------------------------------------+
-| ``bjobs -a``          | Show jobs in all states, including recently finished jobs                      |
-+-----------------------+--------------------------------------------------------------------------------+
-| ``bjobs -l``          | Show long/detailed output                                                      |
-+-----------------------+--------------------------------------------------------------------------------+
-| ``bjobs -l 12345``    | Show long/detailed output for jobs 12345                                       |
-+-----------------------+--------------------------------------------------------------------------------+
-| ``bjobs -d``          | Show details for recently completed jobs                                       |
-+-----------------------+--------------------------------------------------------------------------------+
-| ``bjobs -s``          | Show suspended jobs, including the reason(s) they're suspended                 |
-+-----------------------+--------------------------------------------------------------------------------+
-| ``bjobs -r``          | Show running jobs                                                              |
-+-----------------------+--------------------------------------------------------------------------------+
-| ``bjobs -p``          | Show pending jobs                                                              |
-+-----------------------+--------------------------------------------------------------------------------+
-| ``bjobs -w``          | Use "wide" formatting for output                                               |
-+-----------------------+--------------------------------------------------------------------------------+
-
-If you want to check the STDOUT/STDERR of a currently running job, you
-can do so with the ``bpeek`` command. The command supports several
-options:
-
-+------------------------+---------------------------------------------------------------------------------------------+
-| Command                | Description                                                                                 |
-+========================+=============================================================================================+
-| ``bpeek -J jobname``   | Show STDOUT/STDERR for the job you've most recently submitted with the name jobname         |
-+------------------------+---------------------------------------------------------------------------------------------+
-| ``bpeek 12345``        | Show STDOUT/STDERR for job 12345                                                            |
-+------------------------+---------------------------------------------------------------------------------------------+
-| ``bpeek -f ...``       | Used with other options. Makes ``bpeek`` use ``tail -f`` and exit once the job completes.   |
-+------------------------+---------------------------------------------------------------------------------------------+
-
-The OLCF also provides ``jobstat``, which adds dividers in the queue to
-identify jobs as running, eligible, or blocked. Run without arguments,
-``jobstat`` provides a snapshot of the entire batch queue. Additional
-information, including the number of jobs in each state, total nodes
-available, and relative job priority are also included.
-
-``jobstat -u <username>`` restricts output to only the jobs of a
-specific user. See the ``jobstat`` man page for a full list of
-formatting arguments.
-
-::
-
-    $ jobstat -u <user>
-    --------------------------- Running Jobs: 2 (4544 of 4604 nodes, 98.70%) ---------------------------
-    JobId    Username   Project          Nodes Remain     StartTime       JobName
-    331590   user     project           2     57:06      04/09 10:06:23  Not_Specified
-    331707   user     project           40    39:47      04/09 11:04:04  runA
-    ----------------------------------------- Eligible Jobs: 3 -----------------------------------------
-    JobId    Username   Project          Nodes Walltime   QueueTime       Priority JobName
-    331712   user     project           80    45:00      04/09 11:06:23  501.00   runB
-    331713   user     project           90    45:00      04/09 11:07:19  501.00   runC
-    331714   user     project           100   45:00      04/09 11:07:49  501.00   runD
-    ----------------------------------------- Blocked Jobs: 1 ------------------------------------------
-    JobId    Username   Project          Nodes Walltime   BlockReason
-    331715   user        project           12    2:00:00    Job dependency condition not satisfied
-
-Inspecting Backfill
-^^^^^^^^^^^^^^^^^^^
-
-``bjobs`` and ``jobstat`` help to identify what’s currently running and
-scheduled to run, but sometimes it’s beneficial to know how much of the
-system is *not* currently in use or scheduled for use.
-
-The ``bslots`` command can be used to inspect backfill windows and answer
-the question “How many nodes are currently available, and for how long
-will they remain available?” This can be thought of as identifying gaps in
-the system’s current job schedule. By intentionally requesting resources
-within the parameters of a backfill window, one can potentially shorten
-their queued time and improve overall system utilization.
-
-LSF uses “slots” to describe allocatable resources. Summit compute nodes have 1
-slot per CPU core, for a total of 42 per node ([2x] Power9 CPUs, each
-with 21 cores). Since Summit nodes are scheduled in whole-node
-allocations, the output from ``bslots`` can be divided by 42 to see how
-many nodes are currently available.
-
-By default, ``bslots`` output includes launch node slots, which can
-cause unwanted and inflated fractional node values. The output can
-be adjusted to reflect only available compute node slots with the
-flag  ``-R”select[CN]”``. For example,
-
-::
-
-    $ bslots -R"select[CN]"
-    SLOTS          RUNTIME
-    42             25 hours 42 minutes 51 seconds
-    27384          1 hours 11 minutes 50 seconds
-
-27384 compute node slots / 42 slots per node = 652 compute nodes are
-available for 1 hour, 11 minutes, 50 seconds.
-
-A more specific ``bslots`` query could check for a backfill window with
-space to fit a 1000 node job for 10 minutes:
-
-::
-
-    $ bslots -R"select[CN]" -n $((1000*42)) -W10
-    SLOTS          RUNTIME
-    127764         22 minutes 55 seconds
-
-There is no guarantee that the slots reported by ``bslots`` will still
-be available at time of new job submission.
-
-Interacting With Jobs
----------------------
-
-Sometimes it’s necessary to interact with a batch job after it has been
-submitted. LSF provides several commands for interacting with
-already-submitted jobs.
-
-Many of these commands can operate on either one job or a group of jobs.
-In general, they only operate on the most recently submitted job that
-matches other criteria provided unless “0” is specified as the job id.
-
-Suspending and Resuming Jobs
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-LSF supports user-level suspension and resumption of jobs. Jobs are
-suspended with the ``bstop`` command and resumed with the ``bresume``
-command. The simplest way to invoke these commands is to list the job id
-to be suspended/resumed:
-
-.. code::
-
-    bstop 12345
-    bresume 12345
-
-Instead of specifying a job id, you can specify other criteria that will
-allow you to suspend some/all jobs that meet other criteria such as a
-job name, a queue name, etc. These are described in the manpages for
-``bstop`` and ``bresume``.
-
-Signaling Jobs
-^^^^^^^^^^^^^^
-
-You can send signals to jobs with the ``bkill`` command. While the
-command name suggests its only purpose is to terminate jobs, this is not
-the case. Similar to the ``kill`` command found in Unix-like operating
-systems, this command can be used to send various signals (not just
-``SIGTERM`` and ``SIGKILL``) to jobs. The command can accept both
-numbers and names for signals. For a list of accepted signal names, run
-``bkill -l``. Common ways to invoke the command include:
-
-+---------------------------+----------------------------------------------------------------------------------+
-| Command                   | Description                                                                      |
-+===========================+==================================================================================+
-| ``bkill 12345``           | Force a job to stop by sending ``SIGINT``,                                       |
-|                           | ``SIGTERM``, and ``SIGKILL``. These signals are sent in that order, so users     |
-|                           | can write applications such that they will trap ``SIGINT`` and/or ``SIGTERM``    |
-|                           | and exit in a controlled manner.                                                 |
-+---------------------------+----------------------------------------------------------------------------------+
-| ``bkill -s USR1 12345``   | Send ``SIGUSR1`` to job 12345 NOTE: When                                         |
-|                           | specifying a signal by name, omit SIG from the name. Thus, you specify ``USR1``  |
-|                           | and not ``SIGUSR1`` on the ``bkill`` command line.                               |
-+---------------------------+----------------------------------------------------------------------------------+
-| ``bkill -s 9 12345``      | Send signal 9 to job 12345                                                       |
-+---------------------------+----------------------------------------------------------------------------------+
-
-Like ``bstop`` and ``bresume``, ``bkill`` command also supports
-identifying the job(s) to be signaled by criteria other than the job id.
-These include some/all jobs with a given name, in a particular queue,
-etc. See ``man bkill`` for more information.
-
-Checkpointing Jobs
-^^^^^^^^^^^^^^^^^^
-
-LSF documentation mentions the ``bchkpnt`` and ``brestart`` commands for
-checkpointing and restarting jobs, as well as the ``-k`` option to
-``bsub`` for configuring checkpointing. Since checkpointing is very
-application specific and a wide range of applications run on OLCF
-resources, this type of checkpointing is not configured on Summit. If
-you wish to use checkpointing (which is highly encouraged), you’ll need
-to configure it within your application.
-
-If you wish to implement some form of on-demand checkpointing, keep in mind
-the ``bkill`` command is really a signaling command and you can have your
-job script/application checkpoint as a response to certain signals (such
-as ``SIGUSR1``).
-
-Other LSF Commands
-------------------
-
-The table below summarizes some additional LSF commands that might be
-useful.
-
-+------------------+---------------------------------------------------------------------------+
-| Command          | Description                                                               |
-+==================+===========================================================================+
-| ``bparams -a``   | Show current parameters for LSF. The behavior/available                   |
-|                  | options for some LSF commands depend on settings in various configuration |
-|                  | files. This command shows those settings without having to search for the |
-|                  | actual files.                                                             |
-+------------------+---------------------------------------------------------------------------+
-| ``bjdepinfo``    | Show job dependency information (could be useful in                       |
-|                  | determining what job is keeping another job in a pending state)           |
-+------------------+---------------------------------------------------------------------------+
-
-PBS/Torque/MOAB-to-LSF Translation
-----------------------------------
-
-More details about these commands are given elsewhere in this section;
-the table below is simply for your convenience in looking up various LSF
-commands.
-
-Users of other OLCF resources are likely familiar with
-PBS-like commands which are used by the Torque/Moab instances on other
-systems. The table below summarizes the equivalent LSF command for
-various PBS/Torque/Moab commands.
-
-+--------------------------+----------------------------------+----------------------------------------------------+
-| LSF Command              | PBS/Torque/Moab Command          | Description                                        |
-+==========================+==================================+====================================================+
-| ``bsub job.sh``          | ``qsub job.sh``                  | Submit the job script job.sh to the batch system   |
-+--------------------------+----------------------------------+----------------------------------------------------+
-| ``bsub -Is /bin/bash``   | ``qsub -I``                      | Submit an interactive batch job                    |
-+--------------------------+----------------------------------+----------------------------------------------------+
-| ``bjobs -u all``         | ``qstat showq``                  | Show jobs currently in the queue NOTE: without the |
-|                          |                                  | -u all argument, bjobs will only show your jobs    |
-+--------------------------+----------------------------------+----------------------------------------------------+
-| ``bjobs -l``             | ``checkjob``                     | Get information about a specific job               |
-+--------------------------+----------------------------------+----------------------------------------------------+
-| ``bjobs -d``             | ``showq -c``                     | Get information about completed jobs               |
-+--------------------------+----------------------------------+----------------------------------------------------+
-| ``bjobs -p``             | ``showq -i``                     | Get information about pending jobs                 |
-|                          | ``showq -b``                     |                                                    |
-|                          | ``checkjob``                     |                                                    |
-+--------------------------+----------------------------------+----------------------------------------------------+
-| ``bjobs -r``             | ``showq -r``                     | Get information about running jobs                 |
-+--------------------------+----------------------------------+----------------------------------------------------+
-| ``bkill``                | ``qsig``                         | Send a signal to a job                             |
-+--------------------------+----------------------------------+----------------------------------------------------+
-| ``bkill``                | ``qdel``                         | Terminate/Kill a job                               |
-+--------------------------+----------------------------------+----------------------------------------------------+
-| ``bstop``                | ``qhold``                        | Hold a job/stop a job from running                 |
-+--------------------------+----------------------------------+----------------------------------------------------+
-| ``bresume``              | ``qrls``                         | Release a held job                                 |
-+--------------------------+----------------------------------+----------------------------------------------------+
-| ``bqueues``              | ``qstat -q``                     | Get information about queues                       |
-+--------------------------+----------------------------------+----------------------------------------------------+
-| ``bjdepinfo``            | ``checkjob``                     | Get information about job dependencies             |
-+--------------------------+----------------------------------+----------------------------------------------------+
-
-The table below shows shows LSF (bsub) command-line/batch script options
-and the PBS/Torque/Moab (qsub) options that provide similar
-functionality.
-
-+---------------------------------+------------------------------------------------+------------------------------------------------------------+
-| LSF Option                      | PBS/Torque/Moab Option                         | Description                                                |
-+=================================+================================================+============================================================+
-| ``#BSUB -W 60``                 | ``#PBS -l walltime=1:00:00``                   | Request a walltime of 1 hour                               |
-+---------------------------------+------------------------------------------------+------------------------------------------------------------+
-| ``#BSUB -nnodes 1024``          | ``#PBS -l nodes=1024``                         | Request 1024 nodes                                         |
-+---------------------------------+------------------------------------------------+------------------------------------------------------------+
-| ``#BSUB -P ABC123``             | ``#PBS -A ABC123``                             | Charge the job to project ABC123                           |
-+---------------------------------+------------------------------------------------+------------------------------------------------------------+
-| ``#BSUB -alloc_flags gpumps``   | No equivalent (set via environment variable)   | Enable multiple MPI tasks to simultaneously access a GPU   |
-+---------------------------------+------------------------------------------------+------------------------------------------------------------+
-
-.. _easy_mode_v_expert_mode:
-
-Easy Mode vs. Expert Mode
--------------------------
-
-The Cluster System Management (CSM) component of the job launch
-environment supports two methods of job submission, termed “easy” mode
-and “expert” mode. The difference in the modes is where the
-responsibility for creating the LSF resource string is placed.
-
-In easy mode, the system software converts options such as -nnodes in
-a batch script into the resource string needed by the scheduling system.
-In expert mode, the user is responsible for creating this string and
-options such as -nnodes cannot be used. In easy mode, you will not be
-able to use ``bsub -R`` to create resource strings. The system will
-automatically create the resource string based on your other ``bsub``
-options. In expert mode, you will be able to use ``-R``, but you will
-not be able to use the following options to ``bsub``: ``-ln_slots``,
-``-ln_mem``, ``-cn_cu``, or ``-nnodes``.
-
-Most users will want to use easy mode. However, if you need precise
-control over your job’s resources, such as placement on (or avoidance
-of) specific nodes, you will need to use expert mode. To use expert
-mode, add ``#BSUB -csm y`` to your batch script (or ``-csm y`` to
-your ``bsub`` command line).
-
-Hardware Threads
-----------------
-
-Hardware threads are a feature of the POWER9 processor through which
-individual physical cores can support multiple execution streams,
-essentially looking like one or more virtual cores (similar to
-hyperthreading on some Intel\ |R| microprocessors). This feature is often
-called Simultaneous Multithreading or SMT. The POWER9 processor on
-Summit supports SMT levels of 1, 2, or 4, meaning (respectively) each
-physical core looks like 1, 2, or 4 virtual cores. The SMT level is
-controlled by the ``-alloc_flags`` option to ``bsub``. For example, to
-set the SMT level to 2, add the line ``#BSUB –alloc_flags smt2`` to your
-batch script or add the option ``-alloc_flags smt2`` to you ``bsub``
-command line.
-
-The default SMT level is 4.
-
-System Service Core Isolation
------------------------------
-
-One core per socket is set aside for system service tasks. The cores are
-not available to jsrun. When listing available resources through jsrun,
-you will not see cores with hyperthreads 84-87 and 172-175. Isolating a
-socket's system services to a single core helps to reduce jitter and
-improve performance of tasks performed on the socket's remaining cores.
-
-The isolated core always operates at SMT4 regardless of the batch job's
-SMT level.
-
-GPFS System Service Isolation
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-By default, GPFS system service tasks are forced onto only the isolated
-cores. This can be overridden at the batch job level using the
-``maximizegpfs`` argument to LSF's ``alloc_flags``. For example:
-
-::
-
-     #BSUB -alloc_flags maximizegpfs
-
-The maximizegpfs flag will allow GPFS tasks to utilize any core on the
-compute node. This may be beneficial because it provides more resources
-for GPFS service tasks, but it may also cause resource contention for
-the jsrun compute job.
-
-MPS
----
-
-The Multi-Process Service (MPS) enables multiple processes (e.g. MPI
-ranks) to concurrently share the resources on a single GPU. This is
-accomplished by starting an MPS server process, which funnels the work
-from multiple CUDA contexts (e.g. from multiple MPI ranks) into a single
-CUDA context. In some cases, this can increase performance due to better
-utilization of the resources. As mentioned in the `Common bsub Options <#common-bsub-options>`__
-section above, MPS can be enabled with the ``-alloc_flags "gpumps"``
-option to bsub. The screencast below shows an example of how to start an
-MPS server process for a job. https://vimeo.com/292016149
-
-Resource Accounting
--------------------
-
-While logged into Summit, users can show their YTD usage and allocation
-by project using the ``showusage`` command. System specific details can
-be obtained with the ``-s`` flag. For example,
-
-.. code::
-
-    $ showusage -s summit
-
-    summit usage for the project's current allocation period:
-                                      Project Totals          [USERID]
-     Project      Allocation        Usage    Remaining          Usage
-    __________________________|____________________________|_____________
-     [PROJID1]        50000   |      15728        34272    |         65
-     [PROJID2]        20000   |       1234        18766    |          0
-
-For additional details, please see the help message printed when using
-the ``-h`` flag:
-
-.. code::
-
-     $ showusage -h
-
-Other Notes
------------
-
-Compute nodes are only allocated to one job at a time; they are not
-shared. This is why users request nodes (instead of some other resource
-such as cores or GPUs) in batch jobs and is why projects are charged
-based on the number of nodes allocated multiplied by the amount of time
-for which they were allocated. Thus, a job using only 1 core on each of
-its nodes is charged the same as a job using every core and every GPU on
-each of its nodes.
-
-.. _job-launcher-jsrun:
-
-Job Launcher (jsrun)
---------------------
-
-The default job launcher for Summit is ``jsrun``. jsrun was developed by
-IBM for the Oak Ridge and Livermore Power systems. The tool will execute
-a given program on resources allocated through the LSF batch scheduler;
-similar to ``mpirun`` and ``aprun`` functionality.
-
-Compute Node Description
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-The following compute node image will be used to discuss jsrun resource
-sets and layout.
-
-
-.. image:: /images/summit-node-description-1.png
-   :width: 85%
-   :align: center
-
--  1 node
--  2 sockets (grey)
--  42 physical cores\* (dark blue)
--  168 hardware cores (light blue)
--  6 GPUs (orange)
--  2 Memory blocks (yellow)
-
-**\*Core Isolation:** 1 core on each socket has been set aside for
-overhead and is not available for allocation through jsrun. The core has
-been omitted and is not shown in the above image.
-
-Resource Sets
-^^^^^^^^^^^^^
-
-While jsrun performs similar job launching functions as aprun and
-mpirun, its syntax is very different. A large reason for syntax
-differences is the introduction of the ``resource set`` concept. Through
-resource sets, jsrun can control how a node appears to each job. Users
-can, through jsrun command line flags, control which resources on a node
-are visible to a job. Resource sets also allow the ability to run
-multiple jsruns simultaneously within a node. Under the covers, a
-resource set is a cgroup.
-
-At a high level, a resource set allows users to configure what a node
-look like to their job.
-
-Jsrun will create one or more resource sets within a node. Each resource
-set will contain 1 or more cores and 0 or more GPUs. A resource set can
-span sockets, but it may not span a node. While a resource set can span
-sockets within a node, consideration should be given to the cost of
-cross-socket communication. By creating resource sets only within
-sockets, costly communication between sockets can be prevented.
-
-One or more resource sets can be created on a single node and can span
-sockets. But, a resource set can not span nodes.
-
-While a resource set can span sockets within a node, consideration
-should be given to the cost of cross-socket communication. Creating
-resource sets within sockets will prevent cross-socket communication.
-
-Subdividing a Node with Resource Sets
-"""""""""""""""""""""""""""""""""""""
-
-Resource sets provides the ability to subdivide node’s resources into
-smaller groups. The following examples show how a node can be subdivided
-and how many resource set could fit on a node.
-
-.. image:: /images/summit-resource-set-subdivide.png
-   :align: center
-
-Multiple Methods to Creating Resource Sets
-""""""""""""""""""""""""""""""""""""""""""
-
-Resource sets should be created to fit code requirements. The following
-examples show multiple ways to create resource sets that allow two MPI
-tasks access to a single GPU.
-
-#. 6 resource sets per node: 1 GPU, 2 cores per (Titan)
-
-   .. image:: https://www.olcf.ornl.gov/wp-content/uploads/2018/03/RS-summit-example-1GPU-2Cores.png
-      :align: center
-
-   In this case, CPUs can only see single assigned GPU.
-
-#. 2 resource sets per node: 3 GPUs and 6 cores per socket
-
-   .. image:: https://www.olcf.ornl.gov/wp-content/uploads/2018/03/RS-summit-example-3GPU-6Cores.png
-      :align: center
-
-   In this case, all 6 CPUs can see 3 GPUs. Code must manage CPU -> GPU
-   communication. CPUs on socket0 can not access GPUs or Memory on socket1.
-
-#. Single resource set per node: 6 GPUs, 12 cores
-
-   .. image:: https://www.olcf.ornl.gov/wp-content/uploads/2018/03/RS-summit-example-6GPU-12Core.png
-      :align: center
-
-   In this case, all 12 CPUs can see all node’s 6 GPUs. Code must manage CPU to
-   GPU communication. CPUs on socket0 can access GPUs and Memory on socket1.
-   Code must manage cross socket communication.
-
-Designing a Resource Set
-""""""""""""""""""""""""
-
-Resource sets allow each jsrun to control how the node appears to a
-code. This method is unique to jsrun, and requires thinking of each job
-launch differently than aprun or mpirun. While the method is unique, the
-method is not complicated and can be reasoned in a few basic steps.
-
-The first step to creating resource sets is understanding how a code would
-like the node to appear. For example, the number of tasks/threads per
-GPU. Once this is understood, the next step is to simply calculate the
-number of resource sets that can fit on a node. From here, the number of
-needed nodes can be calculated and passed to the batch job request.
-
-The basic steps to creating resource sets:
-
-1) Understand how your code expects to interact with the system.
-    How many tasks/threads per GPU?
-
-    Does each task expect to see a single GPU? Do multiple tasks expect
-    to share a GPU? Is the code written to internally manage task to GPU
-    workload based on the number of available cores and GPUs?
-2) Create resource sets containing the needed GPU to task binding
-    Based on how your code expects to interact with the system, you can
-    create resource sets containing the needed GPU and core resources.
-    If a code expects to utilize one GPU per task, a resource set would
-    contain one core and one GPU. If a code expects to pass work to a
-    single GPU from two tasks, a resource set would contain two cores
-    and one GPU.
-3) Decide on the number of resource sets needed
-    Once you understand tasks, threads, and GPUs in a resource set, you
-    simply need to decide the number of resource sets needed.
-
-As on any system, it is useful to keep in mind the hardware underneath every
-execution. This is particularly true when laying out resource sets.
-
-Launching a Job with jsrun
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-jsrun Format
-""""""""""""
-
-::
-
-      jsrun    [ -n #resource sets ]   [tasks, threads, and GPUs within each resource set]   program [ program args ]
-
-Common jsrun Options
-""""""""""""""""""""
-
-Below are common jsrun options. More flags and details can be found in
-the jsrun man page.
-
-
-+---------------------------+--------+------------------------------------------------------+------------------------------+
-| Flags                              |                                                      |                              |
-+---------------------------+--------+  Description                                         + Default Value                +
-| Long                      | Short  |                                                      |                              |
-+===========================+========+======================================================+==============================+
-| ``--nrs``                 | ``-n`` | Number of resource sets                              | All available physical cores |
-+---------------------------+--------+------------------------------------------------------+------------------------------+
-| ``--tasks_per_rs``        | ``-a`` | Number of MPI tasks (ranks) per resource set         | Not set by default, instead  |
-|                           |        |                                                      | total tasks (-p) set         |
-+---------------------------+--------+------------------------------------------------------+------------------------------+
-| ``--cpu_per_rs``          | ``-c`` | Number of CPUs (cores) per resource set.             | 1                            |
-+---------------------------+--------+------------------------------------------------------+------------------------------+
-| ``--gpu_per_rs``          | ``-g`` | Number of GPUs per resource set                      | 0                            |
-+---------------------------+--------+------------------------------------------------------+------------------------------+
-| ``--bind``                | ``-b`` | Binding of tasks within a resource set. Can be none, | packed:1                     |
-|                           |        | rs, or packed:#                                      |                              |
-+---------------------------+--------+------------------------------------------------------+------------------------------+
-| ``--rs_per_host``         | ``-r`` | Number of resource sets per host                     | No default                   |
-+---------------------------+--------+------------------------------------------------------+------------------------------+
-| ``--latency_priority``    | ``-l`` | Latency Priority. Controls layout                    | gpu-cpu,cpu-mem,cpu-cpu      |
-|                           |        | priorities. Can currently be cpu-cpu or gpu-cpu      |                              |
-+---------------------------+--------+------------------------------------------------------+------------------------------+
-| ``--launch_distribution`` | ``-d`` | How tasks are started on resource sets               | packed                       |
-+---------------------------+--------+------------------------------------------------------+------------------------------+
-
-It's recommended to explicitly specify ``jsrun`` options. This most
-often includes ``--nrs``,\ ``--cpu_per_rs``, ``--gpu_per_rs``,
-``--tasks_per_rs``, ``--bind``, and ``--launch_distribution``.
-
-jsrun Examples
-^^^^^^^^^^^^^^
-
-The below examples were launched in the following 2 node interactive
-batch job:
-
-::
-
-    summit> bsub -nnodes 2 -Pprj123 -W02:00 -Is $SHELL
-
-Single MPI Task, single GPU per RS
-""""""""""""""""""""""""""""""""""
-
-The following example will create 12 resource sets each with 1 MPI task
-and 1 GPU. Each MPI task will have access to a single GPU.
-
-Rank 0 will have access to GPU 0 on the first node ( red resource set).
-Rank 1 will have access to GPU 1 on the first node ( green resource set).
-This pattern will continue until 12 resources sets have been created.
-
-The following jsrun command will request 12 resource sets (``-n12``) 6
-per node (``-r6``). Each resource set will contain 1 MPI task (``-a1``),
-1 GPU (``-g1``), and 1 core (``-c1``).
-
-.. image:: /images/summit-jsrun-example-1Core-1GPU.png
-   :align: center
-
-::
-
-    summit> jsrun -n12 -r6 -a1 -g1 -c1 ./a.out
-    Rank:    0; NumRanks: 12; RankCore:   0; Hostname: h41n04; GPU: 0
-    Rank:    1; NumRanks: 12; RankCore:   4; Hostname: h41n04; GPU: 1
-    Rank:    2; NumRanks: 12; RankCore:   8; Hostname: h41n04; GPU: 2
-    Rank:    3; NumRanks: 12; RankCore:  84; Hostname: h41n04; GPU: 3
-    Rank:    4; NumRanks: 12; RankCore:  89; Hostname: h41n04; GPU: 4
-    Rank:    5; NumRanks: 12; RankCore:  92; Hostname: h41n04; GPU: 5
-
-    Rank:    6; NumRanks: 12; RankCore:   0; Hostname: h41n03; GPU: 0
-    Rank:    7; NumRanks: 12; RankCore:   4; Hostname: h41n03; GPU: 1
-    Rank:    8; NumRanks: 12; RankCore:   8; Hostname: h41n03; GPU: 2
-    Rank:    9; NumRanks: 12; RankCore:  84; Hostname: h41n03; GPU: 3
-    Rank:   10; NumRanks: 12; RankCore:  89; Hostname: h41n03; GPU: 4
-    Rank:   11; NumRanks: 12; RankCore:  92; Hostname: h41n03; GPU: 5
-
-Multiple tasks, single GPU per RS
-"""""""""""""""""""""""""""""""""
-
-The following jsrun command will request 12 resource sets (``-n12``).
-Each resource set will contain 2 MPI tasks (``-a2``), 1 GPU
-(``-g1``), and 2 cores (``-c2``). 2 MPI tasks will have access to a
-single GPU. Ranks 0 - 1 will have access to GPU 0 on the first node (
-red resource set). Ranks 2 - 3 will have access to GPU 1 on the first
-node ( green resource set). This pattern will continue until 12 resource
-sets have been created.
-
-.. image:: /images/summit-jsrun-example-2taskperGPU.png
-   :align: center
-
-
-**Adding cores to the RS:** The ``-c`` flag should be used to request
-the needed cores for tasks and treads. The default -c core count is 1.
-In the above example, if -c is not specified both tasks will run on a
-single core.
-
-::
-
-    summit> jsrun -n12 -a2 -g1 -c2 -dpacked ./a.out | sort
-    Rank:    0; NumRanks: 24; RankCore:   0; Hostname: a01n05; GPU: 0
-    Rank:    1; NumRanks: 24; RankCore:   4; Hostname: a01n05; GPU: 0
-
-    Rank:    2; NumRanks: 24; RankCore:   8; Hostname: a01n05; GPU: 1
-    Rank:    3; NumRanks: 24; RankCore:  12; Hostname: a01n05; GPU: 1
-
-    Rank:    4; NumRanks: 24; RankCore:  16; Hostname: a01n05; GPU: 2
-    Rank:    5; NumRanks: 24; RankCore:  20; Hostname: a01n05; GPU: 2
-
-    Rank:    6; NumRanks: 24; RankCore:  88; Hostname: a01n05; GPU: 3
-    Rank:    7; NumRanks: 24; RankCore:  92; Hostname: a01n05; GPU: 3
-
-    Rank:    8; NumRanks: 24; RankCore:  96; Hostname: a01n05; GPU: 4
-    Rank:    9; NumRanks: 24; RankCore: 100; Hostname: a01n05; GPU: 4
-
-    Rank:   10; NumRanks: 24; RankCore: 104; Hostname: a01n05; GPU: 5
-    Rank:   11; NumRanks: 24; RankCore: 108; Hostname: a01n05; GPU: 5
-
-    Rank:   12; NumRanks: 24; RankCore:   0; Hostname: a01n01; GPU: 0
-    Rank:   13; NumRanks: 24; RankCore:   4; Hostname: a01n01; GPU: 0
-
-    Rank:   14; NumRanks: 24; RankCore:   8; Hostname: a01n01; GPU: 1
-    Rank:   15; NumRanks: 24; RankCore:  12; Hostname: a01n01; GPU: 1
-
-    Rank:   16; NumRanks: 24; RankCore:  16; Hostname: a01n01; GPU: 2
-    Rank:   17; NumRanks: 24; RankCore:  20; Hostname: a01n01; GPU: 2
-
-    Rank:   18; NumRanks: 24; RankCore:  88; Hostname: a01n01; GPU: 3
-    Rank:   19; NumRanks: 24; RankCore:  92; Hostname: a01n01; GPU: 3
-
-    Rank:   20; NumRanks: 24; RankCore:  96; Hostname: a01n01; GPU: 4
-    Rank:   21; NumRanks: 24; RankCore: 100; Hostname: a01n01; GPU: 4
-
-    Rank:   22; NumRanks: 24; RankCore: 104; Hostname: a01n01; GPU: 5
-    Rank:   23; NumRanks: 24; RankCore: 108; Hostname: a01n01; GPU: 5
-
-    summit>
-
-Multiple Task, Multiple GPU per RS
-""""""""""""""""""""""""""""""""""
-
-The following example will create 4 resource sets each with 6 tasks and
-3 GPUs. Each set of 6 MPI tasks will have access to 3 GPUs. Ranks 0 - 5
-will have access to GPUs 0 - 2 on the first socket of the first node (
-red resource set). Ranks 6 - 11 will have access to GPUs 3 - 5 on the
-second socket of the first node ( green resource set). This pattern will
-continue until 4 resource sets have been created. The following jsrun
-command will request 4 resource sets (``-n4``). Each resource set will
-contain 6 MPI tasks (``-a6``), 3 GPUs (``-g3``), and 6 cores
-(``-c6``).
-
-.. image:: /images/RS-summit-example-24Tasks-3GPU-6Cores.png
-   :align: center
-
-::
-
-    summit> jsrun -n 4 -a 6 -c 6 -g 3 -d packed -l GPU-CPU ./a.out
-    Rank:    0; NumRanks: 24; RankCore:   0; Hostname: a33n06; GPU: 0, 1, 2
-    Rank:    1; NumRanks: 24; RankCore:   4; Hostname: a33n06; GPU: 0, 1, 2
-    Rank:    2; NumRanks: 24; RankCore:   8; Hostname: a33n06; GPU: 0, 1, 2
-    Rank:    3; NumRanks: 24; RankCore:  12; Hostname: a33n06; GPU: 0, 1, 2
-    Rank:    4; NumRanks: 24; RankCore:  16; Hostname: a33n06; GPU: 0, 1, 2
-    Rank:    5; NumRanks: 24; RankCore:  20; Hostname: a33n06; GPU: 0, 1, 2
-
-    Rank:    6; NumRanks: 24; RankCore:  88; Hostname: a33n06; GPU: 3, 4, 5
-    Rank:    7; NumRanks: 24; RankCore:  92; Hostname: a33n06; GPU: 3, 4, 5
-    Rank:    8; NumRanks: 24; RankCore:  96; Hostname: a33n06; GPU: 3, 4, 5
-    Rank:    9; NumRanks: 24; RankCore: 100; Hostname: a33n06; GPU: 3, 4, 5
-    Rank:   10; NumRanks: 24; RankCore: 104; Hostname: a33n06; GPU: 3, 4, 5
-    Rank:   11; NumRanks: 24; RankCore: 108; Hostname: a33n06; GPU: 3, 4, 5
-
-    Rank:   12; NumRanks: 24; RankCore:   0; Hostname: a33n05; GPU: 0, 1, 2
-    Rank:   13; NumRanks: 24; RankCore:   4; Hostname: a33n05; GPU: 0, 1, 2
-    Rank:   14; NumRanks: 24; RankCore:   8; Hostname: a33n05; GPU: 0, 1, 2
-    Rank:   15; NumRanks: 24; RankCore:  12; Hostname: a33n05; GPU: 0, 1, 2
-    Rank:   16; NumRanks: 24; RankCore:  16; Hostname: a33n05; GPU: 0, 1, 2
-    Rank:   17; NumRanks: 24; RankCore:  20; Hostname: a33n05; GPU: 0, 1, 2
-
-    Rank:   18; NumRanks: 24; RankCore:  88; Hostname: a33n05; GPU: 3, 4, 5
-    Rank:   19; NumRanks: 24; RankCore:  92; Hostname: a33n05; GPU: 3, 4, 5
-    Rank:   20; NumRanks: 24; RankCore:  96; Hostname: a33n05; GPU: 3, 4, 5
-    Rank:   21; NumRanks: 24; RankCore: 100; Hostname: a33n05; GPU: 3, 4, 5
-    Rank:   22; NumRanks: 24; RankCore: 104; Hostname: a33n05; GPU: 3, 4, 5
-    Rank:   23; NumRanks: 24; RankCore: 108; Hostname: a33n05; GPU: 3, 4, 5
-    summit>
-
-Single Task, Multiple GPUs, Multiple Threads per RS
-"""""""""""""""""""""""""""""""""""""""""""""""""""
-
-The following example will create 12 resource sets each with 1 task, 4
-threads, and 1 GPU. Each MPI task will start 4 threads and have access
-to 1 GPU. Rank 0 will have access to GPU 0 and start 4 threads on the
-first socket of the first node ( red resource set). Rank 2 will have
-access to GPU 1 and start 4 threads on the second socket of the first
-node ( green resource set). This pattern will continue until 12 resource
-sets have been created. The following jsrun command will create 12
-resource sets (``-n12``). Each resource set will contain 1 MPI task
-(``-a1``), 1 GPU (``-g1``), and 4 cores (``-c4``). Notice that
-more cores are requested than MPI tasks; the extra cores will be needed
-to place threads. Without requesting additional cores, threads will be
-placed on a single core.
-
-.. image:: /images/RS-summit-example-4Threads-4Core-1GPU.png
-   :align: center
-
-**Requesting Cores for Threads:** The ``-c`` flag should be used to
-request additional cores for thread placement. Without requesting
-additional cores, threads will be placed on a single core.
-
-**Binding Cores to Tasks:** The ``-b`` binding flag should be used to
-bind cores to tasks. Without specifying binding, all threads will be
-bound to the first core.
-
-::
-
-    summit> setenv OMP_NUM_THREADS 4
-    summit> jsrun -n12 -a1 -c4 -g1 -b packed:4 -d packed ./a.out
-    Rank: 0; RankCore: 0; Thread: 0; ThreadCore: 0; Hostname: a33n06; OMP_NUM_PLACES: {0},{4},{8},{12}
-    Rank: 0; RankCore: 0; Thread: 1; ThreadCore: 4; Hostname: a33n06; OMP_NUM_PLACES: {0},{4},{8},{12}
-    Rank: 0; RankCore: 0; Thread: 2; ThreadCore: 8; Hostname: a33n06; OMP_NUM_PLACES: {0},{4},{8},{12}
-    Rank: 0; RankCore: 0; Thread: 3; ThreadCore: 12; Hostname: a33n06; OMP_NUM_PLACES: {0},{4},{8},{12}
-
-    Rank: 1; RankCore: 16; Thread: 0; ThreadCore: 16; Hostname: a33n06; OMP_NUM_PLACES: {16},{20},{24},{28}
-    Rank: 1; RankCore: 16; Thread: 1; ThreadCore: 20; Hostname: a33n06; OMP_NUM_PLACES: {16},{20},{24},{28}
-    Rank: 1; RankCore: 16; Thread: 2; ThreadCore: 24; Hostname: a33n06; OMP_NUM_PLACES: {16},{20},{24},{28}
-    Rank: 1; RankCore: 16; Thread: 3; ThreadCore: 28; Hostname: a33n06; OMP_NUM_PLACES: {16},{20},{24},{28}
-
-    ...
-
-    Rank: 10; RankCore: 104; Thread: 0; ThreadCore: 104; Hostname: a33n05; OMP_NUM_PLACES: {104},{108},{112},{116}
-    Rank: 10; RankCore: 104; Thread: 1; ThreadCore: 108; Hostname: a33n05; OMP_NUM_PLACES: {104},{108},{112},{116}
-    Rank: 10; RankCore: 104; Thread: 2; ThreadCore: 112; Hostname: a33n05; OMP_NUM_PLACES: {104},{108},{112},{116}
-    Rank: 10; RankCore: 104; Thread: 3; ThreadCore: 116; Hostname: a33n05; OMP_NUM_PLACES: {104},{108},{112},{116}
-
-    Rank: 11; RankCore: 120; Thread: 0; ThreadCore: 120; Hostname: a33n05; OMP_NUM_PLACES: {120},{124},{128},{132}
-    Rank: 11; RankCore: 120; Thread: 1; ThreadCore: 124; Hostname: a33n05; OMP_NUM_PLACES: {120},{124},{128},{132}
-    Rank: 11; RankCore: 120; Thread: 2; ThreadCore: 128; Hostname: a33n05; OMP_NUM_PLACES: {120},{124},{128},{132}
-    Rank: 11; RankCore: 120; Thread: 3; ThreadCore: 132; Hostname: a33n05; OMP_NUM_PLACES: {120},{124},{128},{132}
-
-    summit>
-
-Hardware Threads: Multiple Threads per Core
-"""""""""""""""""""""""""""""""""""""""""""
-
-Each physical core on Summit contains 4 hardware threads. The SMT level
-can be set using LSF flags:
-
-SMT1
-
-::
-
-    #BSUB -alloc_flags smt1
-    jsrun -n1 -c1 -a1 -bpacked:4 csh -c 'echo $OMP_PLACES’
-    0
-
-SMT2
-
-::
-
-    #BSUB -alloc_flags smt2
-    jsrun -n1 -c1 -a1 -bpacked:4 csh -c 'echo $OMP_PLACES’
-    {0:2}
-
-SMT4
-
-::
-
-    #BSUB -alloc_flags smt4
-    jsrun -n1 -c1 -a1 -bpacked:4 csh -c 'echo $OMP_PLACES’
-    {0:4}
-
-.. image:: /images/FS-summit-example-MultiThreadPerCore.png
-   :align: center
-
-Common Use Cases
-""""""""""""""""
-
-The following table provides a quick reference for creating resource
-sets of various common use cases. The ``-n`` flag can be altered to
-specify the number of resource sets needed.
-
-+-----------------+-------------+-----------+------------------+--------+---------------------------------------+
-| Resource Sets   | MPI Tasks   | Threads   | Physical Cores   | GPUs   | jsrun Command                         |
-+=================+=============+===========+==================+========+=======================================+
-| 1               | 42          | 0         | 42               | 0      | jsrun -n1 -a42 -c42 -g0               |
-+-----------------+-------------+-----------+------------------+--------+---------------------------------------+
-| 1               | 1           | 0         | 1                | 1      | jsrun -n1 -a1 -c1 -g1                 |
-+-----------------+-------------+-----------+------------------+--------+---------------------------------------+
-| 1               | 2           | 0         | 2                | 1      | jsrun -n1 -a2 -c2 -g1                 |
-+-----------------+-------------+-----------+------------------+--------+---------------------------------------+
-| 1               | 1           | 0         | 1                | 2      | jsrun -n1 -a1 -c1 -g2                 |
-+-----------------+-------------+-----------+------------------+--------+---------------------------------------+
-| 1               | 1           | 21        | 21               | 3      | jsrun -n1 -a1 -c21 -g3 -bpacked:21    |
-+-----------------+-------------+-----------+------------------+--------+---------------------------------------+
-
-
-Explicit Resource Files (ERF)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-`Explicit Resource Files
-<https://www.ibm.com/support/knowledgecenter/en/SSWRJV_10.1.0/jsm/10.3/base/erf_format.html>`__
-provide even more fine-granied control over how processes are mapped onto
-compute nodes. ERFs can define job step options such as rank placement/binding,
-SMT/CPU/GPU resources, compute hosts, among many others. If you find that the
-most common jsrun options do not readily provide the resource layout you need,
-we recommend considering ERF files.
-
-A common source of confusion when using ERFs is how physical cores are
-enumerated. See the tutorial on `ERF CPU
-Indexing <https://github.com/olcf-tutorials/ERF-CPU-Indexing>`__ for a
-discussion of the ``cpu_index_using`` control and its interaction with various
-SMT modes.
-
-
-jsrun Tools
-^^^^^^^^^^^
-
-This section describes tools that users might find helpful to better
-understand the jsrun job launcher.
-
-Hello\_jsrun
-""""""""""""
-
-Hello\_jsrun is a "Hello World"-type program that users can run on
-Summit nodes to better understand how MPI ranks and OpenMP threads are
-mapped to the hardware. https://code.ornl.gov/t4p/Hello_jsrun A
-screencast showing how to use Hello\_jsrun is also available:
-https://vimeo.com/261038849
-
-Job Step Viewer
-"""""""""""""""
-
-`Job Step Viewer <https://jobstepviewer.olcf.ornl.gov/>`__ provides a graphical view of an application's runtime layout on Summit.
-It allows users to preview and quickly iterate with multiple ``jsrun`` options to 
-understand and optimize job launch.
-
-For bug reports or suggestions, please email help@olcf.ornl.gov.
-
-Usage
-_____
-
-1. Request a Summit allocation
-    * ``bsub -W 10 -nnodes 2 -P $OLCF_PROJECT_ID -Is $SHELL``
-2. Load the ``job-step-viewer`` module
-    * ``module load job-step-viewer``
-3. Test out a ``jsrun`` line by itself, or provide an executable as normal
-    * ``jsrun -n12 -r6 -c7 -g1 -a1 EOMP_NUM_THREADS=7 -brs``
-4. Visit the provided URL
-    * https://jobstepviewer.olcf.ornl.gov/summit/871957-1
-
-.. note::
-    Most Terminal applications have built-in shortcuts to directly open
-    web addresses in the default browser.
-
-    * MacOS Terminal.app: hold Command (⌘) and double-click on the URL
-    * iTerm2: hold Command (⌘) and single-click on the URL
-
-Limitations
-___________
-
-* (currently) Only available on Summit
-* (currently) Compiled with GCC toolchain only
-* Does not support MPMD-mode via ERF
-* OpenMP only supported with use of the ``OMP_NUM_THREADS`` environment variable.
-
-
-jsrunVisualizer
-"""""""""""""""
-
-jsrunVisualizer is a web-application that mimics basic jsrun behavior
-locally in your browser. It's an easy way to get familiar with jsrun
-options for Summit, understand how multiple flags interact, and share
-your layout ideas with others. Once you've crafted your per-node
-resource sets, you can take the job script it generates and run the same
-layout on Summit itself! https://jsrunvisualizer.olcf.ornl.gov/
-https://vimeo.com/299079999
-
-More Information
-^^^^^^^^^^^^^^^^
-
-This section provides some of the most commonly used LSF commands as
-well as some of the most useful options to those commands and
-information on ``jsrun``, Summit's job launch command. Many commands
-have much more information than can be easily presented here. More
-information about these commands is available via the online manual
-(i.e. ``man jsrun``). Additional LSF information can be found on `IBM’s
-website <https://www.ibm.com/support/knowledgecenter/en/SSWRJV/product_welcome_spectrum_lsf.html>`__.
-
-CUDA-Aware MPI
---------------
-
-CUDA-Aware MPI and GPUDirect are often used interchangeably, but they
-are distinct topics.
-
-CUDA-Aware MPI allows GPU buffers (e.g., GPU memory allocated with
-``cudaMalloc``) to be used directly in MPI calls rather than requiring
-data to be manually transferred to/from a CPU buffer (e.g., using
-``cudaMemcpy``) before/after passing data in MPI calls. By itself,
-CUDA-Aware MPI does not specify whether data is staged through
-CPU memory or, for example, transferred directly between GPUs when
-passing GPU buffers to MPI calls. That is where GPUDirect comes in.
-
-GPUDirect is a technology that can be implemented on a system to enhance
-CUDA-Aware MPI by allowing data transfers directly between GPUs on the
-same node (peer-to-peer) and/or directly between GPUs on different nodes
-(with RDMA support) without the need to stage data through CPU memory.
-On Summit, both peer-to-peer and RDMA support are implemented. To enable
-CUDA-Aware MPI in a job, use the following argument to ``jsrun``:
-
-.. code::
-
-    jsrun --smpiargs="-gpu" ...
-
-.. _debugging:
-
-Debugging
-=========
-
-Arm DDT
--------
-
-Arm DDT is an advanced debugging tool used for scalar, multi-threaded,
-and large-scale parallel applications. In addition to traditional
-debugging features (setting breakpoints, stepping through code,
-examining variables), DDT also supports attaching to already-running
-processes and memory debugging. In-depth details of DDT can be found in
-the `Official DDT User
-Guide <https://www.allinea.com/user-guide/forge/userguide.html>`__, and
-instructions for how to use it on OLCF systems can be found on the
-`Forge (DDT/MAP) Software Page <https://www.olcf.ornl.gov/software_package/forge/>`__. DDT is the
-OLCF's recommended debugging software for large parallel applications.
-
-
-GDB
----
-
-`GDB <https://www.gnu.org/software/gdb/>`__, the GNU Project Debugger,
-is a command-line debugger useful for traditional debugging and
-investigating code crashes. GDB lets you debug programs written in Ada,
-C, C++, Objective-C, Pascal (and many other languages). GDB is available
-on Summit under all compiler families:
-
-.. code::
-
-    module load gdb
-
-Additional information about GDB usage and OLCF-provided builds can be
-found on the `GDB Software Page <https://www.olcf.ornl.gov/software_package/gdb/>`__.
-
-
-Valgrind
---------
-
-`Valgrind <http://valgrind.org>`__ is an instrumentation framework for
-building dynamic analysis tools. There are Valgrind tools that can
-automatically detect many memory management and threading bugs, and
-profile your programs in detail. You can also use Valgrind to build new
-tools.
-
-The Valgrind distribution currently includes five production-quality
-tools: a memory error detector, a thread error detector, a cache and
-branch-prediction profiler, a call-graph generating cache profiler,
-and a heap profiler. It also includes two experimental tools: a data
-race detector, and an instant memory leak detector.
-
-The Valgrind tool suite provides a number of debugging and
-profiling tools. The most popular is Memcheck, a memory checking tool
-which can detect many common memory errors such as:
-
-- Touching memory you shouldn’t (eg. overrunning heap block boundaries,
-  or reading/writing freed memory).
-- Using values before they have been initialized.
-- Incorrect freeing of memory, such as double-freeing heap blocks.
-- Memory leaks.
-
-Valgrind is available on Summit under all compiler families:
-
-.. code::
-
-    module load valgrind
-
-Additional information about Valgrind usage and OLCF-provided builds can
-be found on the `Valgrind Software
-Page <https://www.olcf.ornl.gov/software_package/valgrind/>`__.
-
-.. _optimizing-and-profiling:
-
-Optimizing and Profiling
-========================
-
-Profiling CUDA Code with NVPROF
--------------------------------
-
-NVIDIA's command-line profiler, ``nvprof``, provides profiling for CUDA
-codes. No extra compiling steps are required to use ``nvprof``. The
-profiler includes tracing capability as well as the ability to gather
-many performance metrics, including FLOPS. The profiler data output can
-be saved and imported into the NVIDIA Visual Profiler for additional
-graphical analysis.
-
-To use ``nvprof``, the ``cuda`` module must be loaded.
-
-::
-
-    summit> module load cuda
-
-A simple "Hello, World!" run using ``nvprof`` can be done by adding
-"nvprof" to the jsrun (see: :ref:`job-launcher-jsrun`)
-line in your batch script (see :ref:`batch-scripts`).
-
-::
-
-    ...
-    jsrun -n1 -a1 -g1 nvprof ./hello_world_gpu
-    ...
-
-Although ``nvprof`` doesn't provide aggregated MPI data, the ``%h`` and
-``%p`` output file modifiers can be used to create separate output files
-for each host and process.
-
-::
-
-    ...
-    jsrun -n1 -a1 -g1 nvprof -o output.%h.%p ./hello_world_gpu
-    ...
-
-There are many various metrics and events that the profiler can capture.
-For example, to output the number of double-precision FLOPS, you may use
-the following:
-
-::
-
-    ...
-    jsrun -n1 -a1 -g1 nvprof --metrics flops_dp -o output.%h.%p ./hello_world_gpu
-    ...
-
-To see a list of all available metrics and events, use the following:
-
-::
-
-    summit> nvprof --query-metrics
-    summit> nvprof --query-events
-
-While using ``nvprof`` on the command-line is a quick way to gain
-insight into your CUDA application, a full visual profile is often even
-more useful. For information on how to view the output of ``nvprof`` in
-the NVIDIA Visual Profiler, see the `NVIDIA
-Documentation <http://docs.nvidia.com/cuda/profiler-users-guide/#nvprof-overview>`__.
-
-Score-P
--------
-
-The `Score-P <http://score-p.org/>`__ measurement infrastructure is a
-highly scalable and easy-to-use tool suite for profiling, event
-tracing, and online analysis of HPC applications. Score-P supports
-analyzing C, C++ and Fortran applications that make use of
-multi-processing (MPI, SHMEM), thread parallelism (OpenMP, PThreads) and
-accelerators (CUDA, OpenCL, OpenACC) and combinations.
-
-For detailed information about using Score-P on Summit and the
-builds available, please see the
-`Score-P Software Page. <https://www.olcf.ornl.gov/software_package/score-p/>`__
-
-Vampir
-------
-
-`Vampir <http://vampir.eu/>`__ is a software performance visualizer focused on highly
-parallel applications. It presents a unified view on an application
-run including the use of programming paradigms like MPI, OpenMP,
-PThreads, CUDA, OpenCL and OpenACC. It also incorporates file I/O,
-hardware performance counters and other performance data sources.
-Various interactive displays offer detailed insight into the performance
-behavior of the analyzed application. Vampir’s scalable analysis
-server and visualization engine enable interactive navigation of
-large amounts of performance data. `Score-P <https://olcf.ornl.gov/software_package/score-p>`__
-and `TAU <https://www.olcf.ornl.gov/software_package/tau>`__ generate OTF2
-trace files for Vampir to visualize.
-
-For detailed information about using Vampir on Summit and the builds available,
-please see the `Vampir Software Page <https://www.olcf.ornl.gov/software_package/vampir/>`__.
+When the Spectral library is not used, any output data produced has to be copied
+back from NVMe.  You can observe that with the Spectral library there is no reason
+to explicitly ask for the data to be copied to GPFS as it is done automatically
+through the spectral_wait.py script. Also a log file called spectral.log will be
+created with information on the files that were copied.
 
 .. _known-issues:
 
 Known Issues
 ============
 
-Last Updated: 03 April 2020
+Last Updated: 30 July 2021
 
 Open Issues
 -----------
+
+System not sourcing ``.bashrc``, ``.profile``, etc. files as expected
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Some users have noticed that their login shells, batch jobs, etc. are not sourcing shell run control files as expected. This is related to the way bash is initialized. The initialization process is discussed in the INVOCATION section of the bash manpage, but is summarized here.
+
+Bash sources different files based on two attributes of the shell: whether or not it's a login shell, and whether or not it's an interactive shell. These attributes are not mutually exclusive (so a shell can be "interactive login", "interactive non-login", etc.):
+
+#. If a shell is an interactive login shell (i.e. an ssh to the system) or a non-interactive shell started with the ``--login`` option (say, a batch script with ``#!/bin/bash --login`` as the first line), it will source ``/etc/profile`` and will then search your home directory for ``~/.bash_profile``, ``~/.bash_login``, and ``~/.profile``. It will source the first of those that it finds (once it sources one, it stops looking for the others).
+#. If a shell is an interactive, non-login shell (say, if you run 'bash' in your login session to start a subshell), it will source ``~/.bashrc``
+#. If a shell is a non-interactive, non-login shell, it will source whatever file is defined by the ``$BASH_ENV`` variable in the shell from which it was invoked. 
+
+In any case, if the files listed above that should be sourced in a particular situation do not exist, it is not an error. 
+
+On Summit and Andes, batch-interactive jobs using bash (i.e. those submitted with ``bsub -Is`` or ``salloc``) run as interactive, non-login shells (and therefore source ``~/.bashrc``, if it exists). Regular batch jobs using bash on those systems are non-interactive, non-login shells and source the file defined by the variable ``$BASH_ENV`` in the shell from which you submitted the job. This variable is not set by default, so this means that none of these files will be sourced for a regular batch job unless you explicitly set that variable.
+
+Some systems are configured to have additional files in ``/etc`` sourced, and sometimes the files in ``/etc`` look for and source files in your home directory such as ``~/.bashrc``, so the behavior on any given system may seem to deviate a bit from the information above (which is from the bash manpage). This can explain why jobs (or other shells) on other systems you've used have sourced your ``.bashrc`` file on login.
+
+Improper permissions on ``~/.ssh/config`` cause job state flip-flop/jobs ending in suspended state
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Improper permissions on your SSH configuration file (``~/.ssh/config``) will cause jobs to alternate between pending & running states until the job ultimately ends up in a PSUSP state.
+
+LSF uses SSH to communicate with nodes allocated to your job, and in this case the improper permissions (i.e. write permission for anyone other than the user) cause SSH to fail, which in turn causes the job launch to fail. Note that SSH only checks the permissions of the configuration file itself. Thus, even if the ``~/.ssh/`` directory itself grants no group or other permissions, SSH will fail due to permissions on the configuration file.
+
+To fix this, use a more secure permission setting on the configuration file. An appropriate setting would be read and write permission for the user and no other permissions. You can set this with the command ``chmod 600 ~/.ssh/config``.
 
 Setting ``TMPDIR`` causes JSM (``jsrun``) errors / job state flip-flop
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

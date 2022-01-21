@@ -2,6 +2,10 @@
 User-Centric Data Storage
 ***************************
 
+.. warning::
+   This page has been deprecated, and relevant information is now available on :ref:`data-storage-and-transfers`. Please update any bookmarks to use that page.
+
+
 
 The following table summarizes user-centric storage areas available on OLCF
 resources and lists relevant polices.
@@ -13,6 +17,9 @@ resources and lists relevant polices.
 | Area                | Path                                        | Type           | Permissions |  Quota | Backups | Purged  | Retention  | On Compute Nodes |
 +=====================+=============================================+================+=============+========+=========+=========+============+==================+
 | User Home           | ``/ccs/home/[userid]``                      | NFS            | User set    |  50 GB | Yes     | No      | 90 days    | Read-only        |
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
+| User Home, Moderate | ``/gpfs/arx/[projid]/home/[userid]``        | Spectrum Scale | 700         |  50 TB | No      | Yes     | Subject to | Read/Write       |
+| Enhanced Projects   |                                             |                |             |        |         |         | Purge      |                  |
 +---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
 | User Archive [#f1]_ | ``/home/[userid]``                          | HPSS           | User set    |  2TB   | No      | No      | 90 days    | No               |   
 +---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
@@ -26,8 +33,9 @@ resources and lists relevant polices.
 
 .. [#f2] User Archive directories that were created (or had no user data) after January 14, 2020. Settings other than permissions are not applicable because directories are root-owned and contain no user files.
 
+.. note::
+    Moderate Enhanced projects do not have HPSS storage
 
-.. _user-home-directories-nfs:
 
 User Home Directories (NFS)
 ============================
@@ -56,6 +64,8 @@ use the ``quota`` command:
     nccsfiler1a.ccs.ornl.gov:/vol/home
                       4858M   5000M   5000M           29379   4295m   4295m
 
+.. note::
+   Moderate enhanced projects have home directores located in GPFS. There is no enforced quota, but it is recommended that users not exceed 50 TB. These home directories are subject to the 90 day purge
 
 User Home Permissions
 ----------------------
@@ -66,8 +76,14 @@ permissions on their home directories, although it is recommended that
 permissions be set to as restrictive as possible (without interfering with your
 work).
 
+.. note::
+   Moderate enhanced projects have home directory permissions set to ``0700`` and are automatically reset to that if changed by the user.
+
 User Home Backups
 -----------------
+
+.. note::
+   There are no backups for moderate enhanced project home directories.
 
 If you accidentally delete files from your home directory
 (``/ccs/home/$USER``), you may be able to retrieve them. Online backups are
@@ -87,6 +103,7 @@ backups available for that subdirectory.
 
 To retrieve a backup, simply copy it into your desired destination with the
 ``cp`` command.
+
 
 User Website Directory
 ----------------------
@@ -112,6 +129,7 @@ User Archive Directories (HPSS)
     The information below is simply for reference for those users with existing 
     data in User Archive directories.
 
+
 The High Performance Storage System (HPSS) at the OLCF provides longer-term
 storage for the large amounts of data created on the OLCF compute systems. The
 mass storage facility consists of tape and disk storage components, servers, and
@@ -132,14 +150,15 @@ User Archive Access
 
 Each OLCF user receives an HPSS account automatically. Users can transfer data
 to HPSS from any OLCF system using the HSI or HTAR utilities. For more
-information on using HSI or HTAR, see the :ref:`hpss` .
+information on using HSI or HTAR, see the :ref:`data-hpss` .
+
 
 User Archive Accounting
 ------------------------
 
 Each file and directory on HPSS is associated with an HPSS storage allocation.
-For information on HPSS storage allocations, please visit the :ref:`policy`
+For information on HPSS storage allocations, please visit the :ref:`data-policy`
 section.
 
-For information on usage and best practices for HPSS, please see the :ref:`hpss`
+For information on usage and best practices for HPSS, please see the :ref:`data-hpss`
 documentation.

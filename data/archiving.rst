@@ -1,4 +1,7 @@
-.. _hpss:
+
+.. warning::
+   This page has been deprecated, and relevant information is now available on :ref:`data-storage-and-transfers`. Please update any bookmarks to use that page.
+
 
 **************************
 HPSS Data Archival System
@@ -135,10 +138,8 @@ There is interactive documentation on the ``hsi`` command available by running:
 
      ``hsi help``
 
-Additionally, documentation can be found at the Gleicher Enterprises website,
-including an `HSI Reference Manual
-<http://pal.mgleicher.us/HSI/hsi/hsi_reference_manual_2/>`__ and man pages for
-`HSI <http://pal.mgleicher.us/HSI/hsi/hsi_man_page.html>`__.
+Additional documentation can be found on the `HPSS Collaboration website <http://www.hpss-collaboration.org/user_doc.shtml>`__.
+
 
 Using HTAR
 ===========
@@ -223,8 +224,4 @@ that 64GB, the following error message will appear:
 Additional HTAR Documentation
 ------------------------------
 
-The HTAR user's guide can be found at the Gleicher Enterprises website `Gleicher
-Enterprises website <http://pal.mgleicher.us/HSI/htar/htar_user_guide.html>`__,
-including `the HTAR man page
-<http://pal.mgleicher.us/HSI/htar/htar_man_page.html>`__.
-
+For more information about ``htar``, execute ``man htar``. 
