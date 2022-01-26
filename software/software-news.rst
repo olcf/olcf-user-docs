@@ -6,6 +6,29 @@ Software News
 This page lists significant changes to software provided on OLCF systems. The
 most recent changes are listed first.
 
+
+----
+
+.. raw:: html
+
+   <p style="font-size:20px"><b>Ascent: Software Installation/Default Software Changes (February 7-11, 2022)</b></p>
+
+Ascent's operating system will be upgraded to Red Hat Enterprise Linux 8 (RHEL 8) on February 7-11, 2022.  
+
+.. warning:: **Codes should be rebuilt** prior to running following the upgrade due to the OS and software changes.
+
+As a result of the upgrade, the following new packages will become available:
+
+.. csv-table::
+    :header: "Package", "Current Default", "New Default"
+
+    "CUDA Toolkit", "10.1.243", "11.0.3"
+    "IBM Spectrum MPI", "10.3.1.2-20200121", "10.4.0.3-20210112"
+    "IBM XL", "16.1.1-5", "16.1.1-10"
+    "IBM ESSL", "6.1.0-2", "6.3.0"
+
+.. note::  The **OS-provided Python will no longer be accessible as python** (including variations like */usr/bin/python* or */usr/bin/env python*); rather, you must specify it as *python2* or *python3*. If you are using python from one of the modulefiles rather than the version in */usr/bin*, this change should not affect how you invoke python in your scripts, although we encourage specifying *python2* or *python3* as a best practice.
+
 ----
 
 .. raw:: html
