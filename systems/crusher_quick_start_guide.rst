@@ -1070,6 +1070,75 @@ Additional information on MI250X reduced precision can be found at:
   * The MI250X ISA specification details the flush to zero denorm behavior at: https://developer.amd.com/wp-content/resources/CDNA2_Shader_ISA_18November2021.pdf (See page 41 and 46)
   * AMD rocBLAS library reference guide details this behavior at: https://rocblas.readthedocs.io/en/master/API_Reference_Guide.html#mi200-gfx90a-considerations
 
+Enabling GPU Page Migration
+-----------------------------
+The AMD MI250X and operating system on Crusher supports unified virtual addressing across the entire host and device memory, and automatic page migration between CPU and GPU memory. Migratable, universally addressable memory is sometimes called 'managed' or 'unified' memory, but neither of these terms fully describes how memory may behave on Crusher. In the following section we'll discuss how the heterogenous memory space on a Crusher node are surfaced within your application.
+
+The accessibility of memory from GPU kernels and whether pages may migrate depends three factors: how the memory was allocated; the XNACK operating mode of the GPU; whether the kernel was compiled to support page migration. The latter two factors are intrinsically linked, as the MI250X GPU operating mode restricts the types of kernels which may run.
+
+XNACK (pronounced X-knack) refers to the AMD GPU's ability to retry memory accesses that fail due to a page fault. The XNACK mode of an MI250X can be changed by setting the environment variable `HSA_XNACK` before starting a process that uses the GPU. Valid values are 0 (disabled) and 1 (enabled), and all processes connected to a GPU must use the same XNACK setting. The default MI250X on Crusher is `HSA_XNACK=0`.
+
+If `HSA_XNACK=0`, page faults in GPU kernels are not handled and will terminate the kernel. Therefore all memory locations accessed by the GPU must either be resident in the GPU HBM or mapped by the HIP runtime. Memory regions may be migrated between the host DDR4 and GPU HBM using explicit HIP library functions such as `hipMemAdvise` and `hipPrefetchAsync`, but memory will not be automatically migrated based on access patterns alone.
+
+If `HSA_XNACK=1`, page faults in GPU kernels will trigger a page table lookup. If the memory location can be made accessible to the GPU, either by being migrated to GPU HBM or being mapped for remote access, the appropriate action will occur and the access will be replayed. Once a memory region has been migrated to GPU HBM it typically stay there rather than migrate back to CPU DDR4. The exceptions are if the programmer uses a HIP library call such as `hipPrefetchAsync` to move request migration, or if GPU HBM becomes full and the page must forcibly be evicted back to CPU DDR4 to make room for other data.
+
+
+Migration of Memory by Allocator and XNACK Mode
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Most applications that use "managed" or "unified" memory on other platforms will want to enable XNACK to take advantage of automatic page migration on Crusher. The following table shows how common allocators behave with XNACK enabled. The behavior of a specific memory region may vary from the default if the programmer uses certain API calls.
+
+
+.. note::
+    CPU accesses to migratable memory may behave differently than other platforms you're used to. On Crusher, pages will not migrate from GPU HBM to CPU DDR2 based on access patterns alone. Once a page has migrated to GPU HBM it will remain there even if the CPU accesses it, and all accesses which do not resolve in the CPU cache will occur over the Infinity Fabric between the Trento CPU and the MI250X. Pages will only *automatically* migrate back to CPU DDR4 if they are forcibly evicted to free HBM capacity, although programmers may use HIP APIs to manually migrate memory regions.
+
+**HSA_XNACK=1 ==> Automatic Page Migration Enabled**
+
++---------------------------------------------+---------------------------+--------------------------------------------+-------------------------------------------+
+| Allocator                                   | Initial Physical Location | Default Behavior for CPU Access            | Default Behavior for GPU Access           |
++=============================================+===========================+============================================+===========================================+
+| System Allocator (malloc,new,allocate, etc) | Determined by first touch | Zero copy read/write                       | Migrate to GPU HBM                        |
++---------------------------------------------+---------------------------+--------------------------------------------+-------------------------------------------+
+| hipMallocManaged                            | GPU HBM                   | Zero copy read/write                       | Migrate to GPU HBM                        |
++---------------------------------------------+---------------------------+--------------------------------------------+-------------------------------------------+
+| hipHostMalloc                               | CPU DDR4                  | Local read/write                           | Zero copy read/write over Infinity Fabric |
++---------------------------------------------+---------------------------+--------------------------------------------+-------------------------------------------+
+| hipMalloc                                   | GPU HBM                   | Zero copy read/write over Inifinity Fabric | Local read/write                          |
++---------------------------------------------+---------------------------+--------------------------------------------+-------------------------------------------+
+
+Disabling XNACK will not necessarily result in an application failure, as most types of memory can still be accessed by the Trento CPU and MI250X. In most cases, however, the access will occur in a zero-copy fashion over the Infinity Fabric. The exception is memory allocated through standard system allocators such as `malloc`, which cannot be accessed directly from GPU kernels without previously being registered via a HIP runtime call such as `hipHostRegister`. Accessed to malloc'ed and unregistered memory from GPU kernels will result in fatal unhandled page faults.
+
+**HSA_XNACK=0 ==> Automatic Page Migration Disabled**
+
++---------------------------------------------+---------------------------+-------------------------------------------+---------------------------------------------+
+| Allocator                                   | Initial Physical Location | Default Behavior for CPU Access           | Default Behavior for GPU Access             | 
++=============================================+===========================+===========================================+=============================================+
+| System Allocator (malloc,new,allocate, etc) | CPU DDR4                  | Local read/write                          | Fatal Unhandled Page Fault                  |
++---------------------------------------------+---------------------------+-------------------------------------------+---------------------------------------------+
+| hipMallocManaged                            | GPU HBM                   | Zero copy read/write over Infinity Fabric | Local read/write                            |
++---------------------------------------------+---------------------------+-------------------------------------------+---------------------------------------------+
+| hipHostMalloc                               | CPU DDR4                  | Local read/write                          | Zero copy read/write over Infinity Fabric   |
++---------------------------------------------+---------------------------+-------------------------------------------+---------------------------------------------+
+| hipMalloc                                   | GPU HBM                   | Zero copy read/write over Inifinity Fabric| Local read/write                            |
++---------------------------------------------+---------------------------+-------------------------------------------+---------------------------------------------+
+
+Compiling HIP kernels for specific XNACK modes
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Although XNACK is a capability of the MI250X GPU, it does require that kernels be able to recover from page faults. Both the ROCM and CCE HIP compilers will default to generating code that runs correctly on with both XNACK enabled and disabled. Some applications may benefit from using the following compilation options to target specific XNACK modes.
+
+`hipcc --amdgpu-target=gfx90a` or `CC --ofload-arch=gfx90a -x hip`
+    Kernels are compiled to a single "xnack any" binary, which will run correctly with both XNACK enabled and XNACK disabled.
+
+`hipcc --amdgpu-target=gfx90a:xnack+` or `CC --ofload-arch=gfx90a:xnack+ -x hip`
+    Kernels are compiled in "xnack plus" mode and will *only* be able to run on GPUs with `HSA_XNACK=1` to enable XNACK. Performance may be better than "xnack any", but attempts to run with XNACK disabled will fail.
+
+`hipcc --amdgpu-target=gfx90a:xnack-` or `CC --ofload-arch=gfx90a:xnack- -x hip`
+    Kernels are compiled in "xnack minus" mode and will *only* be able to run on GPUs with `HSA_XNACK=0` and XNACK disabled. Performance may be better than "xnack any", but attempts to run with XNACK enabled will fail.
+
+`hipcc --amdgpu-target=gfx90a:xnack- --amdgpu-target=gfx90a:xnack+ -x hip` or `CC --offload-arch=gfx90a:xnack- --offload-arch=gfx90a:xnack+ -x hip`
+    Two versions of each kernel will be generated, one that runs with XNACK disabled and one that runs if XNACK is enabled. This is different from "xnack any" in that two versions of each kernel are compiled and HIP picks the appropriate one at runtime, rather than there being a single version compatible with both. A "fat binary" compiled in this way will have the same performance of "xnack+" with `HSA_XNACK=1` and as "xnack-" with `HSA_XNACK=0`, but the final executable will be larger since it contains two copies of every kernel.
+
+
 ----
 
 Getting Help
