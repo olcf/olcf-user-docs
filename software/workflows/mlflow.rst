@@ -7,7 +7,7 @@ MLflow
 Overview
 ========
 
-MLflow MLflow is an open source platform to manage the ML lifecycle, including
+MLflow is an open source platform to manage the ML lifecycle, including
 experimentation, reproducibility, deployment, and a central model registry. To
 learn more about MLflow, refer to its `documentation <https://mlflow.org/docs/latest/index.html>`_.
 
