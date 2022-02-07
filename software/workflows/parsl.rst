@@ -21,11 +21,8 @@ from a login node:
 
 .. code-block:: console
 
-    $ module load python/3.6.6-anaconda3-5.3.0
-    $ conda create --name parsl-py36 python=3.6
-    $ source activate parsl-py36
-    $ conda config --add channels conda-forge
-    $ conda install parsl
+    $ module load workflows
+    $ module load parsl/1.1.0
 
 
 Hello world!

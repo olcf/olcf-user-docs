@@ -22,7 +22,8 @@ Swift/T is available as a module on Summit, and it can be loaded as follows:
 
 .. code-block:: console
 
-    $ module load  gcc/11.1.0  spectrum-mpi/10.4.0.3-20210112 stc/0.9.0 
+    $ module load workflows
+    $ module load swift/1.5.0
 
 You will also need to set the ``PROJECT`` environment variable:
 
@@ -146,7 +147,6 @@ In the second terminal, we will run the swift workflow as follows (make sure to 
 
 .. code-block:: console
 
-    $ module load  gcc/11.1.0  spectrum-mpi/10.4.0.3-20210112 stc/0.9.0 # to load swift
     $ module load imagemagick # for convert utility
     $ export WALLTIME=00:10:00
     $ export PROJECT=STF019
