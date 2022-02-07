@@ -17,6 +17,8 @@ vector fields defined on two- and three-dimensional (2D and 3D) structured and
 unstructured meshes. Further information regarding VisIt can be found at the
 links provided in the :ref:`visit-resources` section.
 
+.. _visit-setup:
+
 Installing and Setting Up Visit
 ===============================
 
@@ -79,7 +81,8 @@ Under the “Parallel” Tab:
 - GPU Acceleration
     - Use cluster’s graphics cards: Unchecked
 
-Click “Apply”. Exit and re-launch VisIt.
+Click “Apply” and make sure to save the settings (Options/Save Settings).
+Exit and re-launch VisIt.
 
 .. note::
     Users with large datasets may see a slight performance boost by
@@ -125,7 +128,8 @@ Under the “Parallel” Tab:
 - GPU Acceleration
     - Use cluster’s graphics cards: Unchecked
 
-Click “Apply”. Exit and re-launch VisIt.
+Click “Apply” and make sure to save the settings (Options/Save Settings).
+Exit and re-launch VisIt.
 
 .. _visit-host-profiles:
 
@@ -383,6 +387,48 @@ capture".
 
 Using VisIt on Summit is also an option, as the scalable rendering problem is
 currently not an issue on Summit (as of Sept. 2021).
+
+SSH error after accepting passcode (duplicate host profile bug)
+---------------------------------------------------------------
+
+If you see an error similar to "The metadata server on host andes.olcf.ornl.gov
+could not be launched or it could not connect back to your local computer" with
+the specific error listed as "The reason for the exception was not described",
+double check your host profiles. This bug may occur when you have two or more
+host profiles that represent the same system (e.g., if you have two host
+profiles that connect to andes.olcf.ornl.gov, but may have different settings /
+usernames for both). This bug can affect both Summit and Andes.
+
+One solution is to change the host nickname of the duplicate host profile to
+start with "Copy of".  For example, if my original host profile was named "ORNL
+Andes", a proper duplicate should be named "Copy of ORNL Andes" (this is the
+same nickname that would be generated when clicking the "Copy Host" button in
+VisIt). After renaming, make sure to save your settings via "Options/Save
+Settings" then close and restart VisIt.
+
+Another solution is to delete all copies of a host profile (including the
+original) and remake them. This can be achieved with the "Delete Host" button
+in the Host Profiles window. Make sure to save your settings after deleting the
+profiles, exit and restart VisIt, and then proceed with remaking your profiles. 
+
+If none of the above solutions work for you, the final option would be to
+delete the duplicate host profile entirely and just modify the settings of the
+original when needed.
+
+VisIt launch continues indefinitely after entering passcode
+-----------------------------------------------------------
+
+If the pop-up box called "metadata server launch progress" never goes away
+after entering your passcode, you may need to check if you have enough storage
+space available in your home directory (``/ccs/home/[user id]``). When
+connecting to OLCF systems, VisIt creates some small temporary files in your
+home directory that are unable to be created if you are over your quota (50 GB
+is the default quota limit).
+
+If the above does not apply to you, double check that you set up your host
+profile exactly as how it is outlined in the :ref:`visit-setup` section.
+It may be helpful to delete and remake your host profile, but just remember
+to always save your settings via "Options/Save Settings".
 
 VisIt keeps asking for your password.
 -------------------------------------

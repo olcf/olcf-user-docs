@@ -213,11 +213,11 @@ details about each of the module-provided compilers.
 |        |                         |                 +----------+-------------------+---------------------------------+
 |        |                         |                 | Fortran  | ``ftn``           | ``crayftn``                     |
 +--------+-------------------------+-----------------+----------+-------------------+---------------------------------+
-| AMD    | Not yet available       | ``rocm``        | C        | Not yet available | ``$ROCM_PATH/llvm/bin/clang``   |
+| AMD    | ``PrgEnv-amd``          | ``rocm``        | C        | ``cc``            | ``$ROCM_PATH/llvm/bin/clang``   |
 |        |                         |                 +----------+-------------------+---------------------------------+
-|        |                         |                 | C++      | Not yet available | ``$ROCM_PATH/llvm/bin/clang++`` |
+|        |                         |                 | C++      | ``CC``            | ``$ROCM_PATH/llvm/bin/clang++`` |
 |        |                         |                 +----------+-------------------+---------------------------------+
-|        |                         |                 | Fortran  | Not yet available | ``$ROCM_PATH/llvm/bin/flang``   |
+|        |                         |                 | Fortran  | ``ftn``           | ``$ROCM_PATH/llvm/bin/flang``   |
 +--------+-------------------------+-----------------+----------+-------------------+---------------------------------+
 | GCC    | ``PrgEnv-gnu``          | ``gcc``         | C        | ``cc``            | ``$GCC_PATH/bin/gcc``           |
 |        |                         |                 +----------+-------------------+---------------------------------+
@@ -323,7 +323,7 @@ In addition, the following header files and libraries must be included:
 .. code:: bash
 
     -I${MPICH_DIR}/include
-    -L${MPICH_DIR}/lib -lmpi -L${$CRAY_MPICH_ROOTDIR}/gtl/lib -lmpi_gtl_hsa
+    -L${MPICH_DIR}/lib -lmpi -L${CRAY_MPICH_ROOTDIR}/gtl/lib -lmpi_gtl_hsa
 
 
 OpenMP
@@ -372,10 +372,6 @@ This section shows how to compile with OpenMP Offload using the different compil
 |        |          | | C\+\+   | | ``$ROCM_PATH/llvm/bin/clang++``         | | ``-fopenmp-targets=amdgcn-amd-amdhsa   \`` |
 |        |          | | Fortran | | ``ROCM_PATH/llvm/bin/flang``            | | ``-Xopenmp-target=amdgcn-amd-amdhsa    \`` |
 |        |          |           | | ``hipcc``                               | | ``-march=gfx908``                          |
-+--------+----------+-----------+-------------------------------------------+----------------------------------------------+
-| GCC    | ``gcc``  | | C       | | ``$GCC_PATH/bin/gcc``                   | ``-fopenmp``                                 |
-|        |          | | C++     | | ``$GCC_PATH/bin/g++``                   |                                              |
-|        |          | | Fortran | | ``$GCC_PATH/bin/gfortran``              |                                              |
 +--------+----------+-----------+-------------------------------------------+----------------------------------------------+
 
 HIP

@@ -30,10 +30,23 @@ Access From Globus Online
 DTNs are also accessible via the "OLCF DTN" (for moderate) and "NCCS Open DTN" (for open) Globus endpoints. For more information on using Globus at OLCF see :ref:`data-transferring-data-globus`.
 
 
-Batch Queue
+Batch Queue (Slurm)
 ===================
 
 The moderate DTNs also support batch jobs. The system contains 8 nodes accessible through the DTN batch system.
+
+Most OLCF resources now use the Slurm batch scheduler, including the DTNs.
+Below is a table of useful commands for Slurm.
+
++--------------------------------------------+-------------------+
+| Task                                       | Slurm             |
++============================================+===================+
+| View batch queue                           | ``squeue``        |
++--------------------------------------------+-------------------+
+| Submit batch script                        | ``sbatch``        |
++--------------------------------------------+-------------------+
+| Submit interactive batch job               | ``salloc``        |
++--------------------------------------------+-------------------+
 
 Queue Policy
 ^^^^^^^^^^^^^^^^^^^^
