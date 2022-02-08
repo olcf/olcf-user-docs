@@ -4381,8 +4381,8 @@ Obtaining Access to Ascent
 This sub-section describes the process of obtaining access to Ascent for
 an OLCF training event. Please follow the steps below to request access.
 
-
-Step 1: Go to the 'MyOLC Account Application Form <https://my.olcf.ornl.gov/account-application-new>`__
+- `HIP Programming Guide <https://rocm-documentation.readthedocs.io/en/latest/Programming_Guides/HIP-GUIDE.html>`__
+Step 1: Go to the `myOLCF Account Application Form <https://my.olcf.ornl.gov/account-application-new>`__
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 1. Fill in the project ID in the "Enter the Project ID of the project you wish to join" field and click "Next".
  
