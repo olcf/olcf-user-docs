@@ -74,6 +74,10 @@ you will find a list of current frameworks natively supported in our
 +------------------------------------------------+-------------+
 | :ref:`Swift/T<workflows-swiftt>`               | Summit      | 
 +------------------------------------------------+-------------+
+| :ref:`MLflow<workflows-mlflow>`                | Summit      | 
++------------------------------------------------+-------------+
+| :ref:`FireWorks<workflows-fireworks>`          | Summit      | 
++------------------------------------------------+-------------+
 
 ---------
 
@@ -88,3 +92,5 @@ Workflow Systems
    parsl
    swift_t
    mlflow
+   fireworks
+
