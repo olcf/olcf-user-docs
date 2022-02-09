@@ -1054,12 +1054,12 @@ And here is the output from the script:
 ----
 
 Notable Differences between Summit and Crusher
-============
+================================================
 
 This section details 'tips and tricks' and information of interest to users when porting from Summit to Crusher.
 
 Using reduced precision (FP16, FP32, and BF16 datatypes)
-----------
+------------------------------------------------------------
 Users using BF16, FP16, and FP32 datatypes for applications such as ML/AI training and low-precision matrix multiplication should be aware that the AMD MI250X GPU has different denormal handling than the V100 GPUs on Summit. On the MI250X, the V_DOT2 and the matrix instructions for FP32, FP16, BF16, flush input and output denormal values to zero. FP64 MFMA instructions do not flush input and output denormal values to zero. 
 
 When training deep learning models using FP16 precision, some models may fail to converge with FP16 denorms flushed to zero. This occurs in operations encountering denormal values, and so is more likely to occur in FP16 because of a small dynamic range. BF16 and FP32 numbers have a larger dynamic range than FP16 numbers, and so are less likely to encounter denormal values.
@@ -1092,7 +1092,7 @@ Most applications that use "managed" or "unified" memory on other platforms will
 .. note::
     CPU accesses to migratable memory may behave differently than other platforms you're used to. On Crusher, pages will not migrate from GPU HBM to CPU DDR2 based on access patterns alone. Once a page has migrated to GPU HBM it will remain there even if the CPU accesses it, and all accesses which do not resolve in the CPU cache will occur over the Infinity Fabric between the Trento CPU and the MI250X. Pages will only *automatically* migrate back to CPU DDR4 if they are forcibly evicted to free HBM capacity, although programmers may use HIP APIs to manually migrate memory regions.
 
-**HSA_XNACK=1 ==> Automatic Page Migration Enabled**
+**HSA_XNACK=1** Automatic Page Migration Enabled
 
 +---------------------------------------------+---------------------------+--------------------------------------------+-------------------------------------------+
 | Allocator                                   | Initial Physical Location | Default Behavior for CPU Access            | Default Behavior for GPU Access           |
@@ -1108,7 +1108,7 @@ Most applications that use "managed" or "unified" memory on other platforms will
 
 Disabling XNACK will not necessarily result in an application failure, as most types of memory can still be accessed by the Trento CPU and MI250X. In most cases, however, the access will occur in a zero-copy fashion over the Infinity Fabric. The exception is memory allocated through standard system allocators such as `malloc`, which cannot be accessed directly from GPU kernels without previously being registered via a HIP runtime call such as `hipHostRegister`. Accessed to malloc'ed and unregistered memory from GPU kernels will result in fatal unhandled page faults.
 
-**HSA_XNACK=0 ==> Automatic Page Migration Disabled**
+**HSA_XNACK=0** Automatic Page Migration Disabled
 
 +---------------------------------------------+---------------------------+-------------------------------------------+---------------------------------------------+
 | Allocator                                   | Initial Physical Location | Default Behavior for CPU Access           | Default Behavior for GPU Access             | 
