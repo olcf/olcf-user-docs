@@ -4395,11 +4395,7 @@ Step 1: Go to the `myOLCF Account Application Form <https://my.olcf.ornl.gov/acc
  
 4. Fill in your shipping information and then click "Next".
  
-5. Fill in your Employment/Institution Information. If you are a student and you do not see your school listed, there is a "student" option you can select. There is also a "self" option under funding source if you are not funded by an institution. Click "Next" when you are done.
-
-.. image:: /images/ascent_employment.png
-   :align: center 
-
+5. Fill in your Employment/Institution Information. If you are student please use your school affiliation for both "Employer" and "Funding Source". If you are a student and you do not see your school listed, choose "other" for both "Employer" and "Funding Source" and then manually enter your school affiliation in the adjacent fields.  Click “Next” when you are done.
 
 6. On the Project information screen fill the "Proposed Contribution to Project" with "Participating in OLCF training." Leave all the questions about the project set to "no" and click "Next".
 
