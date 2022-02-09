@@ -1094,17 +1094,17 @@ Most applications that use "managed" or "unified" memory on other platforms will
 
 **HSA_XNACK=1** Automatic Page Migration Enabled
 
-+---------------------------------------------+---------------------------+--------------------------------------------+-------------------------------------------+
-| Allocator                                   | Initial Physical Location | Default Behavior for CPU Access            | Default Behavior for GPU Access           |
-+=============================================+===========================+============================================+===========================================+
-| System Allocator (malloc,new,allocate, etc) | Determined by first touch | Zero copy read/write                       | Migrate to GPU HBM                        |
-+---------------------------------------------+---------------------------+--------------------------------------------+-------------------------------------------+
-| hipMallocManaged                            | GPU HBM                   | Zero copy read/write                       | Migrate to GPU HBM                        |
-+---------------------------------------------+---------------------------+--------------------------------------------+-------------------------------------------+
-| hipHostMalloc                               | CPU DDR4                  | Local read/write                           | Zero copy read/write over Infinity Fabric |
-+---------------------------------------------+---------------------------+--------------------------------------------+-------------------------------------------+
-| hipMalloc                                   | GPU HBM                   | Zero copy read/write over Inifinity Fabric | Local read/write                          |
-+---------------------------------------------+---------------------------+--------------------------------------------+-------------------------------------------+
++---------------------------------------------+---------------------------+--------------------------------------------+----------------------------------------------------+
+| Allocator                                   | Initial Physical Location | CPU Access after GPU First touch           | Default Behavior for GPU Access                    |
++=============================================+===========================+============================================+====================================================+
+| System Allocator (malloc,new,allocate, etc) | Determined by first touch | Zero copy read/write                       | Migrate to GPU HBM on touch, then local read/write |
++---------------------------------------------+---------------------------+--------------------------------------------+----------------------------------------------------+
+| hipMallocManaged                            | GPU HBM                   | Zero copy read/write                       | Populate in  GPU HBM, then local read/write        |
++---------------------------------------------+---------------------------+--------------------------------------------+----------------------------------------------------+
+| hipHostMalloc                               | CPU DDR4                  | Local read/write                           | Zero copy read/write over Infinity Fabric          |
++---------------------------------------------+---------------------------+--------------------------------------------+----------------------------------------------------+
+| hipMalloc                                   | GPU HBM                   | Zero copy read/write over Inifinity Fabric | Local read/write                                   |
++---------------------------------------------+---------------------------+--------------------------------------------+----------------------------------------------------+
 
 Disabling XNACK will not necessarily result in an application failure, as most types of memory can still be accessed by the Trento CPU and MI250X. In most cases, however, the access will occur in a zero-copy fashion over the Infinity Fabric. The exception is memory allocated through standard system allocators such as `malloc`, which cannot be accessed directly from GPU kernels without previously being registered via a HIP runtime call such as `hipHostRegister`. Accessed to malloc'ed and unregistered memory from GPU kernels will result in fatal unhandled page faults.
 
