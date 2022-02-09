@@ -1138,6 +1138,69 @@ Although XNACK is a capability of the MI250X GPU, it does require that kernels b
 `hipcc --amdgpu-target=gfx90a:xnack- --amdgpu-target=gfx90a:xnack+ -x hip` or `CC --offload-arch=gfx90a:xnack- --offload-arch=gfx90a:xnack+ -x hip`
     Two versions of each kernel will be generated, one that runs with XNACK disabled and one that runs if XNACK is enabled. This is different from "xnack any" in that two versions of each kernel are compiled and HIP picks the appropriate one at runtime, rather than there being a single version compatible with both. A "fat binary" compiled in this way will have the same performance of "xnack+" with `HSA_XNACK=1` and as "xnack-" with `HSA_XNACK=0`, but the final executable will be larger since it contains two copies of every kernel.
 
+If the HIP runtime cannot find a kernel image that matches the XNACK mode of the device, it will fail with `hipErrorNoBinaryForGpu`.
+
+.. code::
+
+    $ HSA_XNACK=0 srun -n 1 -N 1 -t 1 ./xnack_plus.exe
+    "hipErrorNoBinaryForGpu: Unable to find code object for all current devices!"
+    srun: error: crusher002: task 0: Aborted
+    srun: launch/slurm: _step_signal: Terminating StepId=74100.0
+
+
+..
+    NOTE: This works in my shell because I used cpan to install the URI::Encode perl modules.
+    This won't work generically unless those get installed, so commenting out this block now.
+
+    The AMD tool `roc-obj-ls` will let you see what code objects are in a binary.
+
+    .. code::
+        $ hipcc --amdgpu-target=gfx90a:xnack+ square.hipref.cpp -o xnack_plus.exe
+        $ roc-obj-ls -v xnack_plus.exe
+        Bundle# Entry ID:                                                              URI:
+        1       host-x86_64-unknown-linux                                           file://xnack_plus.exe#offset=8192&size=0
+        1       hipv4-amdgcn-amd-amdhsa--gfx90a:xnack+                              file://xnack_plus.exe#offset=8192&size=9752
+
+    If no XNACK flag is specificed at compilation the default is "xnack any", and objects in `roc-obj-ls` with not have an XNACK mode specified.
+
+    .. code::
+        $ hipcc --amdgpu-target=gfx90a square.hipref.cpp -o xnack_any.exe
+        $ roc-obj-ls -v xnack_any.exe
+        Bundle# Entry ID:                                                              URI:
+        1       host-x86_64-unknown-linux                                           file://xnack_any.exe#offset=8192&size=0
+        1       hipv4-amdgcn-amd-amdhsa--gfx90a                                     file://xnack_any.exe#offset=8192&size=9752
+
+One way to diagnose `hipErrorNoBinaryForGpu` messages is to set the environment variable `AMD_LOG_LEVEL` to 1 or greater:
+
+.. code::
+    
+    $ AMD_LOG_LEVEL=1 HSA_XNACK=0 srun -n 1 -N 1 -t 1 ./xnack_plus.exe
+    :1:rocdevice.cpp            :1573: 43966598070 us: HSA_AMD_AGENT_INFO_SVM_DIRECT_HOST_ACCESS query failed.
+    :1:rocdevice.cpp            :1573: 43966598762 us: HSA_AMD_AGENT_INFO_SVM_DIRECT_HOST_ACCESS query failed.
+    :1:rocdevice.cpp            :1573: 43966599392 us: HSA_AMD_AGENT_INFO_SVM_DIRECT_HOST_ACCESS query failed.
+    :1:rocdevice.cpp            :1573: 43966599970 us: HSA_AMD_AGENT_INFO_SVM_DIRECT_HOST_ACCESS query failed.
+    :1:rocdevice.cpp            :1573: 43966600550 us: HSA_AMD_AGENT_INFO_SVM_DIRECT_HOST_ACCESS query failed.
+    :1:rocdevice.cpp            :1573: 43966601109 us: HSA_AMD_AGENT_INFO_SVM_DIRECT_HOST_ACCESS query failed.
+    :1:rocdevice.cpp            :1573: 43966601673 us: HSA_AMD_AGENT_INFO_SVM_DIRECT_HOST_ACCESS query failed.
+    :1:rocdevice.cpp            :1573: 43966602248 us: HSA_AMD_AGENT_INFO_SVM_DIRECT_HOST_ACCESS query failed.
+    :1:hip_code_object.cpp      :460 : 43966602806 us: hipErrorNoBinaryForGpu: Unable to find code object for all current devices!
+    :1:hip_code_object.cpp      :461 : 43966602810 us:   Devices:
+    :1:hip_code_object.cpp      :464 : 43966602811 us:     amdgcn-amd-amdhsa--gfx90a:sramecc+:xnack- - [Not Found]
+    :1:hip_code_object.cpp      :464 : 43966602811 us:     amdgcn-amd-amdhsa--gfx90a:sramecc+:xnack- - [Not Found]
+    :1:hip_code_object.cpp      :464 : 43966602812 us:     amdgcn-amd-amdhsa--gfx90a:sramecc+:xnack- - [Not Found]
+    :1:hip_code_object.cpp      :464 : 43966602813 us:     amdgcn-amd-amdhsa--gfx90a:sramecc+:xnack- - [Not Found]
+    :1:hip_code_object.cpp      :464 : 43966602813 us:     amdgcn-amd-amdhsa--gfx90a:sramecc+:xnack- - [Not Found]
+    :1:hip_code_object.cpp      :464 : 43966602814 us:     amdgcn-amd-amdhsa--gfx90a:sramecc+:xnack- - [Not Found]
+    :1:hip_code_object.cpp      :464 : 43966602814 us:     amdgcn-amd-amdhsa--gfx90a:sramecc+:xnack- - [Not Found]
+    :1:hip_code_object.cpp      :464 : 43966602815 us:     amdgcn-amd-amdhsa--gfx90a:sramecc+:xnack- - [Not Found]
+    :1:hip_code_object.cpp      :468 : 43966602816 us:   Bundled Code Objects:
+    :1:hip_code_object.cpp      :485 : 43966602817 us:     host-x86_64-unknown-linux - [Unsupported]
+    :1:hip_code_object.cpp      :483 : 43966602818 us:     hipv4-amdgcn-amd-amdhsa--gfx90a:xnack+ - [code object v4 is amdgcn-amd-amdhsa--gfx90a:xnack+]
+    "hipErrorNoBinaryForGpu: Unable to find code object for all current devices!"
+    srun: error: crusher129: task 0: Aborted
+    srun: launch/slurm: _step_signal: Terminating StepId=74102.0
+
+The above log messages indicate the type of image required by each device, given its current mode (`amdgcn-amd-amdhsa--gfx90a:sramecc+:xnack-`) and the images found in the binary (`hipv4-amdgcn-amd-amdhsa--gfx90a:xnack+`).
 
 ----
 
