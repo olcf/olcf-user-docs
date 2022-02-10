@@ -29,7 +29,7 @@ of both states.
 
 How do I access the OLCF quantum computing resources? 
 =====================================================
-Applications for both Quantum Computing projects and quantum user accounts can be found on the quantum accounts documentation :ref:`quantum-access` page.
+Applications for both Quantum Computing projects and quantum user accounts can be found on the quantum accounts documentation :ref:`quantum_access` page.
 
 
 What happens after I apply for access to QCUP? 
