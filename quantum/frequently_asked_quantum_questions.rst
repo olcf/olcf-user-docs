@@ -28,20 +28,19 @@ of both states.
 
 
 How do I access the OLCF quantum computing resources? 
-====================================================
-Applications for both Quantum Computing projects and quantum user accounts can be found 
-on the quantum accounts documentation :ref:`quantum-accounts` page.
+=====================================================
+Applications for both Quantum Computing projects and quantum user accounts can be found on the quantum accounts documentation :ref:`quantum-access` page.
 
 
 What happens after I apply for access to QCUP? 
-=============================================
+==============================================
 
 Applications are put through a merit review process, and you will be contacted 
 regarding the status of your application. See the user documentation page for more details.
 
 
 I formerly had access to quantum resources, but my backends/lattices/etc. have disappeared, what do I do? 
-=======================================================================================================
+=========================================================================================================
 
 If your account was established prior to July 5th, 2020, and was not through the OLCF directly, 
 your access to quantum resources has been removed, and you will need to re-apply to an OLCF project. 
@@ -50,6 +49,6 @@ need to reapply.
 
 
 I applied to a quantum computing resource via the vendor website, but don’t have access; what do I do? 
-====================================================================================================
+======================================================================================================
 
 Making an account on the vendor website does not enable access to OLCF projects; Access requires an account through an OLCF-affiliated website, and applying for an OLCF quantum account (see above).

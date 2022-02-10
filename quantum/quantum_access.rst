@@ -50,7 +50,7 @@ additionally some projects focus on device characterization, verification, and v
 
 
 Request a New Project Allocation
-******************************
+********************************
 
 A QCUP proposal describes the nature, methodology, and merits of the project, explains why 
 it requires access to QCUP resources, and outlines any other essential information that
@@ -75,7 +75,7 @@ The OLCF will then establish a QCUP project and notify the PI of its creation al
 may proceed with applying for their indviudal user accounts. 
 
 Quantum Project Renewals 
--------------------------
+------------------------
 
 QCUP Projects have a finite duration; when starting, projects get however many months are left in that 
 allocation period and then must be renewed for subsequent 6 month intervals. Projects can be renewed 
@@ -83,7 +83,7 @@ by filling out a renewal form and emailing it to accounts@ccs.ornl.gov:
 :download:`Accounts Renewal Form <Quantum-Renewal-Form.docx>`
 
 Closeout and Quarterly reports for projects
---------------------------------------------
+-------------------------------------------
 
 All QCUP projects are required to submit `Quarterly reports <https://www.olcf.ornl.gov/wp-content/accounts/Closeout_Template.doc>`__ and a 
 `closeout report <https://www.olcf.ornl.gov/wp-content/accounts/industry_quarterly_report.doc>`__. These
@@ -137,7 +137,7 @@ to work.
 
 
 Quantum Account Resource Access
-*********************************
+*******************************
 
 As opposed to setting up a personal account through each of the individual vendor websites, 
 OLCF has purchased subscriptions to those vendor services and handles setting up your access
@@ -171,7 +171,7 @@ Jupyter notebooks is available in the UI via the “Examples” tab.  Honeywell�
 mid-circuit measurement and qubit reuse, and are compatible with a variety of software frameworks.
 
 Rigetti
----------
+-------
 
 After submitting the OLCF quantum account application and receiving approval, you will receive an email 
 from support@rigetti.com inviting you to create your quantum account. If you did not receive this, proceed 
