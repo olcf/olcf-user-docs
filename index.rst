@@ -89,6 +89,14 @@ Training
 
    training/index
 
+Quantum
+--------
+
+.. toctree::
+   :maxdepth: 2
+
+   quantum/index
+
 How to contribute to this documentation
 -----------------------------------------
 
