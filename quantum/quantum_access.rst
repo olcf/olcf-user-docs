@@ -1,0 +1,185 @@
+============================================
+Quantum Computing User Program Access (QCUP)
+============================================
+
+Welcome! The information below introduces how we structure projects and user accounts for 
+access to the Quantum resources within the QCUP program. In general, OLCF QCUP resources 
+are granted to projects, which are in turn made available to the approved users associated 
+with each project. 
+
+To gain access, you must first submit a project proposal to the OLCF QCUP. The Quantum Resource 
+Utilization Council (QRUC), as well as independent referees, review and approve all QCUP 
+project proposals. Applications to QCUP are accepted year-round via the project application form 
+found below. Once your project is approved, then all of the users associated with the 
+
+QCUP Priorities
+***************
+
+There are several broad aims of the Quantum Computing User Program at OLCF, which are as follows:
+
+1. **Enable Research**
+
+The QCUP aims to provide a broad spectrum of user access to the best available quantum computing 
+systems. Once a user’s intended research has been reviewed for merit and user agreements have been 
+established, we seek to provide users with the opportunity to become familiar with the unique 
+aspects and challenges of quantum computing, as well as to implement and test quantum algorithms 
+on the available systems.
+
+2. **Evaluate Technology**
+
+The QCUP aims to aid in the evaluation of technology by monitoring the breadth and performance 
+of early quantum computing applications. How users integrate quantum computing with scientific 
+computing is a question constrained by both application, infrastructure constraints, and the 
+use cases expected for the associated computational system. Through the QCUP program, users 
+can explore new potential computational research applications, and potentially accelerate 
+existing scientific applications using quantum processors and architectures. Research projects 
+supported include advanced scientific computing, basic energy science, biological environmental 
+research, high-energy physics, fusion energy science, and nuclear physics, among others.
+
+3. **Engage the Community**  
+
+The QCUP aims to engage the quantum computing community and support the growth of the quantum 
+information science ecosystems. Our quantum computing users range in quantum computing experience 
+from novice to expert; users are from US national labs, universities, government, and industry. 
+User groups utilize quantum computing expertise to investigate diverse application interests, 
+using multiple programming languages, quantum-classical programming, and multiple software 
+environments. Most projects focus on proof-of-principle demonstrations and/or new method 
+development. Some projects focus on application performance and/or benchmarking, and 
+additionally some projects focus on device characterization, verification, and validation.
+
+
+
+Request a New Project Allocation
+******************************
+
+A QCUP proposal describes the nature, methodology, and merits of the project, explains why 
+it requires access to QCUP resources, and outlines any other essential information that
+might be needed for its consideration. Project applications are submitting using the `Project
+Application Form <https://my.olcf.ornl.gov/project-application-new>`__. Select "OLCF Quantum
+Computing User Program" from the dropdown menu.
+
+For QCUP Projects, all proposed work must be open, fundamental research and no Export Control, PHI, or 
+other controlled data can be used. 
+
+Once submitted, you will receive email notification of successful proposal submission. 
+The proposal is then reviewed by the Quantum Resource Utilization Council (QRUC), as well 
+as independent referees for merit and to ensure the feasibility of project success using 
+the resources available to the QCUP. You will be notified of the QRUC decision via email. 
+
+What happens after a project request is approved?
+-------------------------------------------------
+Once a project request is approved by the QRUC, an OLCF Accounts Manager will communicate with the project’s PI to finalize activation and request a signed Principal Investigator’s PI Agreement to be submitted.
+
+The OLCF will then establish a QCUP project and notify the PI of its creation along with the 
+6-character OLCF QCUP Project ID and resources allocation details. At this time project participants
+may proceed with applying for their indviudal user accounts. 
+
+Quantum Project Renewals 
+-------------------------
+
+QCUP Projects have a finite duration; when starting, projects get however many months are left in that 
+allocation period and then must be renewed for subsequent 6 month intervals. Projects can be renewed 
+by filling out a renewal form and emailing it to accounts@ccs.ornl.gov:
+:download:`Accounts Renewal Form <Quantum-Renewal-Form.docx>`
+
+Closeout and Quarterly reports for projects
+--------------------------------------------
+
+All QCUP projects are required to submit `Quarterly reports <https://www.olcf.ornl.gov/wp-content/accounts/Closeout_Template.doc>`__ and a 
+`closeout report <https://www.olcf.ornl.gov/wp-content/accounts/industry_quarterly_report.doc>`__. These
+forms may be emailed to accounts@ccs.ornl.gov
+
+Publication Citations
+---------------------
+
+Publications using resources provided by the OLCF are requested to include the following 
+acknowledgement statement: *“This research used resources of the Oak Ridge Leadership 
+Computing Facility, which is a DOE Office of Science User Facility supported under 
+Contract DE-AC05-00OR22725.”*
+
+
+
+Applying for a user account
+***************************
+
+Any collaborator involved with an approved and activated OLCF project can apply for a user account
+associated with that project to gain access. 
+
+.. note::
+    Project PIs do not receive a user account with project
+    creation, and must also apply.
+
+#. First-time users should apply for an account using the `Account Request
+   Form <https://my.olcf.ornl.gov/account-application-new>`__. You will need the correct
+   6 character project ID from your PI. 
+#. When our accounts team begins processing your application, you will receive an automated
+   email containing a unique 36-character confirmation code. Make note of it; you can use
+   it to check the status of your application at any time.
+#. The principal investigator (PI) of the project must approve your
+   account and system access. We will make the project PI aware of your request.
+#. Once your application is evaluated and approved, you will be notified via email of your account 
+   creation, and the quantum resource vendor will be contacted with instructions to grant you access.
+
+
+Checking the status of your application
+---------------------------------------
+
+You can check the general status of your application at any time using the myOLCF self-service
+portal's `account status page <https://my.olcf.ornl.gov/pending/status>`__.
+For more information, see the :ref:`myOLCF self-service portal documentation<myolcf-overview>`.
+If you need to make further inquiries about your application, you may email our
+Accounts Team at accounts@ccs.ornl.gov.
+
+When all of the above steps are completed, your user account will be
+created and you will be notified by email. Now that you have a user
+account and it has been associated with a project, you're ready to get
+to work. 
+
+
+Quantum Account Resource Access
+*********************************
+
+As opposed to setting up a personal account through each of the individual vendor websites, 
+OLCF has purchased subscriptions to those vendor services and handles setting up your access
+to each one once your Quantum User Application is approved. You will receive individual email
+invitations from Quantinuum and Rigetti with further instructions, whereas for IBM you can 
+proceed directly to their website to create an account. More details for each vendor are listed
+below.
+
+IBM Quantum Computing
+---------------------
+
+After submitting the OLCF quantum account application and receiving approval, proceed to 
+https://quantum-computing.ibm.com/ and click on "Create an IBMid account". Your IBM Quantum Hub 
+account email will be the email associated with your OLCF account. If sign-in fails, contact 
+help@olcf.ornl.gov. Once logged in, users will have access to the IBM Quantum Hub, IBM’s online 
+platform for QPU access, forums for quantum computing discussion, etc. From the IBM Quantum Hub 
+Dashboard, users can manage system reservations, view system (backend) statuses, and view the 
+results of your past jobs. More information about using these IBM quantum resources can be found
+here: https://quantum-computing.ibm.com/docs/
+
+Quantinuum (previously Honeywell)
+---------------------------------
+
+After submitting the OLCF quantum account application and receiving approval, you will receive an 
+email from Quantinuum inviting you to create your quantum account. Once logged in, users will have 
+access to Honeywell Quantum Solutions User Interface (HQS UI), https://um.qapi.honeywell.com, their
+online platform for managing jobs and accessing the available quantum systems, including the System 
+Model H1, via the cloud. From the HQS UI, users can view system status and upcoming system availability, 
+as well as monitor batch submissions and job history. Information on using the quantum resources via 
+Jupyter notebooks is available in the UI via the “Examples” tab.  Honeywell’s systems feature 
+mid-circuit measurement and qubit reuse, and are compatible with a variety of software frameworks.
+
+Rigetti
+---------
+
+After submitting the OLCF quantum account application and receiving approval, you will receive an email 
+from support@rigetti.com inviting you to create your quantum account. If you did not receive this, proceed 
+to https://qcs.rigetti.com/sign-in and click “Sign In”. It is necessary that the email you use for sign in
+be associated with an affiliated subscribing institution, i.e. ORNL, ANL, etc. If sign in fails, contact 
+help@olcf.ornl.gov. Once logged in, users will have access to Quantum Cloud Services (QCS), Rigetti’s 
+online platform for accessing the hybrid infrastructure of available quantum processors and classical 
+computational framework via the cloud. From the QCS, users can view system status and availability, 
+initiate and manage quantum infrastructure reservations (either executing programs manually or adding 
+them to the queue). Information on using this resource is available at https://qcs.rigetti.com/.
+
