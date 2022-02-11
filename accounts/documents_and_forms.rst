@@ -48,7 +48,7 @@ and maintains records of the identity proofing credentials that may be
 disclosed in the future to an authorized individual or investigative
 agency. Alternatively, you may schedule this verification with a member
 of our staff virtually my filling out the 
-`Conference Scheduler Form <https://www.my.olcf.ornl.gov/video-conference/>`__.
+`Conference Scheduler Form <https://my.olcf.ornl.gov/video-conference/>`__.
 You will need your Application Confirmation Number that was emailed to you
 by our accounts team to schedule in this manner. If you do not possess
 a confirmation number (you are verifying a replacement token, for example),
