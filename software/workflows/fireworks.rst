@@ -1,3 +1,4 @@
+.. _workflows-fireworks:
 
 *********
 FireWorks
