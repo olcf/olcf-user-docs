@@ -77,12 +77,14 @@ productivity on leadership computing platforms. The OLCF Resource
 Utilization Council, as well as independent referees, review and approve
 all DD requests. Applications are accepted year-round via the `OLCF
 Director's Discretion Project
-Application <https://www.olcf.ornl.gov/for-users/documents-forms/olcf-directors-discretion-project-application/>`__.
+Application <https://my.olcf.ornl.gov/project-application-new/>`__. Select
+"OLCF Director's Discretionary Project" from the drop down menu to begin.
 
 **Vendor –** OLCF resources are also available to ORNL vendors.
 Applications may be submitted year-round by completing the `Vendor
 Project
-Application <https://www.olcf.ornl.gov/support/getting-started/olcf-vendor-project-application/>`__.
+Application <https://my.olcf.ornl.gov/project-application-new/>`__. Select
+"OLCF Vendors Program" from the drop down menu to begin.
 
     If you have questions about project types or application procedures,
     feel free to contact the OLCF Accounts Team at accounts@ccs.ornl.gov.
@@ -156,7 +158,7 @@ receiving a user account, and we're here to help you through them.
     :ref:`Get access to additional projects<get-additional-projects>` section below.
 
 #. First-time users should apply for an account using the `Account Request
-   Form <https://www.olcf.ornl.gov/support/getting-started/olcf-account-application>`__.
+   Form <https://my.olcf.ornl.gov/account-application-new>`__.
 #. When our accounts team begins processing your application, you will receive an automated
    email containing an unique 36-character confirmation code. Make note of it; you can use
    it to check the status of your application at any time.
@@ -208,8 +210,8 @@ see the :ref:`myOLCF self-service portal documentation<myolcf-overview>`.
 
 If your user account has only an associated password (i.e. you have an "OLCF Open" account) you
 gain access to another project by filling out the `Account Request Form
-<https://www.olcf.ornl.gov/support/getting-started/olcf-account-application>`__; myOLCF is only
-available to users with RSA SecurID tokens at this time.
+<https://my.olcf.ornl.gov/account-application-new>`__; logging in to myOLCF is only available 
+to users with RSA SecurID tokens at this time.
 
 In either case, once the PI of that project has been contacted and granted permission, your user account
 will be added to the relevant charge accounts and unix groups, and you will see these additions
