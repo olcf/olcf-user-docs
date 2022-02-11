@@ -36,7 +36,7 @@ for complete details.
 `Join an Additional Project <https://my.olcf.ornl.gov/>`__
 Existing users with RSA SecurID tokens should log in to the myOLCF self-service portal to apply for additional projects.
 Existing users without RSA SecurID tokens should fill out the `Account Application Form <https://my.olcf.ornl.gov/account-application-new/>`__ that can be found at the top left of the 
-myOLCF login page without needing to sign in
+myOLCF login page without needing to sign in.
 See the section :ref:`applying-for-a-user-account` for complete details.
 
 `Notary Token Verification Form <https://www.olcf.ornl.gov/wp-content/accounts/Notary_Token_Verification_Form.pdf>`_
