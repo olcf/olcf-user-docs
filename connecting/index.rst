@@ -69,6 +69,8 @@ Activating a new SecurID fob
     or otherwise have your identity verified by the OLCF (See `Notary
     Instructions
     <https://www.olcf.ornl.gov/wp-content/accounts/Notary_Instructions.pdf>`_).
+    You may `schedule an appointment <https://my.olcf.ornl.gov/video-conference/>`_ 
+    to have this step completed virtually with one of our staff.
 
 #. Initiate a SSH connection to ``username@home.ccs.ornl.gov``.
 #. When prompted for a PASSCODE, enter the 6-digit code shown on the

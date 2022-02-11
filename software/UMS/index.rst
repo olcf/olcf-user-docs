@@ -17,7 +17,7 @@ software packages intended for use by other general users on OLCF resources.
 
 To apply to the UMS program, fill out the application at: 
 `https://my.olcf.ornl.gov/project-application-new <https://my.olcf.ornl.gov/project-application-new>`_.
-
+Select "User Managed Software Program" from the drop down menu to begin. 
 
 Currently Available User-Managed Software
 -----------------------------------------
