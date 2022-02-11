@@ -8,5 +8,5 @@ Quantum
    :maxdepth: 2
 
    quantum_access
-   frequently_asked_quantum_questions
+   quantum_faq
 
