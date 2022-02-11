@@ -1,7 +1,8 @@
+.. _workflows-mlflow:
 
-*****
+******
 MLflow
-*****
+******
 
 
 Overview
