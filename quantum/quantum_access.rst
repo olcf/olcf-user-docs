@@ -171,15 +171,14 @@ Quantinuum (previously Honeywell)
 
 After submitting the OLCF quantum account application and receiving approval,
 you will receive an email from Quantinuum inviting you to create your quantum
-account. Once logged in, users will have access to Honeywell Quantum Solutions
-User Interface (HQS UI), https://um.qapi.honeywell.com, their online platform
-for managing jobs and accessing the available quantum systems, including the
-System Model H1, via the cloud. From the HQS UI, users can view system status
-and upcoming system availability, as well as monitor batch submissions and job
-history. Information on using the quantum resources via Jupyter notebooks is
-available in the UI via the “Examples” tab.  Honeywell’s systems feature
-mid-circuit measurement and qubit reuse, and are compatible with a variety of
-software frameworks.
+account. Once logged in, users will have access to Quantinuum's User Interface,
+https://um.qapi.honeywell.com, their online platform for managing jobs and 
+accessing the available quantum systems, including the System Model H1, via the 
+cloud. From the UI, users can view system status and upcoming system availability, 
+as well as monitor batch submissions and job history. Information on using the 
+quantum resources via Jupyter notebooks is available in the UI via the “Examples” 
+tab. Quantinuum’s systems feature mid-circuit measurement and qubit reuse, and are 
+compatible with a variety of software frameworks.
 
 Rigetti
 -------
