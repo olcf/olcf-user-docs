@@ -171,10 +171,10 @@ Below are some basic examples of the different instrumentation scenarios:
 
 |
 
--- Make
+-- Makefiles
 ++++++++++++++++++
 
-Setting ``PREP = scorep`` variable within the Makefile will allow for instrumentation control while using
+Setting ``PREP = scorep`` variable within a Makefile will allow for instrumentation control while using
 ``make``
 
 Additionaly, one can add other scorep options within the ``PREP`` variable e.g. ``--cuda``
@@ -200,10 +200,6 @@ Additionaly, one can add other scorep options within the ``PREP`` variable e.g. 
 
    clean:
 	 rm -f test *.o
-
-   cleanall:
-	 rm -f test *.o test*
-
 
 
 -- CMake / Autotools
