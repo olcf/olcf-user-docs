@@ -8,12 +8,14 @@ general, OLCF QCUP resources are granted to projects, which are in turn made
 available to the approved users associated with each project. 
 
 To gain access, you must first submit a project proposal to the OLCF QCUP 
-(see :ref:`quantum-proj`) or join an existing QCUP project. The Quantum Resource
-Utilization Council (QRUC), as well as independent referees, review and approve
-all QCUP project proposals.  Applications to QCUP are accepted year-round via
-the project application form found below. Once a project is approved, then all
-of the users associated with the project will need to apply for user accounts
-(see :ref:`quantum-user`).
+(see :ref:`quantum-proj`) or join an existing QCUP project (see :ref:`quantum-user`).
+The Quantum Resource Utilization Council (QRUC), as well as independent
+referees, review and approve all QCUP project proposals.  Applications to QCUP
+are accepted year-round via the project application form found below. Once a
+project is approved, then all of the users associated with the project will
+need to apply for a :ref:`User Account <quantum-user>`. After your user account
+is approved, you can then move on to accessing the quantum resources offered by
+our vendors (see :ref:`quantum-vendors`).
 
 QCUP Priorities
 ===============
@@ -140,6 +142,8 @@ Accounts Team at accounts@ccs.ornl.gov.
 When all of the above steps are completed, your user account will be created
 and you will be notified by email. Now that you have a user account and it has
 been associated with a project, you're ready to get to work. 
+
+.. _quantum-vendors:
 
 Accessing Quantum Resources
 ===========================
