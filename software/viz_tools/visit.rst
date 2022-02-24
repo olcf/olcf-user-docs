@@ -258,14 +258,9 @@ job will submit to.
    cd $SLURM_SUBMIT_DIR
    date
 
-   PATH=/sw/andes/visit/bin:$PATH
+   module load visit
 
    visit -nowin -cli -v 3.2.2 -l srun -np 28 -nn 1 -s visit_example.py
-
-.. note::
-    Although VisIt is available on Andes, currently it cannot be accessed
-    via a ``module load`` command. Therefore, you need to manually add the 
-    path of the VisIt installation to your PATH variable.
 
 Following one of the methods above will submit a batch job for five minutes to
 either the batch partition on Summit or the gpu partition on Andes. Once the
@@ -482,6 +477,22 @@ initfsencoding: Unable to get the locale encoding`` error message, you should
 specify a specific VisIt version with the **-v** flag when launching VisIt.
 This is necessary even if you plan to use the default version of VisIt on the
 system. See :ref:`visit-command-line` for proper syntax.
+
+VisIt never asks for passcode then hangs
+----------------------------------------
+
+If VisIt never asks for your passcode and hangs after trying to connect to one
+of our systems, then this means VisIt is unable to establish a proper
+SSH connection. Here are a few different approaches to fix this issue:
+
+* Double check your host profile, especially the "remote host name",
+  "host name aliases", and "tunnel data connections through SSH" sections.
+* If you are using a VPN (including GlobalProtect VPN), try turning it off.
+* If you use multi-factor authentication (MFA4) with a smartcard or yubikey
+  when connecting to our systems, this does not work with VisIt. VisIt only
+  accepts RSA PIN+tokencodes, so you will have to change your SSH config
+  settings (typically within a ``.ssh/config`` file) and temporarily turn
+  off MFA4.
 
 .. _visit-resources:
 
