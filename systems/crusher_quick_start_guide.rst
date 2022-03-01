@@ -363,6 +363,31 @@ This section shows how to compile HIP codes using the Cray compiler wrappers and
 |           | | To see what is being invoked within this compiler driver, issue the command, ``hipcc --verbose``                       |
 +-----------+--------------------------------------------------------------------------------------------------------------------------+
 
+HIP + OpenMP CPU Threading
+--------------------------
+
+This section shows how to compile HIP + OpenMP CPU threading hybrid codes.
+
+.. note::
+
+    Make sure the ``craype-accel-amd-gfx90a`` module is loaded when using HIP.
+
++----------+-----------+-----------------------------------------------------------------------------------------------------------------------------------+
+| Vendor   | Compiler  | Compile/Link Flags, Header Files, and Libraries                                                                                   |
++==========+===========+===================================================================================================================================+
+| AMD/Cray | ``CC``    | | ``CFLAGS = -std=c++11 -D__HIP_ROCclr__ -D__HIP_ARCH_GFX90A__=1 --rocm-path=${ROCM_PATH} --offload-arch=gfx90a -x hip -fopenmp`` |
+|          |           | | ``LFLAGS = --rocm-path=${ROCM_PATH}``                                                                                           |
+|          |           | | ``-L${ROCM_PATH}/lib -lamdhip64``                                                                                               |
+|          +-----------+-----------------------------------------------------------------------------------------------------------------------------------+
+|          | ``hipcc`` | Can be used to directly compile HIP source files, add ``-fopenmp`` flag to enable OpenMP threading                                |
++----------+-----------+-----------------------------------------------------------------------------------------------------------------------------------+
+| GNU      | ``CC``    | | GNU requires that the HIP code is separated from the OpenMP code, since GNU cannot currently compile for HIP.                   |
+|          |           | | Kernel signatures must be forward-declared in the GNU-compiled source files, then implemented in a separate ``.hip`` file.      |
+|          |           | | During compilation, all non-HIP files with be compiled as usual with ``CC``.                                                    |
+|          |           | | HIP files must be compiled using ``amdclang``/``amdclang++`` directly, then be linked to the GNU-compiled objects.              |
++----------+-----------+-----------------------------------------------------------------------------------------------------------------------------------+
+
+
 ----
 
 Running Jobs
