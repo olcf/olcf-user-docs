@@ -76,7 +76,6 @@ Users will need to set up a file in their home directory
 ``<user>`` in the ``graphroot = "/tmp/containers/<user>"`` in the above file should be
 replaced with your username. This will ensure that Podman will use the NVMe mounted in ``/tmp/containers`` for storage during container image builds.
 
-You can also create 
 
 Build and Run Workflow 
 =======================
