@@ -4344,29 +4344,35 @@ an OLCF training event. Please follow the steps below to request access.
 
 Step 1: Go to the `myOLCF Account Application Form <https://my.olcf.ornl.gov/account-application-new>`__
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
 1. Once on the form, linked above, fill in the project ID in the "Enter the Project ID of the project you wish to join" field and click "Next".
- 
+
 .. image:: /images/ascent_start.png
    :align: center
 
-2. The next screen will show you some information about the project, you don't need to change anything, just click "Next".
- 
-3. Fill in your personal information and then click "Next".
- 
-4. Fill in your shipping information and then click "Next".
- 
-5. Fill in your Employment/Institution Information. If you are student please use your school affiliation for both "Employer" and "Funding Source". If you are a student and you do not see your school listed, choose "other" for both "Employer" and "Funding Source" and then manually enter your school affiliation in the adjacent fields.  Click “Next” when you are done.
+2. After you enter the Project ID, use the sliders to select "Yes" for OLCF as the Project Organization and select "Yes" for Open as the Security Enclave.
 
-6. On the Project information screen fill the "Proposed Contribution to Project" with "Participating in OLCF training." Leave all the questions about the project set to "no" and click "Next".
+.. image:: /images/ascent_start2.png
+   :align: center
+
+
+3. The next screen will show you some information about the project, you don't need to change anything, just click "Next".
+
+4. Fill in your personal information and then click "Next".
+
+5. Fill in your shipping information and then click "Next".
+
+6. Fill in your Employment/Institution Information. If you are student please use your school affiliation for both "Employer" and "Funding Source". If you are a student and you do not see your school listed, choose "other" for both "Employer" and "Funding Source" and then manually enter your school affiliation in the adjacent fields.  Click “Next” when you are done.
+
+7. On the Project information screen fill the "Proposed Contribution to Project" with "Participating in OLCF training." Leave all the questions about the project set to "no" and click "Next".
 
 .. image:: /images/ascent_project.png
    :align: center
 
 
-7. On the user account page, selected "yes" or "no" for the questions asking about any pre-existing account names. If this is your first account with us, leave those questions set to "no". Also enter your preferred shell. If you do not know which shell to use, select "/bin/bash". We can change this later if needed. Click "Next".
+8. On the user account page, selected "yes" or "no" for the questions asking about any pre-existing account names. If this is your first account with us, leave those questions set to "no". Also enter your preferred shell. If you do not know which shell to use, select "/bin/bash". We can change this later if needed. Click "Next".
 
-8. On the "Policies & Agreements" page click the links to read the polices and then answer "Yes" to affirm you have read each. Certify your application by selecting "Yes" as well. Then Click "Submit." 
+9. On the "Policies & Agreements" page click the links to read the polices and then answer "Yes" to affirm you have read each. Certify your application by selecting "Yes" as well. Then Click "Submit."
+
 
 
 .. note::
