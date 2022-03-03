@@ -21,7 +21,7 @@ images to be built. We cannot use Podman to run
 containers as it doesn't properly support MPI on Summit, and Podman does not support
 storing its container images on GPFS or NFS.
 
-Due to Podman's lack of support for storaga on GPFS and NFS, container images will be
+Due to Podman's lack of support for storage on GPFS and NFS, container images will be
 built on the login nodes using the node-local NVMe on the login node. This NVMe is mounted
 in ``/tmp/containers``. Users should treat this storage as temporary. Any data (container
 image layers or otherwise) in this storage will be purged if the node is ever rebooted or
