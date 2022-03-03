@@ -18,3 +18,4 @@ Software
    e4s
    spack_env/index
    viz_tools/index
+   containers_on_summit
