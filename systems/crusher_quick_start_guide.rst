@@ -350,18 +350,20 @@ This section shows how to compile HIP codes using the Cray compiler wrappers and
 
 .. note::
 
-    Make sure the ``craype-accel-amd-gfx90a`` module is loaded when using HIP.
+    Make sure the ``craype-accel-amd-gfx90a`` module is loaded when compiling HIP with the Cray compiler wrappers.
 
-+-----------+--------------------------------------------------------------------------------------------------------------------------+
-| Compiler  | Compile/Link Flags, Header Files, and Libraries                                                                          |
-+===========+==========================================================================================================================+
-| ``CC``    | | ``CFLAGS = -std=c++11 -D__HIP_ROCclr__ -D__HIP_ARCH_GFX90A__=1 --rocm-path=${ROCM_PATH} --offload-arch=gfx90a -x hip`` |
-|           | | ``LFLAGS = --rocm-path=${ROCM_PATH}``                                                                                  |
-|           | | ``-L${ROCM_PATH}/lib -lamdhip64``                                                                                      |
-+-----------+--------------------------------------------------------------------------------------------------------------------------+
-| ``hipcc`` | | Can be used directly to compile HIP source files.                                                                      |
-|           | | To see what is being invoked within this compiler driver, issue the command, ``hipcc --verbose``                       |
-+-----------+--------------------------------------------------------------------------------------------------------------------------+
++-------------------+--------------------------------------------------------------------------------------------------------------------------+
+| Compiler          | Compile/Link Flags, Header Files, and Libraries                                                                          |
++===================+==========================================================================================================================+
+| | ``CC``          | | ``CFLAGS = -std=c++11 -D__HIP_ROCclr__ -D__HIP_ARCH_GFX90A__=1 --rocm-path=${ROCM_PATH} --offload-arch=gfx90a -x hip`` |
+| | Only with       | | ``LFLAGS = --rocm-path=${ROCM_PATH}``                                                                                  |
+| | ``PrgEnv-cray`` | | ``-L${ROCM_PATH}/lib -lamdhip64``                                                                                      |
+| | ``PrgEnv-amd``  |                                                                                                                          |
++-------------------+--------------------------------------------------------------------------------------------------------------------------+
+| ``hipcc``         | | Can be used directly to compile HIP source files.                                                                      |
+|                   | | To see what is being invoked within this compiler driver, issue the command, ``hipcc --verbose``                       |
+|                   | | To explicitly target AMD MI250X, use ``--amdgpu-target=gfx90a``                                                        |
++-------------------+--------------------------------------------------------------------------------------------------------------------------+
 
 HIP + OpenMP CPU Threading
 --------------------------
@@ -370,7 +372,7 @@ This section shows how to compile HIP + OpenMP CPU threading hybrid codes.
 
 .. note::
 
-    Make sure the ``craype-accel-amd-gfx90a`` module is loaded when using HIP.
+    Make sure the ``craype-accel-amd-gfx90a`` module is loaded when compiling HIP with the Cray compiler wrappers.
 
 +----------+-----------+-----------------------------------------------------------------------------------------------------------------------------------+
 | Vendor   | Compiler  | Compile/Link Flags, Header Files, and Libraries                                                                                   |
@@ -379,12 +381,13 @@ This section shows how to compile HIP + OpenMP CPU threading hybrid codes.
 |          |           | | ``LFLAGS = --rocm-path=${ROCM_PATH}``                                                                                           |
 |          |           | | ``-L${ROCM_PATH}/lib -lamdhip64``                                                                                               |
 |          +-----------+-----------------------------------------------------------------------------------------------------------------------------------+
-|          | ``hipcc`` | Can be used to directly compile HIP source files, add ``-fopenmp`` flag to enable OpenMP threading                                |
+|          | ``hipcc`` | | Can be used to directly compile HIP source files, add ``-fopenmp`` flag to enable OpenMP threading                              |
+|          |           | | To explicitly target AMD MI250X, use ``--amdgpu-target=gfx90a``                                                                 |
 +----------+-----------+-----------------------------------------------------------------------------------------------------------------------------------+
-| GNU      | ``CC``    | | GNU requires that the HIP code is separated from the OpenMP code, since GNU cannot currently compile for HIP.                   |
-|          |           | | Kernel signatures must be forward-declared in the GNU-compiled source files, then implemented in a separate ``.hip`` file.      |
-|          |           | | During compilation, all non-HIP files with be compiled as usual with ``CC``.                                                    |
-|          |           | | HIP files must be compiled using ``amdclang``/``amdclang++`` directly, then be linked to the GNU-compiled objects.              |
+| GNU      | ``CC``    | | The GNU compilers cannot be used to compile HIP code, so all HIP kernels must be separated from CPU code.                       |
+|          |           | | During compilation, all non-HIP files must be compiled with ``CC`` while HIP kernels must be compiled with ``hipcc``.           |
+|          |           | | Then linking must be performed with the ``CC`` wrapper.                                                                         |
+|          |           | | NOTE: When using ``cmake``, HIP code must currently be compiled using ``amdclang++`` instead of ``hipcc``.                      |
 +----------+-----------+-----------------------------------------------------------------------------------------------------------------------------------+
 
 
