@@ -3,9 +3,8 @@
 VisIt
 *****
 
-.. warning::
-    Scalable render request failure when using VisIt on Andes,
-    see :ref:`visit-troubleshooting` section.
+.. note::
+    Scalable rendering issue fixed on Andes. Please use VisIt version 3.2.2.
 
 Overview
 ========
@@ -26,9 +25,17 @@ VisIt uses a client-server architecture. You will obtain the best performance
 by running the VisIt client on your local computer and running the server on
 OLCF resources. VisIt for your local computer can be obtained here: 
 `VisIt Installation <https://visit-dav.github.io/visit-website/>`__.  
-Both Summit and Andes currently have Remote Backend Version 3.1.4 available, 
-so the local client version 3.1.4 is recommended. For sample data and additional 
-examples, explore the `VisIt Data Archive <https://visit-dav.github.io/largedata/datarchives.html>`__ 
+
+Recommended VisIt versions on our systems:
+
+* Summit: VisIt 3.1.4
+* Andes: VisIt 3.2.2
+
+.. warning::
+    Using a different version than what is listed above is not guaranteed to work properly.
+
+For sample data and additional examples, explore the
+`VisIt Data Archive <https://visit-dav.github.io/largedata/datarchives.html>`__
 and various `VisIt Tutorials <https://visit-sphinx-github-user-manual.readthedocs.io/en/develop/tutorials/index.html>`__.
 Supplementary test data can be found in your local installation in the ``data``
 directory:
@@ -66,6 +73,7 @@ Under the “Parallel” Tab:
 
 - Launch parallel engine: Checked (required)
 - Launch Tab:
+
     - Parallel launch method:
       sbatch/srun (required)
     - Partition/Pool/Queue: batch (required)
@@ -79,6 +87,7 @@ Under the “Parallel” Tab:
     - Constraints: unchecked
 - Advanced tab – All boxes unchecked
 - GPU Acceleration
+
     - Use cluster’s graphics cards: Unchecked
 
 Click “Apply” and make sure to save the settings (Options/Save Settings).
@@ -113,6 +122,7 @@ Under the “Parallel” Tab:
 
 - Launch parallel engine: Checked (required)
 - Launch Tab:
+
     - Parallel launch method:
       bsub (required)
     - Partition/Pool/Queue: batch (required)
@@ -126,6 +136,7 @@ Under the “Parallel” Tab:
     - Constraints: unchecked
 - Advanced tab – All boxes unchecked
 - GPU Acceleration
+
     - Use cluster’s graphics cards: Unchecked
 
 Click “Apply” and make sure to save the settings (Options/Save Settings).
@@ -247,18 +258,13 @@ job will submit to.
    cd $SLURM_SUBMIT_DIR
    date
 
-   PATH=/sw/andes/visit/bin:$PATH
+   module load visit
 
-   visit -nowin -cli -v 3.1.4 -l srun -np 28 -nn 1 -s visit_example.py
-
-.. note::
-    Although VisIt is available on Andes, currently it cannot be accessed
-    via a ``module load`` command. Therefore, you need to manually add the 
-    path of the VisIt installation to your PATH variable.
+   visit -nowin -cli -v 3.2.2 -l srun -np 28 -nn 1 -s visit_example.py
 
 Following one of the methods above will submit a batch job for five minutes to
 either the batch partition on Summit or the gpu partition on Andes. Once the
-batch job makes its way through the queue, the script will launch VisIt 3.1.4
+batch job makes its way through the queue, the script will launch VisIt 3.1.4 or 3.2.2
 (specified with the **-v** flag, required on Andes) and execute a python script
 called ``visit_example.py`` (specified with the **-s** flag, required if using
 a Python script). Note that the **-nowin -cli** options are also required,
@@ -364,8 +370,8 @@ tasks, including VisIt.
 Troubleshooting
 ===============
 
-Scalable Render Request Failed when using VisIt
------------------------------------------------
+Scalable Render Request Failed when using VisIt (fixed Feb. 2022)
+-----------------------------------------------------------------
 
 Some users have encountered their compute engine exiting abnormally on Andes
 after VisIt reaches 100% when drawing a plot, resulting in a "Scalable Render
@@ -387,6 +393,8 @@ capture".
 
 Using VisIt on Summit is also an option, as the scalable rendering problem is
 currently not an issue on Summit (as of Sept. 2021).
+
+As of February 2022, this issue on Andes has been fixed (must use VisIt 3.2.2).
 
 SSH error after accepting passcode (duplicate host profile bug)
 ---------------------------------------------------------------
@@ -470,6 +478,22 @@ specify a specific VisIt version with the **-v** flag when launching VisIt.
 This is necessary even if you plan to use the default version of VisIt on the
 system. See :ref:`visit-command-line` for proper syntax.
 
+VisIt never asks for passcode then hangs
+----------------------------------------
+
+If VisIt never asks for your passcode and hangs after trying to connect to one
+of our systems, then this means VisIt is unable to establish a proper
+SSH connection. Here are a few different approaches to fix this issue:
+
+* Double check your host profile, especially the "remote host name",
+  "host name aliases", and "tunnel data connections through SSH" sections.
+* If you are using a VPN (including GlobalProtect VPN), try turning it off.
+* If you use multi-factor authentication (MFA4) with a smartcard or yubikey
+  when connecting to our systems, this does not work with VisIt. VisIt only
+  accepts RSA PIN+tokencodes, so you will have to change your SSH config
+  settings (typically within a ``.ssh/config`` file) and temporarily turn
+  off MFA4.
+
 .. _visit-resources:
 
 Additional Resources
@@ -486,7 +510,8 @@ Additional Resources
 * `Older VisIt Versions <https://wci.llnl.gov/simulation/computer-codes/visit/executables>`__ 
   with their release notes can be found on the old VisIt website, and
   `Newer Versions <https://visit-dav.github.io/visit-website/releases-as-tables/>`__ 
-  can be found on the new VisIt website with release notes found in the 
-  `VisIt Blog <https://visit-dav.github.io/visit-website/blog/archive/>`__.
+  can be found on the new VisIt website with release notes found on the
+  `VisIt Blog <https://visit-dav.github.io/visit-website/blog/archive/>`__
+  or `VisIt Github Releases <https://github.com/visit-dav/visit/releases>`__ page.
 * Non-ORNL related bugs and issues in VisIt can be found and reported on
   `Github <https://github.com/visit-dav/visit/discussions>`__.

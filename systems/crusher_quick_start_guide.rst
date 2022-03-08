@@ -286,6 +286,11 @@ To use GPU-aware Cray MPICH with ``hipcc``, users must include appropriate heade
 
     HIPFLAGS = --amdgpu-target=gfx90a
 
+Determining the Compatibility of Cray MPICH and ROCm
+""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Releases of ``cray-mpich`` are each built with a specific version of ROCm, and compatibility across multiple versions is not guaranteed. OLCF will maintain compatible default modules when possible. If using non-default modules, you can determine compatibility by reviewing the *Product and OS Dependencies* section in the ``cray-mpich`` release notes. This can be displayed by running ``module show cray-mpich/<version>``. If the notes indicate compatibility with *AMD ROCM X.Y or later*, only use ``rocm/X.Y.Z`` modules. If using a non-default version of ``cray-mpich``, you must add ``${CRAY_MPICH_ROOTDIR}/gtl/lib`` to either your ``LD_LIBRARY_PATH`` at run time or your executable's rpath at build time.
+
 OpenMP
 ------
 
@@ -345,18 +350,46 @@ This section shows how to compile HIP codes using the Cray compiler wrappers and
 
 .. note::
 
-    Make sure the ``craype-accel-amd-gfx90a`` module is loaded when using HIP.
+    Make sure the ``craype-accel-amd-gfx90a`` module is loaded when compiling HIP with the Cray compiler wrappers.
 
-+-----------+--------------------------------------------------------------------------------------------------------------------------+
-| Compiler  | Compile/Link Flags, Header Files, and Libraries                                                                          |
-+===========+==========================================================================================================================+
-| ``CC``    | | ``CFLAGS = -std=c++11 -D__HIP_ROCclr__ -D__HIP_ARCH_GFX90A__=1 --rocm-path=${ROCM_PATH} --offload-arch=gfx90a -x hip`` |
-|           | | ``LFLAGS = --rocm-path=${ROCM_PATH}``                                                                                  |
-|           | | ``-L${ROCM_PATH}/lib -lamdhip64``                                                                                      |
-+-----------+--------------------------------------------------------------------------------------------------------------------------+
-| ``hipcc`` | | Can be used directly to compile HIP source files.                                                                      |
-|           | | To see what is being invoked within this compiler driver, issue the command, ``hipcc --verbose``                       |
-+-----------+--------------------------------------------------------------------------------------------------------------------------+
++-------------------+--------------------------------------------------------------------------------------------------------------------------+
+| Compiler          | Compile/Link Flags, Header Files, and Libraries                                                                          |
++===================+==========================================================================================================================+
+| | ``CC``          | | ``CFLAGS = -std=c++11 -D__HIP_ROCclr__ -D__HIP_ARCH_GFX90A__=1 --rocm-path=${ROCM_PATH} --offload-arch=gfx90a -x hip`` |
+| | Only with       | | ``LFLAGS = --rocm-path=${ROCM_PATH}``                                                                                  |
+| | ``PrgEnv-cray`` | | ``-L${ROCM_PATH}/lib -lamdhip64``                                                                                      |
+| | ``PrgEnv-amd``  |                                                                                                                          |
++-------------------+--------------------------------------------------------------------------------------------------------------------------+
+| ``hipcc``         | | Can be used directly to compile HIP source files.                                                                      |
+|                   | | To see what is being invoked within this compiler driver, issue the command, ``hipcc --verbose``                       |
+|                   | | To explicitly target AMD MI250X, use ``--amdgpu-target=gfx90a``                                                        |
++-------------------+--------------------------------------------------------------------------------------------------------------------------+
+
+HIP + OpenMP CPU Threading
+--------------------------
+
+This section shows how to compile HIP + OpenMP CPU threading hybrid codes.
+
+.. note::
+
+    Make sure the ``craype-accel-amd-gfx90a`` module is loaded when compiling HIP with the Cray compiler wrappers.
+
++----------+-----------+-----------------------------------------------------------------------------------------------------------------------------------+
+| Vendor   | Compiler  | Compile/Link Flags, Header Files, and Libraries                                                                                   |
++==========+===========+===================================================================================================================================+
+| AMD/Cray | ``CC``    | | ``CFLAGS = -std=c++11 -D__HIP_ROCclr__ -D__HIP_ARCH_GFX90A__=1 --rocm-path=${ROCM_PATH} --offload-arch=gfx90a -x hip -fopenmp`` |
+|          |           | | ``LFLAGS = --rocm-path=${ROCM_PATH}``                                                                                           |
+|          |           | | ``-L${ROCM_PATH}/lib -lamdhip64``                                                                                               |
+|          +-----------+-----------------------------------------------------------------------------------------------------------------------------------+
+|          | ``hipcc`` | | Can be used to directly compile HIP source files, add ``-fopenmp`` flag to enable OpenMP threading                              |
+|          |           | | To explicitly target AMD MI250X, use ``--amdgpu-target=gfx90a``                                                                 |
++----------+-----------+-----------------------------------------------------------------------------------------------------------------------------------+
+| GNU      | ``CC``    | | The GNU compilers cannot be used to compile HIP code, so all HIP kernels must be separated from CPU code.                       |
+|          |           | | During compilation, all non-HIP files must be compiled with ``CC`` while HIP kernels must be compiled with ``hipcc``.           |
+|          |           | | Then linking must be performed with the ``CC`` wrapper.                                                                         |
+|          |           | | NOTE: When using ``cmake``, HIP code must currently be compiled using ``amdclang++`` instead of ``hipcc``.                      |
++----------+-----------+-----------------------------------------------------------------------------------------------------------------------------------+
+
 
 ----
 
@@ -529,7 +562,7 @@ The CAAR and ECP "batch" partition consists of 192 total compute nodes. On a per
 +=================+==============+
 | 1 - 8           | 8 hours      |
 +-----------------+--------------+
-| 9 - 64          | 6 hours      |
+| 9 - 64          | 4 hours      |
 +-----------------+--------------+
 | 65 - 160        | 2 hours      |
 +-----------------+--------------+
@@ -1054,12 +1087,13 @@ And here is the output from the script:
 ----
 
 Notable Differences between Summit and Crusher
-================================================
+==============================================
 
 This section details 'tips and tricks' and information of interest to users when porting from Summit to Crusher.
 
 Using reduced precision (FP16, FP32, and BF16 datatypes)
 ------------------------------------------------------------
+
 Users using BF16, FP16, and FP32 datatypes for applications such as ML/AI training and low-precision matrix multiplication should be aware that the AMD MI250X GPU has different denormal handling than the V100 GPUs on Summit. On the MI250X, the V_DOT2 and the matrix instructions for FP32, FP16, BF16, flush input and output denormal values to zero. FP64 MFMA instructions do not flush input and output denormal values to zero. 
 
 When training deep learning models using FP16 precision, some models may fail to converge with FP16 denorms flushed to zero. This occurs in operations encountering denormal values, and so is more likely to occur in FP16 because of a small dynamic range. BF16 and FP32 numbers have a larger dynamic range than FP16 numbers, and so are less likely to encounter denormal values.

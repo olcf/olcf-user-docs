@@ -276,14 +276,6 @@ family is first present in the environment.
     modulefiles. However, long and logic-heavy Tcl modulefiles may require
     porting to Lua.
 
-.. note::
-    Because of the mismatched operating system versions between the Moderate Enhanced login node and the Summit
-    compute nodes, the ``module`` command is not available on the Moderate Enhanced login node. Similar to how
-    users need to compile on a batch node, the module system is also only available on the batch nodes. For
-    more information see :ref:`compiling-mod-enhanced` .
-    Eventually, the Summit login nodes will be upgraded to match the Moderate Enhanced login node and this
-    will no longer be necessary
-
 General Usage
 ^^^^^^^^^^^^^
 
@@ -436,38 +428,6 @@ using the modules system:
 
 
 
-.. _compiling-mod-enhanced:
-
-Compiling for Projects in the Moderate Enhanced Security Enclave 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Moderate Enhanced projects need to compile code on a batch node rather than the moderate-enhanced login node because the
-login node has a newer version of the operating system than standard Summit login nodes and compute nodes. 
-To do this requires submitting an interactive batch job and then compiling the code on the batch node. Additionally, users need
-to "relogin" on the batch node to setup the environment properly. The easiest way to do this is to add ``-l`` (dash "ell") to the $SHELL argument as
-shown below. To facilitate the requirement to compile on batch nodes, users can 
-submit to the ``debug-spi`` queue for a slight priority boost. Note that machine load on Summit can still delay
-startup of the interactive job unfortunately. Typical work flow would be:
-
-::
-   
-   user@citadel > bsub -q debug-spi -nnodes 1  -P ABC123_MDE -W 2:00 -Is $SHELL -l
-   Job <XXXXXX> is submitted to queue <debug-spi>
-   <<Waiting for dispatch ....>>
-   [Possible delay here until a node is available]
-   <<Starting on batchX>>
-   prompt > cd /path/to/the/code
-   prompt > cmake or ./configure or whatever is needed to configure and prepare the code for compiling
-   prompt > make  or whatever is needed to compile the code
-
-At this point, it is possible to run a quick test job using jsrun or fix any compilation issues which may have occured.
-
-
-.. note:: 
-
-    Eventually, the Summit compute nodes will be upgraded to match the Moderate Enhanced login node and this will no longer be necessary
-
-    
 C compilation
 ^^^^^^^^^^^^^
 
@@ -1128,9 +1088,10 @@ parameter, which all jobs in the bin receive.
 ``batch`` Queue Policy
 """""""""""""""""""""""
 
-The ``batch`` queue is the default queue for production work on Summit.
-Most work on Summit is handled through this queue. It enforces the
-following policies:
+The ``batch`` queue (and the ``batch-spi`` queue for Moderate Enhanced security
+enclave projects) is the default queue for production work on Summit.  Most
+work on Summit is handled through this queue. It enforces the following
+policies:
 
 -  Limit of (4) *eligible-to-run* jobs per user.
 -  Jobs in excess of the per user limit above will be placed into a
@@ -1147,8 +1108,9 @@ following policies:
 ``batch-hm`` Queue Policy
 """""""""""""""""""""""""
 
-The ``batch-hm`` queue is used to access Summit's high-memory nodes.
-Jobs may use all 54 nodes. It enforces the following policies:
+The ``batch-hm`` queue (and the ``batch-hm-spi`` queue for Moderate Enhanced
+security enclave projects) is used to access Summit's high-memory nodes.  Jobs
+may use all 54 nodes. It enforces the following policies:
 
 -  Limit of (4) *eligible-to-run* jobs per user.
 -  Jobs in excess of the per user limit above will be placed into a
@@ -1167,23 +1129,6 @@ Jobs may use all 54 nodes. It enforces the following policies:
 
 To submit a job to the ``batch-hm`` queue, add the ``-q batch-hm`` option to your
 ``bsub`` command or ``#BSUB -q batch-hm`` to your job script.
-
-
-Moderate Enhanced Projects ``batch-spi`` Queue Policy
-"""""""""""""""""""""""""""""""""""""""""""""""""""""
-The ``batch-spi`` queue is used by Summit's "Moderate Enhanced Enclave" projects. Projects in
-this enclave will be required to add ``-q batch-spi`` to their ``bsub`` command, or ``#BSUB -q batch-spi`` to
-their job scripts. Except for the enhanced security policies for jobs in these queues, all other queue properties are
-the same as the regular batch queue, including walltime limits based on node count, job aging priorities based on node
-count, and maximum number of jobs per user.
-
-Moderate Enhanced Projects ``batch-hm-spi`` Queue Policy
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-The ``batch-hm-spi`` queue is used by Summit's "Moderate Enhanced Enclave" projects that also want to
-take advantage of Summit's high-memory nodes. Projects in this enclave that want to use the Summit
-high-memory nodes will need to add ``-q batch-hm-spi`` to their ``bsub`` command, or ``#BSUB -q batch-hm-spi`` to
-their job scripts. Except for the enhanced security policies for jobs in these queues, all other queue properties are the same 
-as the ``batch-hm`` queue, such as maximum walltime and number of eligible running jobs.
 
 
 ``killable`` Queue Policy
@@ -1224,13 +1169,13 @@ flag can be used at submit time.
 ``debug`` Queue Policy
 """"""""""""""""""""""""""
 
-The ``debug`` queue (and the ``debug-spi`` queue for Moderate Enhanced security enclave projects)
-can be used to access Summit's compute resources for short 
-non-production debug tasks.  The queue provides a higher priority compared
-to jobs of the same job size bin in production queues.  Production work and 
-job chaining in the debug queue is prohibited.  Each user is limited to one 
-job in any state in the debug queue at any one point. Attempts to submit multiple
-jobs to the debug queue will be rejected upon job submission.
+The ``debug`` queue (and the ``debug-spi`` queue for Moderate Enhanced security
+enclave projects) can be used to access Summit's compute resources for short
+non-production debug tasks.  The queue provides a higher priority compared to
+jobs of the same job size bin in production queues.  Production work and job
+chaining in the debug queue is prohibited.  Each user is limited to one job in
+any state in the debug queue at any one point. Attempts to submit multiple jobs
+to the debug queue will be rejected upon job submission.
 
 **debug job limits:**
 
@@ -1241,12 +1186,28 @@ jobs to the debug queue will be rejected upon job submission.
 +-------------+--------------+------------------------+---------------------------------+--------------------+
 
 To submit a job to the ``debug`` queue, add the ``-q debug`` option to your
-``bsub`` command or ``#BSUB -q debug`` to your job script. Moderate Enhanced projects would add ``-q debug-spi``
-to the ``bsub`` command or ``#BSUB -q debug-spi`` to job scripts.
+``bsub`` command or ``#BSUB -q debug`` to your job script.
 
 
 .. note::
     Production work and job chaining in the ``debug`` queue is prohibited.
+
+SPI/KDI Citadel Queue Policy (Moderate Enhanced Projects)
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+There are special queue names when submitting jobs to ``citadel.ccs.ornl.gov``
+(the Moderate Enhanced version of Summit). These queues are: ``batch-spi``,
+``batch-hm-spi``, and ``debug-spi``.  For example, to submit a job to the
+``batch-spi`` queue on Citadel, you would need ``-q batch-spi`` when using the
+``bsub`` command or ``#BSUB -q batch-spi`` when using a job script.
+
+Except for the enhanced security policies for jobs in these queues, all other
+queue properties are the same as the respective Summit queues described above,
+such as maximum walltime and number of eligible running jobs.
+
+.. warning::
+    If you submit a job to a "normal" Summit queue while on Citadel, such as
+    ``-q batch``, your job will be unable to launch.
 
 Allocation Overuse Policy
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -4383,29 +4344,35 @@ an OLCF training event. Please follow the steps below to request access.
 
 Step 1: Go to the `myOLCF Account Application Form <https://my.olcf.ornl.gov/account-application-new>`__
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
 1. Once on the form, linked above, fill in the project ID in the "Enter the Project ID of the project you wish to join" field and click "Next".
- 
+
 .. image:: /images/ascent_start.png
    :align: center
 
-2. The next screen will show you some information about the project, you don't need to change anything, just click "Next".
- 
-3. Fill in your personal information and then click "Next".
- 
-4. Fill in your shipping information and then click "Next".
- 
-5. Fill in your Employment/Institution Information. If you are student please use your school affiliation for both "Employer" and "Funding Source". If you are a student and you do not see your school listed, choose "other" for both "Employer" and "Funding Source" and then manually enter your school affiliation in the adjacent fields.  Click “Next” when you are done.
+2. After you enter the Project ID, use the sliders to select "Yes" for OLCF as the Project Organization and select "Yes" for Open as the Security Enclave.
 
-6. On the Project information screen fill the "Proposed Contribution to Project" with "Participating in OLCF training." Leave all the questions about the project set to "no" and click "Next".
+.. image:: /images/ascent_start2.png
+   :align: center
+
+
+3. The next screen will show you some information about the project, you don't need to change anything, just click "Next".
+
+4. Fill in your personal information and then click "Next".
+
+5. Fill in your shipping information and then click "Next".
+
+6. Fill in your Employment/Institution Information. If you are student please use your school affiliation for both "Employer" and "Funding Source". If you are a student and you do not see your school listed, choose "other" for both "Employer" and "Funding Source" and then manually enter your school affiliation in the adjacent fields.  Click “Next” when you are done.
+
+7. On the Project information screen fill the "Proposed Contribution to Project" with "Participating in OLCF training." Leave all the questions about the project set to "no" and click "Next".
 
 .. image:: /images/ascent_project.png
    :align: center
 
 
-7. On the user account page, selected "yes" or "no" for the questions asking about any pre-existing account names. If this is your first account with us, leave those questions set to "no". Also enter your preferred shell. If you do not know which shell to use, select "/bin/bash". We can change this later if needed. Click "Next".
+8. On the user account page, selected "yes" or "no" for the questions asking about any pre-existing account names. If this is your first account with us, leave those questions set to "no". Also enter your preferred shell. If you do not know which shell to use, select "/bin/bash". We can change this later if needed. Click "Next".
 
-8. On the "Policies & Agreements" page click the links to read the polices and then answer "Yes" to affirm you have read each. Certify your application by selecting "Yes" as well. Then Click "Submit." 
+9. On the "Policies & Agreements" page click the links to read the polices and then answer "Yes" to affirm you have read each. Certify your application by selecting "Yes" as well. Then Click "Submit."
+
 
 
 .. note::
