@@ -58,6 +58,7 @@ Setup before Building
 Users will need to set up a file in their home directory
 ``/ccs/home/<username>/.config/containers/storage.conf`` with the following content:
 ::
+
    [storage]
    driver = "overlay"
    graphroot = "/tmp/containers/<user>"
@@ -88,6 +89,7 @@ Building a Simple Image
 - Create a directory called ``simplecontainer`` on home or GPFS and ``cd`` into it.
 - Create a file named ``simple.dockerfile`` with the following contents.
   ::
+
      FROM quay.io/centos/centos:stream8
      RUN dnf -y install epel-release && dnf -y install fakeroot
      RUN fakeroot dnf upgrade -y && fakeroot dnf update -y
@@ -103,6 +105,7 @@ Building a Simple Image
 
 - Run ``podman image ls`` to see the list of images. ``localhost/simple`` should be among them. Any container created without an explicit url to a container registry in its name will automatically have the ``localhost`` prefix.
   ::
+
      $ podman image ls
      REPOSITORY             TAG      IMAGE ID      CREATED      SIZE
      localhost/simple       latest   e47dbfde3e99  3 hours ago  687 MB
@@ -125,6 +128,7 @@ other container registries that you can use.
 
 - Check if your image is created
   ::
+
      $ podman image ls
      REPOSITORY                         TAG      IMAGE ID      CREATED      SIZE
      docker.io/subilabrahamornl/simple  latest   e47dbfde3e99  3 hours ago  687 MB
@@ -154,6 +158,7 @@ As a simple example, we will run ``hostname`` with the Singularity container.
 
 - Create a file submit.lsf with the contents below.
   ::
+
      #!/bin/bash
      # Begin LSF Directives
      #BSUB -P STF007
@@ -168,11 +173,13 @@ As a simple example, we will run ``hostname`` with the Singularity container.
 
 - Submit the job with ``bsub submit.lsf``. This should produce an output that looks like:
   ::
+
      h41n08
      h41n08
 
   Here, Jsrun starts 2 separate Singularity container runtimes since we pass the -n2 flag to start two processes. Each Singularity container runtime then loads the container image simple.sif and executes the ``hostname`` command from that container. If we had requested 2 nodes in the batch script and had run ``jsrun -n2 -r1 singularity exec ./simple.sif hostname``, Jsrun would've started a Singularity runtime on each node and the output would look something like 
   ::
+
      h41n08
      h41n09
 
@@ -182,7 +189,7 @@ Running an MPI program with the OLCF MPI base image
 
 Creating Singularity containers that run MPI programs require a few additional steps. 
 
-OLCF provides an MPI base image that you can use for MPI programs. You can pull it with Podman with ``podman pull code.ornl.gov:4567/olcfcontainers/olcfbaseimages/mpiimage-centos-cuda
+OLCF provides an MPI base image that you can use for MPI programs. You can pull it with Podman with ``podman pull code.ornl.gov:4567/olcfcontainers/olcfbaseimages/mpiimage-centos-cuda``
 
 
 Let's build an simple MPI example container using the prebuilt MPI base image from the repository.
@@ -190,6 +197,7 @@ Let's build an simple MPI example container using the prebuilt MPI base image fr
 - Create a new directory ``mpiexample``.
 - Create a file ``mpiexample.c`` with the following contents.
   ::
+
      #include <stdio.h>
      #include <mpi.h>
      
@@ -211,6 +219,7 @@ Let's build an simple MPI example container using the prebuilt MPI base image fr
 
 - Create a file named ``mpiexample.dockerfile`` with the following contents
   ::
+
      FROM code.ornl.gov:4567/olcfcontainers/olcfbaseimages/mpiimage-centos-cuda:latest
      RUN mkdir /app
      COPY mpiexample.c /app
@@ -219,6 +228,7 @@ Let's build an simple MPI example container using the prebuilt MPI base image fr
 - The MPI base image only supports gcc/9.1.0 at the moment in order to be able to compile an MPI program during the container build.
   So run the following commands to build the Podman image and convert it to the Singularity format.
   ::
+
      module purge
      module load DefApps
      module load gcc/9.1.0
@@ -229,11 +239,13 @@ Let's build an simple MPI example container using the prebuilt MPI base image fr
 
 - It's possible the singularity build step might get killed due to reaching cgroup memory limit. To get around this, you can start an interactive job and build the singularity image with
   ::
+
      jsrun -n1 -c42 -brs singularity build --disable-cache mpiexampleimage.sif docker-archive://mpiexampleimage.tar;
 
 
 - Create the following submit script submit.lsf. Make sure you replace the ``#BSUB -P STF007`` line with your own project ID.
   ::
+
      #BSUB -P STF007
      #BSUB -W 0:30
      #BSUB -nnodes 2
