@@ -2002,7 +2002,7 @@ SMT modes.
 
 
 .. note::
-    Please note, a known bug is currently preventing execution of most ERF use cases. We are working to resolve the issue. If you experience issues using the ERF feature, please see the work around in `Known Issues <https://docs.olcf.ornl.gov/systems/summit_user_guide.html#open-issues>`.
+    Please note, a known bug is currently preventing execution of most ERF use cases. We are working to resolve the issue. If you experience issues using the ERF feature, please see the work around in `Known Issues <https://docs.olcf.ornl.gov/systems/summit_user_guide.html#open-issues>`__.
 
 CUDA-Aware MPI
 --------------
