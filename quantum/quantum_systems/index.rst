@@ -5,7 +5,7 @@ Quantum Systems
 ###############
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
 
    ibm_quantum
    rigetti
