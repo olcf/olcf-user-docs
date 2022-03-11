@@ -2002,7 +2002,7 @@ SMT modes.
 
 
 .. note::
-    An error is reported when using ERF on Summit. Please visit `Known Issues <https://docs.olcf.ornl.gov/systems/summit_user_guide.html#open-issues>`__ for solutions. 
+    Please note, a known bug is currently preventing execution of most ERF use cases. We are working to resolve the issue. If you experience issues using the ERF feature, please see the work around in `Known Issues <https://docs.olcf.ornl.gov/systems/summit_user_guide.html#open-issues>`.
 
 CUDA-Aware MPI
 --------------
