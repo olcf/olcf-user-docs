@@ -153,22 +153,24 @@ vendor websites, OLCF has purchased subscriptions to those vendor services and
 handles setting up your access to each one once your Quantum User Application
 is approved. You will receive individual email invitations from Quantinuum and
 Rigetti with further instructions, whereas for IBM you can proceed directly to
-their website to create an account. More details for each vendor are listed
-below.
+their website to create an account. More details for gaining access to each
+vendor are listed below. For details on how to use a vendor's system once
+access is gained, see our :doc:`Quantum Systems Guides </quantum/quantum_systems/index>`
+instead.
 
 IBM Quantum Computing
 ---------------------
 
 After submitting the OLCF quantum account application and receiving approval,
-proceed to https://quantum-computing.ibm.com/ and click on "Create an IBMid
+proceed to `<https://quantum-computing.ibm.com/>`__ and click on "Create an IBMid
 account". Your IBM Quantum Hub account email will be the email associated with
 your OLCF account. If sign-in fails, contact help@olcf.ornl.gov. Once logged
 in, users will have access to the IBM Quantum Hub, IBM’s online platform for
 QPU access, forums for quantum computing discussion, etc. From the IBM Quantum
 Hub Dashboard, users can manage system reservations, view system (backend)
 statuses, and view the results of your past jobs. More information about using
-these IBM quantum resources can be found here:
-https://quantum-computing.ibm.com/docs/
+these IBM quantum resources can be found on the `IBM's Documentation <https://quantum-computing.ibm.com/docs/>`__
+or our :doc:`OLCF IBM Quantum Guide </quantum/quantum_systems/ibm_quantum>`.
 
 Quantinuum (previously Honeywell)
 ---------------------------------
@@ -176,7 +178,7 @@ Quantinuum (previously Honeywell)
 After submitting the OLCF quantum account application and receiving approval,
 you will receive an email from Quantinuum inviting you to create your quantum
 account. Once logged in, users will have access to Quantinuum's User Interface,
-https://um.qapi.honeywell.com, their online platform for managing jobs and 
+`<https://um.qapi.honeywell.com>`__, their online platform for managing jobs and 
 accessing the available quantum systems, including the System Model H1, via the 
 cloud. From the UI, users can view system status and upcoming system availability, 
 as well as monitor batch submissions and job history. Information on using the 
@@ -190,7 +192,7 @@ Rigetti
 After submitting the OLCF quantum account application and receiving approval,
 you will receive an email from support@rigetti.com inviting you to create your
 quantum account. If you did not receive this, proceed to
-https://qcs.rigetti.com/sign-in and click “Sign In”. It is necessary that the
+`<https://qcs.rigetti.com/sign-in>`__ and click “Sign In”. It is necessary that the
 email you use for sign in be associated with an affiliated subscribing
 institution, i.e. ORNL, ANL, etc. If sign in fails, contact help@olcf.ornl.gov.
 Once logged in, users will have access to Quantum Cloud Services (QCS),
@@ -198,8 +200,9 @@ Rigetti’s online platform for accessing the hybrid infrastructure of available
 quantum processors and classical computational framework via the cloud. From
 the QCS, users can view system status and availability, initiate and manage
 quantum infrastructure reservations (either executing programs manually or
-adding them to the queue). Information on using this resource is available at
-https://qcs.rigetti.com/.
+adding them to the queue). Information on using this resource is available on
+the `Rigetti's Documentation <https://docs.rigetti.com/qcs/>`__ or our 
+:doc:`OLCF Rigetti Guide </quantum/quantum_systems/rigetti>`.
 
 Publication Citations
 =====================
