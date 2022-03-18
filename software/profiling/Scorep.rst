@@ -197,10 +197,10 @@ Additionaly, one can add other Score-P options within the ``PREP`` variable e.g.
 	 rm -f test *.o
 
 
--- CMake / Autotools
+CMake / Autotools
 ++++++++++++++++++++
 
-For CMake and autotools based build systems, it is recommended to use the scorep-wrapper script
+For CMake and Autotools based build systems, it is recommended to use the scorep-wrapper script
 instances. The intended usage of the wrapper instances is to replace the application's compiler and
 linker with the corresponding wrapper at configuration time so that they will be used at build time.
 As the Score-P instrumentation during the CMake or configure steps is likely to fail, the wrapper script allows for disabling the instrumentation by setting the variable ``SCOREP_WRAPPER=off``.
@@ -229,9 +229,9 @@ For **CMake** and **autotools** based builds it is recommended to configure in t
 
 .. Note::
 
-   ``SCOREP_WRAPPER=off`` disables the instrumentation only in the environment of the configure or **cmake** command. Subsequent calls to 'make' are not affected and will instrument the application as expected.
+   ``SCOREP_WRAPPER=off`` disables the instrumentation only in the environment of the ``configure`` or ``cmake`` command. Subsequent calls to ``make`` are not affected and will instrument the application as expected.
 
-For more detailed information on using Score-P with **CMake** or **Autotools** visit `Score-P <https://scorepci.pages.jsc.fz-juelich.de/scorep-pipelines/docs/scorep-4.1/html/scorepwrapper.html>`_
+For more detailed information on using Score-P with CMake or Autotools visit `Score-P <https://scorepci.pages.jsc.fz-juelich.de/scorep-pipelines/docs/scorep-4.1/html/scorepwrapper.html>`_
 
 To see all available options for instrumentation:
 
@@ -244,7 +244,7 @@ To see all available options for instrumentation:
 |
 
 Measurement
-+++++++++++++++++++++++++
++++++++++++
 
 Once the code has been instrumented, it is time to begin the measurement run of the newly compiled code. The measurement calls will gather information during the runtime of the code where this information will be stored for later analysis.
 
