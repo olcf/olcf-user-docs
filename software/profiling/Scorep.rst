@@ -186,19 +186,18 @@ Additionaly, one can add other Score-P options within the ``PREP`` variable e.g.
    LIBRARIES = -L<Path to Libraries>/lib64 ##If needed
 
    test: test.o
-	 $(PREP) $(CCOMP) $(CFLAGS) $(LIBRARIES) test.o -o test
+      $(PREP) $(CCOMP) $(CFLAGS) $(LIBRARIES) test.o -o test
 
    test.o: test.c
-	 $(PREP) $(CCOMP) $(CFLAGS) $(INCLUDES) -c test.c
+      $(PREP) $(CCOMP) $(CFLAGS) $(INCLUDES) -c test.c
 
    .PHONY: clean
 
    clean:
-	 rm -f test *.o
-
+      rm -f test *.o
 
 CMake / Autotools
-++++++++++++++++++++
++++++++++++++++++
 
 For CMake and Autotools based build systems, it is recommended to use the scorep-wrapper script
 instances. The intended usage of the wrapper instances is to replace the application's compiler and
@@ -206,7 +205,7 @@ linker with the corresponding wrapper at configuration time so that they will be
 As the Score-P instrumentation during the CMake or configure steps is likely to fail, the wrapper script allows for disabling the instrumentation by setting the variable ``SCOREP_WRAPPER=off``.
 
 
-For **CMake** and **autotools** based builds it is recommended to configure in the following way(s):
+For CMake and Autotools based builds it is recommended to configure in the following way(s):
 
 .. code::
 
