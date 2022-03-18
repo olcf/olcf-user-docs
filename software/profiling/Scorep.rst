@@ -13,11 +13,11 @@
 
 
 Score-P
-**************************
+*******
 
 
 Overview
-+++++++++++++++++++++++++++
+++++++++
 
 The `Score-P  <https://www.vi-hps.org/projects/score-p>`__ measurement infrastructure is a highly
 scalable and easy-to-use tool suite for profiling, event tracing, and online analysis of HPC
@@ -27,7 +27,7 @@ OpenACC) and combinations. It works in combination with Periscope, Scalasca, Vam
 
 
 Usage
-++++++++++++++++++++++++++
++++++
 
 Steps in a typical Score-P workflow to run on `Summit <file:///Users/41z/github/olcf-user-docs/_build/html/systems/summit_user_guide.html>`_:
 
@@ -40,7 +40,7 @@ Steps in a typical Score-P workflow to run on `Summit <file:///Users/41z/github/
 7. Perform in-depth analysis on the trace data with Vampir
 
 Instrumentation
-++++++++++++++++++++++++++
++++++++++++++++
 
 
 To instrument your code, you need to compile the code using the Score-P instrumentation command (``scorep``), which is added as a prefix to your compile statement.
@@ -166,13 +166,13 @@ Below are some basic examples of the different instrumentation scenarios:
         $ scorep --cuda --user nvc++ -I${OLCF_NVHPC_ROOT}/include -o test test.o
 
 
--- Makefiles
-++++++++++++++++++
+Makefiles
++++++++++
 
 Setting ``PREP = scorep`` variable within a Makefile will allow for instrumentation control while using
 ``make``
 
-Additionaly, one can add other scorep options within the ``PREP`` variable e.g. ``--cuda``
+Additionaly, one can add other Score-P options within the ``PREP`` variable e.g. ``--cuda``
 
 .. code::
 
@@ -183,7 +183,7 @@ Additionaly, one can add other scorep options within the ``PREP`` variable e.g. 
    PREP = scorep --cuda
 
    INCLUDES  = -I<Path to Includes>/include ##If needed
-   LIBRARIES = -L$<Path to Libraries>/lib64 ##If needed
+   LIBRARIES = -L<Path to Libraries>/lib64 ##If needed
 
    test: test.o
 	 $(PREP) $(CCOMP) $(CFLAGS) $(LIBRARIES) test.o -o test
