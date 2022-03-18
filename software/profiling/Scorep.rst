@@ -17,7 +17,7 @@ Score-P
 
 
 Overview
-++++++++
+========
 
 The `Score-P  <https://www.vi-hps.org/projects/score-p>`__ measurement infrastructure is a highly
 scalable and easy-to-use tool suite for profiling, event tracing, and online analysis of HPC
@@ -27,11 +27,11 @@ OpenACC) and combinations. It works in combination with Periscope, Scalasca, Vam
 
 
 Usage
-+++++
+=====
 
-Steps in a typical Score-P workflow to run on `Summit <file:///Users/41z/github/olcf-user-docs/_build/html/systems/summit_user_guide.html>`_:
+Steps in a typical Score-P workflow to run on :ref:`summit-user-guide`:
 
-1. Login to `Summit <file:///Users/41z/github/olcf-user-docs/_build/html/systems/summit_user_guide.html#connecting>`_ ``ssh <user_id>@summit.olcf.ornl.gov``
+1. Login to :ref:`Summit <connecting-to-olcf>`: ``ssh <user_id>@summit.olcf.ornl.gov``
 2. Instrument your code with Score-P
 3. Perform a measurement run with profiling enabled
 4. Perform a profile analysis with CUBE or cube_stat
@@ -40,7 +40,7 @@ Steps in a typical Score-P workflow to run on `Summit <file:///Users/41z/github/
 7. Perform in-depth analysis on the trace data with Vampir
 
 Instrumentation
-+++++++++++++++
+===============
 
 
 To instrument your code, you need to compile the code using the Score-P instrumentation command (``scorep``), which is added as a prefix to your compile statement.
@@ -167,7 +167,7 @@ Below are some basic examples of the different instrumentation scenarios:
 
 
 Makefiles
-+++++++++
+---------
 
 Setting ``PREP = scorep`` variable within a Makefile will allow for instrumentation control while using
 ``make``
@@ -197,7 +197,7 @@ Additionaly, one can add other Score-P options within the ``PREP`` variable e.g.
       rm -f test *.o
 
 CMake / Autotools
-+++++++++++++++++
+-----------------
 
 For CMake and Autotools based build systems, it is recommended to use the scorep-wrapper script
 instances. The intended usage of the wrapper instances is to replace the application's compiler and
@@ -232,9 +232,10 @@ For CMake and Autotools based builds it is recommended to configure in the follo
 
 For more detailed information on using Score-P with CMake or Autotools visit `Score-P <https://scorepci.pages.jsc.fz-juelich.de/scorep-pipelines/docs/scorep-4.1/html/scorepwrapper.html>`_
 
-To see all available options for instrumentation:
 
 .. Note::
+
+  To see all available options for instrumentation:
 
   .. code::
 
@@ -243,13 +244,11 @@ To see all available options for instrumentation:
 |
 
 Measurement
-+++++++++++
+===========
 
 Once the code has been instrumented, it is time to begin the measurement run of the newly compiled code. The measurement calls will gather information during the runtime of the code where this information will be stored for later analysis.
 
-By default Score-P is configured to run with profiling set to **true** and tracing set to **false**.
-
-Measurement types are configured via environment variables.
+By default Score-P is configured to run with profiling set to **true** and tracing set to **false**. Measurement types are configured via environment variables.
 
 .. code::
 
@@ -283,8 +282,8 @@ You can check what current Score-P environment variables are set:
     .....
 
 
---Profiling
-++++++++++++
+Profiling
+=========
 
 To generate a profile run of your instrumented code on Summit, you will first need to get a node allocation
 using a batch script or an interactive job; Additionaly you will need to load modules ``otf2`` and ``cubew``:
@@ -300,10 +299,10 @@ using a batch script or an interactive job; Additionaly you will need to load mo
 
      #!/bin/bash
      # Begin LFS Directives
-     #BSUB -P ABC123     #Project Account
-     #BSUB -W 3:00       #Walltime
-     #BSUB -nnodes 1  #Number of Nodes
-     #BSUB -J RunSim123  #Job Name
+     #BSUB -P ABC123        #Project Account
+     #BSUB -W 3:00          #Walltime
+     #BSUB -nnodes 1        #Number of Nodes
+     #BSUB -J RunSim123     #Job Name
      #BSUB -o RunSim123.%J  #Job System Out
      #BSUB -e RunSim123.%J  #Job System Error Out
 
@@ -311,7 +310,7 @@ using a batch script or an interactive job; Additionaly you will need to load mo
 
      jsrun -n 1 ./<binary to run>
 
-For more information to launch a job on `Summit <file:///Users/41z/github/olcf-user-docs/_build/html/systems/summit_user_guide.html#running-jobs>`_
+For more information on launching jobs on Summit, please see the :ref:`Running Jobs <running-jobs>` section of the Summit User Guide.
 
 The output files generated when the profile measurement runs are successful will be placed in a folder uniquely named:
 
