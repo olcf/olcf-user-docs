@@ -29,13 +29,13 @@ OpenACC) and combinations. It works in combination with Periscope, Scalasca, Vam
 Usage
 ++++++++++++++++++++++++++
 
-Steps in a typical ScoreP workflow to run on `Summit <file:///Users/41z/github/olcf-user-docs/_build/html/systems/summit_user_guide.html>`_:
+Steps in a typical Score-P workflow to run on `Summit <file:///Users/41z/github/olcf-user-docs/_build/html/systems/summit_user_guide.html>`_:
 
 1. Login to `Summit <file:///Users/41z/github/olcf-user-docs/_build/html/systems/summit_user_guide.html#connecting>`_ ``ssh <user_id>@summit.olcf.ornl.gov``
 2. Instrument your code with Score-P
 3. Perform a measurement run with profiling enabled
 4. Perform a profile analysis with CUBE or cube_stat
-5. Use ScoreP-score to define a filter
+5. Use ``scorep-score`` to define a filter
 6. Perform a measurement run with tracing enabled and the filter applied
 7. Perform in-depth analysis on the trace data with Vampir
 
@@ -43,18 +43,19 @@ Instrumentation
 ++++++++++++++++++++++++++
 
 
-To instrument your code, you need to compile the code using the Score-P instrumentation command, which is added as a prefix to your compile statement.
+To instrument your code, you need to compile the code using the Score-P instrumentation command (``scorep``), which is added as a prefix to your compile statement.
 In most cases the Score-P instrumentor is able to automatically detect the programming paradigm from the set of compile and link options given to the compiler.
-Some cases will, however require some additional link options within the compile statement e.g. CUDA instrumentation.
+Some cases will, however, require some additional link options within the compile statement e.g. CUDA instrumentation.
+
 Below are some basic examples of the different instrumentation scenarios:
 
 .. Note::
 
-   You will need to unload the Darshan Runtime module. In `some` instances you may need to unload the **xalt** and **xl** modules.
+   You will need to unload the ``darshan-runtime`` module. In `some` instances you may need to unload the ``xalt`` and ``xl`` modules.
 
    .. code::
 
-      $ module unload darshan-runtime/3.3.0-lite
+      $ module unload darshan-runtime
 
 .. dropdown:: Serial
 
@@ -63,7 +64,7 @@ Below are some basic examples of the different instrumentation scenarios:
         .. code-block:: bash
         
             $ module unload darshan-runtime
-            $ module load scorep/7.0
+            $ module load scorep
             $ scorep gcc -c test.c
             $ scorep gcc -o test test.o
 
@@ -72,7 +73,7 @@ Below are some basic examples of the different instrumentation scenarios:
         .. code-block:: bash
 
             $ module unload darshan-runtime
-            $ module load scorep/7.0
+            $ module load scorep
             $ scorep g++ -c test.cpp main.cpp
             $ scorep g++ -o test test.o main.o
 
@@ -81,7 +82,7 @@ Below are some basic examples of the different instrumentation scenarios:
         .. code-block:: bash
 
             $ module unload darshan-runtime
-            $ module load scorep/7.0
+            $ module load scorep
             $ scorep gfortran -c test_def.f90 test.f90 main.f90
             $ scorep gfortran -o test test_def.o test.o main.o
 
@@ -94,7 +95,7 @@ Below are some basic examples of the different instrumentation scenarios:
         .. code-block:: bash
             
               $ module unload darshan-runtime
-              $ module load scorep/7.0
+              $ module load scorep
               $ module load spectrum-mpi
               $ scorep mpicc -c test.c main.c
               $ scorep mpicc -o test test.o main.o
@@ -104,7 +105,7 @@ Below are some basic examples of the different instrumentation scenarios:
         .. code-block:: bash
 
               $ module unload darshan-runtime
-              $ module load scorep/7.0
+              $ module load scorep
               $ module load spectrum-mpi
               $ scorep mpiCC -c test.c++ main.c++
               $ scorep mpiCC -o test test.o main.o
@@ -160,9 +161,9 @@ Below are some basic examples of the different instrumentation scenarios:
         $ module unload darshan-runtime xl
         $ module load nvhpc
         $ module load cuda
-        $ module load scorep/7.0-papi
-        $ scorep --cuda --user  nvc++ -I/sw/summit/cuda/11.0.3/include  -c test.c
-        $ scorep --cuda --user  nvc++ -I/sw/summit/cuda/11.0.3/include  -o test test.o
+        $ module load scorep/<version-number>-papi
+        $ scorep --cuda --user nvc++ -I${OLCF_NVHPC_ROOT}/include -c test.c
+        $ scorep --cuda --user nvc++ -I${OLCF_NVHPC_ROOT}/include -o test test.o
 
 
 -- Makefiles
