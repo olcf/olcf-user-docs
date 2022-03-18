@@ -320,20 +320,20 @@ The output files generated when the profile measurement runs are successful will
 
 A file will be placed within the above mentioned folder with the name ``profile.cubex``. This type of file can be analyzed using a tool called `Cube <http://apps.fz-juelich.de/scalasca/releases/cube/4.3/docs/CubeGuide.pdf>`_ developed by Scalasca.
 
-For a more detailed description of Profiling measurements, please visit the `ScorepP_Profiling <https://scorepci.pages.jsc.fz-juelich.de/scorep-pipelines/docs/scorep-4.1/html/measurement.html>`_ homepage.
+For a more detailed description of profiling measurements with Score-P, please visit the `ScorepP_Profiling <https://scorepci.pages.jsc.fz-juelich.de/scorep-pipelines/docs/scorep-4.1/html/measurement.html>`_ homepage.
 
 
---Tracing
-+++++++++++
+Tracing
+=======
 
-To run a tracing measurement, we will need to enable this through environment variable ``SCOREP_ENABLE_TRACING``:
+To run a tracing measurement, we will need to enable this through the environment variable ``SCOREP_ENABLE_TRACING``:
 
 .. code::
 
    $ export SCOREP_ENABLE_TRACING=true
 
 
-Since tracing measurements acquire significantly more output data than profiling, we need to design a filter to remove some of the most visited calls within your instrumented code. There is a tool developed by Score-P that allows us to estimate the size the trace file (OTF2) based on information attained from the profiling generated cube file.
+Since tracing measurements acquire significantly more output data than profiling, we need to design a filter to remove some of the most visited calls within your instrumented code. There is a tool developed by Score-P that allows us to estimate the size of the trace file (OTF2) based on information attained from the profiling generated cube file.
 
 To gather the needed information to design a filter file, first run ``scorep-score``:
 
@@ -352,15 +352,15 @@ To gather the needed information to design a filter file, first run ``scorep-sco
      intermediate flushes when tracing. Set SCOREP_TOTAL_MEMORY=4G to get the
      maximum supported memory or reduce requirements using USR regions filters.)
 
-     Flt type     max_buf[B]        visits time[s] time[%] time/visit[us]  region
-     ALL 10,690,196,070 1,634,070,493 1081.30   100.0           0.66  ALL
-     USR 10,666,890,182 1,631,138,069  470.23    43.5           0.29  USR
-     OMP     22,025,152     2,743,808  606.80    56.1         221.15  OMP
-     COM      1,178,450       181,300    2.36     0.2          13.04  COM
-     MPI        102,286         7,316    1.90     0.2         260.07  MPI
-
-     USR  3,421,305,420   522,844,416  144.46    13.4           0.28  matmul_sub
-     USR  3,421,305,420   522,844,416  102.40     9.5           0.20  matvec_sub
+     Flt type      max_buf[B]         visits  time[s]  time[%]  time/visit[us]      region
+          ALL  10,690,196,070  1,634,070,493  1081.30    100.0            0.66         ALL
+          USR  10,666,890,182  1,631,138,069   470.23     43.5            0.29         USR
+          OMP      22,025,152      2,743,808   606.80     56.1          221.15         OMP
+          COM       1,178,450        181,300     2.36      0.2           13.04         COM
+          MPI         102,286          7,316     1.90      0.2          260.07         MPI
+ 
+          USR   3,421,305,420    522,844,416   144.46     13.4            0.28  matmul_sub
+          USR   3,421,305,420    522,844,416   102.40      9.5            0.20  matvec_sub
 
 The first line of the output gives an estimation of the total size of the trace, aggregated over all processes. This information is useful for estimating the space required on disk. In the given example, the estimated total size of the event trace is 40GB. The second line prints an estimation of the memory space required by a single process for the trace. Since flushes heavily disturb measurements, the memory space that Score-P reserves on each process at application start must be large enough to hold the process’ trace in memory in order to avoid flushes during runtime.
 
@@ -388,25 +388,27 @@ To apply the filter to your measurement run, you must specify this in an environ
 
    $ export SCOREP_FILTERING_FILE=scorep.filter
 
-Now you are ready to submit your instrumented code to run with tracing enabled. This measurement will generate files of the form **traces.otf**.
-The **.otf2** file format can be analyzed by a tool called `Vampir <https://docs.olcf.ornl.gov/software/profiling/Vampir.html>`_ .
+Now you are ready to submit your instrumented code to run with tracing enabled. This measurement will generate files of the form ``traces.otf``.
+The ``.otf2`` file format can be analyzed by a tool called `Vampir <https://docs.olcf.ornl.gov/software/profiling/Vampir.html>`_ .
 
 `Vampir <https://docs.olcf.ornl.gov/software/profiling/Vampir.html>`_ provides a visual GUI to
-analyze the **.otf2** trace file generated with Score-P.
+analyze the ``.otf2`` trace file generated with Score-P.
 
 .. Note::
 
    Small trace files can be viewed locally on your machine if you have the Vampir client downloaded,
    otherwise they can be viewed locally on Summit. For large trace files, it is strongly recommended to run
-   `Vampirserver <https://docs.olcf.ornl.gov/software/profiling/Vampir.html#:~:text=a%20login%20node.-,vampirserver,-is%20the%20backend>`_ `reverse connected <https://docs.olcf.ornl.gov/software/profiling/Vampir.html#vampir-tunneling-to-vampirserver>`_ to a local copy of the Vampir client.
+   ``vampirserver`` reverse-connected to a local copy of the Vampir client. See the :ref:`vamptunnel` section for more details.
 
 Score-P Demo Video
-++++++++++++++++++
+==================
 
-Please see the provided video below to get a brief demo of the Score-P provided by TU-Dresden and presented by Ronny Brendel.
+Please see the provided video below to watch a brief demo of using Score-P provided by TU-Dresden and presented by Ronny Brendel.
 
 .. raw:: html
 
    <div style="padding:56.25% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/285908215?h=26f33f1775" style="position:absolute;top:0;left:0;width:100%;height:100%;" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>
+
    <p><a href="https://vimeo.com/285908215">2018 Score-P / Vampir Workshop</a> from <a href="https://vimeo.com/olcf">OLCF</a> on <a href="https://vimeo.com">Vimeo</a>.</p>
-   <p>This recording is from the 2018 Score-P / Vampir workshop that took place at ORNL on August 17, 2018. In the video, Ronny Brendel gives an introduction to the Score-P and Vampir tools, which are often used together to collect performance profiles/traces from an application and visualize the results.</p>
+
+This recording is from the 2018 Score-P / Vampir workshop that took place at ORNL on August 17, 2018. In the video, Ronny Brendel gives an introduction to the Score-P and Vampir tools, which are often used together to collect performance profiles/traces from an application and visualize the results.
