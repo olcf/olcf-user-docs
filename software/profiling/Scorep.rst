@@ -56,57 +56,52 @@ Below are some basic examples of the different instrumentation scenarios:
 
       $ module unload darshan-runtime/3.3.0-lite
 
-.. tabs::
+.. dropdown:: Serial
 
-   .. tab:: Serial
+    .. tabbed:: C
 
-      .. tabs::
+        .. code-block:: bash
+        
+            $ module unload darshan-runtime
+            $ module load scorep/7.0
+            $ scorep gcc -c test.c
+            $ scorep gcc -o test test.o
 
-         .. tab:: C
+    .. tabbed:: C++
 
-            #Score-P instrumentation with C ::
+        .. code-block:: bash
 
             $ module unload darshan-runtime
             $ module load scorep/7.0
-            $ scorep cc -c test.c
-            $ scorep cc -o test test.o
+            $ scorep g++ -c test.cpp main.cpp
+            $ scorep g++ -o test test.o main.o
 
-         .. tab:: C++
+    .. tabbed:: Fortran
 
-            #Score-P instrumentation with C++ ::
-
-            $ module unload darshan-runtime
-            $ module load scorep/7.0
-            $ scorep c++ -c test.cpp main.cpp
-            $ scorep c++ -o test test.o main.o
-
-         .. tab:: Fortran
-
-            #Score-P instrumentation with Fortran ::
+        .. code-block:: bash
 
             $ module unload darshan-runtime
             $ module load scorep/7.0
             $ scorep gfortran -c test_def.f90 test.f90 main.f90
             $ scorep gfortran -o test test_def.o test.o main.o
 
+    
 
-   .. tab:: MPI
+.. dropdown:: MPI
 
-      .. tabs::
+    .. tabbed:: C
 
-         .. tab:: C
-
-              #MPI Score-P instrumentation with C ::
-
+        .. code-block:: bash
+            
               $ module unload darshan-runtime
               $ module load scorep/7.0
               $ module load spectrum-mpi
               $ scorep mpicc -c test.c main.c
               $ scorep mpicc -o test test.o main.o
 
-         .. tab:: C++
+    .. tabbed:: C++
 
-              #MPI Score-P instrumentation with C++::
+        .. code-block:: bash
 
               $ module unload darshan-runtime
               $ module load scorep/7.0
@@ -114,62 +109,61 @@ Below are some basic examples of the different instrumentation scenarios:
               $ scorep mpiCC -c test.c++ main.c++
               $ scorep mpiCC -o test test.o main.o
 
-         .. tab:: Fortran
+    .. tabbed:: Fortran
 
-              #MPI Score-P instrumentation with Fortran90::
+        .. code-block:: bash
 
-              $ module unload darshan-runtime
-              $ module unload xl
-              $ module load gcc
-              $ module load Scorep
-              $ scorep mpif90 -c test.f90
-              $ scorep mpif90 test.o -o test
+            $ module unload darshan-runtime
+            $ module unload xl
+            $ module load gcc
+            $ module load Scorep
+            $ scorep mpif90 -c test.f90
+            $ scorep mpif90 test.o -o test
 
 
-   .. tab:: OpenMP
+.. dropdown:: MPI + OpenMP
 
-      .. tabs::
+    .. tabbed:: C
 
-         .. tab:: C
-
-              #MPI with Openmp Score-P instrumentation with C ::
+        .. code-block:: bash
 
               $ module unload darshan-runtime
               $ module load scorep
               $ scorep mpicc -fopenmp -c test.c main.c
               $ scorep mpicc -fopenmp -o test test.o main.o
 
-         .. tab:: C++
+    .. tabbed:: C++
 
-              #MPI with Openmp Score-P instrumentation with C++::
+        .. code-block:: bash
 
               $ module unload darshan-runtime
               $ module load scorep
               $ scorep mpiCC -fopenmp -c test.c++ main.c++
               $ scorep mpiCC -fopenmp -o test test.o main.o
 
-         .. tab:: Fortran
+    .. tabbed:: Fortran
 
-              #MPI with Openmp Score-P instrumentation with Fortran::
+        .. code-block:: bash
 
               $ module unload darshan-runtime
               $ module load scorep
               $ module load gcc
-              $ scorep gfortran -fopenmp -c test.f90
-              $ scorep gfortran -fopenmp -o test test.o
+              $ scorep mpif90 -fopenmp -c test.f90
+              $ scorep mpif90 -fopenmp -o test test.o
 
-   .. tab:: CUDA
+.. dropdown:: CUDA
 
-         In some cases e.g. **CUDA** applications, Score-P needs to be made aware of the programming paradigm in order to do the correct instrumentation. ::
+    In some cases e.g. **CUDA** applications, Score-P needs to be made aware of the programming paradigm in order to do the correct instrumentation.
 
-         $ module unload darshan-runtime xl
-         $ module load nvhpc
-         $ module load cuda
-         $ module load scorep/7.0-papi
-         $ scorep --cuda --user  nvc++ -I/sw/summit/cuda/11.0.3/include  -c test.c
-         $ scorep --cuda --user  nvc++ -I/sw/summit/cuda/11.0.3/include  -o test test.o
+    .. code-block:: bash
 
-|
+        $ module unload darshan-runtime xl
+        $ module load nvhpc
+        $ module load cuda
+        $ module load scorep/7.0-papi
+        $ scorep --cuda --user  nvc++ -I/sw/summit/cuda/11.0.3/include  -c test.c
+        $ scorep --cuda --user  nvc++ -I/sw/summit/cuda/11.0.3/include  -o test test.o
+
 
 -- Makefiles
 ++++++++++++++++++
