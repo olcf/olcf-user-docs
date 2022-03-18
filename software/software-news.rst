@@ -11,6 +11,48 @@ most recent changes are listed first.
 
 .. raw:: html
 
+   <p style="font-size:20px"><b>Summit: OpenCE 1.5.2 (March 17, 2022)</b></p>
+
+OpenCE 1.5.2 is now available on Summit. OpenCE 1.5.2 is available for python versions 3.9, 3.8, and 3.7. These builds can be accessed by
+loading the open-ce/1.5.2-py39-0, open-ce/1.5.2-py38-0, and open-ce/1.5.2-py37-0 modules, respectively.
+
+The following packages are available in this release of OpenCE:
+
+.. csv-table::
+    :header: "Package", "Version"
+
+
+    "Tensorflow", "2.7.1"
+    "TensorFlow Estimators", "2.7.0"
+    "TensorFlow Probability", "0.15.0"
+    "TensorBoard", "2.7.0"
+    "TensorFlow Text", "2.7.3"
+    "TensorFlow Model Optimizations", "0.7.0"
+    "TensorFlow Addons", "0.15.0"
+    "TensorFlow Datasets", "4.4.0"
+    "TensorFlow Hub", "0.12.0"
+    "TensorFlow MetaData", "1.5.0"
+    "PyTorch", "1.10.2"
+    "TorchText", "0.11.2"
+    "TorchVision", "0.11.3"
+    "PyTorch Lightning", "1.5.10"
+    "PyTorch Lightning Bolts", "0.5.0"
+    "ONNX", "1.10.2"
+    "Keras", "2.7.0"
+    "Magma", "2.5.4"
+    "XGBoost", "1.5.2"
+    "Transformers", "4.11.3"
+    "Tokenizers", "0.10.3"
+    "SentencePiece", "0.1.96"
+    "Spacy", "3.2.1"
+    "OpenCV", "4.5.5"
+    "DALI", "1.9.0"
+    "Horovod", "0.23.0"
+
+----
+
+.. raw:: html
+
    <p style="font-size:20px"><b>Ascent: Software Installation/Default Software Changes (February 7-11, 2022)</b></p>
 
 Ascent's operating system will be upgraded to Red Hat Enterprise Linux 8 (RHEL 8) on February 7-11, 2022.  
