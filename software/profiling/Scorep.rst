@@ -62,7 +62,7 @@ Below are some basic examples of the different instrumentation scenarios:
     .. tabbed:: C
 
         .. code-block:: bash
-        
+
             $ module unload darshan-runtime
             $ module load scorep
             $ scorep gcc -c test.c
@@ -86,14 +86,14 @@ Below are some basic examples of the different instrumentation scenarios:
             $ scorep gfortran -c test_def.f90 test.f90 main.f90
             $ scorep gfortran -o test test_def.o test.o main.o
 
-    
+
 
 .. dropdown:: MPI
 
     .. tabbed:: C
 
         .. code-block:: bash
-            
+
               $ module unload darshan-runtime
               $ module load scorep
               $ module load spectrum-mpi
@@ -107,7 +107,7 @@ Below are some basic examples of the different instrumentation scenarios:
               $ module unload darshan-runtime
               $ module load scorep
               $ module load spectrum-mpi
-              $ scorep mpiCC -c test.c++ main.c++
+              $ scorep mpiCC -c test.cpp main.cpp
               $ scorep mpiCC -o test test.o main.o
 
     .. tabbed:: Fortran
@@ -139,7 +139,7 @@ Below are some basic examples of the different instrumentation scenarios:
 
               $ module unload darshan-runtime
               $ module load scorep
-              $ scorep mpiCC -fopenmp -c test.c++ main.c++
+              $ scorep mpiCC -fopenmp -c test.cpp main.cpp
               $ scorep mpiCC -fopenmp -o test test.o main.o
 
     .. tabbed:: Fortran
@@ -149,8 +149,8 @@ Below are some basic examples of the different instrumentation scenarios:
               $ module unload darshan-runtime
               $ module load scorep
               $ module load gcc
-              $ scorep mpif90 -fopenmp -c test.f90
-              $ scorep mpif90 -fopenmp -o test test.o
+              $ scorep gfortran -fopenmp -c test.f90
+              $ scorep gfortran -fopenmp -o test test.o
 
 .. dropdown:: CUDA
 
@@ -162,8 +162,8 @@ Below are some basic examples of the different instrumentation scenarios:
         $ module load nvhpc
         $ module load cuda
         $ module load scorep/<version-number>-papi
-        $ scorep --cuda --user nvc++ -I${OLCF_NVHPC_ROOT}/include -c test.c
-        $ scorep --cuda --user nvc++ -I${OLCF_NVHPC_ROOT}/include -o test test.o
+        $ scorep --cuda --user nvc++ -cuda -L${OLCF_CUDA_ROOT}/lib64 -c test.c
+        $ scorep --cuda --user nvc++ -cuda -L${OLCF_CUDA_ROOT}/lib64 -o test test.o
 
 
 Makefiles
@@ -358,7 +358,7 @@ To gather the needed information to design a filter file, first run ``scorep-sco
           OMP      22,025,152      2,743,808   606.80     56.1          221.15         OMP
           COM       1,178,450        181,300     2.36      0.2           13.04         COM
           MPI         102,286          7,316     1.90      0.2          260.07         MPI
- 
+
           USR   3,421,305,420    522,844,416   144.46     13.4            0.28  matmul_sub
           USR   3,421,305,420    522,844,416   102.40      9.5            0.20  matvec_sub
 
