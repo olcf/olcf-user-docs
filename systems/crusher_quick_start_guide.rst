@@ -651,6 +651,21 @@ In order for each OpenMP thread to run on its own physical CPU core, each MPI ra
 
 Now the output shows that each OpenMP thread ran on (one of the hardware threads of) its own physical CPU core. More specifically (see the Crusher Compute Node diagram), OpenMP thread 000 of MPI rank 000 ran on hardware thread 000 (i.e., physical CPU core 00), OpenMP thread 001 of MPI rank 000 ran on hardware thread 001 (i.e., physical CPU core 01), OpenMP thread 000 of MPI rank 001 ran on hardware thread 008 (i.e., physical CPU core 08), and OpenMP thread 001 of MPI rank 001 ran on hardware thread 009 (i.e., physical CPU core 09) - as intended.
 
+**Third attempt - Using multiple threads per core**
+
+To use both availble hardware threads per core, the job must be allocated with ``--threads-per-core=2``. That value will then be inherited by ``srun`` unless explcitly overridden with ``--threads-per-core=1``.
+
+.. code-block:: bash
+
+    $ salloc -N1 -A <project_id> -t <time> -p <partition> --threads-per-core=2
+    $ srun -N1 -n2 -c2 ./hello_mpi_omp | sort
+    MPI 000 - OMP 000 - HWT 000 - Node crusher001
+    MPI 000 - OMP 001 - HWT 064 - Node crusher001
+    MPI 001 - OMP 000 - HWT 008 - Node crusher001
+    MPI 001 - OMP 001 - HWT 072 - Node crusher001
+
+Comparing this output to the Crusher Compute Node diagram, we see that each pair of OpenMP threads is contained within a single physical core. MPI rank 000 ran on hardware threads 000 and 064 (i.e. physical CPU core 00) and MPI rank 001 ran on hardware threads 008 and 072 (i.e. physical CPU core 08).
+
 .. note::
 
     There are many different ways users might choose to perform these mappings, so users are encouraged to clone the ``hello_mpi_omp`` program and test whether or not processes and threads are running where intended.
