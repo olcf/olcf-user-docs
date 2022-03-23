@@ -655,12 +655,12 @@ Now the output shows that each OpenMP thread ran on (one of the hardware threads
 GPU Mapping
 ^^^^^^^^^^^
 
-In this sub-section, an MPI+OpenMP+HIP "Hello, World" program (`hello_jobstep <https://code.ornl.gov/olcf/hello_jobstep>`__) will be used to clarify the GPU mappings. Again, Slurm's :ref:`interactive` method was used to request an allocation of 2 compute node for these examples: ``salloc -A <project_id> -t 30 -p <parition> -N 2``. The CPU mapping part of this example is very similar to the example used above in the CPU Mapping sub-section, so the focus here will be on the GPU mapping part.
+In this sub-section, an MPI+OpenMP+HIP "Hello, World" program (`hello_jobstep <https://code.ornl.gov/olcf/hello_jobstep>`__) will be used to clarify the GPU mappings. Again, Slurm's :ref:`interactive` method was used to request an allocation of 2 compute nodes for these examples: ``salloc -A <project_id> -t 30 -p <parition> -N 2``. The CPU mapping part of this example is very similar to the example used above in the CPU Mapping sub-section, so the focus here will be on the GPU mapping part.
 
 The following ``srun`` options will be used in the examples below. See ``man srun`` for a complete list of options and more information.
 
 +------------------------------------------------+--------------------------------------------------------------------------------------------------------------+
-| ``--gpus``                                     | Specify the number of GPUs required for the job.                                                             |
+| ``--gpus``                                     | Specify the number of GPUs required for the job (total GPUs across all nodes).                                                             |
 +------------------------------------------------+--------------------------------------------------------------------------------------------------------------+
 | ``--gpus-per-node``                            | Specify the number of GPUs per node required for the job.                                                    |
 +------------------------------------------------+--------------------------------------------------------------------------------------------------------------+
@@ -948,7 +948,7 @@ This example is an extension of Example 5 to run on 2 nodes.
 
 This example launches 16 MPI ranks (``-n16``), each with 4 physical CPU cores (``-c4``) to launch 1 OpenMP thread (``OMP_NUM_THREADS=1``) on. The MPI ranks will be assigned to GPUs in a packed fashion so that each of the 8 GPUs on the node are shared by 2 MPI ranks. Similar to Example 5, ``-ntasks-per-gpu=2`` will be used, but a new ``srun`` flag will be used to change the default round-robin (``cyclic``) distribution of MPI ranks across NUMA domains:
 
-* ``--distribution=<value>:[<value>]:[<value>]`` specifies the distribution of MPI ranks across compute nodes, sockets (L3 cache regions on Crusher), and cores, respectively. The default values are ``block:cyclic:cyclic``, which is where the ``cyclic`` assignment comes from in the previous examples.
+* ``--distribution=<value>[:<value>][:<value>]`` specifies the distribution of MPI ranks across compute nodes, sockets (L3 cache regions on Crusher), and cores, respectively. The default values are ``block:cyclic:cyclic``, which is where the ``cyclic`` assignment comes from in the previous examples.
 
 .. note::
 
@@ -982,7 +982,7 @@ This example launches 16 MPI ranks (``-n16``), each with 4 physical CPU cores (`
     MPI 014 - OMP 000 - HWT 056 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
     MPI 015 - OMP 000 - HWT 060 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
 
-The overall effect of using ``--distribution=*:block`` and increasing the number of physical CPU cores available to each MPI rank is to place the first two MPI ranks in the first L2 cache region with GPU 4, the next two MPI ranks in the second L3 cache region with GPU 5, and so on.
+The overall effect of using ``--distribution=*:block`` and increasing the number of physical CPU cores available to each MPI rank is to place the first two MPI ranks in the first L3 cache region with GPU 4, the next two MPI ranks in the second L3 cache region with GPU 5, and so on.
 
 **Example 8: 32 MPI ranks - where 2 ranks share a GPU (packed, multi-node)**
 
