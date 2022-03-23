@@ -499,21 +499,23 @@ Common Slurm Submission Options
 
 The table below summarizes commonly-used Slurm job submission options:
 
-+--------------------------+--------------------------------+
-| ``-A <project_id>``      | Project ID to charge           |
-+--------------------------+--------------------------------+
-| ``-J <job_name>``        | Name of job                    |
-+--------------------------+--------------------------------+
-| ``-p <partition>``       | Partition / batch queue        |
-+--------------------------+--------------------------------+
-| ``-t <time>``            | Wall clock time <``HH:MM:SS``> |
-+--------------------------+--------------------------------+
-| ``-N <number_of_nodes>`` | Number of compute nodes        |
-+--------------------------+--------------------------------+
-| ``-o <file_name>``       | Standard output file name      |
-+--------------------------+--------------------------------+
-| ``-e <file_name>``       | Standard error file name       |
-+--------------------------+--------------------------------+
++-----------------------------------+--------------------------------+
+| ``-A <project_id>``               | Project ID to charge           |
++-----------------------------------+--------------------------------+
+| ``-J <job_name>``                 | Name of job                    |
++-----------------------------------+--------------------------------+
+| ``-p <partition>``                | Partition / batch queue        |
++-----------------------------------+--------------------------------+
+| ``-t <time>``                     | Wall clock time <``HH:MM:SS``> |
++-----------------------------------+--------------------------------+
+| ``-N <number_of_nodes>``          | Number of compute nodes        |
++-----------------------------------+--------------------------------+
+| ``-o <file_name>``                | Standard output file name      |
++-----------------------------------+--------------------------------+
+| ``-e <file_name>``                | Standard error file name       |
++-----------------------------------+--------------------------------+
+| ``--threads-per-core=<threads>``  | Number of threads per core     |
++-----------------------------------+--------------------------------+
 
 For more information about these and/or other options, please see the ``sbatch`` man page.
 
@@ -592,6 +594,7 @@ The ``srun`` options used in this section are (see ``man srun`` for more informa
 +----------------------------------+-------------------------------------------------------------------------------------------------------+
 | ``--threads-per-core=<threads>`` | | In task layout, use the specified maximum number of threads per core                                |
 |                                  | | (default is 1; there are 2 hardware threads per physical CPU core).                                 |
+|                                  | | Must also be set in salloc or sbatch if using 2 threads per core.                                   |
 +----------------------------------+-------------------------------------------------------------------------------------------------------+
 |  ``--cpu-bind=threads``          | | Bind tasks to CPUs.                                                                                 |
 |                                  | | ``threads`` - Automatically generate masks binding tasks to threads.                                |
