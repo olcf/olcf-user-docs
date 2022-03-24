@@ -39,7 +39,7 @@ required from industrial Director's Discretion projects only.
 |                              | <https://doeleadershipcomputing.org/proposal/call-for-proposals/>`__  |                             | <http://science.energy.gov/ascr/facilities/accessing-ascr-facilities/alcc/>`__ |
 +------------------------------+-----------------------------------------------------------------------+-----------------------------+--------------------------------------------------------------------------------+
 
-.. _Apply for DD: https://www.olcf.ornl.gov/for-users/documents-forms/olcf-directors-discretion-project-application/
+.. _Apply for DD: https://my.olcf.ornl.gov/project-application-new
  
 
 What are the differences between project types?
