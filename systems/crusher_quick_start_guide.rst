@@ -592,9 +592,9 @@ The ``srun`` options used in this section are (see ``man srun`` for more informa
 | ``-c, --cpus-per-task=<ncpus>``  | | Request that ``ncpus`` be allocated per process (default is 1).                                     |
 |                                  | | (``ncpus`` refers to hardware threads)                                                              |
 +----------------------------------+-------------------------------------------------------------------------------------------------------+
-| ``--threads-per-core=<threads>`` | | In task layout, use the specified maximum number of threads per core                                |
+| ``--threads-per-core=<threads>`` | | In task layout, use the specified maximum number of hardware threads per core                       |
 |                                  | | (default is 1; there are 2 hardware threads per physical CPU core).                                 |
-|                                  | | Must also be set in salloc or sbatch if using 2 threads per core.                                   |
+|                                  | | Must also be set in ``salloc`` or ``sbatch`` if using 2 threads per core.                           |
 +----------------------------------+-------------------------------------------------------------------------------------------------------+
 |  ``--cpu-bind=threads``          | | Bind tasks to CPUs.                                                                                 |
 |                                  | | ``threads`` - Automatically generate masks binding tasks to threads.                                |
