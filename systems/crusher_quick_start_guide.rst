@@ -643,7 +643,9 @@ In order for each OpenMP thread to run on its own physical CPU core, each MPI ra
 
 .. code-block:: bash
 
+    $ export OMP_NUM_THREADS=2
     $ srun -N1 -n2 -c2 ./hello_mpi_omp | sort
+
     MPI 000 - OMP 000 - HWT 000 - Node crusher001
     MPI 000 - OMP 001 - HWT 001 - Node crusher001
     MPI 001 - OMP 000 - HWT 008 - Node crusher001
@@ -653,12 +655,15 @@ Now the output shows that each OpenMP thread ran on (one of the hardware threads
 
 **Third attempt - Using multiple threads per core**
 
-To use both availble hardware threads per core, the job must be allocated with ``--threads-per-core=2``. That value will then be inherited by ``srun`` unless explcitly overridden with ``--threads-per-core=1``.
+To use both available hardware threads per core, the *job* must be allocated with ``--threads-per-core=2`` (as opposed to only the job step - i.e., ``srun`` command). That value will then be inherited by ``srun`` unless explcitly overridden with ``--threads-per-core=1``.
 
 .. code-block:: bash
 
     $ salloc -N1 -A <project_id> -t <time> -p <partition> --threads-per-core=2
+
+    $ export OMP_NUM_THREADS=2
     $ srun -N1 -n2 -c2 ./hello_mpi_omp | sort
+
     MPI 000 - OMP 000 - HWT 000 - Node crusher001
     MPI 000 - OMP 001 - HWT 064 - Node crusher001
     MPI 001 - OMP 000 - HWT 008 - Node crusher001
