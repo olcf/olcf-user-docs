@@ -499,21 +499,23 @@ Common Slurm Submission Options
 
 The table below summarizes commonly-used Slurm job submission options:
 
-+--------------------------+--------------------------------+
-| ``-A <project_id>``      | Project ID to charge           |
-+--------------------------+--------------------------------+
-| ``-J <job_name>``        | Name of job                    |
-+--------------------------+--------------------------------+
-| ``-p <partition>``       | Partition / batch queue        |
-+--------------------------+--------------------------------+
-| ``-t <time>``            | Wall clock time <``HH:MM:SS``> |
-+--------------------------+--------------------------------+
-| ``-N <number_of_nodes>`` | Number of compute nodes        |
-+--------------------------+--------------------------------+
-| ``-o <file_name>``       | Standard output file name      |
-+--------------------------+--------------------------------+
-| ``-e <file_name>``       | Standard error file name       |
-+--------------------------+--------------------------------+
++-----------------------------------+---------------------------------------------------------------+
+| ``-A <project_id>``               | Project ID to charge                                          |
++-----------------------------------+---------------------------------------------------------------+
+| ``-J <job_name>``                 | Name of job                                                   |
++-----------------------------------+---------------------------------------------------------------+
+| ``-p <partition>``                | Partition / batch queue                                       |
++-----------------------------------+---------------------------------------------------------------+
+| ``-t <time>``                     | Wall clock time <``HH:MM:SS``>                                |
++-----------------------------------+---------------------------------------------------------------+
+| ``-N <number_of_nodes>``          | Number of compute nodes                                       |
++-----------------------------------+---------------------------------------------------------------+
+| ``-o <file_name>``                | Standard output file name                                     |
++-----------------------------------+---------------------------------------------------------------+
+| ``-e <file_name>``                | Standard error file name                                      |
++-----------------------------------+---------------------------------------------------------------+
+| ``--threads-per-core=<threads>``  | Number of active hardware threads per core [1 (default) or 2] |
++-----------------------------------+---------------------------------------------------------------+
 
 For more information about these and/or other options, please see the ``sbatch`` man page.
 
@@ -590,8 +592,9 @@ The ``srun`` options used in this section are (see ``man srun`` for more informa
 | ``-c, --cpus-per-task=<ncpus>``  | | Request that ``ncpus`` be allocated per process (default is 1).                                     |
 |                                  | | (``ncpus`` refers to hardware threads)                                                              |
 +----------------------------------+-------------------------------------------------------------------------------------------------------+
-| ``--threads-per-core=<threads>`` | | In task layout, use the specified maximum number of threads per core                                |
+| ``--threads-per-core=<threads>`` | | In task layout, use the specified maximum number of hardware threads per core                       |
 |                                  | | (default is 1; there are 2 hardware threads per physical CPU core).                                 |
+|                                  | | Must also be set in ``salloc`` or ``sbatch`` if using 2 threads per core.                           |
 +----------------------------------+-------------------------------------------------------------------------------------------------------+
 |  ``--cpu-bind=threads``          | | Bind tasks to CPUs.                                                                                 |
 |                                  | | ``threads`` - Automatically generate masks binding tasks to threads.                                |
@@ -640,13 +643,33 @@ In order for each OpenMP thread to run on its own physical CPU core, each MPI ra
 
 .. code-block:: bash
 
+    $ export OMP_NUM_THREADS=2
     $ srun -N1 -n2 -c2 ./hello_mpi_omp | sort
+
     MPI 000 - OMP 000 - HWT 000 - Node crusher001
     MPI 000 - OMP 001 - HWT 001 - Node crusher001
     MPI 001 - OMP 000 - HWT 008 - Node crusher001
     MPI 001 - OMP 001 - HWT 009 - Node crusher001
 
 Now the output shows that each OpenMP thread ran on (one of the hardware threads of) its own physical CPU core. More specifically (see the Crusher Compute Node diagram), OpenMP thread 000 of MPI rank 000 ran on hardware thread 000 (i.e., physical CPU core 00), OpenMP thread 001 of MPI rank 000 ran on hardware thread 001 (i.e., physical CPU core 01), OpenMP thread 000 of MPI rank 001 ran on hardware thread 008 (i.e., physical CPU core 08), and OpenMP thread 001 of MPI rank 001 ran on hardware thread 009 (i.e., physical CPU core 09) - as intended.
+
+**Third attempt - Using multiple threads per core**
+
+To use both available hardware threads per core, the *job* must be allocated with ``--threads-per-core=2`` (as opposed to only the job step - i.e., ``srun`` command). That value will then be inherited by ``srun`` unless explcitly overridden with ``--threads-per-core=1``.
+
+.. code-block:: bash
+
+    $ salloc -N1 -A <project_id> -t <time> -p <partition> --threads-per-core=2
+
+    $ export OMP_NUM_THREADS=2
+    $ srun -N1 -n2 -c2 ./hello_mpi_omp | sort
+
+    MPI 000 - OMP 000 - HWT 000 - Node crusher001
+    MPI 000 - OMP 001 - HWT 064 - Node crusher001
+    MPI 001 - OMP 000 - HWT 008 - Node crusher001
+    MPI 001 - OMP 001 - HWT 072 - Node crusher001
+
+Comparing this output to the Crusher Compute Node diagram, we see that each pair of OpenMP threads is contained within a single physical core. MPI rank 000 ran on hardware threads 000 and 064 (i.e. physical CPU core 00) and MPI rank 001 ran on hardware threads 008 and 072 (i.e. physical CPU core 08).
 
 .. note::
 
