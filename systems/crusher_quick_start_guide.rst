@@ -683,7 +683,7 @@ In this sub-section, an MPI+OpenMP+HIP "Hello, World" program (`hello_jobstep <h
 The following ``srun`` options will be used in the examples below. See ``man srun`` for a complete list of options and more information.
 
 +------------------------------------------------+--------------------------------------------------------------------------------------------------------------+
-| ``--gpus``                                     | Specify the number of GPUs required for the job (total GPUs across all nodes).                                                             |
+| ``--gpus``                                     | Specify the number of GPUs required for the job (total GPUs across all nodes).                               |
 +------------------------------------------------+--------------------------------------------------------------------------------------------------------------+
 | ``--gpus-per-node``                            | Specify the number of GPUs per node required for the job.                                                    |
 +------------------------------------------------+--------------------------------------------------------------------------------------------------------------+
