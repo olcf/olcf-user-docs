@@ -65,6 +65,7 @@ Below are some basic examples of the different instrumentation scenarios:
 
             $ module unload darshan-runtime
             $ module load scorep
+            $ module load gcc
             $ scorep gcc -c test.c
             $ scorep gcc -o test test.o
 
@@ -74,6 +75,7 @@ Below are some basic examples of the different instrumentation scenarios:
 
             $ module unload darshan-runtime
             $ module load scorep
+            $ module load gcc
             $ scorep g++ -c test.cpp main.cpp
             $ scorep g++ -o test test.o main.o
 
@@ -83,6 +85,7 @@ Below are some basic examples of the different instrumentation scenarios:
 
             $ module unload darshan-runtime
             $ module load scorep
+            $ module load gcc
             $ scorep gfortran -c test_def.f90 test.f90 main.f90
             $ scorep gfortran -o test test_def.o test.o main.o
 
@@ -97,6 +100,7 @@ Below are some basic examples of the different instrumentation scenarios:
               $ module unload darshan-runtime
               $ module load scorep
               $ module load spectrum-mpi
+              $ module load gcc
               $ scorep mpicc -c test.c main.c
               $ scorep mpicc -o test test.o main.o
 
@@ -107,6 +111,7 @@ Below are some basic examples of the different instrumentation scenarios:
               $ module unload darshan-runtime
               $ module load scorep
               $ module load spectrum-mpi
+              $ module load gcc
               $ scorep mpiCC -c test.cpp main.cpp
               $ scorep mpiCC -o test test.o main.o
 
@@ -115,11 +120,10 @@ Below are some basic examples of the different instrumentation scenarios:
         .. code-block:: bash
 
             $ module unload darshan-runtime
-            $ module unload xl
             $ module load gcc
             $ module load Scorep
-            $ scorep mpif90 -c test.f90
-            $ scorep mpif90 test.o -o test
+            $ scorep mpifort -c test.f90
+            $ scorep mpifort -o test test.o
 
 
 .. dropdown:: MPI + OpenMP
@@ -130,6 +134,7 @@ Below are some basic examples of the different instrumentation scenarios:
 
               $ module unload darshan-runtime
               $ module load scorep
+              $ module load gcc
               $ scorep mpicc -fopenmp -c test.c main.c
               $ scorep mpicc -fopenmp -o test test.o main.o
 
@@ -139,6 +144,7 @@ Below are some basic examples of the different instrumentation scenarios:
 
               $ module unload darshan-runtime
               $ module load scorep
+              $ module load gcc
               $ scorep mpiCC -fopenmp -c test.cpp main.cpp
               $ scorep mpiCC -fopenmp -o test test.o main.o
 
@@ -149,8 +155,8 @@ Below are some basic examples of the different instrumentation scenarios:
               $ module unload darshan-runtime
               $ module load scorep
               $ module load gcc
-              $ scorep gfortran -fopenmp -c test.f90
-              $ scorep gfortran -fopenmp -o test test.o
+              $ scorep mpifort -pthread -fopenmp -c test.f90
+              $ scorep mpifort -pthread -fopenmp -o test test.o
 
 .. dropdown:: CUDA
 
