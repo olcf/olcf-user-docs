@@ -1093,7 +1093,6 @@ This section details 'tips and tricks' and information of interest to users when
 
 Using reduced precision (FP16, FP32, and BF16 datatypes)
 --------------------------------------------------------
-
 Users using BF16, FP16, and FP32 datatypes for applications such as ML/AI training and low-precision matrix multiplication should be aware that the AMD MI250X GPU has different denormal handling than the V100 GPUs on Summit. On the MI250X, the V_DOT2 and the matrix instructions for FP32, FP16, BF16, flush input and output denormal values to zero. FP64 MFMA instructions do not flush input and output denormal values to zero. 
 
 When training deep learning models using FP16 precision, some models may fail to converge with FP16 denorms flushed to zero. This occurs in operations encountering denormal values, and so is more likely to occur in FP16 because of a small dynamic range. BF16 and FP32 numbers have a larger dynamic range than FP16 numbers, and so are less likely to encounter denormal values.
