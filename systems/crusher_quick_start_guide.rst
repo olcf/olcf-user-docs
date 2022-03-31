@@ -1092,7 +1092,7 @@ Notable Differences between Summit and Crusher
 This section details 'tips and tricks' and information of interest to users when porting from Summit to Crusher.
 
 Using reduced precision (FP16, FP32, and BF16 datatypes)
-------------------------------------------------------------
+--------------------------------------------------------
 
 Users using BF16, FP16, and FP32 datatypes for applications such as ML/AI training and low-precision matrix multiplication should be aware that the AMD MI250X GPU has different denormal handling than the V100 GPUs on Summit. On the MI250X, the V_DOT2 and the matrix instructions for FP32, FP16, BF16, flush input and output denormal values to zero. FP64 MFMA instructions do not flush input and output denormal values to zero. 
 
