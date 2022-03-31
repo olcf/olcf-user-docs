@@ -270,7 +270,7 @@ port forward command. This will open a secure tunnel from your local machine to 
 
 .. code::
 
-   ssh -L <localport>:<Node ID>:<Remote port>  <USERID>$summit.olcf.ornl.gov
+   ssh -L <localport>:<Node ID>:<Remote port>  <USERID>@summit.olcf.ornl.gov
 
 .. Note::
 
