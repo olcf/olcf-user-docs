@@ -1049,6 +1049,46 @@ This example is an extension of Example 7 to use 2 compute nodes. With the appro
     MPI 030 - OMP 000 - HWT 056 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
     MPI 031 - OMP 000 - HWT 060 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
 
+
+**Example 9: 4 independent and simultaneous job steps in a single allocation**
+
+This example shows how to run multiple job steps simultaneously in a single allocation. The example below demonstrates running 4 independent, single rank MPI executions on a single node, however the example could be extrapolated to more complex invocations using the above examples.
+
+Submission script:
+
+.. code:: bash
+
+    #!/bin/bash
+    #SBATCH -A <projid>
+    #SBATCH -N 1
+    #SBATCH -t 10
+
+    srun -N1 -c1 --gpus-per-task=1 --exact ./hello_jobstep &
+    srun -N1 -c1 --gpus-per-task=1 --exact ./hello_jobstep &
+    srun -N1 -c1 --gpus-per-task=1 --exact ./hello_jobstep &
+    srun -N1 -c1 --gpus-per-task=1 --exact ./hello_jobstep &
+    wait
+
+
+Output:
+
+.. code:: bash
+
+   MPI 000 - OMP 000 - HWT 003 - Node crusher25 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
+   MPI 000 - OMP 000 - HWT 001 - Node crusher25 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
+   MPI 000 - OMP 000 - HWT 002 - Node crusher25 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID 48
+   MPI 000 - OMP 000 - HWT 000 - Node crusher25 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
+
+.. note::
+
+   The ``--exact`` parameter is important to avoid the error message ``srun: Job <job id> step creation temporarily disabled, retrying (Requested nodes are busy)``. The ``wait`` command is also critical, or your job script and allocation will immediately end after launching your jobs in the background.
+
+.. note::
+
+   This may result in a sub-optimal alignment of CPU and GPU on the node, as shown in the example output. Unfortunately, at the moment there is not a workaround for this, however improvements are possible in future SLURM updates.
+
+
+
 Multiple GPUs per MPI rank
 """"""""""""""""""""""""""
 
