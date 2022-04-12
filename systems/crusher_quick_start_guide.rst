@@ -291,6 +291,18 @@ Determining the Compatibility of Cray MPICH and ROCm
 
 Releases of ``cray-mpich`` are each built with a specific version of ROCm, and compatibility across multiple versions is not guaranteed. OLCF will maintain compatible default modules when possible. If using non-default modules, you can determine compatibility by reviewing the *Product and OS Dependencies* section in the ``cray-mpich`` release notes. This can be displayed by running ``module show cray-mpich/<version>``. If the notes indicate compatibility with *AMD ROCM X.Y or later*, only use ``rocm/X.Y.Z`` modules. If using a non-default version of ``cray-mpich``, you must add ``${CRAY_MPICH_ROOTDIR}/gtl/lib`` to either your ``LD_LIBRARY_PATH`` at run time or your executable's rpath at build time.
 
+The compatibility table below was determined by linker testing with all current combinations of ``cray-mpich`` and ``rocm`` modules on Crusher.
+
++------------+---------------------+
+| cray-mpich |        ROCm         |
++============+=====================+
+|   8.1.12   |    4.5.2, 4.5.0     |
++------------+---------------------+
+|   8.1.14   |    4.5.2, 4.5.0     |
++------------+---------------------+
+|   8.1.15   | 5.1.0, 5.0.2, 5.0.0 |
++------------+---------------------+
+
 OpenMP
 ------
 
