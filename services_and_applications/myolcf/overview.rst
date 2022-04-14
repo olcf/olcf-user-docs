@@ -18,7 +18,7 @@ What can it do?
 As you are waiting on your first user account, myOLCF lets you:
 
 * :ref:`Check the status <checking-application-status>` of your first-time account application
-* Schedule a video conference for identity proofing
+* `Schedule a video conference <https://my.olcf.ornl.gov/video-conference>__` for identity proofing
 
 As a current project member, myOLCF lets you:
 
@@ -30,8 +30,9 @@ As a current project member, myOLCF lets you:
 * View contact information for your fellow project members
 * View information about your projects' allocations
 * Examine usage metrics for your allocations at varied granularity
+* View the status and details of your OLCF help-desk tickets
 
-Additionaly, as a current principal investigator, myOLCF lets you:
+Additionally, as a current principal investigator, myOLCF lets you:
 
 * :ref:`Approve or deny requests <processing_project_membership_requests>` to join your project(s)
 * Apply for project renewal or extensions

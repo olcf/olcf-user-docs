@@ -33,5 +33,6 @@ to account-centric pages.
 
    "**My Profile**", "Your account profile data, and forms to update them"
    "**For My Approval**", "An interactive list of requests that need your feedback"
-   "**My Account Applications**", "An list of your pending and completed membership requests"
+   "**My Account Applications**", "A list of your pending and completed membership requests"
    "**Join Another Project**", "A form to request membership on an additional project"
+   "**Tickets**", "An interactive list of your tickets with the OLCF help-desk"
