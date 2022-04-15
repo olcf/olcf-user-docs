@@ -1194,6 +1194,56 @@ Additional information on MI250X reduced precision can be found at:
 
 ----
 
+# Floating-Point (FP) Atomic Operations and Coarse/Fine Grained Memory Allocations 
+
+The Crusher system, equipped with CDNA2-based architecture MI250X cards, offers a coherent host interface that enables advanced memory and unique cache coherency capabilities    . The AMD driver leverages   the Heterogeneous Memory Management (HMM) support in the Linux kernel to perform seamless page migrations to/from CPU/GPUs.   
+This new capability comes with a memory model that needs to be understood completely to avoid unexpected behavior in real applications. For more details, please visit the following link.
+AMD GPUs can allocate two different types of memory locations: 1) Coarse grained and 2) Fine grained.
+
+**Coarse grained** memory is only guaranteed to be coherent outside of GPU kernels that modify it, enabling higher performance memory operations. Changes applied to coarse-grained memory by a GPU kernel are  only visible to the rest of the system (CPU or other GPUs) when the kernel has completed. A GPU kernel is only guaranteed to see changes applied to coarse grained memory by the rest of the system (CPU or other GPUs) if those changes were made before the kernel launched.
+
+**Fine grained** memory allows CPUs and GPUs to synchronize (via atomics) and coherently communicate with each other while the GPU kernel is running, allowing more advanced programming patterns. The additional visibility  impacts the performance of fine-grained allocated memory.
+The fast hardware-based Floating point (FP) atomic operations available on MI250X are assumed to be working on coarse grained memory regions; when these instructions are applied to a fine-grained memory region, they will silently produce a no-op. To avoid returning incorrect results, the compiler never emits hardware-based FP atomics instructions by default, even when applied to coarse grained memory regions. Currently, users can use the `-munsafe-fp-atomics` flag to suggest to the compiler that hardware-based FP atomics be emitted. Using hardware-based FP atomics translates in a substantial performance improvement over the default choice.
+
+Users applying floating point atomic operations (e.g., atomicAdd) on memory regions allocated via regular hipMalloc can safely apply the `-munsafe-fp-atomics` flags to their codes to get the best possible performance and leverage hardware supported floating point atomics. Atomic operations supported in hardware on non-FP datatypes  (e.g., INT32) will work correctly regardless of the nature of the memory region used.
+The following tables summarize the result  granularity of various combinations of allocators, flags and arguments.
+
+For hipHostMalloc, the following table shows the nature of the memory returned based on the flag passed as argument and the status of the environment variable `HIP_HOST_COHERENT`.  If the `HIP_HOST_COHERENT` variable is not defined, it is considered to be set to 0.
+
+| Flag     | HIP_HOST_COHERENT = 0 | HIP_HOST_COHERENT = 1 |
+| --------------- | -------------- | -------------- |
+| hipHostMallocDefault  | Fine grained    | Fine grained |
+| hipHostMallocPortable | Coarse grained    | Fine grained |
+| hipHostMallocMapped   | Fine grained    | Fine grained |
+| hipHostMallocWriteCombined | Coarse grained    | Fine grained |
+| hipHostMallocNumaUser | Coarse grained    | Fine grained |
+| hipHostMallocCoherent | Fine grained    | Fine grained |
+| hipHostMallocNonCoherent | Coarse grained    | Coarse grained |
+
+The following table shows the nature of the memory returned based on the flag passed as argument to hipExtMallocWithFlags. 
+
+| API     | Flag/MemAdvise | Result |
+| --------------- | -------------- | -------------- |
+| hipExtMallocWithFlags()  | hipDeviceMallocDefault    | Coarse grained |
+| hipExtMallocWithFlags() | hipDeviceMallocFinegrained  | Fine grained |
+
+Finally, the following table summarizes the nature of the memory returned based on the flag passed as argument to hipMallocManaged and the use of CPU regular malloc() and mmap() routines with the possible use of hipMemAdvise.
+
+| API     | Flag/MemAdvise | Result |
+| --------------- | -------------- | -------------- |
+| hipMallocManaged()  | Default/hipMemAttachGlobal/hipMemAttachHost   | Fine grained |
+| hipMallocManaged() | hipMemAttachHost + hipMemAdvise (hipMemAdviseSetCoarseGrain)   | Coarse grained |
+| hipMallocManaged()   | hipMemAttachGlobal + hipMemAdvise ( hipMemAdviseSetCoarseGrain) | Coarse grained |
+| Malloc() |     | Fine grained |
+| Malloc() | hipMemAdvise ( hipMemAdviseSetCoarseGrain)  | Coarse grained |
+| Mmap() |     | Fine grained |
+| Mmap() | hipMemAdvise ( hipMemAdviseSetCoarseGrain)   | Coarse grained |
+
+
+For more details about this topic, click here.
+
+------
+
 Getting Help
 ============
 
