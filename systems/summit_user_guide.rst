@@ -4476,9 +4476,9 @@ Frontier today on Summit. To use HIP on Summit, you must load the HIP module:
 
 ::
 
-    $ module load hip
+    $ module load hip-cuda
 
-This will automatically load the appropriate CUDA module as well.
+CUDA 11.4.0 or later must be loaded in order to load the hip-cuda module.
 
 Learning to Program with HIP
 ----------------------------
