@@ -4479,6 +4479,7 @@ Frontier today on Summit. To use HIP on Summit, you must load the HIP module:
     $ module load hip-cuda
 
 CUDA 11.4.0 or later must be loaded in order to load the hip-cuda module.
+hipBLAS, hipFFT, hipSOLVER, and hipSPARSE have also been added to hip-cuda.
 
 Learning to Program with HIP
 ----------------------------
