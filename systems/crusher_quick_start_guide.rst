@@ -1208,21 +1208,16 @@ The fast hardware-based Floating point (FP) atomic operations available on MI250
 Users applying floating point atomic operations (e.g., atomicAdd) on memory regions allocated via regular hipMalloc can safely apply the `-munsafe-fp-atomics` flags to their codes to get the best possible performance and leverage hardware supported floating point atomics. Atomic operations supported in hardware on non-FP datatypes  (e.g., INT32) will work correctly regardless of the nature of the memory region used.
 The following tables summarize the result  granularity of various combinations of allocators, flags and arguments.
 
-For hipHostMalloc, the following table shows the nature of the memory returned based on the flag passed as argument and the status of the environment variable `HIP_HOST_COHERENT`.  If the `HIP_HOST_COHERENT` variable is not defined, it is considered to be set to 0.
+For hipHostMalloc, the following table shows the nature of the memory returned based on the flag passed as argument.
 
-| Flag     | HIP_HOST_COHERENT = 0 | HIP_HOST_COHERENT = 1 |
-| --------------- | -------------- | -------------- |
-| hipHostMallocDefault  | Fine grained    | Fine grained |
-| hipHostMallocPortable | Coarse grained    | Fine grained |
-| hipHostMallocMapped   | Fine grained    | Fine grained |
-| hipHostMallocWriteCombined | Coarse grained    | Fine grained |
-| hipHostMallocNumaUser | Coarse grained    | Fine grained |
-| hipHostMallocCoherent | Fine grained    | Fine grained |
-| hipHostMallocNonCoherent | Coarse grained    | Coarse grained |
+| Flag     | Result |
+| --------------- | -------------- |
+| hipHostMallocDefault  | Fine grained  |
+| hipHostMallocNonCoherent | Coarse grained  |
 
 The following table shows the nature of the memory returned based on the flag passed as argument to hipExtMallocWithFlags. 
 
-| API     | Flag/MemAdvise | Result |
+| API     | Flag | Result |
 | --------------- | -------------- | -------------- |
 | hipExtMallocWithFlags()  | hipDeviceMallocDefault    | Coarse grained |
 | hipExtMallocWithFlags() | hipDeviceMallocFinegrained  | Fine grained |
