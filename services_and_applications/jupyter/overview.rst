@@ -30,9 +30,14 @@ Access
 
 All members of currently enabled OLCF projects have access to the OLCF JupyterHub and JupyterLab.
 
-OLCF JupyterHub link: `https://jupyter.olcf.ornl.gov/ <https://jupyter.olcf.ornl.gov/>`__
+OLCF Moderate JupyterHub (for Moderate Security Enclave projects): `https://jupyter.olcf.ornl.gov/ <https://jupyter.olcf.ornl.gov/>`__
 
-The above link will present you with the page below. Please login with your OLCF account and PASSCODE.
+OLCF Open JupyterHub (for Open Security Enclave projects): `https://jupyter-open.olcf.ornl.gov/ <https://jupyter-open.olcf.ornl.gov/>`__
+
+The above links will present you with a page similar to below.
+
+- When using the `Moderate JupyterHub <https://jupyter.olcf.ornl.gov/>`__, please login with your OLCF Moderate account and PASSCODE.
+- When using the `Open JupyterHub <https://jupyter-open.olcf.ornl.gov/>`__, please login with either your OLCF Open account credentials (accepts both UCAMS and XCAMS accounts).
 
 .. image:: /images/jupyter/login.png
 
@@ -40,7 +45,7 @@ The above link will present you with the page below. Please login with your OLCF
 After succesfull authentication you will be presented with a choice of JupyterLab images (similar to the image below):
 
 - CPU-Only Lab
-- GPU-Lab
+- GPU-Lab (currently only available to Moderate Security Enclave projects)
 
 
 .. note::
@@ -67,25 +72,41 @@ CPU vs. GPU JupyterLab (Available Resources)
 Hardware Resources
 ^^^^^^^^^^^^^^^^^^
 
+.. tabbed:: Moderate JupyterHub
 
-Each CPU Lab, spawned by OLCF's JupyterHub, gets these default resources:
+    Each CPU Lab, spawned by OLCF's Moderate JupyterHub, gets these default resources:
 
-- 32 CPUs
-- 32GB Memory
-- NCCS filesystem access (GPFS and NFS)
-
-
-Each GPU Lab gets the following resources:
-
-- 16 CPUs
-- 32GB Memory
-- Nvidia V100 GPU
-- NCCS filesystem access (GPFS and NFS)
+    - 32 CPUs
+    - 32GB Memory
+    - NCCS filesystem access (GPFS and NFS)
 
 
-.. note::
-  You have the same filesystem access as if you were on Summit, to both NFS and
-  GPFS, as you will be working under your standard OLCF UID.
+    Each GPU Lab gets the following resources:
+
+    - 16 CPUs
+    - 32GB Memory
+    - Nvidia V100 GPU
+    - NCCS filesystem access (GPFS and NFS)
+
+    .. note::
+      You have the same filesystem access as if you were on Summit, to both NFS and
+      GPFS, as you will be working under your standard OLCF UID.
+
+.. tabbed:: Open JupyterHub
+
+    Each CPU Lab, spawned by OLCF's Open JupyterHub, gets these default resources:
+
+    - 8 CPUs
+    - 24GB Memory
+    - NCCS Open filesystem access (NFS only)
+
+
+    Each GPU Lab gets the following resources:
+
+    - Currently unavailable
+
+    .. note::
+      You have the same NFS filesystem access as if you were on Ascent.
 
 Software and Libraries
 ^^^^^^^^^^^^^^^^^^^^^^
