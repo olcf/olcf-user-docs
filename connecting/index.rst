@@ -238,9 +238,14 @@ and attach to it by number (or name if you have assigned one):
 ::
 
         $ tmux ls
-        0: 1 window (created Mon Apr 25 10:39:26 2022) [109x32]
+        1: 1 window (created Mon Apr 25 10:39:26 2022) [109x32]
 
-        $ tmux attach -t 0
+        $ tmux attach -t 1
+
+You can kill an existing tmux session by its ID with the following
+::
+
+        $ tmux kill-session -t 1
 
 After creating your first tmux session, a configuration file called ``.tmux.conf`` 
 will be automatically created in your home directory. You can edit this file to
