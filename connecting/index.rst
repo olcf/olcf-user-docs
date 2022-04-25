@@ -219,6 +219,35 @@ displayed by your SSH client does not match the OLCF-authorized RSA fingerprint
 (shown in the table above) for the machine you are accessing, do not continue
 authentication; instead, contact help@olcf.ornl.gov.
 
+************************
+Starting a Tmux Session
+************************
+
+Tmux is a terminal multiplexer available on home.ccs.ornl.gov that allows you to 
+easily open multiple connections to OLCF machines in a single window. To start a 
+session from home issue the following on the command line:
+
+::
+
+	$ tmux
+
+To detach from an active session, you can type ``Crtl-B D``. If you aren't sure what
+existing sessions you have running, you can type the following to list the sessions
+and attach to it by number (or name if you have assigned one):
+
+::
+
+        $ tmux ls
+        0: 1 window (created Mon Apr 25 10:39:26 2022) [109x32]
+
+        $ tmux attach -t 0
+
+After creating your first tmux session, a configuration file called ``.tmux.conf`` 
+will be automatically created in your home directory. You can edit this file to
+customize your tmux sessions. Check out the `tmux documentation 
+<https://github.com/tmux/tmux/wiki>`_ for more information on tmux commands 
+and customization.
+
 
 *****************************
 Checking System Availability
