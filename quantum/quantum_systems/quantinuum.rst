@@ -7,7 +7,7 @@ Overview
 
 Quantinuum offers access to trapped ion quantum computers and emulators,
 accessible via their API and User Portal. For the complete set of currently
-available devices, see the `Quantinuum User Portal <https://um.qapi.quantinuum.com/>`__. 
+available devices, qubit numbers, etc. see the *Quantinuum Systems User Guide* under the *Examples* tab on the `Quantinuum User Portal <https://um.qapi.quantinuum.com/>`__. 
 
 This guide describes how to use the system once you have access. For
 instructions on how to gain access, see our :doc:`Quantum Access
@@ -69,8 +69,7 @@ Running Jobs & Queue Policies
 =============================
 
 Information on submitting jobs to Quantinuum systems, system availability,
-checking job status, and tracking usage can be found under the  *Examples* tab
-on the `Quantinuum User Portal <https://um.qapi.quantinuum.com/>`__.
+checking job status, and tracking usage can be found in the *Quantinuum Systems User Guide* under the *Examples* tab on the `Quantinuum User Portal <https://um.qapi.quantinuum.com/>`__.
 
 Users have access to the API validator to check program syntax, and to the
 Quantinuum System Model H1 emulator, which returns actual results back as if
@@ -85,7 +84,7 @@ Allocations & Credit Usage
 ==========================
 
 Running a job on the System Model H1 family of hardware requires Quantinuum
-Credits. Additional information on credit usage can be found under the
+Credits. Additional information on credit usage can be found in the *Quantinuum Systems User Guide* under the
 *Examples* tab on the `Quantinuum User Portal <https://um.qapi.quantinuum.com/>`__.
 Users and groups are initially allocated 500 HQC's and 2000 eHQC's at the
 beginning of each month, but requests for increased allocations will be
