@@ -82,7 +82,7 @@ Running a job on the Aspen-11 system requires Rigetti credits, denoted in
 dollars, $.  QPUs are accessed via reservation with a minimum of 15 minutes at
 $40/minute, for a minimum charge of $600.  Users are initially allocated $2400
 in credits at the beginning of a project, but requests for increased
-allocations will be reviewed by the QRUC.
+allocations should be submitted (with a brief explanation) to help@olcf.ornl.gov and will be reviewed by the QRUC.
 
 Data Storage Policies
 =====================

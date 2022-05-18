@@ -172,13 +172,13 @@ statuses, and view the results of your past jobs. More information about using
 these IBM quantum resources can be found on the `IBM's Documentation <https://quantum-computing.ibm.com/docs/>`__
 or our :doc:`OLCF IBM Quantum Guide </quantum/quantum_systems/ibm_quantum>`.
 
-Quantinuum (previously Honeywell)
----------------------------------
+Quantinuum 
+----------
 
 After submitting the OLCF quantum account application and receiving approval,
 you will receive an email from Quantinuum inviting you to create your quantum
 account. Once logged in, users will have access to Quantinuum's User Interface,
-`<https://um.qapi.honeywell.com>`__, their online platform for managing jobs and 
+`<https://um.qapi.quantinuum.com>`__, their online platform for managing jobs and 
 accessing the available quantum systems, including the System Model H1, via the 
 cloud. From the UI, users can view system status and upcoming system availability, 
 as well as monitor batch submissions and job history. Information on using the 

@@ -120,13 +120,11 @@ There is a limited number of minutes per month that can be reserved on each
 device. Reservations are supported on these devices with these monthly
 allocations:
 
-  * ibmq_toronto, 1800 minutes per month 
+  * ibmq_toronto, 2400 minutes per month 
 
-  * ibmq_jakarta, 720 minutes per month
+  * ibmq_kolkata, 2400 minutes per month
 
-  * ibmq_lagos, 720 minutes per month
-
-  * ibmq_perth, 720 minutes per month
+  * ibmq_jakarta, 480 minutes per month
 
 Checking System Availability & Capability
 =========================================
