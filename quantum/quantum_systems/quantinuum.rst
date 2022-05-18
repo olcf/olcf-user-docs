@@ -87,5 +87,4 @@ Running a job on the System Model H1 family of hardware requires Quantinuum
 Credits. Additional information on credit usage can be found in the *Quantinuum Systems User Guide* under the
 *Examples* tab on the `Quantinuum User Portal <https://um.qapi.quantinuum.com/>`__.
 Users and groups are initially allocated 500 HQC's and 2000 eHQC's at the
-beginning of each month, but requests for increased allocations will be
-reviewed by the QRUC.
+beginning of each month, but requests for increased allocations should be submitted (with a brief explanation) to help@olcf.ornl.gov and will be reviewed by the QRUC.
