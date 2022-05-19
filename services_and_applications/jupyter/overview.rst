@@ -74,7 +74,7 @@ Hardware Resources
 
 .. tabbed:: Moderate JupyterHub
 
-    Each CPU Lab, spawned by OLCF's Moderate JupyterHub, gets these default resources:
+    Each CPU Lab spawned by OLCF's Moderate JupyterHub gets these default resources:
 
     - 32 CPUs
     - 32GB Memory
@@ -94,11 +94,11 @@ Hardware Resources
 
 .. tabbed:: Open JupyterHub
 
-    Each CPU Lab, spawned by OLCF's Open JupyterHub, gets these default resources:
+    Each CPU Lab spawned by OLCF's Open JupyterHub gets these default resources:
 
     - 8 CPUs
     - 24GB Memory
-    - NCCS Open filesystem access (NFS only)
+    - NCCS Open filesystem access (GPFS and NFS)
 
 
     Each GPU Lab gets the following resources:
@@ -106,7 +106,7 @@ Hardware Resources
     - Currently unavailable
 
     .. note::
-      You have the same NFS filesystem access as if you were on Ascent.
+      You have the same filesystem access as if you were on Ascent, to both NFS and GPFS.
 
 Software and Libraries
 ^^^^^^^^^^^^^^^^^^^^^^
