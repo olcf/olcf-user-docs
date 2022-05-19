@@ -12,6 +12,7 @@ The table below lists presentations given at previous OLCF training events. For 
 .. csv-table::
    :header: "Date", "Title", "Speaker", "Event", "Presentation"
 
+   "2022-04-07", "CODING FOR GPUS USING STANDARD Fortran", "Jeff Larkin", `CODING FOR GPUS USING STANDARD Fortran <https://www.olcf.ornl.gov/calendar/coding-for-gpus-using-standard-fortran/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/20220513_OLCF_Fortran.pdf>`__ | `recording <https://vimeo.com/manage/videos/711784748>`__)
    "2022-04-07", "CODING FOR GPUS USING STANDARD C++", "Robert Searles", `CODING FOR GPUS USING STANDARD C++ <https://www.olcf.ornl.gov/calendar/coding-for-gpus-using-standard-c/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/4-7-22-ORNL-Stdpar.pdf>`__ | `recording <https://vimeo.com/697495123>`__)
    "2022-02-23", "OLCF Best Practices and Overview for New Users (Hands-on/Exercises)", "Suzanne Parete-Koon (OLCF)", `February 2022 OLCF User Conference Call <https://www.olcf.ornl.gov/calendar/userconcall-feb2022/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2022/02/Introduction-to-Job-Submission-on-Summit.pdf>`__ | `recording <https://vimeo.com/681464497>`__)
    "2022-02-23", "OLCF Best Practices and Overview for New Users (Presentation)", "Bill Renaud (OLCF)", `February 2022 OLCF User Conference Call <https://www.olcf.ornl.gov/calendar/userconcall-feb2022/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2022/02/Best-Practices-2022.pdf>`__ | `recording <https://vimeo.com/681464868>`__)
