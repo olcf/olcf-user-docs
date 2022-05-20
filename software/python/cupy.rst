@@ -98,7 +98,7 @@ To make sure that you are building from source, and not a pre-compiled binary, u
 
 .. code-block:: bash
 
-   $ CUDA_PATH="${CUDAPATH}" CC=gcc NVCC=nvcc pip install --no-binary=cupy cupy
+   $ CC=gcc NVCC=nvcc pip install --no-binary=cupy cupy
 
 The ``CUDA_PATH`` flag makes sure that you are using the correct path set by the ``cuda`` module, while the ``CC`` and ``NVCC`` flags ensure that you are passing the correct wrappers. Note that, if you are using the instructions for installing CuPy with OpenCE below, the ``cuda/11.0.3`` module will automatically be loaded.
 This installation takes, on average, 20 minutes to complete (due to building everything from scratch), so don't panic if it looks like the install timed-out.
@@ -131,7 +131,7 @@ Next, install CuPy the way you did before. This installation will use the system
 
 .. code-block::
 
-   $ CUDA_PATH="${CUDAPATH}"CC=gcc NVCC=nvcc pip install --no-binary=cupy cupy
+   $ CC=gcc NVCC=nvcc pip install --no-binary=cupy cupy
 
 Now, everytime you want to use this environment with CuPy on a new login or in a job, you will have to do the sequence of the following
 
