@@ -100,13 +100,51 @@ To make sure that you are building from source, and not a pre-compiled binary, u
 
    $ CUDA_PATH="${CUDAPATH}" CC=gcc NVCC=nvcc pip install --no-binary=cupy cupy
 
-The ``CUDA_PATH`` flag makes sure that you are using the correct path set by the ``cuda`` module, while the ``CC`` and ``NVCC`` flags ensure that you are passing the correct wrappers. Note that, if you modify these instructions to use the ``open-ce`` module instead, the ``cuda/11.0.3`` module will automatically be loaded but ``CUDA_PATH`` will not be set.
+The ``CUDA_PATH`` flag makes sure that you are using the correct path set by the ``cuda`` module, while the ``CC`` and ``NVCC`` flags ensure that you are passing the correct wrappers. Note that, if you are using the instructions for installing CuPy with OpenCE below, the ``cuda/11.0.3`` module will automatically be loaded.
 This installation takes, on average, 20 minutes to complete (due to building everything from scratch), so don't panic if it looks like the install timed-out.
 Eventually you should see output similar to:
 
 .. code-block::
 
    Successfully installed cupy-9.5.0 fastrlock-0.6
+
+Installing CuPy in an OpenCE Environment
+-----------------------------------------
+
+If you wish to use CuPy within a clone of the OpenCE environment, the installation process is very similar to what we do in the regular CuPy installation we saw above.
+
+.. warning::
+   The open-ce/1.2.0-pyXY-0 (which is the current default) will not support this. So make sure you are using open-ce/1.5.0-pyXY-0 or higher.
+   
+The contents of the open-ce module cannot be modified so you need to make your own clone of the open-ce environment.
+
+.. code-block::
+
+   $ module purge
+   $ module load DefApps
+   $ module unload xl
+   $ module load open-ce/1.5.2-py39-0
+   $ conda create --clone open-ce-1.5.2-py39-0 -p /ccs/proj/<project_id>/<user_id>/conda_envs/summit/opence_cupy_summit
+   $ conda activate /ccs/proj/<project_id>/<user_id>/conda_envs/summit/opence_cupy_summit
+
+Next, install CuPy the way you did before. This installation will use the system GCC /usr/bin/gcc which is currently 8.3.1.
+
+.. code-block::
+
+   $ CUDA_PATH="${CUDAPATH}"CC=gcc NVCC=nvcc pip install --no-binary=cupy cupy
+
+Now, everytime you want to use this environment with CuPy on a new login or in a job, you will have to do the sequence of the following
+
+.. code-block::
+
+   module purge
+   module load DefApps
+   module unload xl
+   module load open-ce/1.5.2-py39-0
+   conda activate /ccs/proj/<project_id>/<user_id>/conda_envs/summit/opence_cupy_summit
+
+
+
 
 Getting Started With CuPy
 =========================
