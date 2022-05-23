@@ -1204,32 +1204,51 @@ XNACK (pronounced X-knack) refers to the AMD GPU's ability to retry memory acces
 
 If ``HSA_XNACK=0``, page faults in GPU kernels are not handled and will terminate the kernel. Therefore all memory locations accessed by the GPU must either be resident in the GPU HBM or mapped by the HIP runtime. Memory regions may be migrated between the host DDR4 and GPU HBM using explicit HIP library functions such as ``hipMemAdvise`` and ``hipPrefetchAsync``, but memory will not be automatically migrated based on access patterns alone.
 
-If ``HSA_XNACK=1``, page faults in GPU kernels will trigger a page table lookup. If the memory location can be made accessible to the GPU, either by being migrated to GPU HBM or being mapped for remote access, the appropriate action will occur and the access will be replayed. Once a memory region has been migrated to GPU HBM it typically stays there rather than migrating back to CPU DDR4. The exceptions are if the programmer uses a HIP library call such as ``hipPrefetchAsync`` to request migration, or if GPU HBM becomes full and the page must forcibly be evicted back to CPU DDR4 to make room for other data.
+If ``HSA_XNACK=1``, page faults in GPU kernels will trigger a page table lookup. If the memory location can be made accessible to the GPU, either by being migrated to GPU HBM or being mapped for remote access, the appropriate action will occur and the access will be replayed. Page migration  will happen between CPU DDR4 and GPU HBM according to page touch. The exceptions are if the programmer uses a HIP library call such as ``hipPrefetchAsync`` to request migration, or if a preferred location is set via ``hipMemAdvise``, or if GPU HBM becomes full and the page must forcibly be evicted back to CPU DDR4 to make room for other data.
+
+..
+   If ``HSA_XNACK=1``, page faults in GPU kernels will trigger a page table lookup. If the memory location can be made accessible to the GPU, either by being migrated to GPU HBM or being mapped for remote access, the appropriate action will occur and the access will be replayed. Once a memory region has been migrated to GPU HBM it typically stays there rather than migrating back to CPU DDR4. The exceptions are if the programmer uses a HIP library call such as ``hipPrefetchAsync`` to request migration, or if GPU HBM becomes full and the page must forcibly be evicted back to CPU DDR4 to make room for other data.
 
 
 Migration of Memory by Allocator and XNACK Mode
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Most applications that use "managed" or "unified" memory on other platforms will want to enable XNACK to take advantage of automatic page migration on Crusher. The following table shows how common allocators behave with XNACK enabled. The behavior of a specific memory region may vary from the default if the programmer uses certain API calls.
+Most applications that use "managed" or "unified" memory on other platforms will want to enable XNACK to take advantage of automatic page migration on Crusher. The following table shows how common allocators currently behave with XNACK enabled. The behavior of a specific memory region may vary from the default if the programmer uses certain API calls.
 
 
 .. note::
-    CPU accesses to migratable memory may behave differently than other platforms you're used to. On Crusher, pages will not migrate from GPU HBM to CPU DDR4 based on access patterns alone. Once a page has migrated to GPU HBM it will remain there even if the CPU accesses it, and all accesses which do not resolve in the CPU cache will occur over the Infinity Fabric between the Trento CPU and the MI250X. Pages will only *automatically* migrate back to CPU DDR4 if they are forcibly evicted to free HBM capacity, although programmers may use HIP APIs to manually migrate memory regions.
+   The page migration behavior summarized by the following tables represents the current, observable behavior. Said behavior will likely change in the near future.
+
+    ..
+       CPU accesses to migratable memory may behave differently than other platforms you're used to. On Crusher, pages will not migrate from GPU HBM to CPU DDR4 based on access patterns alone. Once a page has migrated to GPU HBM it will remain there even if the CPU accesses it, and all accesses which do not resolve in the CPU cache will occur over the Infinity Fabric between the Trento CPU and the MI250X. Pages will only *automatically* migrate back to CPU DDR4 if they are forcibly evicted to free HBM capacity, although programmers may use HIP APIs to manually migrate memory regions.
 
 ``HSA_XNACK=1`` **Automatic Page Migration Enabled**
+
+..
+   +---------------------------------------------+---------------------------+--------------------------------------------+----------------------------------------------------+
+   | Allocator                                   | Initial Physical Location | CPU Access after GPU First Touch           | Default Behavior for GPU Access                    |
+   +=============================================+===========================+============================================+====================================================+
+   | System Allocator (malloc,new,allocate, etc) | Determined by first touch | Zero copy read/write                       | Migrate to GPU HBM on touch, then local read/write |
+   +---------------------------------------------+---------------------------+--------------------------------------------+----------------------------------------------------+
+   | hipMallocManaged                            | GPU HBM                   | Zero copy read/write                       | Populate in  GPU HBM, then local read/write        |
+   +---------------------------------------------+---------------------------+--------------------------------------------+----------------------------------------------------+
+   | hipHostMalloc                               | CPU DDR4                  | Local read/write                           | Zero copy read/write over Infinity Fabric          |
+   +---------------------------------------------+---------------------------+--------------------------------------------+----------------------------------------------------+
+   | hipMalloc                                   | GPU HBM                   | Zero copy read/write over Inifinity Fabric | Local read/write                                   |
+   +---------------------------------------------+---------------------------+--------------------------------------------+----------------------------------------------------+
 
 +---------------------------------------------+---------------------------+--------------------------------------------+----------------------------------------------------+
 | Allocator                                   | Initial Physical Location | CPU Access after GPU First Touch           | Default Behavior for GPU Access                    |
 +=============================================+===========================+============================================+====================================================+
-| System Allocator (malloc,new,allocate, etc) | Determined by first touch | Zero copy read/write                       | Migrate to GPU HBM on touch, then local read/write |
+| System Allocator (malloc,new,allocate, etc) | CPU DDR4                  | Migrate to CPU DDR4 on touch               | Migrate to GPU HBM on touch                        |
 +---------------------------------------------+---------------------------+--------------------------------------------+----------------------------------------------------+
-| hipMallocManaged                            | GPU HBM                   | Zero copy read/write                       | Populate in  GPU HBM, then local read/write        |
+| hipMallocManaged                            | CPU DDR4                  | Migrate to CPU DDR4 on touch               | Migrate to GPU HBM on touch                        |
 +---------------------------------------------+---------------------------+--------------------------------------------+----------------------------------------------------+
 | hipHostMalloc                               | CPU DDR4                  | Local read/write                           | Zero copy read/write over Infinity Fabric          |
 +---------------------------------------------+---------------------------+--------------------------------------------+----------------------------------------------------+
 | hipMalloc                                   | GPU HBM                   | Zero copy read/write over Inifinity Fabric | Local read/write                                   |
 +---------------------------------------------+---------------------------+--------------------------------------------+----------------------------------------------------+
-
+   
 Disabling XNACK will not necessarily result in an application failure, as most types of memory can still be accessed by the Trento CPU and MI250X. In most cases, however, the access will occur in a zero-copy fashion over the Infinity Fabric. The exception is memory allocated through standard system allocators such as ``malloc``, which cannot be accessed directly from GPU kernels without previously being registered via a HIP runtime call such as ``hipHostRegister``. Access to malloc'ed and unregistered memory from GPU kernels will result in fatal unhandled page faults. The table below shows how common allocators behave with XNACK disabled.
 
 ``HSA_XNACK=0`` **Automatic Page Migration Disabled**
@@ -1239,7 +1258,7 @@ Disabling XNACK will not necessarily result in an application failure, as most t
 +=============================================+===========================+============================================+=============================================+
 | System Allocator (malloc,new,allocate, etc) | CPU DDR4                  | Local read/write                           | Fatal Unhandled Page Fault                  |
 +---------------------------------------------+---------------------------+--------------------------------------------+---------------------------------------------+
-| hipMallocManaged                            | GPU HBM                   | Zero copy read/write over Infinity Fabric  | Local read/write                            |
+| hipMallocManaged                            | CPU DDR4                  | Zero copy read/write over Infinity Fabric  | Local read/write                            |
 +---------------------------------------------+---------------------------+--------------------------------------------+---------------------------------------------+
 | hipHostMalloc                               | CPU DDR4                  | Local read/write                           | Zero copy read/write over Infinity Fabric   |
 +---------------------------------------------+---------------------------+--------------------------------------------+---------------------------------------------+
@@ -1248,7 +1267,7 @@ Disabling XNACK will not necessarily result in an application failure, as most t
 
 Compiling HIP kernels for specific XNACK modes
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Although XNACK is a capability of the MI250X GPU, it does require that kernels be able to recover from page faults. Both the ROCM and CCE HIP compilers will default to generating code that runs correctly with both XNACK enabled and disabled. Some applications may benefit from using the following compilation options to target specific XNACK modes.
+Although XNACK is a capability of the MI250X GPU, it does require that kernels be able to recover from page faults. Both the ROCm and CCE HIP compilers will default to generating code that runs correctly with both XNACK enabled and disabled. Some applications may benefit from using the following compilation options to target specific XNACK modes.
 
 | ``hipcc --amdgpu-target=gfx90a`` or ``CC --offload-arch=gfx90a -x hip``
 |   Kernels are compiled to a single "xnack any" binary, which will run correctly with both XNACK enabled and XNACK disabled.
