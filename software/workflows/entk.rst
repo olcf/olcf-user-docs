@@ -41,7 +41,7 @@ define environment variables.
 .. code-block:: bash
 
     module load workflows
-    module load entk
+    module load entk/1.13.0
 
     export RADICAL_PILOT_DBURL="mongodb://admin:password@apps.marble.ccs.ornl.gov:32767/test"
     export RMQ_HOSTNAME="apps.marble.ccs.ornl.gov"
