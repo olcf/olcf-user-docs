@@ -59,8 +59,8 @@ The second will be named ``demo.py``:
     print("Tracking URI:", mlflow.tracking.get_tracking_uri())
 
     with mlflow.start_run() as run:
-        print("run_id:", run.info.run_id)
-        print("artifact_uri:", mlflow.get_artifact_uri())
+        print("Run ID:", run.info.run_id)
+        print("Artifact URI:", mlflow.get_artifact_uri())
         with open("hello.txt", "w") as f:
             f.write("Hello world!")
             mlflow.log_artifact("hello.txt")
