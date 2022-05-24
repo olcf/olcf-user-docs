@@ -78,6 +78,7 @@ change ``abc123`` to match your own project identifier:
     #BSUB -o mlflow_demo.o%J
     #BSUB -e mlflow_demo.e%J
 
+    module load git
     module load workflows
     module load mlflow/1.22.0
 
