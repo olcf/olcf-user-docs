@@ -27,6 +27,19 @@ but the tutorial for RabbitMQ is forthcoming.
 You will need to know the connection information for both MongoDB and RabbitMQ
 so that EnTK can be configured to connect to the services.
 
+Then, to use EnTK on Summit, load the module as shown below:
+
+.. code-block:: console
+
+    $ module load workflows
+    $ module load entk/1.13.0
+
+Run the following command to verify that EnTK is available:
+
+.. code-block:: console
+
+    $ radical-utils-version
+    1.13.0
 
 Hello world!
 ============
