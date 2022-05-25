@@ -17,14 +17,14 @@ millions of workflows encompassing tens of millions of CPU-hours across diverse
 application areas and in long-term production projects over the span of
 multiple years.
 
-To learn more about FireWorks, refer to its extensive online
+To learn more about FireWorks, please refer to its extensive online
 `documentation <https://materialsproject.github.io/fireworks/>`_.
 
 
 Prerequisites
 ================
 
-Before using EnTK itself, you will need a MongoDB service running
+Before using FireWorks itself, you will need a MongoDB service running
 on :ref:`Slate<slate>`. There is a tutorial for MongoDB elsewhere in this
 documentation.
 
