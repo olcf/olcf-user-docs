@@ -25,8 +25,8 @@ Prerequisites
 ================
 
 Before using FireWorks itself, you will need a MongoDB service running
-on :ref:`Slate<slate>`. There is a tutorial for MongoDB elsewhere in this
-documentation.
+on :ref:`Slate<slate>`. A tutorial to deploy MongoDB is available in the
+Slate `documentation <https://docs.olcf.ornl.gov/services_and_applications/slate/use_cases/mongodb_service.html>`_.
 
 You will need to know the connection information for both MongoDB so that
 FireWorks can be configured to connect to it.
