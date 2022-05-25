@@ -84,9 +84,9 @@ change ``abc123`` to match your own project identifier:
     #BSUB -W 10
     #BSUB -nnodes 1
 
-    #BSUB -J mlflow_demo
-    #BSUB -o mlflow_demo.o%J
-    #BSUB -e mlflow_demo.e%J
+    #BSUB -J fireworks_demo
+    #BSUB -o fireworks_demo.o%J
+    #BSUB -e fireworks_demo.e%J
 
     module load workflows
     module load fireworks/2.0.2
