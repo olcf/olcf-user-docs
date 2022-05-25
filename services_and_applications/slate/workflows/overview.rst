@@ -74,4 +74,4 @@ For more information as well as how to install and use ArgoCD on Slate, see: :re
 Scientific Workflows
 ^^^^^^^^^^^^^^^^^^^^
 
-*Coming soon.*
+:ref:`workflows`
