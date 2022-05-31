@@ -18,7 +18,7 @@ application areas and in long-term production projects over the span of
 multiple years.
 
 To learn more about FireWorks, please refer to its extensive online
-`documentation <https://materialsproject.github.io/fireworks/>`_.
+`documentation <https://materialsproject.github.io/fireworks/>`__.
 
 
 Prerequisites
@@ -26,7 +26,7 @@ Prerequisites
 
 Before using FireWorks itself, you will need a MongoDB service running
 on :ref:`Slate<slate>`. A tutorial to deploy MongoDB is available in the
-Slate `documentation <https://docs.olcf.ornl.gov/services_and_applications/slate/use_cases/mongodb_service.html>`_.
+Slate `documentation <https://docs.olcf.ornl.gov/services_and_applications/slate/use_cases/mongodb_service.html>`__.
 
 You will need to know the connection information for both MongoDB so that
 FireWorks can be configured to connect to it.

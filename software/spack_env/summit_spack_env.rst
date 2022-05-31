@@ -79,7 +79,7 @@ installed by the user.
   - Users should not uninstall packages from the upstream instance. Since the upstream instance doesn’t know about
     the local instance, it cannot prevent the uninstallation of packages which the local instance depends on.
 
-  See `here <https://spack.readthedocs.io/en/latest/chain.html#chaining-spack-installations>`_ for more information
+  See `here <https://spack.readthedocs.io/en/latest/chain.html#chaining-spack-installations>`__ for more information
   regarding chained Spack instances.
 
 Add Dependencies to the environment
@@ -142,7 +142,7 @@ For more information regarding Spack and its usage, please see `the Spack docume
 
 For an extensive tutorial concerning Spack, go to `the Spack 101 tutorial <https://spack-tutorial.readthedocs.io/en/latest>`_.
 
-For more information concerning external packages, please see `here <https://spack.readthedocs.io/en/latest/build_settings.html#external-packages>`_.
+For more information concerning external packages, please see `here <https://spack.readthedocs.io/en/latest/build_settings.html#external-packages>`__.
 
 References
 ********************************************

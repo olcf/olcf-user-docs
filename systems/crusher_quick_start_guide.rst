@@ -496,7 +496,7 @@ To request an interactive job where multiple job steps (i.e., multiple ``srun`` 
 
 Here, ``salloc`` is used to request an allocation of 2 compute nodes for 5 minutes. Once the resources become available, the user is granted access to the compute nodes (``crusher010`` and ``crusher011`` in this case) and can launch job steps on them using ``srun``.
 
-.. _single-command:
+.. _single-command-crusher:
 
 Single Command (non-interactive)
 """"""""""""""""""""""""""""""""
