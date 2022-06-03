@@ -237,7 +237,7 @@ Let's build an simple MPI example container using the prebuilt MPI base image fr
      podman save -o mpiexampleimage.tar localhost/mpiexample:latest;
      singularity build --disable-cache mpiexampleimage.sif docker-archive://mpiexampleimage.tar;
 
-- It's possible the singularity build step might get killed due to reaching cgroup memory limit. To get around this, you can start an interactive job and build the singularity image with
+- It's possible the ``singularity build`` step might get killed due to reaching cgroup memory limit. To get around this, you can start an interactive job and build the singularity image with
   ::
 
      jsrun -n1 -c42 -brs singularity build --disable-cache mpiexampleimage.sif docker-archive://mpiexampleimage.tar;
@@ -278,6 +278,100 @@ try running the build again if that happens when building.
    will be purged on reboot or if it becomes too full with no warning. It is the user's
    responsibility to make sure they to save any images they have as tar files or sif files
    and load them on a new session.
+
+
+Running a single node GPU program with the OLCF MPI base image
+--------------------------------------------------------------
+
+Singularity provides the ability to access the GPUs from the containers, allowing you to containerize GPU programs. 
+The OLCF provided MPI base image already has CUDA libraries preinstalled and can be used for CUDA programs as well. You can pull it with Podman with ``podman pull code.ornl.gov:4567/olcfcontainers/olcfbaseimages/mpiimage-centos-cuda``. 
+
+.. note::
+   The OLCF provided MPI base image currently has CUDA 11.0.3 and CuDNN 8.2. If these don't fit your needs, you can build your own base image by modifying the files from the `code.ornl.gov repository <https://code.ornl.gov/olcfcontainers/olcfbaseimages>`_.
+
+Let's build an simple CUDA example container using the MPI base image from the repository.
+
+- Create a new directory ``gpuexample``.
+
+- Create a file ``cudaexample.cu`` with the following contents
+  ::
+
+     #include <stdio.h>
+     #define N 1000
+     
+     __global__
+     void add(int *a, int *b) {
+         int i = blockIdx.x;
+         if (i<N) {
+             b[i] = 2*a[i];
+         }
+     }
+     
+     int main() {
+         int ha[N], hb[N];
+     
+         int *da, *db;
+         cudaMalloc((void **)&da, N*sizeof(int));
+         cudaMalloc((void **)&db, N*sizeof(int));
+     
+         for (int i = 0; i<N; ++i) {
+             ha[i] = i;
+         }
+     cudaMemcpy(da, ha, N*sizeof(int), cudaMemcpyHostToDevice);
+
+     add<<<N, 1>>>(da, db);
+
+     cudaMemcpy(hb, db, N*sizeof(int), cudaMemcpyDeviceToHost);
+
+     for (int i = 0; i<N; ++i) {
+         if(i+i != hb[i]) {
+             printf("Something went wrong in the GPU calculation\n");
+         }
+     }
+     printf("COMPLETE!");
+          cudaFree(da);
+          cudaFree(db);
+      
+          return 0;
+     }
+
+
+- Create a file named ``gpuexample.dockerfile`` with the following contents
+  ::
+
+     FROM code.ornl.gov:4567/olcfcontainers/olcfbaseimages/mpiimage-centos-cuda:latest
+     RUN mkdir /app
+     COPY cudaexample.cu /app
+     RUN cd /app && nvcc -o cudaexample cudaexample.cu
+
+- Run the following commands to build the container image with Podman and convert it to Singularity
+  :: 
+     
+     podman build -f gpuexample.dockerfile -t gpuexample:latest .;
+     podman save -o gpuexampleimage.tar localhost/gpuexample:latest;
+     singularity build --disable-cache gpuexampleimage.sif docker-archive://gpuexampleimage.tar;
+
+
+- It's possible the ``singularity build`` step might get killed due to reaching cgroup memory limit. To get around this, you can start an interactive job and build the singularity image with
+  ::
+
+     jsrun -n1 -c42 -brs singularity build --disable-cache gpuexampleimage.sif docker-archive://gpuexampleimage.tar;
+
+
+- Create the following submit script submit.lsf. Make sure you replace the ``#BSUB -P STF007`` line with your own project ID.
+  ::
+
+     #BSUB -P STF007
+     #BSUB -W 0:30
+     #BSUB -nnodes 2
+     #BSUB -J singularity
+     #BSUB -o singularity.%J
+     #BSUB -e singularity.%J
+     
+     jsrun -n 1 -c 1 -g 1 singularity exec --nv gpuexampleimage.sif /app/cudaexample
+
+  The ``--nv`` flag is needed to tell Singularity to make use of the GPU.
+
 
 
 Tips and Tricks
