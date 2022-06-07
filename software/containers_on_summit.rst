@@ -33,7 +33,9 @@ using ``podman save`` and stored elsewhere if you wish to preserve your image.
    node is different with an independent NVMe. So you will not find the container layers
    built on one login node to appear in another login node. Every time you login to
    Summit, the load balancer may put you on a different login node than where you were
-   working on building your container. It is the user's responsibility to save any in
+   working on building your container. Even if you try to stick to the same login node,
+   the NVMes should be treated as temporary storage as they can be purged anytime, during
+   a reboot or for some other reason. It is the user's responsibility to save any in
    progress or completed container image build as a tar file or sif file before you close
    a session.
 
@@ -273,11 +275,6 @@ images to your own needs if you don't need all the components in the base images
 run into the cgroup memory limit when building so kill the podman process, log out, and
 try running the build again if that happens when building.
 
-.. note::
-   Treat your Podman storage as temporary storage. The NVMes on the login nodes
-   will be purged on reboot or if it becomes too full with no warning. It is the user's
-   responsibility to make sure they to save any images they have as tar files or sif files
-   and load them on a new session.
 
 
 Running a single node GPU program with the OLCF MPI base image
@@ -344,6 +341,7 @@ Let's build an simple CUDA example container using the MPI base image from the r
      COPY cudaexample.cu /app
      RUN cd /app && nvcc -o cudaexample cudaexample.cu
 
+
 - Run the following commands to build the container image with Podman and convert it to Singularity
   :: 
      
@@ -363,7 +361,7 @@ Let's build an simple CUDA example container using the MPI base image from the r
 
      #BSUB -P STF007
      #BSUB -W 0:30
-     #BSUB -nnodes 2
+     #BSUB -nnodes 1
      #BSUB -J singularity
      #BSUB -o singularity.%J
      #BSUB -e singularity.%J
@@ -373,6 +371,74 @@ Let's build an simple CUDA example container using the MPI base image from the r
   The ``--nv`` flag is needed to tell Singularity to make use of the GPU.
 
 
+Running a CUDA-Aware MPI program with the OLCF MPI base image
+-------------------------------------------------------------
+
+You can run containers with CUDA-aware MPI as well. CUDA-aware MPI allows transferring GPU
+data with MPI without needing to copy the data over to CPU memory first. Read more
+:ref:`CUDA-Aware MPI`.
+
+Let's build and run a container that will demonstrate CUDA-aware MPI. 
+
+- Create a new directory ``cudawarempiexample``.
+
+- Run the below wget commands to obtain the example code and Makefile from the `OLCF
+  tutorial example page <https://github.com/olcf-tutorials/MPI_ping_pong>`_.
+
+  ::
+
+     wget -O Makefile https://raw.githubusercontent.com/olcf-tutorials/MPI_ping_pong/master/cuda_aware/Makefile
+     wget -O ping_pong_cuda_aware.cu https://raw.githubusercontent.com/olcf-tutorials/MPI_ping_pong/master/cuda_aware/ping_pong_cuda_aware.cu
+
+- Create a file named ``cudaawarempiexample.dockerfile`` with the following contents
+  ::
+
+     FROM code.ornl.gov:4567/olcfcontainers/olcfbaseimages/mpiimage-centos-cuda:latest
+     ARG mpi_root
+     ENV OMPI_DIR=$mpi_root
+     RUN mkdir /app
+     COPY ping_pong_cuda_aware.cu Makefile /app
+     RUN cd /app && make
+
+- Run the following commands to build the container image with Podman and convert it to Singularity
+  :: 
+     
+     module purge
+     module load DefApps
+     module load gcc/9.1.0
+     module -t list
+     podman build --build-arg mpi_root=$MPI_ROOT -v $MPI_ROOT:$MPI_ROOT -f cudawarempiexample.dockerfile -t cudawarempiexample:latest .;
+     podman save -o cudawarempiexampleimage.tar localhost/cudawarempiexample:latest;
+     singularity build --disable-cache cudawarempiexampleimage.sif docker-archive://cudawarempiexampleimage.tar;
+
+
+- It's possible the ``singularity build`` step might get killed due to reaching cgroup memory limit. To get around this, you can start an interactive job and build the singularity image with
+  ::
+
+     jsrun -n1 -c42 -brs singularity build cudawarempiexampleimage.sif docker-archive://cudawarempiexampleimage.tar;
+
+
+- Create the following submit script submit.lsf. Make sure you replace the ``#BSUB -P STF007`` line with your own project ID.
+  ::
+
+     #BSUB -P STF007
+     #BSUB -W 0:30
+     #BSUB -nnodes 2
+     #BSUB -J singularity
+     #BSUB -o singularity.%J
+     #BSUB -e singularity.%J
+     
+     module purge
+     module load DefApps
+     module load  gcc/9.1.0
+     
+     source /gpfs/alpine/stf007/world-shared/containers/utils/requiredmpilibs.source
+     
+     jsrun --smpiargs="-gpu" -n 2 -a 1 -r 1 -c 42 -g 6 singularity exec --nv --bind $MPI_ROOT:$MPI_ROOT,/autofs/nccs-svm1_home1,/autofs/nccs-svm1_home1:/ccs/home cudawarempiexampleima    ge.sif /app/pp_cuda_aware
+ 
+ 
+
+  The ``--nv`` flag is needed to tell Singularity to make use of the GPU.
 
 Tips and Tricks
 =================
