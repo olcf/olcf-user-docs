@@ -2004,30 +2004,37 @@ SMT modes.
 .. note::
     Please note, a known bug is currently preventing execution of most ERF use cases. We are working to resolve the issue. If you experience issues using the ERF feature, please see the work around in `Known Issues <https://docs.olcf.ornl.gov/systems/summit_user_guide.html#open-issues>`__.
 
+.. _CUDA-Aware MPI:
+
 CUDA-Aware MPI
 --------------
 
-CUDA-Aware MPI and GPUDirect are often used interchangeably, but they
+CUDA-aware MPI and GPUDirect are often used interchangeably, but they
 are distinct topics.
 
-CUDA-Aware MPI allows GPU buffers (e.g., GPU memory allocated with
+CUDA-aware MPI allows GPU buffers (e.g., GPU memory allocated with
 ``cudaMalloc``) to be used directly in MPI calls rather than requiring
 data to be manually transferred to/from a CPU buffer (e.g., using
 ``cudaMemcpy``) before/after passing data in MPI calls. By itself,
-CUDA-Aware MPI does not specify whether data is staged through
+CUDA-aware MPI does not specify whether data is staged through
 CPU memory or, for example, transferred directly between GPUs when
 passing GPU buffers to MPI calls. That is where GPUDirect comes in.
 
 GPUDirect is a technology that can be implemented on a system to enhance
-CUDA-Aware MPI by allowing data transfers directly between GPUs on the
+CUDA-aware MPI by allowing data transfers directly between GPUs on the
 same node (peer-to-peer) and/or directly between GPUs on different nodes
 (with RDMA support) without the need to stage data through CPU memory.
 On Summit, both peer-to-peer and RDMA support are implemented. To enable
-CUDA-Aware MPI in a job, use the following argument to ``jsrun``:
+CUDA-aware MPI in a job, use the following argument to ``jsrun``:
 
 .. code::
 
     jsrun --smpiargs="-gpu" ...
+
+
+Not using the ``--smpiargs="-gpu"`` flag might result in confusing segmentation
+faults. If you see a segmentation fault when trying to do GPU aware MPI, check to
+see if you have the flag set correctly.
 
 
 Monitoring Jobs
@@ -4091,7 +4098,7 @@ they are investigating.
 Issue with CUDA Aware MPI with >1 resource set per node (Resolved: May 21, 2019)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Attempting to run an application with CUDA aware MPI using more than one
+Attempting to run an application with CUDA-aware MPI using more than one
 resource set per node with produce the following error on each MPI rank:
 
 ::
