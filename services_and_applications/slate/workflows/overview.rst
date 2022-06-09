@@ -74,4 +74,4 @@ For more information as well as how to install and use ArgoCD on Slate, see: :re
 Scientific Workflows
 ^^^^^^^^^^^^^^^^^^^^
 
-*Coming soon.*
+Scientific workflows at OLCF can be found in the :ref:workflows page under the Software section.
