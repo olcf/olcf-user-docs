@@ -17,6 +17,46 @@ For more information on connecting to OLCF resources, see :ref:`connecting-to-ol
 
 ----
 
+Data and Storage
+================
+
+For more detailed information about center-wide file systems and data archiving available on Frontier, please refer to the pages on :ref:`data-storage-and-transfers`. The subsections below give a quick overview of NFS and GPFS storage spaces as well as the on node NVMe Burst Buffers.
+
+NFS
+---
+
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
+| Area                | Path                                        | Type           | Permissions |  Quota | Backups | Purged  | Retention  | On Compute Nodes |
++=====================+=============================================+================+=============+========+=========+=========+============+==================+
+| User Home           | ``/ccs/home/[userid]``                      | NFS            | User set    |  50 GB | Yes     | No      | 90 days    | Read-only        |
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
+| Project Home        | ``/ccs/proj/[projid]``                      | NFS            | 770         |  50 GB | Yes     | No      | 90 days    | Read-only        |
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
+
+GPFS
+----
+
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
+| Area                | Path                                        | Type           | Permissions |  Quota | Backups | Purged  | Retention  | On Compute Nodes |
++=====================+=============================================+================+=============+========+=========+=========+============+==================+
+| Member Work         | ``/gpfs/alpine/[projid]/scratch/[userid]``  | Spectrum Scale | 700         |  50 TB | No      | 90 days | N/A        | Yes              |
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
+| Project Work        | ``/gpfs/alpine/[projid]/proj-shared``       | Spectrum Scale | 770         |  50 TB | No      | 90 days | N/A        | Yes              |
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
+| World Work          | ``/gpfs/alpine/[projid]/world-shared``      | Spectrum Scale | 775         |  50 TB | No      | 90 days | N/A        | Yes              |
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
+
+NVMe
+----
+
+Each compute node on Frontier has [2x] 1.92TB \ **N**\ on-\ **V**\ olatile **Me**\
+mory (NVMe) storage devices (SSDs), colloquially known as a "Burst Buffer" with
+theoretical performance peak of 2.1 GB/s for writing and 5.5 GB/s for reading.
+The NVMes could be used to reduce the time that applications wait for
+I/O.  More information can be found later in the `Burst Buffer`_ section.
+
+----
+
 AMD GPUs
 ========
 
