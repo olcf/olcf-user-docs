@@ -20,7 +20,7 @@ For more information on connecting to OLCF resources, see :ref:`connecting-to-ol
 Data and Storage
 ================
 
-For more detailed information about center-wide file systems and data archiving available on Frontier, please refer to the pages on :ref:`data-storage-and-transfers`. The subsections below give a quick overview of NFS and GPFS storage spaces as well as the on node NVMe Burst Buffers.
+For more detailed information about center-wide file systems and data archiving available on Frontier, please refer to the pages on :ref:`data-storage-and-transfers`. The subsections below give a quick overview of NFS and GPFS storage spaces as well as the on node NVMe "Burst Buffers" (SSDs).
 
 NFS
 ---
