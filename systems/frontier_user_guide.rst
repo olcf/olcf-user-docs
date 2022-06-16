@@ -49,11 +49,7 @@ GPFS
 NVMe
 ----
 
-Each compute node on Frontier has [2x] 1.92TB \ **N**\ on-\ **V**\ olatile **Me**\
-mory (NVMe) storage devices (SSDs), colloquially known as a "Burst Buffer" with
-theoretical performance peak of 2.1 GB/s for writing and 5.5 GB/s for reading.
-The NVMes could be used to reduce the time that applications wait for
-I/O.  More information can be found later in the `Burst Buffer`_ section.
+Each compute node on Frontier has [2x] 1.92TB \ **N**\ on-\ **V**\ olatile **Me**\mory (NVMe) storage devices (SSDs), colloquially known as a "Burst Buffer" with a peak sequential performance of 5500 MB/s (read) and 2000 MB/s (write). The NVMes could be used to reduce the time that applications wait for I/O. More information can be found later in the `Burst Buffer`_ section.
 
 ----
 
