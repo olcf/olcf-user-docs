@@ -1173,38 +1173,16 @@ And here is the output from the script:
 
 ----
 
-Notable Differences between Summit and Crusher
-==============================================
-
-This section details 'tips and tricks' and information of interest to users when porting from Summit to Crusher.
-
-Using reduced precision (FP16 and BF16 datatypes)
---------------------------------------------------------
-Users leveraging BF16 and FP16 datatypes for applications such as ML/AI training and low-precision matrix multiplication should be aware that the AMD MI250X GPU has different denormal handling than the V100 GPUs on Summit. On the MI250X, the V_DOT2 and the matrix instructions for FP16 and BF16 flush input and output denormal values to zero. FP32 and FP64 MFMA instructions do not flush input and output denormal values to zero. 
-
-When training deep learning models using FP16 precision, some models may fail to converge with FP16 denorms flushed to zero. This occurs in operations encountering denormal values, and so is more likely to occur in FP16 because of a small dynamic range. BF16 numbers have a larger dynamic range than FP16 numbers and are less likely to encounter denormal values.
-
-AMD has provided a solution in ROCm 5.0 which modifies the behavior of Tensorflow, PyTorch, and rocBLAS. This modification starts with FP16 input values, casting the intermediate FP16 values to BF16, and then casting back to FP16 output after the accumulate FP32 operations. In this way, the input and output types are unchanged. The behavior is enabled by default in machine learning frameworks. This behavior requires user action in rocBLAS, via a special enum type. For more information, see the rocBLAS link below. 
-
-If you encounter significant differences when running using reduced precision, explore replacing non-converging models in FP16 with BF16, because of the greater dynamic range in BF16. We recommend using BF16 for ML models in general. If you have further questions or encounter issues, contact help@olcf.ornl.gov.
-
-Additional information on MI250X reduced precision can be found at:
-  * The MI250X ISA specification details the flush to zero denorm behavior at: https://developer.amd.com/wp-content/resources/CDNA2_Shader_ISA_18November2021.pdf (See page 41 and 46)
-  * AMD rocBLAS library reference guide details this behavior at: https://rocblas.readthedocs.io/en/master/API_Reference_Guide.html#mi200-gfx90a-considerations
-
-----
-
 Profiling applications
 ======================
 
 Getting started
 ---------------
 
-``rocprof`` gathers metrics on kernels run on the AMD GPU architectures.
-This works for HIP kernels, as well as offloaded kernels from OpenMP target offloading, OpenCL, and abstraction layers such as Kokkos.
+``rocprof`` gathers metrics on kernels run on AMD GPU architectures. The profiler works for HIP kernels, as well as offloaded kernels from OpenMP target offloading, OpenCL, and abstraction layers such as Kokkos.
 For a simple view of kernels being run, ``rocprof --stats --timestamp on`` is a great place to start.
-With stats on, ``rocprof`` will generate a file that is named ``results.stats.csv`` by default, but named ``<output>.stats.csv`` if the ``-o`` flag is supplied.
-This file will list all kernels being run, the number of times they are run, total duration and average duration (in nanoseconds) of the kernel, and the GPU usage percentage.
+With the ``--stats`` option enabled, ``rocprof`` will generate a file that is named ``results.stats.csv`` by default, but named ``<output>.stats.csv`` if the ``-o`` flag is supplied.
+This file will list all kernels being run, the number of times they are run, the total duration and the average duration (in nanoseconds) of the kernel, and the GPU usage percentage.
 More detailed infromation on ``rocprof`` profiling modes can be found at `ROCm Profiler <https://rocmdocs.amd.com/en/latest/ROCm_Tools/ROCm-Tools.html>`__ documentation.
 
 
@@ -1214,7 +1192,7 @@ The `Roofline <https://docs.nersc.gov/tools/performance/roofline/>`__ performanc
 This section documents how to construct a simple roofline model for a single kernel using ``rocprof``.
 This roofline model is designed to be comparable to rooflines constructed by NVIDIA's `NSight Compute <https://developer.nvidia.com/blog/accelerating-hpc-applications-with-nsight-compute-roofline-analysis/>`__.
 A roofline model plots the achieved performance (in floating-point operations per second, FLOPS/s) as a function of operational (or arithmetic) intensity (in FLOPS per Byte).
-The model detailed here calculates the bytes moved as the bytes moved to and from the GPU's HBM.
+The model detailed here calculates the bytes moved as they move to and from the GPU's HBM.
 
 .. note::
 
@@ -1235,7 +1213,7 @@ Below is an example, and contains the information needed:
 
 .. note::
 
-    In an application with more than one kernel, you should strongly consider filtering by kernel name by adding a line like: ``kernel: <kernel_name>`` to the rocprof input file.
+    In an application with more than one kernel, you should strongly consider filtering by kernel name by adding a line like: ``kernel: <kernel_name>`` to the ``rocprof`` input file.
 
 This provides the minimum set of metrics used to construct a roofline model.
 
@@ -1269,7 +1247,7 @@ Operational Intensity
 
 Operational intensity calculates the ratio of FLOPS to bytes moved between HBM and L2 cache.
 We calculated FLOPS above (FP64_FLOPS).
-We can calculate the number of bytes moved using the rocprof metrics ``TCC_EA_WREQ_64B``, ``TCC_EA_WREQ_sum``, ``TCC_EA_RREQ_32B``, and ``TCC_EA_RREQ_sum``.
+We can calculate the number of bytes moved using the ``rocprof`` metrics ``TCC_EA_WREQ_64B``, ``TCC_EA_WREQ_sum``, ``TCC_EA_RREQ_32B``, and ``TCC_EA_RREQ_sum``.
 ``TCC`` refers to the L2 cache, and ``EA`` is the interface between L2 and HBM.
 ``WREQ`` and ``RREQ`` are write-requests and read-requests, respectively.
 Each of these requests is either 32 bytes or 64 bytes.
@@ -1289,6 +1267,29 @@ where
 
     BytesRead = 32 * TCC\_EA\_RREQ\_32B + 64 * (TCC\_EA\_RREQ\_sum - TCC\_EA\_RREQ\_32B)
 
+
+----
+
+Notable Differences between Summit and Crusher
+==============================================
+
+This section details 'tips and tricks' and information of interest to users when porting from Summit to Crusher.
+
+Using reduced precision (FP16 and BF16 datatypes)
+--------------------------------------------------------
+Users leveraging BF16 and FP16 datatypes for applications such as ML/AI training and low-precision matrix multiplication should be aware that the AMD MI250X GPU has different denormal handling than the V100 GPUs on Summit. On the MI250X, the V_DOT2 and the matrix instructions for FP16 and BF16 flush input and output denormal values to zero. FP32 and FP64 MFMA instructions do not flush input and output denormal values to zero. 
+
+When training deep learning models using FP16 precision, some models may fail to converge with FP16 denorms flushed to zero. This occurs in operations encountering denormal values, and so is more likely to occur in FP16 because of a small dynamic range. BF16 numbers have a larger dynamic range than FP16 numbers and are less likely to encounter denormal values.
+
+AMD has provided a solution in ROCm 5.0 which modifies the behavior of Tensorflow, PyTorch, and rocBLAS. This modification starts with FP16 input values, casting the intermediate FP16 values to BF16, and then casting back to FP16 output after the accumulate FP32 operations. In this way, the input and output types are unchanged. The behavior is enabled by default in machine learning frameworks. This behavior requires user action in rocBLAS, via a special enum type. For more information, see the rocBLAS link below. 
+
+If you encounter significant differences when running using reduced precision, explore replacing non-converging models in FP16 with BF16, because of the greater dynamic range in BF16. We recommend using BF16 for ML models in general. If you have further questions or encounter issues, contact help@olcf.ornl.gov.
+
+Additional information on MI250X reduced precision can be found at:
+  * The MI250X ISA specification details the flush to zero denorm behavior at: https://developer.amd.com/wp-content/resources/CDNA2_Shader_ISA_18November2021.pdf (See page 41 and 46)
+  * AMD rocBLAS library reference guide details this behavior at: https://rocblas.readthedocs.io/en/master/API_Reference_Guide.html#mi200-gfx90a-considerations
+
+----
 
 ----
 
