@@ -1291,8 +1291,6 @@ Additional information on MI250X reduced precision can be found at:
 
 ----
 
-----
-
 Getting Help
 ============
 
