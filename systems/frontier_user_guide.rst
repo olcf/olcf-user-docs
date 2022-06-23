@@ -4,6 +4,13 @@
 Frontier User Guide
 *******************
 
+System Overview
+===============
+
+Frontier is a HPE Cray EX supercomputer located at the Oak Ridge Leadership Computing Facility. With a theoretical peak double-precision performance of approximately 2 exaflops (2 quintillion calculations per second), it is the fastest system in the world for a wide range of traditional computational science applications.
+
+----
+
 Connecting
 ==========
 
