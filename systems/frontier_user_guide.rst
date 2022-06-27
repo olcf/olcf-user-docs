@@ -4,12 +4,54 @@
 Frontier User Guide
 *******************
 
+.. _system_overview:
+
 System Overview
 ===============
 
 Frontier is a HPE Cray EX supercomputer located at the Oak Ridge Leadership Computing Facility. With a theoretical peak double-precision performance of approximately 2 exaflops (2 quintillion calculations per second), it is the fastest system in the world for a wide range of traditional computational science applications.
 
+.. _frontier-nodes:
+
+Frontier Nodes
+--------------
+
+A picture containing a node diagram goes here.
+
+A description of the setup of the nodes. 
+
+
+Node Types
+----------
+
+Describe different nodes: logins, batch, computes, etc.
+
+System Interconnect
+-------------------
+
+Describe how nodes are connected.
+
+File Systems
+------------
+
+Explain the filesystem.
+
+Operating System
+----------------
+
+State the operating system and current version.
+
+Hardware Threads
+----------------
+
+A blurb here about hardware thread support.
+
+GPUs
 ----
+
+Describe the specs and capability of the GPUs in use on the compute nodes.
+
+
 
 Connecting
 ==========
