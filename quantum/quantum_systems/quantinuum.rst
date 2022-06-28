@@ -21,7 +21,7 @@ operations, can be found in the *Quantinuum System Model H1 Product Data Sheet*
 on the `Quantinuum User Portal <https://um.qapi.quantinuum.com/>`__. Features
 include, but are not limited to:
 
-* N ≥ 12 qubit trapped-ion based quantum computer
+* N ≥ 20 qubit trapped-ion based quantum computer
 
 * All-to-all connectivity
 
