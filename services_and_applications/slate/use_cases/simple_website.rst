@@ -113,7 +113,7 @@ We will create the directory along with our files:
    EOF
 
    cat <<EOF > Dockerfile
-   FROM centos:latest
+   FROM rockylinux:latest
    RUN yum -y update
    RUN yum -y install httpd
    ADD index.html /var/www/html

@@ -132,7 +132,9 @@ Here is what it looks like:
     # This is the OLCF file system path MinIO will server out of, if "enabled" above.
     olcf_mount: /ccs/proj/stf007/minio-test
     # Amount of storage to use, if use_olcf_fs is "disabled"
-    pvc_storage: 10Gi
+    pvc_storage: 3Gi
+    # Change this to reflect <your-project-namespace>, this will be the output of the `oc project` command.
+    network_policy_namespace: <your-project-namespace>
 
 What do you need to consider?
 
@@ -151,6 +153,7 @@ What do you need to configure?
 - ``use_olcf_fs`` (Controls if NCCS filesystems are used or not - ``enabled`` or ``disabled``)
 - ``olcf_mount`` (Set the mount path to your project directory (i.e ``/ccs/proj/<projectID>/minio/``))
 - ``pvc_storage`` (Set the quota for your dedicated storage if ``use_olcf_fs`` is ``disabled``)
+- ``network_policy_namespace`` (Set the network policy's namespace to your project name, this will be the output of the ``oc project`` command)
 
 
 Create the MinIO Application's Secret Tokens
@@ -166,7 +169,7 @@ To establish these credentials in our Marble project, allowing our MinIO
 deployment to use them, we need to create a ``secret-token.yaml`` file and
 apply it to our project.
 
-Create this example ``secret-tokens.yaml`` file locally:
+Create this example ``secret-token.yaml`` file locally:
 
 .. code-block:: bash
 
@@ -186,6 +189,8 @@ Create this example ``secret-tokens.yaml`` file locally:
       kind: Secret
       metadata:
         # Keep the '-secret-key' part appended to the name.
+        # Note: <your_choice> below must be a string
+        # Ex: SECRET_TOKEN: "your_choice_string"
         name: <name-of-your-app>-secret-key
       stringData:
         SECRET_TOKEN: <your_choice>
@@ -293,7 +298,7 @@ normal NCCS login credentials.
 
 After the NCCS login, you will be greeted with MinIO's login page. Here you
 will enter the access-key and secret-key you created with the
-``secret-tokens.yaml`` file.
+``secret-token.yaml`` file.
 
 At this point, you should be inside the MinIO Browser.
 
