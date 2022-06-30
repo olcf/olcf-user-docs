@@ -57,6 +57,8 @@ and `<https://quota.onyx.ccs.ornl.gov>`_. The terms
 project's usable space within the requested resource boundaries
 (CPU/Memory/Storage).
 
+.. _slate_getting_started_oc:
+
 Install the OC tool
 -------------------
 
@@ -110,6 +112,10 @@ Test login with OC Tool
 .. code-block:: bash
 
    $ oc login <URL>
+
+After entering the login command above, oc will ask you to obtain an API token and will provide a URL like the following: ``https://oauth-openshift.apps.<CLUSTER>.ccs.ornl.gov/oauth/token/request``.
+
+You will need to go to the given URL in your browser, log in with NCCS, click the ``Display Token`` link, copy the command under ``Log in with this token`` and enter it into your terminal.
 
 (**NOTE**: Marble authentication uses NCCS Usernames and RSA passcodes. Onyx
 uses XCAMS usernames and passwords).

@@ -21,7 +21,7 @@ Before you can do anything you need a :term:`Project` to do your things in. Fort
 
 NOTE: Everywhere that you see `<cluster>` replace that with the cluster that you will be running on (marble or onyx).
 
-Now that you have a project you can create objects inside that project. We will be doing this with the Openshift Web GUI and the ``oc`` CLI client so you can use whichever interface you are more comfortable with in this tutorial. If you are more comfortable using the command line than you are using a GUI you can now `jump to the oc portion of this document. <#guided-oc-tutorial>`_. Otherwise, if you are more comfortable with the GUI `skip to the GUI portion of the tutorial <#guided-web-gui-tutorial>`_.
+Now that you have a project you can create objects inside that project. We will be doing this with the Openshift Web GUI and the ``oc`` CLI client so you can use whichever interface you are more comfortable with in this tutorial. If you are more comfortable using the command line than you are using a GUI you can now :ref:`jump to the oc portion of this document<slate_guided_tutorial_cli>`. Otherwise, continue with the GUI based tutorial below.
 
 Guided Web GUI Tutorial
 -----------------------

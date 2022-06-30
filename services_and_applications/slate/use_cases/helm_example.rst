@@ -40,6 +40,9 @@ There are two ways to set values for ``helm install``\ :
 
 In this example, we'll be using the latter method. Let's create a file called ``values.yaml`` with the following values:
 
+.. note::
+  You may need to adjust the persistence > size value down depending on the storage quotas set for your project. Your project quotas can be found at ``https://quotas.CLUSTER.ccs.ornl.gov``, where CLUSTER is replaced with the cluster you are running on (Marble/Onyx).
+
 .. code-block::
 
    persistence:
