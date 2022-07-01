@@ -406,6 +406,87 @@ analyze the ``.otf2`` trace file generated with Score-P.
    otherwise they can be viewed locally on Summit. For large trace files, it is strongly recommended to run
    ``vampirserver`` reverse-connected to a local copy of the Vampir client. See the :ref:`vamptunnel` section for more details.
 
+Manual Instrumentation
+======================
+
+In addition to automatically profiling and tracing functions, there is also a way to manually instrument a specific region in the source code. To do this, you first must include the following header file:
+
+**C,C++**:
+
+.. code::
+   
+   #include <scorep/SCOREP_User.h>
+
+**Fortran**:
+
+.. code::
+
+   #include <scorep/SCOREP_User.inc>
+
+Additionally, the ``--user`` flag must be added to the ``scorep`` command:
+
+.. code::
+
+   $ scorep --user gcc -c test.c
+   $ scorep --user gcc -o test test.o
+
+Then macros can be added to the code itself as seen below:
+
+.. tabbed:: C,C++
+
+   .. code::
+      
+      void foo() {
+         SCOREP_USER_REGION_DEFINE(my_region)
+         SCOREP_USER_REGION_BEGIN(my_region, "foo", SCOREP_USER_REGION_TYPE_COMMON)
+     	 // do something
+	 SCOREP_USER_REGION_END(my_region)
+      }
+
+
+.. tabbed:: Fortran
+
+   .. code::
+      
+      subroutine foo
+         SCOREP_USER_REGION_DEFINE(my_region)
+         SCOREP_USER_REGION_BEGIN(my_region, "foo", SCOREP_USER_REGION_TYPE_COMMON)
+         ! do something
+         SCOREP_USER_REGION_END(my_region)
+      end subroutine foo
+
+
+In this case, "my_region" is the handle name of the region, "foo" is the string containing the region's unique name (this is the name that will show up in vampir), and ``SCOREP_USER_REGION_TYPE_COMMON`` identifies the type of the region. 
+Below are some examples of manually instrumented regions using phase and loop types: 
+
+.. code::
+   
+   #include <scorep/SCOREP_User.h>
+   
+   SCOREP_USER_REGION_DEFINE(sum_hdl)
+   SCOREP_USER_REGION_BEGIN(sum_hdl, "sum", SCOREP_USER_REGION_TYPE_PHASE)
+   if (x < 1){
+      //do calculation
+   }
+   else{
+      //do other calculation
+   }
+   SCOREP_USER_REGION_END(sum_hdl)
+
+.. code::
+
+   #include <scorep/SCOREP_User.h>
+   
+   SCOREP_USER_REGION_DEFINE(calculation_hdl)
+   SCOREP_USER_REGION_BEGIN(calculation_hdl, "my_calculations", SCOREP_USER_REGION_TYPE_LOOP)
+   #pragma omp parallel for ...
+      for (int i=0; i <num; i++){
+         //do calculation
+      }
+   SCOREP_USER_REGION_END(calculation_hdl)
+
+The regions "sum" and "my_calculations" in this example would then be included in the profiling and tracing runs and can be analysed with vampir.
+
 Score-P Demo Video
 ==================
 
