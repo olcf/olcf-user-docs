@@ -446,7 +446,7 @@ Now you can manually instrument Score-P to the source code as seen below:
       end subroutine foo
 
 
-In this case, "my_region" is the handle name of the region which has to be defined with ``SCOREP_USER_REGION_DEFINE``. Additionally, "foo" is the string containing the region's unique name (this is the name that will show up in Vampir) and ``SCOREP_USER_REGION_TYPE_COMMON`` identifies the type of the region. Make note of the header files seen in the above example that are needed to include the Score-P macros. 
+In this case, "my_region" is the handle name of the region which has to be defined with ``SCOREP_USER_REGION_DEFINE``. Additionally, "foo" is the string containing the region's unique name (this is the name that will show up in Vampir) and ``SCOREP_USER_REGION_TYPE_COMMON`` identifies the type of the region. Make note of the header files seen in the above example that are needed to include the Score-P macros. See the `Score-P User Adapter <https://scorepci.pages.jsc.fz-juelich.de/scorep-pipelines/docs/scorep-6.0/html/group__SCOREP__User.html>`_ page for more user configuration options.  
 
 Below are some examples of manually instrumented regions using phase and loop types: 
 
