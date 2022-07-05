@@ -105,7 +105,62 @@ Each compute node on Frontier has [2x] 1.92TB \ **N**\ on-\ **V**\ olatile **Me
 AMD GPUs
 ========
 
-Each Frontier node uses 4 AMD MI200 GPUs.
+Each Frontier node contains 4x AMD Instinct MI250X accelerators. Each MI250X has 2
+Graphical Compute Dies (GCD) for a total of 8 GCDs per node. Each GCD can be treated as
+its own independent GPU. Each GCD has a peak performance of 26.5 TFLOPS
+(double-precision), 110 compute units, and 64 GB of high-bandwidth memory (HBM2) which can
+be accessed at a peak of 1.6 TB/s. The 2 GPUs on an MI250X are connected with Infinity
+Fabric with a bandwidth of 200 GB/s for input and output.
+
+Each GCD is composed of a command processor and 8 shader engines. Each GCD is composed of
+110 compute units spread over the 8 shader engines. The compute unit is the piece of
+hardware that actually performs the mathematical operations. The command processor takes
+the kernel from the command queue and creates the workgroups. These are then distributed
+to the shader engine. Each shader engine has an Asynchronous Compute Engine or ACE
+(sometimes also called a workload manager) that takes the compute tasks it gets from the
+command processor, and distributes the wavefronts among the compute units. The ACE creates
+the wavefronts from the workgroups and distributes them to the CUs. All the wavefronts of
+a workgroup are assigned to the same CU.
+
+
+TODO: insert diagram of internals
+TODO: diagram of command queue, command processor, workload manager, and CUs.
+TODO: more detailed info about the compute unit
+TODO: detailed info about HBM
+TODO: detailed info about the infinity fabric and where the MI250x connects to internally and externally
+TODO: unified memory? If mi250x has it, what is it and how does it work
+TODO: info about tensor cores
+TODO: Does __syncwarp exist like it does in cuda
+TODO: link to HIP from scratch tutorial
+TODO: write about blocks, grids, workgroup and wavefronts
+
+
+The Compute Unit
+----------------
+
+.. image:: /images/amd_computeunit.png
+   :align: center
+   :alt: Block diagram of the AMD Instinct CDNA2 Compute Unit
+
+
+Each CU has 4 Matrix Core Units (the equivalent of Nvidia's Tensor core units) and 4
+16-wide SIMD units. For a vector instruction that uses the SIMD units, each wavefront
+(which has 64 threads) is assigned to a single 16-wide SIMD unit such that the wavefront
+as a whole executes the instruction over 4 cycles, 16 threads per cycle. Since other
+wavefronts occupy the other three SIMD units at the same time, the total throughput still
+remains 1 instruction per cycle. The Local Data Share (LDS) provides (TODO) bytes of
+shared memory, allowing a block to have shared memory among its threads with much lower
+latency compared to using the HBM since the data is in the compute unit itself.
+
+
+HBM
+---
+
+Infinty Fabric
+--------------
+
+HIP
+---
 
 Compiling
 =========
