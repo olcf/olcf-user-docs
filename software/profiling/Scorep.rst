@@ -409,33 +409,21 @@ analyze the ``.otf2`` trace file generated with Score-P.
 Manual Instrumentation
 ======================
 
-In addition to automatically profiling and tracing functions, there is also a way to manually instrument a specific region in the source code. To do this, you first must include the following header file:
-
-**C,C++**:
-
-.. code::
-   
-   #include <scorep/SCOREP_User.h>
-
-**Fortran**:
-
-.. code::
-
-   #include <scorep/SCOREP_User.inc>
-
-Additionally, the ``--user`` flag must be added to the ``scorep`` command:
+In addition to automatically profiling and tracing functions, there is also a way to manually instrument a specific region in the source code. To do this, you will need to add the ``--user`` flag to the ``scorep`` command when compiling:
 
 .. code::
 
    $ scorep --user gcc -c test.c
    $ scorep --user gcc -o test test.o
 
-Then macros can be added to the code itself as seen below:
+Now you can manually instrument Score-P to the source code as seen below:
 
 .. tabbed:: C,C++
 
    .. code::
       
+      #include <scorep/SCOREP_User.h>
+
       void foo() {
          SCOREP_USER_REGION_DEFINE(my_region)
          SCOREP_USER_REGION_BEGIN(my_region, "foo", SCOREP_USER_REGION_TYPE_COMMON)
@@ -448,6 +436,8 @@ Then macros can be added to the code itself as seen below:
 
    .. code::
       
+      #include <scorep/SCOREP_User.inc>
+
       subroutine foo
          SCOREP_USER_REGION_DEFINE(my_region)
          SCOREP_USER_REGION_BEGIN(my_region, "foo", SCOREP_USER_REGION_TYPE_COMMON)
@@ -456,7 +446,8 @@ Then macros can be added to the code itself as seen below:
       end subroutine foo
 
 
-In this case, "my_region" is the handle name of the region, "foo" is the string containing the region's unique name (this is the name that will show up in vampir), and ``SCOREP_USER_REGION_TYPE_COMMON`` identifies the type of the region. 
+In this case, "my_region" is the handle name of the region which has to be defined with ``SCOREP_USER_REGION_DEFINE``. Additionally, "foo" is the string containing the region's unique name (this is the name that will show up in Vampir) and ``SCOREP_USER_REGION_TYPE_COMMON`` identifies the type of the region. Make note of the header files seen in the above example that are needed to include the Score-P macros. 
+
 Below are some examples of manually instrumented regions using phase and loop types: 
 
 .. code::
@@ -485,7 +476,7 @@ Below are some examples of manually instrumented regions using phase and loop ty
       }
    SCOREP_USER_REGION_END(calculation_hdl)
 
-The regions "sum" and "my_calculations" in this example would then be included in the profiling and tracing runs and can be analysed with vampir.
+The regions "sum" and "my_calculations" in the above examples would then be included in the profiling and tracing runs and can be analysed with Vampir. For more details, refer to the Advanced Score-P training in the :ref:`training-archive`.
 
 Score-P Demo Video
 ==================
