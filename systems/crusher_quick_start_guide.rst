@@ -1249,9 +1249,9 @@ Operational Intensity
 
 Operational intensity calculates the ratio of FLOPS to bytes moved between HBM and L2 cache.
 We calculated FLOPS above (FP64_FLOPS).
-We can calculate the number of bytes moved using the ``rocprof`` metrics ``TCC_EA_WREQ_64B``, ``TCC_EA_WREQ_sum``, ``TCC_EA_RREQ_32B``, and ``TCC_EA_RREQ_sum``.
+We can calculate the number of bytes moved using the ``rocprof`` metrics ``TCC_EA_WRREQ_64B``, ``TCC_EA_WRREQ_sum``, ``TCC_EA_RDREQ_32B``, and ``TCC_EA_RDREQ_sum``.
 ``TCC`` refers to the L2 cache, and ``EA`` is the interface between L2 and HBM.
-``WREQ`` and ``RREQ`` are write-requests and read-requests, respectively.
+``WRREQ`` and ``RDREQ`` are write-requests and read-requests, respectively.
 Each of these requests is either 32 bytes or 64 bytes.
 So we calculate the number of bytes traveling over the EA interface as:
 
@@ -1263,11 +1263,11 @@ where
 
 .. math::
 
-    BytesWritten = 64 * TCC\_EA\_WREQ\_64B + 32 * (TCC\_EA\_WREQ\_sum - TCC\_EA\_WREQ\_64B)
+    BytesWritten = 64 * TCC\_EA\_WRREQ\_64B + 32 * (TCC\_EA\_WRREQ\_sum - TCC\_EA\_WRREQ\_64B)
 
 .. math::
 
-    BytesRead = 32 * TCC\_EA\_RREQ\_32B + 64 * (TCC\_EA\_RREQ\_sum - TCC\_EA\_RREQ\_32B)
+    BytesRead = 32 * TCC\_EA\_RDREQ\_32B + 64 * (TCC\_EA\_RDREQ\_sum - TCC\_EA\_RDREQ\_32B)
 
 
 ----
