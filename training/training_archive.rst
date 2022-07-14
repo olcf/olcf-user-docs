@@ -12,7 +12,7 @@ The table below lists presentations given at previous OLCF training events. For 
 .. csv-table::
    :header: "Date", "Title", "Speaker", "Event", "Presentation"
 
-   "2022-05-25", "Automating Science with Workflows at OLCF", "Ketan Maheshwari, Sean Wilkinson, Rafael Ferreira da Silva", `May 2022 OLCF User Conference Call <https://www.olcf.ornl.gov/calendar/userconcall-may2022>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/Automating-Science-With-Workflows-at-OLCF.pdf>`__)
+   "2022-05-25", "Automating Science with Workflows at OLCF", "Ketan Maheshwari, Sean Wilkinson, Rafael Ferreira da Silva", `May 2022 OLCF User Conference Call <https://www.olcf.ornl.gov/calendar/userconcall-may2022>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/Automating-Science-With-Workflows-at-OLCF.pdf>`__ | `recording <https://vimeo.com/730109850>`__)
    "2022-04-27", "myOLCF Self-Service Portal", "Leah Huk (OLCF)", `April 2022 OLCF User Conference Call <https://www.olcf.ornl.gov/calendar/userconcall-apr2022>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2022_myOLCF_User_Concall.pdf>`__)
    "2022-04-07", "CODING FOR GPUS USING STANDARD Fortran", "Jeff Larkin", `CODING FOR GPUS USING STANDARD Fortran <https://www.olcf.ornl.gov/calendar/coding-for-gpus-using-standard-fortran/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/20220513_OLCF_Fortran.pdf>`__ | `recording <https://vimeo.com/manage/videos/711784748>`__)
    "2022-04-07", "CODING FOR GPUS USING STANDARD C++", "Robert Searles", `CODING FOR GPUS USING STANDARD C++ <https://www.olcf.ornl.gov/calendar/coding-for-gpus-using-standard-c/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/4-7-22-ORNL-Stdpar.pdf>`__ | `recording <https://vimeo.com/697495123>`__)
