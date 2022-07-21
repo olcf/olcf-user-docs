@@ -113,7 +113,7 @@ Compiling
 Compilers
 ---------
 
-Cray, AMD, and GCC compilers are provided through modules on Crusher. The Cray and AMD compilers are both based on LLVM/Clang. There is also a system/OS versions of GCC available in ``/usr/bin``. The table below lists details about each of the module-provided compilers.
+Cray, AMD, and GCC compilers are provided through modules on Frontier. The Cray and AMD compilers are both based on LLVM/Clang. There is also a system/OS versions of GCC available in ``/usr/bin``. The table below lists details about each of the module-provided compilers.
 
 .. note::
 
@@ -154,17 +154,7 @@ Cray provides ``PrgEnv-<compiler>`` modules (e.g., ``PrgEnv-cray``) that load co
 MPI
 ---
 
-The MPI implementation available on Crusher is Cray's MPICH, which is "GPU-aware" so GPU buffers can be passed directly to MPI calls.
-
-----
-
-Compiling
-=========
-
-This section covers how to compile for different programming models using the different compilers covered in the previous section.
-
-MPI
----
+The MPI implementation available on Frontier is Cray's MPICH, which is "GPU-aware" so GPU buffers can be passed directly to MPI calls.
 
 +----------------+----------------+-----------------------------------------------------+-------------------------------------------------------------------------------+
 | Implementation | Module         | Compiler                                            | Header Files & Linking                                                        |
@@ -189,7 +179,7 @@ To use GPU-aware Cray MPICH, users must set the following modules and environmen
 
 .. note::
 
-    There are extra steps needed to enable GPU-aware MPI on Crusher, which depend on the compiler that is used (see 1. and 2. below).
+    There are extra steps needed to enable GPU-aware MPI on Frontier, which depend on the compiler that is used (see 1. and 2. below).
     
 
 1. Compiling with the Cray compiler wrappers, ``cc`` or ``CC``
