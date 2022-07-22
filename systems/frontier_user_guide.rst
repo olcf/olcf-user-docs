@@ -341,3 +341,40 @@ Running Jobs
 
 Initial placeholder for running jobs section.
 Running jobs on Frontier is fun!
+
+Simplified Node Layout
+----------------------
+
+To easily visualize ``srun`` examples, the node diagram shown in section
+REFERENCE has been simplified to the picture shown below. 
+
+.. image:: /images/Frontier_Node_Diagram_Simple.png
+   :align: center
+   :width: 100%
+   :alt: Simplified Frontier node architecture diagram
+
+In the diagram, each **physical** core on Frontier is composed of two
+**logical** cores that are represented by a pair of blue and grey boxes. For a
+given physical core, the blue box represents the logical core of the first
+hardware thread, where the grey box represents the logical core of the second
+hardware thread.
+
+Process and Thread Mapping
+--------------------------
+
+Thread mapping blurb goes here
+
+CPU Mapping
+^^^^^^^^^^^
+
+Mapping to CPUs (limited to no OpenMP or OpenMP=1)
+
+Multithreading
+^^^^^^^^^^^^^^
+
+Introducing Multithreading
+
+GPU Mapping
+^^^^^^^^^^^
+
+Mapping to GPUs (both noOpenMP / with OpenMP)
