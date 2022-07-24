@@ -339,8 +339,83 @@ This section shows how to compile HIP + OpenMP CPU threading hybrid codes.
 Running Jobs
 ============
 
-Initial placeholder for running jobs section.
-Running jobs on Frontier is fun!
+Srun
+----------------------
+
+Most OLCF resources like Frontier use the Slurm batch scheduler. Summit and other IBM hardware use the LSF scheduler.
+Below is a comparison table of useful commands among the two schedulers.
+
++--------------------------------------------+-----------------------+-------------------+
+| Task                                       | LSF (Summit)          | Slurm (Frontier)  |
++============================================+=======================+===================+
+| View batch queue                           | ``jobstat``           | ``squeue``        |
++--------------------------------------------+-----------------------+-------------------+
+| Submit batch script                        | ``bsub``              | ``sbatch``        |
++--------------------------------------------+-----------------------+-------------------+
+| Submit interactive batch job               | ``bsub -Is $SHELL``   | ``salloc``        |
++--------------------------------------------+-----------------------+-------------------+
+| Run parallel code within batch job         | ``jsrun``             | ``srun``          |
++--------------------------------------------+-----------------------+-------------------+
+
+The ``srun`` command is used to execute an MPI binary on one or more compute nodes in parallel.
+``srun`` accepts the following common options:
+
++----------------------+---------------------------------------+
+| ``-N``               | Minimum number of nodes               |
++----------------------+---------------------------------------+
+| ``-n``               | Total number of MPI tasks             |
++----------------------+---------------------------------------+
+| ``--cpu-bind=no``    | Allow code to control thread affinity |
++----------------------+---------------------------------------+
+| ``-c``               | Cores per MPI task                    |
++----------------------+---------------------------------------+
+| ``--cpu-bind=cores`` | Bind to cores                         |
++----------------------+---------------------------------------+
+
+.. note::
+    If you do not specify the number of MPI tasks to ``srun``
+    via ``-n``, the system will default to using only one task per node.
+
+Scheduling Policy
+-----------------
+Job Priority by Processor Count
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Jobs are *aged* according to the job's requested processor count (older
+age equals higher queue priority). Each job's requested processor count
+places it into a specific *bin*. Each bin has a different aging
+parameter, which all jobs in the bin receive.
+
++-------+-------------+-------------+------------------------+----------------------+
+| Bin   | Min Nodes   | Max Nodes   | Max Walltime (Hours)   | Aging Boost (Days)   |
++=======+=============+=============+========================+======================+
+| 1     | 5,645       | 9,408       | 24.0                   | 15                   |
++-------+-------------+-------------+------------------------+----------------------+
+| 2     | 1,882       | 5,644       | 24.0                   | 10                   |
++-------+-------------+-------------+------------------------+----------------------+
+| 3     | 184         | 1,881       | 12.0                   | 0                    |
++-------+-------------+-------------+------------------------+----------------------+
+| 4     | 92          | 183         | 6.0                    | 0                    |
++-------+-------------+-------------+------------------------+----------------------+
+| 5     | 1           | 91          | 2.0                    | 0                    |
++-------+-------------+-------------+------------------------+----------------------+
+
+``batch`` Queue Policy
+"""""""""""""""""""""""
+The ``batch`` queue is the default queue for production work on Frontier. Most work on Frontier is handled through this queue. It enforces the following policies:
+
+-  Limit of (4) *eligible-to-run* jobs per user.
+-  Jobs in excess of the per user limit above will be placed into a
+   *held* state, but will change to eligible-to-run at the appropriate
+   time.
+-  Users may have only (100) jobs queued in the ``batch`` queue at any state at any time.
+   Additional jobs will be rejected at submit time.
+
+.. note::
+    The *eligible-to-run* state is not the *running* state.
+    Eligible-to-run jobs have not started and are waiting for resources.
+    Running jobs are actually executing.
+
 
 Simplified Node Layout
 ----------------------
