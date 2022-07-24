@@ -339,9 +339,6 @@ This section shows how to compile HIP + OpenMP CPU threading hybrid codes.
 Running Jobs
 ============
 
-Srun
-----------------------
-
 Most OLCF resources like Frontier use the Slurm batch scheduler. Summit and other IBM hardware use the LSF scheduler.
 Below is a comparison table of useful commands among the two schedulers.
 
@@ -357,11 +354,15 @@ Below is a comparison table of useful commands among the two schedulers.
 | Run parallel code within batch job         | ``jsrun``             | ``srun``          |
 +--------------------------------------------+-----------------------+-------------------+
 
+
+Srun
+----------------------
+
 The ``srun`` command is used to execute an MPI binary on one or more compute nodes in parallel.
 ``srun`` accepts the following common options:
 
 +----------------------+---------------------------------------+
-| ``-N``               | Minimum number of nodes               |
+| ``-N``               | Number of nodes                       |
 +----------------------+---------------------------------------+
 | ``-n``               | Total number of MPI tasks             |
 +----------------------+---------------------------------------+
@@ -375,6 +376,36 @@ The ``srun`` command is used to execute an MPI binary on one or more compute nod
 .. note::
     If you do not specify the number of MPI tasks to ``srun``
     via ``-n``, the system will default to using only one task per node.
+
+
+Below is a comparison table between srun and jsrun.
+
++--------------------------------------------+---------------------------+-------------------------+
+| Option                                     | jsrun (Summit)            | srun  (Frontier)        |
++============================================+===========================+=========================+
+| Number of nodes                            | ``-nnodes``               | ``-N, --nnodes``        |
++--------------------------------------------+---------------------------+-------------------------+
+| Number of tasks                            | defined with resource set | ``-n, --ntasks``        |
++--------------------------------------------+---------------------------+-------------------------+
+| Number of tasks per node                   | defined with resource set | ``--ntasks-per-node``   |
++--------------------------------------------+---------------------------+-------------------------+
+| Number of CPUs per task                    | defined with resource set | ``-c, --cpus-per-task`` |
++--------------------------------------------+---------------------------+-------------------------+
+| Number of resource sets                    | ``-n, --nrs``             | N/A                     |
++--------------------------------------------+---------------------------+-------------------------+
+| Number of resource sets per host           | ``-r, --rs_per_host``     | N/A                     |
++--------------------------------------------+---------------------------+-------------------------+
+| Number of tasks per resource set           | ``-a, --tasks_per_rs``    | N/A                     |
++--------------------------------------------+---------------------------+-------------------------+
+| Number of CPUs per resource set            | ``-c, --cpus_per_rs``     | N/A                     |
++--------------------------------------------+---------------------------+-------------------------+
+| Number of GPUs per resource set            | ``-g, --gpus_per_rs``     | N/A                     |
++--------------------------------------------+---------------------------+-------------------------+
+| Bind tasks to allocated CPUs               | ``-b, --bind``            | ``--cpu_bind``          |
++--------------------------------------------+---------------------------+-------------------------+
+| Do not run more than one task on resources | ``--exclusive``           | ``--tasks_per_rs 1``    |
++--------------------------------------------+---------------------------+-------------------------+
+
 
 Scheduling Policy
 -----------------
@@ -400,21 +431,6 @@ parameter, which all jobs in the bin receive.
 | 5     | 1           | 91          | 2.0                    | 0                    |
 +-------+-------------+-------------+------------------------+----------------------+
 
-``batch`` Queue Policy
-"""""""""""""""""""""""
-The ``batch`` queue is the default queue for production work on Frontier. Most work on Frontier is handled through this queue. It enforces the following policies:
-
--  Limit of (4) *eligible-to-run* jobs per user.
--  Jobs in excess of the per user limit above will be placed into a
-   *held* state, but will change to eligible-to-run at the appropriate
-   time.
--  Users may have only (100) jobs queued in the ``batch`` queue at any state at any time.
-   Additional jobs will be rejected at submit time.
-
-.. note::
-    The *eligible-to-run* state is not the *running* state.
-    Eligible-to-run jobs have not started and are waiting for resources.
-    Running jobs are actually executing.
 
 
 Simplified Node Layout
