@@ -361,17 +361,28 @@ Srun
 The ``srun`` command is used to execute an MPI binary on one or more compute nodes in parallel.
 ``srun`` accepts the following common options:
 
-+----------------------+---------------------------------------+
-| ``-N``               | Number of nodes                       |
-+----------------------+---------------------------------------+
-| ``-n``               | Total number of MPI tasks             |
-+----------------------+---------------------------------------+
-| ``--cpu-bind=no``    | Allow code to control thread affinity |
-+----------------------+---------------------------------------+
-| ``-c``               | Cores per MPI task                    |
-+----------------------+---------------------------------------+
-| ``--cpu-bind=cores`` | Bind to cores                         |
-+----------------------+---------------------------------------+
++--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+| ``-N``                                                 | Number of nodes                                                                                                |
++--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+| ``-n``                                                 | Total number of MPI tasks                                                                                      |
++--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+| ``-c, --cpus-per-task=<ncpus>``                        | Logical cores per MPI task (default is 1)                                                                      |
++--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+| ``--cpu-bind=threads``                                 | | Bind tasks to CPUs.                                                                                          |
+|                                                        | | ``threads`` - (default, recommended) Automatically generate masks binding tasks to threads.                  |
+|                                                        | | ``no`` - Allow code to control thread affinity                                                               |
++--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+| ``--threads-per-core=<threads>``                       | | In task layout, use the specified maximum number of hardware threads per core                                |
+|                                                        | | (default is 1; there are 2 hardware threads per physical CPU core).                                          |
+|                                                        | | Must also be set in ``salloc`` or ``sbatch`` if using ``--threads-per-core=2`` in your ``srun`` command.     |
++--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+| ``-m, --distribution=<value>:<value>:<value>``         | | Specifies the distribution of MPI ranks across compute nodes, sockets (L3 regions), and cores, respectively. |
+|                                                        | | The default values are ``block:cyclic:cyclic``                                                               |
+|                                                        | | Currently, the distribution setting for cores (the third "<value>" entry) has no effect on Frontier          |
++--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+|  ``--ntasks-per-node=<ntasks>``                        | | If used without ``-n``: requests that a specific number of tasks be invoked on each node.                    |
+|                                                        | | If used with ``-n``: treated as a *maximum* count of tasks per node.                                         |
++--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
 
 .. note::
     If you do not specify the number of MPI tasks to ``srun``
@@ -401,9 +412,9 @@ Below is a comparison table between srun and jsrun.
 +--------------------------------------------+---------------------------+-------------------------+
 | Number of GPUs per resource set            | ``-g, --gpus_per_rs``     | N/A                     |
 +--------------------------------------------+---------------------------+-------------------------+
-| Bind tasks to allocated CPUs               | ``-b, --bind``            | ``--cpu_bind``          |
+| Bind tasks to allocated CPUs               | ``-b, --bind``            | ``--cpu-bind``          |
 +--------------------------------------------+---------------------------+-------------------------+
-| Do not run more than one task on resources | ``--exclusive``           | ``--tasks_per_rs 1``    |
+| Do not run more than one task on resources | ``--tasks_per_rs 1``      | ``--exclusive``         |
 +--------------------------------------------+---------------------------+-------------------------+
 
 
@@ -453,12 +464,84 @@ hardware thread.
 Process and Thread Mapping
 --------------------------
 
-Thread mapping blurb goes here
+This section describes how to map processes (e.g., MPI ranks) and process
+threads (e.g., OpenMP threads) to the CPUs and GPUs on Frontier.
+
+.. note:: 
+
+   Users are highly encouraged to use the CPU- and GPU-mapping programs
+   used in the following sections to check their understanding of the job steps
+   (i.e., srun commands) the intend to use in their actual jobs. They can be
+   found HERELINK to jobstep and hello_mpi
+
 
 CPU Mapping
 ^^^^^^^^^^^
 
-Mapping to CPUs (limited to no OpenMP or OpenMP=1)
+This sub-section covers how to map tasks to the CPU without the presence of
+additional threads (i.e., solely MPI tasks -- no additional OpenMP threads).
+
+For the following examples, Slurm’s Interactive Jobs method was used to request
+an allocation of 1 compute node: ``salloc -A <project_id> -t 30 -p <parition>
+-N 1``. The intent with both of the following examples is to launch 8 MPI ranks
+across the node where each rank is assigned its own logical core.  Using the
+``-m`` distribution flag, we will cover two common approaches to assign the MPI
+ranks -- in a "round-robin" (``cyclic``) configuration and in a "packed"
+(``block``) configuration.
+
+8 MPI Ranks (round-robin)
+"""""""""""""""""""""""""
+
+Assigning MPI ranks in a "round-robin" (``cyclic``) manner across L3 cache
+regions (sockets) is the default behavior on Frontier. This mode will assign
+consecutive MPI tasks to different sockets before it tries to "fill up" a
+socket.
+
+Recall that the ``-m`` flag behaves like: ``-m <node distribution>:<socket
+distribution>``.  Hence, the key setting to achieving the round-robin nature is
+the ``-m block:cyclic`` flag, specifically the ``cyclic`` setting provided for
+the "socket distribution". This ensures that the MPI tasks will be distributed
+across L3 cache regions (sockets) in a cyclic (round-robin) manner.
+
+The below ``srun`` command will achieve the intended 8 MPI "round-robin" layout:
+
+.. code-block:: bash
+
+    $ export OMP_NUM_THREADS=1
+    $ srun -N1 -n8 -c1 --cpu-bind=threads --threads-per-core=1 -m block:cyclic ./hello_mpi_omp | sort
+
+    MPI 000 - OMP 000 - HWT 000 - Node crusher144
+    MPI 001 - OMP 000 - HWT 008 - Node crusher144
+    MPI 002 - OMP 000 - HWT 016 - Node crusher144
+    MPI 003 - OMP 000 - HWT 024 - Node crusher144
+    MPI 004 - OMP 000 - HWT 032 - Node crusher144
+    MPI 005 - OMP 000 - HWT 040 - Node crusher144
+    MPI 006 - OMP 000 - HWT 048 - Node crusher144
+    MPI 007 - OMP 000 - HWT 056 - Node crusher144
+
+.. note::
+
+   Although the above command used the default settings ``-c1``,
+   ``--cpu-bind=threads``, ``--threads-per-core=1`` and ``-m block:cyclic``, it is
+   always better to be explicit with your ``srun`` command to have more control
+   over your node layout. The above command is equivalent to ``srun -N1 -n8``.
+
+See the node diagram below for a visual representation of the round-robin distribution:
+
+.. image:: /images/Frontier_Node_Diagram_Simple_mpiRR.png
+   :align: center
+   :width: 100%
+
+8 MPI Ranks (packed)
+"""""""""""""""""""""""""
+
+The below image is packed across threads (``block``)
+
+.. image:: /images/Frontier_Node_Diagram_Simple_mpiPacked.png
+   :align: center
+   :width: 100%
+
+More text
 
 Multithreading
 ^^^^^^^^^^^^^^
