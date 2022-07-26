@@ -100,7 +100,6 @@ NVMe
 
 Each compute node on Frontier has [2x] 1.92TB \ **N**\ on-\ **V**\ olatile **Me**\mory (NVMe) storage devices (SSDs), colloquially known as a "Burst Buffer" with a peak sequential performance of 5500 MB/s (read) and 2000 MB/s (write). The NVMes could be used to reduce the time that applications wait for I/O. More information can be found later in the `Burst Buffer`_ section.
 
-----
 
 AMD GPUs
 ========
@@ -110,7 +109,9 @@ Graphical Compute Dies (GCD) for a total of 8 GCDs per node. Each GCD can be tre
 its own independent GPU. Each GCD has a peak performance of 26.5 TFLOPS
 (double-precision), 110 compute units, and 64 GB of high-bandwidth memory (HBM2) which can
 be accessed at a peak of 1.6 TB/s. The 2 GPUs on an MI250X are connected with Infinity
-Fabric with a bandwidth of 200 GB/s for input and output.
+Fabric with a bandwidth of 200 GB/s for input and output. Consult the diagram in the
+(TODO) section for information on how the accelerators connect to each other, to the CPU,
+and to the network.
 
 Each GCD is composed of a command processor and 8 shader engines. Each GCD is composed of
 110 compute units spread over the 8 shader engines. The compute unit is the piece of
@@ -122,17 +123,38 @@ command processor, and distributes the wavefronts among the compute units. The A
 the wavefronts from the workgroups and distributes them to the CUs. All the wavefronts of
 a workgroup are assigned to the same CU.
 
+.. image:: /images/amd_commandqueue.png
+   :align: center
+   :alt: Block diagram of command processor and shader engines
 
-TODO: insert diagram of internals
-TODO: diagram of command queue, command processor, workload manager, and CUs.
-TODO: more detailed info about the compute unit
-TODO: detailed info about HBM
-TODO: detailed info about the infinity fabric and where the MI250x connects to internally and externally
-TODO: unified memory? If mi250x has it, what is it and how does it work
-TODO: info about tensor cores
-TODO: Does __syncwarp exist like it does in cuda
-TODO: link to HIP from scratch tutorial
-TODO: write about blocks, grids, workgroup and wavefronts
+..
+  TODO: unified memory? If mi250x has it, what is it and how does it work
+  TODO: link to HIP from scratch tutorial
+  TODO: here are some references https://www.amd.com/system/files/documents/amd-cdna2-white-paper.pdf and https://www.amd.com/system/files/documents/amd-instinct-mi200-datasheet.pdf
+
+
+Blocks (workgroups), Threads (work items), Grids, Wavefronts
+------------------------------------------------------------
+
+Kernels are launched on the GCDs by specifying a number of blocks and threads. A *block*
+(also called a *thread block* or *workgroup*) is composed of a number of threads (also
+called *work-items*), and a *grid* is composed of a number of blocks. The block and grid
+sizes can be specified in one, two, or three dimensions during the kernel launch. Each
+thread can be identified with a unique id within the kernel, indexed along the X, Y, and Z
+dimensions.
+
+- Number of blocks we can specify along each dimension in a grid: (2147483647, 2147483647, 2147483647) 
+- Max number of threads we can specify along each dimension in a block: (1024, 1024, 1024) 
+  - However, the total of number of threads in a block has an upper limit of 1024
+    i.e. (size of x dimension * size of y dimension * size of z dimension) cannot exceed 1024.
+
+Each block or workgroup of threads is assigned to a single Compute Unit i.e. a single
+block won't be split across multiple CUs. The threads in a block are scheduled in units of
+64 threads called *wavefronts*.  When launching a kernel, up to 64KB of block level shared
+memory called the Local Data Store (LDS) can be statically or dynamically allocated. This
+shared memory between the threads in a block allows the threads to access block local data
+with much lower latency compared to using the HBM since the data is in the compute unit
+itself.
 
 
 The Compute Unit
@@ -148,19 +170,37 @@ Each CU has 4 Matrix Core Units (the equivalent of Nvidia's Tensor core units) a
 (which has 64 threads) is assigned to a single 16-wide SIMD unit such that the wavefront
 as a whole executes the instruction over 4 cycles, 16 threads per cycle. Since other
 wavefronts occupy the other three SIMD units at the same time, the total throughput still
-remains 1 instruction per cycle. The Local Data Share (LDS) provides (TODO) bytes of
-shared memory, allowing a block to have shared memory among its threads with much lower
-latency compared to using the HBM since the data is in the compute unit itself.
+remains 1 instruction per cycle. Each CU maintains an instructions buffer for 10
+wavefronts and also maintains 256 registers where each register is 64 4-byte wide
+entries. 
 
 
-HBM
----
+..
+  Infinty Fabric
+  --------------
+  
+  Infinity Fabric is AMD interconnect technology for connecting various AMD components
+    within the node. The two GCDs in the
+  accelerator as well as connecting out to the AMD EPYC CPUs.
 
-Infinty Fabric
---------------
 
 HIP
 ---
+
+The Heterogeneous Interface for Portability (HIP) is AMD’s dedicated GPU programming
+environment for designing high performance kernels on GPU hardware. HIP is a C++ runtime
+API and programming language that allows developers to create portable applications on
+different platforms. This means that developers can write their GPU applications and with
+very minimal changes be able to run their code in any environment.  The API is very similar
+to CUDA, so if you're already familiar with CUDA there is almost no additional work to
+learn HIP.
+
+If you wish to learn HIP, there is a recorded training (Github repo for video tutorial
+(TODO)). If you have CUDA code on Summit and want to learn how to convert that to HIP and
+test it, Summit provides the ``hip-cuda`` module with the ``hipify-perl`` tool to convert
+CUDA API calls to HIP and run them on Summit. There is a recorded tutorial for that here
+(TODO) (Github repo for the tutorial (TODO)).
+
 
 Compiling
 =========
