@@ -434,6 +434,24 @@ Compute nodes are the appropriate place for long-running, computationally-intens
   Unlike Summit and Titan, there are no launch/batch nodes on Frontier. This means your batch script runs on a node allocated to you rather than a shared node. You still must use the job launcher (srun) to run parallel jobs across all of your nodes, but serial tasks need not be launched with srun.
 
 
+Simplified Node Layout
+----------------------
+
+To easily visualize job examples (see section REFERENCE further below), the
+compute node diagram has been simplified to the picture shown below.
+
+.. image:: /images/Frontier_Node_Diagram_Simple.png
+   :align: center
+   :width: 100%
+   :alt: Simplified Frontier node architecture diagram
+
+In the diagram, each **physical** core on a Frontier compute node is composed
+of two **logical** cores that are represented by a pair of blue and grey boxes.
+For a given physical core, the blue box represents the logical core of the
+first hardware thread, where the grey box represents the logical core of the
+second hardware thread.
+
+
 Slurm
 -----
 
@@ -544,7 +562,8 @@ The table below summarizes options for submitted jobs. Unless otherwise noted, t
 |                        |                                            | Walltime requests can be specified as minutes, hours:minutes, hours:minuts:seconds   |
 |                        |                                            | days-hours, days-hours:minutes, or days-hours:minutes:seconds                        |
 +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-| ``--threads-per-core`` | ``#SBATCH --threads-per-core=2``           | Number of active hardware threads per core. Can be 1 or 2 (1 is default)             |
+| ``--threads-per-core`` | ``#SBATCH --threads-per-core=2``           | | Number of active hardware threads per core. Can be 1 or 2 (1 is default)           |
+|                        |                                            | | **Must** be used if using ``--threads-per-core=2`` in your ``srun`` command.       |
 +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
 | ``-d``                 | ``#SBATCH -d afterok:12345``               | Specify job dependency (in this example, this job cannot start until job 12345 exits |
 |                        |                                            | with an exit code of 0. See the Job Dependency section for more information          |
@@ -659,14 +678,27 @@ As a DOE Leadership Computing Facility, OLCF has a mandate that a large portion 
 
 The basic priority mechanism for jobs waiting in the queue is the time the job has been waiting in the queue. If your jobs require resources outside these policies such as higher priorit or longer walltimes, please contact help@olcf.ornl.gov
 
-Jobs by Node Count
-^^^^^^^^^^^^^^^^^^
+Job Priority by Node Count
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-+-----+-----------+-----------+----------------------+--------------------+
-| Bin | Min Nodes | Max Nodes | Max Walltime (Hours) | Aging Boost (Days) |
-+=====+===========+===========+======================+====================+
-|     |           |           |                      |                    |
-+-----+-----------+-----------+----------------------+--------------------+
+Jobs are *aged* according to the job's requested node count (older
+age equals higher queue priority). Each job's requested node count
+places it into a specific *bin*. Each bin has a different aging
+parameter, which all jobs in the bin receive.
+
++-------+-------------+-------------+------------------------+----------------------+
+| Bin   | Min Nodes   | Max Nodes   | Max Walltime (Hours)   | Aging Boost (Days)   |
++=======+=============+=============+========================+======================+
+| 1     | 5,645       | 9,408       | 24.0                   | 15                   |
++-------+-------------+-------------+------------------------+----------------------+
+| 2     | 1,882       | 5,644       | 24.0                   | 10                   |
++-------+-------------+-------------+------------------------+----------------------+
+| 3     | 184         | 1,881       | 12.0                   | 0                    |
++-------+-------------+-------------+------------------------+----------------------+
+| 4     | 92          | 183         | 6.0                    | 0                    |
++-------+-------------+-------------+------------------------+----------------------+
+| 5     | 1           | 91          | 2.0                    | 0                    |
++-------+-------------+-------------+------------------------+----------------------+
 
 
 Allocation Overuse Policy
@@ -850,51 +882,8 @@ Below is a comparison table between srun and jsrun.
 +--------------------------------------------+---------------------------+-------------------------+
 
 
-Scheduling Policy
------------------
-Job Priority by Processor Count
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Jobs are *aged* according to the job's requested processor count (older
-age equals higher queue priority). Each job's requested processor count
-places it into a specific *bin*. Each bin has a different aging
-parameter, which all jobs in the bin receive.
-
-+-------+-------------+-------------+------------------------+----------------------+
-| Bin   | Min Nodes   | Max Nodes   | Max Walltime (Hours)   | Aging Boost (Days)   |
-+=======+=============+=============+========================+======================+
-| 1     | 5,645       | 9,408       | 24.0                   | 15                   |
-+-------+-------------+-------------+------------------------+----------------------+
-| 2     | 1,882       | 5,644       | 24.0                   | 10                   |
-+-------+-------------+-------------+------------------------+----------------------+
-| 3     | 184         | 1,881       | 12.0                   | 0                    |
-+-------+-------------+-------------+------------------------+----------------------+
-| 4     | 92          | 183         | 6.0                    | 0                    |
-+-------+-------------+-------------+------------------------+----------------------+
-| 5     | 1           | 91          | 2.0                    | 0                    |
-+-------+-------------+-------------+------------------------+----------------------+
-
-
-
-Simplified Node Layout
-----------------------
-
-To easily visualize ``srun`` examples, the node diagram shown in section
-REFERENCE has been simplified to the picture shown below. 
-
-.. image:: /images/Frontier_Node_Diagram_Simple.png
-   :align: center
-   :width: 100%
-   :alt: Simplified Frontier node architecture diagram
-
-In the diagram, each **physical** core on Frontier is composed of two
-**logical** cores that are represented by a pair of blue and grey boxes. For a
-given physical core, the blue box represents the logical core of the first
-hardware thread, where the grey box represents the logical core of the second
-hardware thread.
-
-Process and Thread Mapping
---------------------------
+Process and Thread Mapping Examples
+-----------------------------------
 
 This section describes how to map processes (e.g., MPI ranks) and process
 threads (e.g., OpenMP threads) to the CPUs and GPUs on Frontier.
