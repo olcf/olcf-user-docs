@@ -403,20 +403,388 @@ This section shows how to compile HIP + OpenMP CPU threading hybrid codes.
 Running Jobs
 ============
 
-Most OLCF resources like Frontier use the Slurm batch scheduler. Summit and other IBM hardware use the LSF scheduler.
-Below is a comparison table of useful commands among the two schedulers.
+Computational work on Frontier is performed by *jobs*. Jobs typically consist of several componenets:
 
-+--------------------------------------------+-----------------------+-------------------+
-| Task                                       | LSF (Summit)          | Slurm (Frontier)  |
-+============================================+=======================+===================+
-| View batch queue                           | ``jobstat``           | ``squeue``        |
-+--------------------------------------------+-----------------------+-------------------+
-| Submit batch script                        | ``bsub``              | ``sbatch``        |
-+--------------------------------------------+-----------------------+-------------------+
-| Submit interactive batch job               | ``bsub -Is $SHELL``   | ``salloc``        |
-+--------------------------------------------+-----------------------+-------------------+
-| Run parallel code within batch job         | ``jsrun``             | ``srun``          |
-+--------------------------------------------+-----------------------+-------------------+
+-  A batch submission script 
+-  A binary executable
+-  A set of input files for the executable
+-  A set of output files created by the executable
+
+In general, the process for running a job is to:
+
+#. Prepare executables and input files.
+#. Write a batch script.
+#. Submit the batch script to the batch scheduler.
+#. Optionally monitor the job before and during execution.
+
+The following sections describe in detail how to create, submit, and manage jobs for execution on Frontier. Frontier uses SchedMD's Slurm Workload Manager as the batch scheduling system.
+
+
+Login vs Compute Nodes
+----------------------
+
+Recall from the System Overview that Frontier contains two node types: Login and Compute. When you connect to the system, you are placed on a *login* node. Login nodes are used for tasks such as code editing, compiling, etc. They are shared among all users of the system, so it is not appropriate to run tasks that are long/computationally intensive on login nodes. Users should also limit the number of simultaneous tasks on login nodes (e.g. concurrent tar commands, parallel make 
+
+Compute nodes are the appropriate place for long-running, computationally-intensive tasks. When you start a batch job, your batch script (or interactive shell for batch-interactive jobs) runs on one of your allocated compute nodes.
+
+.. warning::
+  Compute-intensive, memory-intensive, or other disruptive processes running on login nodes may be killed without warning.
+
+.. note::
+  Unlike Summit and Titan, there are no launch/batch nodes on Frontier. This means your batch script runs on a node allocated to you rather than a shared node. You still must use the job launcher (srun) to run parallel jobs across all of your nodes, but serial tasks need not be launched with srun.
+
+
+Slurm
+-----
+
+Frontier uses SchedMD's Slurm workload manager for scheduling jobs. Proir systems used different schedulers (Summit used IBM's LSF, many others used Moab). While most of these systems provide similar functionality, but with different commands/options. A comparison of a few important commands is below, but SchedMD provides a more complete reference in their `Rosetta Stone of Workload Managers <https://slurm.schedmd.com/rosetta.pdf>`_.
+
+Slurm documentation for each command is available on the system via the ``man`` utility as well as on the web at ` <https://slurm.schedmd.com/man_index.html>`_. Additional documentation is available at ` <https://slurm.schedmd.com/documentation.html>`_.
+
+Some common Slurm commands are summarized in the table below. More complete examples are given in the Monitoring and Modifying Batch Jobs section of this guide.
+
++--------------+------------------------------------------------+------------------------------------+
+| Command      | Action/Task                                    | LSF Equivalent                     |
++==============+================================================+====================================+
+| ``squeue``   | Show the current queue                         | ``bjobs``                          |
++--------------+------------------------------------------------+------------------------------------+
+| ``sbatch``   | Submit a batch script                          | ``bsub``                           |
++--------------+------------------------------------------------+------------------------------------+
+| ``salloc``   | Submit an interactive job                      | ``bsub -Is $SHELL``                |
++--------------+------------------------------------------------+------------------------------------+
+| ``srun``     | Launch a parallel job                          | ``jsrun``                          |
++--------------+------------------------------------------------+------------------------------------+
+| ``sinfo``    | Show node/partition info                       | ``bqueues`` or ``bhosts``          |
++--------------+------------------------------------------------+------------------------------------+
+| ``sacct``    | View accounting information for jobs/job steps | ``bacct``                          |
++--------------+------------------------------------------------+------------------------------------+
+| ``scancel``  | Cancel a job or job step                       | ``bkill``                          |
++--------------+------------------------------------------------+------------------------------------+
+| ``scontrol`` | View or modify job configuration.              | ``bstop``, ``bresume``, ``bmod``   |
++--------------+------------------------------------------------+------------------------------------+
+
+
+Batch Scripts
+-------------
+
+The most common way to interact with the batch system is via batch scripts. A batch script is simply a shell script with added directives to request various resoruces from or provide certain information to the scheduling system.  Aside from these directives, the batch script is simply the series of commands needed to set up and run your job.
+
+To submit a batch script, use the command ``sbatch myjob.sl``
+
+Consider the following batch script:
+
+.. code-block:: bash
+   :linenos:
+
+    #!/bin/bash
+    #SBATCH -A ABC123
+    #SBATCH -J RunSim123
+    #SBATCH -o %x-%j.out
+    #SBATCH -t 1:00:00
+    #SBATCH -p batch
+    #SBATCH -N 1024
+
+    cd $MEMBERWORK/abc123/Run.456
+    cp $PROJWORK/abc123/RunData/Input.456 ./Input.456
+    srun ...
+    cp my_output_file $PROJWORK/abc123/RunData/Output.456
+
+In the script, Slurm directives are preceded by ``#SBATCH``, making them appear as somments to the shell. Slurm looks for these directives through the first non-comment, non-whitespace line. Options after that will be ignored by Slurm (and the shell).
+
++------+-------------------------------------------------------------------------------------------------+
+| Line | Description                                                                                     |
++======+=================================================================================================+
+|    1 | Shell interpreter line                                                                          |
++------+-------------------------------------------------------------------------------------------------+
+|    2 | OLCF project to charge                                                                          |
++------+-------------------------------------------------------------------------------------------------+
+|    3 | Job name                                                                                        |
++------+-------------------------------------------------------------------------------------------------+
+|    4 | Job standard output file (``%x`` will be replaced with the job name and ``%j`` with the Job ID) |
++------+-------------------------------------------------------------------------------------------------+
+|    5 | Walltime requested (in ``HH:MM:SS`` format). See the table below for other formats.             |
++------+-------------------------------------------------------------------------------------------------+
+|    6 | Partition (queue) to use                                                                        |
++------+-------------------------------------------------------------------------------------------------+
+|    7 | Number of compute nodes requested                                                               |
++------+-------------------------------------------------------------------------------------------------+
+|    8 | Blank line                                                                                      |
++------+-------------------------------------------------------------------------------------------------+
+|    9 | Change into the run directory                                                                   |
++------+-------------------------------------------------------------------------------------------------+
+|   10 | Copy the input file into place                                                                  |
++------+-------------------------------------------------------------------------------------------------+
+|   11 | Run the job ( add layout details )                                                              |
++------+-------------------------------------------------------------------------------------------------+
+|   12 | Copy the output file to an appropriate location.                                                |
++------+-------------------------------------------------------------------------------------------------+
+
+
+Interactive Jobs
+----------------
+
+Most users will find batch jobs an easy way to use the system, as they allow you to "hand off" a job to the scheduler, allowing them to focus on other tasks while their job waits in the queue and eventually runs. Occasionally, it is necessary to run interactively, especially when developing, testing, modifying or debugging a code.
+
+Since all compute resources are managed and scheduled by Slurm, it is not possible to simply log into the system and immediately begin running parallel codes interactively. Rather, you must request the appropriate resources from Slurm and, if necessary, wait for them to become available. This is done through an "interactive batch" job. Interactive batch jobs are submitted with the ``salloc`` command. Resources are requested via the same options that are passed via ``#SBATCH`` in a regular batch script (but without the ``#SBATCH`` prefix). For example, to request an interactive batch job with the same resources that the batch script above requests, you would use ``salloc -A ABC123 -J RunSim123 -t 1:00:00 -p batch -N 1024``. Note there is no option for an output file...you are running interactively, so standard output and standard error will be displayed to the terminal.
+
+
+Common Slurm Options
+--------------------
+
+The table below summarizes options for submitted jobs. Unless otherwise noted, they can be used for either batch scripts or interactive batch jobs. For scripts, they can be added on the ``sbatch`` command line or as a ``#BSUB`` directive in the batch script. (If they're specified in both places, the command line takes precedence.) This is only a subset of all available options. Check the `Slurm Man Pages <https://slurm.schedmd.com/man_index.html>`_ for a more complete list.
+
++------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+| Option                 | Example Usage                              | Description                                                                          |
++========================+============================================+======================================================================================+
+| ``-A``                 | ``#SBATCH -A ABC123``                      | Specifies the project to which the job should be charged                             |
++------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+| ``-N``                 | ``#SBATCH -N 1024``                        | Request 1024 nodes for the job                                                       |
++------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+| ``-t``                 | ``#SBATCH -t 4:00:00``                     | Request a walltime of 4 hours.                                                       |
+|                        |                                            | Walltime requests can be specified as minutes, hours:minutes, hours:minuts:seconds   |
+|                        |                                            | days-hours, days-hours:minutes, or days-hours:minutes:seconds                        |
++------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+| ``--threads-per-core`` | ``#SBATCH --threads-per-core=2``           | Number of active hardware threads per core. Can be 1 or 2 (1 is default)             |
++------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+| ``-d``                 | ``#SBATCH -d afterok:12345``               | Specify job dependency (in this example, this job cannot start until job 12345 exits |
+|                        |                                            | with an exit code of 0. See the Job Dependency section for more information          |
++------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+| ``-C``                 | ``#SBATCH -C nvme``                        | Request the burst buffer/NVMe on each node be made available for your job. See       |
+|                        |                                            | the Burst Buffers section for more information on using them.                        |
++------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+| ``-J``                 | ``#SBATCH -J MyJob123``                    | Specify the job name (this will show up in queue listings)                           |
++------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+| ``-o``                 | ``#SBATCH -o jobout.%j``                   | File where job STDOUT will be directed (%j will be replaced with the job ID).        |
+|                        |                                            | If no `-e` option is specified, job STDERR will be placed in this file, too.         |
++------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+| ``-e``                 | ``#SBATCH -e joberr.%j``                   | File where job STDERR will be directed (%j will be replaced with the job ID).        |
+|                        |                                            | If no `-o` option is specified, job STDOUT will be placed in this file, too.         |
++------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+| ``--mail-type``        | ``#SBATCH --mail-type=END``                | Send email for certain job actions. Can be a comma-separated list. Actions include   |
+|                        |                                            | BEGIN, END, FAIL, REQUEUE, INVALID_DEPEND, STAGE_OUT, ALL, and more.                 |
++------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+| ``--mail-user``        | ``#SBATCH --mail-user=user@somewhere.com`` | Email address to be used for notifications.                                          |
++------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+
+
+Slurm Environment Variables
+---------------------------
+
+Slurm reads a number of environment variables, many of which can provide the same information as the job options noted above. We recommend using the job options rather than environment variables to specify job options, as it allows you to have everything self-contained within the job submission script (rather than having to remember what options you set for a given job).
+
+Slurm also provides a number of environment variables within your running job. The following table summarizes those that may be particularly useful within your job (e.g. for naming output log files):
+
++--------------------------+-----------------------------------------------------------------------------------------+
+| Variable                 | Description                                                                             |
++==========================+=========================================================================================+
+| ``$SLURM_SUBMIT_DIR``    | The directory from which the batch job was submitted. By default, a new job starts      |
+|                          | in your home directory. You can get back to the directory of job submission with        |
+|                          | ``cd $SLURM_SUBMIT_DIR``. Note that this is not necessarily the same directory in which |
+|                          | the batch script resides.                                                               |
++--------------------------+-----------------------------------------------------------------------------------------+
+| ``$SLURM_JOBID``         | The job’s full identifier. A common use for ``$SLURM_JOBID`` is to append the job’s ID  |
+|                          | to the standard output and error files.                                                 |
++--------------------------+-----------------------------------------------------------------------------------------+
+| ``$SLURM_JOB_NUM_NODES`` | The number of nodes requested.                                                          |
++--------------------------+-----------------------------------------------------------------------------------------+
+| ``$SLURM_JOB_NAME``      | The job name supplied by the user.                                                      |
++--------------------------+-----------------------------------------------------------------------------------------+
+| ``$SLURM_NODELIST``      | The list of nodes assigned to the job.                                                  |
++--------------------------+-----------------------------------------------------------------------------------------+
+
+
+Job States
+----------
+
+A job will transition through several states during its lifetime. Common ones include:
+
++-------+------------+-------------------------------------------------------------------------------+
+| State | State      | Description                                                                   |
+| Code  |            |                                                                               | 
++=======+============+===============================================================================+
+| CA    | Canceled   | The job was canceled (could've been by the user or an administrator)          |
++-------+------------+-------------------------------------------------------------------------------+
+| CD    | Completed  | The job completed successfully (exit code 0)                                  |
++-------+------------+-------------------------------------------------------------------------------+
+| CG    | Completing | The job is in the process of completing (some processes may still be running) |
++-------+------------+-------------------------------------------------------------------------------+
+| PD    | Pending    | The job is waiting for resources to be allocated                              |
++-------+------------+-------------------------------------------------------------------------------+
+| R     | Running    | The job is currently running                                                  |
++-------+------------+-------------------------------------------------------------------------------+
+
+
+Job Reason Codes
+----------------
+
+In addition to state codes, jobs that are pending will have a "reason code" to explain why the job is pending. Completed jobs will have a reason describing how the job ended. Some codes you might see include:
+
++-------------------+---------------------------------------------------------------------------------------------------------------+
+| Reason            | Meaning                                                                                                       |
++===================+===============================================================================================================+
+| Dependency        | Job has dependencies that have not been met                                                                   |
++-------------------+---------------------------------------------------------------------------------------------------------------+
+| JobHeldUser       | Job is held at user's request                                                                                 |
++-------------------+---------------------------------------------------------------------------------------------------------------+
+| JobHeldAdmin      | Job is held at system administrator's request                                                                 |
++-------------------+---------------------------------------------------------------------------------------------------------------+
+| Priority          | Other jobs with higher priority exist for the partition/reservation                                           |
++-------------------+---------------------------------------------------------------------------------------------------------------+
+| Reservation       | The job is waiting for its reservation to become available                                                    |
++-------------------+---------------------------------------------------------------------------------------------------------------+
+| AssocMaxJobsLimit | The job is being held because the user/project has hit the limit on running jobs                              |
++-------------------+---------------------------------------------------------------------------------------------------------------+
+| ReqNodeNotAvail   | The requested a particular node, but it's currently unavailable (it's in use, reserved, down, draining, etc.) |
++-------------------+---------------------------------------------------------------------------------------------------------------+
+| JobLaunchFailure  | Job failed to launch (could due to system problems, invalid program name, etc.)                               |
++-------------------+---------------------------------------------------------------------------------------------------------------+
+| NonZeroExitCode   | The job exited with some code other than 0                                                                    |
++-------------------+---------------------------------------------------------------------------------------------------------------+
+
+Many other states and job reason codes exist. For a more complete description, see the ``squeue`` man page (either on the system or online).
+
+
+Scheduling Policy
+-----------------
+
+In a simple batch queue system, jobs run in a first-in, first-out (FIFO) order. This can lead to inefficient use of the system. If a large job is the next to run, a strict FIFO queue can cause nodes to sit idle while waiting for the large job to start. *Backfilling* would allow smaller, shorter jobs to use those resources that would otherwise remain idle until the large job starts. With the proper algorithm, they would do so without impacting the start time of the large job. While this does make more efficient use of the system, it encourages the submission of smaller jobs.
+
+The DOE Leadership-Class Job Mandate
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+As a DOE Leadership Computing Facility, OLCF has a mandate that a large portion of Frontier's usage come from large, *leadership-class* (a.k.a. *capability*) jobs. To ensure that OLCF complies with this directive, we strongly encourage users to run jobs on Frontier that are as large as their code will allow. To that end, OLCF implements queue policies that enable large jobs to run in a timely fashion.
+
+.. note::
+  The OLCF implements queue policies that encourage the submission and timely execution of large, leadership-class jobs on Frontier.
+
+The basic priority mechanism for jobs waiting in the queue is the time the job has been waiting in the queue. If your jobs require resources outside these policies such as higher priorit or longer walltimes, please contact help@olcf.ornl.gov
+
+Jobs by Node Count
+^^^^^^^^^^^^^^^^^^
+
++-----+-----------+-----------+----------------------+--------------------+
+| Bin | Min Nodes | Max Nodes | Max Walltime (Hours) | Aging Boost (Days) |
++=====+===========+===========+======================+====================+
+|     |           |           |                      |                    |
++-----+-----------+-----------+----------------------+--------------------+
+
+
+Allocation Overuse Policy
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Projects that overrun their allocation are still allowed to run on OLCF systems, although at a reduced priority. Like the adjustment for the number of processors requested above, this is an adjustment to the apparent submit time of the job. However, this adjustment has the effect of making jobs appear much younger than jobs submitted under projects that have not exceeded their allocation. In addition to the priority change, these jobs are also limited in the amount of wall time that can be used. For example, consider that `job1` is submitted at the same time as `job2`. The project associated with `job1` is over its allocation, while the project for `job2` is not. The batch system will consider `job2` to have been waiting for a longer time than `job1`. Additionally, projects that are at 125% of their allocated time will be limited to only 3 running jobs at a time. The adjustment to the apparent submit time depends upon the percentage that the project is over its allocation, as shown in the table below:
+
++----------------------+-----------+
+| % of Allocation Used | Priority  |
+|                      | Reduction |
++======================+===========+
+| < 100%               | none      |
++----------------------+-----------+
+| >=100% but <=125%    | 30 days   |
++----------------------+-----------+
+| > 125%               | 365 days  |
++----------------------+-----------+
+
+
+System Reservation Policy
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Projects may request to reserve a set of nodes for a period of time by contacting help@olcf.ornl.gov. If the reservation is granted, the reserved nodes will be blocked from general use for a given period of time. Only users that have been authorized to use the reservation can utilize those resources. ince no other users can access the reserved resources, it is crucial that groups given reservations take care to ensure the utilization on those resources remains high. To prevent reserved resources from remaining idle for an extended period of time, reservations are monitored for inactivity. If activity falls below 50% of the reserved resources for more than (30) minutes, the reservation will be canceled and the system will be returned to normal scheduling. A new reservation must be requested if this occurs.
+
+The requesting project’s allocation is charged according to the time window granted, regardless of actual utilization. For example, an 8-hour, 2,000 node reservation on Frontier would be equivalent to using 16,000 Frontier node-hours of a project’s allocation.
+
+.. note::
+  Reservations should not be confused with priority requests. If quick turnaround is needed for a few jobs or for a period of time, a priority boost should be requested. A reservation should only be requested if users need to guarantee availability of a set of nodes at a given time, such as for a live demonstration at a conference.
+
+
+Job Dependencies
+----------------
+
+Oftentimes, a job will need data from some other job in the queue, but it's nonetheless convenient to submit the second job before the first finishes. Slurm allows you to submit a job with constraints that will keep it from running until these dependencies are met. These are specified with the ``-d`` option to Slurm. Common dependency flags are summarized below. In each of these examples, only a single jobid is shown but you can specify multiple job IDs as a colon-delimited list (i.e. ``#SBATCH -d afterok:12345:12346:12346``). For the ``after`` dependency, you can optionally specify a ``+time`` value for each jobid.
+
++-----------------------------------+---------------------------------------------------------------------------------------------------+
+| Flag                              | Meaning (for the dependent job)                                                                   |
++===================================+===================================================================================================+
+| ``#SBATCH -d after:jobid[+time]`` | The job can start after the specified jobs start or are canceled. The optional ``+time`` argument |
+|                                   | is a number of minutes. If specified, the job cannot start until that many minutes have passed    |
+|                                   | since the listed jobs start/are canceled. If not specified, there is no delay.                    |
++-----------------------------------+---------------------------------------------------------------------------------------------------+
+| ``#SBATCH -d afterany:jobid``     | The job can start after the specified jobs have ended (regardless of exit state)                  |
++-----------------------------------+---------------------------------------------------------------------------------------------------+
+| ``#SBATCH -d afternotok:jobid``   | The job can start after the specified jobs terminate in a failed (non-zero) state                 |
++-----------------------------------+---------------------------------------------------------------------------------------------------+
+| ``#SBATCH -d afterok:jobid``      | The job can start after the specified jobs complete successfully (i.e. zero exit code)            |
++-----------------------------------+---------------------------------------------------------------------------------------------------+
+| ``#SBATCH -d singleton``          | Job can begin after any previously-launched job with the same name and from the same user         |
+|                                   | have completed. In other words, serialize the running jobs based on username+jobname pairs.       |
++-----------------------------------+---------------------------------------------------------------------------------------------------+
+
+
+Monitoring and Modifying Batch Jobs
+-----------------------------------
+
+``scontrol hold`` and ``scontrol release``: Holding and Releasing Jobs
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Sometimes you may need to place a hold on a job to keep it from starting. For example, you may have submitted it assuming some needed data was in place but later realized that data is not yet available. This can be done with the ``scontrol hold`` command. Later, when the data is ready, you can release the job (i.e. tell the system that it's now OK to run the job) with the ``scontrol release`` command. For example:
+
++----------------------------+------------------------------------------------------------+
+| ``scontrol hold 12345``    | Place job 12345 on hold                                    | 
++----------------------------+------------------------------------------------------------+
+| ``scontrol release 12345`` | Release job 12345 (i.e. tell the system it's OK to run it) |
++----------------------------+------------------------------------------------------------+
+
+
+``scontrol update``: Changing Job Parameters
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+There may also be occasions where you want to modify a job that's waiting in the queue. For example, perhaps you requested 2,000 nodes but later realized this is a different data set and only needs 1,000 nodes. You can use the ``scontrol update`` command for this. For example:
+
++---------------------------------------------------+-----------------------------------------------+
+| ``scontrol update NumNodes=1000 JobID=12345``     | Change job 12345's node request to 1000 nodes |
++---------------------------------------------------+-----------------------------------------------+
+| ``scontrol update TimeLimit=4:00:00 JobID=12345`` | Change job 12345's max walltime to 4 hours    |
++---------------------------------------------------+-----------------------------------------------+
+
+
+``scancel``: Cancel a Job
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If you need to remove a job from the queue, use the ``scancel`` command. For example, ``scancel 12345``
+
+
+``squeue``: View the Queue
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The ``squeue`` command is used to show the batch queue. You can filter the level of detail through several command-line options. For example:
+
++------------------------+------------------------------------------------+
+| ``squeue -l``          | Show all jobs currently in the queue           |
++------------------------+------------------------------------------------+
+| ``squeue -l -u $USER`` | Show all of *your* jobs currently in the queue |
++------------------------+------------------------------------------------+
+
+
+``sacct``: Get Job Accounting Information
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The ``sacct`` command gives detailed information about jobs currently in the queue and recently-completed jobs. You can also use it to see the various steps within a batch jobs. 
+
++-----------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------+
+| ``sacct -a -X``                                                                   | Show all jobs (``-a``) in the queue, but summarize the whole allocation instead of showing individual steps (``-X``) |
++-----------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------+
+| ``sacct -u $USER``                                                                | Show all of your jobs, and show the individual steps (since there was no ``-X`` option)                              |
++-----------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------+
+| ``sacct -j 12345``                                                                | Show all job steps that are part of job 12345                                                                        |
++-----------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------+
+| ``sacct -u $USER -S 2022-07-01T13:00:00 -o "jobid%5,jobname%25,nodelist%20" -X``  | Show all of your jobs since 1 PM on July 1, 2022 using a particular output format                                    |
++-----------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------+
+
+``scontrol show job``: Get Detailed Job Information
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+In addition to holding, releasing, and updating the job, the ``scontrol`` command can show detailed job information via the ``show job`` subcommand. For example, ``scontrol show job 12345``.
+
 
 
 Srun
