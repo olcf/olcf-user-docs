@@ -623,6 +623,6 @@ Debugging
 Debugging text goes here
 
 Optimization and Profiling
-============
+==========================
 
 Optimization and Profiling text goes here
