@@ -1684,10 +1684,6 @@ so it is possible to *programatically* map any combination of GPUs to MPI
 ranks. It should be noted however that Cray MPICH does not support GPU-aware
 MPI for multiple GPUs per rank, so this binding is not suggested.
 
-..
-   However, there is currently no way to use Slurm to map multiple GPUs to a
-   single MPI rank. If this functionality is needed for an application, please
-   submit a ticket by emailing help@olcf.ornl.gov.
 
 Software
 ============
