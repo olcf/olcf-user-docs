@@ -1283,7 +1283,7 @@ script to start the vncserver and run matlab within:
     In a new terminal, open a tunneling connection with andes79.olcf.ornl.gov and port 5901
     example:
          localsystem: ssh -L 5901:localhost:5901 username@andes.olcf.ornl.gov
-         andes: ssh -L 5901:localhost:5901 andes79
+         andes: ssh -4L 5901:localhost:5901 andes79
 
     **************************************************************************
 
@@ -1297,7 +1297,7 @@ In a second terminal on your local system open a tunneling connection following
 the instructions given by the vnc start-up script:
 
 -  localsystem: ``ssh -L 5901:localhost:5901 username@andes.olcf.ornl.gov``
--  andes: ``ssh -L 5901:localhost:5901 andes79``
+-  andes: ``ssh -4L 5901:localhost:5901 andes79``
 
 Step 4 (local system)
 ^^^^^^^^^^^^^^^^^^^^^
@@ -1329,7 +1329,7 @@ matlab-vnc.sh (non-GPU rendering)
     echo "In a new terminal, open a tunneling connection with $(what) and port 5901"
     echo "example:"
     echo "   localsystom: ssh -L 5901:localhost:5901 username@andes.olcf.ornl.gov "
-    echo "   andes: ssh -L 5901:localhost:5901 $(what) "
+    echo "   andes: ssh -4L 5901:localhost:5901 $(what) "
     echo
     echo "**************************************************************************"
     echo
@@ -1398,7 +1398,7 @@ script to start the vncserver and run vmd within:
     In a new terminal, open a tunneling connection with andes-gpu5.olcf.ornl.gov and                                                                              port 5901
     example:
          localsystem: ssh -L 5901:localhost:5901 username@andes.olcf.ornl.gov
-         andes: ssh -L 5901:localhost:5901 andes-gpu5
+         andes: ssh -4L 5901:localhost:5901 andes-gpu5
 
     **************************************************************************
 
@@ -1440,7 +1440,7 @@ In a second terminal on your local system open a tunneling connection following
 the instructions given by the vnc start-up script:
 
 -  localsystem: ``ssh -L 5901:localhost:5901 username@andes.olcf.ornl.gov``
--  andes: ``ssh -L 5901:localhost:5901 andes-gpu5``
+-  andes: ``ssh -4L 5901:localhost:5901 andes-gpu5``
 
 Step 4 (local system)
 ^^^^^^^^^^^^^^^^^^^^^
@@ -1476,7 +1476,7 @@ vmd-vgl.sh (GPU rendering)
     echo "In a new terminal, open a tunneling connection with $(what) and port 5901"
     echo "example:"
     echo "   localsystem: ssh -L 5901:localhost:5901 username@andes.olcf.ornl.gov "
-    echo "   andes: ssh -L 5901:localhost:5901 $(what) "
+    echo "   andes: ssh -4L 5901:localhost:5901 $(what) "
     echo
     echo "**************************************************************************"
     echo
@@ -1488,6 +1488,9 @@ vmd-vgl.sh (GPU rendering)
 
 Remote Visualization using Nice DCV (GPU nodes only)
 ----------------------------------------------------
+
+.. warning::
+   Nice DCV is currently undergoing maintenance. Instead, please use the VNC options detailed above.
 
 Step 1 (terminal 1)
 ^^^^^^^^^^^^^^^^^^^
