@@ -218,9 +218,9 @@ For CMake and Autotools based builds it is recommended to configure in the follo
    #Example for CMake
 
    $ SCOREP_WRAPPER=off cmake .. \
-        -DCMAKE_C_COMPILER=scorep--gcc \
-        -DCMAKE_CXX_COMPILER=scorep--g++ \
-        -DCMAKE_Fortran_COMPILER=scorep--ftn
+        -DCMAKE_C_COMPILER=scorep-gcc \
+        -DCMAKE_CXX_COMPILER=scorep-g++ \
+        -DCMAKE_Fortran_COMPILER=scorep-ftn
 
 .. code::
 
