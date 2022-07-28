@@ -974,6 +974,13 @@ GPU Mapping
 
 Mapping to GPUs (both noOpenMP / with OpenMP)
 
+Software
+============
+
+Visualization and analysis tasks should be done on the Andes cluster. There are a few tools provided for various visualization tasks, as described in the Visualization tools section of the :ref:`Andes User Guide`.
+
+For a full list of software available at the OLCF, please see the Software section (coming soon).
+
 Debugging
 ============
 
