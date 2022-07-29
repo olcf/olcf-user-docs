@@ -104,24 +104,38 @@ Each compute node on Frontier has [2x] 1.92TB \ **N**\ on-\ **V**\ olatile **Me
 AMD GPUs
 ========
 
+
 Each Frontier node contains 4x AMD Instinct MI250X accelerators. Each MI250X has 2
 Graphical Compute Dies (GCD) for a total of 8 GCDs per node. Each GCD can be treated as
-its own independent GPU. Each GCD has a peak performance of 26.5 TFLOPS
-(double-precision), 110 compute units, and 64 GB of high-bandwidth memory (HBM2) which can
-be accessed at a peak of 1.6 TB/s. The 2 GPUs on an MI250X are connected with Infinity
-Fabric with a bandwidth of 200 GB/s for input and output. Consult the diagram in the
-(TODO) section for information on how the accelerators connect to each other, to the CPU,
-and to the network.
+its own independent GPU.
 
-Each GCD is composed of a command processor and 8 shader engines. Each GCD is composed of
-110 compute units spread over the 8 shader engines. The compute unit is the piece of
-hardware that actually performs the mathematical operations. The command processor takes
-the kernel from the command queue and creates the workgroups. These are then distributed
-to the shader engine. Each shader engine has an Asynchronous Compute Engine or ACE
-(sometimes also called a workload manager) that takes the compute tasks it gets from the
-command processor, and distributes the wavefronts among the compute units. The ACE creates
-the wavefronts from the workgroups and distributes them to the CUs. All the wavefronts of
-a workgroup are assigned to the same CU.
+.. note::
+
+    **TERMINOLOGY:**
+
+    The 8 GCDs contained in the 4 MI250X will show as 8 separate GPUs according to Slurm,
+    ``ROCR_VISIBLE_DEVICES``, and the ROCr runtime, so from this point forward in the
+    quick-start guide, we will simply refer to the GCDs as GPUs.
+
+Each GPU has a peak performance of 26.5 TFLOPS (double-precision), 110 compute units, and
+64 GB of high-bandwidth memory (HBM2) which can be accessed at a peak of 1.6 TB/s. The 2
+GPUs on an MI250X are connected with [4x] GPU-to-GPU Infinity Fabric links for a total
+bandwidth of 200+200 GB/s . Consult the diagram in the (TODO) section for
+information on how the accelerators connect to each other, to the CPU, and to the network.
+
+.. note::
+
+   The X+X GB/s refers to bidirectional bandwidth, so X GB/s in both directions. 
+
+Each GCD is composed of a command processor, 8 shader engines, and 110 compute units (CUs;
+the hardware components that actually perform the mathematical operations), where the CUs
+are distributed among the shader engines. The command processor takes the kernel from the
+command queue and creates workgroups ("blocks" in CUDA terminology) which are distributed
+to the shader engines. The shader engines have an Asynchronous Compute Engine (ACE;
+sometimes also called a workload manager) that takes the compute tasks and workgroups it
+gets from the command processor, creates wavefronts ("warps" in CUDA terminology) from the
+workgroups, and distributes them to the CUs. All wavefronts from a single workgroup are
+assigned to the same CU.
 
 .. image:: /images/amd_commandqueue.png
    :align: center
@@ -136,25 +150,44 @@ a workgroup are assigned to the same CU.
 Blocks (workgroups), Threads (work items), Grids, Wavefronts
 ------------------------------------------------------------
 
-Kernels are launched on the GCDs by specifying a number of blocks and threads. A *block*
-(also called a *thread block* or *workgroup*) is composed of a number of threads (also
-called *work-items*), and a *grid* is composed of a number of blocks. The block and grid
-sizes can be specified in one, two, or three dimensions during the kernel launch. Each
-thread can be identified with a unique id within the kernel, indexed along the X, Y, and Z
-dimensions.
+..
+  TODO: make a decision of if we should commit to using AMD terminology or NVIDIA terminology in our documentation and training
+  
 
-- Number of blocks we can specify along each dimension in a grid: (2147483647, 2147483647, 2147483647) 
-- Max number of threads we can specify along each dimension in a block: (1024, 1024, 1024) 
+When kernels are launched on a GPU, a "grid" of thread blocks are created, where the
+number of thread blocks in the grid and the number of threads within each block are
+defined by the programmer. The number of blocks in the grid (grid size) and the number of
+threads within each block (block size) can be specified in one, two, or three dimensions
+during the kernel launch. Each thread can be identified with a unique id within the
+kernel, indexed along the X, Y, and Z dimensions.
+
+- Number of blocks that can be specified along each dimension in a grid: (2147483647, 2147483647, 2147483647)
+- Max number of threads that can be specified along each dimension in a block: (1024, 1024, 1024)
   - However, the total of number of threads in a block has an upper limit of 1024
-    i.e. (size of x dimension * size of y dimension * size of z dimension) cannot exceed 1024.
+    [i.e. (size of x dimension * size of y dimension * size of z dimension) cannot exceed
+    1024].
 
-Each block or workgroup of threads is assigned to a single Compute Unit i.e. a single
-block won't be split across multiple CUs. The threads in a block are scheduled in units of
-64 threads called *wavefronts*.  When launching a kernel, up to 64KB of block level shared
-memory called the Local Data Store (LDS) can be statically or dynamically allocated. This
-shared memory between the threads in a block allows the threads to access block local data
-with much lower latency compared to using the HBM since the data is in the compute unit
-itself.
+Each block (or workgroup) of threads is assigned to a single Compute Unit i.e. a single
+block won’t be split across multiple CUs. The threads in a block are scheduled in units of
+64 threads called wavefronts (warps in CUDA terminology). When launching a kernel, up to
+64KB of block level shared memory called the Local Data Store (LDS) can be statically or
+dynamically allocated. This shared memory between the threads in a block allows the
+threads to access block local data with much lower latency compared to using the HBM since
+the data is in the compute unit itself.
+
+For reference, here is a table showing equivalent AMD and NVIDIA terminology 
++-----------+------------------------+
+| AMD       | NVIDIA                 |
++===========+========================+
+| Threads   | Work-items or threads  |
++-----------+------------------------+
+| Workgroup | Block                  |
++-----------+------------------------+
+| Wavefront | Warp                   |
++-----------+------------------------+
+| Grid      | Grid                   |
++-----------+------------------------+
+
 
 
 The Compute Unit
@@ -165,7 +198,7 @@ The Compute Unit
    :alt: Block diagram of the AMD Instinct CDNA2 Compute Unit
 
 
-Each CU has 4 Matrix Core Units (the equivalent of Nvidia's Tensor core units) and 4
+Each CU has 4 Matrix Core Units (the equivalent of NVIDIA's Tensor core units) and 4
 16-wide SIMD units. For a vector instruction that uses the SIMD units, each wavefront
 (which has 64 threads) is assigned to a single 16-wide SIMD unit such that the wavefront
 as a whole executes the instruction over 4 cycles, 16 threads per cycle. Since other
