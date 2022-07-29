@@ -1700,4 +1700,122 @@ Debugging text goes here
 Optimization and Profiling
 ==========================
 
-Optimization and Profiling text goes here
+Getting started
+---------------
+
+``rocprof`` gathers metrics on kernels run on AMD GPU architectures. The profiler works for HIP kernels, as well as offloaded kernels from OpenMP target offloading, OpenCL, and abstraction layers such as Kokkos.
+For a simple view of kernels being run, ``rocprof --stats --timestamp on`` is a great place to start.
+With the ``--stats`` option enabled, ``rocprof`` will generate a file that is named ``results.stats.csv`` by default, but named ``<output>.stats.csv`` if the ``-o`` flag is supplied.
+This file will list all kernels being run, the number of times they are run, the total duration and the average duration (in nanoseconds) of the kernel, and the GPU usage percentage.
+More detailed infromation on ``rocprof`` profiling modes can be found at `ROCm Profiler <https://rocmdocs.amd.com/en/latest/ROCm_Tools/ROCm-Tools.html>`__ documentation.
+
+
+Roofline profiling
+------------------
+The `Roofline <https://docs.nersc.gov/tools/performance/roofline/>`__ performance model is an increasingly popular way to demonstrate and understand application performance.
+This section documents how to construct a simple roofline model for a single kernel using ``rocprof``.
+This roofline model is designed to be comparable to rooflines constructed by NVIDIA's `NSight Compute <https://developer.nvidia.com/blog/accelerating-hpc-applications-with-nsight-compute-roofline-analysis/>`__.
+A roofline model plots the achieved performance (in floating-point operations per second, FLOPS/s) as a function of operational (or arithmetic) intensity (in FLOPS per Byte).
+The model detailed here calculates the bytes moved as they move to and from the GPU's HBM.
+
+.. note::
+
+    Integer instructions, cache levels, and matrix-FMA operations are currently not considered.
+
+To get started, you will need to make an input file for ``rocprof``, to be passed in through ``rocprof -i <input_file> --timestamp on -o my_output.csv <my_exe>``.
+Below is an example, and contains the information needed:
+
+.. code:: bash
+
+    pmc : SQ_INSTS_VALU_ADD_F16 SQ_INSTS_VALU_MUL_F16 SQ_INSTS_VALU_FMA_F16 SQ_INSTS_VALU_TRANS_F16
+    pmc : SQ_INSTS_VALU_ADD_F32 SQ_INSTS_VALU_MUL_F32 SQ_INSTS_VALU_FMA_F32 SQ_INSTS_VALU_TRANS_F32
+    pmc : SQ_INSTS_VALU_ADD_F64 SQ_INSTS_VALU_MUL_F64 SQ_INSTS_VALU_FMA_F64 SQ_INSTS_VALU_TRANS_F64
+    pmc : SQ_INSTS_VALU_MFMA_MOPS_F16 SQ_INSTS_VALU_MFMA_MOPS_BF16 SQ_INSTS_VALU_MFMA_MOPS_F32 SQ_INSTS_VALU_MFMA_MOPS_F64
+    pmc : TCC_EA_RDREQ_32B_sum TCC_EA_RDREQ_sum TCC_EA_WRREQ_sum TCC_EA_WRREQ_64B_sum
+    gpu: 0
+
+
+.. note::
+
+    In an application with more than one kernel, you should strongly consider filtering by kernel name by adding a line like: ``kernel: <kernel_name>`` to the ``rocprof`` input file.
+
+This provides the minimum set of metrics used to construct a roofline model.
+
+Theoretical Roofline
+^^^^^^^^^^^^^^^^^^^^
+
+The theoretical (attainable) roofline constructs a theoretical maximum performance for each operational intensity.
+The theoretical roofline can be constructed as:
+
+.. math::
+
+    FLOPS_{peak} = minimum(OpIntensity * BW_{HBM}, theoretical\_flops)
+
+
+Achieved FLOPS/s
+^^^^^^^^^^^^^^^^
+
+We calculate the achieved performance at the desired level (here, double-precision floating point, FP64), by summing each metric count and weighting the FMA metric by 2, since a fused multiply-add is considered 2 floating point operations.
+Also note that these ``SQ_INSTS_VALU_*`` metrics are reported as per-simd, so we mutliply by the wavefront size as well.
+We use this equation to calculate the number of double-precision FLOPS:
+
+.. math::
+
+    FP64\_FLOPS = 64 * (SQ\_INSTS\_VALU\_ADD\_F64 + SQ\_INSTS\_VALU\_MUL\_F64 + 2 * SQ\_INSTS\_VALU\_FMA\_F64)
+
+Then, we divide the number of FLOPS by the elapsed time of the kernel.
+This is found from subtracting the ``rocprof`` metrics ``EndNs`` by ``BeginNs``, provided by ``--timestamp on``, then converting from nanoseconds to seconds by dividing by 1,000,000,000 (power(10,9)).
+
+Operational Intensity
+^^^^^^^^^^^^^^^^^^^^^
+
+Operational intensity calculates the ratio of FLOPS to bytes moved between HBM and L2 cache.
+We calculated FLOPS above (FP64_FLOPS).
+We can calculate the number of bytes moved using the ``rocprof`` metrics ``TCC_EA_WRREQ_64B``, ``TCC_EA_WRREQ_sum``, ``TCC_EA_RDREQ_32B``, and ``TCC_EA_RDREQ_sum``.
+``TCC`` refers to the L2 cache, and ``EA`` is the interface between L2 and HBM.
+``WRREQ`` and ``RDREQ`` are write-requests and read-requests, respectively.
+Each of these requests is either 32 bytes or 64 bytes.
+So we calculate the number of bytes traveling over the EA interface as:
+
+.. math::
+
+    BytesMoved = BytesWritten + BytesRead
+
+where
+
+.. math::
+
+    BytesWritten = 64 * TCC\_EA\_WRREQ\_64B + 32 * (TCC\_EA\_WRREQ\_sum - TCC\_EA\_WRREQ\_64B)
+
+.. math::
+
+    BytesRead = 32 * TCC\_EA\_RDREQ\_32B + 64 * (TCC\_EA\_RDREQ\_sum - TCC\_EA\_RDREQ\_32B)
+
+
+CrayPat (From Titan Guide, needs updating)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+CrayPat is a performance analysis tool for evaluating program execution on Cray systems. CrayPat consists of three main components:
+
+pat_build - used to instrument the program for analysis
+pat_report - a text report generator that can be used to explore data gathered by instrumented program execution
+Apprentice2 - a graphical analysis tool that can be used in addition to pat_report to explore and visualize the data gathered by instrumented program execution
+
+.. note::
+    Details of these components can be found in the pat_build, pat_report, and app2 man pages made available by loading the perftools-base module.
+
+The standard workflow for program profiling with CrayPat is as follows:
+
+Load the perftools-base and perftools modules
+Build your application as normal
+Instrument the application with pat_build
+Execute the instrumented application
+View the performance data generated in Step 4 with pat_report and Apprentice2
+The following steps will guide you through performing a basic analysis with CrayPat and Apprentice2.
+
+Begin with a fully debugged and executable program. Since CrayPat is a performance analysis tool, not a debugger, the targeted program must be capable of running to completion, or intentional termination.
+
+
+
+
+
