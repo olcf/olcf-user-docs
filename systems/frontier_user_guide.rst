@@ -115,7 +115,7 @@ its own independent GPU.
 
     The 8 GCDs contained in the 4 MI250X will show as 8 separate GPUs according to Slurm,
     ``ROCR_VISIBLE_DEVICES``, and the ROCr runtime, so from this point forward in the
-    quick-start guide, we will simply refer to the GCDs as GPUs.
+    Frontier guide, we will simply refer to the GCDs as GPUs.
 
 Each GPU has a peak performance of 26.5 TFLOPS (double-precision), 110 compute units, and
 64 GB of high-bandwidth memory (HBM2) which can be accessed at a peak of 1.6 TB/s. The 2
@@ -163,6 +163,7 @@ kernel, indexed along the X, Y, and Z dimensions.
 
 - Number of blocks that can be specified along each dimension in a grid: (2147483647, 2147483647, 2147483647)
 - Max number of threads that can be specified along each dimension in a block: (1024, 1024, 1024)
+
   - However, the total of number of threads in a block has an upper limit of 1024
     [i.e. (size of x dimension * size of y dimension * size of z dimension) cannot exceed
     1024].
@@ -176,6 +177,7 @@ threads to access block local data with much lower latency compared to using the
 the data is in the compute unit itself.
 
 For reference, here is a table showing equivalent AMD and NVIDIA terminology 
+
 +-----------+------------------------+
 | AMD       | NVIDIA                 |
 +===========+========================+
