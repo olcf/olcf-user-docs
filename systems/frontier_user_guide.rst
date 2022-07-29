@@ -825,7 +825,16 @@ In addition to holding, releasing, and updating the job, the ``scontrol`` comman
 Srun
 ----------------------
 
-The ``srun`` command is used to execute an MPI binary on one or more compute nodes in parallel.
+The default job launcher for Frontier is `srun <https://slurm.schedmd.com/srun.html>`_ . The ``srun`` command is used to execute an MPI binary on one or more compute nodes in parallel.
+
+Srun Format
+^^^^^^^^^^^^
+
+::
+
+      srun  [OPTIONS... [executable [args...]]] 
+
+
 ``srun`` accepts the following common options:
 
 +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
@@ -897,6 +906,7 @@ Below is a comparison table between srun and jsrun.
 
 
 .. _frontier-mapping:
+
 
 Process and Thread Mapping Examples
 -----------------------------------
