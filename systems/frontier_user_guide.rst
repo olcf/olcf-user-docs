@@ -1688,7 +1688,7 @@ MPI for multiple GPUs per rank, so this binding is not suggested.
 Software
 ============
 
-Visualization and analysis tasks should be done on the Andes cluster. There are a few tools provided for various visualization tasks, as described in the Visualization tools section of the :ref:`andes-user-guide`.
+Visualization and analysis tasks should be done on the Andes cluster. There are a few tools provided for various visualization tasks, as described in the :ref:`visualization-tools` section of the :ref:`andes-user-guide`.
 
 For a full list of software available at the OLCF, please see the Software section (coming soon).
 
