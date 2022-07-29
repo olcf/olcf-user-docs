@@ -1109,6 +1109,6 @@ The following steps will guide you through performing a basic analysis with Cray
 Begin with a fully debugged and executable program. Since CrayPat is a performance analysis tool, not a debugger, the targeted program must be capable of running to completion, or intentional termination.
 
 
-----
+
 
 
