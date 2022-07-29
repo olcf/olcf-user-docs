@@ -587,6 +587,8 @@ The table below summarizes options for submitted jobs. Unless otherwise noted, t
 +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
 | ``--mail-user``        | ``#SBATCH --mail-user=user@somewhere.com`` | Email address to be used for notifications.                                          |
 +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+| ``--reservation``      | ``#SBATCH --reservation=MyReservation.1``  | Instructs Slurm to run a job on nodes that are part of the specified reservation.    |
++------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
 
 
 Slurm Environment Variables
@@ -689,19 +691,28 @@ age equals higher queue priority). Each job's requested node count
 places it into a specific *bin*. Each bin has a different aging
 parameter, which all jobs in the bin receive.
 
-+-------+-------------+-------------+------------------------+----------------------+
-| Bin   | Min Nodes   | Max Nodes   | Max Walltime (Hours)   | Aging Boost (Days)   |
-+=======+=============+=============+========================+======================+
-| 1     | 5,645       | 9,408       | 24.0                   | 15                   |
-+-------+-------------+-------------+------------------------+----------------------+
-| 2     | 1,882       | 5,644       | 24.0                   | 10                   |
-+-------+-------------+-------------+------------------------+----------------------+
-| 3     | 184         | 1,881       | 12.0                   | 0                    |
-+-------+-------------+-------------+------------------------+----------------------+
-| 4     | 92          | 183         | 6.0                    | 0                    |
-+-------+-------------+-------------+------------------------+----------------------+
-| 5     | 1           | 91          | 2.0                    | 0                    |
-+-------+-------------+-------------+------------------------+----------------------+
++-----+-----------+-----------+----------------------+--------------------+
+| Bin | Min Nodes | Max Nodes | Max Walltime (Hours) | Aging Boost (Days) |
++=====+===========+===========+======================+====================+
+| 1   | 5,645     | 9,408     | 24.0                 | 15                 |
++-----+-----------+-----------+----------------------+--------------------+
+| 2   | 1,882     | 5,644     | 24.0                 | 10                 |
++-----+-----------+-----------+----------------------+--------------------+
+| 3   | 184       | 1,881     | 12.0                 | 0                  |
++-----+-----------+-----------+----------------------+--------------------+
+| 4   | 92        | 183       | 6.0                  | 0                  |
++-----+-----------+-----------+----------------------+--------------------+
+| 5   | 1         | 91        | 2.0                  | 0                  |
++-----+-----------+-----------+----------------------+--------------------+
+
+
+``batch`` Queue Policy
+^^^^^^^^^^^^^^^^^^^^^^
+
+The ``batch`` queue is the default queue for production work on Frontier. Most work on Frontier is handled through this queue. The following policies are enforced for the ``batch`` queue:
+
+* Limit of four *eligible-to-run* jobs per user. (Jobs in excess of this number will be held, but will move to the eligible-to-run state at the appropriate time.)
+* Users may have only 100 jobs queued in the ``batch`` queue at any time (this includes jobs in all states). Additional jobs will be rejected at submit time.
 
 
 Allocation Overuse Policy
@@ -782,10 +793,12 @@ There may also be occasions where you want to modify a job that's waiting in the
 +---------------------------------------------------+-----------------------------------------------+
 
 
-``scancel``: Cancel a Job
-^^^^^^^^^^^^^^^^^^^^^^^^^
+``scancel``: Cancel or Signal a Job
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-If you need to remove a job from the queue, use the ``scancel`` command. For example, ``scancel 12345``
+Slurm allows you to signal a job with the ``scancel`` command. Typically, this is used to remove a job from the queue. In this use case, you do not need to specify a signal and can simply provide the jobid. For example, ``scancel 12345``.
+
+In addition to removing a job from the queue, the command gives you the ability to send other signals to the job with the ``-s`` option. For example, if you want to send ``SIGUSR1`` to a job, you would use ``scancel -s USR1 12345``.
 
 
 ``squeue``: View the Queue
