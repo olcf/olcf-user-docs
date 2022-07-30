@@ -147,6 +147,24 @@ assigned to the same CU.
   TODO: here are some references https://www.amd.com/system/files/documents/amd-cdna2-white-paper.pdf and https://www.amd.com/system/files/documents/amd-instinct-mi200-datasheet.pdf
 
 
+.. _amd-nvidia-terminology:
+
+AMD vs NVIDIA Terminology
+-------------------------
+
++-------------------------+--------------+
+| AMD                     | NVIDIA       |
++=========================+==============+
+| Work-items or Threads   | Threads      |
++-------------------------+--------------+
+| Workgroup               | Block        |
++-------------------------+--------------+
+| Wavefront               | Warp         |
++-------------------------+--------------+
+| Grid                    | Grid         |
++-------------------------+--------------+
+
+  
 Blocks (workgroups), Threads (work items), Grids, Wavefronts
 ------------------------------------------------------------
 
@@ -175,20 +193,6 @@ block won’t be split across multiple CUs. The threads in a block are scheduled
 dynamically allocated. This shared memory between the threads in a block allows the
 threads to access block local data with much lower latency compared to using the HBM since
 the data is in the compute unit itself.
-
-For reference, here is a table showing equivalent AMD and NVIDIA terminology 
-
-+-----------+------------------------+
-| AMD       | NVIDIA                 |
-+===========+========================+
-| Threads   | Work-items or threads  |
-+-----------+------------------------+
-| Workgroup | Block                  |
-+-----------+------------------------+
-| Wavefront | Warp                   |
-+-----------+------------------------+
-| Grid      | Grid                   |
-+-----------+------------------------+
 
 
 
