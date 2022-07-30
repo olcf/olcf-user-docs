@@ -841,11 +841,20 @@ Srun
 The default job launcher for Frontier is `srun <https://slurm.schedmd.com/srun.html>`_ . The ``srun`` command is used to execute an MPI binary on one or more compute nodes in parallel.
 
 Srun Format
-^^^^^^^^^^^^
+^^^^^^^^^^^
 
 ::
 
       srun  [OPTIONS... [executable [args...]]] 
+
+Single Command (non-interactive)
+
+.. code-block:: bash
+
+   $ srun -A <project_id> -t 00:05:00 -p <partition> -N 2 -n 4 --ntasks-per-node=2 ./a.out
+   <output printed to terminal>
+
+The job name and output options have been removed since stdout/stderr are typically desired in the terminal window in this usage mode.
 
 
 ``srun`` accepts the following common options:
