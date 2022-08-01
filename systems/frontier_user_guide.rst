@@ -103,6 +103,9 @@ Each compute node on Frontier has [2x] 1.92TB \ **N**\ on-\ **V**\ olatile **Me
 
 AMD GPUs
 ========
+.. note::
+
+   This section on AMD GPUs is still a work in progress.
 
 
 Each Frontier node contains 4x AMD Instinct MI250X accelerators. Each MI250X has 2
@@ -164,6 +167,10 @@ AMD vs NVIDIA Terminology
 | Grid                    | Grid         |
 +-------------------------+--------------+
 
+We will be using these terms interchangeably as they refer to the same concepts in GPU
+programming, with the exception that we will only be using "wavefront" (which refers to a
+unit of 64 threads) instead of "warp" (which refers to a unit of 32 threads) as they mean
+different things.
   
 Blocks (workgroups), Threads (work items), Grids, Wavefronts
 ------------------------------------------------------------
@@ -188,11 +195,11 @@ kernel, indexed along the X, Y, and Z dimensions.
 
 Each block (or workgroup) of threads is assigned to a single Compute Unit i.e. a single
 block won’t be split across multiple CUs. The threads in a block are scheduled in units of
-64 threads called wavefronts (warps in CUDA terminology). When launching a kernel, up to
-64KB of block level shared memory called the Local Data Store (LDS) can be statically or
-dynamically allocated. This shared memory between the threads in a block allows the
-threads to access block local data with much lower latency compared to using the HBM since
-the data is in the compute unit itself.
+64 threads called wavefronts (similar to warps in CUDA, but warps only have 32 threads
+instead of 64). When launching a kernel, up to 64KB of block level shared memory called
+the Local Data Store (LDS) can be statically or dynamically allocated. This shared memory
+between the threads in a block allows the threads to access block local data with much
+lower latency compared to using the HBM since the data is in the compute unit itself.
 
 
 
@@ -234,11 +241,11 @@ very minimal changes be able to run their code in any environment.  The API is v
 to CUDA, so if you're already familiar with CUDA there is almost no additional work to
 learn HIP.
 
-If you wish to learn HIP, there is a recorded training (Github repo for video tutorial
-(TODO)). If you have CUDA code on Summit and want to learn how to convert that to HIP and
+If you wish to learn HIP, there is a recorded training (recording, github repo (TODO
+links)). If you have CUDA code on Summit and want to learn how to convert that to HIP and
 test it, Summit provides the ``hip-cuda`` module with the ``hipify-perl`` tool to convert
-CUDA API calls to HIP and run them on Summit. There is a recorded tutorial for that here
-(TODO) (Github repo for the tutorial (TODO)).
+CUDA API calls to HIP and run them on Summit. There is a recorded training for that as well
+(recording, github repo (TODO links)).
 
 
 Compiling
