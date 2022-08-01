@@ -38,6 +38,8 @@ Currently Available User-Managed Software
 | gen119     | NVIDIA RAPIDS  | Benjamin Hernandez (hernandezarb@ornl.gov) | https://developer.nvidia.com/rapids                                            |
 |            | BlazingSQL     |                                            | https://blazingsql.com/                                                        |
 +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
+| ums013     | Julia          | Valentin Churavy  (vchuravy@mit.edu)       | https://julialang.org                                                          |
++------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
 
 Usage
 -----

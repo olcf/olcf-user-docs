@@ -4,15 +4,6 @@
 Summit User Guide
 ******************
 
-.. warning:: 
-    Summit's OS was upgraded to RHEL8 on August 17-19, 2021. You should be aware of several changes resulting from this upgrade:
-    
-    * **You should recompile your codes** prior to running on the upgraded system.
-    
-    * **The OS-provided Python is no longer accessible as** ``python`` (including variations like ``/usr/bin/python`` or ``/usr/bin/env python``); rather, you must specify it as ``python2`` or ``python3``. If you are using python from one of the modulefiles rather than the version in ``/usr/bin``, this change should not affect how you invoke python in your scripts, although we encourage specifying ``python2`` or ``python3`` as a best practice.
-    
-    * A list of **default version changess**. including XL, CUDA, Spectrum, and ESSL as well as older versions scheduled for removal can be found on the :doc:`Software News </software/software-news>` page.
-
 
 .. _summit-documentation-resources:
 
@@ -218,7 +209,7 @@ Software
 
 Visualization and analysis tasks should be done on the Andes cluster. There are a
 few tools provided for various visualization tasks, as described in the
-:ref:`visualization-tools` section of the :ref:`andes-user-guide`.
+:ref:`andes-viz-tools` section of the :ref:`andes-user-guide`.
 
 For a full list of software available at the OLCF, please see the
 Software section (coming soon).

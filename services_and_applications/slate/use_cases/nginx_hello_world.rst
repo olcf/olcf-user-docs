@@ -101,7 +101,7 @@ and wget them. The ``index.html`` and ``nginx.conf`` file are defined respective
   from 80 to 8080 since the server will be running as a non-root user. The Route that we will add
   later on will redirect traffic coming in on port 80 to our server running on port 8080.
 
-The BuildConfig
+The BuildConfig, the following should be placed inside a ``buildconfig.yaml`` file:
 
 .. code-block:: yaml
 
@@ -113,7 +113,7 @@ The BuildConfig
      runPolicy: Serial
      source:
        dockerfile: |
-         FROM centos:7
+         FROM rockylinux:latest
          RUN yum install -y epel-release && \
              yum install -y nginx
 
@@ -159,7 +159,7 @@ logs. Once the build completes then we should have an image pushed to our ImageS
    NAME                DOCKER REPO                                                         TAGS      UPDATED
    nginx-hello-world   image-registry.openshift-image-registry.svc:5000/YOUR_NAMESPACE/nginx-hello-world   latest    3 minutes ago
 
-If all goes well it is time to create the Deployment:
+If all goes well it is time to create the Deployment. The following should be placed inside a ``deployment.yaml`` file:
 
 .. code-block:: yaml
 
@@ -192,7 +192,7 @@ If all goes well it is time to create the Deployment:
 .. note::
   In the Deployment make sure to change the YOUR_NAMESPACE string.
 
-Create the deployment:
+Create the Deployment object:
 
 .. code-block:: text
 
@@ -213,7 +213,7 @@ After the deployment has been created it will spin up a pod running NGINX but we
 traffic from outside the cluster to the pod so that we can display the hello world.
 
 The Service object will create a Cluster IP address that will direct traffic to any pod in our
-deployment that is considered by the cluster to be ready.
+deployment that is considered by the cluster to be ready. The following should be placed inside a ``service.yaml`` file:
 
 .. code-block:: yaml
 
@@ -234,6 +234,12 @@ deployment that is considered by the cluster to be ready.
      sessionAffinity: None
      type: ClusterIP
 
+Create the Service object:
+
+.. code-block:: text
+
+   oc create -f service.yaml
+
 The Route object will set up the cluster load balancers to accept traffic for a specified hostname
 and direct the traffic to the service which will in turn direct the traffic to any pod into our
 deployment that is considered by the cluster to be ready.
@@ -241,6 +247,8 @@ deployment that is considered by the cluster to be ready.
 If you do not set a hostname on the route, one will be automatically chosen. We will use this
 mechanism for this demo but you can choose any hostname as long as it ends with
 ``apps.CLUSTER.ccs.ornl.gov`` where CLUSTER is one marble or onyx.
+
+The following should be placed inside a ``route.yaml`` file:
 
 .. code-block:: yaml
 
@@ -261,7 +269,13 @@ mechanism for this demo but you can choose any hostname as long as it ends with
        weight: 100
      wildcardPolicy: None
 
-We need to get the route so that we can see the generated hostname
+Create the Route object:
+
+.. code-block:: text
+
+   oc create -f route.yaml
+
+We need to get the route so that we can see the generated hostname.
 
 .. code-block:: text
 
@@ -270,7 +284,7 @@ We need to get the route so that we can see the generated hostname
    nginx-hello-world   nginx-hello-world-test.apps.granite.ccs.ornl.gov                nginx-hello-world   nginx     edge/Redirect   None
 
 Now if you access the hostname that you set up with the route from a browser you should see the
-text "Hello World"
+text "Hello World".
 
 Once you are finished you can remove the resources that were created for this demo:
 
