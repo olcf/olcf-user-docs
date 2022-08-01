@@ -92,15 +92,14 @@ The Frontier nodes are connected with [4x] HPE Slingshot 200 Gbps (25 GB/s) NICs
 File Systems
 ------------
 
-Frontier is connected to the center-wide(?) Orion Lustre filesystem providing 695(? - is that center wide?) PB of storage capacity with a peak write speed of 4.4 TB/s (unclear - got this values from Bronsons user call). Frontier also has access to the center-wide NFS-based filesystem (which provides user and project home areas). 
+Frontier is connected to the center-wide IBM Spectra filesystem called Alpine, which provides 250 PB of storage capacity with a peak write speed of 2.5 TB/s. Frontier also has access to the center-wide NFS-based filesystem (which provides user and project home areas). Each compute node has two 1.92TB Non-Volatile Memory storage devices. See :ref:`frontier-data-storage` for more information. 
 
-I cannot find information about the future of HPSS access on Frontier. I know that Crusher currently does not have access, per the crusher doc. I assume it will, and would look like this:
-Frontier will also access to the center’s High Performance Storage System (HPSS) - for user and project archival storage - users can log in to the :ref:`dtn-user-guide` to move data to/from HPSS.
+Frontier connects to the center’s High Performance Storage System (HPSS) - for user and project archival storage - users can log in to the :ref:`dtn-user-guide` to move data to/from HPSS.
 
 Operating System
 ----------------
 
-State the operating system and current version.
+Frontier is running SUSE Linux Enterprise Server (SLES) version 15.3
 
 
 GPUs
@@ -121,6 +120,8 @@ To connect to Frontier, ``ssh`` to ``frontier.olcf.ornl.gov``. For example:
 For more information on connecting to OLCF resources, see :ref:`connecting-to-olcf`.
 
 ----
+
+.. _frontier-data-storage:
 
 Data and Storage
 ================
@@ -224,8 +225,6 @@ And here is the output from the script:
 Programming Environment
 =======================
 
-[NOTE - I am assuming that nothing will be changing as far as the use of Lmod in managing packages]
-
 Frontier users are provided with many pre-installed software packages and scientific libraries. To facilitate this, environment management tools are used to handle necessary changes to the shell.
 
 Environment Modules (Lmod)
@@ -284,33 +283,7 @@ Modules with dependencies are only available when the underlying dependencies, s
 Compilers
 ---------
 
-Cray, AMD, and GCC compilers are provided through modules on Frontier. The Cray and AMD compilers are both based on LLVM/Clang. There is also a system/OS versions of GCC available in ``/usr/bin``. The table below lists details about each of the module-provided compilers.
-
-.. note::
-
-    It is highly recommended to use the Cray compiler wrappers (``cc``, ``CC``, and ``ftn``) whenever possible. See the next section for more details.
-
-+--------+-------------------------+-----------------+----------+-------------------+---------------------------------+
-| Vendor | Programming Environment | Compiler Module | Language | Compiler Wrapper  | Compiler                        |
-+========+=========================+=================+==========+===================+=================================+
-| Cray   | ``PrgEnv-cray``         | ``cce``         | C        | ``cc``            | ``craycc``                      |
-|        |                         |                 +----------+-------------------+---------------------------------+
-|        |                         |                 | C++      | ``CC``            | ``craycxx`` or ``crayCC``       |
-|        |                         |                 +----------+-------------------+---------------------------------+
-|        |                         |                 | Fortran  | ``ftn``           | ``crayftn``                     |
-+--------+-------------------------+-----------------+----------+-------------------+---------------------------------+
-| AMD    | ``PrgEnv-amd``          | ``rocm``        | C        | ``cc``            | ``amdclang``                    |
-|        |                         |                 +----------+-------------------+---------------------------------+
-|        |                         |                 | C++      | ``CC``            | ``amdclang++``                  |
-|        |                         |                 +----------+-------------------+---------------------------------+
-|        |                         |                 | Fortran  | ``ftn``           | ``amdflang``                    |
-+--------+-------------------------+-----------------+----------+-------------------+---------------------------------+
-| GCC    | ``PrgEnv-gnu``          | ``gcc``         | C        | ``cc``            | ``${GCC_PATH}/bin/gcc``         |
-|        |                         |                 +----------+-------------------+---------------------------------+
-|        |                         |                 | C++      | ``CC``            | ``${GCC_PATH}/bin/g++``         |
-|        |                         |                 +----------+-------------------+---------------------------------+
-|        |                         |                 | Fortran  | ``ftn``           | ``${GCC_PATH}/bin/gfortran``    |
-+--------+-------------------------+-----------------+----------+-------------------+---------------------------------+
+Cray, AMD, and GCC compilers are provided through modules on Frontier. The Cray and AMD compilers are both based on LLVM/Clang. There is also a system/OS versions of GCC available in ``/usr/bin``. The table below lists details about each of the module-provided compilers. Please see the following :ref:`frontier-compilers` section for more detailed inforation on how to compile using these modules.
 
 
 Cray Programming Environment and Compiler Wrappers
@@ -474,6 +447,7 @@ test it, Summit provides the ``hip-cuda`` module with the ``hipify-perl`` tool t
 CUDA API calls to HIP and run them on Summit. There is a recorded training for that as well
 (recording, github repo (TODO links)).
 
+.. _frontier-compilers:
 
 Compiling
 =========
