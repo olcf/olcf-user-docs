@@ -222,84 +222,6 @@ And here is the output from the script:
     ***********************
 
 
-Programming Environment
-=======================
-
-Frontier users are provided with many pre-installed software packages and scientific libraries. To facilitate this, environment management tools are used to handle necessary changes to the shell.
-
-Environment Modules (Lmod)
---------------------------
-
-Environment modules are provided through `Lmod <https://lmod.readthedocs.io/en/latest/>`__, a Lua-based module system for dynamically altering shell environments. By managing changes to the shell’s environment variables (such as ``PATH``, ``LD_LIBRARY_PATH``, and ``PKG_CONFIG_PATH``), Lmod allows you to alter the software available in your shell environment without the risk of creating package and version combinations that cannot coexist in a single environment.
-
-General Usage
-^^^^^^^^^^^^^
-
-The interface to Lmod is provided by the ``module`` command:
-
-+------------------------------------+-------------------------------------------------------------------------+
-| Command                            | Description                                                             |
-+====================================+=========================================================================+
-| ``module -t list``                 | Shows a terse list of the currently loaded modules                      |
-+------------------------------------+-------------------------------------------------------------------------+
-| ``module avail``                   | Shows a table of the currently available modules                        |
-+------------------------------------+-------------------------------------------------------------------------+
-| ``module help <modulename>``       | Shows help information about ``<modulename>``                           |
-+------------------------------------+-------------------------------------------------------------------------+
-| ``module show <modulename>``       | Shows the environment changes made by the ``<modulename>`` modulefile   |
-+------------------------------------+-------------------------------------------------------------------------+
-| ``module spider <string>``         | Searches all possible modules according to ``<string>``                 |
-+------------------------------------+-------------------------------------------------------------------------+
-| ``module load <modulename> [...]`` | Loads the given ``<modulename>``\(s) into the current environment       |
-+------------------------------------+-------------------------------------------------------------------------+
-| ``module use <path>``              | Adds ``<path>`` to the modulefile search cache and ``MODULESPATH``      |
-+------------------------------------+-------------------------------------------------------------------------+
-| ``module unuse <path>``            | Removes ``<path>`` from the modulefile search cache and ``MODULESPATH`` |
-+------------------------------------+-------------------------------------------------------------------------+
-| ``module purge``                   | Unloads all modules                                                     |
-+------------------------------------+-------------------------------------------------------------------------+
-| ``module reset``                   | Resets loaded modules to system defaults                                |
-+------------------------------------+-------------------------------------------------------------------------+
-| ``module update``                  | Reloads all currently loaded modules                                    |
-+------------------------------------+-------------------------------------------------------------------------+
-
-Searching for Modules
-^^^^^^^^^^^^^^^^^^^^^
-
-Modules with dependencies are only available when the underlying dependencies, such as compiler families, are loaded. Thus, module avail will only display modules that are compatible with the current state of the environment. To search the entire hierarchy across all possible dependencies, the ``spider`` sub-command can be used as summarized in the following table.
-
-+------------------------------------------+--------------------------------------------------------------------------------------+
-| Command                                  | Description                                                                          |
-+==========================================+======================================================================================+
-| ``module spider``                        | Shows the entire possible graph of modules                                           |
-+------------------------------------------+--------------------------------------------------------------------------------------+
-| ``module spider <modulename>``           | Searches for modules named ``<modulename>`` in the graph of possible modules         |
-+------------------------------------------+--------------------------------------------------------------------------------------+
-| ``module spider <modulename>/<version>`` | Searches for a specific version of ``<modulename>`` in the graph of possible modules |
-+------------------------------------------+--------------------------------------------------------------------------------------+
-| ``module spider <string>``               | Searches for modulefiles containing ``<string>``                                     |
-+------------------------------------------+--------------------------------------------------------------------------------------+
-
-Compilers
----------
-
-Cray, AMD, and GCC compilers are provided through modules on Frontier. The Cray and AMD compilers are both based on LLVM/Clang. There is also a system/OS versions of GCC available in ``/usr/bin``. The table below lists details about each of the module-provided compilers. Please see the following :ref:`frontier-compilers` section for more detailed inforation on how to compile using these modules.
-
-
-Cray Programming Environment and Compiler Wrappers
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Cray provides ``PrgEnv-<compiler>`` modules (e.g., ``PrgEnv-cray``) that load compatible components of a specific compiler toolchain. The components include the specified compiler as well as MPI, LibSci, and other libraries. Loading the ``PrgEnv-<compiler>`` modules also defines a set of compiler wrappers for that compiler toolchain that automatically add include paths and link in libraries for Cray software. Compiler wrappers are provided for C (``cc``), C++ (``CC``), and Fortran (``ftn``).
-
-.. note::
-   Use the ``-craype-verbose`` flag to display the full include and link information used by the Cray compiler wrappers. This must be called on a file to see the full output (e.g., ``CC -craype-verbose test.cpp``).
-
-MPI
----
-
-The MPI implementation available on Frontier is Cray's MPICH, which is "GPU-aware" so GPU buffers can be passed directly to MPI calls.
-
-----
 
 AMD GPUs
 ========
@@ -323,7 +245,7 @@ its own independent GPU.
 Each GPU has a peak performance of 26.5 TFLOPS (double-precision), 110 compute units, and
 64 GB of high-bandwidth memory (HBM2) which can be accessed at a peak of 1.6 TB/s. The 2
 GPUs on an MI250X are connected with [4x] GPU-to-GPU Infinity Fabric links for a total
-bandwidth of 200+200 GB/s . Consult the diagram in the (TODO) section for
+bandwidth of 200+200 GB/s . Consult the diagram in the  section :ref:`frontier-nodes` for
 information on how the accelerators connect to each other, to the CPU, and to the network.
 
 .. note::
@@ -450,6 +372,88 @@ learn HIP.
   CUDA API calls to HIP and run them on Summit. There is a recorded training for that as well
   (recording, github repo (TODO links)).
 
+
+Programming Environment
+=======================
+
+Frontier users are provided with many pre-installed software packages and scientific libraries. To facilitate this, environment management tools are used to handle necessary changes to the shell.
+
+Environment Modules (Lmod)
+--------------------------
+
+Environment modules are provided through `Lmod <https://lmod.readthedocs.io/en/latest/>`__, a Lua-based module system for dynamically altering shell environments. By managing changes to the shell’s environment variables (such as ``PATH``, ``LD_LIBRARY_PATH``, and ``PKG_CONFIG_PATH``), Lmod allows you to alter the software available in your shell environment without the risk of creating package and version combinations that cannot coexist in a single environment.
+
+General Usage
+^^^^^^^^^^^^^
+
+The interface to Lmod is provided by the ``module`` command:
+
++------------------------------------+-------------------------------------------------------------------------+
+| Command                            | Description                                                             |
++====================================+=========================================================================+
+| ``module -t list``                 | Shows a terse list of the currently loaded modules                      |
++------------------------------------+-------------------------------------------------------------------------+
+| ``module avail``                   | Shows a table of the currently available modules                        |
++------------------------------------+-------------------------------------------------------------------------+
+| ``module help <modulename>``       | Shows help information about ``<modulename>``                           |
++------------------------------------+-------------------------------------------------------------------------+
+| ``module show <modulename>``       | Shows the environment changes made by the ``<modulename>`` modulefile   |
++------------------------------------+-------------------------------------------------------------------------+
+| ``module spider <string>``         | Searches all possible modules according to ``<string>``                 |
++------------------------------------+-------------------------------------------------------------------------+
+| ``module load <modulename> [...]`` | Loads the given ``<modulename>``\(s) into the current environment       |
++------------------------------------+-------------------------------------------------------------------------+
+| ``module use <path>``              | Adds ``<path>`` to the modulefile search cache and ``MODULESPATH``      |
++------------------------------------+-------------------------------------------------------------------------+
+| ``module unuse <path>``            | Removes ``<path>`` from the modulefile search cache and ``MODULESPATH`` |
++------------------------------------+-------------------------------------------------------------------------+
+| ``module purge``                   | Unloads all modules                                                     |
++------------------------------------+-------------------------------------------------------------------------+
+| ``module reset``                   | Resets loaded modules to system defaults                                |
++------------------------------------+-------------------------------------------------------------------------+
+| ``module update``                  | Reloads all currently loaded modules                                    |
++------------------------------------+-------------------------------------------------------------------------+
+
+Searching for Modules
+^^^^^^^^^^^^^^^^^^^^^
+
+Modules with dependencies are only available when the underlying dependencies, such as compiler families, are loaded. Thus, module avail will only display modules that are compatible with the current state of the environment. To search the entire hierarchy across all possible dependencies, the ``spider`` sub-command can be used as summarized in the following table.
+
++------------------------------------------+--------------------------------------------------------------------------------------+
+| Command                                  | Description                                                                          |
++==========================================+======================================================================================+
+| ``module spider``                        | Shows the entire possible graph of modules                                           |
++------------------------------------------+--------------------------------------------------------------------------------------+
+| ``module spider <modulename>``           | Searches for modules named ``<modulename>`` in the graph of possible modules         |
++------------------------------------------+--------------------------------------------------------------------------------------+
+| ``module spider <modulename>/<version>`` | Searches for a specific version of ``<modulename>`` in the graph of possible modules |
++------------------------------------------+--------------------------------------------------------------------------------------+
+| ``module spider <string>``               | Searches for modulefiles containing ``<string>``                                     |
++------------------------------------------+--------------------------------------------------------------------------------------+
+
+Compilers
+---------
+
+Cray, AMD, and GCC compilers are provided through modules on Frontier. The Cray and AMD compilers are both based on LLVM/Clang. There is also a system/OS versions of GCC available in ``/usr/bin``. The table below lists details about each of the module-provided compilers. Please see the following :ref:`frontier-compilers` section for more detailed inforation on how to compile using these modules.
+
+
+Cray Programming Environment and Compiler Wrappers
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Cray provides ``PrgEnv-<compiler>`` modules (e.g., ``PrgEnv-cray``) that load compatible components of a specific compiler toolchain. The components include the specified compiler as well as MPI, LibSci, and other libraries. Loading the ``PrgEnv-<compiler>`` modules also defines a set of compiler wrappers for that compiler toolchain that automatically add include paths and link in libraries for Cray software. Compiler wrappers are provided for C (``cc``), C++ (``CC``), and Fortran (``ftn``).
+
+.. note::
+   Use the ``-craype-verbose`` flag to display the full include and link information used by the Cray compiler wrappers. This must be called on a file to see the full output (e.g., ``CC -craype-verbose test.cpp``).
+
+MPI
+---
+
+The MPI implementation available on Frontier is Cray's MPICH, which is "GPU-aware" so GPU buffers can be passed directly to MPI calls.
+
+----
+
+
+  
 .. _frontier-compilers:
 
 Compiling
