@@ -164,12 +164,153 @@ And here is the output from the script:
     frontier0123
     ***********************
 
-----
 
 AMD GPUs
 ========
+.. note::
 
-Each Frontier node uses 4 AMD MI200 GPUs.
+   This section on AMD GPUs is still a work in progress.
+
+
+Each Frontier node contains 4x AMD Instinct MI250X accelerators. Each MI250X has 2
+Graphical Compute Dies (GCD) for a total of 8 GCDs per node. Each GCD can be treated as
+its own independent GPU.
+
+.. note::
+
+    **TERMINOLOGY:**
+
+    The 8 GCDs contained in the 4 MI250X will show as 8 separate GPUs according to Slurm,
+    ``ROCR_VISIBLE_DEVICES``, and the ROCr runtime, so from this point forward in the
+    Frontier guide, we will simply refer to the GCDs as GPUs.
+
+Each GPU has a peak performance of 26.5 TFLOPS (double-precision), 110 compute units, and
+64 GB of high-bandwidth memory (HBM2) which can be accessed at a peak of 1.6 TB/s. The 2
+GPUs on an MI250X are connected with [4x] GPU-to-GPU Infinity Fabric links for a total
+bandwidth of 200+200 GB/s . Consult the diagram in the (TODO) section for
+information on how the accelerators connect to each other, to the CPU, and to the network.
+
+.. note::
+
+   The X+X GB/s refers to bidirectional bandwidth, so X GB/s in both directions. 
+
+Each GCD is composed of a command processor, 8 shader engines, and 110 compute units (CUs;
+the hardware components that actually perform the mathematical operations), where the CUs
+are distributed among the shader engines. The command processor takes the kernel from the
+command queue and creates workgroups ("blocks" in CUDA terminology) which are distributed
+to the shader engines. The shader engines have an Asynchronous Compute Engine (ACE;
+sometimes also called a workload manager) that takes the compute tasks and workgroups it
+gets from the command processor, creates wavefronts ("warps" in CUDA terminology) from the
+workgroups, and distributes them to the CUs. All wavefronts from a single workgroup are
+assigned to the same CU.
+
+.. image:: /images/amd_commandqueue.png
+   :align: center
+   :alt: Block diagram of command processor and shader engines
+
+..
+  TODO: unified memory? If mi250x has it, what is it and how does it work
+  TODO: link to HIP from scratch tutorial
+  TODO: here are some references https://www.amd.com/system/files/documents/amd-cdna2-white-paper.pdf and https://www.amd.com/system/files/documents/amd-instinct-mi200-datasheet.pdf
+
+
+.. _amd-nvidia-terminology:
+
+AMD vs NVIDIA Terminology
+-------------------------
+
++-------------------------+--------------+
+| AMD                     | NVIDIA       |
++=========================+==============+
+| Work-items or Threads   | Threads      |
++-------------------------+--------------+
+| Workgroup               | Block        |
++-------------------------+--------------+
+| Wavefront               | Warp         |
++-------------------------+--------------+
+| Grid                    | Grid         |
++-------------------------+--------------+
+
+We will be using these terms interchangeably as they refer to the same concepts in GPU
+programming, with the exception that we will only be using "wavefront" (which refers to a
+unit of 64 threads) instead of "warp" (which refers to a unit of 32 threads) as they mean
+different things.
+  
+Blocks (workgroups), Threads (work items), Grids, Wavefronts
+------------------------------------------------------------
+
+..
+  TODO: make a decision of if we should commit to using AMD terminology or NVIDIA terminology in our documentation and training
+  
+
+When kernels are launched on a GPU, a "grid" of thread blocks are created, where the
+number of thread blocks in the grid and the number of threads within each block are
+defined by the programmer. The number of blocks in the grid (grid size) and the number of
+threads within each block (block size) can be specified in one, two, or three dimensions
+during the kernel launch. Each thread can be identified with a unique id within the
+kernel, indexed along the X, Y, and Z dimensions.
+
+- Number of blocks that can be specified along each dimension in a grid: (2147483647, 2147483647, 2147483647)
+- Max number of threads that can be specified along each dimension in a block: (1024, 1024, 1024)
+
+  - However, the total of number of threads in a block has an upper limit of 1024
+    [i.e. (size of x dimension * size of y dimension * size of z dimension) cannot exceed
+    1024].
+
+Each block (or workgroup) of threads is assigned to a single Compute Unit i.e. a single
+block won’t be split across multiple CUs. The threads in a block are scheduled in units of
+64 threads called wavefronts (similar to warps in CUDA, but warps only have 32 threads
+instead of 64). When launching a kernel, up to 64KB of block level shared memory called
+the Local Data Store (LDS) can be statically or dynamically allocated. This shared memory
+between the threads in a block allows the threads to access block local data with much
+lower latency compared to using the HBM since the data is in the compute unit itself.
+
+
+
+The Compute Unit
+----------------
+
+.. image:: /images/amd_computeunit.png
+   :align: center
+   :alt: Block diagram of the AMD Instinct CDNA2 Compute Unit
+
+
+Each CU has 4 Matrix Core Units (the equivalent of NVIDIA's Tensor core units) and 4
+16-wide SIMD units. For a vector instruction that uses the SIMD units, each wavefront
+(which has 64 threads) is assigned to a single 16-wide SIMD unit such that the wavefront
+as a whole executes the instruction over 4 cycles, 16 threads per cycle. Since other
+wavefronts occupy the other three SIMD units at the same time, the total throughput still
+remains 1 instruction per cycle. Each CU maintains an instructions buffer for 10
+wavefronts and also maintains 256 registers where each register is 64 4-byte wide
+entries. 
+
+
+..
+  Infinty Fabric
+  --------------
+  
+  Infinity Fabric is AMD interconnect technology for connecting various AMD components
+    within the node. The two GCDs in the
+  accelerator as well as connecting out to the AMD EPYC CPUs.
+
+
+HIP
+---
+
+The Heterogeneous Interface for Portability (HIP) is AMD’s dedicated GPU programming
+environment for designing high performance kernels on GPU hardware. HIP is a C++ runtime
+API and programming language that allows developers to create portable applications on
+different platforms. This means that developers can write their GPU applications and with
+very minimal changes be able to run their code in any environment.  The API is very similar
+to CUDA, so if you're already familiar with CUDA there is almost no additional work to
+learn HIP.
+
+If you wish to learn HIP, there is a recorded training (recording, github repo (TODO
+links)). If you have CUDA code on Summit and want to learn how to convert that to HIP and
+test it, Summit provides the ``hip-cuda`` module with the ``hipify-perl`` tool to convert
+CUDA API calls to HIP and run them on Summit. There is a recorded training for that as well
+(recording, github repo (TODO links)).
+
 
 Compiling
 =========
