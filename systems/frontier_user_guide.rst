@@ -194,19 +194,20 @@ information on how the accelerators connect to each other, to the CPU, and to th
 
    The X+X GB/s refers to bidirectional bandwidth, so X GB/s in both directions. 
 
-Each GCD is composed of a command processor, 8 shader engines, and 110 compute units (CUs;
-the hardware components that actually perform the mathematical operations), where the CUs
-are distributed among the shader engines. The command processor takes the kernel from the
-command queue and creates workgroups ("blocks" in CUDA terminology) which are distributed
-to the shader engines. The shader engines have an Asynchronous Compute Engine (ACE;
-sometimes also called a workload manager) that takes the compute tasks and workgroups it
-gets from the command processor, creates wavefronts ("warps" in CUDA terminology) from the
-workgroups, and distributes them to the CUs. All wavefronts from a single workgroup are
-assigned to the same CU.
-
-.. image:: /images/amd_commandqueue.png
-   :align: center
-   :alt: Block diagram of command processor and shader engines
+..
+  TODO: Uncomment this section after nvidia goes through it and updates info
+  Each GCD is composed of a command processor, 8 shader engines, and 110 compute units (CUs;
+  the hardware components that actually perform the mathematical operations), where the CUs
+  are distributed among the shader engines. The command processor takes the kernel from the
+  command queue and creates workgroups ("blocks" in CUDA terminology) which are distributed
+  to the shader engines. The shader engines have an Asynchronous Compute Engine (ACE;
+  sometimes also called a workload manager) that takes the compute tasks and workgroups it
+  gets from the command processor, creates wavefronts ("warps" in CUDA terminology) from the
+  workgroups, and distributes them to the CUs. All wavefronts from a single workgroup are
+  assigned to the same CU.
+  .. image:: /images/amd_commandqueue.png
+     :align: center
+     :alt: Block diagram of command processor and shader engines
 
 ..
   TODO: unified memory? If mi250x has it, what is it and how does it work
@@ -305,11 +306,13 @@ very minimal changes be able to run their code in any environment.  The API is v
 to CUDA, so if you're already familiar with CUDA there is almost no additional work to
 learn HIP.
 
-If you wish to learn HIP, there is a recorded training (recording, github repo (TODO
-links)). If you have CUDA code on Summit and want to learn how to convert that to HIP and
-test it, Summit provides the ``hip-cuda`` module with the ``hipify-perl`` tool to convert
-CUDA API calls to HIP and run them on Summit. There is a recorded training for that as well
-(recording, github repo (TODO links)).
+..
+  TODO: uncomment this section after you have the links set up
+  If you wish to learn HIP, there is a recorded training (recording, github repo (TODO
+  links)). If you have CUDA code on Summit and want to learn how to convert that to HIP and
+  test it, Summit provides the ``hip-cuda`` module with the ``hipify-perl`` tool to convert
+  CUDA API calls to HIP and run them on Summit. There is a recorded training for that as well
+  (recording, github repo (TODO links)).
 
 
 Compiling
