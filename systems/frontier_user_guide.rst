@@ -742,9 +742,9 @@ second hardware thread.
 Slurm
 -----
 
-Frontier uses SchedMD's Slurm workload manager for scheduling jobs. Proir systems used different schedulers (Summit used IBM's LSF, many others used Moab). While most of these systems provide similar functionality, but with different commands/options. A comparison of a few important commands is below, but SchedMD provides a more complete reference in their `Rosetta Stone of Workload Managers <https://slurm.schedmd.com/rosetta.pdf>`_.
+Frontier uses SchedMD's Slurm workload manager for scheduling jobs. Proir systems used different schedulers (Summit used IBM's LSF, many others used Moab). While most of these systems provide similar functionality, but with different commands/options. A comparison of a few important commands is below, but SchedMD provides a more complete reference in their `Rosetta Stone of Workload Managers <https://slurm.schedmd.com/rosetta.pdf>`__.
 
-Slurm documentation for each command is available on the system via the ``man`` utility as well as on the web at ` <https://slurm.schedmd.com/man_index.html>`_. Additional documentation is available at ` <https://slurm.schedmd.com/documentation.html>`_.
+Slurm documentation for each command is available on the system via the ``man`` utility as well as on the web at `<https://slurm.schedmd.com/man_index.html>`__. Additional documentation is available at `<https://slurm.schedmd.com/documentation.html>`__.
 
 Some common Slurm commands are summarized in the table below. More complete examples are given in the Monitoring and Modifying Batch Jobs section of this guide.
 
@@ -837,7 +837,7 @@ Since all compute resources are managed and scheduled by Slurm, it is not possib
 Common Slurm Options
 --------------------
 
-The table below summarizes options for submitted jobs. Unless otherwise noted, they can be used for either batch scripts or interactive batch jobs. For scripts, they can be added on the ``sbatch`` command line or as a ``#BSUB`` directive in the batch script. (If they're specified in both places, the command line takes precedence.) This is only a subset of all available options. Check the `Slurm Man Pages <https://slurm.schedmd.com/man_index.html>`_ for a more complete list.
+The table below summarizes options for submitted jobs. Unless otherwise noted, they can be used for either batch scripts or interactive batch jobs. For scripts, they can be added on the ``sbatch`` command line or as a ``#BSUB`` directive in the batch script. (If they're specified in both places, the command line takes precedence.) This is only a subset of all available options. Check the `Slurm Man Pages <https://slurm.schedmd.com/man_index.html>`__ for a more complete list.
 
 +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
 | Option                 | Example Usage                              | Description                                                                          |
@@ -1123,7 +1123,7 @@ In addition to holding, releasing, and updating the job, the ``scontrol`` comman
 Srun
 ----------------------
 
-The default job launcher for Frontier is `srun <https://slurm.schedmd.com/srun.html>`_ . The ``srun`` command is used to execute an MPI binary on one or more compute nodes in parallel.
+The default job launcher for Frontier is `srun <https://slurm.schedmd.com/srun.html>`__ . The ``srun`` command is used to execute an MPI binary on one or more compute nodes in parallel.
 
 Srun Format
 ^^^^^^^^^^^
@@ -1207,8 +1207,6 @@ Below is a comparison table between srun and jsrun.
 | Number of GPUs per resource set              | ``-g, --gpus_per_rs``     | N/A                     |
 +----------------------------------------------+---------------------------+-------------------------+
 | Bind tasks to allocated CPUs                 | ``-b, --bind``            | ``--cpu-bind``          |
-+----------------------------------------------+---------------------------+-------------------------+
-| Do not run more than one task on resources   | ``--tasks_per_rs 1``      | ``--exclusive``         |
 +----------------------------------------------+---------------------------+-------------------------+
 | Performance binding preference               | ``-l,--latency_priority`` | ``--hint``              |
 +----------------------------------------------+---------------------------+-------------------------+
@@ -2009,9 +2007,9 @@ MPI for multiple GPUs per rank, so this binding is not suggested.
 Software
 ============
 
-Visualization and analysis tasks should be done on the Andes cluster. There are a few tools provided for various visualization tasks, as described in the :ref:`visualization-tools` section of the :ref:`andes-user-guide`.
+Visualization and analysis tasks should be done on the Andes cluster. There are a few tools provided for various visualization tasks, as described in the :ref:`andes-viz-tools` section of the :ref:`andes-user-guide`.
 
-For a full list of software availability and latest news at the OLCF, please reference the :ref:`Software <software-news>` section in OLCF's User Documentation.
+For a full list of software availability and latest news at the OLCF, please reference the :doc:`Software </software/software-news>` section in OLCF's User Documentation.
 
 Debugging
 ============
