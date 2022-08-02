@@ -126,7 +126,7 @@ For more information on connecting to OLCF resources, see :ref:`connecting-to-ol
 Data and Storage
 ================
 
-For more detailed information about center-wide file systems and data archiving available on Frontier, please refer to the pages on :ref:`data-storage-and-transfers`. The subsections below give a quick overview of NFS and GPFS storage spaces as well as the on node NVMe "Burst Buffers" (SSDs).
+For more detailed information about center-wide file systems and data archiving available on Frontier, please refer to the pages on :ref:`data-storage-and-transfers`. The subsections below give a quick overview of NFS, GPFS, and HPSS storage spaces as well as the on node NVMe "Burst Buffers" (SSDs).
 
 NFS
 ---
@@ -152,9 +152,25 @@ GPFS
 | World Work          | ``/gpfs/alpine/[projid]/world-shared``      | Spectrum Scale | 775         |  50 TB | No      | 90 days | N/A        | Yes              |
 +---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
 
+
 .. note::
 
     Frontier will be migrating from the Alpine Spectrum Scale filesystem to the Orion Lustre filesystem in the coming months. Details will be added to this section as they become available.
+
+HPSS Archival Storage
+---------------------
+
+Please note that the HPSS is not mounted directly onto Frontier nodes. There are two main methods for accessing and moving data to/from the HPSS. The first is to use the command line utilities ``hsi`` and ``htar``. The second is to use the Globus data transfer service. See :ref:`data-hpss` for more information on both of these methods.
+
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
+| Area                | Path                                        | Type           | Permissions |  Quota | Backups | Purged  | Retention  | On Compute Nodes |
++=====================+=============================================+================+=============+========+=========+=========+============+==================+
+| Member Archive      | ``/hpss/prod/[projid]/users/$USER``         | HPSS           | 700         | 100 TB | No      | No      | 90 days    | No               |
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
+| Project Archive     | ``/hpss/prod/[projid]/proj-shared``         | HPSS           | 770         | 100 TB | No      | No      | 90 days    | No               |
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
+| World Archive       | ``/hpss/prod/[projid]/world-shared``        | HPSS           | 775         | 100 TB | No      | No      | 90 days    | No               |
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
 
 NVMe
 ----
