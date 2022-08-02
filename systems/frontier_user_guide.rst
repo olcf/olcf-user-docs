@@ -2030,7 +2030,22 @@ For a full list of software availability and latest news at the OLCF, please ref
 Debugging
 ============
 
-Debugging text goes here
+ARM DDT
+-------
+
+Arm DDT is an advanced debugging tool used for scalar, multi-threaded,
+and large-scale parallel applications. In addition to traditional
+debugging features (setting breakpoints, stepping through code,
+examining variables), DDT also supports attaching to already-running
+processes and memory debugging. In-depth details of DDT can be found in
+the `Official DDT User
+Guide <https://www.allinea.com/user-guide/forge/userguide.html>`__, and
+instructions for how to use it on OLCF systems can be found on the
+`Forge (DDT/MAP) Software Page <https://www.olcf.ornl.gov/software_package/forge/>`__. DDT is the
+OLCF's recommended debugging software for large parallel applications.
+
+One of the most useful features of DDT is its remote debugging feature. This allows you to connect to a debugging session on Frontier from a client running on your workstation. The local client provides much faster interaction than you would have if using the graphical client on Frontier. For guidance in setting up the remote client see `this tutorial <https://www.olcf.ornl.gov/tutorials/forge-remote-client-setup-and-usage/>`__.
+
 
 Optimization and Profiling
 ==========================
@@ -2127,14 +2142,16 @@ where
     BytesRead = 32 * TCC\_EA\_RDREQ\_32B + 64 * (TCC\_EA\_RDREQ\_sum - TCC\_EA\_RDREQ\_32B)
 
 
-CrayPat (From Titan Guide, needs updating)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+CrayPat
+^^^^^^^
 
 CrayPat is a performance analysis tool for evaluating program execution on Cray systems. CrayPat consists of three main components:
 
-pat_build - used to instrument the program for analysis
-pat_report - a text report generator that can be used to explore data gathered by instrumented program execution
-Apprentice2 - a graphical analysis tool that can be used in addition to pat_report to explore and visualize the data gathered by instrumented program execution
+``pat_build`` - used to instrument the program for analysis
+
+``pat_report`` - a text report generator that can be used to explore data gathered by instrumented program execution
+
+``Apprentice2`` - a graphical analysis tool that can be used in addition to pat_report to explore and visualize the data gathered by instrumented program execution
 
 .. note::
     Details of these components can be found in the pat_build, pat_report, and app2 man pages made available by loading the perftools-base module.
@@ -2149,6 +2166,34 @@ View the performance data generated in Step 4 with pat_report and Apprentice2
 The following steps will guide you through performing a basic analysis with CrayPat and Apprentice2.
 
 Begin with a fully debugged and executable program. Since CrayPat is a performance analysis tool, not a debugger, the targeted program must be capable of running to completion, or intentional termination.
+
+Step 1: Load the appropriate modules
+
+To make CrayPat available,
+
+.. code:: bash
+
+    module load perftools-base 
+    module load perftools
+
+The perftools-base module must be loaded before the perftools module. Attempting to load perftools first will result in the following message:
+
+.. code:: bash
+
+    Error: The Perftools module is available only after the perftools-base module is loaded.
+
+    The Perftools-base module:
+    - Provides access to Perftools man pages, Reveal and Cray Apprentice2
+    - Does not alter compiling or program behavior 
+    - Makes the following instrumentation modules available: 
+
+    perftools                - full support, including pat_build and pat_report
+    perftools-lite           - default CrayPat-lite profile
+    perftools-lite-events    - CrayPat-lite event profile
+    perftools-lite-gpu       - CrayPat-lite gpu kernel and data movement
+    perftools-lite-loops     - CrayPat-lite loop estimates (for Reveal)
+    perftools-lite-hbm       - CrayPat-lite memory bandwidth estimates (for Reveal)
+
 
 
 
