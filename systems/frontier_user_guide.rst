@@ -2013,8 +2013,7 @@ Software
 
 Visualization and analysis tasks should be done on the Andes cluster. There are a few tools provided for various visualization tasks, as described in the :ref:`visualization-tools` section of the :ref:`andes-user-guide`.
 
-For a full list of software availability and latest news at the OLCF, please reference the `Software Section <https://docs.olcf.ornl.gov/software/index.html>`_
- in OLCF's User Documentation.
+For a full list of software availability and latest news at the OLCF, please reference the `Software Section <https://docs.olcf.ornl.gov/software/index.html>`_ in OLCF's User Documentation.
 
 Debugging
 ============
