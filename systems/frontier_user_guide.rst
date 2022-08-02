@@ -568,7 +568,7 @@ Determining the Compatibility of Cray MPICH and ROCm
 
 Releases of ``cray-mpich`` are each built with a specific version of ROCm, and compatibility across multiple versions is not guaranteed. OLCF will maintain compatible default modules when possible. If using non-default modules, you can determine compatibility by reviewing the *Product and OS Dependencies* section in the ``cray-mpich`` release notes. This can be displayed by running ``module show cray-mpich/<version>``. If the notes indicate compatibility with *AMD ROCM X.Y or later*, only use ``rocm/X.Y.Z`` modules. If using a non-default version of ``cray-mpich``, you must add ``${CRAY_MPICH_ROOTDIR}/gtl/lib`` to either your ``LD_LIBRARY_PATH`` at run time or your executable's rpath at build time.
 
-The compatibility table below was determined by linker testing with all current combinations of ``cray-mpich`` and ``rocm`` modules on Crusher.
+The compatibility table below was determined by linker testing with all current combinations of ``cray-mpich`` and ``rocm`` modules on Frontier.
 
 +------------+---------------------+
 | cray-mpich |        ROCm         |
@@ -580,6 +580,8 @@ The compatibility table below was determined by linker testing with all current 
 |   8.1.15   | 5.1.0, 5.0.2, 5.0.0 |
 +------------+---------------------+
 |   8.1.16   | 5.1.0, 5.0.2, 5.0.0 |
++------------+---------------------+
+|   8.1.17   | 5.1.0, 5.0.2, 5.0.0 |
 +------------+---------------------+
 
 OpenMP
@@ -2011,7 +2013,8 @@ Software
 
 Visualization and analysis tasks should be done on the Andes cluster. There are a few tools provided for various visualization tasks, as described in the :ref:`visualization-tools` section of the :ref:`andes-user-guide`.
 
-For a full list of software availability and latest news at the OLCF, please reference the :ref:`Software <software-news>` section in OLCF's User Documentation.
+For a full list of software availability and latest news at the OLCF, please reference the `Software Section <https://docs.olcf.ornl.gov/software/index.html>`_
+ in OLCF's User Documentation.
 
 Debugging
 ============
