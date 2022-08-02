@@ -671,7 +671,7 @@ This section shows how to compile HIP + OpenMP CPU threading hybrid codes.
 | Vendor   | Compiler  | Compile/Link Flags, Header Files, and Libraries                                                                                   |
 +==========+===========+===================================================================================================================================+
 | AMD/Cray | ``CC``    | | ``CFLAGS = -std=c++11 -D__HIP_ROCclr__ -D__HIP_ARCH_GFX90A__=1 --rocm-path=${ROCM_PATH} --offload-arch=gfx90a -x hip -fopenmp`` |
-|          |           | | ``LFLAGS = --rocm-path=${ROCM_PATH}``                                                                                           |
+|          |           | | ``LFLAGS = --rocm-path=${ROCM_PATH} -fopenmp``                                                                                  |
 |          |           | | ``-L${ROCM_PATH}/lib -lamdhip64``                                                                                               |
 |          +-----------+-----------------------------------------------------------------------------------------------------------------------------------+
 |          | ``hipcc`` | | Can be used to directly compile HIP source files, add ``-fopenmp`` flag to enable OpenMP threading                              |
@@ -2013,7 +2013,7 @@ Software
 
 Visualization and analysis tasks should be done on the Andes cluster. There are a few tools provided for various visualization tasks, as described in the :ref:`visualization-tools` section of the :ref:`andes-user-guide`.
 
-For a full list of software availability and latest news at the OLCF, please reference the `Software Section <https://docs.olcf.ornl.gov/software/index.html>`_ in OLCF's User Documentation.
+For a full list of software availability and latest news at the OLCF, please reference the :doc:`Software Section </software/software-news>` in OLCF's User Documentation.
 
 Debugging
 ============
