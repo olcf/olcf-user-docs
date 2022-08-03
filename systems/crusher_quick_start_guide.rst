@@ -1213,7 +1213,7 @@ The ``pat_build`` command in the above generates an instrumented executable with
 
 When run, the instrumented executable will trace HIP, I/O, MPI, and all user functions and generate a folder of results (e.g., ``hello_jobstep+pat+39545-2t``).
 
-To analyze these results, use the ``pat_report`` command as below:
+To analyze these results, use the ``pat_report`` command, e.g.:
 
 .. code:: bash
 
