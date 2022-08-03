@@ -1188,6 +1188,7 @@ There are three programming interfaces available: (1) ``Perftools-lite``, (2) ``
 Below is an example that generates an instrumented executable using ``Perftools``, which is an advanced interface that provides full-featured data collection and analysis capability, including full traces with timeline displays.
 
 .. code:: bash
+
     module load perftools
     module load craype-accel-amd-gfx90a
     module load rocm
@@ -1215,12 +1216,16 @@ When run, the instrumented executable will trace HIP, I/O, MPI, and all user fun
 To analyze these results, use the ``pat_report`` command as below:
 
 .. code:: bash
+
     pat_report hello_jobstep+pat+39545-2t
 
 The resulting report includes profiles of functions, profiles of maximum function times, details on load imbalance, details on program energy and power usages, details on memory high water mark, and more.
 
 More detailed information on the HPE Performance Analysis Tools can be found in the `HPE Performance Analysis Tools User Guide <https://support.hpe.com/hpesc/public/docDisplay?docLocale=en_US&docId=a00123563en_us>`__.
 
+.. note::
+
+    When using ``perftools-lite-gpu``, there is a known issue causing ``ld.lld`` not to be found. A workaround this issue can be found `here <https://docs.olcf.ornl.gov/systems/crusher_quick_start_guide.html#olcfdev-513-error-with-perftools-lite-gpu>`__.
 
 Getting Started with the ROCm Profiler
 --------------------------------------
