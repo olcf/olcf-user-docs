@@ -1181,7 +1181,7 @@ Profiling Applications
 Getting Started with the HPE Performance Analysis Tools (Perftools)
 -------------------------------------------------------------------
 
-The Performance Analysis Tools (Perftools) are a suite of utilities that enable users to capture and analyze performance data generated during program execution. These tools provide an integrated infrastructure for measurement, analysis, and visualization of computation, communication, I/O, and memory utilization to help users optimize programs for faster execution and more efficient computing resource usage.
+The Performance Analysis Tools (Perftools), formerly CrayPAT, are a suite of utilities that enable users to capture and analyze performance data generated during program execution. These tools provide an integrated infrastructure for measurement, analysis, and visualization of computation, communication, I/O, and memory utilization to help users optimize programs for faster execution and more efficient computing resource usage.
 
 There are three programming interfaces available: (1) ``Perftools-lite``, (2) ``Perftools``, and (3) ``Perftools-preload``.
 
