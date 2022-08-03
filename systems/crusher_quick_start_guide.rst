@@ -1178,14 +1178,37 @@ And here is the output from the script:
 Profiling Applications
 ======================
 
-Getting Started with the HPE Performance Analysis Tools (Perftools)
+Getting Started with the HPE Performance Analysis Tools (PAT)
 -------------------------------------------------------------------
 
-The Performance Analysis Tools (Perftools), formerly CrayPAT, are a suite of utilities that enable users to capture and analyze performance data generated during program execution. These tools provide an integrated infrastructure for measurement, analysis, and visualization of computation, communication, I/O, and memory utilization to help users optimize programs for faster execution and more efficient computing resource usage.
+The Performance Analysis Tools (PAT), formerly CrayPAT, are a suite of utilities that enable users to capture and analyze performance data generated during program execution. These tools provide an integrated infrastructure for measurement, analysis, and visualization of computation, communication, I/O, and memory utilization to help users optimize programs for faster execution and more efficient computing resource usage.
 
 There are three programming interfaces available: (1) ``Perftools-lite``, (2) ``Perftools``, and (3) ``Perftools-preload``.
 
-Below is an example that generates an instrumented executable using ``Perftools``, which is an advanced interface that provides full-featured data collection and analysis capability, including full traces with timeline displays.
+Below are two examples that generate an instrumented executable using ``Perftools``, which is an advanced interface that provides full-featured data collection and analysis capability, including full traces with timeline displays.
+
+The first example generates an instrumented executable using a ``PrgEnv-amd`` build:
+
+.. code:: bash
+
+    module load PrgEnv-amd
+    module load craype-accel-amd-gfx90a
+    module load rocm
+    module load perftools
+
+    export PATH="${PATH}:${ROCM_PATH}/llvm/bin"
+    export CXX='CC -x hip'
+    export CXXFLAGS='-ggdb -O3 -std=c++17 –Wall'
+    export LD='CC'
+    export LDFLAGS="${CXXFLAGS} -L${ROCM_PATH}/lib"
+    export LIBS='-lamdhip64'
+
+    make clean
+    make
+
+    pat_build -g hip,io,mpi -w -f <executable>
+
+The second example generates an instrumened executable using a ``hipcc`` build:
 
 .. code:: bash
 
@@ -1209,7 +1232,7 @@ Below is an example that generates an instrumented executable using ``Perftools`
     
     pat_build -g hip,io,mpi -w -f <executable>
 
-The ``pat_build`` command in the above generates an instrumented executable with ``+pat`` appended to the executable name (e.g., ``hello_jobstep+pat``).
+The ``pat_build`` command in the above examples generates an instrumented executable with ``+pat`` appended to the executable name (e.g., ``hello_jobstep+pat``).
 
 When run, the instrumented executable will trace HIP, I/O, MPI, and all user functions and generate a folder of results (e.g., ``hello_jobstep+pat+39545-2t``).
 
