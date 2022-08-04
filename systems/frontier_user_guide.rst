@@ -126,7 +126,7 @@ For more information on connecting to OLCF resources, see :ref:`connecting-to-ol
 Data and Storage
 ================
 
-For more detailed information about center-wide file systems and data archiving available on Frontier, please refer to the pages on :ref:`data-storage-and-transfers`. The subsections below give a quick overview of NFS and GPFS storage spaces as well as the on node NVMe "Burst Buffers" (SSDs).
+For more detailed information about center-wide file systems and data archiving available on Frontier, please refer to the pages on :ref:`data-storage-and-transfers`. The subsections below give a quick overview of NFS, GPFS, and HPSS storage spaces as well as the on node NVMe "Burst Buffers" (SSDs).
 
 NFS
 ---
@@ -152,9 +152,25 @@ GPFS
 | World Work          | ``/gpfs/alpine/[projid]/world-shared``      | Spectrum Scale | 775         |  50 TB | No      | 90 days | N/A        | Yes              |
 +---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
 
+
 .. note::
 
     Frontier will be migrating from the Alpine Spectrum Scale filesystem to the Orion Lustre filesystem in the coming months. Details will be added to this section as they become available.
+
+HPSS Archival Storage
+---------------------
+
+Please note that the HPSS is not mounted directly onto Frontier nodes. There are two main methods for accessing and moving data to/from the HPSS. The first is to use the command line utilities ``hsi`` and ``htar``. The second is to use the Globus data transfer service. See :ref:`data-hpss` for more information on both of these methods.
+
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
+| Area                | Path                                        | Type           | Permissions |  Quota | Backups | Purged  | Retention  | On Compute Nodes |
++=====================+=============================================+================+=============+========+=========+=========+============+==================+
+| Member Archive      | ``/hpss/prod/[projid]/users/$USER``         | HPSS           | 700         | 100 TB | No      | No      | 90 days    | No               |
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
+| Project Archive     | ``/hpss/prod/[projid]/proj-shared``         | HPSS           | 770         | 100 TB | No      | No      | 90 days    | No               |
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
+| World Archive       | ``/hpss/prod/[projid]/world-shared``        | HPSS           | 775         | 100 TB | No      | No      | 90 days    | No               |
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
 
 NVMe
 ----
@@ -745,9 +761,9 @@ second hardware thread.
 Slurm
 -----
 
-Frontier uses SchedMD's Slurm workload manager for scheduling jobs. Proir systems used different schedulers (Summit used IBM's LSF, many others used Moab). While most of these systems provide similar functionality, but with different commands/options. A comparison of a few important commands is below, but SchedMD provides a more complete reference in their `Rosetta Stone of Workload Managers <https://slurm.schedmd.com/rosetta.pdf>`_.
+Frontier uses SchedMD's Slurm workload manager for scheduling jobs. Proir systems used different schedulers (Summit used IBM's LSF, many others used Moab). While most of these systems provide similar functionality, but with different commands/options. A comparison of a few important commands is below, but SchedMD provides a more complete reference in their `Rosetta Stone of Workload Managers <https://slurm.schedmd.com/rosetta.pdf>`__.
 
-Slurm documentation for each command is available on the system via the ``man`` utility as well as on the web at ` <https://slurm.schedmd.com/man_index.html>`_. Additional documentation is available at ` <https://slurm.schedmd.com/documentation.html>`_.
+Slurm documentation for each command is available on the system via the ``man`` utility as well as on the web at `<https://slurm.schedmd.com/man_index.html>`__. Additional documentation is available at `<https://slurm.schedmd.com/documentation.html>`__.
 
 Some common Slurm commands are summarized in the table below. More complete examples are given in the Monitoring and Modifying Batch Jobs section of this guide.
 
@@ -840,7 +856,7 @@ Since all compute resources are managed and scheduled by Slurm, it is not possib
 Common Slurm Options
 --------------------
 
-The table below summarizes options for submitted jobs. Unless otherwise noted, they can be used for either batch scripts or interactive batch jobs. For scripts, they can be added on the ``sbatch`` command line or as a ``#BSUB`` directive in the batch script. (If they're specified in both places, the command line takes precedence.) This is only a subset of all available options. Check the `Slurm Man Pages <https://slurm.schedmd.com/man_index.html>`_ for a more complete list.
+The table below summarizes options for submitted jobs. Unless otherwise noted, they can be used for either batch scripts or interactive batch jobs. For scripts, they can be added on the ``sbatch`` command line or as a ``#BSUB`` directive in the batch script. (If they're specified in both places, the command line takes precedence.) This is only a subset of all available options. Check the `Slurm Man Pages <https://slurm.schedmd.com/man_index.html>`__ for a more complete list.
 
 +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
 | Option                 | Example Usage                              | Description                                                                          |
@@ -1126,7 +1142,7 @@ In addition to holding, releasing, and updating the job, the ``scontrol`` comman
 Srun
 ----------------------
 
-The default job launcher for Frontier is `srun <https://slurm.schedmd.com/srun.html>`_ . The ``srun`` command is used to execute an MPI binary on one or more compute nodes in parallel.
+The default job launcher for Frontier is `srun <https://slurm.schedmd.com/srun.html>`__ . The ``srun`` command is used to execute an MPI binary on one or more compute nodes in parallel.
 
 Srun Format
 ^^^^^^^^^^^
@@ -1210,8 +1226,6 @@ Below is a comparison table between srun and jsrun.
 | Number of GPUs per resource set              | ``-g, --gpus_per_rs``     | N/A                     |
 +----------------------------------------------+---------------------------+-------------------------+
 | Bind tasks to allocated CPUs                 | ``-b, --bind``            | ``--cpu-bind``          |
-+----------------------------------------------+---------------------------+-------------------------+
-| Do not run more than one task on resources   | ``--tasks_per_rs 1``      | ``--exclusive``         |
 +----------------------------------------------+---------------------------+-------------------------+
 | Performance binding preference               | ``-l,--latency_priority`` | ``--hint``              |
 +----------------------------------------------+---------------------------+-------------------------+
@@ -2012,14 +2026,29 @@ MPI for multiple GPUs per rank, so this binding is not suggested.
 Software
 ============
 
-Visualization and analysis tasks should be done on the Andes cluster. There are a few tools provided for various visualization tasks, as described in the :ref:`visualization-tools` section of the :ref:`andes-user-guide`.
+Visualization and analysis tasks should be done on the Andes cluster. There are a few tools provided for various visualization tasks, as described in the :ref:`andes-viz-tools` section of the :ref:`andes-user-guide`.
 
-For a full list of software availability and latest news at the OLCF, please reference the :doc:`Software Section </software/software-news>` in OLCF's User Documentation.
+For a full list of software availability and latest news at the OLCF, please reference the :doc:`Software </software/software-news>` section in OLCF's User Documentation.
 
 Debugging
 ============
 
-Debugging text goes here
+ARM DDT
+-------
+
+Arm DDT is an advanced debugging tool used for scalar, multi-threaded,
+and large-scale parallel applications. In addition to traditional
+debugging features (setting breakpoints, stepping through code,
+examining variables), DDT also supports attaching to already-running
+processes and memory debugging. In-depth details of DDT can be found in
+the `Official DDT User
+Guide <https://www.allinea.com/user-guide/forge/userguide.html>`__, and
+instructions for how to use it on OLCF systems can be found on the
+`Forge (DDT/MAP) Software Page <https://www.olcf.ornl.gov/software_package/forge/>`__. DDT is the
+OLCF's recommended debugging software for large parallel applications.
+
+One of the most useful features of DDT is its remote debugging feature. This allows you to connect to a debugging session on Frontier from a client running on your workstation. The local client provides much faster interaction than you would have if using the graphical client on Frontier. For guidance in setting up the remote client see `this tutorial <https://www.olcf.ornl.gov/tutorials/forge-remote-client-setup-and-usage/>`__.
+
 
 Optimization and Profiling
 ==========================
@@ -2116,14 +2145,16 @@ where
     BytesRead = 32 * TCC\_EA\_RDREQ\_32B + 64 * (TCC\_EA\_RDREQ\_sum - TCC\_EA\_RDREQ\_32B)
 
 
-CrayPat (From Titan Guide, needs updating)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+CrayPat
+^^^^^^^
 
 CrayPat is a performance analysis tool for evaluating program execution on Cray systems. CrayPat consists of three main components:
 
-pat_build - used to instrument the program for analysis
-pat_report - a text report generator that can be used to explore data gathered by instrumented program execution
-Apprentice2 - a graphical analysis tool that can be used in addition to pat_report to explore and visualize the data gathered by instrumented program execution
+``pat_build`` - used to instrument the program for analysis
+
+``pat_report`` - a text report generator that can be used to explore data gathered by instrumented program execution
+
+``Apprentice2`` - a graphical analysis tool that can be used in addition to pat_report to explore and visualize the data gathered by instrumented program execution
 
 .. note::
     Details of these components can be found in the pat_build, pat_report, and app2 man pages made available by loading the perftools-base module.
@@ -2138,6 +2169,34 @@ View the performance data generated in Step 4 with pat_report and Apprentice2
 The following steps will guide you through performing a basic analysis with CrayPat and Apprentice2.
 
 Begin with a fully debugged and executable program. Since CrayPat is a performance analysis tool, not a debugger, the targeted program must be capable of running to completion, or intentional termination.
+
+Step 1: Load the appropriate modules
+
+To make CrayPat available,
+
+.. code:: bash
+
+    module load perftools-base 
+    module load perftools
+
+The perftools-base module must be loaded before the perftools module. Attempting to load perftools first will result in the following message:
+
+.. code:: bash
+
+    Error: The Perftools module is available only after the perftools-base module is loaded.
+
+    The Perftools-base module:
+    - Provides access to Perftools man pages, Reveal and Cray Apprentice2
+    - Does not alter compiling or program behavior 
+    - Makes the following instrumentation modules available: 
+
+    perftools                - full support, including pat_build and pat_report
+    perftools-lite           - default CrayPat-lite profile
+    perftools-lite-events    - CrayPat-lite event profile
+    perftools-lite-gpu       - CrayPat-lite gpu kernel and data movement
+    perftools-lite-loops     - CrayPat-lite loop estimates (for Reveal)
+    perftools-lite-hbm       - CrayPat-lite memory bandwidth estimates (for Reveal)
+
 
 
 
