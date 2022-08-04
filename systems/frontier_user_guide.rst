@@ -633,7 +633,9 @@ This section shows how to compile with OpenMP Offload using the different compil
 
 .. note::
 
-    If invoking ``amdclang``, ``amdclang++``, or ``amdflang`` directly for ``openmp offload``, you will need to add: ``-fopenmp -target x86_64-pc-linux-gnu -fopenmp-targets=amdgcn-amd-amdhsa -Xopenmp-target=amdgcn-amd-amdhsa -march=gfx90a``.
+    If invoking ``amdclang``, ``amdclang++``, or ``amdflang`` directly for ``openmp offload``, or using ``hipcc`` you will need to add: 
+    
+    ``-fopenmp -target x86_64-pc-linux-gnu -fopenmp-targets=amdgcn-amd-amdhsa -Xopenmp-target=amdgcn-amd-amdhsa -march=gfx90a``.
 
 HIP
 ---
