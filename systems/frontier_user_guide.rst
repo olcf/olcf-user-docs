@@ -584,7 +584,7 @@ Determining the Compatibility of Cray MPICH and ROCm
 
 Releases of ``cray-mpich`` are each built with a specific version of ROCm, and compatibility across multiple versions is not guaranteed. OLCF will maintain compatible default modules when possible. If using non-default modules, you can determine compatibility by reviewing the *Product and OS Dependencies* section in the ``cray-mpich`` release notes. This can be displayed by running ``module show cray-mpich/<version>``. If the notes indicate compatibility with *AMD ROCM X.Y or later*, only use ``rocm/X.Y.Z`` modules. If using a non-default version of ``cray-mpich``, you must add ``${CRAY_MPICH_ROOTDIR}/gtl/lib`` to either your ``LD_LIBRARY_PATH`` at run time or your executable's rpath at build time.
 
-The compatibility table below was determined by linker testing with all current combinations of ``cray-mpich`` and ``rocm`` modules on Crusher.
+The compatibility table below was determined by linker testing with all current combinations of ``cray-mpich`` and ``rocm`` modules on Frontier.
 
 +------------+---------------------+
 | cray-mpich |        ROCm         |
@@ -596,6 +596,8 @@ The compatibility table below was determined by linker testing with all current 
 |   8.1.15   | 5.1.0, 5.0.2, 5.0.0 |
 +------------+---------------------+
 |   8.1.16   | 5.1.0, 5.0.2, 5.0.0 |
++------------+---------------------+
+|   8.1.17   | 5.1.0, 5.0.2, 5.0.0 |
 +------------+---------------------+
 
 OpenMP
@@ -647,7 +649,8 @@ This section shows how to compile with OpenMP Offload using the different compil
 
 .. note::
 
-    If invoking ``amdclang``, ``amdclang++``, or ``amdflang`` directly, or using ``hipcc`` you will need to add:
+    If invoking ``amdclang``, ``amdclang++``, or ``amdflang`` directly for ``openmp offload``, or using ``hipcc`` you will need to add: 
+    
     ``-fopenmp -target x86_64-pc-linux-gnu -fopenmp-targets=amdgcn-amd-amdhsa -Xopenmp-target=amdgcn-amd-amdhsa -march=gfx90a``.
 
 HIP
@@ -685,7 +688,7 @@ This section shows how to compile HIP + OpenMP CPU threading hybrid codes.
 | Vendor   | Compiler  | Compile/Link Flags, Header Files, and Libraries                                                                                   |
 +==========+===========+===================================================================================================================================+
 | AMD/Cray | ``CC``    | | ``CFLAGS = -std=c++11 -D__HIP_ROCclr__ -D__HIP_ARCH_GFX90A__=1 --rocm-path=${ROCM_PATH} --offload-arch=gfx90a -x hip -fopenmp`` |
-|          |           | | ``LFLAGS = --rocm-path=${ROCM_PATH}``                                                                                           |
+|          |           | | ``LFLAGS = --rocm-path=${ROCM_PATH} -fopenmp``                                                                                  |
 |          |           | | ``-L${ROCM_PATH}/lib -lamdhip64``                                                                                               |
 |          +-----------+-----------------------------------------------------------------------------------------------------------------------------------+
 |          | ``hipcc`` | | Can be used to directly compile HIP source files, add ``-fopenmp`` flag to enable OpenMP threading                              |
