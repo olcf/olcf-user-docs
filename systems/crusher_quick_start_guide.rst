@@ -302,6 +302,8 @@ The compatibility table below was determined by linker testing with all current 
 +------------+---------------------+
 |   8.1.15   | 5.1.0, 5.0.2, 5.0.0 |
 +------------+---------------------+
+|   8.1.16   | 5.1.0, 5.0.2, 5.0.0 |
++------------+---------------------+
 
 OpenMP
 ------
@@ -494,7 +496,7 @@ To request an interactive job where multiple job steps (i.e., multiple ``srun`` 
 
 Here, ``salloc`` is used to request an allocation of 2 compute nodes for 5 minutes. Once the resources become available, the user is granted access to the compute nodes (``crusher010`` and ``crusher011`` in this case) and can launch job steps on them using ``srun``.
 
-.. _single-command:
+.. _single-command-crusher:
 
 Single Command (non-interactive)
 """"""""""""""""""""""""""""""""
@@ -1173,6 +1175,103 @@ And here is the output from the script:
 
 ----
 
+Profiling applications
+======================
+
+Getting started
+---------------
+
+``rocprof`` gathers metrics on kernels run on AMD GPU architectures. The profiler works for HIP kernels, as well as offloaded kernels from OpenMP target offloading, OpenCL, and abstraction layers such as Kokkos.
+For a simple view of kernels being run, ``rocprof --stats --timestamp on`` is a great place to start.
+With the ``--stats`` option enabled, ``rocprof`` will generate a file that is named ``results.stats.csv`` by default, but named ``<output>.stats.csv`` if the ``-o`` flag is supplied.
+This file will list all kernels being run, the number of times they are run, the total duration and the average duration (in nanoseconds) of the kernel, and the GPU usage percentage.
+More detailed infromation on ``rocprof`` profiling modes can be found at `ROCm Profiler <https://rocmdocs.amd.com/en/latest/ROCm_Tools/ROCm-Tools.html>`__ documentation.
+
+
+Roofline profiling
+------------------
+The `Roofline <https://docs.nersc.gov/tools/performance/roofline/>`__ performance model is an increasingly popular way to demonstrate and understand application performance.
+This section documents how to construct a simple roofline model for a single kernel using ``rocprof``.
+This roofline model is designed to be comparable to rooflines constructed by NVIDIA's `NSight Compute <https://developer.nvidia.com/blog/accelerating-hpc-applications-with-nsight-compute-roofline-analysis/>`__.
+A roofline model plots the achieved performance (in floating-point operations per second, FLOPS/s) as a function of operational (or arithmetic) intensity (in FLOPS per Byte).
+The model detailed here calculates the bytes moved as they move to and from the GPU's HBM.
+
+.. note::
+
+    Integer instructions, cache levels, and matrix-FMA operations are currently not considered.
+
+To get started, you will need to make an input file for ``rocprof``, to be passed in through ``rocprof -i <input_file> --timestamp on -o my_output.csv <my_exe>``.
+Below is an example, and contains the information needed:
+
+.. code:: bash
+
+    pmc : SQ_INSTS_VALU_ADD_F16 SQ_INSTS_VALU_MUL_F16 SQ_INSTS_VALU_FMA_F16 SQ_INSTS_VALU_TRANS_F16
+    pmc : SQ_INSTS_VALU_ADD_F32 SQ_INSTS_VALU_MUL_F32 SQ_INSTS_VALU_FMA_F32 SQ_INSTS_VALU_TRANS_F32
+    pmc : SQ_INSTS_VALU_ADD_F64 SQ_INSTS_VALU_MUL_F64 SQ_INSTS_VALU_FMA_F64 SQ_INSTS_VALU_TRANS_F64
+    pmc : SQ_INSTS_VALU_MFMA_MOPS_F16 SQ_INSTS_VALU_MFMA_MOPS_BF16 SQ_INSTS_VALU_MFMA_MOPS_F32 SQ_INSTS_VALU_MFMA_MOPS_F64
+    pmc : TCC_EA_RDREQ_32B_sum TCC_EA_RDREQ_sum TCC_EA_WRREQ_sum TCC_EA_WRREQ_64B_sum
+    gpu: 0
+
+
+.. note::
+
+    In an application with more than one kernel, you should strongly consider filtering by kernel name by adding a line like: ``kernel: <kernel_name>`` to the ``rocprof`` input file.
+
+This provides the minimum set of metrics used to construct a roofline model.
+
+Theoretical Roofline
+^^^^^^^^^^^^^^^^^^^^
+
+The theoretical (attainable) roofline constructs a theoretical maximum performance for each operational intensity.
+The theoretical roofline can be constructed as:
+
+.. math::
+
+    FLOPS_{peak} = minimum(OpIntensity * BW_{HBM}, theoretical\_flops)
+
+
+Achieved FLOPS/s
+^^^^^^^^^^^^^^^^
+
+We calculate the achieved performance at the desired level (here, double-precision floating point, FP64), by summing each metric count and weighting the FMA metric by 2, since a fused multiply-add is considered 2 floating point operations.
+Also note that these ``SQ_INSTS_VALU_*`` metrics are reported as per-simd, so we mutliply by the wavefront size as well.
+We use this equation to calculate the number of double-precision FLOPS:
+
+.. math::
+
+    FP64\_FLOPS = 64 * (SQ\_INSTS\_VALU\_ADD\_F64 + SQ\_INSTS\_VALU\_MUL\_F64 + 2 * SQ\_INSTS\_VALU\_FMA\_F64)
+
+Then, we divide the number of FLOPS by the elapsed time of the kernel.
+This is found from subtracting the ``rocprof`` metrics ``EndNs`` by ``BeginNs``, provided by ``--timestamp on``, then converting from nanoseconds to seconds by dividing by 1,000,000,000 (power(10,9)).
+
+Operational Intensity
+^^^^^^^^^^^^^^^^^^^^^
+
+Operational intensity calculates the ratio of FLOPS to bytes moved between HBM and L2 cache.
+We calculated FLOPS above (FP64_FLOPS).
+We can calculate the number of bytes moved using the ``rocprof`` metrics ``TCC_EA_WRREQ_64B``, ``TCC_EA_WRREQ_sum``, ``TCC_EA_RDREQ_32B``, and ``TCC_EA_RDREQ_sum``.
+``TCC`` refers to the L2 cache, and ``EA`` is the interface between L2 and HBM.
+``WRREQ`` and ``RDREQ`` are write-requests and read-requests, respectively.
+Each of these requests is either 32 bytes or 64 bytes.
+So we calculate the number of bytes traveling over the EA interface as:
+
+.. math::
+
+    BytesMoved = BytesWritten + BytesRead
+
+where
+
+.. math::
+
+    BytesWritten = 64 * TCC\_EA\_WRREQ\_64B + 32 * (TCC\_EA\_WRREQ\_sum - TCC\_EA\_WRREQ\_64B)
+
+.. math::
+
+    BytesRead = 32 * TCC\_EA\_RDREQ\_32B + 64 * (TCC\_EA\_RDREQ\_sum - TCC\_EA\_RDREQ\_32B)
+
+
+----
+
 Notable Differences between Summit and Crusher
 ==============================================
 
@@ -1191,6 +1290,157 @@ If you encounter significant differences when running using reduced precision, e
 Additional information on MI250X reduced precision can be found at:
   * The MI250X ISA specification details the flush to zero denorm behavior at: https://developer.amd.com/wp-content/resources/CDNA2_Shader_ISA_18November2021.pdf (See page 41 and 46)
   * AMD rocBLAS library reference guide details this behavior at: https://rocblas.readthedocs.io/en/master/API_Reference_Guide.html#mi200-gfx90a-considerations
+
+Enabling GPU Page Migration
+---------------------------
+The AMD MI250X and operating system on Crusher supports unified virtual addressing across the entire host and device memory, and automatic page migration between CPU and GPU memory. Migratable, universally addressable memory is sometimes called 'managed' or 'unified' memory, but neither of these terms fully describes how memory may behave on Crusher. In the following section we'll discuss how the heterogenous memory space on a Crusher node is surfaced within your application.
+
+The accessibility of memory from GPU kernels and whether pages may migrate depends three factors: how the memory was allocated; the XNACK operating mode of the GPU; whether the kernel was compiled to support page migration. The latter two factors are intrinsically linked, as the MI250X GPU operating mode restricts the types of kernels which may run.
+
+XNACK (pronounced X-knack) refers to the AMD GPU's ability to retry memory accesses that fail due to a page fault. The XNACK mode of an MI250X can be changed by setting the environment variable ``HSA_XNACK`` before starting a process that uses the GPU. Valid values are 0 (disabled) and 1 (enabled), and all processes connected to a GPU must use the same XNACK setting. The default MI250X on Crusher is ``HSA_XNACK=0``.
+
+If ``HSA_XNACK=0``, page faults in GPU kernels are not handled and will terminate the kernel. Therefore all memory locations accessed by the GPU must either be resident in the GPU HBM or mapped by the HIP runtime. Memory regions may be migrated between the host DDR4 and GPU HBM using explicit HIP library functions such as ``hipMemAdvise`` and ``hipPrefetchAsync``, but memory will not be automatically migrated based on access patterns alone.
+
+If ``HSA_XNACK=1``, page faults in GPU kernels will trigger a page table lookup. If the memory location can be made accessible to the GPU, either by being migrated to GPU HBM or being mapped for remote access, the appropriate action will occur and the access will be replayed. Page migration  will happen between CPU DDR4 and GPU HBM according to page touch. The exceptions are if the programmer uses a HIP library call such as ``hipPrefetchAsync`` to request migration, or if a preferred location is set via ``hipMemAdvise``, or if GPU HBM becomes full and the page must forcibly be evicted back to CPU DDR4 to make room for other data.
+
+..
+   If ``HSA_XNACK=1``, page faults in GPU kernels will trigger a page table lookup. If the memory location can be made accessible to the GPU, either by being migrated to GPU HBM or being mapped for remote access, the appropriate action will occur and the access will be replayed. Once a memory region has been migrated to GPU HBM it typically stays there rather than migrating back to CPU DDR4. The exceptions are if the programmer uses a HIP library call such as ``hipPrefetchAsync`` to request migration, or if GPU HBM becomes full and the page must forcibly be evicted back to CPU DDR4 to make room for other data.
+
+
+Migration of Memory by Allocator and XNACK Mode
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Most applications that use "managed" or "unified" memory on other platforms will want to enable XNACK to take advantage of automatic page migration on Crusher. The following table shows how common allocators currently behave with XNACK enabled. The behavior of a specific memory region may vary from the default if the programmer uses certain API calls.
+
+
+.. note::
+   The page migration behavior summarized by the following tables represents the current, observable behavior. Said behavior will likely change in the near future.
+
+    ..
+       CPU accesses to migratable memory may behave differently than other platforms you're used to. On Crusher, pages will not migrate from GPU HBM to CPU DDR4 based on access patterns alone. Once a page has migrated to GPU HBM it will remain there even if the CPU accesses it, and all accesses which do not resolve in the CPU cache will occur over the Infinity Fabric between the AMD "Optimized 3rd Gen EPYC" CPU and AMD MI250X GPU. Pages will only *automatically* migrate back to CPU DDR4 if they are forcibly evicted to free HBM capacity, although programmers may use HIP APIs to manually migrate memory regions.
+
+``HSA_XNACK=1`` **Automatic Page Migration Enabled**
+
+..
+   +---------------------------------------------+---------------------------+--------------------------------------------+----------------------------------------------------+
+   | Allocator                                   | Initial Physical Location | CPU Access after GPU First Touch           | Default Behavior for GPU Access                    |
+   +=============================================+===========================+============================================+====================================================+
+   | System Allocator (malloc,new,allocate, etc) | Determined by first touch | Zero copy read/write                       | Migrate to GPU HBM on touch, then local read/write |
+   +---------------------------------------------+---------------------------+--------------------------------------------+----------------------------------------------------+
+   | hipMallocManaged                            | GPU HBM                   | Zero copy read/write                       | Populate in  GPU HBM, then local read/write        |
+   +---------------------------------------------+---------------------------+--------------------------------------------+----------------------------------------------------+
+   | hipHostMalloc                               | CPU DDR4                  | Local read/write                           | Zero copy read/write over Infinity Fabric          |
+   +---------------------------------------------+---------------------------+--------------------------------------------+----------------------------------------------------+
+   | hipMalloc                                   | GPU HBM                   | Zero copy read/write over Inifinity Fabric | Local read/write                                   |
+   +---------------------------------------------+---------------------------+--------------------------------------------+----------------------------------------------------+
+
++---------------------------------------------+---------------------------+--------------------------------------------+----------------------------------------------------+
+| Allocator                                   | Initial Physical Location | CPU Access after GPU First Touch           | Default Behavior for GPU Access                    |
++=============================================+===========================+============================================+====================================================+
+| System Allocator (malloc,new,allocate, etc) | CPU DDR4                  | Migrate to CPU DDR4 on touch               | Migrate to GPU HBM on touch                        |
++---------------------------------------------+---------------------------+--------------------------------------------+----------------------------------------------------+
+| hipMallocManaged                            | CPU DDR4                  | Migrate to CPU DDR4 on touch               | Migrate to GPU HBM on touch                        |
++---------------------------------------------+---------------------------+--------------------------------------------+----------------------------------------------------+
+| hipHostMalloc                               | CPU DDR4                  | Local read/write                           | Zero copy read/write over Infinity Fabric          |
++---------------------------------------------+---------------------------+--------------------------------------------+----------------------------------------------------+
+| hipMalloc                                   | GPU HBM                   | Zero copy read/write over Inifinity Fabric | Local read/write                                   |
++---------------------------------------------+---------------------------+--------------------------------------------+----------------------------------------------------+
+   
+Disabling XNACK will not necessarily result in an application failure, as most types of memory can still be accessed by the AMD "Optimized 3rd Gen EPYC" CPU and AMD MI250X GPU. In most cases, however, the access will occur in a zero-copy fashion over the Infinity Fabric. The exception is memory allocated through standard system allocators such as ``malloc``, which cannot be accessed directly from GPU kernels without previously being registered via a HIP runtime call such as ``hipHostRegister``. Access to malloc'ed and unregistered memory from GPU kernels will result in fatal unhandled page faults. The table below shows how common allocators behave with XNACK disabled.
+
+``HSA_XNACK=0`` **Automatic Page Migration Disabled**
+
++---------------------------------------------+---------------------------+--------------------------------------------+---------------------------------------------+
+| Allocator                                   | Initial Physical Location | Default Behavior for CPU Access            | Default Behavior for GPU Access             | 
++=============================================+===========================+============================================+=============================================+
+| System Allocator (malloc,new,allocate, etc) | CPU DDR4                  | Local read/write                           | Fatal Unhandled Page Fault                  |
++---------------------------------------------+---------------------------+--------------------------------------------+---------------------------------------------+
+| hipMallocManaged                            | CPU DDR4                  | Zero copy read/write over Infinity Fabric  | Local read/write                            |
++---------------------------------------------+---------------------------+--------------------------------------------+---------------------------------------------+
+| hipHostMalloc                               | CPU DDR4                  | Local read/write                           | Zero copy read/write over Infinity Fabric   |
++---------------------------------------------+---------------------------+--------------------------------------------+---------------------------------------------+
+| hipMalloc                                   | GPU HBM                   | Zero copy read/write over Inifinity Fabric | Local read/write                            |
++---------------------------------------------+---------------------------+--------------------------------------------+---------------------------------------------+
+
+Compiling HIP kernels for specific XNACK modes
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Although XNACK is a capability of the MI250X GPU, it does require that kernels be able to recover from page faults. Both the ROCm and CCE HIP compilers will default to generating code that runs correctly with both XNACK enabled and disabled. Some applications may benefit from using the following compilation options to target specific XNACK modes.
+
+| ``hipcc --amdgpu-target=gfx90a`` or ``CC --offload-arch=gfx90a -x hip``
+|   Kernels are compiled to a single "xnack any" binary, which will run correctly with both XNACK enabled and XNACK disabled.
+
+| ``hipcc --amdgpu-target=gfx90a:xnack+`` or ``CC --offload-arch=gfx90a:xnack+ -x hip``
+|   Kernels are compiled in "xnack plus" mode and will *only* be able to run on GPUs with ``HSA_XNACK=1`` to enable XNACK. Performance may be better than "xnack any", but attempts to run with XNACK disabled will fail.
+
+| ``hipcc --amdgpu-target=gfx90a:xnack-`` or ``CC --offload-arch=gfx90a:xnack- -x hip``
+|   Kernels are compiled in "xnack minus" mode and will *only* be able to run on GPUs with ``HSA_XNACK=0`` and XNACK disabled. Performance may be better than "xnack any", but attempts to run with XNACK enabled will fail.
+
+| ``hipcc --amdgpu-target=gfx90a:xnack- --amdgpu-target=gfx90a:xnack+ -x hip`` or ``CC --offload-arch=gfx90a:xnack- --offload-arch=gfx90a:xnack+ -x hip``
+|   Two versions of each kernel will be generated, one that runs with XNACK disabled and one that runs if XNACK is enabled. This is different from "xnack any" in that two versions of each kernel are compiled and HIP picks the appropriate one at runtime, rather than there being a single version compatible with both. A "fat binary" compiled in this way will have the same performance of "xnack+" with ``HSA_XNACK=1`` and as "xnack-" with ``HSA_XNACK=0``, but the final executable will be larger since it contains two copies of every kernel.
+
+If the HIP runtime cannot find a kernel image that matches the XNACK mode of the device, it will fail with ``hipErrorNoBinaryForGpu``.
+
+.. code::
+
+    $ HSA_XNACK=0 srun -n 1 -N 1 -t 1 ./xnack_plus.exe
+    "hipErrorNoBinaryForGpu: Unable to find code object for all current devices!"
+    srun: error: crusher002: task 0: Aborted
+    srun: launch/slurm: _step_signal: Terminating StepId=74100.0
+
+
+..
+    NOTE: This works in my shell because I used cpan to install the URI::Encode perl modules.
+    This won't work generically unless those get installed, so commenting out this block now.
+
+    The AMD tool `roc-obj-ls` will let you see what code objects are in a binary.
+
+    .. code::
+        $ hipcc --amdgpu-target=gfx90a:xnack+ square.hipref.cpp -o xnack_plus.exe
+        $ roc-obj-ls -v xnack_plus.exe
+        Bundle# Entry ID:                                                              URI:
+        1       host-x86_64-unknown-linux                                           file://xnack_plus.exe#offset=8192&size=0
+        1       hipv4-amdgcn-amd-amdhsa--gfx90a:xnack+                              file://xnack_plus.exe#offset=8192&size=9752
+
+    If no XNACK flag is specificed at compilation the default is "xnack any", and objects in `roc-obj-ls` with not have an XNACK mode specified.
+
+    .. code::
+        $ hipcc --amdgpu-target=gfx90a square.hipref.cpp -o xnack_any.exe
+        $ roc-obj-ls -v xnack_any.exe
+        Bundle# Entry ID:                                                              URI:
+        1       host-x86_64-unknown-linux                                           file://xnack_any.exe#offset=8192&size=0
+        1       hipv4-amdgcn-amd-amdhsa--gfx90a                                     file://xnack_any.exe#offset=8192&size=9752
+
+One way to diagnose ``hipErrorNoBinaryForGpu`` messages is to set the environment variable ``AMD_LOG_LEVEL`` to 1 or greater:
+
+.. code::
+    
+    $ AMD_LOG_LEVEL=1 HSA_XNACK=0 srun -n 1 -N 1 -t 1 ./xnack_plus.exe
+    :1:rocdevice.cpp            :1573: 43966598070 us: HSA_AMD_AGENT_INFO_SVM_DIRECT_HOST_ACCESS query failed.
+    :1:rocdevice.cpp            :1573: 43966598762 us: HSA_AMD_AGENT_INFO_SVM_DIRECT_HOST_ACCESS query failed.
+    :1:rocdevice.cpp            :1573: 43966599392 us: HSA_AMD_AGENT_INFO_SVM_DIRECT_HOST_ACCESS query failed.
+    :1:rocdevice.cpp            :1573: 43966599970 us: HSA_AMD_AGENT_INFO_SVM_DIRECT_HOST_ACCESS query failed.
+    :1:rocdevice.cpp            :1573: 43966600550 us: HSA_AMD_AGENT_INFO_SVM_DIRECT_HOST_ACCESS query failed.
+    :1:rocdevice.cpp            :1573: 43966601109 us: HSA_AMD_AGENT_INFO_SVM_DIRECT_HOST_ACCESS query failed.
+    :1:rocdevice.cpp            :1573: 43966601673 us: HSA_AMD_AGENT_INFO_SVM_DIRECT_HOST_ACCESS query failed.
+    :1:rocdevice.cpp            :1573: 43966602248 us: HSA_AMD_AGENT_INFO_SVM_DIRECT_HOST_ACCESS query failed.
+    :1:hip_code_object.cpp      :460 : 43966602806 us: hipErrorNoBinaryForGpu: Unable to find code object for all current devices!
+    :1:hip_code_object.cpp      :461 : 43966602810 us:   Devices:
+    :1:hip_code_object.cpp      :464 : 43966602811 us:     amdgcn-amd-amdhsa--gfx90a:sramecc+:xnack- - [Not Found]
+    :1:hip_code_object.cpp      :464 : 43966602811 us:     amdgcn-amd-amdhsa--gfx90a:sramecc+:xnack- - [Not Found]
+    :1:hip_code_object.cpp      :464 : 43966602812 us:     amdgcn-amd-amdhsa--gfx90a:sramecc+:xnack- - [Not Found]
+    :1:hip_code_object.cpp      :464 : 43966602813 us:     amdgcn-amd-amdhsa--gfx90a:sramecc+:xnack- - [Not Found]
+    :1:hip_code_object.cpp      :464 : 43966602813 us:     amdgcn-amd-amdhsa--gfx90a:sramecc+:xnack- - [Not Found]
+    :1:hip_code_object.cpp      :464 : 43966602814 us:     amdgcn-amd-amdhsa--gfx90a:sramecc+:xnack- - [Not Found]
+    :1:hip_code_object.cpp      :464 : 43966602814 us:     amdgcn-amd-amdhsa--gfx90a:sramecc+:xnack- - [Not Found]
+    :1:hip_code_object.cpp      :464 : 43966602815 us:     amdgcn-amd-amdhsa--gfx90a:sramecc+:xnack- - [Not Found]
+    :1:hip_code_object.cpp      :468 : 43966602816 us:   Bundled Code Objects:
+    :1:hip_code_object.cpp      :485 : 43966602817 us:     host-x86_64-unknown-linux - [Unsupported]
+    :1:hip_code_object.cpp      :483 : 43966602818 us:     hipv4-amdgcn-amd-amdhsa--gfx90a:xnack+ - [code object v4 is amdgcn-amd-amdhsa--gfx90a:xnack+]
+    "hipErrorNoBinaryForGpu: Unable to find code object for all current devices!"
+    srun: error: crusher129: task 0: Aborted
+    srun: launch/slurm: _step_signal: Terminating StepId=74102.0
+
+The above log messages indicate the type of image required by each device, given its current mode (``amdgcn-amd-amdhsa--gfx90a:sramecc+:xnack-``) and the images found in the binary (``hipv4-amdgcn-amd-amdhsa--gfx90a:xnack+``).
 
 ----
 

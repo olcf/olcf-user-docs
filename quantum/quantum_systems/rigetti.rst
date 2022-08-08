@@ -7,14 +7,22 @@ Rigetti
 Overview
 ========
 
-Rigetti currently offers access to the 40-qubit Aspen-11 system, a scalable,
-superconducting, gate-based quantum processor, which is accessible via their
-Quantum Cloud Service (QCS). Rigetti also provides users with quantum computing
-example algorithms for optimization, quantum system profiling, and other
-applications.
+Rigetti currently offers access to their systems via their Quantum Cloud
+Services (QCS).  With QCS, Rigetti's quantum processors (QPUs) are tightly
+integrated with classical computing infrastructure and made available to you
+over the cloud. Rigetti also provides users with quantum computing example
+algorithms for optimization, quantum system profiling, and other applications.
 
-This guide describes how to use the system once you have access. For 
-instructions on how to gain access, see our :doc:`Quantum Access
+A list of available Rigetti systems/QPUs, along with their performance statistics,
+can be found on the `Rigetti Systems Page <https://qcs.rigetti.com/qpus>`__.
+
+In addition to the :ref:`rigetti-running` section below, a general workflow
+overview of how programs are run with Rigetti's QCS can be found on Rigetti's
+`How Programs Are Built & Run Guide
+<https://docs.rigetti.com/qcs/guides/how-programs-are-built-and-run>`__.
+
+The guide below describes how to use the system(s) once you have access.
+For instructions on how to gain access, see our :doc:`Quantum Access
 </quantum/quantum_access>` page instead.
 
 Connecting
@@ -50,6 +58,8 @@ be done via two methods:
 
 * Docker: `<https://hub.docker.com/r/rigetti/forest>`__
 
+.. _rigetti-running:
+
 Running Jobs
 ============
 
@@ -78,11 +88,7 @@ or Jupyter notebook.
 Allocations & Credit Usage
 ==========================
 
-Running a job on the Aspen-11 system requires Rigetti credits, denoted in
-dollars, $.  QPUs are accessed via reservation with a minimum of 15 minutes at
-$40/minute, for a minimum charge of $600.  Users are initially allocated $2400
-in credits at the beginning of a project, but requests for increased
-allocations will be reviewed by the QRUC.
+Running a job on the Aspen-M-1 and Aspen-11 systems requires Rigetti credits, which are exchanged for system reservation time.  Users are initially allocated credits equivalent to 60 minutes of reservation time at the beginning of a project, but requests for increased allocations should be submitted (with a brief explanation) to help@olcf.ornl.gov and will be reviewed by the QRUC.
 
 Data Storage Policies
 =====================
@@ -106,3 +112,5 @@ Additional Resources
 ====================
 
 * `Rigetti's Documention <https://docs.rigetti.com/qcs/>`__
+
+* `Rigetti System Performance Data <https://qcs.rigetti.com/qpus/>`__

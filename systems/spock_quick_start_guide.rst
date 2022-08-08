@@ -509,7 +509,7 @@ Here, ``salloc`` is used to request an allocation of 2 MI100 compute nodes for
 the compute nodes (``spock10`` and ``spock11`` in this case) and can launch job
 steps on them using srun. 
 
-.. _single-command:
+.. _single-command-spock:
 
 Single Command (non-interactive)
 """"""""""""""""""""""""""""""""

@@ -175,34 +175,47 @@ Systems Available to All Projects
 OLCF System Hostnames
 *****************************
 
-+----------------------+--------------------------+------------------------------------------------------------------+
-| System Name          | Full Hostname            | Hostkey Fingerprints                                             |
-+======================+==========================+==================================================================+
-| Home (machine)       | ``home.ccs.ornl.gov``    | - RSA MD5: ``ba:12:46:8d:23:e7:4d:37:92:39:94:82:91:ea:3d:e9``   |
-|                      |                          | - RSA SHA256: ``FjDs4sRAX8hglzA7TVkK22NzRKsjhDTTTdfeEAHwPEA``    |
-|                      |                          | - ECDSA MD5: ``8a:92:0f:31:4d:38:2d:2c:ec:7d:53:ce:8b:46:73:d6`` |
-|                      |                          | - ECDSA SHA256: ``0hc6SDou8vauFWgOaeXKUmhDSmKK8roj9jWpapV4qzc``  |
-+----------------------+--------------------------+------------------------------------------------------------------+
-| Data Transfer Nodes  | ``dtn.ccs.ornl.gov``     | - RSA MD5: ``d1:c5:84:5b:88:d3:0e:81:33:a7:c2:5f:8a:09:b2:7f``   |
-|                      |                          | - RSA SHA256: ``xAIWJhey/RCjetTR4Hll2GNE9WwCNrMUEOdyDhIeHeE``    |
-|                      |                          | - ECDSA MD5: ``bd:52:af:c3:8b:ad:a3:30:4f:28:75:9c:79:84:68:cd`` |
-|                      |                          | - ECDSA SHA256: ``ITEbdZ0ddYNJJehefOh+/0JMgSvHwClpr+P+kak58Xc``  |
-+----------------------+--------------------------+------------------------------------------------------------------+
-| Summit               | ``summit.olcf.ornl.gov`` | - RSA MD5: ``08:d0:fe:3f:f3:41:96:9c:ae:73:73:a8:92:6c:79:34``   |
-|                      |                          | - RSA SHA256: ``nA7X4qyPvtEpXWxG5MDeXEC8xfpmm0UMiLq/LkgM33I``    |
-|                      |                          | - ECDSA MD5: ``cf:32:f9:35:fd:3f:2a:0f:ed:d3:84:b1:2d:f0:35:1b`` |
-|                      |                          | - ECDSA SHA256: ``m0iF9JJEoJu6jJGA8FFbSABlpKFYPGKbdmi25rFC1AI``  |
-+----------------------+--------------------------+------------------------------------------------------------------+
-| Moderate-Enhanced    | ``citadel.ccs.ornl.gov`` | - RSA MD5: ``26:9d:38:64:57:73:3b:d3:0d:94:0d:ce:13:28:74:0a``   |
-| Enclave Login Node   |                          | - RSA SHA256: ``srq2/sRnB+U1PmmZXhk2Z/RnycgHbP7JCbu6hmFdWz4``    |
-|                      |                          | - ECDSA MD5: ``b3:7d:a1:cb:90:92:31:78:03:84:ab:f6:8c:f2:8b:18`` |
-|                      |                          | - ECDSA SHA256: ``yRbaOHLGto08TYCKy9R182rd0PK6smHBxaLdJtRxuF8``  |
-+----------------------+--------------------------+------------------------------------------------------------------+
-| Andes                | ``andes.olcf.ornl.gov``  | - RSA MD5: ``17:4a:49:f8:37:e2:1b:7c:b5:23:b3:5c:64:3a:c5:07``   |
-|                      |                          | - RSA SHA256: ``R9/5L+ZQ9+pR/jThxbLmmmxBtxRfVt3MsEGPEhv1uTQ``    |
-|                      |                          | - ECDSA MD5: ``e4:a4:b4:4a:24:bf:53:e0:9a:c4:10:9f:9f:3a:ec:f4`` |
-|                      |                          | - ECDSA SHA256: ``F92QU1abt3tN2cgYwONJla0MoyV0srD3mNoyoFe5Cxo``  |
-+----------------------+--------------------------+------------------------------------------------------------------+
++----------------------+--------------------------+--------------------------------------------------------------------+
+| System Name          | Full Hostname            | Hostkey Fingerprints                                               |
++======================+==========================+====================================================================+
+| Home (machine)       | ``home.ccs.ornl.gov``    | - RSA MD5: ``ba:12:46:8d:23:e7:4d:37:92:39:94:82:91:ea:3d:e9``     |
+|                      |                          | - RSA SHA256: ``FjDs4sRAX8hglzA7TVkK22NzRKsjhDTTTdfeEAHwPEA``      |
+|                      |                          | - ECDSA MD5: ``8a:92:0f:31:4d:38:2d:2c:ec:7d:53:ce:8b:46:73:d6``   |
+|                      |                          | - ECDSA SHA256: ``0hc6SDou8vauFWgOaeXKUmhDSmKK8roj9jWpapV4qzc``    |
++----------------------+--------------------------+--------------------------------------------------------------------+
+| Data Transfer Nodes  | ``dtn.ccs.ornl.gov``     | - RSA MD5: ``d1:c5:84:5b:88:d3:0e:81:33:a7:c2:5f:8a:09:b2:7f``     |
+|                      |                          | - RSA SHA256: ``xAIWJhey/RCjetTR4Hll2GNE9WwCNrMUEOdyDhIeHeE``      |
+|                      |                          | - ECDSA MD5: ``bd:52:af:c3:8b:ad:a3:30:4f:28:75:9c:79:84:68:cd``   |
+|                      |                          | - ECDSA SHA256: ``ITEbdZ0ddYNJJehefOh+/0JMgSvHwClpr+P+kak58Xc``    |
+|                      |                          | - ED25519 MD5: ``76:89:40:82:a5:92:65:88:e1:90:57:e3:25:68:d5:60`` |
+|                      |                          | - ED25519 SHA256: ``svTxlziE4JOmVlvLp9PIa3uSHZdGokM/7EU8T6f6x0A``  |
++----------------------+--------------------------+--------------------------------------------------------------------+
+| Summit               | ``summit.olcf.ornl.gov`` | - RSA MD5: ``08:d0:fe:3f:f3:41:96:9c:ae:73:73:a8:92:6c:79:34``     |
+|                      |                          | - RSA SHA256: ``nA7X4qyPvtEpXWxG5MDeXEC8xfpmm0UMiLq/LkgM33I``      |
+|                      |                          | - ECDSA MD5: ``cf:32:f9:35:fd:3f:2a:0f:ed:d3:84:b1:2d:f0:35:1b``   |
+|                      |                          | - ECDSA SHA256: ``m0iF9JJEoJu6jJGA8FFbSABlpKFYPGKbdmi25rFC1AI``    |
+|                      |                          | - ED25519 MD5: ``7a:fe:53:04:0c:4b:6d:dc:9e:f2:cc:dd:b0:bc:01:2c`` |
+|                      |                          | - ED25519 SHA256: ``JM2ZfZx2dVHW5AOLdnoRAm3Ui1faV6lqCLmyBd73g8k``  |
++----------------------+--------------------------+--------------------------------------------------------------------+
+| Moderate-Enhanced    | ``citadel.ccs.ornl.gov`` | - RSA MD5: ``26:9d:38:64:57:73:3b:d3:0d:94:0d:ce:13:28:74:0a``     |
+| Enclave Login Node   |                          | - RSA SHA256: ``srq2/sRnB+U1PmmZXhk2Z/RnycgHbP7JCbu6hmFdWz4``      |
+|                      |                          | - ECDSA MD5: ``b3:7d:a1:cb:90:92:31:78:03:84:ab:f6:8c:f2:8b:18``   |
+|                      |                          | - ECDSA SHA256: ``yRbaOHLGto08TYCKy9R182rd0PK6smHBxaLdJtRxuF8``    |
++----------------------+--------------------------+--------------------------------------------------------------------+
+| Andes                | ``andes.olcf.ornl.gov``  | - RSA MD5: ``17:4a:49:f8:37:e2:1b:7c:b5:23:b3:5c:64:3a:c5:07``     |
+|                      |                          | - RSA SHA256: ``R9/5L+ZQ9+pR/jThxbLmmmxBtxRfVt3MsEGPEhv1uTQ``      |
+|                      |                          | - ECDSA MD5: ``e4:a4:b4:4a:24:bf:53:e0:9a:c4:10:9f:9f:3a:ec:f4``   |
+|                      |                          | - ECDSA SHA256: ``F92QU1abt3tN2cgYwONJla0MoyV0srD3mNoyoFe5Cxo``    |
+|                      |                          | - ED25519 MD5: ``a0:75:f3:14:be:37:7f:7f:23:3c:ec:d6:d7:34:9b:50`` |
+|                      |                          | - ED25519 SHA256: ``Y5mXzGRGs12pM6a6HYTb6iamoRJLBMiCiypY15zzjR4``  |
++----------------------+--------------------------+--------------------------------------------------------------------+
+| Frontier             |``frontier.olcf.ornl.gov``| - RSA MD5: ``68:0f:21:93:4a:34:fd:6e:5c:35:8a:34:09:8e:d9:27``     |
+|                      |                          | - RSA SHA256: ``vIjuRocIuWExV4+htXgNKNAuFU16JL0opb6T4ajcfHk``      |
+|                      |                          | - ECDSA MD5: ``28:08:bb:38:7a:6d:b1:0d:d1:fd:6d:a9:40:0a:5f:ae``   |
+|                      |                          | - ECDSA SHA256: ``bGyAOAnp4kfmmi23HRwqqJPWo7A6zDsUFpot9jqTR1U``    |
+|                      |                          | - ED25519 MD5: ``29:81:b5:5f:ff:18:5a:d8:41:3f:4b:d5:15:39:ea:62`` |
+|                      |                          | - ED25519 SHA256: ``ALuNAoAykEUIJzwsExhCaTqwrqhnd4fssvVB4xK87bs``  |
++----------------------+--------------------------+--------------------------------------------------------------------+
 
 Occassionally, you may receive an error message upon logging in to a system such
 as the following:
@@ -218,6 +231,40 @@ public key, or could be an actual security incident.  If the RSA fingerprint
 displayed by your SSH client does not match the OLCF-authorized RSA fingerprint
 (shown in the table above) for the machine you are accessing, do not continue
 authentication; instead, contact help@olcf.ornl.gov.
+
+************************
+Starting a Tmux Session
+************************
+
+Tmux is a terminal multiplexer available on home.ccs.ornl.gov that allows you to 
+easily open multiple connections to OLCF machines in a single window. To start a 
+session from home issue the following on the command line:
+
+::
+
+	$ tmux
+
+To detach from an active session, you can type ``Crtl-B D``. If you aren't sure what
+existing sessions you have running, you can type the following to list the sessions
+and attach to it by number (or name if you have assigned one):
+
+::
+
+        $ tmux ls
+        1: 1 window (created Mon Apr 25 10:39:26 2022) [109x32]
+
+        $ tmux attach -t 1
+
+You can kill an existing tmux session by its ID with the following
+::
+
+        $ tmux kill-session -t 1
+
+After creating your first tmux session, a configuration file called ``.tmux.conf`` 
+will be automatically created in your home directory. You can edit this file to
+customize your tmux sessions. Check out the `tmux documentation 
+<https://github.com/tmux/tmux/wiki>`_ for more information on tmux commands 
+and customization.
 
 
 *****************************

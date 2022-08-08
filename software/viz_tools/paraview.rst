@@ -26,23 +26,57 @@ mode or be used to drive a ParaView GUI client running on your local machine.
 Installing and Setting Up ParaView
 ==================================
 
-A ParaView client instance is not available on OLCF systems. Interactive mode
-requires that your local machine have a version matched ParaView client
-installation and batch mode can benefit from a local installation as well to
-aid in script generation. Precompiled ParaView binaries for Windows, macOS, and
-Linux can be downloaded from `Kitware <https://www.paraview.org/download/>`__.
-
 Although in a single machine setup both the ParaView client and server run on
 the same host, this need not be the case. It is possible to run a local
 ParaView client to display and interact with your data while the ParaView
 server runs in an Andes or Summit batch job, allowing interactive analysis of
 very large data sets.
 
+You will obtain the best performance by running the ParaView client on your
+local computer and running the server on OLCF resources with the same version
+of ParaView. It is highly recommended to check the available ParaView versions
+using ``module avail paraview`` on the system you plan to connect ParaView to.
+Precompiled ParaView binaries for Windows, macOS, and Linux can be downloaded
+from `Kitware <https://www.paraview.org/download/>`__.
+
+Recommended ParaView versions on our systems:
+
+* Summit: ParaView 5.9.1, 5.10.0
+* Andes: ParaView 5.9.1, 5.10.0
+
 .. warning::
-    In interactive mode, your local ParaView version number must match the
-    ParaView version number available on Andes or Summit. Please check the
-    available ParaView versions using ``module avail paraview`` on the system 
-    you plan to connect ParaView to.
+    Using a different version than what is listed above is not guaranteed to work properly.
+
+We offer two rendering modes of the ParaView API on our systems: OSMesa and
+EGL.  OSMesa is intended for use on regular compute nodes, whereas EGL is
+intended for use on GPU enabled nodes. When running interactively, you **do not**
+need to download or install anything special to use the EGL or OSMesa versions,
+as you'll be able to choose between those options when connecting to the system
+(see :ref:`paraview-gui` below). If instead you're running in batch mode on the
+command line (see :ref:`paraview-command-line` below), you can choose between
+the rendering options by loading its corresponding module on the system you're
+connected to. For example, to see these modules on Summit:
+
+.. code-block:: bash
+
+    [user@login4.summit ~]$ module -t avail paraview
+
+    /sw/summit/modulefiles/core:
+    paraview/5.9.1-egl
+    paraview/5.9.1-osmesa
+    paraview/5.10.0-egl
+    paraview/5.10.0-osmesa
+
+    [user@login4.summit ~]$ module load paraview/5.9.1-egl
+
+.. warning::
+    It is highly recommended to only use the modules located in
+    ``/sw/andes/modulefiles/core`` or ``/sw/summit/modulefiles/core``.
+
+.. note::
+    The EGL mode seems to work better with larger datasets and is generally
+    recommended over OSMesa on our systems. However, we encourage users to try both
+    options and see which version works best for their data.
 
 After installing, you must give ParaView the relevant server information to be
 able to connect to OLCF systems (comparable to VisIt's system of host
@@ -51,7 +85,7 @@ methods may be used, the one described should work in most cases.
 
 .. warning::
     For macOS clients, it is necessary to install `XQuartz
-    (X11) <https://support.apple.com/en-us/HT201341>`__ to get a command prompt
+    (X11) <https://www.xquartz.org/>`__ to get a command prompt
     in which you will securely enter your OLCF credentials.
 
     For Windows clients, it is necessary to install PuTTY to
@@ -287,6 +321,8 @@ Click Load Servers button and find the servers.pvsc file
 After successfully completing the above steps, you should now be able to
 connect to either Andes or Summit.
 
+.. _paraview-gui:
+
 Remote GUI Usage
 ================
 
@@ -301,6 +337,8 @@ Next, click on Connect and change the values in the Connection Options box.
 
 A dialog box follows, in which you must enter in your username and project
 allocation, the number of nodes to reserve and a duration to reserve them for.
+This is also where you can choose between the OSMesa and EGL rendering options
+(via the "Server headless API" box).
 
 .. image:: /images/paraview_step2b_Andes.png
    :align: center
@@ -470,6 +508,22 @@ tasks, including ParaView.
 
 Troubleshooting
 ===============
+
+Process failed to start connection issue (or DISPLAY not set)
+-------------------------------------------------------------
+
+If ParaView is unable to connect to our systems after trying to initiate a
+connection via the GUI and you see a "The process failed to start. Either the
+invoked program is missing, or you may have insufficient permissions to invoke
+the program" error, make sure that you have XQuartz (X11) installed.
+
+For macOS clients, it is necessary to install `XQuartz (X11)
+<https://www.xquartz.org/>`__ to get a command prompt in which you will
+securely enter your OLCF credentials.
+
+After installing, if you see a "Can't open display" or a "DISPLAY is not set"
+error, try restarting your computer. Sometimes XQuartz doesn't function
+properly if the computer was never restarted after installing.
 
 ParaView crashes when using the EGL API module via command line
 ---------------------------------------------------------------

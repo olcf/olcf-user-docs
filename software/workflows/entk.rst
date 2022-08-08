@@ -11,8 +11,9 @@ Overview
 The Ensemble Toolkit (EnTK) is a Python library developed by the RADICAL
 Research Group at Rutgers University for developing and executing large-scale
 ensemble-based workflows. This tutorial shows how to get up and running with
-EnTK on Summit specifically. For in-depth information about EnTK itself, please
-refer to its `documentation <https://radicalentk.readthedocs.io/en/stable/>`_.
+EnTK 1.13.0 on Summit specifically. For in-depth information about EnTK itself,
+please refer to its
+`documentation <https://radicalentk.readthedocs.io/en/stable/>`_.
 
 
 Prerequisites
@@ -20,11 +21,25 @@ Prerequisites
 
 Before using EnTK itself, you will need `MongoDB <https://www.mongodb.com/>`_
 and `RabbitMQ <https://www.rabbitmq.com/>`_ services running on
-:ref:`Slate<slate>`. The tutorials for this are forthcoming.
+:ref:`Slate<slate>`. There are tutorials for MongoDB in this documentation,
+but the tutorial for RabbitMQ is forthcoming.
 
 You will need to know the connection information for both MongoDB and RabbitMQ
 so that EnTK can be configured to connect to the services.
 
+Then, to use EnTK on Summit, load the module as shown below:
+
+.. code-block:: console
+
+    $ module load workflows
+    $ module load entk/1.13.0
+
+Run the following command to verify that EnTK is available:
+
+.. code-block:: console
+
+    $ radical-utils-version
+    1.13.0
 
 Hello world!
 ============
@@ -38,14 +53,8 @@ define environment variables.
 
 .. code-block:: bash
 
-    module load python/3.7.0
-    module load py-virtualenv/16.0.0
-    module load py-setuptools/40.4.3-py3
-
-    python3 -m venv ./
-    source ./bin/activate
-    pip install --upgrade pip
-    pip install radical.entk
+    module load workflows
+    module load entk/1.13.0
 
     export RADICAL_PILOT_DBURL="mongodb://admin:password@apps.marble.ccs.ornl.gov:32767/test"
     export RMQ_HOSTNAME="apps.marble.ccs.ornl.gov"
@@ -85,15 +94,15 @@ Now, create a ``demo.py3`` file with the following lines:
     # Use the objects to model the workflow.
 
     appman.resource_desc = {
-        'resource': 'ornl.summit',
-        'walltime': 10,
-        'cpus':     1,
-        'project':  'stf011' # replace with your own project identifier
+        "resource": "ornl.summit",
+        "walltime": 10,
+        "cpus":     1,
+        "project":  "abc123" # replace with your own project identifier
     }
 
-    t.name = 'my-first-task'
-    t.executable = '/bin/echo'
-    t.arguments = ['Hello world!']
+    t.name = "mytask"
+    t.executable = "/bin/echo"
+    t.arguments = ["Hello world!"]
 
     s.add_tasks(t)
 

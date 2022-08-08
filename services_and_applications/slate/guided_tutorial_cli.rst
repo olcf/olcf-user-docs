@@ -14,7 +14,7 @@ This tutorial is a continuation of the :ref:`slate_guided_tutorial` and you shou
 Adding a Pod to your Project
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Before using the CLI it would be wise to read our `Getting Started on the CLI <../getting_started_cli>`_ doc.
+Before using the CLI it would be wise to read our :ref:`Getting Started on the CLI<slate_getting_started_oc>` doc.
 
 Once the **oc** client has been installed and is logged into the cluster you need to switch to your :term:`Project`. Switching to a :term:`Project` allows the **oc** client to assume that the commands it is running should be executed inside of the  :term:`Project` that you switch to. You could alternatively not switch to a project and append the ``-n`` flag to each command you run followed by the name of the project you wish to run your command in. That being said, switch to your project:
 
@@ -89,16 +89,18 @@ To get logs from the pod we can run the command:
 
    oc logs -f <POD_NAME>
 
-*NOTE* the ``-f`` flag will follow the logs. You can run the logs command without the ``-f`` flag to get a snapshot of the logs. Additionally, this will be empty for the pod we created above because there will be no logs from the 'cat' command.
+*NOTE* the ``-f`` flag will follow the logs. You can run the logs command without the ``-f`` flag to get a snapshot of the logs. 
 
 .. code-block:: bash
 
-   oc get <POD_NAME> -o yaml
+   oc get pod <POD_NAME> -o yaml
 
 Will allow you to view the YAML representation that exists in Openshift that defines your pod. You may notice that the YAML contains many more key/value pairs than the YAML that we have in our pod.yaml file. This is correct and is because extra YAML is added during the pod creation process.
 
-Finally, to get a shell in the pod we run the ``oc exec`` command. What this command does is execute a command inside the pod; for us the command will be ``/bin/bash``.
+Finally, to get a remote shell in the pod we run the ``oc rsh <POD_NAME>`` command. This will default to using ``/bin/sh`` in the pod. If a different shell is required, we can provide the optional ``--shell=/path/to/shell`` flag. For example, if we wanted to open a bash shell in the pod we would run the following command:
 
 .. code-block:: bash
 
-   oc exec -it <POD_NAME> /bin/bash
+   oc rsh --shell='/bin/bash' <POD_NAME>
+   
+If you have multiple containers in your pod, the ``oc rsh <POD_NAME>`` command will default to the first container. If you would like to start a remote shell in one of the other containers, you can use the optional ``-c <CONTAINER_NAME>`` flag.
