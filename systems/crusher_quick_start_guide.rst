@@ -1456,7 +1456,8 @@ AMD GPUs can allocate two different types of memory locations: 1) Coarse grained
 **Coarse grained** memory is only guaranteed to be coherent outside of GPU kernels that modify it, enabling higher performance memory operations. Changes applied to coarse-grained memory by a GPU kernel are  only visible to the rest of the system (CPU or other GPUs) when the kernel has completed. A GPU kernel is only guaranteed to see changes applied to coarse grained memory by the rest of the system (CPU or other GPUs) if those changes were made before the kernel launched.
 
 **Fine grained** memory allows CPUs and GPUs to synchronize (via atomics) and coherently communicate with each other while the GPU kernel is running, allowing more advanced programming patterns. The additional visibility impacts the performance of fine grained allocated memory.
-The fast hardware-based Floating point (FP) atomic operations available on MI250X are assumed to be working on coarse grained memory regions; when these instructions are applied to a fine-grained memory region, they will silently produce a no-op. To avoid returning incorrect results, the compiler never emits hardware-based FP atomics instructions by default, even when applied to coarse grained memory regions. Currently, users can use the `-munsafe-fp-atomics` flag to suggest to the compiler that hardware-based FP atomics should be emitted.
+
+The fast hardware-based Floating point (FP) atomic operations available on MI250X are assumed to be working on coarse grained memory regions; when these instructions are applied to a fine-grained memory region, they will silently produce a no-op. To avoid returning incorrect results, the compiler never emits hardware-based FP atomics instructions by default, even when applied to coarse grained memory regions. Currently, users can use the `-munsafe-fp-atomics` flag to force the compiler to emit hardware-based FP atomics.
 Using hardware-based FP atomics translates in a substantial performance improvement over the default choice.
 
 Users applying floating point atomic operations (e.g., atomicAdd) on memory regions allocated via regular hipMalloc() can safely apply the `-munsafe-fp-atomics` flags to their codes to get the best possible performance and leverage hardware supported floating point atomics.
@@ -1466,17 +1467,17 @@ In ROCm-5.1 and earlier versions, the flag `-munsafe-fp-atomics` is interpreted 
 
 The following tables summarize the result granularity of various combinations of allocators, flags and arguments.
 
-For hipHostMalloc, the following table shows the nature of the memory returned based on the flag passed as argument.
+For ``hipHostMalloc()``, the following table shows the nature of the memory returned based on the flag passed as argument.
 
-+---------------------------+-----------------+
-| Flag                      | Results         |
-+===========================+=================+
-| hipHostMallocDefault      |  Fine grained   |
-+---------------------------+-----------------+
-| hipHostMallocNonCoherent  | Coarse grained  |
-+---------------------------+-----------------+
++----------------------+---------------------------+-----------------+
+| API                  | Flag                      | Results         |
++======================+===========================+=================+
+| hipHostMalloc()      | hipHostMallocDefault      |  Fine grained   |
++----------------------+---------------------------+-----------------+
+| hipHostMalloc()      | hipHostMallocNonCoherent  | Coarse grained  |
++----------------------+---------------------------+-----------------+
 
-The following table shows the nature of the memory returned based on the flag passed as argument to `hipExtMallocWithFlags()`.
+The following table shows the nature of the memory returned based on the flag passed as argument to ``hipExtMallocWithFlags()``.
 
 +---------------------------+------------------------------+-------------------------+
 | API                       |  Flag                        |  Result                 |
@@ -1486,7 +1487,7 @@ The following table shows the nature of the memory returned based on the flag pa
 | hipExtMallocWithFlags()   | hipDeviceMallocFinegrained   |  Fine grained           |
 +---------------------------+------------------------------+-------------------------+
 
-Finally, the following table summarizes the nature of the memory returned based on the flag passed as argument to `hipMallocManaged()` and the use of CPU regular `malloc()` routine with the possible use of `hipMemAdvise()`.
+Finally, the following table summarizes the nature of the memory returned based on the flag passed as argument to ``hipMallocManaged()`` and the use of CPU regular ``malloc()`` routine with the possible use of ``hipMemAdvise()``.
 
 +----------------------+---------------------------------------------+-------------------------+
 | API                  |  MemAdvice                                  |  Result                 |
