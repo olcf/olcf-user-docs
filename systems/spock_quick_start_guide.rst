@@ -112,11 +112,11 @@ GPFS
 +---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
 | Area                | Path                                        | Type           | Permissions |  Quota | Backups | Purged  | Retention  | On Compute Nodes |
 +=====================+=============================================+================+=============+========+=========+=========+============+==================+
-| Member Work         | ``/gpfs/alpine/[projid]/scratch/[userid]``  | Spectrum Scale | 700         |  50 TB | No      | 90 days | N/A        | Yes              |
+| Member Work         | ``/gpfs/alpine/scratch/[userid]/[projid]``  | Spectrum Scale | 700         |  50 TB | No      | 90 days | N/A        | Yes              |
 +---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
-| Project Work        | ``/gpfs/alpine/[projid]/proj-shared``       | Spectrum Scale | 770         |  50 TB | No      | 90 days | N/A        | Yes              |
+| Project Work        | ``/gpfs/alpine/proj-shared/[projid]``       | Spectrum Scale | 770         |  50 TB | No      | 90 days | N/A        | Yes              |
 +---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
-| World Work          | ``/gpfs/alpine/[projid]/world-shared``      | Spectrum Scale | 775         |  50 TB | No      | 90 days | N/A        | Yes              |
+| World Work          | ``/gpfs/alpine/world-shared/[projid]``      | Spectrum Scale | 775         |  50 TB | No      | 90 days | N/A        | Yes              |
 +---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
 
 ----
