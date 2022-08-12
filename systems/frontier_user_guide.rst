@@ -2098,7 +2098,7 @@ We use this equation to calculate the number of double-precision FLOPS:
 
 .. math::
 
-FP64_{FLOPS} = 64 * (\text{SQ_INSTS_VALU_ADD_F64} + \text{SQ_INSTS_VALU_MUL_F64} + 2 * \text{SQ_INSTS_VALU_FMA_F64})
+    FP64_{FLOPS} = 64 * (\text{SQ_INSTS_VALU_ADD_F64} + \text{SQ_INSTS_VALU_MUL_F64} + 2 * \text{SQ_INSTS_VALU_FMA_F64})
 
 Then, we divide the number of FLOPS by the elapsed time of the kernel.
 This is found from subtracting the ``rocprof`` metrics ``EndNs`` by ``BeginNs``, provided by ``--timestamp on``, then converting from nanoseconds to seconds by dividing by 1,000,000,000 (power(10,9)).
