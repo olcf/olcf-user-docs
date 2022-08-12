@@ -65,7 +65,7 @@ use.
 +-------------+----------------------------------------------------------------------------------+
 | Node Type   | Description                                                                      |
 +=============+==================================================================================+
-| Login       | When you connect to Summit, you're placed on a login node. This                  |
+| Login       | When you connect to Frontier, you're placed on a login node. This                |
 |             | is the place to write/edit/compile your code, manage data, submit jobs, etc. You |
 |             | should never launch parallel jobs from a login node nor should you run threaded  |
 |             | jobs on a login node. Login nodes are shared resources that are in use by many   |
@@ -79,7 +79,7 @@ use.
 |             | run multiprocessor/threaded programs on Launch nodes. It is appropriate to       |
 |             | launch the jsrun command from launch nodes.                                      |
 +-------------+----------------------------------------------------------------------------------+
-| Compute     | Most of the nodes on Summit are compute nodes. These are where                   |
+| Compute     | Most of the nodes on Frontier are compute nodes. These are where                 |
 |             | your parallel job executes. They're accessed via the jsrun command.              |
 +-------------+----------------------------------------------------------------------------------+
 
