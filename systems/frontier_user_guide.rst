@@ -2086,7 +2086,7 @@ The theoretical roofline can be constructed as:
 
 .. math::
 
-    FLOPS_{peak} = minimum(OpIntensity * BW_{HBM}, theoretical\_flops)
+    FLOPS_\text{peak} = \text{minimum}(\text{OpIntensity} * BW_{\text{HBM}}, \text{theoretical_flops})
 
 
 Achieved FLOPS/s
@@ -2098,7 +2098,7 @@ We use this equation to calculate the number of double-precision FLOPS:
 
 .. math::
 
-    FP64\_FLOPS = 64 * (SQ\_INSTS\_VALU\_ADD\_F64 + SQ\_INSTS\_VALU\_MUL\_F64 + 2 * SQ\_INSTS\_VALU\_FMA\_F64)
+FP64_{FLOPS} = 64 * (\text{SQ_INSTS_VALU_ADD_F64} + \text{SQ_INSTS_VALU_MUL_F64} + 2 * \text{SQ_INSTS_VALU_FMA_F64})
 
 Then, we divide the number of FLOPS by the elapsed time of the kernel.
 This is found from subtracting the ``rocprof`` metrics ``EndNs`` by ``BeginNs``, provided by ``--timestamp on``, then converting from nanoseconds to seconds by dividing by 1,000,000,000 (power(10,9)).
@@ -2116,17 +2116,17 @@ So we calculate the number of bytes traveling over the EA interface as:
 
 .. math::
 
-    BytesMoved = BytesWritten + BytesRead
+    \text{BytesMoved} = \text{BytesWritten} + \text{BytesRead}
 
 where
 
 .. math::
 
-    BytesWritten = 64 * TCC\_EA\_WRREQ\_64B + 32 * (TCC\_EA\_WRREQ\_sum - TCC\_EA\_WRREQ\_64B)
+    \text{BytesWritten} = 64 * \text{TCC_EA_WRREQ_64B} + 32 * (\text{TCC_EA_WRREQ_sum} - \text{TCC_EA_WRREQ_64B})
 
 .. math::
 
-    BytesRead = 32 * TCC\_EA\_RDREQ\_32B + 64 * (TCC\_EA\_RDREQ\_sum - TCC\_EA\_RDREQ\_32B)
+    \text{BytesWritten} = 32 * \text{TCC_EA_WRREQ_32B} + 64 * (\text{TCC_EA_WRREQ_sum} - \text{TCC_EA_WRREQ_32B})
 
 
 CrayPat
