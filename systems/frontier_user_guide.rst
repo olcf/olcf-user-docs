@@ -2137,11 +2137,12 @@ CrayPat is a performance analysis tool for evaluating program execution on Cray 
 
 The standard workflow for program profiling with CrayPat is as follows:
 
-Load the perftools-base and perftools modules
-Build your application as normal
-Instrument the application with pat_build
-Execute the instrumented application
-View the performance data generated in Step 4 with pat_report and Apprentice2
+#. Load the perftools-base and perftools modules.
+#. Build your application as normal.
+#. Instrument the application with pat_build.
+#. Execute the instrumented application.
+#. View the performance data generated in Step 4 with pat_report and Apprentice2.
+
 The following steps will guide you through performing a basic analysis with CrayPat and Apprentice2.
 
 Begin with a fully debugged and executable program. Since CrayPat is a performance analysis tool, not a debugger, the targeted program must be capable of running to completion, or intentional termination.
