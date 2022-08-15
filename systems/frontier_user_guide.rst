@@ -71,16 +71,8 @@ use.
 |             | jobs on a login node. Login nodes are shared resources that are in use by many   |
 |             | users simultaneously.                                                            |
 +-------------+----------------------------------------------------------------------------------+
-| Launch      | When your batch script (or interactive batch job) starts                         |
-|             | running, it will execute on a Launch Node. (If you were a user of Titan,         |
-|             | these are similar in function to service nodes on that system). All commands     |
-|             | within your job script (or the commands you run in an interactive job) will run  |
-|             | on a launch node. Like login nodes, these are shared resources so you should not |
-|             | run multiprocessor/threaded programs on Launch nodes. It is appropriate to       |
-|             | launch the jsrun command from launch nodes.                                      |
-+-------------+----------------------------------------------------------------------------------+
 | Compute     | Most of the nodes on Frontier are compute nodes. These are where                 |
-|             | your parallel job executes. They're accessed via the jsrun command.              |
+|             | your parallel job executes. They're accessed via the srun command.               |
 +-------------+----------------------------------------------------------------------------------+
 
 
