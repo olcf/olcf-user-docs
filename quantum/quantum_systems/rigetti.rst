@@ -7,14 +7,22 @@ Rigetti
 Overview
 ========
 
-Rigetti currently offers access to the 40-qubit Aspen-11 and the 80-qubit Aspen-M-1 systems, scalable,
-superconducting, gate-based quantum processors, which are accessible via their
-Quantum Cloud Service (QCS). Rigetti also provides users with quantum computing
-example algorithms for optimization, quantum system profiling, and other
-applications.
+Rigetti currently offers access to their systems via their Quantum Cloud
+Services (QCS).  With QCS, Rigetti's quantum processors (QPUs) are tightly
+integrated with classical computing infrastructure and made available to you
+over the cloud. Rigetti also provides users with quantum computing example
+algorithms for optimization, quantum system profiling, and other applications.
 
-This guide describes how to use the system once you have access. For 
-instructions on how to gain access, see our :doc:`Quantum Access
+A list of available Rigetti systems/QPUs, along with their performance statistics,
+can be found on the `Rigetti Systems Page <https://qcs.rigetti.com/qpus>`__.
+
+In addition to the :ref:`rigetti-running` section below, a general workflow
+overview of how programs are run with Rigetti's QCS can be found on Rigetti's
+`How Programs Are Built & Run Guide
+<https://docs.rigetti.com/qcs/guides/how-programs-are-built-and-run>`__.
+
+The guide below describes how to use the system(s) once you have access.
+For instructions on how to gain access, see our :doc:`Quantum Access
 </quantum/quantum_access>` page instead.
 
 Connecting
@@ -49,6 +57,8 @@ be done via two methods:
 * Installing manually: `<https://docs.rigetti.com/qcs/getting-started/installing-locally>`__
 
 * Docker: `<https://hub.docker.com/r/rigetti/forest>`__
+
+.. _rigetti-running:
 
 Running Jobs
 ============

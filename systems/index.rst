@@ -7,6 +7,7 @@ Systems
 .. toctree::
    :maxdepth: 2
 
+   frontier_user_guide
    summit_user_guide
    andes_user_guide
    home_user_guide
