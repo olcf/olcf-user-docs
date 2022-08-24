@@ -1250,6 +1250,38 @@ More detailed information on the HPE Performance Analysis Tools can be found in 
 
     When using ``perftools-lite-gpu``, there is a known issue causing ``ld.lld`` not to be found. A workaround this issue can be found `here <https://docs.olcf.ornl.gov/systems/crusher_quick_start_guide.html#olcfdev-513-error-with-perftools-lite-gpu>`__.
 
+Getting Stared with HPCToolkit
+------------------------------
+
+HPCToolkit is an integrated suite of tools for measurement and analysis of program performance on computers ranging from multicore desktop systems to the nation's largest supercomputers. HPCToolkit provides accurate measurements of a program's work, resource consumption, and inefficiency, correlates these metrics with the program's source code, works with multilingual, fully optimized binaries, has very low measurement overhead, and scales to large parallel systems. HPCToolkit's measurements provide support for analyzing a program execution cost, inefficiency, and scaling characteristics both within and across nodes of a parallel system.
+
+Programming models supported by HPCToolkit include MPI, OpenMP, OpenACC, CUDA, OpenCL, DPC++, HIP, RAJA, Kokkos, and others.
+
+Below is an example that generates a profile and loads the results in their GUI-based viewer.
+
+.. code:: bash
+
+    module use /gpfs/alpine/csc322/world-shared/modulefiles/x86_64 
+    module load hpctoolkit 
+    
+    # 1. Profile and trace an application using CPU time and GPU performance counters 
+    hpcrun -o <measurement_dir> -t -e CPUTIME -e gpu=amd <application> 
+
+    # 2. Analyze the binary of executables and its dependent libraries 
+    hpcstruct <measurement_dir> 
+
+    # 3. Combine measurements with program structure information and generate a database 
+    hpcprof -o <database_dir> <measurement_dir> 
+
+    # 4. Understand performance issues by analyzing profiles and traces with the GUI 
+    hpcviewer <database_dir> 
+
+More detailed information on HPCToolkit can be found in the `HPCToolkit User's Manual <http://hpctoolkit.org/manual/HPCToolkit-users-manual.pdf>`__.
+
+.. note::
+
+    HPCToolkit does not require a recompile to profile the code. It is recommended to use the -g optimization flag for attribution to source lines.
+
 Getting Started with the ROCm Profiler
 --------------------------------------
 
