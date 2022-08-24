@@ -4294,6 +4294,87 @@ hanging. If possible, debugging a smaller problem size with fewer
 active threads can be more pleasant.
 
 --------------
+.. _scalable-protected-infrastructure:
+
+Scalable Protected Infrastructure (SPI)
+=======================================
+
+.. _enhanced-enclave:
+
+Enhanced Enclave
+----------------
+The OLCF provides multiple security enclaves to support multiple levels of computing. 
+
+Open
+^^^^
+The Open enclave includes training resources such as Ascent as well as othere tasks.  Policies and procedures are in place to ensure data is separate from other enclaves.  For example, hardware resources do not overlap between the Open and Moderate enclaves.
+
+Moderate
+^^^^^^^^
+The majority of computing at the OLCF takes place in the moderate enclave. Summit, Andes, HPSS, and the DTNs are all examples of resources in the moderate enclave. Access to the resources require two-factor authentication.
+
+Enhanced
+^^^^^^^^
+Security controls are in place to allow computation and storage of data that require higher protection than the moderate enclave provides.  The SPI resource, Cirus, utilizes Summit compute resources with measures to ensure data separation.  This section describes differences in using Summit through the SPI policies and procedures.
+
+.. _spi-access:
+
+SPI Access
+----------
+Projects
+^^^^^^^^
+SPI project ids may look similar to those used in the moderate enclave but append _mde.  For example: abc123_mde.  Projects will not overlap moderate and enhanced enclaves.  SPI projects will only exist on SPI resources.
+  
+Usernames
+^^^^^^^^^
+In order to help ensure data separation, each SPI user is given a unique userid for each project.  SPI user names use the format: <userid>_<proj>_mde . For example: userx_abc123_mde.  SPI usernames will not overlap with usernames used in the moderate enclave.  Unlike moderate usernames, SPI usernames only exist in a single project.  Users on multiple SPI projects will have a unique username for each SPI project.
+
+Authentication
+^^^^^^^^^^^^^
+SPI resources require two-factor authentication.  Users with accounts in the moderate enclave can use the same issued SecurID fob used to log into other OLCF resources.  KDI users, please follow the KDI documented procedures: https://kdivdi.ornl.gov 
+
+IP Address White List
+^^^^^^^^^^^^^^^^^^^^^
+Access to the SPI resources is allowed to approved IP addresses only.  Direct access to SPI resources require the connecting IP address to be whitelisted.  An IP can be added to the whitelist by contacting help@olcf.ornl.gov
+
+Login nodes
+^^^^^^^^^^^
+To help separate data and processes, SPI users use separate login nodes, citadel.olcf.ornl.gov, to reach Summit's compute resources. The Citadel login nodes must be used to submit SPI jobs to Summit's compute resources and access the SPI specific filesystem.
+
+.. _spi-filesystems:
+
+SPI Filesystems
+---------------
+The SPI resources use filesystems visible only from within the enhanced enclave.  The SPI resources do not mount filesystems mounted in the moderate enclave.  The gpfs ARX filesystem provides home, scratch, and shared project areas for SPI resources.
+
+Available filesystems
+* home : /gpfs/arx/<proj>/home/<userid>
+* project shared : /gpfs/arx/<proj>/proj-shared
+* scratch : /gpfs/arx/<proj>/scratch/<userid>
+
+.. _spi-user-environment:
+
+SPI User Environment
+--------------------
+The user environment on the Citadel login nodes mirror the Summit login nodes.  For available user software, module environments, and compiling please see the Summit sections in this document.
+
+.. _spi-running-batch-jobs:
+
+SPI Running Batch Jobs
+----------------------
+Workflows executed in the enhanced enclave can only be submitted from the Summit's Citadel login node and through specific batch queues.  The Citadel login nodes can be access from a whitelisted IP through: ssh citadel.olcf.ornl.gov
+
+Workflows executed in the enhanced enclave can only be submitted from the Summit's Citadel login node and through specific batch queues. SPI batch jobs must specify an SPI specific batch queue:
+* batch-spi
+* debug-spi
+* batch-hm-spi
+
+The batch queues mirror the purpose of the similarly named Summit queues.  Details on each queue can be found in the Summit documentation.  The SPI queues must be used to launch batch jobs from the Citadel nodes and can not be used directly from the moderate enclave Summit login nodes.
+
+Use of the queues will trigger configuration changes to the Summit compute nodes to allow enhanced data protection.  Compute nodes will be booted before and after each SPI batch job.  Compute nodes will be booted into an image that mounts only the ARX filesystem.  The image will also restrict connections.   Please note: the reboot process may cause a slight delay in job startup.
+
+
+--------------
 
 .. _training-system-ascent:
 
