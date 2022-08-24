@@ -4306,7 +4306,7 @@ Enhanced Enclave
 The OLCF provides multiple security enclaves to support multiple levels of computing. 
 
 * Open
-  * Training resources such as Andes is an example
+  * Training resources such as Ascent is an example
   * Policies and procedures are in place to separate data.
   * Hardware resources do not overlap between the Open and Moderate enclaves.
 * Moderate
