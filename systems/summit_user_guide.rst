@@ -4294,6 +4294,7 @@ hanging. If possible, debugging a smaller problem size with fewer
 active threads can be more pleasant.
 
 --------------
+
 .. _scalable-protected-infrastructure:
 
 Scalable Protected Infrastructure (SPI)
@@ -4330,7 +4331,7 @@ Usernames
 In order to help ensure data separation, each SPI user is given a unique userid for each project.  SPI user names use the format: <userid>_<proj>_mde . For example: userx_abc123_mde.  SPI usernames will not overlap with usernames used in the moderate enclave.  Unlike moderate usernames, SPI usernames only exist in a single project.  Users on multiple SPI projects will have a unique username for each SPI project.
 
 Authentication
-^^^^^^^^^^^^^
+^^^^^^^^^^^^^^
 SPI resources require two-factor authentication.  Users with accounts in the moderate enclave can use the same issued SecurID fob used to log into other OLCF resources.  KDI users, please follow the KDI documented procedures: https://kdivdi.ornl.gov 
 
 IP Address White List
