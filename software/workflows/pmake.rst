@@ -21,7 +21,7 @@ file specifies extended make-rules with:
    ``{jsrun -g -c ...}`` on summit).
 
 Full documentation and examples are available
-in `<https://https://code.ornl.gov/99R/pmake>`_.
+in `<https://code.ornl.gov/99R/pmake>`_.
 
 
 Prerequisites
