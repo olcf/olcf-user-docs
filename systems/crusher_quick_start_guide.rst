@@ -1175,11 +1175,115 @@ And here is the output from the script:
 
 ----
 
-Profiling applications
+Profiling Applications
 ======================
 
-Getting started
----------------
+Getting Started with the HPE Performance Analysis Tools (PAT)
+-------------------------------------------------------------------
+
+The Performance Analysis Tools (PAT), formerly CrayPAT, are a suite of utilities that enable users to capture and analyze performance data generated during program execution. These tools provide an integrated infrastructure for measurement, analysis, and visualization of computation, communication, I/O, and memory utilization to help users optimize programs for faster execution and more efficient computing resource usage.
+
+There are three programming interfaces available: (1) ``Perftools-lite``, (2) ``Perftools``, and (3) ``Perftools-preload``.
+
+Below are two examples that generate an instrumented executable using ``Perftools``, which is an advanced interface that provides full-featured data collection and analysis capability, including full traces with timeline displays.
+
+The first example generates an instrumented executable using a ``PrgEnv-amd`` build:
+
+.. code:: bash
+
+    module load PrgEnv-amd
+    module load craype-accel-amd-gfx90a
+    module load rocm
+    module load perftools
+
+    export PATH="${PATH}:${ROCM_PATH}/llvm/bin"
+    export CXX='CC -x hip'
+    export CXXFLAGS='-ggdb -O3 -std=c++17 –Wall'
+    export LD='CC'
+    export LDFLAGS="${CXXFLAGS} -L${ROCM_PATH}/lib"
+    export LIBS='-lamdhip64'
+
+    make clean
+    make
+
+    pat_build -g hip,io,mpi -w -f <executable>
+
+The second example generates an instrumened executable using a ``hipcc`` build:
+
+.. code:: bash
+
+    module load perftools
+    module load craype-accel-amd-gfx90a
+    module load rocm
+    
+    export CXX='hipcc'
+    export CXXFLAGS="$(pat_opts include hipcc) \
+      $(pat_opts pre_compile hipcc) -g -O3 -std=c++17 -Wall \
+      --offload-arch=gfx90a -I${CRAY_MPICH_DIR}/include \
+      $(pat_opts post_compile hipcc)"
+    export LD='hipcc'
+    export LDFLAGS="$(pat_opts pre_link hipcc) ${CXXFLAGS} \
+      -L${CRAY_MPICH_DIR}/lib ${PE_MPICH_GTL_DIR_amd_gfx908}"
+    export LIBS="-lmpi ${PE_MPICH_GTL_LIBS_amd_gfx908} \
+      $(pat_opts post_link hipcc)"
+    
+    make clean
+    make
+    
+    pat_build -g hip,io,mpi -w -f <executable>
+
+The ``pat_build`` command in the above examples generates an instrumented executable with ``+pat`` appended to the executable name (e.g., ``hello_jobstep+pat``).
+
+When run, the instrumented executable will trace HIP, I/O, MPI, and all user functions and generate a folder of results (e.g., ``hello_jobstep+pat+39545-2t``).
+
+To analyze these results, use the ``pat_report`` command, e.g.:
+
+.. code:: bash
+
+    pat_report hello_jobstep+pat+39545-2t
+
+The resulting report includes profiles of functions, profiles of maximum function times, details on load imbalance, details on program energy and power usages, details on memory high water mark, and more.
+
+More detailed information on the HPE Performance Analysis Tools can be found in the `HPE Performance Analysis Tools User Guide <https://support.hpe.com/hpesc/public/docDisplay?docLocale=en_US&docId=a00123563en_us>`__.
+
+.. note::
+
+    When using ``perftools-lite-gpu``, there is a known issue causing ``ld.lld`` not to be found. A workaround this issue can be found `here <https://docs.olcf.ornl.gov/systems/crusher_quick_start_guide.html#olcfdev-513-error-with-perftools-lite-gpu>`__.
+
+Getting Stared with HPCToolkit
+------------------------------
+
+HPCToolkit is an integrated suite of tools for measurement and analysis of program performance on computers ranging from multicore desktop systems to the nation's largest supercomputers. HPCToolkit provides accurate measurements of a program's work, resource consumption, and inefficiency, correlates these metrics with the program's source code, works with multilingual, fully optimized binaries, has very low measurement overhead, and scales to large parallel systems. HPCToolkit's measurements provide support for analyzing a program execution cost, inefficiency, and scaling characteristics both within and across nodes of a parallel system.
+
+Programming models supported by HPCToolkit include MPI, OpenMP, OpenACC, CUDA, OpenCL, DPC++, HIP, RAJA, Kokkos, and others.
+
+Below is an example that generates a profile and loads the results in their GUI-based viewer.
+
+.. code:: bash
+
+    module use /gpfs/alpine/csc322/world-shared/modulefiles/x86_64 
+    module load hpctoolkit 
+    
+    # 1. Profile and trace an application using CPU time and GPU performance counters 
+    hpcrun -o <measurement_dir> -t -e CPUTIME -e gpu=amd <application> 
+
+    # 2. Analyze the binary of executables and its dependent libraries 
+    hpcstruct <measurement_dir> 
+
+    # 3. Combine measurements with program structure information and generate a database 
+    hpcprof -o <database_dir> <measurement_dir> 
+
+    # 4. Understand performance issues by analyzing profiles and traces with the GUI 
+    hpcviewer <database_dir> 
+
+More detailed information on HPCToolkit can be found in the `HPCToolkit User's Manual <http://hpctoolkit.org/manual/HPCToolkit-users-manual.pdf>`__.
+
+.. note::
+
+    HPCToolkit does not require a recompile to profile the code. It is recommended to use the -g optimization flag for attribution to source lines.
+
+Getting Started with the ROCm Profiler
+--------------------------------------
 
 ``rocprof`` gathers metrics on kernels run on AMD GPU architectures. The profiler works for HIP kernels, as well as offloaded kernels from OpenMP target offloading, OpenCL, and abstraction layers such as Kokkos.
 For a simple view of kernels being run, ``rocprof --stats --timestamp on`` is a great place to start.
@@ -1188,8 +1292,8 @@ This file will list all kernels being run, the number of times they are run, the
 More detailed infromation on ``rocprof`` profiling modes can be found at `ROCm Profiler <https://rocmdocs.amd.com/en/latest/ROCm_Tools/ROCm-Tools.html>`__ documentation.
 
 
-Roofline profiling
-------------------
+Roofline Profiling with the ROCm Profiler
+-----------------------------------------
 The `Roofline <https://docs.nersc.gov/tools/performance/roofline/>`__ performance model is an increasingly popular way to demonstrate and understand application performance.
 This section documents how to construct a simple roofline model for a single kernel using ``rocprof``.
 This roofline model is designed to be comparable to rooflines constructed by NVIDIA's `NSight Compute <https://developer.nvidia.com/blog/accelerating-hpc-applications-with-nsight-compute-roofline-analysis/>`__.
