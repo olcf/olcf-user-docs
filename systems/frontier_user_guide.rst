@@ -233,53 +233,48 @@ And here is the output from the script:
 
 AMD GPUs
 ========
-.. note::
 
-   This section on AMD GPUs is still a work in progress.
-
-
-Each Frontier node contains 4x AMD Instinct MI250X accelerators. Each MI250X has 2
-Graphical Compute Dies (GCD) for a total of 8 GCDs per node. Each GCD can be treated as
-its own independent GPU.
-
-.. note::
-
-    **TERMINOLOGY:**
-
-    The 8 GCDs contained in the 4 MI250X will show as 8 separate GPUs according to Slurm,
-    ``ROCR_VISIBLE_DEVICES``, and the ROCr runtime, so from this point forward in the
-    Frontier guide, we will simply refer to the GCDs as GPUs.
-
-Each GPU has a peak performance of 26.5 TFLOPS (double-precision), 110 compute units, and
-64 GB of high-bandwidth memory (HBM2) which can be accessed at a peak of 1.6 TB/s. The 2
-GPUs on an MI250X are connected with [4x] GPU-to-GPU Infinity Fabric links for a total
-bandwidth of 200+200 GB/s . Consult the diagram in the  section :ref:`frontier-nodes` for
-information on how the accelerators connect to each other, to the CPU, and to the network.
+The AMD Instinct MI200 is built on advanced packaging technologies
+enabling two Graphic Compute Dies (GCDs) to be integrated
+into a single package in the Open Compute Project (OCP) Accelerator Module (OAM)
+in the MI250 and MI250X products.
+Each GCD is build on the AMD CDNA 2 architecture.
+A single Frontier node contains 4 MI250X OAMs for the total of 8 GCDs.
 
 .. note::
 
-   The X+X GB/s refers to bidirectional bandwidth, so X GB/s in both directions. 
+    The Slurm workload manager and the ROCr runtime treat each GCD as a separate GPU
+    and visibility can be controlled using the ``ROCR_VISIBLE_DEVICES`` environment variable.
+    Therefore, from this point on, the Frontier guide simply refers to a GCD as a GPU.
 
+Each GPU contains 110 Compute Units (CUs) grouped in 4 Compute Engines (CEs).
+Physically, each GPU contains 112 CUs, but two are disabled.
+A command processor in each GPU receives API commands and transforms them into compute tasks.
+Compute tasks are managed by the 4 compute engines, which dispatch wavefronts to compute units.
+All wavefronts from a single workgroup are assigned to the same CU.
+In CUDA terminology, workgroups are "blocks", wavefronts are "warps", and work-items are "threads".
+The terms are often used interchangeably.
 
-Each GPU is composed of a command processor, 8 shader engines, and 110 compute units (CUs;
-the hardware components that actually perform the mathematical operations), where the CUs
-are distributed among the shader engines. The command processor takes the kernel from the
-command queue and creates workgroups ("blocks" in CUDA terminology) which are distributed
-to the shader engines. The shader engines have an Asynchronous Compute Engine (ACE;
-sometimes also called a workload manager) that takes the compute tasks and workgroups it
-gets from the command processor, creates wavefronts ("warps" in CUDA terminology) from the
-workgroups, and distributes them to the CUs. All wavefronts from a single workgroup are
-assigned to the same CU.
-
-.. image:: /images/amd_commandqueue.png
+.. image:: /images/amd_instinct_mi250x_oam.png
    :align: center
-   :alt: Block diagram of command processor and shader engines
+   :alt: Block diagram of the AMD Instinct MI200 multi-chip module
+
+The 110 CUs in each GPU deliver peak performance of 26.5 TFLOPS in double precision.
+Also, each GPU contains 64 GB of high-bandwidth memory (HBM2) accessible at a peak
+bandwidth of 1.6 TB/s.
+The 2 GPUs in an MI250X are connected with [4x] GPU-to-GPU Infinity Fabric links
+providing 200+200 GB/s of bandwidth.
+(Consult the diagram in the :ref:`frontier-nodes` section for information
+on how the accelerators are connected to each other, to the CPU, and to the network.
+
+.. note::
+
+   The X+X GB/s notation describes bidirectional bandwidth, meaning X GB/s in each directions.
 
 ..
   TODO: unified memory? If mi250x has it, what is it and how does it work
   TODO: link to HIP from scratch tutorial
   TODO: here are some references https://www.amd.com/system/files/documents/amd-cdna2-white-paper.pdf and https://www.amd.com/system/files/documents/amd-instinct-mi200-datasheet.pdf
-
 
 .. _amd-nvidia-terminology:
 
