@@ -70,13 +70,15 @@ you will find a list of current frameworks natively supported in our
 +================================================+=============+
 | :ref:`Ensemble Toolkit (EnTK)<workflows-entk>` | Summit      |
 +------------------------------------------------+-------------+
-| :ref:`Parsl<workflows-parsl>`                  | Summit      | 
+| :ref:`FireWorks<workflows-fireworks>`          | Summit      |
 +------------------------------------------------+-------------+
-| :ref:`Swift/T<workflows-swiftt>`               | Summit      | 
+| :ref:`MLflow<workflows-mlflow>`                | Summit      |
 +------------------------------------------------+-------------+
-| :ref:`MLflow<workflows-mlflow>`                | Summit      | 
+| :ref:`Parsl<workflows-parsl>`                  | Summit      |
 +------------------------------------------------+-------------+
-| :ref:`FireWorks<workflows-fireworks>`          | Summit      | 
+| :ref:`pmake<workflows-pmake>`                  | All         |
++------------------------------------------------+-------------+
+| :ref:`Swift/T<workflows-swiftt>`               | Summit      |
 +------------------------------------------------+-------------+
 
 ---------
@@ -89,8 +91,9 @@ Workflow Systems
    :maxdepth: 1
    
    entk
-   parsl
-   swift_t
-   mlflow
    fireworks
+   mlflow
+   parsl
+   pmake
+   swift_t
 
