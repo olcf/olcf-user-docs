@@ -248,7 +248,7 @@ A single Frontier node contains 4 MI250X OAMs for the total of 8 GCDs.
     Therefore, from this point on, the Frontier guide simply refers to a GCD as a GPU.
 
 Each GPU contains 110 Compute Units (CUs) grouped in 4 Compute Engines (CEs).
-Physically, each GPU contains 112 CUs, but two are disabled for yield reasons.
+Physically, each GPU contains 112 CUs, but two are disabled.
 A command processor in each GPU receives API commands and transforms them into compute tasks.
 Compute tasks are managed by the 4 compute engines, which dispatch wavefronts to compute units.
 All wavefronts from a single workgroup are assigned to the same CU.
