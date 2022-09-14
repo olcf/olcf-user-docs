@@ -4336,7 +4336,17 @@ SPI resources require two-factor authentication.  Users with accounts in the mod
 
 IP Address White List
 ^^^^^^^^^^^^^^^^^^^^^
-Access to the SPI resources is allowed to approved IP addresses only.  Direct access to SPI resources require the connecting IP address to be whitelisted.  An IP can be added to the whitelist by contacting help@olcf.ornl.gov
+Access to the SPI resources is allowed to approved IP addresses only.  Direct access to SPI resources require the connecting IP address to be whitelisted.  
+
+Tools and web sites similar to 'whats my ip' can be used to find your IP.  But please note, the tools may only return your internal IP.  The following are internal rages:
+- 10.0. 0.0 - 10.255. 255.255 (10.0. 0.0/8 prefix)
+- 172.16. 0.0 - 172.31. 255.255 (172.16. 0.0/12 prefix)
+- 192.168. 0.0 - 192.168. 255.255 (192.168. 0.0/16 prefix)
+
+The tool may also return you current IP which may change if not static.  For these reasons, reaching out to your IT department may be the best option.  Your IT department can provide a range of externally facing IP addresses that can be whitelisted.  
+
+To add an IP or range of IPs to your project's whitelist, please contact help@olcf.ornl.gov
+
 
 Login nodes
 ^^^^^^^^^^^
