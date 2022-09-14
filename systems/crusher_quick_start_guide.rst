@@ -1305,7 +1305,7 @@ The model detailed here calculates the bytes moved as they move to and from the 
     Integer instructions, cache levels, and matrix-FMA operations are currently not considered.
 
 To get started, you will need to make an input file for ``rocprof``, to be passed in through ``rocprof -i <input_file> --timestamp on -o my_output.csv <my_exe>``.
-Below is an example, and contains the information needed:
+Below is an example, and contains the information needed to roofline profile GPU 0, as seen by each rank:
 
 .. code:: bash
 
@@ -1321,7 +1321,21 @@ Below is an example, and contains the information needed:
 
     In an application with more than one kernel, you should strongly consider filtering by kernel name by adding a line like: ``kernel: <kernel_name>`` to the ``rocprof`` input file.
 
+
 This provides the minimum set of metrics used to construct a roofline model.
+To gather metrics across multiple MPI ranks, you will need to use a command that redirects the output of rocprof to a unique file for each task.
+For example:
+
+.. code:: bash
+
+    srun -N 2 -n 16 --ntasks-per-node=8 --gpus-per-node=8 --gpu-bind=closest bash -c 'rocprof -o ${SLURM_JOBID}_${SLURM_PROCID}.csv -i <input_file> --timestamp on <exe>'
+
+
+.. note::
+
+    The ``gpu:`` filter in the ``rocprof`` input file identifies GPUs by the number the MPI rank would see them as. In the ``srun`` example above,
+    each MPI rank only has 1 GPU, so each rank sees its GPU as GPU 0.
+
 
 Theoretical Roofline
 ^^^^^^^^^^^^^^^^^^^^
@@ -1333,6 +1347,12 @@ The theoretical roofline can be constructed as:
 
     FLOPS_{peak} = minimum(OpIntensity * BW_{HBM}, theoretical\_flops)
 
+On Crusher, the memory bandwidth for HBM is 1.6 TB/s, and the theoretical peak flops is calculated by:
+
+.. math::
+
+    TheoreticalFLOPS = 128 FLOP/cycle/CU * 110 CU * 1700000000 cycles/second = 23.9 TFLOP/s
+
 
 Achieved FLOPS/s
 ^^^^^^^^^^^^^^^^
@@ -1343,10 +1363,17 @@ We use this equation to calculate the number of double-precision FLOPS:
 
 .. math::
 
-    FP64\_FLOPS = 64 * (SQ\_INSTS\_VALU\_ADD\_F64 + SQ\_INSTS\_VALU\_MUL\_F64 + 2 * SQ\_INSTS\_VALU\_FMA\_F64)
+    FP64\_FLOPS = 64 * (SQ\_INSTS\_VALU\_ADD\_F64 + SQ\_INSTS\_VALU\_MUL\_F64 \\\\
+                        + SQ\_INSTS\_VALU\_TRANS\_F64 + 2 * SQ\_INSTS\_VALU\_FMA\_F64)
 
-Then, we divide the number of FLOPS by the elapsed time of the kernel.
+
+Then, we divide the number of FLOPS by the elapsed time of the kernel to find FLOPS per second.
 This is found from subtracting the ``rocprof`` metrics ``EndNs`` by ``BeginNs``, provided by ``--timestamp on``, then converting from nanoseconds to seconds by dividing by 1,000,000,000 (power(10,9)).
+
+.. note::
+
+    For ROCm/5.2.0 and earlier, there is a known issue with the timings provided by ``--timestamp on``. See :ref:`crusher-known-issues`.
+
 
 Operational Intensity
 ^^^^^^^^^^^^^^^^^^^^^
@@ -1612,6 +1639,8 @@ Getting Help
 
 If you have problems or need helping running on Crusher, please submit a ticket
 by emailing help@olcf.ornl.gov.
+
+.. _crusher-known-issues:
 
 Known Issues
 ============
