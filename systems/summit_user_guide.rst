@@ -4324,11 +4324,11 @@ SPI Access
 ----------
 Projects
 ^^^^^^^^
-SPI project ids may look similar to those used in the moderate enclave but append _mde.  For example: abc123_mde.  Projects will not overlap moderate and enhanced enclaves.  SPI projects will only exist on SPI resources.
+SPI project ids may look similar to those used in the moderate enclave but append ``_mde``.  For example: ``abc123_mde``.  Projects will not overlap moderate and enhanced enclaves.  SPI projects will only exist on SPI resources.
   
 Usernames
 ^^^^^^^^^
-In order to help ensure data separation, each SPI user is given a unique userid for each project.  SPI user names use the format: <userid>_<proj>_mde . For example: userx_abc123_mde.  SPI usernames will not overlap with usernames used in the moderate enclave.  Unlike moderate usernames, SPI usernames only exist in a single project.  Users on multiple SPI projects will have a unique username for each SPI project.
+In order to help ensure data separation, each SPI user is given a unique userid for each project.  SPI user names use the format: ``<userid>_<proj>_mde`` . For example: ``userx_abc123_mde``.  SPI usernames will not overlap with usernames used in the moderate enclave.  Unlike moderate usernames, SPI usernames only exist in a single project.  Users on multiple SPI projects will have a unique username for each SPI project.
 
 Authentication
 ^^^^^^^^^^^^^^
@@ -4336,7 +4336,18 @@ SPI resources require two-factor authentication.  Users with accounts in the mod
 
 IP Address White List
 ^^^^^^^^^^^^^^^^^^^^^
-Access to the SPI resources is allowed to approved IP addresses only.  Direct access to SPI resources require the connecting IP address to be whitelisted.  An IP can be added to the whitelist by contacting help@olcf.ornl.gov
+Access to the SPI resources is allowed to approved IP addresses only.  Direct access to SPI resources require the connecting IP address to be whitelisted.  
+
+Tools and web sites similar to 'whats my ip' can be used to find your IP.  But please note, the tools may only return your internal IP.  The following are internal rages:
+
+- 10.0. 0.0 - 10.255. 255.255 (10.0. 0.0/8 prefix)
+- 172.16. 0.0 - 172.31. 255.255 (172.16. 0.0/12 prefix)
+- 192.168. 0.0 - 192.168. 255.255 (192.168. 0.0/16 prefix)
+
+The tool may also return you current IP which may change if not static.  For these reasons, reaching out to your IT department may be the best option.  Your IT department can provide a range of externally facing IP addresses that can be whitelisted.  
+
+To add an IP or range of IPs to your project's whitelist, please contact help@olcf.ornl.gov
+
 
 Login nodes
 ^^^^^^^^^^^
@@ -4349,6 +4360,7 @@ SPI Filesystems
 The SPI resources use filesystems visible only from within the enhanced enclave.  The SPI resources do not mount filesystems mounted in the moderate enclave.  The gpfs ARX filesystem provides home, scratch, and shared project areas for SPI resources.
 
 Available filesystems
+
 * home : /gpfs/arx/<proj>/home/<userid>
 * project shared : /gpfs/arx/<proj>/proj-shared
 * scratch : /gpfs/arx/<proj>/scratch/<userid>
@@ -4366,6 +4378,7 @@ SPI Running Batch Jobs
 Workflows executed in the enhanced enclave can only be submitted from the Summit's Citadel login node and through specific batch queues.  The Citadel login nodes can be access from a whitelisted IP through: ssh citadel.olcf.ornl.gov
 
 Workflows executed in the enhanced enclave can only be submitted from the Summit's Citadel login node and through specific batch queues. SPI batch jobs must specify an SPI specific batch queue:
+
 * batch-spi
 * debug-spi
 * batch-hm-spi
