@@ -1265,7 +1265,7 @@ Below is an example that generates a profile and loads the results in their GUI-
     module load hpctoolkit 
     
     # 1. Profile and trace an application using CPU time and GPU performance counters 
-    hpcrun -o <measurement_dir> -t -e CPUTIME -e gpu=amd <application> 
+    srun <srun_options> hpcrun -o <measurement_dir> -t -e CPUTIME -e gpu=amd <application> 
 
     # 2. Analyze the binary of executables and its dependent libraries 
     hpcstruct <measurement_dir> 
