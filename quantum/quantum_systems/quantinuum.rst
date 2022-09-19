@@ -2,6 +2,9 @@
 Quantinuum
 **********
 
+.. warning::
+    New allocation policy in effect Oct. 1st 2022, see :ref:`quantinuum-alloc` section.
+
 Overview
 ========
 
@@ -80,11 +83,25 @@ users submitted code to the real quantum hardware.
     utilize the syntax checker first, run on the emulator, then run on one of the
     quantum computers. This is highlighted in the examples.
 
+.. _quantinuum-alloc:
+
 Allocations & Credit Usage
 ==========================
 
 Running a job on the System Model H1 family of hardware requires Quantinuum
 Credits. Additional information on credit usage can be found in the *Quantinuum Systems User Guide* under the
 *Examples* tab on the `Quantinuum User Portal <https://um.qapi.quantinuum.com/>`__.
-Users and groups are initially allocated 500 HQC's and 2000 eHQC's at the
-beginning of each month, but requests for increased allocations should be submitted (with a brief explanation) to help@olcf.ornl.gov and will be reviewed by the QRUC.
+Due to increased demand and to make the most efficient use of credits, the following allocating policy will go into effect starting October 1st 2022:
+
+* Any request for credits must be submitted by the project Principle Investigator (PI) to help@olcf.ornl.gov
+
+* Requests for machine credits must be justified using results from the emulator to determine the appropriate amount needed. Requests without emulator-based justifications will be denied.
+
+* Requests will be evaluated based on the provided technical justification, programmatic efficiency, and machine availability. The effective usage of prior allocations by the project will also be considered.
+
+* Allocations will be granted on a monthly basis to maximize the availability of the machine. Please note that allocations do not carry over to the next month and must be consumed in the month granted.
+ 
+Allocation requests for the following month must be submitted no later than the 25th of the preceding month.  The uptime schedule is available on the *Calendar* tab of the `Quantinuum User Portal <https://um.qapi.quantinuum.com/>`__. 
+
+
+
