@@ -13,6 +13,7 @@ The table below lists presentations given at previous OLCF training events. For 
    :header: "Date", "Title", "Speaker", "Event", "Presentation"
    :widths: 12 22 22 22 22
 
+   "2022-09-15", "Data Visualization and Analytics Training Series: ParaView at OLCF", "Ken Moreland (ORNL)", `ParaView at OLCF 2022 <https://www.olcf.ornl.gov/calendar/paraview-at-olcf/>`__ , (`recording <https://vimeo.com/750382858>`__ | `tutorial site <https://kmorel.gitlab.io/pv-tutorial-olcf-2022/>`__)
    "2022-08-31", "Andes Overview", "Leah Huk (OLCF)", `August 2022 OLCF User Conference Call 2022 <https://www.olcf.ornl.gov/calendar/userconcall-aug2022/>`__ , (`Announcement slides <https://www.olcf.ornl.gov/wp-content/uploads/Aug22_UserCall_Announcements.pdf>`__ | `Andes slides <https://www.olcf.ornl.gov/wp-content/uploads/Andes_User_Call_08_31_22.pdf>`__ | `recording <https://vimeo.com/745108997>`__ )
    "2022-08-23", "Understanding GPU Register Pressure (part 1)", "Alessandro Fanfarillo (AMD)", Special Session, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/Intro_Register_pressure_ORNL_20220812_2083.pdf>`__ | `recording <https://vimeo.com/742349001>`__)
    "2022-08-19", "Using R on HPC Clusters Part 2", "George Ostrouchov, (ORNL)", `Using R on HPC Clusters <https://www.olcf.ornl.gov/calendar/using-r-on-hpc-clusters-webinar/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/Using-_R_on_HPC_Clusters_Part-2.pdf>`__ | `recording <https://vimeo.com/manage/videos/742349613>`__)
