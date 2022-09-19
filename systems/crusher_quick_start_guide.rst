@@ -1358,13 +1358,17 @@ Achieved FLOPS/s
 ^^^^^^^^^^^^^^^^
 
 We calculate the achieved performance at the desired level (here, double-precision floating point, FP64), by summing each metric count and weighting the FMA metric by 2, since a fused multiply-add is considered 2 floating point operations.
-Also note that these ``SQ_INSTS_VALU_*`` metrics are reported as per-simd, so we mutliply by the wavefront size as well.
+Also note that these ``SQ_INSTS_VALU_<ADD,MUL,TRANS>`` metrics are reported as per-simd, so we mutliply by the wavefront size as well.
+The ``SQ_INSTS_VALU_MFMA_MOPS_*`` instructions should be multiplied by 512.
 We use this equation to calculate the number of double-precision FLOPS:
 
 .. math::
 
-    FP64\_FLOPS = 64 * (SQ\_INSTS\_VALU\_ADD\_F64 + SQ\_INSTS\_VALU\_MUL\_F64 \\\\
-                        + SQ\_INSTS\_VALU\_TRANS\_F64 + 2 * SQ\_INSTS\_VALU\_FMA\_F64)
+    FP64\_FLOPS =   64  *&(SQ\_INSTS\_VALU\_ADD\_F64         \\\\
+                         &+ SQ\_INSTS\_VALU\_MUL\_F64       \\\\
+                         &+ SQ\_INSTS\_VALU\_TRANS\_F64     \\\\
+                         &+ 2 * SQ\_INSTS\_VALU\_FMA\_F64)  \\\\
+                  + 512 *&(SQ\_INSTS\_VALU\_MFMA\_MOPS\_F64)
 
 
 Then, we divide the number of FLOPS by the elapsed time of the kernel to find FLOPS per second.
