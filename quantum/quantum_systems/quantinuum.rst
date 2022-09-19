@@ -2,6 +2,9 @@
 Quantinuum
 **********
 
+.. warning::
+    New allocation policy in effect Oct. 1st 2022, see :ref:`quantinuum-alloc` section.
+
 Overview
 ========
 
@@ -80,13 +83,15 @@ users submitted code to the real quantum hardware.
     utilize the syntax checker first, run on the emulator, then run on one of the
     quantum computers. This is highlighted in the examples.
 
+.. _quantinuum-alloc:
+
 Allocations & Credit Usage
 ==========================
 
 Running a job on the System Model H1 family of hardware requires Quantinuum
 Credits. Additional information on credit usage can be found in the *Quantinuum Systems User Guide* under the
 *Examples* tab on the `Quantinuum User Portal <https://um.qapi.quantinuum.com/>`__.
-Due to increased demand and to make the most efficient use of credits, the following allocating policy will go into effect starting 1 October 2022:
+Due to increased demand and to make the most efficient use of credits, the following allocating policy will go into effect starting October 1st 2022:
 
 * Any request for credits must be submitted by the project Principle Investigator (PI) to help@olcf.ornl.gov
 
