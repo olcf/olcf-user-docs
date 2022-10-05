@@ -104,4 +104,15 @@ Due to increased demand and to make the most efficient use of credits, the follo
 Allocation requests for the following month must be submitted no later than the 25th of the preceding month.  The uptime schedule is available on the *Calendar* tab of the `Quantinuum User Portal <https://um.qapi.quantinuum.com/>`__. 
 
 
+Software
+========
+
+* TKET documentation is available at `<https://cqcl.github.io/pytket/manual/manual_intro.html>`__
+
+* An introduction to quantum compilation with TKET is available at `<https://github.com/CalMacCQ/tket_blog/blob/main/blog1_intro_to_qc.ipynb>`__
+
+* For a video introduction to TKET, see `<https://www.youtube.com/watch?v=yXKSpvgAtrk>`__
+
+
+
 
