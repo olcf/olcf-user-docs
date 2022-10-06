@@ -13,7 +13,7 @@ software packages intended for use by other general users on OLCF resources.
 
 .. note::
 
-  The UMS program is currently supported on Summit, Andes, and Spock.
+  The UMS program is not currently available on all OLCF systems.
 
 To apply to the UMS program, fill out the application at: 
 `https://my.olcf.ornl.gov/project-application-new <https://my.olcf.ornl.gov/project-application-new>`_.
@@ -38,21 +38,33 @@ Currently Available User-Managed Software
 | gen119     | NVIDIA RAPIDS  | Benjamin Hernandez (hernandezarb@ornl.gov) | https://developer.nvidia.com/rapids                                            |
 |            | BlazingSQL     |                                            | https://blazingsql.com/                                                        |
 +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
+| ums012     | SOLLVE         | Felipe Jaramillo (cabarcas@udel.edu)       |                                                                                |
+|            |                |                                            |                                                                                |
+|            | LLVM           | Sunita Chandrasekaran (schandra@udel.edu)  |                                                                                |
++------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
 | ums013     | Julia          | Valentin Churavy  (vchuravy@mit.edu)       | https://julialang.org                                                          |
++------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
+| ums015     | DPC++ for HIP  | Gordon Brown (gordon@codeplay.com)         |                                                                                |
 +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
 
 Usage
 -----
 
-To access and use the UMS available on a system:
+To access and use the UMS available on a system, you must first load the base ums module to add
+the individual projects to the module list. Once this is loaded, then each project has a module
+to gain access to that project’s provided software. For example:
 
 .. code::
 
+  ## Find the base UMS module:
   > module avail ums
   --------------- /sw/summit/modulefiles/core ---------------
     ums/default
 
+  ## Load the UMS project access modules:
   > module load ums
+
+  ## See the newly available UMS projects:
   > module avail ums
   --------------- /sw/summit/modulefiles/core ---------------
     ums/default (L)
@@ -60,6 +72,24 @@ To access and use the UMS available on a system:
   ------------- /sw/summit/modulefiles/ums/core -------------
     ums-abc123/default
     ums-xyz987/default
+
+  ## Gain access to a UMS project's provided modules:
+  > module load ums-abc123
+
+  ## See the provided UMS project's modules (truncated output):
+  > module avail
+  ...
+  --------------- /sw/summit/modulefiles/core ---------------
+    ums/default (L)
+
+  ------------- /sw/summit/modulefiles/ums/core -------------
+    ums-abc123/default (L)
+    ums-xyz987/default
+
+  ------------ /sw/summit/ums/ums-abc123/modules ------------
+    abc123/1.0
+    abc123/1.1
+  ...
 
 If there are issues with a UMS provided product, you can find information in the module via:
 
@@ -98,7 +128,13 @@ The OLCF UMS Policy is located in the "Accounts and Projects" section of this do
 Writing UMS Modulefiles
 -----------------------
 
-The following directories will be created and made available for you to install software and modulefiles:
+A project directory and modulefile will be created and made available.  The project directory will be the
+workspace for your team to build and install the software you wish to provide to the other OLCF users.
+The created modulefile will add your project's provided modules to the modulepath. Note that by default,
+the project modulefile will add a default path, `/sw/{{HOST}}/ums/abc123/modules`, to the MODULEPATH. If
+you wish to locate your project's modules in another directory, you will need to modify the provided modulefile.
+
+The following will be created and put under the ownership of your UMS project and your project's PI:
 
 .. code::
 
