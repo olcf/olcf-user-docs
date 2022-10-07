@@ -3,6 +3,16 @@
 Python on OLCF Systems
 ***********************
 
+.. warning::
+    Currently, Crusher and Frontier do **NOT** have Anaconda/Conda modules.
+    To use conda, you will have to download and install Miniconda on your own
+    (see `Miniconda Documentation <https://docs.conda.io/en/latest/miniconda.html>`__).
+    Alternatively, you can use Python's inherent virtual environments ``venv``
+    feature with the ``cray-python`` module instead.  For more details on ``venv``, 
+    see `Python's Official Documentation <https://docs.python.org/3/tutorial/venv.html>`__.
+    Contact help@olcf.ornl.gov if conda is required for your workflow, or if you
+    have any issues.
+
 Overview
 ========
 
