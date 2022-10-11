@@ -1302,7 +1302,7 @@ The model detailed here calculates the bytes moved as they move to and from the 
 
 .. note::
 
-    Integer instructions, cache levels, and matrix-FMA operations are currently not considered.
+    Integer instructions and cache levels operations are currently not documented here.
 
 To get started, you will need to make an input file for ``rocprof``, to be passed in through ``rocprof -i <input_file> --timestamp on -o my_output.csv <my_exe>``.
 Below is an example, and contains the information needed to roofline profile GPU 0, as seen by each rank:
