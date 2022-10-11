@@ -1297,7 +1297,7 @@ Roofline Profiling with the ROCm Profiler
 The `Roofline <https://docs.nersc.gov/tools/performance/roofline/>`__ performance model is an increasingly popular way to demonstrate and understand application performance.
 This section documents how to construct a simple roofline model for a single kernel using ``rocprof``.
 This roofline model is designed to be comparable to rooflines constructed by NVIDIA's `NSight Compute <https://developer.nvidia.com/blog/accelerating-hpc-applications-with-nsight-compute-roofline-analysis/>`__.
-A roofline model plots the achieved performance (in floating-point operations per second, FLOPS/s) as a function of operational (or arithmetic) intensity (in FLOPS per Byte).
+A roofline model plots the achieved performance (in floating-point operations per second, FLOPS/s) as a function of arithmetic (or operational) intensity (in FLOPS per Byte).
 The model detailed here calculates the bytes moved as they move to and from the GPU's HBM.
 
 .. note::
@@ -1352,7 +1352,7 @@ The theoretical roofline can be constructed as:
 
 .. math::
 
-    FLOPS_{peak} = minimum(OpIntensity * BW_{HBM}, TheoreticalFLOPS)
+    FLOPS_{peak} = minimum(ArithmeticIntensity * BW_{HBM}, TheoreticalFLOPS)
 
 
 On Crusher, the memory bandwidth for HBM is 1.6 TB/s, and the theoretical peak floating-point FLOPS/s is calculated by:
@@ -1401,10 +1401,10 @@ This is found from subtracting the ``rocprof`` metrics ``EndNs`` by ``BeginNs``,
     For ROCm/5.2.0 and earlier, there is a known issue with the timings provided by ``--timestamp on``. See :ref:`crusher-known-issues`.
 
 
-Operational Intensity
-^^^^^^^^^^^^^^^^^^^^^
+Arithmetic Intensity
+^^^^^^^^^^^^^^^^^^^^
 
-Operational intensity calculates the ratio of FLOPS to bytes moved between HBM and L2 cache.
+Arithmetic intensity calculates the ratio of FLOPS to bytes moved between HBM and L2 cache.
 We calculated FLOPS above (FP64_FLOPS).
 We can calculate the number of bytes moved using the ``rocprof`` metrics ``TCC_EA_WRREQ_64B``, ``TCC_EA_WRREQ_sum``, ``TCC_EA_RDREQ_32B``, and ``TCC_EA_RDREQ_sum``.
 ``TCC`` refers to the L2 cache, and ``EA`` is the interface between L2 and HBM.
