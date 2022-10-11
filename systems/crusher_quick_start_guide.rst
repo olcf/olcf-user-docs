@@ -1340,18 +1340,31 @@ For example:
 Theoretical Roofline
 ^^^^^^^^^^^^^^^^^^^^
 
-The theoretical (attainable) roofline constructs a theoretical maximum performance for each operational intensity.
+The theoretical (this is NOT attainable FLOPS/s) roofline constructs a theoretical maximum performance for each operational intensity.
 The theoretical roofline can be constructed as:
 
 .. math::
 
     FLOPS_{peak} = minimum(OpIntensity * BW_{HBM}, theoretical\_flops)
 
-On Crusher, the memory bandwidth for HBM is 1.6 TB/s, and the theoretical peak flops is calculated by:
+
+On Crusher, the memory bandwidth for HBM is 1.6 TB/s, and the theoretical peak floating-point FLOPS/s is calculated by:
 
 .. math::
 
     TheoreticalFLOPS = 128 FLOP/cycle/CU * 110 CU * 1700000000 cycles/second = 23.9 TFLOP/s
+
+
+However, when using MFMA instructions, the theoretical peak floating-point FLOPS/s is calculated by:
+
+.. math::
+
+    TheoreticalFLOPS = 256 FLOP/cycle/CU * 110 CU * 1700000000 cycles/second = 47.8 TFLOP/s
+
+
+.. note::
+    Attainable rooflines are constructed using microbenchmarks, and are not currently discussed here.
+    Attainable rooflines consider the effects of cooling and power consumption and are more representative of what an application can achieve.
 
 
 Achieved FLOPS/s
@@ -1371,6 +1384,8 @@ We use this equation to calculate the number of double-precision FLOPS:
                   + 512 *&(SQ\_INSTS\_VALU\_MFMA\_MOPS\_F64)
 
 
+When ``SQ_INSTS_VALU_MFMA_MOPS_*`` are used, then 47.8 TF/s is considered the theoretical maximum FLOPS/s.
+If only ``SQ_INSTS_VALU_<ADD,MUL,TRANS>`` are found, then 23.9 TF/s is the theoretical maximum FLOPS/s.
 Then, we divide the number of FLOPS by the elapsed time of the kernel to find FLOPS per second.
 This is found from subtracting the ``rocprof`` metrics ``EndNs`` by ``BeginNs``, provided by ``--timestamp on``, then converting from nanoseconds to seconds by dividing by 1,000,000,000 (power(10,9)).
 
