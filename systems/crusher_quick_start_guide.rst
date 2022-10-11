@@ -1340,12 +1340,19 @@ For example:
 Theoretical Roofline
 ^^^^^^^^^^^^^^^^^^^^
 
-The theoretical (this is NOT attainable FLOPS/s) roofline constructs a theoretical maximum performance for each operational intensity.
+The theoretical (not attainable) peak roofline constructs a theoretical maximum performance for each operational intensity.
+
+.. note::
+
+    ``theoretical`` peak is determined by the hardware specifications and is not attainable in practice. ``attaiable`` peak is the performance as measured by
+    in-situ microbenchmarks designed to best utilize the hardware. ``achieved`` performance is what the profiled application actually achieves.
+
+
 The theoretical roofline can be constructed as:
 
 .. math::
 
-    FLOPS_{peak} = minimum(OpIntensity * BW_{HBM}, theoretical\_flops)
+    FLOPS_{peak} = minimum(OpIntensity * BW_{HBM}, TheoreticalFLOPS)
 
 
 On Crusher, the memory bandwidth for HBM is 1.6 TB/s, and the theoretical peak floating-point FLOPS/s is calculated by:
@@ -1363,8 +1370,8 @@ However, when using MFMA instructions, the theoretical peak floating-point FLOPS
 
 
 .. note::
-    Attainable rooflines are constructed using microbenchmarks, and are not currently discussed here.
-    Attainable rooflines consider the effects of cooling and power consumption and are more representative of what an application can achieve.
+    Attainable peak rooflines are constructed using microbenchmarks, and are not currently discussed here.
+    Attainable rooflines consider the limitations of cooling and power consumption and are more representative of what an application can achieve.
 
 
 Achieved FLOPS/s
