@@ -1297,12 +1297,12 @@ Roofline Profiling with the ROCm Profiler
 The `Roofline <https://docs.nersc.gov/tools/performance/roofline/>`__ performance model is an increasingly popular way to demonstrate and understand application performance.
 This section documents how to construct a simple roofline model for a single kernel using ``rocprof``.
 This roofline model is designed to be comparable to rooflines constructed by NVIDIA's `NSight Compute <https://developer.nvidia.com/blog/accelerating-hpc-applications-with-nsight-compute-roofline-analysis/>`__.
-A roofline model plots the achieved performance (in floating-point operations per second, FLOPS/s) as a function of operational (or arithmetic) intensity (in FLOPS per Byte).
+A roofline model plots the achieved performance (in floating-point operations per second, FLOPS/s) as a function of arithmetic (or operational) intensity (in FLOPS per Byte).
 The model detailed here calculates the bytes moved as they move to and from the GPU's HBM.
 
 .. note::
 
-    Integer instructions, cache levels, and matrix-FMA operations are currently not considered.
+    Integer instructions and cache levels are currently not documented here.
 
 To get started, you will need to make an input file for ``rocprof``, to be passed in through ``rocprof -i <input_file> --timestamp on -o my_output.csv <my_exe>``.
 Below is an example, and contains the information needed to roofline profile GPU 0, as seen by each rank:
@@ -1340,33 +1340,59 @@ For example:
 Theoretical Roofline
 ^^^^^^^^^^^^^^^^^^^^
 
-The theoretical (attainable) roofline constructs a theoretical maximum performance for each operational intensity.
+The theoretical (not attainable) peak roofline constructs a theoretical maximum performance for each operational intensity.
+
+.. note::
+
+    ``theoretical`` peak is determined by the hardware specifications and is not attainable in practice. ``attaiable`` peak is the performance as measured by
+    in-situ microbenchmarks designed to best utilize the hardware. ``achieved`` performance is what the profiled application actually achieves.
+
+
 The theoretical roofline can be constructed as:
 
 .. math::
 
-    FLOPS_{peak} = minimum(OpIntensity * BW_{HBM}, theoretical\_flops)
+    FLOPS_{peak} = minimum(ArithmeticIntensity * BW_{HBM}, TheoreticalFLOPS)
 
-On Crusher, the memory bandwidth for HBM is 1.6 TB/s, and the theoretical peak flops is calculated by:
+
+On Crusher, the memory bandwidth for HBM is 1.6 TB/s, and the theoretical peak floating-point FLOPS/s is calculated by:
 
 .. math::
 
     TheoreticalFLOPS = 128 FLOP/cycle/CU * 110 CU * 1700000000 cycles/second = 23.9 TFLOP/s
 
 
+However, when using MFMA instructions, the theoretical peak floating-point FLOPS/s is calculated by:
+
+.. math::
+
+    TheoreticalFLOPS = 256 FLOP/cycle/CU * 110 CU * 1700000000 cycles/second = 47.8 TFLOP/s
+
+
+.. note::
+    Attainable peak rooflines are constructed using microbenchmarks, and are not currently discussed here.
+    Attainable rooflines consider the limitations of cooling and power consumption and are more representative of what an application can achieve.
+
+
 Achieved FLOPS/s
 ^^^^^^^^^^^^^^^^
 
 We calculate the achieved performance at the desired level (here, double-precision floating point, FP64), by summing each metric count and weighting the FMA metric by 2, since a fused multiply-add is considered 2 floating point operations.
-Also note that these ``SQ_INSTS_VALU_*`` metrics are reported as per-simd, so we mutliply by the wavefront size as well.
+Also note that these ``SQ_INSTS_VALU_<ADD,MUL,TRANS>`` metrics are reported as per-simd, so we mutliply by the wavefront size as well.
+The ``SQ_INSTS_VALU_MFMA_MOPS_*`` instructions should be multiplied by 512.
 We use this equation to calculate the number of double-precision FLOPS:
 
 .. math::
 
-    FP64\_FLOPS = 64 * (SQ\_INSTS\_VALU\_ADD\_F64 + SQ\_INSTS\_VALU\_MUL\_F64 \\\\
-                        + SQ\_INSTS\_VALU\_TRANS\_F64 + 2 * SQ\_INSTS\_VALU\_FMA\_F64)
+    FP64\_FLOPS =   64  *&(SQ\_INSTS\_VALU\_ADD\_F64         \\\\
+                         &+ SQ\_INSTS\_VALU\_MUL\_F64       \\\\
+                         &+ SQ\_INSTS\_VALU\_TRANS\_F64     \\\\
+                         &+ 2 * SQ\_INSTS\_VALU\_FMA\_F64)  \\\\
+                  + 512 *&(SQ\_INSTS\_VALU\_MFMA\_MOPS\_F64)
 
 
+When ``SQ_INSTS_VALU_MFMA_MOPS_*`` are used, then 47.8 TF/s is considered the theoretical maximum FLOPS/s.
+If only ``SQ_INSTS_VALU_<ADD,MUL,TRANS>`` are found, then 23.9 TF/s is the theoretical maximum FLOPS/s.
 Then, we divide the number of FLOPS by the elapsed time of the kernel to find FLOPS per second.
 This is found from subtracting the ``rocprof`` metrics ``EndNs`` by ``BeginNs``, provided by ``--timestamp on``, then converting from nanoseconds to seconds by dividing by 1,000,000,000 (power(10,9)).
 
@@ -1375,10 +1401,10 @@ This is found from subtracting the ``rocprof`` metrics ``EndNs`` by ``BeginNs``,
     For ROCm/5.2.0 and earlier, there is a known issue with the timings provided by ``--timestamp on``. See :ref:`crusher-known-issues`.
 
 
-Operational Intensity
-^^^^^^^^^^^^^^^^^^^^^
+Arithmetic Intensity
+^^^^^^^^^^^^^^^^^^^^
 
-Operational intensity calculates the ratio of FLOPS to bytes moved between HBM and L2 cache.
+Arithmetic intensity calculates the ratio of FLOPS to bytes moved between HBM and L2 cache.
 We calculated FLOPS above (FP64_FLOPS).
 We can calculate the number of bytes moved using the ``rocprof`` metrics ``TCC_EA_WRREQ_64B``, ``TCC_EA_WRREQ_sum``, ``TCC_EA_RDREQ_32B``, and ``TCC_EA_RDREQ_sum``.
 ``TCC`` refers to the L2 cache, and ``EA`` is the interface between L2 and HBM.
