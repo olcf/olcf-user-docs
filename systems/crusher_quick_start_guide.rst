@@ -1420,11 +1420,11 @@ where
 
 .. math::
 
-    BytesWritten = 64 * TCC\_EA\_WRREQ\_64B + 32 * (TCC\_EA\_WRREQ\_sum - TCC\_EA\_WRREQ\_64B)
+    BytesWritten = 64 * TCC\_EA\_WRREQ\_64B\_sum + 32 * (TCC\_EA\_WRREQ\_sum - TCC\_EA\_WRREQ\_64B\_sum)
 
 .. math::
 
-    BytesRead = 32 * TCC\_EA\_RDREQ\_32B + 64 * (TCC\_EA\_RDREQ\_sum - TCC\_EA\_RDREQ\_32B)
+    BytesRead = 32 * TCC\_EA\_RDREQ\_32B\_sum + 64 * (TCC\_EA\_RDREQ\_sum - TCC\_EA\_RDREQ\_32B\_sum)
 
 
 ----
