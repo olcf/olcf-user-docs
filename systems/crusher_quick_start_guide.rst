@@ -1401,6 +1401,31 @@ This is found from subtracting the ``rocprof`` metrics ``EndNs`` by ``BeginNs``,
     For ROCm/5.2.0 and earlier, there is a known issue with the timings provided by ``--timestamp on``. See :ref:`crusher-known-issues`.
 
 
+Calculating for all precisions
+""""""""""""""""""""""""""""""
+
+The above formula can be adapted to compute the total FLOPS across all precisions.
+
+.. math::
+
+    TOTAL\_FLOPS =   64  *&(SQ\_INSTS\_VALU\_ADD\_F16         \\\\
+                         &+ SQ\_INSTS\_VALU\_MUL\_F16       \\\\
+                         &+ SQ\_INSTS\_VALU\_TRANS\_F16     \\\\
+                         &+ 2 * SQ\_INSTS\_VALU\_FMA\_F16)  \\\\
+                  + 64  *&(SQ\_INSTS\_VALU\_ADD\_F32         \\\\
+                         &+ SQ\_INSTS\_VALU\_MUL\_F32       \\\\
+                         &+ SQ\_INSTS\_VALU\_TRANS\_F32     \\\\
+                         &+ 2 * SQ\_INSTS\_VALU\_FMA\_F32)  \\\\
+                  + 64  *&(SQ\_INSTS\_VALU\_ADD\_F64         \\\\
+                         &+ SQ\_INSTS\_VALU\_MUL\_F64       \\\\
+                         &+ SQ\_INSTS\_VALU\_TRANS\_F64     \\\\
+                         &+ 2 * SQ\_INSTS\_VALU\_FMA\_F64)  \\\\
+                  + 512 *&(SQ\_INSTS\_VALU\_MFMA\_MOPS\_F16) \\\\
+                  + 512 *&(SQ\_INSTS\_VALU\_MFMA\_MOPS\_BF16) \\\\
+                  + 512 *&(SQ\_INSTS\_VALU\_MFMA\_MOPS\_F32) \\\\
+                  + 512 *&(SQ\_INSTS\_VALU\_MFMA\_MOPS\_F64) \\\\
+
+
 Arithmetic Intensity
 ^^^^^^^^^^^^^^^^^^^^
 
