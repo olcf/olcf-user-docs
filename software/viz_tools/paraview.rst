@@ -21,6 +21,9 @@ and Summit to facilitate large scale distributed visualizations. The ParaView
 server running on Andes and Summit may be used in a headless batch processing
 mode or be used to drive a ParaView GUI client running on your local machine.
 
+For a tutorial of how to get started with ParaView on Andes, see our 
+`ParaView at OLCF Tutorial <https://kmorel.gitlab.io/pv-tutorial-olcf-2022/>`__.
+
 .. _paraview-install-setup:
 
 Installing and Setting Up ParaView
@@ -557,6 +560,8 @@ avoid this issue.
 Additional Resources
 ====================
 
+* The `ParaView at OLCF Tutorial <https://kmorel.gitlab.io/pv-tutorial-olcf-2022/>`__ highlights
+  how to get started on Andes with example datasets.
 * The `Official ParaView User's Guide <https://docs.paraview.org/en/latest/>`__
   and the `Python API Documentation <https://kitware.github.io/paraview-docs/latest/python/>`__
   contain all information regarding the GUI and Python interfaces.

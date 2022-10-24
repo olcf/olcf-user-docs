@@ -44,110 +44,127 @@ directory:
 * macOS: ``/path/to/VisIt.app/Contents/Resources/data``
 * Windows: ``C:\path\to\LLNL\VisIt x.y.z\data``
 
-The first time you launch VisIt (after installing), you will be prompted
-for a remote host preference. Unfortunately, ORNL does not maintain this
-list and the ORNL entry is outdated. Click the “None” option instead.
-Restart VisIt, and go to Options→Host Profiles. Select “New Host”
-
-**For Andes:**
-
-- For host nickname: Andes (this is arbitrary)
-- Remote hostname: andes.olcf.ornl.gov (required)
-- Host name aliases: andes-login#g (required)
-- Maximum Nodes: unchecked
-- Maximum processors: unchecked (arbitrary but use fewer than cores available)
-- Path to VisIt Installation: ``/sw/andes/visit`` (required)
-- Username: Your OLCF Username (required)
-- Tunnel data connections through SSH: Checked (required)
-
-Under the “Launch Profiles” tab create a launch profile. Most of these values
-are arbitrary
-
-- Profile Name: No GPU, MPI, Multinode (arbitrary)
-- Timeout: 480 (arbitrary)
-- Number of threads per task: 0 (arbitrary, but not tested
-  with OMP/pthread support)
-- Additional arguments: blank (arbitrary)
-
-Under the “Parallel” Tab:
-
-- Launch parallel engine: Checked (required)
-- Launch Tab:
-
-    - Parallel launch method:
-      sbatch/srun (required)
-    - Partition/Pool/Queue: batch (required)
-    - Number of processors: 2 (arbitrary, but
-      high number may lead to OOM errors)
-    - Number of nodes: 2 (arbitrary)
-    - Bank/Account: Your OLCF project to use (required)
-    - Time Limit: 1:00:00 (arbitrary)
-    - Machine file: Unchecked (required – Lets VisIt get
-      the nodelist from the scheduler)
-    - Constraints: unchecked
-- Advanced tab – All boxes unchecked
-- GPU Acceleration
-
-    - Use cluster’s graphics cards: Unchecked
-
-Click “Apply” and make sure to save the settings (Options/Save Settings).
-Exit and re-launch VisIt.
-
-.. note::
-    Users with large datasets may see a slight performance boost by
-    using the high-memory ``gpu`` partition or by increasing
-    the number of processors if memory is not an issue.
-
-**For Summit:**
-
-- For host nickname: Summit (this is arbitrary)
-- Remote hostname: summit.olcf.ornl.gov (required)
-- Host name aliases: login# (required)
-- Maximum Nodes: unchecked
-- Maximum processors: unchecked (arbitrary)
-- Path to VisIt Installation: ``/sw/summit/visit`` (required)
-- Username: Your OLCF Username (required)
-- Tunnel data connections through SSH: Checked (required)
-
-Under the “Launch Profiles” tab create a launch profile. Most of these values
-are arbitrary
-
-- Profile Name: No GPU, MPI, Multinode (arbitrary)
-- Timeout: 480 (arbitrary)
-- Number of threads per task: 0 (arbitrary, but not tested
-  with OMP/pthread support)
-- Additional arguments: blank (arbitrary)
-
-Under the “Parallel” Tab:
-
-- Launch parallel engine: Checked (required)
-- Launch Tab:
-
-    - Parallel launch method:
-      bsub (required)
-    - Partition/Pool/Queue: batch (required)
-    - Number of processors: 2 (arbitrary, but 
-      high number may lead to OOM errors)
-    - Number of nodes: 2 (arbitrary)
-    - Bank/Account: Your OLCF project to use (required)
-    - Time Limit: 01:00 (arbitrary)
-    - Machine file: Unchecked (required – Lets VisIt get 
-      the nodelist from the scheduler)
-    - Constraints: unchecked
-- Advanced tab – All boxes unchecked
-- GPU Acceleration
-
-    - Use cluster’s graphics cards: Unchecked
-
-Click “Apply” and make sure to save the settings (Options/Save Settings).
-Exit and re-launch VisIt.
+Additionally, check out our beginner friendly
+`OLCF VisIt Tutorial <https://github.com/olcf/dva-training-series/tree/main/visit>`__
+which uses Andes to visualize example datasets.
 
 .. _visit-host-profiles:
+
+Creating ORNL/OLCF Host Profiles
+--------------------------------
+
+The first time you launch VisIt (after installing), you will be prompted for a
+remote host preference. Unfortunately, ORNL does not maintain that list
+often, so the ORNL entry may be outdated. Click the “None” option instead.
+Restart VisIt, and go to Options→Host Profiles. Select “New Host”
+
+.. tabbed:: Andes
+
+    **For Andes:**
+
+    - **Host nickname**: ``Andes`` (this is arbitrary)
+    - **Remote hostname**: ``andes.olcf.ornl.gov`` (required)
+    - **Host name aliases**: ``andes-login#g`` (required)
+    - **Maximum Nodes**: Unchecked
+    - **Maximum processors**: Unchecked (arbitrary)
+    - **Path to VisIt Installation**: ``/sw/andes/visit`` (required)
+    - **Username**: Your OLCF Username (required)
+    - **Tunnel data connections through SSH**: Checked (required)
+
+    Under the “Launch Profiles” tab create a launch profile. Most of these values
+    are arbitrary
+
+    - **Profile Name**: ``batch`` (arbitrary)
+    - **Timeout**: 480 (arbitrary)
+    - **Number of threads per task**: 0 (arbitrary, but not tested
+      with OMP/pthread support)
+    - **Additional arguments**: blank (arbitrary)
+
+    Under the “Parallel” Tab:
+
+    - **Launch parallel engine**: Checked (required)
+    - Launch Tab:
+
+        - **Parallel launch method**:
+          ``sbatch/srun`` (required)
+        - **Partition/Pool/Queue**: ``batch`` (required)
+        - **Number of processors**: 1 (arbitrary, but
+          high number may lead to OOM errors) (max for ``batch`` queue is 32)
+        - **Number of nodes**: 1 (arbitrary)
+        - **Bank/Account**: Your OLCF project to use (required)
+        - **Time Limit**: 1:00:00 (arbitrary, ``HH:MM:SS``)
+        - **Machine file**: Unchecked (required – Lets VisIt get
+          the nodelist from the scheduler)
+        - **Constraints**: Unchecked
+    - Advanced tab – All boxes unchecked
+    - GPU Acceleration
+
+        - **Use cluster’s graphics cards**: Unchecked (even if using the ``gpu`` partition)
+
+    Click “Apply” and make sure to save the settings (Options/Save Settings).
+    Exit and re-launch VisIt.
+
+    .. note::
+        Users with large datasets may see a slight performance boost by
+        using the high-memory ``gpu`` partition or by increasing
+	the number of processors if memory is not an issue. See the
+        :ref:`visit-modify-host` section below for how to add a ``gpu`` partition
+        launch profile on Andes.
+
+.. tabbed:: Summit
+
+    **For Summit:**
+
+    - **Host nickname**: ``Summit`` (this is arbitrary)
+    - **Remote hostname**: ``summit.olcf.ornl.gov`` (required)
+    - **Host name aliases**: ``login#`` (required)
+    - **Maximum Nodes**: Unchecked
+    - **Maximum processors**: Unchecked (arbitrary)
+    - **Path to VisIt Installation**: ``/sw/summit/visit`` (required)
+    - **Username**: Your OLCF Username (required)
+    - **Tunnel data connections through SSH**: Checked (required)
+
+    Under the “Launch Profiles” tab create a launch profile. Most of these values
+    are arbitrary
+
+    - **Profile Name**: ``batch`` (arbitrary)
+    - **Timeout**: 480 (arbitrary)
+    - **Number of threads per task**: 0 (arbitrary, but not tested
+      with OMP/pthread support)
+    - **Additional arguments**: blank (arbitrary)
+
+    Under the “Parallel” Tab:
+
+    - **Launch parallel engine**: Checked (required)
+    - Launch Tab:
+
+        - **Parallel launch method**:
+          ``bsub`` (required)
+        - **Partition/Pool/Queue**: ``batch`` (required)
+        - **Number of processors**: 1 (arbitrary, but 
+          high number may lead to OOM errors) (max is 42)
+        - **Number of nodes**: 1 (arbitrary)
+        - **Bank/Account**: Your OLCF project to use (required)
+        - **Time Limit**: 01:00 (arbitrary, ``HH:MM``)
+        - **Machine file**: Unchecked (required – Lets VisIt get 
+          the nodelist from the scheduler)
+        - **Constraints**: Unchecked
+    - Advanced tab – All boxes unchecked
+    - GPU Acceleration
+
+        - **Use cluster’s graphics cards**: Unchecked
+
+    Click “Apply” and make sure to save the settings (Options/Save Settings).
+    Exit and re-launch VisIt.
+
+.. _visit-modify-host:
 
 Modifying Host Profiles
 -----------------------
 
-To make changes to an existing host profile, do the following:
+See :ref:`visit-host-profiles` section above for creating your initial host profile.
+
+To make changes to an *existing* host profile, do the following:
 
 -  Go to "Options→Host Profiles".
 -  The window will display the known hosts on the left, with the 
@@ -158,8 +175,8 @@ To make changes to an existing host profile, do the following:
 -  Once you have made your changes, press the "Apply" button, and then
    save the settings (Options/Save Settings).
 
-Each host can have several launch profiles. A launch profile specifies VisIt can 
-be run on a given host computer. To make changes to a host's launch profile, do
+Each host can have several launch profiles. A launch profile specifies how VisIt 
+runs on a given host computer. To make changes to a host's launch profile, do
 the following:
 
 -  Go to "Options→Host Profiles".
@@ -174,6 +191,23 @@ the following:
    field in the "Parallel" tab.
 -  Once you have made your changes, press the "Apply" button, and then
    save the settings (Options/Save Settings).
+
+For example, this is how you would modify the Andes profile to use the ``gpu`` partition:
+
+Under Andes' "Launch Profiles":
+
+1. Click on "New Profile"
+2. Name the profile something like "gpu" (arbitrary)
+3. Click on "Parallel"
+4. Check "Launch Parallel Engine"
+5. Set "Launch Method" to ``sbatch/srun`` (required)
+6. Set "Partition/Pool/Queue" to ``gpu`` (required)
+7. Set default number of processors to 28 (max without hyperthreading) (arbitrary)
+8. Set default number of nodes to 1 (arbitrary)
+9. Set default "Bank/Account" to your OLCF project with Andes allocation
+10. Set a default "Time Limit" in format of (``HH:MM:SS``)
+11. Click "Apply"
+12. At the top menu click on "Options"→"Save Settings"
 
 .. _visit-remote-gui:
 
@@ -434,7 +468,7 @@ home directory that are unable to be created if you are over your quota (50 GB
 is the default quota limit).
 
 If the above does not apply to you, double check that you set up your host
-profile exactly as how it is outlined in the :ref:`visit-setup` section.
+profile exactly as how it is outlined in the :ref:`visit-host-profiles` section.
 It may be helpful to delete and remake your host profile, but just remember
 to always save your settings via "Options/Save Settings".
 
@@ -466,7 +500,7 @@ Andes, enter ``squeue`` from the command line. To do this on Summit, enter
 you see it in a state marked "PD" or "PEND" you should wait a bit longer to see
 if it will start. If you do not see your job listed in the queue, check to make
 sure your project ID is entered in your VisIt host profile. See the
-:ref:`visit-host-profiles` section for instructions.
+:ref:`visit-modify-host` section for instructions.
 
 Fatal Python error when launching the CLI
 -----------------------------------------
@@ -499,6 +533,9 @@ SSH connection. Here are a few different approaches to fix this issue:
 Additional Resources
 ====================
 
+* The `OLCF VisIt Tutorial on Andes
+  <https://github.com/olcf/dva-training-series/tree/main/visit>`__ is a
+  beginner friendly tutorial for getting started on Andes with example datasets.
 * The `VisIt User Manual <https://visit-sphinx-github-user-manual.readthedocs.io/en/develop/>`__ 
   contains all information regarding the CLI and the GUI.
 * `Past VisIt Tutorials <https://www.visitusers.org/index.php?title=VisIt_Tutorial>`__ 
