@@ -3706,10 +3706,18 @@ created with information on the files that were copied.
 Known Issues
 ============
 
-Last Updated: 30 July 2021
+Last Updated: 24 October 2022
 
 Open Issues
 -----------
+
+Unsupported CUDA versions do not work with GPU-aware MPI
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Although there are newer CUDA modules on Summit, ``cuda/11.0.3`` is the latest version that is officially supported by the version of IBM's software stack installed on Summit. When loading the newer CUDA modules, a message is printed to the screen stating that the module is for “testing purposes only”. These newer unsupported CUDA versions might work with some users’ applications, but importantly, they are known **not** to work with GPU-aware MPI.
+
+HIP does not currently work with GPU-aware MPI
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Using the ``hip-cuda/5.1.0`` module on Summit requires CUDA v11.4.0 or later. However, only CUDA v11.0.3 and earlier currently support GPU-aware MPI, so GPU-aware MPI is currently not available when using HIP on Summit.
 
 System not sourcing ``.bashrc``, ``.profile``, etc. files as expected
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
