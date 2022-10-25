@@ -133,7 +133,7 @@ Writing UMS Modulefiles
 A project directory and modulefile will be created and made available.  The project directory will be the
 workspace for your team to build and install the software you wish to provide to the other OLCF users.
 The created modulefile will add your project's provided modules to the modulepath. Note that by default,
-the project modulefile will add a default path, `/sw/{{HOST}}/ums/{{PROJECT}}/modules`, to the MODULEPATH. If
+the project modulefile will add a default path, ``/sw/{{HOST}}/ums/{{PROJECT}}/modules``, to the MODULEPATH. If
 you wish to locate your project's modules in another directory, you will need to modify the provided modulefile.
 
 The following will be created and put under the ownership of your UMS project and your project's PI:
