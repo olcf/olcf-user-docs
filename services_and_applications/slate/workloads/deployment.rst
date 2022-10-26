@@ -99,13 +99,13 @@ Once created, you can check the status of the ongoing deployment process with th
 
 .. code-block::
 
-   oc rollout status deployment/{NAME}
+   oc rollout status deploy/{NAME}
 
 To get basic information about the available revisions, if you had done any updates to the deployment since, run
 
 .. code-block::
 
-   oc rollout history deployment/{NAME}
+   oc rollout history deploy/{NAME}
 
 You can view a specific revision with
 
