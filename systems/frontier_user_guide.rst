@@ -784,7 +784,7 @@ Consider the following batch script:
     srun ...
     cp my_output_file $PROJWORK/abc123/RunData/Output.456
 
-In the script, Slurm directives are preceded by ``#SBATCH``, making them appear as somments to the shell. Slurm looks for these directives through the first non-comment, non-whitespace line. Options after that will be ignored by Slurm (and the shell).
+In the script, Slurm directives are preceded by ``#SBATCH``, making them appear as comments to the shell. Slurm looks for these directives through the first non-comment, non-whitespace line. Options after that will be ignored by Slurm (and the shell).
 
 +------+-------------------------------------------------------------------------------------------------+
 | Line | Description                                                                                     |
