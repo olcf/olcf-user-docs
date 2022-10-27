@@ -28,7 +28,8 @@ Below is an example Deployment:
    spec:
      replicas: 5
      selector:
-       name: my-app
+       matchLabels:
+         name: my-app
      template: { ... }
      strategy:
        type: RollingUpdate
@@ -75,7 +76,8 @@ Here is an example completed Deployment.
    spec:
      replicas: 2
      selector:
-       deployment: recreate-example
+       matchLabels:
+         deployment: recreate-example
      strategy:
        # We set the type of strategy to Recreate, which means that it will be scaled down prior to being scaled up
        type: Recreate
@@ -93,13 +95,13 @@ Here is an example completed Deployment.
 
 As with other objects in OpenShift, you can create this Deployment with ``oc create -f {FILE_NAME}``.
 
-Once created, you can start a new deployment process with the command
+Once created, you can check the status of the ongoing deployment process with the command
 
 .. code-block::
 
-   oc rollout latest deploy/{NAME}
+   oc rollout status deploy/{NAME}
 
-This will begin a new deployment. To get basic information about the available revisions, run
+To get basic information about the available revisions, if you had done any updates to the deployment since, run
 
 .. code-block::
 
@@ -266,8 +268,7 @@ sake of showing how route-based deployments work, we'll use a route.
        oc create route edge --service=my-app-green --name=my-app
 
 #. 
-   Browse to your project at my-app.{PROJECT}.apps.granite.ccs.ornl.gov and verify that the v1 version
-    is displayed.
+   Browse to your project at my-app.{PROJECT}.apps.granite.ccs.ornl.gov and verify that the v1 version is displayed.
 
 #. 
    Edit the route and change the service name to ``my-app-blue``
