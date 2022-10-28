@@ -13,7 +13,9 @@ software packages intended for use by other general users on OLCF resources.
 
 .. note::
 
-  The UMS program is currently supported on Summit, Andes, and Spock.
+  The UMS program is not currently available on all OLCF systems.
+
+  Depending on the system, the directories used by UMS projects may differ, but the workflow remains the same.
 
 To apply to the UMS program, fill out the application at: 
 `https://my.olcf.ornl.gov/project-application-new <https://my.olcf.ornl.gov/project-application-new>`_.
@@ -38,28 +40,58 @@ Currently Available User-Managed Software
 | gen119     | NVIDIA RAPIDS  | Benjamin Hernandez (hernandezarb@ornl.gov) | https://developer.nvidia.com/rapids                                            |
 |            | BlazingSQL     |                                            | https://blazingsql.com/                                                        |
 +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
+| ums012     | SOLLVE         | Felipe Jaramillo (cabarcas@udel.edu)       |                                                                                |
+|            |                |                                            |                                                                                |
+|            | LLVM           | Sunita Chandrasekaran (schandra@udel.edu)  |                                                                                |
++------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
 | ums013     | Julia          | Valentin Churavy  (vchuravy@mit.edu)       | https://julialang.org                                                          |
++------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
+| ums015     | DPC++ for HIP  | Gordon Brown (gordon@codeplay.com)         |                                                                                |
 +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
 
 Usage
 -----
 
-To access and use the UMS available on a system:
+To access and use the UMS available on a system, you must first load the base ums module to add
+the individual projects to the module list. Once this is loaded, then each project has a module
+to gain access to that project’s provided software. For example:
 
 .. code::
 
+  ## Find the base UMS module:
   > module avail ums
-  --------------- /sw/summit/modulefiles/core ---------------
+  ----------------- /sw/{{HOST}}/modulefiles ------------------
     ums/default
 
+  ## Load the UMS project access modules:
   > module load ums
+
+  ## See the newly available UMS projects:
   > module avail ums
-  --------------- /sw/summit/modulefiles/core ---------------
+  --------------- /sw/{{HOST}}/ums/modulefiles/ ---------------
+    ums-abc123/default
+    ums001/default
+
+  ----------------- /sw/{{HOST}}/modulefiles ------------------
     ums/default (L)
 
-  ------------- /sw/summit/modulefiles/ums/core -------------
-    ums-abc123/default
-    ums-xyz987/default
+  ## Gain access to a UMS project's provided modules:
+  > module load ums-abc123
+
+  ## See the provided UMS project's modules (truncated output):
+  > module avail
+  ...
+  ------------ /sw/{{HOST}}/ums/ums-abc123/modules ------------
+    abc123/1.0
+    abc123/1.1
+
+  --------------- /sw/{{HOST}}/ums/modulefiles/ ---------------
+    ums-abc123/default (L)
+    ums001/default
+
+  ----------------- /sw/{{HOST}}/modulefiles ------------------
+    ums/default (L)
+  ...
 
 If there are issues with a UMS provided product, you can find information in the module via:
 
@@ -67,7 +99,7 @@ If there are issues with a UMS provided product, you can find information in the
 
   > module show ums-abc123
   -----------------------------------------------------------
-    /sw/summit/modulefiles/ums/Core/ums-abc123/default.lua:
+    /sw/{{HOST}}/ums/modules/ums-abc123/default.lua:
   -----------------------------------------------------------
 
   help([[ABC software description (User Managed Software)
@@ -87,7 +119,7 @@ If there are issues with a UMS provided product, you can find information in the
       <URL to the project's documentation>
     ]])
     whatis("UMS - ABC Software")
-    prepend_path("MODULEPATH","/sw/summit/modulefiles/ums/abc123/Core")
+    prepend_path("MODULEPATH","/sw/{{HOST}}/ums/modules/abc123/Core")
 
 Policies
 --------
@@ -98,12 +130,19 @@ The OLCF UMS Policy is located in the "Accounts and Projects" section of this do
 Writing UMS Modulefiles
 -----------------------
 
-The following directories will be created and made available for you to install software and modulefiles:
+A project directory and modulefile will be created and made available.  The project directory will be the
+workspace for your team to build and install the software you wish to provide to the other OLCF users.
+The created modulefile will add your project's provided modules to the modulepath. Note that by default,
+the project modulefile will add a default path, ``/sw/{{HOST}}/ums/{{PROJECT}}/modules``, to the MODULEPATH. If
+you wish to locate your project's modules in another directory, you will need to modify the provided modulefile.
+
+The following will be created and put under the ownership of your UMS project and your project's PI:
 
 .. code::
 
-  /sw/{{HOST}}/ums/{{PROJECT}}                     ## root prefix for installing builds
-  /sw/{{HOST}}/modulefiles/ums/{{PROJECT}}/Core    ## root prefix for installing modulefiles
+  /sw/{{HOST}}/ums/modules/{{PROJECT}}/default.lua    ## default project gateway module
+  /sw/{{HOST}}/ums/{{PROJECT}}                        ## root prefix for installing builds
+  /sw/{{HOST}}/ums/{{PROJECT}}/modules                ## root prefix for installing modulefiles
 
 The builds in ``/sw/{{HOST}}/ums/{{PROJECT}}`` can be organized as you see fit, but we ask that you try to 
 document the layout and build procedures. For example, under the prefix directory, use one or more of the 
@@ -132,27 +171,32 @@ more modulefiles that you have written for your software:
   # To see modules your project provides:
   ls $(module --redirect show ums-{{PROJECT}} | egrep "MODULEPATH.*$" | grep -o "/sw/[^\'\"]*")
 
-The gateway module ``ums-{{PROJECT}}`` will add ``/sw/{{HOST}}/modulefiles/ums/{{PROJECT}}/Core`` to the
+The project gateway module ``ums-{{PROJECT}}`` will add ``/sw/{{HOST}}/ums/{{PROJECT}}/modules`` to the
 ``$MODULEPATH``. Any modulefiles you install under this directory will be available to users when they have 
-loaded the gateway module. Modulefiles must be organized according to the following structure:
+loaded the gateway module. Modulefiles should be organized according to the following structure:
 
 .. code::
 
-  /sw/{{HOST}}/modulefiles/ums/{{PROJECT}}/Core/<package1_name>/<package1_version1>.lua
-  /sw/{{HOST}}/modulefiles/ums/{{PROJECT}}/Core/<package1_name>/<package1_version2>.lua
-  /sw/{{HOST}}/modulefiles/ums/{{PROJECT}}/Core/<package2_name>/<package2_version1>.lua
+  /sw/{{HOST}}/ums/{{PROJECT}}/modules/<package1_name>/<package1_version1>.lua
+  /sw/{{HOST}}/ums/{{PROJECT}}/modules/<package1_name>/<package1_version2>.lua
+  /sw/{{HOST}}/ums/{{PROJECT}}/modules/<package2_name>/<package2_version1>.lua
 
 You may have as many modulefiles as you see fit, both in terms of ``<package_name>`` and ``<package_version>``. 
-However, it is imperative that ``/sw/{{HOST}}/modulefiles/ums/{{PROJECT}}/Core`` only have one level of 
-subdirectories (``<packageN_name>``). Having subdirectories will alter the way LMOD searches for modulefiles 
-globally and generally make LMOD's behavior indeterminate. It is also recommended that you be careful with 
-symlinks in the modulefile prefix. In particular, symlinks under ``/sw/{{HOST}}/modulefiles/ums/{{PROJECT}}/Core`` 
-that refer back to ``/sw/{{HOST}}/modulefiles/ums/{{PROJECT}}/Core`` will cause LMOD to enter a recursive 
-loop and be unable to display or load your modules correctly.
+
+.. warning::
+
+  It is imperative that ``/sw/{{HOST}}/ums/{{PROJECT}}/modules`` only have one level of subdirectories
+  (``<packageN_name>``). Having further subdirectories will alter the way LMOD searches for modulefiles 
+  globally and generally make LMOD's behavior indeterminate. It is also recommended that you be careful with 
+  symlinks in the modulefile prefix.
+
+  In particular, symlinks under ``/sw/{{HOST}}/ums/{{PROJECT}}/modules`` 
+  that refer back to ``/sw/{{HOST}}/ums/{{PROJECT}}/modules`` will cause LMOD to enter a recursive 
+  loop and be unable to display or load your modules correctly.
 
 .. 
   If you want to expand the pilot to other machines, let us know and we can create corresponding directories 
-  under ``/sw/{andes,...}``. UA organizes software per-hostname rather than per-architecture 
+  under ``/sw/{andes,crusher,summit,...}``. UA organizes software per-hostname rather than per-architecture 
   and we discourage sharing builds between different machines.
   Even though the architecture may be the same for multiple hosts, these hosts generally go through 
   upgrades and changes to key dependency libraries at different times; or they may have different resource 
