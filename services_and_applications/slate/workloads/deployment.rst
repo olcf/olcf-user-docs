@@ -253,7 +253,10 @@ sake of showing how route-based deployments work, we'll use a route.
 
 
 #. 
-   Create two copies of your application, one for the old service (green) and one for the new (blue)
+   Create two copies of your application, one for the old service (green) and one for the
+   new (blue). Note that the image you are using here ``my-app:v<n>`` must have a port
+   exposed with the ``EXPOSE <portnumber>`` in its Dockerfile when you built it. Otherwise,
+   make sure you create a service for it after the below commands.
 
    .. code-block::
 
@@ -265,7 +268,7 @@ sake of showing how route-based deployments work, we'll use a route.
 
    .. code-block::
 
-       oc create route edge --service=my-app-green --name=my-app
+       oc create route edge my-app-route --service=my-app-green --hostname=my-app.apps.<cluster>.ccs.ornl.gov
 
 #. 
    Browse to your project at my-app.{PROJECT}.apps.granite.ccs.ornl.gov and verify that the v1 version is displayed.
@@ -275,7 +278,7 @@ sake of showing how route-based deployments work, we'll use a route.
 
    .. code-block::
 
-       oc patch route/my-app -p '{"spec":{"to":{"name":"my-app-blue"}}}'
+       oc patch route/my-app-route -p '{"spec":{"to":{"name":"my-app-blue"}}}'
 
 #. 
    Verify the change has taken effect by refreshing your browser until you see the new version.
@@ -315,8 +318,7 @@ To set up an A/B environment:
 #. 
    Browse to the application at ``my-app.{PROJECT}.{CLUSTER}.ccs.ornl.gov`` to verify that you see the ``A`` version. 
 #. 
-   Edit the route to include the second service with ``alternateBackends``
-    (see the :ref:`slate_routes` for more information)
+   Edit the route to include the second service with ``alternateBackends`` (see the :ref:`slate_routes` for more information)
 
    .. code-block::
 
