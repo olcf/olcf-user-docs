@@ -360,4 +360,4 @@ To set up an A/B environment:
 More information
 ~~~~~~~~~~~~~~~~
 
-For more information, checkout the `upstream kubernetes doc on Deployments <https://kubernetes.io/docs/concepts/workloads/controllers/deployment/>`_.
+For more information, checkout the `upstream kubernetes doc on Deployments <https://kubernetes.io/docs/concepts/workloads/controllers/deployment/>`_ and the  `Openshift doc on Route based deployment strategies <https://docs.openshift.com/container-platform/4.8/applications/deployments/route-based-deployment-strategies.html>`_.
