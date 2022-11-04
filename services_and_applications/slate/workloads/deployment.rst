@@ -231,10 +231,11 @@ More Advanced Deployment Strategies with Routes
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 While some strategies leverage features of Deployments, others leverage features of
-*routes*. If you haven't read the docs on :ref:`slate_services`
-or :ref:`slate_routes`, read those first before trying these more advanced strategies.
+*routes*. If you haven't read the docs on :ref:`slate_services` or :ref:`slate_routes`,
+read those first before trying these more advanced strategies.
 
-Since routes are intended for HTTP and HTTPS traffic, these strategies are best used for web applications.
+Since routes are intended for HTTP and HTTPS traffic, these strategies are best used for
+web applications.
 
 Blue-Green Deployment
 ~~~~~~~~~~~~~~~~~~~~~
@@ -251,17 +252,31 @@ sake of showing how route-based deployments work, we'll use a route.
   version of the software won't be able to read the database changes, and your production instance could
   break. This is known as "N-1 compatibility" or "backward compatibility".
 
+.. note::
+  The below examples use commands to create everything for demonstration purposes but the
+  general best practice is to use yaml files for for all your deploying and configuration.
 
 #. 
    Create two copies of your application, one for the old service (green) and one for the
    new (blue). Note that the image you are using here ``my-app:v<n>`` must have a port
    exposed with the ``EXPOSE <portnumber>`` in its Dockerfile when you built it. Otherwise,
-   make sure you create a service for it after the below commands.
+   make sure you create a service for it after the below commands. The below command
+   creates two DeploymentConfigs ``my-app-green`` and ``my-app-blue``. 
 
    .. code-block::
 
        oc new-app my-app:v1 --name=my-app-green
        oc new-app my-app:v2 --name=my-app-blue
+
+#. 
+   If a service wasn't created automatically, create a service with the below commands,
+   where the ``--port`` refers to the port the service exposes to incoming traffic, and the ``--target-port``
+   refers to the port in the running pod to direct traffic to.
+
+   .. code-block:: 
+     
+       oc expose dc/my-app-blue --port=80 --target-port=8080
+       oc expose dc/my-app-green --port=80 --target-port=8080
 
 #. 
    Create a route which points to the old service (this is assuming your application)
@@ -271,7 +286,7 @@ sake of showing how route-based deployments work, we'll use a route.
        oc create route edge my-app-route --service=my-app-green --hostname=my-app.apps.<cluster>.ccs.ornl.gov
 
 #. 
-   Browse to your project at my-app.{PROJECT}.apps.granite.ccs.ornl.gov and verify that the v1 version is displayed.
+   Browse to your project at my-app.apps.<cluster>.ccs.ornl.gov and verify that the v1 version is displayed.
 
 #. 
    Edit the route and change the service name to ``my-app-blue``
