@@ -1683,6 +1683,16 @@ Finally, the following table summarizes the nature of the memory returned based 
 | malloc()             | hipMemAdvise (hipMemAdviseSetCoarseGrain)   |  Coarse grained         |
 +----------------------+---------------------------------------------+-------------------------+
 
+
+Performance considerations for LDS FP atomicAdd()
+-------------------------------------------------
+
+Hardware FP atomic operations performed in LDS memory are usually always faster than an equivalent CAS loop, in particular when contention on LDS memory locations is high.
+Because of a hardware design choice, FP32 LDS atomicAdd() operations can be slower than equivalent FP64 LDS atomicAdd(), in particular when contention on memory locations is low (e.g. random access pattern).
+The aforementioned behavior is only true for FP atomicAdd() operations. Hardware atomic operations for CAS/Min/Max on FP32 are usually faster than the FP64 counterparts.
+In cases when contention is very low, a FP32 CAS loop implementing an atomicAdd() operation could be faster than an hardware FP32 LDS atomicAdd().
+Applications using single precision FP atomicAdd() are encouraged to experiment with the use of double precision to evaluate the trade-off between high atomicAdd() performance vs. potential lower occupancy due to higher LDS usage.
+
 ------
 
 Getting Help
