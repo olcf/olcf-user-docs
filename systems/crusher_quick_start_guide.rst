@@ -24,7 +24,7 @@ Each Crusher compute node consists of [1x] 64-core AMD EPYC 7A53 "Optimized 3rd 
 
     The 8 GCDs contained in the 4 MI250X will show as 8 separate GPUs according to Slurm, ``ROCR_VISIBLE_DEVICES``, and the ROCr runtime, so from this point forward in the quick-start guide, we will simply refer to the GCDs as GPUs.
 
-.. image:: /images/Crusher_Node_Diagram.jpg
+.. image:: /images/Frontier_Node_Diagram.jpg
    :align: center
    :width: 100%
    :alt: Crusher node architecture diagram
