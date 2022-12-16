@@ -97,6 +97,14 @@ Quantum
 
    quantum/index
 
+Scalable Protected Infrastructure (SPI)
+----------------------------------------
+
+.. toctree::
+   :maxdepth: 2
+
+   spi/index
+
 How to contribute to this documentation
 -----------------------------------------
 
