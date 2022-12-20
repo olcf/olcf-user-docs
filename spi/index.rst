@@ -92,7 +92,7 @@ To safely separate SPI and non-SPI workflows, the SPI resources only mount a GPF
 
 :ref:`Data Transfer<spi-data-transfer>`
 ---------------------------------------
-The SPI provides separate :ref:`Data Transfer Nodes<spi-data-tranfer>` configured specifically for SPI workflows.  The nodes are not directly accessible for login but are accessible through the Globus tool.  The SPI DTNs mount the same Arx filesystem available on the SPI compute resources.  Globus is the prefered method to transfer data into and out of the SPI resources.
+The SPI provides separate :ref:`Data Transfer Nodes<spi-data-transfer>` configured specifically for SPI workflows.  The nodes are not directly accessible for login but are accessible through the Globus tool.  The SPI DTNs mount the same Arx filesystem available on the SPI compute resources.  Globus is the prefered method to transfer data into and out of the SPI resources.
 
 
 IP Whitelisting
