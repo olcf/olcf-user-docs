@@ -461,3 +461,8 @@ Tips and Tricks
   can set the cache to a location in ``/tmp/containers`` with ``export
   SINGULARITY_CACHEDIR=/tmp/containers/<username>/singularitycache`` if you want to avoid
   using the ``--disable-cache`` flag.
+- If you see an error that looks something like ``Error: Cannot connect to the Podman
+  socket, make sure there is a Podman REST API service running.: error creating tmpdir:
+  mkdir /run/user/12341: permission denied``, try logging out and logging back in. If that
+  fails, then after logging in run ``ssh login<number>`` where login<number> is the login node 
+  you are currently logged in to. 

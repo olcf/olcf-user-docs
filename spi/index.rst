@@ -5,7 +5,7 @@ Scalable Protected Infrastructure (SPI)
 What is SPI
 =============
 
-The OLCF's **Scalable Protected Infrastructure (SPI)** provides resources and protocols that enable researchers to process protected data at scale.  The SPI is built around a framework of security protocals that allows researchers to process large datasets containing private information.  Using this framework researchers can use the center's large HPC resources to compute data containing protected health information (PHI), personally identifiable information (PII), data protected under International Traffic in Arms Regulations, and other types of data that require privacy.  
+The OLCF's **Scalable Protected Infrastructure (SPI)** provides resources and protocols that enable researchers to process protected data at scale.  The SPI is built around a framework of security protocols that allows researchers to process large datasets containing private information.  Using this framework researchers can use the center's large HPC resources to compute data containing protected health information (PHI), personally identifiable information (PII), data protected under International Traffic in Arms Regulations, and other types of data that require privacy.  
 
 The SPI utilizes a mixture of existing resources combined with specialized resources targeted at SPI workloads.  Because of this, many processes used within the SPI are very similar to those used for standard non-SPI.  This page lists the differences you may see when using OLCF resources to execute SPI resources.  The page will also point to sections within the site where more information on standard non-SPI use can be found.
 
@@ -41,7 +41,7 @@ Allocations and User Accounts
 Allocations (Projects)
 -----------------------
 
-Similar to standard OLCF workflows, to run SPI workflows on OLCF resources, you will first need an approved project.  The project will be given an allocation(s) that will alow resource access and use.  The first step to requesting an allocation is to complete the project request form.  The form will initiate the process that includes peer review, export control review, agreements, and others.  Once submitted, members of the OLCF accounts team will help walk you through the process.
+Similar to standard OLCF workflows, to run SPI workflows on OLCF resources, you will first need an approved project.  The project will be given an allocation(s) that will allow resource access and use.  The first step to requesting an allocation is to complete the project request form.  The form will initiate the process that includes peer review, export control review, agreements, and others.  Once submitted, members of the OLCF accounts team will help walk you through the process.
 
 
 Requesting a New Allocation (Project)
@@ -152,7 +152,7 @@ For users with accounts on non-SPI resources, you will use the same SecurID fob 
 
 Login Nodes
 ------------
-To help separate data and processes, SPI use separate login nodes, ``citadel.olcf.ornl.gov``, to reach Summit’s compute resources. 
+To help separate data and processes, SPI use separate login nodes, ``citadel.ccs.ornl.gov``, to reach Summit’s compute resources. 
 
 .. note:: The Citadel login node must be used to submit SPI jobs to Summit’s compute resources and access the SPI specific filesystem.
 
