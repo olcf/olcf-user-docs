@@ -9,6 +9,7 @@ Systems
 
    frontier_user_guide
    summit_user_guide
+   citadel_user_guide
    andes_user_guide
    home_user_guide
    dtn_user_guide
