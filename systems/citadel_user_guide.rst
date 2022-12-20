@@ -22,7 +22,7 @@ More information on the Programming Environment, Compiling, and Running Batch Jo
 
 Citadel (SPI) Documentation
 ============================
-For notable differences between Citadel and Summit, please see the :ref:`Citadel<spi-compute-citadel>` documentation.
+For notable differences between Citadel and Summit, please see the :ref:`SPI<spi-compute-citadel>` documentation.
 
 .. note::
     The login node used by Citadel mirrors the Summit login nodes in hardare and software.  The login node also provides access to the same compute resources as are accessible from Summit. 
