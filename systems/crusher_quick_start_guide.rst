@@ -1712,7 +1712,7 @@ System Updates
 
 On Thursday, December 29, 2022 the following system configuration settings will be updated on Crusher:
 
- * Core isolation will be enabled: as a result, system processes will be constrained to core 0 on every node.
+ * Low-Noise Mode will be enabled: as a result, system processes will be constrained to core 0 on every node.
  * Slurm's core specialization default will change: Slurm ``--core-spec`` or ``-S`` value will be set to 8. This will provide a symmetric distribution of cores per GCD to the application and will reserve one core per L3 cache region. After the outage, the default number of cores available to each GCD on a node will be 7. To change from the new default value, you can set ``--core-spec`` or ``-S`` in your job submission.
  * The default NIC mapping will be updated to ``MPICH_OFI_NIC_POLICY=NUMA`` to address known issues described in `OLCFDEV-192 <https://docs.olcf.ornl.gov/systems/crusher_quick_start_guide.html#olcfdev-1292-crusher-default-nic-binding-is-not-ideal>`__ and `OLCFDEV-1366 <https://docs.olcf.ornl.gov/systems/crusher_quick_start_guide.html#olcfdev-1366-ofi-poll-failed-errors-with-gpu-aware-mpi>`__.
 
