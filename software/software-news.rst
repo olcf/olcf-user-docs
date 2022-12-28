@@ -12,9 +12,9 @@ most recent changes are listed first.
 
 .. raw:: html
 
-   <p style="font-size:20px"><b>Summit: Darshan Runtime 3.4.0-lite (December 27, 2022)</b></p>
+   <p style="font-size:20px"><b>Summit: Darshan Runtime 3.4.0-lite (December 28, 2022)</b></p>
 
-Darshan Runtime 3.4.0-lite is now available on Summit.  The build can be accessed through the darshan-runtime/3.4.0-lite module.  The version will become default on December 27, 2022 if no issues are reported.
+The default version of Darshan Runtime has been updated on Summit to version 3.4.0-lite and is available via the `darshan-runtime/3.4.0-lite` modulefile. In addition, the default version for the companion set of tools provided in Darshan Util has been updated to `darshan-util/3.4.0`. Please note that `darshan-util/3.4.0` is required to properly parse logs generated with `darshan-runtime/3.4.0-lite`.
 
 .. csv-table::
     :header: "Package", "Version"
