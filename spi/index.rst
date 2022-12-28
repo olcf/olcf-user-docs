@@ -134,7 +134,7 @@ Citadel
 The SPI resource, **Citadel**, utilizes Summit's compute resources but adds measures to ensure separation of SPI and non-SPI workflows and data. The :ref:`Summit User Guide<summit-documentation-resources>` provides documentation on system details and use.  Because Citadel is largely a front end for Summit, you can use the Summit documentation when using Citadel.  This section describes some of the notable differences in using Summit directly and through the SPI's Citadel.  It should be used in combination with the :ref:`Summit User Guide<summit-user-guide>` .
 
 
-Conecting 
+Connecting 
 ----------
 
 Similar to the non-SPI resources, SPI resources reqiure two-factor authentication.  If you are new to the center, you will receive a SecurID fob during the account approval/creation process.  If you are an existing user of non-SPI resources, you can use the same SecurID fob and PIN used on your non-SPI account.  
@@ -168,7 +168,7 @@ The user environment on the Citadel login nodes mirrors the Summit login nodes. 
 
 .. warning:: The Citadel login nodes can not access the internet.  This may impact build workflows that attempt to access external repositories.
 
-Because the Citadel login nodes cannot reach repositories external to the system, you may need to alter your build workflows.  For these cases, you may be able to retrieve needed data. For cases where this is not possible, you can reach out to help@olcf.ornlgov and request login access to Summit.  We can provide Summit login access and a location where builds can be written and then read from Citadel.  
+Because the Citadel login nodes cannot reach repositories external to the system, you may need to alter your build workflows.  For these cases, you may be able to retrieve needed data. For cases where this is not possible, you can reach out to help@olcf.ornl.gov and request login access to Summit.  We can provide Summit login access by creating a sister project on Summit. You can then login to Summit to build your code and copy it to ``/sw/summit/mde/abc123_mde`` where ``abc123_mde`` is replaced by your Citadel project. This location is writable from Summit but only readable from Citadel. If the source code and data is small enough, you can also use the ``scp`` command from your whitelisted IP system to copy the data onto the Citadel login nodes directly.
 
 More information on building codes for Citadel including programming environments, compilers, and available software can be found on :ref:`Summit User Guide<summit-user-guide>`. 
 
