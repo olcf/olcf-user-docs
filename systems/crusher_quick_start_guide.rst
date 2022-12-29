@@ -651,10 +651,10 @@ To set the number of OpenMP threads spawned per MPI rank, the ``OMP_NUM_THREADS`
     Explicitly set OMP_WAIT_POLICY=PASSIVE or ACTIVE to suppress this message.
     Set CRAY_OMP_CHECK_AFFINITY=TRUE to print detailed thread-affinity messages.
 
-    MPI 000 - OMP 000 - HWT 000 - Node crusher001
-    MPI 000 - OMP 001 - HWT 000 - Node crusher001
-    MPI 001 - OMP 000 - HWT 008 - Node crusher001
-    MPI 001 - OMP 001 - HWT 008 - Node crusher001
+    MPI 000 - OMP 000 - HWT 001 - Node crusher001
+    MPI 000 - OMP 001 - HWT 001 - Node crusher001
+    MPI 001 - OMP 000 - HWT 009 - Node crusher001
+    MPI 001 - OMP 001 - HWT 009 - Node crusher001
 
 The first thing to notice here is the ``WARNING`` about oversubscribing the available CPU cores. Also, the output shows each MPI rank did spawn 2 OpenMP threads, but both OpenMP threads ran on the same hardware thread (for a given MPI rank). This was not the intended behavior; each OpenMP thread was meant to run on its own physical CPU core.
 
@@ -669,12 +669,12 @@ In order for each OpenMP thread to run on its own physical CPU core, each MPI ra
     $ export OMP_NUM_THREADS=2
     $ srun -N1 -n2 -c2 ./hello_mpi_omp | sort
 
-    MPI 000 - OMP 000 - HWT 000 - Node crusher001
-    MPI 000 - OMP 001 - HWT 001 - Node crusher001
-    MPI 001 - OMP 000 - HWT 008 - Node crusher001
-    MPI 001 - OMP 001 - HWT 009 - Node crusher001
+    MPI 000 - OMP 000 - HWT 001 - Node crusher001
+    MPI 000 - OMP 001 - HWT 002 - Node crusher001
+    MPI 001 - OMP 000 - HWT 009 - Node crusher001
+    MPI 001 - OMP 001 - HWT 010 - Node crusher001
 
-Now the output shows that each OpenMP thread ran on (one of the hardware threads of) its own physical CPU core. More specifically (see the Crusher Compute Node diagram), OpenMP thread 000 of MPI rank 000 ran on hardware thread 000 (i.e., physical CPU core 00), OpenMP thread 001 of MPI rank 000 ran on hardware thread 001 (i.e., physical CPU core 01), OpenMP thread 000 of MPI rank 001 ran on hardware thread 008 (i.e., physical CPU core 08), and OpenMP thread 001 of MPI rank 001 ran on hardware thread 009 (i.e., physical CPU core 09) - as intended.
+Now the output shows that each OpenMP thread ran on (one of the hardware threads of) its own physical CPU core. More specifically (see the Crusher Compute Node diagram), OpenMP thread 000 of MPI rank 000 ran on hardware thread 001 (i.e., physical CPU core 01), OpenMP thread 001 of MPI rank 000 ran on hardware thread 002 (i.e., physical CPU core 02), OpenMP thread 000 of MPI rank 001 ran on hardware thread 009 (i.e., physical CPU core 09), and OpenMP thread 001 of MPI rank 001 ran on hardware thread 010 (i.e., physical CPU core 10) - as intended.
 
 **Third attempt - Using multiple threads per core**
 
@@ -687,12 +687,12 @@ To use both available hardware threads per core, the *job* must be allocated wit
     $ export OMP_NUM_THREADS=2
     $ srun -N1 -n2 -c2 ./hello_mpi_omp | sort
 
-    MPI 000 - OMP 000 - HWT 000 - Node crusher001
-    MPI 000 - OMP 001 - HWT 064 - Node crusher001
-    MPI 001 - OMP 000 - HWT 008 - Node crusher001
-    MPI 001 - OMP 001 - HWT 072 - Node crusher001
+    MPI 000 - OMP 000 - HWT 001 - Node crusher001
+    MPI 000 - OMP 001 - HWT 065 - Node crusher001
+    MPI 001 - OMP 000 - HWT 009 - Node crusher001
+    MPI 001 - OMP 001 - HWT 073 - Node crusher001
 
-Comparing this output to the Crusher Compute Node diagram, we see that each pair of OpenMP threads is contained within a single physical core. MPI rank 000 ran on hardware threads 000 and 064 (i.e. physical CPU core 00) and MPI rank 001 ran on hardware threads 008 and 072 (i.e. physical CPU core 08).
+Comparing this output to the Crusher Compute Node diagram, we see that each pair of OpenMP threads is contained within a single physical core. MPI rank 000 ran on hardware threads 001 and 065 (i.e. physical CPU core 01) and MPI rank 001 ran on hardware threads 009 and 073 (i.e. physical CPU core 09).
 
 .. note::
 
@@ -743,9 +743,9 @@ Somewhat counterintuitively, this common test case is currently among the most d
 .. code-block:: bash
 
     $ export OMP_NUM_THREADS=1
-    $ srun -N1 -n1 -c1 --cpu-bind=map_cpu:48 --gpus=1 ./hello_jobstep
+    $ srun -N1 -n1 -c1 --cpu-bind=map_cpu:49 --gpus=1 ./hello_jobstep
 
-    MPI 000 - OMP 000 - HWT 048 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 000 - OMP 000 - HWT 049 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
 
 **Example 1: 8 MPI ranks - each with 2 OpenMP threads and 1 GPU (single-node)**
 
@@ -762,22 +762,22 @@ This example launches 8 MPI ranks (``-n8``), each with 2 physical CPU cores (``-
     $ export OMP_NUM_THREADS=2
     $ srun -N1 -n8 -c2 --gpus-per-node=8 --gpu-bind=closest ./hello_jobstep | sort
 
-    MPI 000 - OMP 000 - HWT 000 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
-    MPI 000 - OMP 001 - HWT 001 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
-    MPI 001 - OMP 000 - HWT 008 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
-    MPI 001 - OMP 001 - HWT 009 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
-    MPI 002 - OMP 000 - HWT 016 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
-    MPI 002 - OMP 001 - HWT 017 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
-    MPI 003 - OMP 000 - HWT 024 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
-    MPI 003 - OMP 001 - HWT 025 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
-    MPI 004 - OMP 000 - HWT 032 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
-    MPI 004 - OMP 001 - HWT 033 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
-    MPI 005 - OMP 000 - HWT 040 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
-    MPI 005 - OMP 001 - HWT 041 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
-    MPI 006 - OMP 000 - HWT 048 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
-    MPI 006 - OMP 001 - HWT 049 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
-    MPI 007 - OMP 000 - HWT 056 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
-    MPI 007 - OMP 001 - HWT 057 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 000 - OMP 000 - HWT 001 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 000 - OMP 001 - HWT 002 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 001 - OMP 000 - HWT 009 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 001 - OMP 001 - HWT 010 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 002 - OMP 000 - HWT 017 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 002 - OMP 001 - HWT 018 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 003 - OMP 000 - HWT 025 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 003 - OMP 001 - HWT 026 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 004 - OMP 000 - HWT 033 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 004 - OMP 001 - HWT 034 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 005 - OMP 000 - HWT 041 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 005 - OMP 001 - HWT 042 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 006 - OMP 000 - HWT 049 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 006 - OMP 001 - HWT 050 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 007 - OMP 000 - HWT 057 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 007 - OMP 001 - HWT 058 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
 
 The output from the program contains a lot of information, so let's unpack it. First, there are different IDs associated with the GPUs so it is important to describe them before moving on. ``GPU_ID`` is the node-level (or global) GPU ID, which is labeled as one might expect from looking at the Crusher Node Diagram: 0, 1, 2, 3, 4, 5, 6, 7. ``RT_GPU_ID`` is the HIP runtime GPU ID, which can be though of as each MPI rank's local GPU ID number (with zero-based indexing). So in the output above, each MPI rank has access to only 1 unique GPU - where MPI 000 has access to "global" GPU 4, MPI 001 has access to "global" GPU 5, etc., but all MPI ranks show a HIP runtime GPU ID of 0. The reason is that each MPI rank only "sees" one GPU and so the HIP runtime labels it as "0", even though it might be global GPU ID 0, 1, 2, 3, 4, 5, 6, or 7. The GPU's bus ID is included to definitively show that different GPUs are being used.
 
@@ -802,38 +802,38 @@ This example will extend Example 1 to run on 2 nodes. As the output shows, it is
     $ export OMP_NUM_THREADS=2
     $ srun -N2 -n16 -c2 --gpus-per-node=8 --gpu-bind=closest ./hello_jobstep | sort
 
-    MPI 000 - OMP 000 - HWT 000 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
-    MPI 000 - OMP 001 - HWT 001 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
-    MPI 001 - OMP 000 - HWT 008 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
-    MPI 001 - OMP 001 - HWT 009 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
-    MPI 002 - OMP 000 - HWT 016 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
-    MPI 002 - OMP 001 - HWT 017 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
-    MPI 003 - OMP 000 - HWT 024 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
-    MPI 003 - OMP 001 - HWT 025 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
-    MPI 004 - OMP 000 - HWT 032 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
-    MPI 004 - OMP 001 - HWT 033 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
-    MPI 005 - OMP 000 - HWT 040 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
-    MPI 005 - OMP 001 - HWT 041 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
-    MPI 006 - OMP 000 - HWT 048 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
-    MPI 006 - OMP 001 - HWT 049 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
-    MPI 007 - OMP 000 - HWT 056 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
-    MPI 007 - OMP 001 - HWT 057 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
-    MPI 008 - OMP 000 - HWT 000 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
-    MPI 008 - OMP 001 - HWT 001 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
-    MPI 009 - OMP 000 - HWT 008 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
-    MPI 009 - OMP 001 - HWT 009 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
-    MPI 010 - OMP 000 - HWT 016 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
-    MPI 010 - OMP 001 - HWT 017 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
-    MPI 011 - OMP 000 - HWT 024 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
-    MPI 011 - OMP 001 - HWT 025 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
-    MPI 012 - OMP 000 - HWT 032 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
-    MPI 012 - OMP 001 - HWT 033 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
-    MPI 013 - OMP 000 - HWT 040 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
-    MPI 013 - OMP 001 - HWT 041 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
-    MPI 014 - OMP 000 - HWT 048 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
-    MPI 014 - OMP 001 - HWT 049 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
-    MPI 015 - OMP 000 - HWT 056 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
-    MPI 015 - OMP 001 - HWT 057 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 000 - OMP 000 - HWT 001 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 000 - OMP 001 - HWT 002 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 001 - OMP 000 - HWT 009 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 001 - OMP 001 - HWT 010 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 002 - OMP 000 - HWT 017 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 002 - OMP 001 - HWT 018 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 003 - OMP 000 - HWT 025 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 003 - OMP 001 - HWT 026 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 004 - OMP 000 - HWT 033 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 004 - OMP 001 - HWT 034 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 005 - OMP 000 - HWT 041 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 005 - OMP 001 - HWT 042 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 006 - OMP 000 - HWT 049 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 006 - OMP 001 - HWT 050 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 007 - OMP 000 - HWT 057 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 007 - OMP 001 - HWT 058 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 008 - OMP 000 - HWT 001 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 008 - OMP 001 - HWT 002 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 009 - OMP 000 - HWT 009 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 009 - OMP 001 - HWT 010 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 010 - OMP 000 - HWT 017 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 010 - OMP 001 - HWT 018 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 011 - OMP 000 - HWT 025 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 011 - OMP 001 - HWT 026 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 012 - OMP 000 - HWT 033 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 012 - OMP 001 - HWT 034 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 013 - OMP 000 - HWT 041 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 013 - OMP 001 - HWT 042 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 014 - OMP 000 - HWT 049 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 014 - OMP 001 - HWT 050 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 015 - OMP 000 - HWT 057 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 015 - OMP 001 - HWT 058 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
 
 **Example 3: 8 MPI ranks - each with 2 OpenMP threads and 1 *specific* GPU (single-node)**
 
@@ -844,22 +844,22 @@ This example will be very similar to Example 1, but instead of using ``--gpu-bin
     $ export OMP_NUM_THREADS=2
     $ srun -N1 -n8 -c2 --gpus-per-node=8 --gpu-bind=map_gpu:4,5,2,3,6,7,0,1 ./hello_jobstep | sort
 
-    MPI 000 - OMP 000 - HWT 000 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
-    MPI 000 - OMP 001 - HWT 001 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
-    MPI 001 - OMP 000 - HWT 008 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
-    MPI 001 - OMP 001 - HWT 009 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
-    MPI 002 - OMP 000 - HWT 016 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
-    MPI 002 - OMP 001 - HWT 017 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
-    MPI 003 - OMP 000 - HWT 024 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
-    MPI 003 - OMP 001 - HWT 025 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
-    MPI 004 - OMP 000 - HWT 032 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
-    MPI 004 - OMP 001 - HWT 033 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
-    MPI 005 - OMP 000 - HWT 040 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
-    MPI 005 - OMP 001 - HWT 041 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
-    MPI 006 - OMP 000 - HWT 048 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
-    MPI 006 - OMP 001 - HWT 049 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
-    MPI 007 - OMP 000 - HWT 056 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
-    MPI 007 - OMP 001 - HWT 057 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 000 - OMP 000 - HWT 001 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 000 - OMP 001 - HWT 002 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 001 - OMP 000 - HWT 009 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 001 - OMP 001 - HWT 010 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 002 - OMP 000 - HWT 017 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 002 - OMP 001 - HWT 018 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 003 - OMP 000 - HWT 025 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 003 - OMP 001 - HWT 026 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 004 - OMP 000 - HWT 033 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 004 - OMP 001 - HWT 034 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 005 - OMP 000 - HWT 041 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 005 - OMP 001 - HWT 042 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 006 - OMP 000 - HWT 049 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 006 - OMP 001 - HWT 050 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 007 - OMP 000 - HWT 057 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 007 - OMP 001 - HWT 058 - Node crusher001 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
 
 Here, the output is the same as the results from Example 1. This is because the 8 GPU IDs in the comma-separated list happen to specify the GPUs within the same L3 cache region that the MPI ranks are in. So MPI 000 is mapped to GPU 4, MPI 001 is mapped to GPU 5, etc.
 
@@ -873,39 +873,39 @@ Extending Examples 2 and 3 to run on 2 nodes is also a straightforward exercise 
 
     $ export OMP_NUM_THREADS=2
     $ srun -N2 -n16 -c2 --gpus-per-node=8 --gpu-bind=map_gpu:4,5,2,3,6,7,0,1 ./hello_jobstep | sort
-    
-    MPI 000 - OMP 000 - HWT 000 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
-    MPI 000 - OMP 001 - HWT 001 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
-    MPI 001 - OMP 000 - HWT 008 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
-    MPI 001 - OMP 001 - HWT 009 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
-    MPI 002 - OMP 000 - HWT 016 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
-    MPI 002 - OMP 001 - HWT 017 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
-    MPI 003 - OMP 000 - HWT 024 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
-    MPI 003 - OMP 001 - HWT 025 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
-    MPI 004 - OMP 000 - HWT 032 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
-    MPI 004 - OMP 001 - HWT 033 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
-    MPI 005 - OMP 000 - HWT 040 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
-    MPI 005 - OMP 001 - HWT 041 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
-    MPI 006 - OMP 000 - HWT 048 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
-    MPI 006 - OMP 001 - HWT 049 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
-    MPI 007 - OMP 000 - HWT 056 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
-    MPI 007 - OMP 001 - HWT 057 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
-    MPI 008 - OMP 000 - HWT 000 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
-    MPI 008 - OMP 001 - HWT 001 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
-    MPI 009 - OMP 000 - HWT 008 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
-    MPI 009 - OMP 001 - HWT 009 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
-    MPI 010 - OMP 000 - HWT 016 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
-    MPI 010 - OMP 001 - HWT 017 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
-    MPI 011 - OMP 000 - HWT 024 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
-    MPI 011 - OMP 001 - HWT 025 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
-    MPI 012 - OMP 000 - HWT 032 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
-    MPI 012 - OMP 001 - HWT 033 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
-    MPI 013 - OMP 000 - HWT 040 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
-    MPI 013 - OMP 001 - HWT 041 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
-    MPI 014 - OMP 000 - HWT 048 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
-    MPI 014 - OMP 001 - HWT 049 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
-    MPI 015 - OMP 000 - HWT 056 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
-    MPI 015 - OMP 001 - HWT 057 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+
+    MPI 000 - OMP 000 - HWT 001 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 000 - OMP 001 - HWT 002 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 001 - OMP 000 - HWT 009 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 001 - OMP 001 - HWT 010 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 002 - OMP 000 - HWT 017 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 002 - OMP 001 - HWT 018 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 003 - OMP 000 - HWT 025 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 003 - OMP 001 - HWT 026 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 004 - OMP 000 - HWT 033 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 004 - OMP 001 - HWT 034 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 005 - OMP 000 - HWT 041 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 005 - OMP 001 - HWT 042 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 006 - OMP 000 - HWT 049 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 006 - OMP 001 - HWT 050 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 007 - OMP 000 - HWT 057 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 007 - OMP 001 - HWT 058 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 008 - OMP 000 - HWT 001 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 008 - OMP 001 - HWT 002 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 009 - OMP 000 - HWT 009 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 009 - OMP 001 - HWT 010 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 010 - OMP 000 - HWT 017 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 010 - OMP 001 - HWT 018 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 011 - OMP 000 - HWT 025 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 011 - OMP 001 - HWT 026 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 012 - OMP 000 - HWT 033 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 012 - OMP 001 - HWT 034 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 013 - OMP 000 - HWT 041 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 013 - OMP 001 - HWT 042 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 014 - OMP 000 - HWT 049 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 014 - OMP 001 - HWT 050 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 015 - OMP 000 - HWT 057 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 015 - OMP 001 - HWT 058 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
 
 Mapping multiple MPI ranks to a single GPU
 """"""""""""""""""""""""""""""""""""""""""
@@ -927,23 +927,22 @@ This example launches 16 MPI ranks (``-n16``), each with 1 physical CPU core (``
     $ export OMP_NUM_THREADS=1
     $ srun -N1 -n16 -c1 --ntasks-per-gpu=2 --gpu-bind=closest ./hello_jobstep | sort
 
-    MPI 000 - OMP 000 - HWT 000 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
-    MPI 001 - OMP 000 - HWT 008 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
-    MPI 002 - OMP 000 - HWT 016 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
-    MPI 003 - OMP 000 - HWT 024 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
-    MPI 004 - OMP 000 - HWT 032 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
-    MPI 005 - OMP 000 - HWT 040 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
-    MPI 006 - OMP 000 - HWT 048 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
-    MPI 007 - OMP 000 - HWT 056 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
-    MPI 008 - OMP 000 - HWT 001 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
-    MPI 009 - OMP 000 - HWT 009 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
-    MPI 010 - OMP 000 - HWT 017 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
-    MPI 011 - OMP 000 - HWT 025 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
-    MPI 012 - OMP 000 - HWT 033 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
-    MPI 013 - OMP 000 - HWT 041 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
-    MPI 014 - OMP 000 - HWT 049 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
-    MPI 015 - OMP 000 - HWT 057 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
-
+    MPI 000 - OMP 000 - HWT 001 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 001 - OMP 000 - HWT 009 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 002 - OMP 000 - HWT 017 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 003 - OMP 000 - HWT 025 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 004 - OMP 000 - HWT 033 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 005 - OMP 000 - HWT 041 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 006 - OMP 000 - HWT 049 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 007 - OMP 000 - HWT 057 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 008 - OMP 000 - HWT 002 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 009 - OMP 000 - HWT 010 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 010 - OMP 000 - HWT 018 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 011 - OMP 000 - HWT 026 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 012 - OMP 000 - HWT 034 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 013 - OMP 000 - HWT 042 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 014 - OMP 000 - HWT 050 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 015 - OMP 000 - HWT 058 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
 
 The output shows the round-robin (``cyclic``) distribution of MPI ranks to GPUs. In fact, it is a round-robin distribution of MPI ranks *to L3 cache regions* (the default distribution). The GPU mapping is a consequence of where the MPI ranks are distributed; ``--gpu-bind=closest`` simply maps the GPU in an L3 cache region to the MPI ranks in the same L3 region.
 
@@ -956,43 +955,42 @@ This example is an extension of Example 5 to run on 2 nodes.
     $ export OMP_NUM_THREADS=1
     $ srun -N2 -n32 -c1 --ntasks-per-gpu=2 --gpu-bind=closest ./hello_jobstep | sort
 
-    MPI 000 - OMP 000 - HWT 000 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
-    MPI 001 - OMP 000 - HWT 008 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
-    MPI 002 - OMP 000 - HWT 016 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
-    MPI 003 - OMP 000 - HWT 024 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
-    MPI 004 - OMP 000 - HWT 032 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
-    MPI 005 - OMP 000 - HWT 040 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
-    MPI 006 - OMP 000 - HWT 048 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
-    MPI 007 - OMP 000 - HWT 056 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
-    MPI 008 - OMP 000 - HWT 004 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
-    MPI 009 - OMP 000 - HWT 012 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
-    MPI 010 - OMP 000 - HWT 020 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
-    MPI 011 - OMP 000 - HWT 028 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
-    MPI 012 - OMP 000 - HWT 036 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
-    MPI 013 - OMP 000 - HWT 044 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
-    MPI 014 - OMP 000 - HWT 052 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
-    MPI 015 - OMP 000 - HWT 060 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
-    MPI 016 - OMP 000 - HWT 000 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
-    MPI 017 - OMP 000 - HWT 008 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
-    MPI 018 - OMP 000 - HWT 016 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
-    MPI 019 - OMP 000 - HWT 024 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
-    MPI 020 - OMP 000 - HWT 034 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 000 - OMP 000 - HWT 001 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 001 - OMP 000 - HWT 009 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 002 - OMP 000 - HWT 017 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 003 - OMP 000 - HWT 025 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 004 - OMP 000 - HWT 033 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 005 - OMP 000 - HWT 041 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 006 - OMP 000 - HWT 049 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 007 - OMP 000 - HWT 057 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 008 - OMP 000 - HWT 002 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 009 - OMP 000 - HWT 010 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 010 - OMP 000 - HWT 018 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 011 - OMP 000 - HWT 026 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 012 - OMP 000 - HWT 034 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 013 - OMP 000 - HWT 042 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 014 - OMP 000 - HWT 050 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 015 - OMP 000 - HWT 058 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 016 - OMP 000 - HWT 001 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 017 - OMP 000 - HWT 009 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 018 - OMP 000 - HWT 017 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 019 - OMP 000 - HWT 025 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 020 - OMP 000 - HWT 033 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
     MPI 021 - OMP 000 - HWT 041 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
-    MPI 022 - OMP 000 - HWT 048 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
-    MPI 023 - OMP 000 - HWT 056 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
-    MPI 024 - OMP 000 - HWT 006 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
-    MPI 025 - OMP 000 - HWT 012 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
-    MPI 026 - OMP 000 - HWT 021 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
-    MPI 027 - OMP 000 - HWT 028 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
-    MPI 028 - OMP 000 - HWT 036 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
-    MPI 029 - OMP 000 - HWT 044 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
-    MPI 030 - OMP 000 - HWT 052 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
-    MPI 031 - OMP 000 - HWT 060 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
-
+    MPI 022 - OMP 000 - HWT 049 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 023 - OMP 000 - HWT 057 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 024 - OMP 000 - HWT 002 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 025 - OMP 000 - HWT 010 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 026 - OMP 000 - HWT 018 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 027 - OMP 000 - HWT 026 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 028 - OMP 000 - HWT 034 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 029 - OMP 000 - HWT 042 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 030 - OMP 000 - HWT 050 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 031 - OMP 000 - HWT 058 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
 
 **Example 7: 16 MPI ranks - where 2 ranks share a GPU (packed, single-node)**
 
-This example launches 16 MPI ranks (``-n16``), each with 4 physical CPU cores (``-c4``) to launch 1 OpenMP thread (``OMP_NUM_THREADS=1``) on. The MPI ranks will be assigned to GPUs in a packed fashion so that each of the 8 GPUs on the node are shared by 2 MPI ranks. Similar to Example 5, ``-ntasks-per-gpu=2`` will be used, but a new ``srun`` flag will be used to change the default round-robin (``cyclic``) distribution of MPI ranks across NUMA domains:
+This example launches 16 MPI ranks (``-n16``), each with 4 physical CPU cores (``-c4``) to launch 1 OpenMP thread (``OMP_NUM_THREADS=1``) on. Because it is using 4 physical CPU cores per task, core specialization needs to be disabled (``-S 0``). The MPI ranks will be assigned to GPUs in a packed fashion so that each of the 8 GPUs on the node are shared by 2 MPI ranks. Similar to Example 5, ``-ntasks-per-gpu=2`` will be used, but a new ``srun`` flag will be used to change the default round-robin (``cyclic``) distribution of MPI ranks across NUMA domains:
 
 * ``--distribution=<value>[:<value>][:<value>]`` specifies the distribution of MPI ranks across compute nodes, sockets (L3 cache regions on Crusher), and cores, respectively. The default values are ``block:cyclic:cyclic``, which is where the ``cyclic`` assignment comes from in the previous examples.
 
@@ -1008,69 +1006,71 @@ This example launches 16 MPI ranks (``-n16``), each with 4 physical CPU cores (`
 
 .. code:: bash
 
+    $ salloc -N 1 -S 0 ...
+    <job starts>
     $ export OMP_NUM_THREADS=1
-    $ srun -N1 -n16 -c4 --ntasks-per-gpu=2 --gpu-bind=closest --distribution=*:block ./hello_jobstep | sort
-    
-    MPI 000 - OMP 000 - HWT 000 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
-    MPI 001 - OMP 000 - HWT 004 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
-    MPI 002 - OMP 000 - HWT 008 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
-    MPI 003 - OMP 000 - HWT 012 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    $ srun -N1 -n16 -c3 --ntasks-per-gpu=2 --gpu-bind=closest --distribution=*:block ./hello_jobstep | sort
+
+    MPI 000 - OMP 000 - HWT 002 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 001 - OMP 000 - HWT 006 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 002 - OMP 000 - HWT 010 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 003 - OMP 000 - HWT 014 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
     MPI 004 - OMP 000 - HWT 016 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
-    MPI 005 - OMP 000 - HWT 020 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
-    MPI 006 - OMP 000 - HWT 024 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
-    MPI 007 - OMP 000 - HWT 028 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
-    MPI 008 - OMP 000 - HWT 032 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
-    MPI 009 - OMP 000 - HWT 036 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
-    MPI 010 - OMP 000 - HWT 040 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
-    MPI 011 - OMP 000 - HWT 044 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
-    MPI 012 - OMP 000 - HWT 048 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
-    MPI 013 - OMP 000 - HWT 052 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
-    MPI 014 - OMP 000 - HWT 056 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
-    MPI 015 - OMP 000 - HWT 060 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 005 - OMP 000 - HWT 021 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 006 - OMP 000 - HWT 027 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 007 - OMP 000 - HWT 031 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 008 - OMP 000 - HWT 034 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 009 - OMP 000 - HWT 037 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 010 - OMP 000 - HWT 042 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 011 - OMP 000 - HWT 045 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 012 - OMP 000 - HWT 049 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 013 - OMP 000 - HWT 053 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 014 - OMP 000 - HWT 057 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 015 - OMP 000 - HWT 061 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
 
 The overall effect of using ``--distribution=*:block`` and increasing the number of physical CPU cores available to each MPI rank is to place the first two MPI ranks in the first L3 cache region with GPU 4, the next two MPI ranks in the second L3 cache region with GPU 5, and so on.
 
 **Example 8: 32 MPI ranks - where 2 ranks share a GPU (packed, multi-node)**
 
-This example is an extension of Example 7 to use 2 compute nodes. With the appropriate changes put in place in Example 7, it is a straightforward exercise to change to using 2 nodes (``-N2``) and 32 MPI ranks (``-n32``).
+This example is an extension of Example 7 to use 2 compute nodes. Again, because it is using 4 physical CPU cores per task, core specialization needs to be disabled (``-S 0``). With the appropriate changes put in place in Example 7, it is a straightforward exercise to change to using 2 nodes (``-N2``) and 32 MPI ranks (``-n32``).
 
 .. code:: bash
 
     $ export OMP_NUM_THREADS=1
     $ srun -N2 -n32 -c4 --ntasks-per-gpu=2 --gpu-bind=closest --distribution=*:block ./hello_jobstep | sort
-    
-    MPI 000 - OMP 000 - HWT 000 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
-    MPI 001 - OMP 000 - HWT 004 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
-    MPI 002 - OMP 000 - HWT 010 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
-    MPI 003 - OMP 000 - HWT 012 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
-    MPI 004 - OMP 000 - HWT 016 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
-    MPI 005 - OMP 000 - HWT 021 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
-    MPI 006 - OMP 000 - HWT 024 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
-    MPI 007 - OMP 000 - HWT 028 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
-    MPI 008 - OMP 000 - HWT 032 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+
+    MPI 000 - OMP 000 - HWT 001 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 001 - OMP 000 - HWT 005 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 002 - OMP 000 - HWT 009 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 003 - OMP 000 - HWT 014 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 004 - OMP 000 - HWT 017 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 005 - OMP 000 - HWT 020 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 006 - OMP 000 - HWT 025 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 007 - OMP 000 - HWT 029 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 008 - OMP 000 - HWT 033 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
     MPI 009 - OMP 000 - HWT 037 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
-    MPI 010 - OMP 000 - HWT 041 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
-    MPI 011 - OMP 000 - HWT 044 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 010 - OMP 000 - HWT 042 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 011 - OMP 000 - HWT 045 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
     MPI 012 - OMP 000 - HWT 049 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
-    MPI 013 - OMP 000 - HWT 052 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
-    MPI 014 - OMP 000 - HWT 056 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
-    MPI 015 - OMP 000 - HWT 060 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
-    MPI 016 - OMP 000 - HWT 000 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
-    MPI 017 - OMP 000 - HWT 004 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
-    MPI 018 - OMP 000 - HWT 008 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
-    MPI 019 - OMP 000 - HWT 013 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
-    MPI 020 - OMP 000 - HWT 016 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
-    MPI 021 - OMP 000 - HWT 020 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
-    MPI 022 - OMP 000 - HWT 024 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 013 - OMP 000 - HWT 054 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 014 - OMP 000 - HWT 058 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 015 - OMP 000 - HWT 063 - Node crusher002 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 016 - OMP 000 - HWT 001 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 017 - OMP 000 - HWT 005 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 018 - OMP 000 - HWT 009 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 019 - OMP 000 - HWT 014 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 020 - OMP 000 - HWT 017 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 021 - OMP 000 - HWT 021 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 022 - OMP 000 - HWT 026 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
     MPI 023 - OMP 000 - HWT 028 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
-    MPI 024 - OMP 000 - HWT 034 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
-    MPI 025 - OMP 000 - HWT 036 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
-    MPI 026 - OMP 000 - HWT 040 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
-    MPI 027 - OMP 000 - HWT 044 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
-    MPI 028 - OMP 000 - HWT 048 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 024 - OMP 000 - HWT 033 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 025 - OMP 000 - HWT 037 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 026 - OMP 000 - HWT 042 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 027 - OMP 000 - HWT 045 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 028 - OMP 000 - HWT 049 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
     MPI 029 - OMP 000 - HWT 052 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
-    MPI 030 - OMP 000 - HWT 056 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
-    MPI 031 - OMP 000 - HWT 060 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 030 - OMP 000 - HWT 059 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 031 - OMP 000 - HWT 061 - Node crusher004 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
 
 
 **Example 9: 4 independent and simultaneous job steps in a single allocation**
@@ -1097,10 +1097,10 @@ Output:
 
 .. code:: bash
 
-   MPI 000 - OMP 000 - HWT 003 - Node crusher25 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
-   MPI 000 - OMP 000 - HWT 001 - Node crusher25 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
-   MPI 000 - OMP 000 - HWT 002 - Node crusher25 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID 48
-   MPI 000 - OMP 000 - HWT 000 - Node crusher25 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
+    MPI 000 - OMP 000 - HWT 017 - Node crusher166 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 000 - OMP 000 - HWT 057 - Node crusher166 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 000 - OMP 000 - HWT 049 - Node crusher166 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 000 - OMP 000 - HWT 025 - Node crusher166 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
 
 .. note::
 
