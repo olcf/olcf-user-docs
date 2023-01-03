@@ -3737,7 +3737,7 @@ created with information on the files that were copied.
 Known Issues
 ============
 
-Last Updated: 24 October 2022
+Last Updated: 30 December 2022
 
 Open Issues
 -----------
@@ -4054,6 +4054,21 @@ This is a known issue with the current version of jsrun. A workaround is to add 
 
 Resolved Issues
 ---------------
+
+'Received msg header indicates a size that is too large' error message from Spectrum MPI
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If you get an error message that looks like:
+
+::
+
+    A received msg header indicates a size that is too large:
+     Requested size: 25836785
+     Size limit: 16777216
+    If you believe this msg is legitimate, please increase the
+    max msg size via the ptl_base_max_msg_size parameter.
+
+This can be resolved by setting ``export PMIX_MCA_ptl_base_max_msg_size=18`` where the value is size in MB. Setting it to 18 or higher usually works. The default if its not explicitly set is around 16 MB. 
 
 JSM Fault Tolerance causes jobs to fail to start
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
