@@ -7,7 +7,7 @@ What is SPI
 
 The OLCF's **Scalable Protected Infrastructure (SPI)** provides resources and protocols that enable researchers to process protected data at scale.  The SPI is built around a framework of security protocols that allows researchers to process large datasets containing private information.  Using this framework researchers can use the center's large HPC resources to compute data containing protected health information (PHI), personally identifiable information (PII), data protected under International Traffic in Arms Regulations, and other types of data that require privacy.  
 
-The SPI utilizes a mixture of existing resources combined with specialized resources targeted at SPI workloads.  Because of this, many processes used within the SPI are very similar to those used for standard non-SPI.  This page lists the differences you may see when using OLCF resources to execute SPI resources.  The page will also point to sections within the site where more information on standard non-SPI use can be found.
+The SPI utilizes a mixture of existing resources combined with specialized resources targeted at SPI workloads.  Because of this, many processes used within the SPI are very similar to those used for standard non-SPI.  This page lists the differences you may see when using OLCF resources to execute SPI workflows.  The page will also point to sections within the site where more information on standard non-SPI use can be found.
 
 New User QuickStart
 --------------------
