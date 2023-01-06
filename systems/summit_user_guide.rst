@@ -3750,6 +3750,10 @@ HIP does not currently work with GPU-aware MPI
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Using the ``hip-cuda/5.1.0`` module on Summit requires CUDA v11.4.0 or later. However, only CUDA v11.0.3 and earlier currently support GPU-aware MPI, so GPU-aware MPI is currently not available when using HIP on Summit.
 
+MPS does not currently work with codes compiled with post 11.0.3 CUDA
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Any codes compiled with post 11.0.3 CUDA (``cuda/11.0.3``) will not work with MPS enabled (``-alloc_flags "gpumps"``) on Summit. The code will hang indefinitely. CUDA v11.0.3 is the latest version that is officially supported by IBM's software stack installed on Summit. We are continuing to look into this issue.
+
 System not sourcing ``.bashrc``, ``.profile``, etc. files as expected
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Some users have noticed that their login shells, batch jobs, etc. are not sourcing shell run control files as expected. This is related to the way bash is initialized. The initialization process is discussed in the INVOCATION section of the bash manpage, but is summarized here.
