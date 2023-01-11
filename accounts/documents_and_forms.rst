@@ -85,7 +85,7 @@ Report Templates
 
 `Closeout Report Template <https://www.olcf.ornl.gov/wp-content/accounts/Closeout_Template.doc>`_
 Use this template if you have been asked to submit a closeout report for your
-project.
+project.  Note this form does not apply to INCITE projects.  If you have been provided a template via email, only that template applies.
 
 `Industry Quarterly Report Template <https://www.olcf.ornl.gov/wp-content/accounts/industry_quarterly_report.doc>`_
 Use this template if you have an industry project to submit a quarterly
