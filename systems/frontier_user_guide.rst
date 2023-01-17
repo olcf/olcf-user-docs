@@ -2021,11 +2021,115 @@ OLCF's recommended debugging software for large parallel applications.
 One of the most useful features of DDT is its remote debugging feature. This allows you to connect to a debugging session on Frontier from a client running on your workstation. The local client provides much faster interaction than you would have if using the graphical client on Frontier. For guidance in setting up the remote client see `this tutorial <https://www.olcf.ornl.gov/tutorials/forge-remote-client-setup-and-usage/>`__.
 
 
-Optimization and Profiling
-==========================
+Profiling Applications
+======================
 
-Getting started
----------------
+Getting Started with the HPE Performance Analysis Tools (PAT)
+-------------------------------------------------------------------
+
+The Performance Analysis Tools (PAT), formerly CrayPAT, are a suite of utilities that enable users to capture and analyze performance data generated during program execution. These tools provide an integrated infrastructure for measurement, analysis, and visualization of computation, communication, I/O, and memory utilization to help users optimize programs for faster execution and more efficient computing resource usage.
+
+There are three programming interfaces available: (1) ``Perftools-lite``, (2) ``Perftools``, and (3) ``Perftools-preload``.
+
+Below are two examples that generate an instrumented executable using ``Perftools``, which is an advanced interface that provides full-featured data collection and analysis capability, including full traces with timeline displays.
+
+The first example generates an instrumented executable using a ``PrgEnv-amd`` build:
+
+.. code:: bash
+
+    module load PrgEnv-amd
+    module load craype-accel-amd-gfx90a
+    module load rocm
+    module load perftools
+
+    export PATH="${PATH}:${ROCM_PATH}/llvm/bin"
+    export CXX='CC -x hip'
+    export CXXFLAGS='-ggdb -O3 -std=c++17 –Wall'
+    export LD='CC'
+    export LDFLAGS="${CXXFLAGS} -L${ROCM_PATH}/lib"
+    export LIBS='-lamdhip64'
+
+    make clean
+    make
+
+    pat_build -g hip,io,mpi -w -f <executable>
+
+The second example generates an instrumened executable using a ``hipcc`` build:
+
+.. code:: bash
+
+    module load perftools
+    module load craype-accel-amd-gfx90a
+    module load rocm
+    
+    export CXX='hipcc'
+    export CXXFLAGS="$(pat_opts include hipcc) \
+      $(pat_opts pre_compile hipcc) -g -O3 -std=c++17 -Wall \
+      --offload-arch=gfx90a -I${CRAY_MPICH_DIR}/include \
+      $(pat_opts post_compile hipcc)"
+    export LD='hipcc'
+    export LDFLAGS="$(pat_opts pre_link hipcc) ${CXXFLAGS} \
+      -L${CRAY_MPICH_DIR}/lib ${PE_MPICH_GTL_DIR_amd_gfx908}"
+    export LIBS="-lmpi ${PE_MPICH_GTL_LIBS_amd_gfx908} \
+      $(pat_opts post_link hipcc)"
+    
+    make clean
+    make
+    
+    pat_build -g hip,io,mpi -w -f <executable>
+
+The ``pat_build`` command in the above examples generates an instrumented executable with ``+pat`` appended to the executable name (e.g., ``hello_jobstep+pat``).
+
+When run, the instrumented executable will trace HIP, I/O, MPI, and all user functions and generate a folder of results (e.g., ``hello_jobstep+pat+39545-2t``).
+
+To analyze these results, use the ``pat_report`` command, e.g.:
+
+.. code:: bash
+
+    pat_report hello_jobstep+pat+39545-2t
+
+The resulting report includes profiles of functions, profiles of maximum function times, details on load imbalance, details on program energy and power usages, details on memory high water mark, and more.
+
+More detailed information on the HPE Performance Analysis Tools can be found in the `HPE Performance Analysis Tools User Guide <https://support.hpe.com/hpesc/public/docDisplay?docLocale=en_US&docId=a00123563en_us>`__.
+
+.. note::
+
+    When using ``perftools-lite-gpu``, there is a known issue causing ``ld.lld`` not to be found. A workaround this issue can be found `here <https://docs.olcf.ornl.gov/systems/crusher_quick_start_guide.html#olcfdev-513-error-with-perftools-lite-gpu>`__.
+
+Getting Started with HPCToolkit
+-------------------------------
+
+HPCToolkit is an integrated suite of tools for measurement and analysis of program performance on computers ranging from multicore desktop systems to the nation's largest supercomputers. HPCToolkit provides accurate measurements of a program's work, resource consumption, and inefficiency, correlates these metrics with the program's source code, works with multilingual, fully optimized binaries, has very low measurement overhead, and scales to large parallel systems. HPCToolkit's measurements provide support for analyzing a program execution cost, inefficiency, and scaling characteristics both within and across nodes of a parallel system.
+
+Programming models supported by HPCToolkit include MPI, OpenMP, OpenACC, CUDA, OpenCL, DPC++, HIP, RAJA, Kokkos, and others.
+
+Below is an example that generates a profile and loads the results in their GUI-based viewer.
+
+.. code:: bash
+
+    module use /gpfs/alpine/csc322/world-shared/modulefiles/x86_64 
+    module load hpctoolkit 
+    
+    # 1. Profile and trace an application using CPU time and GPU performance counters 
+    srun <srun_options> hpcrun -o <measurement_dir> -t -e CPUTIME -e gpu=amd <application> 
+
+    # 2. Analyze the binary of executables and its dependent libraries 
+    hpcstruct <measurement_dir> 
+
+    # 3. Combine measurements with program structure information and generate a database 
+    hpcprof -o <database_dir> <measurement_dir> 
+
+    # 4. Understand performance issues by analyzing profiles and traces with the GUI 
+    hpcviewer <database_dir> 
+
+More detailed information on HPCToolkit can be found in the `HPCToolkit User's Manual <http://hpctoolkit.org/manual/HPCToolkit-users-manual.pdf>`__.
+
+.. note::
+
+    HPCToolkit does not require a recompile to profile the code. It is recommended to use the -g optimization flag for attribution to source lines.
+
+Getting Started with the ROCm Profiler
+--------------------------------------
 
 ``rocprof`` gathers metrics on kernels run on AMD GPU architectures. The profiler works for HIP kernels, as well as offloaded kernels from OpenMP target offloading, OpenCL, and abstraction layers such as Kokkos.
 For a simple view of kernels being run, ``rocprof --stats --timestamp on`` is a great place to start.
@@ -2034,20 +2138,20 @@ This file will list all kernels being run, the number of times they are run, the
 More detailed infromation on ``rocprof`` profiling modes can be found at `ROCm Profiler <https://rocmdocs.amd.com/en/latest/ROCm_Tools/ROCm-Tools.html>`__ documentation.
 
 
-Roofline profiling
-------------------
+Roofline Profiling with the ROCm Profiler
+-----------------------------------------
 The `Roofline <https://docs.nersc.gov/tools/performance/roofline/>`__ performance model is an increasingly popular way to demonstrate and understand application performance.
 This section documents how to construct a simple roofline model for a single kernel using ``rocprof``.
 This roofline model is designed to be comparable to rooflines constructed by NVIDIA's `NSight Compute <https://developer.nvidia.com/blog/accelerating-hpc-applications-with-nsight-compute-roofline-analysis/>`__.
-A roofline model plots the achieved performance (in floating-point operations per second, FLOPS/s) as a function of operational (or arithmetic) intensity (in FLOPS per Byte).
+A roofline model plots the achieved performance (in floating-point operations per second, FLOPS/s) as a function of arithmetic (or operational) intensity (in FLOPS per Byte).
 The model detailed here calculates the bytes moved as they move to and from the GPU's HBM.
 
 .. note::
 
-    Integer instructions, cache levels, and matrix-FMA operations are currently not considered.
+    Integer instructions and cache levels are currently not documented here.
 
 To get started, you will need to make an input file for ``rocprof``, to be passed in through ``rocprof -i <input_file> --timestamp on -o my_output.csv <my_exe>``.
-Below is an example, and contains the information needed:
+Below is an example, and contains the information needed to roofline profile GPU 0, as seen by each rank:
 
 .. code:: bash
 
@@ -2063,37 +2167,115 @@ Below is an example, and contains the information needed:
 
     In an application with more than one kernel, you should strongly consider filtering by kernel name by adding a line like: ``kernel: <kernel_name>`` to the ``rocprof`` input file.
 
+
 This provides the minimum set of metrics used to construct a roofline model.
+To gather metrics across multiple MPI ranks, you will need to use a command that redirects the output of rocprof to a unique file for each task.
+For example:
+
+.. code:: bash
+
+    srun -N 2 -n 16 --ntasks-per-node=8 --gpus-per-node=8 --gpu-bind=closest bash -c 'rocprof -o ${SLURM_JOBID}_${SLURM_PROCID}.csv -i <input_file> --timestamp on <exe>'
+
+
+.. note::
+
+    The ``gpu:`` filter in the ``rocprof`` input file identifies GPUs by the number the MPI rank would see them as. In the ``srun`` example above,
+    each MPI rank only has 1 GPU, so each rank sees its GPU as GPU 0.
+
 
 Theoretical Roofline
 ^^^^^^^^^^^^^^^^^^^^
 
-The theoretical (attainable) roofline constructs a theoretical maximum performance for each operational intensity.
+The theoretical (not attainable) peak roofline constructs a theoretical maximum performance for each operational intensity.
+
+.. note::
+
+    ``theoretical`` peak is determined by the hardware specifications and is not attainable in practice. ``attaiable`` peak is the performance as measured by
+    in-situ microbenchmarks designed to best utilize the hardware. ``achieved`` performance is what the profiled application actually achieves.
+
+
 The theoretical roofline can be constructed as:
 
 .. math::
 
-    FLOPS_\text{peak} = \text{minimum}(\text{OpIntensity} * BW_{\text{HBM}}, \text{theoretical_flops})
+    FLOPS_{peak} = minimum(ArithmeticIntensity * BW_{HBM}, TheoreticalFLOPS)
+
+
+On Crusher, the memory bandwidth for HBM is 1.6 TB/s, and the theoretical peak floating-point FLOPS/s is calculated by:
+
+.. math::
+
+    TheoreticalFLOPS = 128 FLOP/cycle/CU * 110 CU * 1700000000 cycles/second = 23.9 TFLOP/s
+
+
+However, when using MFMA instructions, the theoretical peak floating-point FLOPS/s is calculated by:
+
+.. math::
+
+    TheoreticalFLOPS = 256 FLOP/cycle/CU * 110 CU * 1700000000 cycles/second = 47.8 TFLOP/s
+
+
+.. note::
+    Attainable peak rooflines are constructed using microbenchmarks, and are not currently discussed here.
+    Attainable rooflines consider the limitations of cooling and power consumption and are more representative of what an application can achieve.
 
 
 Achieved FLOPS/s
 ^^^^^^^^^^^^^^^^
 
 We calculate the achieved performance at the desired level (here, double-precision floating point, FP64), by summing each metric count and weighting the FMA metric by 2, since a fused multiply-add is considered 2 floating point operations.
-Also note that these ``SQ_INSTS_VALU_*`` metrics are reported as per-simd, so we mutliply by the wavefront size as well.
+Also note that these ``SQ_INSTS_VALU_<ADD,MUL,TRANS>`` metrics are reported as per-simd, so we mutliply by the wavefront size as well.
+The ``SQ_INSTS_VALU_MFMA_MOPS_*`` instructions should be multiplied by 512.
 We use this equation to calculate the number of double-precision FLOPS:
 
 .. math::
 
-    FP64_{FLOPS} = 64 * (\text{SQ_INSTS_VALU_ADD_F64} + \text{SQ_INSTS_VALU_MUL_F64} + 2 * \text{SQ_INSTS_VALU_FMA_F64})
+    FP64\_FLOPS =   64  *&(SQ\_INSTS\_VALU\_ADD\_F64         \\\\
+                         &+ SQ\_INSTS\_VALU\_MUL\_F64       \\\\
+                         &+ SQ\_INSTS\_VALU\_TRANS\_F64     \\\\
+                         &+ 2 * SQ\_INSTS\_VALU\_FMA\_F64)  \\\\
+                  + 512 *&(SQ\_INSTS\_VALU\_MFMA\_MOPS\_F64)
 
-Then, we divide the number of FLOPS by the elapsed time of the kernel.
+
+When ``SQ_INSTS_VALU_MFMA_MOPS_*`` are used, then 47.8 TF/s is considered the theoretical maximum FLOPS/s.
+If only ``SQ_INSTS_VALU_<ADD,MUL,TRANS>`` are found, then 23.9 TF/s is the theoretical maximum FLOPS/s.
+Then, we divide the number of FLOPS by the elapsed time of the kernel to find FLOPS per second.
 This is found from subtracting the ``rocprof`` metrics ``EndNs`` by ``BeginNs``, provided by ``--timestamp on``, then converting from nanoseconds to seconds by dividing by 1,000,000,000 (power(10,9)).
 
-Operational Intensity
-^^^^^^^^^^^^^^^^^^^^^
+.. note::
 
-Operational intensity calculates the ratio of FLOPS to bytes moved between HBM and L2 cache.
+    For ROCm/5.2.0 and earlier, there is a known issue with the timings provided by ``--timestamp on``. See :ref:`crusher-known-issues`.
+
+
+Calculating for all precisions
+""""""""""""""""""""""""""""""
+
+The above formula can be adapted to compute the total FLOPS across all precisions.
+
+.. math::
+
+    TOTAL\_FLOPS =   64  *&(SQ\_INSTS\_VALU\_ADD\_F16         \\\\
+                         &+ SQ\_INSTS\_VALU\_MUL\_F16       \\\\
+                         &+ SQ\_INSTS\_VALU\_TRANS\_F16     \\\\
+                         &+ 2 * SQ\_INSTS\_VALU\_FMA\_F16)  \\\\
+                  + 64  *&(SQ\_INSTS\_VALU\_ADD\_F32         \\\\
+                         &+ SQ\_INSTS\_VALU\_MUL\_F32       \\\\
+                         &+ SQ\_INSTS\_VALU\_TRANS\_F32     \\\\
+                         &+ 2 * SQ\_INSTS\_VALU\_FMA\_F32)  \\\\
+                  + 64  *&(SQ\_INSTS\_VALU\_ADD\_F64         \\\\
+                         &+ SQ\_INSTS\_VALU\_MUL\_F64       \\\\
+                         &+ SQ\_INSTS\_VALU\_TRANS\_F64     \\\\
+                         &+ 2 * SQ\_INSTS\_VALU\_FMA\_F64)  \\\\
+                  + 512 *&(SQ\_INSTS\_VALU\_MFMA\_MOPS\_F16) \\\\
+                  + 512 *&(SQ\_INSTS\_VALU\_MFMA\_MOPS\_BF16) \\\\
+                  + 512 *&(SQ\_INSTS\_VALU\_MFMA\_MOPS\_F32) \\\\
+                  + 512 *&(SQ\_INSTS\_VALU\_MFMA\_MOPS\_F64) \\\\
+
+
+Arithmetic Intensity
+^^^^^^^^^^^^^^^^^^^^
+
+Arithmetic intensity calculates the ratio of FLOPS to bytes moved between HBM and L2 cache.
 We calculated FLOPS above (FP64_FLOPS).
 We can calculate the number of bytes moved using the ``rocprof`` metrics ``TCC_EA_WRREQ_64B``, ``TCC_EA_WRREQ_sum``, ``TCC_EA_RDREQ_32B``, and ``TCC_EA_RDREQ_sum``.
 ``TCC`` refers to the L2 cache, and ``EA`` is the interface between L2 and HBM.
@@ -2103,72 +2285,20 @@ So we calculate the number of bytes traveling over the EA interface as:
 
 .. math::
 
-    \text{BytesMoved} = \text{BytesWritten} + \text{BytesRead}
+    BytesMoved = BytesWritten + BytesRead
 
 where
 
 .. math::
 
-    \text{BytesWritten} = 64 * \text{TCC_EA_WRREQ_64B} + 32 * (\text{TCC_EA_WRREQ_sum} - \text{TCC_EA_WRREQ_64B})
+    BytesWritten = 64 * TCC\_EA\_WRREQ\_64B\_sum + 32 * (TCC\_EA\_WRREQ\_sum - TCC\_EA\_WRREQ\_64B\_sum)
 
 .. math::
 
-    \text{BytesWritten} = 32 * \text{TCC_EA_WRREQ_32B} + 64 * (\text{TCC_EA_WRREQ_sum} - \text{TCC_EA_WRREQ_32B})
+    BytesRead = 32 * TCC\_EA\_RDREQ\_32B\_sum + 64 * (TCC\_EA\_RDREQ\_sum - TCC\_EA\_RDREQ\_32B\_sum)
 
 
-CrayPat
-^^^^^^^
-
-CrayPat is a performance analysis tool for evaluating program execution on Cray systems. CrayPat consists of three main components:
-
-``pat_build`` - used to instrument the program for analysis
-
-``pat_report`` - a text report generator that can be used to explore data gathered by instrumented program execution
-
-``Apprentice2`` - a graphical analysis tool that can be used in addition to pat_report to explore and visualize the data gathered by instrumented program execution
-
-.. note::
-    Details of these components can be found in the pat_build, pat_report, and app2 man pages made available by loading the perftools-base module.
-
-The standard workflow for program profiling with CrayPat is as follows:
-
-#. Load the perftools-base and perftools modules.
-#. Build your application as normal.
-#. Instrument the application with pat_build.
-#. Execute the instrumented application.
-#. View the performance data generated in Step 4 with pat_report and Apprentice2.
-
-The following steps will guide you through performing a basic analysis with CrayPat and Apprentice2.
-
-Begin with a fully debugged and executable program. Since CrayPat is a performance analysis tool, not a debugger, the targeted program must be capable of running to completion, or intentional termination.
-
-Step 1: Load the appropriate modules
-
-To make CrayPat available,
-
-.. code:: bash
-
-    module load perftools-base 
-    module load perftools
-
-The perftools-base module must be loaded before the perftools module. Attempting to load perftools first will result in the following message:
-
-.. code:: bash
-
-    Error: The Perftools module is available only after the perftools-base module is loaded.
-
-    The Perftools-base module:
-    - Provides access to Perftools man pages, Reveal and Cray Apprentice2
-    - Does not alter compiling or program behavior 
-    - Makes the following instrumentation modules available: 
-
-    perftools                - full support, including pat_build and pat_report
-    perftools-lite           - default CrayPat-lite profile
-    perftools-lite-events    - CrayPat-lite event profile
-    perftools-lite-gpu       - CrayPat-lite gpu kernel and data movement
-    perftools-lite-loops     - CrayPat-lite loop estimates (for Reveal)
-    perftools-lite-hbm       - CrayPat-lite memory bandwidth estimates (for Reveal)
-
+----
 
 Known Issues
 ============
