@@ -4,32 +4,6 @@
 Andes User Guide
 ****************
 
-.. note::
-    We are pleased to announce the availability of a new pre/post processing and data analysis cluster, ``Andes``.  Andes is available to all users with current Rhea access.  Rhea was decommissioned on January 15, 2021.  Please note the following:
-    
-    -  **Access and Allocations:** Projects with allocations on Rhea have automatically been given access to Andes.  Allocations will start fresh on Andes and in most cases will be the same node-hour allocation awarded on Rhea. 
-    -  **Timeline:** Access to Andes and Rhea will overlap undil January 15, 2021.  During this overlap users will have access to both systems to facilitate workflow migration.
-    -  **High Memory GPU nodes:** Rhea’s high memory GPU nodes have been  moved to Andes. 
-    -  **Filesystems:** Andes mounts the same center-wide GPFS and NFS filesystems as Rhea.
-    -  **Batch System:** Andes utilizes Slurm like Rhea did.  Batch scripts in use on Rhea should also run on Andes.  Batch policies will also remain the same.
-    -  **Recompile:** Due to the changes in hardware, OS, and software, rebuilds prior to running on Andes is strongly suggested.
-    -  **Default Version Changes:** All software provided in /sw has been rebuilt.  In many cases, default versions have been updated.  
-    -  **Hardware:** The following table lists several notable hardware differences between Andes and Rhea.
-
-
-        +--------------+--------------------------------+-------------------------------------+
-        |              | Rhea                           | Andes                               | 
-        +==============+================================+=====================================+
-        | Processor    | Intel\ |R| Xeon\ |R| E5-2650   | AMD EPYC 7302                       |
-        +--------------+--------------------------------+-------------------------------------+
-        | Node Count   | 512 compute nodes              | 704 compute nodes                   |
-        +--------------+--------------------------------+-------------------------------------+
-        | Core per node| 16 cores per node              | 32 cores per node                   |
-        +--------------+--------------------------------+-------------------------------------+
-        | node memory  | 128 GB                         | 256 GB                              |
-        +--------------+--------------------------------+-------------------------------------+
-
-
 System Overview
 ===============
 
