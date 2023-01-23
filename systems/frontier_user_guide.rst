@@ -2327,3 +2327,6 @@ or ``-m *:block``.  If the number of tasks per node is less than 64, then try se
 If it is equal to 64 per node, then you can try combining those settings and set ``-c 1 -m *:fcyclic`` or ``-c 1 -m *:block``.
 
 This is a new behavior in Slurm 22.05 which was installed on July 5, 2022.
+
+
+.. JIRA_CONTENT_HERE
