@@ -2201,7 +2201,7 @@ The theoretical roofline can be constructed as:
     FLOPS_{peak} = minimum(ArithmeticIntensity * BW_{HBM}, TheoreticalFLOPS)
 
 
-On Crusher, the memory bandwidth for HBM is 1.6 TB/s, and the theoretical peak floating-point FLOPS/s is calculated by:
+On Frontier, the memory bandwidth for HBM is 1.6 TB/s, and the theoretical peak floating-point FLOPS/s when using vector registers is calculated by:
 
 .. math::
 
@@ -2212,7 +2212,25 @@ However, when using MFMA instructions, the theoretical peak floating-point FLOPS
 
 .. math::
 
-    TheoreticalFLOPS = 256 FLOP/cycle/CU * 110 CU * 1700000000 cycles/second = 47.8 TFLOP/s
+    TheoreticalFLOPS = flop\_per\_cycle(precision) FLOP/cycle/CU * 110 CU * 1700000000 cycles/second
+
+
+where ``flop_per_cycle(precision)`` is the published floating-point operations per clock cycle, per compute unit.
+Those values are:
+
++------------+-----------------+
+| Data Type  | Flops/Clock/CU  |
++============+=================+
+| FP64       | 256             |
++------------+-----------------+
+| FP32       | 256             |
++------------+-----------------+
+| FP16       | 1024            |
++------------+-----------------+
+| BF16       | 1024            |
++------------+-----------------+
+| INT8       | 1024            |
++------------+-----------------+
 
 
 .. note::
@@ -2225,7 +2243,7 @@ Achieved FLOPS/s
 
 We calculate the achieved performance at the desired level (here, double-precision floating point, FP64), by summing each metric count and weighting the FMA metric by 2, since a fused multiply-add is considered 2 floating point operations.
 Also note that these ``SQ_INSTS_VALU_<ADD,MUL,TRANS>`` metrics are reported as per-simd, so we mutliply by the wavefront size as well.
-The ``SQ_INSTS_VALU_MFMA_MOPS_*`` instructions should be multiplied by 512.
+The ``SQ_INSTS_VALU_MFMA_MOPS_*`` instructions should be multiplied by the ``Flops/Cycle/CU`` value listed above.
 We use this equation to calculate the number of double-precision FLOPS:
 
 .. math::
@@ -2234,10 +2252,10 @@ We use this equation to calculate the number of double-precision FLOPS:
                          &+ SQ\_INSTS\_VALU\_MUL\_F64       \\\\
                          &+ SQ\_INSTS\_VALU\_TRANS\_F64     \\\\
                          &+ 2 * SQ\_INSTS\_VALU\_FMA\_F64)  \\\\
-                  + 512 *&(SQ\_INSTS\_VALU\_MFMA\_MOPS\_F64)
+                  + 256 *&(SQ\_INSTS\_VALU\_MFMA\_MOPS\_F64)
 
 
-When ``SQ_INSTS_VALU_MFMA_MOPS_*`` are used, then 47.8 TF/s is considered the theoretical maximum FLOPS/s.
+When ``SQ_INSTS_VALU_MFMA_MOPS_*_F64`` instructions are used, then 47.8 TF/s is considered the theoretical maximum FLOPS/s.
 If only ``SQ_INSTS_VALU_<ADD,MUL,TRANS>`` are found, then 23.9 TF/s is the theoretical maximum FLOPS/s.
 Then, we divide the number of FLOPS by the elapsed time of the kernel to find FLOPS per second.
 This is found from subtracting the ``rocprof`` metrics ``EndNs`` by ``BeginNs``, provided by ``--timestamp on``, then converting from nanoseconds to seconds by dividing by 1,000,000,000 (power(10,9)).
@@ -2250,7 +2268,7 @@ This is found from subtracting the ``rocprof`` metrics ``EndNs`` by ``BeginNs``,
 Calculating for all precisions
 """"""""""""""""""""""""""""""
 
-The above formula can be adapted to compute the total FLOPS across all precisions.
+The above formula can be adapted to compute the total FLOPS across all floating-point precisions (``INT`` excluded).
 
 .. math::
 
@@ -2266,10 +2284,10 @@ The above formula can be adapted to compute the total FLOPS across all precision
                          &+ SQ\_INSTS\_VALU\_MUL\_F64       \\\\
                          &+ SQ\_INSTS\_VALU\_TRANS\_F64     \\\\
                          &+ 2 * SQ\_INSTS\_VALU\_FMA\_F64)  \\\\
-                  + 512 *&(SQ\_INSTS\_VALU\_MFMA\_MOPS\_F16) \\\\
-                  + 512 *&(SQ\_INSTS\_VALU\_MFMA\_MOPS\_BF16) \\\\
-                  + 512 *&(SQ\_INSTS\_VALU\_MFMA\_MOPS\_F32) \\\\
-                  + 512 *&(SQ\_INSTS\_VALU\_MFMA\_MOPS\_F64) \\\\
+                  + 1024 &*(SQ\_INSTS\_VALU\_MFMA\_MOPS\_F16) \\\\
+                  + 1024 &*(SQ\_INSTS\_VALU\_MFMA\_MOPS\_BF16) \\\\
+                  + 256 *&(SQ\_INSTS\_VALU\_MFMA\_MOPS\_F32) \\\\
+                  + 256 *&(SQ\_INSTS\_VALU\_MFMA\_MOPS\_F64) \\\\
 
 
 Arithmetic Intensity
