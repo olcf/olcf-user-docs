@@ -2303,30 +2303,4 @@ where
 Known Issues
 ============
 
-Open Issues w/ Workaround
--------------------------
-
-Slurm "Unspecified error" when tasks per node is greater than 32
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-When running greater than 32 tasks per node, the following error can occur:
-
-.. code:: bash
-
-    $ srun --ntasks-per-node=63 -n 126 -N 2 --gpus-per-node=8 --gpu-bind=closest ./hello_jobstep
-    srun: error: Task launch for StepId=136281.21 failed on node crusher001: Unspecified error
-    srun: error: Task launch for StepId=136281.21 failed on node crusher002: Unspecified error
-    srun: error: Application launch failed: Unspecified error
-    srun: Job step aborted
-
-Workaround
-""""""""""
-
-The first thing to try would be to change your distribution flag to ``-m *:fcyclic`` 
-or ``-m *:block``.  If the number of tasks per node is less than 64, then try setting ``-c 1`` instead. 
-If it is equal to 64 per node, then you can try combining those settings and set ``-c 1 -m *:fcyclic`` or ``-c 1 -m *:block``.
-
-This is a new behavior in Slurm 22.05 which was installed on July 5, 2022.
-
-
 .. JIRA_CONTENT_HERE
