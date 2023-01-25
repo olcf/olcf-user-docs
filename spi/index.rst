@@ -139,7 +139,13 @@ Connecting
 
 Similar to the non-SPI resources, SPI resources reqiure two-factor authentication.  If you are new to the center, you will receive a SecurID fob during the account approval/creation process.  If you are an existing user of non-SPI resources, you can use the same SecurID fob and PIN used on your non-SPI account.  
 
-Also similar to non-SPI resources, you will connect directly to the SPI resources through ssh.  KDI users, please follow the KDI documented procedures: https://kdivdi.ornl.gov
+Also similar to non-SPI resources, you will connect directly to the SPI resources through ssh.  
+
+ORNL's KDI users are an exception and can not by policy log directly into SPI resources.  KDI users, please follow the KDI documented procedures:
+#.  Login to https://kdivdi.ornl.gov with your KDI issued credentials
+#.  Launch the Putty Application
+#.  Enter the hostname "citadel.ccs.ornl.gov" and click Open
+#.  You will then be in an ssh terminal to authenticate with your OLCF credentials as detailed above. 
 
 .. note::  Projects using ORNL's KDI must following KDI access procedures and cannot access SPI resources directly.  If your project uses both KDI and SPI, you will not access the SPI resources directly.
 
