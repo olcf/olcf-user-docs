@@ -101,6 +101,7 @@ Building a Simple Image
 .. note::
    You will notice the use of the fakeroot command when doing package installs with dnf. This is necessary as some some package installations require root permissions on container which the container builder does not have. So fakeroot allows dnf to think it is running as root and allows the installation to succeed.
      
+
 - Build the container image with ``podman build -t simple -f simple.dockerfile .``.
 
   * The ``-t`` flag names the container image and the ``-f`` flag indicates the file to use for building the image.
@@ -115,6 +116,9 @@ Building a Simple Image
 
 - Convert this Podman container image into a tar file with ``podman save -o simple.tar localhost/simple``.
 - Convert the tar file into a Singularity sif file with  ``singularity build --disable-cache simple.sif docker-archive://simple.tar``
+
+.. note::
+   You will also notice that we use centos:stream8 as our base image in the example. If you're planning on building a container image from scratch instead of using the OLCF MPI base image , use a centos:stream8 image with fakeroot installed as demonstrated above as your starting point (we talk about the OLCF MPI base image later in the :ref:`olcf-mpi-base-image` section). Ubuntu would be difficult to use as a starting point since ``apt-get`` requires root from the get-go, and you can't even do a ``apt-get -y fakeroot`` to get you started. Other distributions haven't been tested. Using centos for this case for now is the most user friendly option).
 
 
 Using a Container Registry to Build and Save your Images
@@ -186,6 +190,8 @@ As a simple example, we will run ``hostname`` with the Singularity container.
      h41n09
 
 
+.. _olcf-mpi-base-image:
+
 Running an MPI program with the OLCF MPI base image
 --------------------------------------------------- 
 
@@ -243,6 +249,7 @@ Let's build an simple MPI example container using the prebuilt MPI base image fr
   ::
 
      jsrun -n1 -c42 -brs singularity build --disable-cache mpiexampleimage.sif docker-archive://mpiexampleimage.tar;
+  (remember to do this in /gpfs or specify the full path for the sif file somewhere in GPFS. If you try to save the sif file in your home directory you will error out because NFS is read-only from the compute nodes).
 
 
 - Create the following submit script submit.lsf. Make sure you replace the ``#BSUB -P STF007`` line with your own project ID.
@@ -355,8 +362,13 @@ Let's build an simple CUDA example container using the MPI base image from the r
 
      jsrun -n1 -c42 -brs singularity build --disable-cache gpuexampleimage.sif docker-archive://gpuexampleimage.tar;
 
+  (remember to do this in /gpfs or specify the full path for the sif file somewhere in
+  GPFS. If you try to save the sif file in your home directory you will error out because
+  NFS is read-only from the compute nodes).
 
-- Create the following submit script submit.lsf. Make sure you replace the ``#BSUB -P STF007`` line with your own project ID.
+
+- Create the following submit script submit.lsf. Make sure you replace the ``#BSUB -P
+  STF007`` line with your own project ID.
   ::
 
      #BSUB -P STF007
@@ -380,7 +392,7 @@ data with MPI without needing to copy the data over to CPU memory first. Read mo
 
 Let's build and run a container that will demonstrate CUDA-aware MPI. 
 
-- Create a new directory ``cudawarempiexample``.
+- Create a new directory ``cudaawarempiexample``.
 
 - Run the below wget commands to obtain the example code and Makefile from the `OLCF
   tutorial example page <https://github.com/olcf-tutorials/MPI_ping_pong>`_.
@@ -394,8 +406,6 @@ Let's build and run a container that will demonstrate CUDA-aware MPI.
   ::
 
      FROM code.ornl.gov:4567/olcfcontainers/olcfbaseimages/mpiimage-centos-cuda:latest
-     ARG mpi_root
-     ENV OMPI_DIR=$mpi_root
      RUN mkdir /app
      COPY ping_pong_cuda_aware.cu Makefile /app
      RUN cd /app && make
@@ -407,15 +417,19 @@ Let's build and run a container that will demonstrate CUDA-aware MPI.
      module load DefApps
      module load gcc/9.1.0
      module -t list
-     podman build --build-arg mpi_root=$MPI_ROOT -v $MPI_ROOT:$MPI_ROOT -f cudawarempiexample.dockerfile -t cudawarempiexample:latest .;
-     podman save -o cudawarempiexampleimage.tar localhost/cudawarempiexample:latest;
-     singularity build --disable-cache cudawarempiexampleimage.sif docker-archive://cudawarempiexampleimage.tar;
+     podman build --build-arg mpi_root=$MPI_ROOT -v $MPI_ROOT:$MPI_ROOT -f cudaawarempiexample.dockerfile -t cudaawarempiexample:latest .;
+     podman save -o cudaawarempiexampleimage.tar localhost/cudaawarempiexample:latest;
+     singularity build --disable-cache cudaawarempiexampleimage.sif docker-archive://cudaawarempiexampleimage.tar;
 
 
 - It's possible the ``singularity build`` step might get killed due to reaching cgroup memory limit. To get around this, you can start an interactive job and build the singularity image with
   ::
 
-     jsrun -n1 -c42 -brs singularity build cudawarempiexampleimage.sif docker-archive://cudawarempiexampleimage.tar;
+     jsrun -n1 -c42 -brs singularity build cudaawarempiexampleimage.sif docker-archive://cudaawarempiexampleimage.tar;
+
+  (remember to do this in /gpfs or specify the full path for the sif file somewhere in
+  GPFS. If you try to save the sif file in your home directory you will error out because
+  NFS is read-only from the compute nodes).
 
 
 - Create the following submit script submit.lsf. Make sure you replace the ``#BSUB -P STF007`` line with your own project ID.
@@ -434,14 +448,14 @@ Let's build and run a container that will demonstrate CUDA-aware MPI.
      
      source /gpfs/alpine/stf007/world-shared/containers/utils/requiredmpilibs.source
      
-     jsrun --smpiargs="-gpu" -n 2 -a 1 -r 1 -c 42 -g 6 singularity exec --nv --bind $MPI_ROOT:$MPI_ROOT,/autofs/nccs-svm1_home1,/autofs/nccs-svm1_home1:/ccs/home cudawarempiexampleima    ge.sif /app/pp_cuda_aware
+     jsrun --smpiargs="-gpu" -n 2 -a 1 -r 1 -c 42 -g 6 singularity exec --nv --bind $MPI_ROOT:$MPI_ROOT,/autofs/nccs-svm1_home1,/autofs/nccs-svm1_home1:/ccs/home cudaawarempiexampleimage.sif /app/pp_cuda_aware
  
  
 
   The ``--nv`` flag is needed to tell Singularity to make use of the GPU.
 
-Tips and Tricks
-=================
+Tips, Tricks, and Things to Watch Out For
+=========================================
 
 - Run ``podman system prune`` and then run ``podman image rm --force $(podman image ls
   -aq)`` several times to clean out all the dangling images and layers if you want to do a
@@ -461,8 +475,17 @@ Tips and Tricks
   can set the cache to a location in ``/tmp/containers`` with ``export
   SINGULARITY_CACHEDIR=/tmp/containers/<username>/singularitycache`` if you want to avoid
   using the ``--disable-cache`` flag.
-- If you see an error that looks something like ``Error: Cannot connect to the Podman
-  socket, make sure there is a Podman REST API service running.: error creating tmpdir:
-  mkdir /run/user/12341: permission denied``, try logging out and logging back in. If that
-  fails, then after logging in run ``ssh login<number>`` where login<number> is the login node 
-  you are currently logged in to. 
+- If you see an error that looks something like ``ERRO[0000] stat /run/user/16248: no such
+  file or directory`` or ``Error: Cannot connect to the Podman socket, make sure there is
+  a Podman REST API service running.: error creating tmpdir: mkdir /run/user/12341:
+  permission denied``, try logging out and logging back in. If that fails, then after
+  logging in run ``ssh login<number>`` where login<number> is the login node you are
+  currently logged in to. If all else fails, write to the help@olcf.ornl.gov and we can
+  see if the issue can be fixed from there.
+- If you're trying to mount your home directory with ``--bind
+  /ccs/home/<user>:/ccs/home/<user>`` in your ``singularity exec`` command, it might not
+  work correctly. ``/ccs/home/user`` is an alias to ``/autofs/nccs-svm1_home1/user`` or
+  ``/autofs/nccs-svm1_home2/user``. You can find out which one is yours with ``stat
+  /ccs/home/user`` and then mount your home directory with ``--bind
+  /autofs/nccs-svm1_home1/user:/ccs/home/user`` to make ``/ccs/home/user`` visible within
+  your container.
