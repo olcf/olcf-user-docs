@@ -249,7 +249,8 @@ Let's build an simple MPI example container using the prebuilt MPI base image fr
   ::
 
      jsrun -n1 -c42 -brs singularity build --disable-cache mpiexampleimage.sif docker-archive://mpiexampleimage.tar;
-  (remember to do this in /gpfs or specify the full path for the sif file somewhere in GPFS. If you try to save the sif file in your home directory you will error out because NFS is read-only from the compute nodes).
+
+  (remember to do the above in ``/gpfs`` or specify the full path for the sif file somewhere in GPFS. If you try to save the sif file in your home directory you will error out because NFS is read-only from the compute nodes).
 
 
 - Create the following submit script submit.lsf. Make sure you replace the ``#BSUB -P STF007`` line with your own project ID.
