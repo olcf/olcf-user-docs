@@ -182,6 +182,8 @@ OLCF System Hostnames
 |                      |                          | - RSA SHA256: ``FjDs4sRAX8hglzA7TVkK22NzRKsjhDTTTdfeEAHwPEA``      |
 |                      |                          | - ECDSA MD5: ``8a:92:0f:31:4d:38:2d:2c:ec:7d:53:ce:8b:46:73:d6``   |
 |                      |                          | - ECDSA SHA256: ``0hc6SDou8vauFWgOaeXKUmhDSmKK8roj9jWpapV4qzc``    |
+|                      |                          | - ED25519 MD5: ``5c:a4:42:d4:51:b9:2a:4e:cb:ac:3b:3d:3f:b8:55:81`` |
+|                      |                          | - ED25519 SHA256: ``ZFrVqaDfFYd6MV6yA9r6qEKupJUqWkq8qwIVH2SNtPk``  |
 +----------------------+--------------------------+--------------------------------------------------------------------+
 | Data Transfer Nodes  | ``dtn.ccs.ornl.gov``     | - RSA MD5: ``d1:c5:84:5b:88:d3:0e:81:33:a7:c2:5f:8a:09:b2:7f``     |
 |                      |                          | - RSA SHA256: ``xAIWJhey/RCjetTR4Hll2GNE9WwCNrMUEOdyDhIeHeE``      |
