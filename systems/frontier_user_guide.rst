@@ -55,8 +55,9 @@ Each Frontier compute node consists of [1x] 64-core AMD "Optimized 3rd Gen EPYC"
 
 
 By default, Frontier reserves the first core in each L3 cache region. Frontier uses low-noise mode,
-which constrains all system processes to core 0. In addition, Frontier uses SLURM core specialization (``-S 8`` flag at job allocation time, e.g., ``sbatch``)
-to reserve one core from each L3 cache region, leaving 56 allocatable cores. Set ``-S 0`` at job allocation to override.
+which constrains all system processes to core 0. Low-noise mode cannot be disabled by users.
+In addition, Frontier uses SLURM core specialization (``-S 8`` flag at job allocation time, e.g., ``sbatch``)
+to reserve one core from each L3 cache region, leaving 56 allocatable cores. Set ``-S 0`` at job allocation to override this setting.
 
 
 Node Types
