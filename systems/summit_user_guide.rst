@@ -3737,10 +3737,14 @@ created with information on the files that were copied.
 Known Issues
 ============
 
-Last Updated: 30 December 2022
+Last Updated: 07 February 2023
 
 Open Issues
 -----------
+
+HIP code cannot be built using CMake using hip::host/device or HIP language support
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Using the ``hip-cuda/5.1.0`` module on Summit, applications cannot build using a ``CMakeLists.txt`` that requires HIP language support or references the ``hip::host`` and ``hip::device`` identifiers. There is no known workaround for this issue. Applications wishing to compile HIP code with CMake need to avoid using HIP language support or ``hip::host`` and ``hip::device`` identifiers.
 
 Unsupported CUDA versions do not work with GPU-aware MPI
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
