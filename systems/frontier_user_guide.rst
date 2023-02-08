@@ -54,6 +54,12 @@ Each Frontier compute node consists of [1x] 64-core AMD "Optimized 3rd Gen EPYC"
     * hardware threads 056-063, 120-127 | GPU 1
 
 
+By default, Frontier reserves the first core in each L3 cache region. Frontier uses low-noise mode,
+which constrains all system processes to core 0. Low-noise mode cannot be disabled by users.
+In addition, Frontier uses SLURM core specialization (``-S 8`` flag at job allocation time, e.g., ``sbatch``)
+to reserve one core from each L3 cache region, leaving 56 allocatable cores. Set ``-S 0`` at job allocation to override this setting.
+
+
 Node Types
 ----------
 
@@ -864,6 +870,9 @@ The table below summarizes options for submitted jobs. Unless otherwise noted, t
 +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
 | ``--reservation``      | ``#SBATCH --reservation=MyReservation.1``  | Instructs Slurm to run a job on nodes that are part of the specified reservation.    |
 +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+| ``-S``                 | ``#SBATCH -S 8``                           | Instructs Slurm to reserve a specific number of cores per node.                      |
+|                        |                                            | Reserved cores cannot be used by the application.                                    |
++------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
 
 
 Slurm Environment Variables
@@ -1365,6 +1374,15 @@ threads can be assigned to additional MPI tasks, this is not recommended. It is
 highly recommended to only use 1 MPI task per physical core and to use OpenMP
 threads instead on any additional logical cores gained when using both hardware
 threads.
+
+.. note::
+
+    Frontier uses low-noise mode and core specialization (``-S`` flag at job allocation, e.g., ``sbatch``).
+    Low-noise mode constrains all system processes to core 0.
+    Core specialization (by default, ``-S 8``) reserves the first core in each L3 region.
+    This prevents the user running on the core that system processes are constrained to.
+    This also means that there are only 56 allocatable cores by default.
+
 
 The following examples cover multithreading with hybrid MPI+OpenMP
 applications.  In these examples, Slurm's :ref:`frontier-interactive` method
