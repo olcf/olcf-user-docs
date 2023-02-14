@@ -3,9 +3,12 @@
 Conda Basics
 ************
 
+.. warning::
+   Because there is no conda module on Frontier, this guide only applies if you installed a personal Miniconda first.
+
 This guide has been shortened and adapted from a challenge in OLCF's `Hands-On with Summit <https://github.com/olcf/hands-on-with-summit>`__ GitHub repository (`Python: Conda Basics <https://github.com/olcf/hands-on-with-summit/tree/master/challenges/Python_Conda_Basics>`__).
 
-.. warning::
+.. note::
    The guide is designed to be followed from start to finish, as certain steps must be completed in the correct order before some commands work properly.
    For those that just want a quick-reference list of common conda commands, see the :ref:`conda-quick` section.
 
@@ -14,6 +17,7 @@ Overview
 
 This guide introduces a user to the basic workflow of using conda environments, as well as providing an example of how to create a conda environment that uses a different version of Python than the base environment uses on Summit.
 Although Summit is being used in this guide, all of the concepts still apply to other OLCF systems.
+If using Frontier, this assumes you already have installed your own version of conda (e.g., by installing Miniconda).
 
 Inspecting and setting up an environment
 ========================================
@@ -24,6 +28,9 @@ First, load the python module and the gnu compiler module on Summit (most Python
 
    $ module load gcc
    $ module load python
+
+.. note::
+   The above ``module load python`` does not apply to Frontier (since you will be using a personal Miniconda instead).
 
 This puts you in the "base" conda environment, which is the default Python environment after loading the module.
 To see a list of environments, use the command ``conda env list``:
@@ -237,6 +244,27 @@ Additional Tips
     This will create a ``.condarc`` file in your ``$HOME`` directory if you do not have one already, which will now contain this new envs_dirs location.
     This will now enable you to use the ``--name env_name`` flag when using conda commands for environments stored in the ``summit`` directory, instead of having to use the ``-p /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/conda_envs/summit/env_name`` flag and specifying the full path to the environment.
     For example, you can do ``source activate py3711-summit`` instead of ``source activate /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/conda_envs/summit/py3711-summit``.
+
+* Exporting (sharing) an environment:
+
+    You may want to share your environment with someone else.
+    One way to do this is by creating your environment in a shared location where other users can access it.
+    A different way (the method described below) is to export a list of all the packages and versions of your environment (an ``environment.yml`` file).
+    If a different user provides conda the list you made, conda will install all the same package versions and recreate your environment for them -- essentially "sharing" your environment.
+    To export your environment list:
+    
+    .. code-block:: bash
+
+       $ source activate my_env
+       $ conda env export > environment.yml
+    
+    You can then email or otherwise provide the ``environment.yml`` file to the desired person.
+    The person would then be able to create the environment like so:
+    
+    .. code-block:: bash
+
+       $ conda env create -f environment.yml
+
 
 .. _conda-quick:
 
