@@ -3,9 +3,12 @@
 Installing CuPy
 ***************
 
+.. warning::
+   This guide has not been adapted for Frontier yet.
+
 This guide has been shortened and adapted from a challenge in OLCF's `Hands-On with Summit <https://github.com/olcf/hands-on-with-summit>`__ GitHub repository (`Python: CuPy Basics <https://github.com/olcf/hands-on-with-summit/tree/master/challenges/Python_Cupy_Basics>`__).
 
-.. warning::
+.. note::
    The guide is designed to be followed from start to finish, as certain steps must be completed in the correct order before some commands work properly.
 
 Overview
