@@ -4,9 +4,13 @@ Installing CuPy
 ***************
 
 .. warning::
-   This guide has not been adapted for Frontier yet.
+   This guide has been adapted for Frontier following ``venv`` syntax. If you
+   are using a personal :doc:`Miniconda distribution on Frontier </software/python/miniconda>`, 
+   the workflow will be similar to the Summit/Andes ``conda`` scenario.  If
+   that is your use-case, then ignore the mention of the ``cray-python`` module in
+   the workflow (other modules still apply).
 
-This guide has been shortened and adapted from a challenge in OLCF's `Hands-On with Summit <https://github.com/olcf/hands-on-with-summit>`__ GitHub repository (`Python: CuPy Basics <https://github.com/olcf/hands-on-with-summit/tree/master/challenges/Python_Cupy_Basics>`__).
+This guide has been adapted from a challenge in OLCF's `Hands-On with Summit <https://github.com/olcf/hands-on-with-summit>`__ GitHub repository (`Python: CuPy Basics <https://github.com/olcf/hands-on-with-summit/tree/master/challenges/Python_Cupy_Basics>`__).
 
 .. note::
    The guide is designed to be followed from start to finish, as certain steps must be completed in the correct order before some commands work properly.
@@ -14,14 +18,14 @@ This guide has been shortened and adapted from a challenge in OLCF's `Hands-On w
 Overview
 ========
 
-This guide teaches you how to build CuPy from source into a custom conda environment on Summit.
-Although Summit is being used in this guide, all of the concepts still apply to other OLCF systems.
+This guide teaches you how to build CuPy from source into a custom virtual environment.
+On Summit and Andes, this is done using ``conda``, while on Frontier this is done using ``venv``.
 
 In this guide, you will:
 
-* Learn how to install CuPy on Summit
+* Learn how to install CuPy
 * Learn the basics of CuPy
-* Compare speeds to NumPy on Summit
+* Compare speeds to NumPy
 
 CuPy
 ====
@@ -40,79 +44,176 @@ Most operations provide an immediate speed-up out of the box, and some operation
    :align: center
    :width: 50%
 
-Because each Summit compute node has 6 NVIDIA V100 GPUs, you will be able to take full advantage of CuPy's capabilities on the system, providing significant speedups over NumPy-written code.
+Compute nodes equipped with NVIDIA GPUs will be able to take full advantage of CuPy's capabilities on the system, providing significant speedups over NumPy-written code.
+**CuPy with AMD GPUs is still being explored, and the same performance is not guaranteed (especially with larger data sizes).**
+**Instructions for Frontier are available in this guide, but users must note that the CuPy developers have labeled this method as** `experimental <https://docs.cupy.dev/en/stable/install.html#using-cupy-on-amd-gpu-experimental>`__ **and has** `limitations <https://docs.cupy.dev/en/stable/install.html#limitations>`__.
+
+.. _cupy-envs:
 
 Installing CuPy
 ===============
 
 .. warning::
-   Before setting up your conda environment, you must exit and log back in to Summit so that you have a fresh login shell.
-   This is to ensure that no previously activated conda environments exist in your ``$PATH`` environment variable.
+   Before setting up your environment, you must exit and log back in so that you have a fresh login shell.
+   This is to ensure that no previously activated environments exist in your ``$PATH`` environment variable.
+   Additionally, you should execute ``module reset``.
 
 Building CuPy from source is highly sensitive to the current environment variables set in your profile.
-Because of this, it is extremely important that all the modules and conda environments you plan to load are done in the correct order, so that all the environment variables are set correctly.
-First, unload all the current modules that you may have automatically loaded on Summit and then immediately load the default modules.
+Because of this, it is extremely important that all the modules and environments you plan to load are done in the correct order, so that all the environment variables are set correctly.
 
-.. code-block:: bash
+First, load the gnu compiler module (most Python packages assume GCC), relevant GPU module (necessary for CuPy), and the python module (allows you to create a new environment):
 
-   $ module purge
-   $ module load DefApps
+.. tabbed:: Summit
 
-Next, load the gnu compiler module (most Python packages assume GCC), cuda module (necessary for CuPy), and the python module (allows you to create a new conda environment):
+   .. code-block:: bash
 
-.. code-block:: bash
+      $ module load gcc/7.5.0
+      $ module load cuda/11.0.3
+      $ module load python
 
-   $ module load gcc/7.5.0 # gcc/6.5.0 for Andes
-   $ module load cuda/11.0.3 # cuda/11.0.2 for Andes
-   $ module load python
+.. tabbed:: Andes
 
-Loading the python module puts you in a "base" conda environment, but you need to create a new environment using the ``conda create`` command:
+   .. code-block:: bash
 
-.. code-block:: bash
+      $ module load gcc/6.5.0
+      $ module load cuda/11.0.2
+      $ module load python
 
-   $ conda create -p /ccs/proj/<project_id>/<user_id>/conda_envs/summit/cupy-summit python=3.9
+.. tabbed:: Frontier
+
+   .. code-block:: bash
+
+      $ module load PrgEnv-gnu
+      $ module load rocm/5.3.0
+      $ module load craype-accel-amd-gfx90a
+      $ module load cray-python # only if not using Miniconda on Frontier
+
+   .. note::
+      If you are using a :doc:`Miniconda distribution on Frontier </software/python/miniconda>`, the above ``module load cray-python`` should not be loaded.
+
+Loading a python module puts you in a "base" environment, but you need to create a new environment using the ``conda create`` command (Summit/Andes) or the ``venv`` command (Frontier):
+
+.. tabbed:: Summit
+
+   .. code-block:: bash
+
+      $ conda create -p /ccs/proj/<project_id>/<user_id>/envs/summit/cupy-summit python=3.9
+
+.. tabbed:: Andes
+
+   .. code-block:: bash
+
+      $ conda create -p /ccs/proj/<project_id>/<user_id>/envs/andes/cupy-andes python=3.9
+
+.. tabbed:: Frontier
+
+   .. code-block:: bash
+
+      $ python3 -m venv /ccs/proj/<project_id>/<user_id>/envs/frontier/cupy-frontier
+
 
 .. note::
    As noted in the :doc:`/software/python/index` page, it is highly recommended to create new environments in the "Project Home" directory.
 
 After following the prompts for creating your new environment, you can now activate it:
 
-.. code-block:: bash
+.. tabbed:: Summit
 
-   $ source activate /ccs/proj/<project_id>/<user_id>/conda_envs/summit/cupy-summit
+   .. code-block:: bash
 
-CuPy depends on NumPy, so let's install an optimized version of NumPy into your fresh conda environment:
+      $ source activate /ccs/proj/<project_id>/<user_id>/envs/summit/cupy-summit
 
-.. code-block:: bash
+.. tabbed:: Andes
 
-   $ conda install -c defaults --override-channels numpy
+   .. code-block:: bash
+
+      $ source activate /ccs/proj/<project_id>/<user_id>/envs/andes/cupy-andes
+
+.. tabbed:: Frontier
+
+   .. code-block:: bash
+
+      $ source /ccs/proj/<project_id>/<user_id>/envs/frontier/cupy-frontier/bin/activate
+
+CuPy depends on NumPy, so let's install an optimized version of NumPy into your fresh environment:
+
+.. tabbed:: Summit
+
+   .. code-block:: bash
+
+      $ conda install -c defaults --override-channels numpy
+
+.. tabbed:: Andes
+
+   .. code-block:: bash
+
+      $ conda install -c defaults --override-channels numpy
+
+.. tabbed:: Frontier
+
+   .. code-block:: bash
+
+      $ pip install --no-cache-dir --upgrade pip
+      $ pip install numpy --no-cache-dir
 
 After following the prompts, NumPy and its linear algebra dependencies should successfully install.
 
 Next, install SciPy.
 SciPy is an optional dependency, but it would allow you to use the additional SciPy-based routines in CuPy:
 
-.. code-block:: bash
+.. tabbed:: Summit
 
-   $ conda install scipy
+   .. code-block:: bash
+
+      $ conda install scipy
+
+.. tabbed:: Andes
+
+   .. code-block:: bash
+
+      $ conda install scipy
+
+.. tabbed:: Frontier
+
+   .. code-block:: bash
+
+      $ pip install scipy --no-cache-dir
 
 Finally, install CuPy from source into your environment.
-To make sure that you are building from source, and not a pre-compiled binary, use pip:
+To make sure that you are building from source, and not a pre-compiled binary, use ``pip``:
 
-.. code-block:: bash
+.. tabbed:: Summit
 
-   $ CC=gcc NVCC=nvcc pip install --no-binary=cupy cupy
+   .. code-block:: bash
 
-The ``CUDA_PATH`` flag makes sure that you are using the correct path set by the ``cuda`` module, while the ``CC`` and ``NVCC`` flags ensure that you are passing the correct wrappers. Note that, if you are using the instructions for installing CuPy with OpenCE below, the ``cuda/11.0.3`` module will automatically be loaded.
-This installation takes, on average, 20 minutes to complete (due to building everything from scratch), so don't panic if it looks like the install timed-out.
-Eventually you should see output similar to:
+      $ CC=gcc NVCC=nvcc pip install --no-cache-dir --no-binary=cupy cupy
+
+.. tabbed:: Andes
+
+   .. code-block:: bash
+
+      $ CC=gcc NVCC=nvcc pip install --no-cache-dir --no-binary=cupy cupy
+
+.. tabbed:: Frontier
+
+   .. code-block:: bash
+
+      $ export CUPY_INSTALL_USE_HIP=1
+      $ export ROCM_HOME=/opt/rocm-5.3.0
+      $ export HCC_AMDGPU_TARGET=gfx90a
+      $ CC=gcc pip install --no-cache-dir --no-binary=cupy cupy
+
+The ``CC`` and ``NVCC`` flags ensure that you are passing the correct wrappers, while the various flags for Frontier tell CuPy to build for AMD GPUs.
+Note that, on Summit, if you are using the instructions for installing CuPy with OpenCE below, the ``cuda/11.0.3`` module will automatically be loaded.
+This installation takes, on average, 10-20 minutes to complete (due to building everything from scratch), so don't panic if it looks like the install timed-out.
+Eventually you should see output similar to this (versions will vary):
 
 .. code-block::
 
    Successfully installed cupy-9.5.0 fastrlock-0.6
 
-Installing CuPy in an OpenCE Environment
------------------------------------------
+Installing CuPy in an OpenCE Environment (Summit only)
+------------------------------------------------------
 
 If you wish to use CuPy within a clone of the OpenCE environment, the installation process is very similar to what we do in the regular CuPy installation we saw above.
 
@@ -127,8 +228,8 @@ The contents of the open-ce module cannot be modified so you need to make your o
    $ module load DefApps
    $ module unload xl
    $ module load open-ce/1.5.2-py39-0
-   $ conda create --clone open-ce-1.5.2-py39-0 -p /ccs/proj/<project_id>/<user_id>/conda_envs/summit/opence_cupy_summit
-   $ conda activate /ccs/proj/<project_id>/<user_id>/conda_envs/summit/opence_cupy_summit
+   $ conda create --clone open-ce-1.5.2-py39-0 -p /ccs/proj/<project_id>/<user_id>/envs/summit/opence_cupy_summit
+   $ conda activate /ccs/proj/<project_id>/<user_id>/envs/summit/opence_cupy_summit
 
 Next, install CuPy the way you did before. This installation will use the system GCC /usr/bin/gcc which is currently 8.3.1.
 
@@ -144,7 +245,7 @@ Now, everytime you want to use this environment with CuPy on a new login or in a
    module load DefApps
    module unload xl
    module load open-ce/1.5.2-py39-0
-   conda activate /ccs/proj/<project_id>/<user_id>/conda_envs/summit/opence_cupy_summit
+   conda activate /ccs/proj/<project_id>/<user_id>/envs/summit/opence_cupy_summit
 
 
 
@@ -153,8 +254,9 @@ Getting Started With CuPy
 =========================
 
 .. note::
-   Assuming you are continuing from the previous section, you do not need to load any modules.
-   However, if you logged out after finishing the previous section, you must load the "cuda/11.0.3" and "python" modules followed by activating your CuPy conda environment before moving on.
+   Assuming you are continuing from the previous sections, you do not need to
+   load any modules. Otherwise, you need to load the modules associated with your
+   system covered in the :ref:`Installing CuPy section <cupy-envs>`.
 
 When a kernel call is required in CuPy, it compiles a kernel code optimized for the shapes and data types of given arguments, sends it to the GPU device, and executes the kernel.
 Due to this, CuPy runs slower on its initial execution.
@@ -170,6 +272,9 @@ Before you start testing CuPy with Python scripts, let's go over some of the bas
 The developers provide a great introduction to using CuPy in their user guide under the `CuPy Basics <https://docs.cupy.dev/en/stable/user_guide/basic.html>`__ section.
 We will be following this walkthrough on Summit.
 The syntax below assumes being in a Python shell with access to 4 GPUs (through a ``jsrun -g4 ...`` command).
+
+.. note::
+   On Frontier, running in an interactive job will return 8 GPUs available to CuPy.
 
 As is the standard with NumPy being imported as "np", CuPy is often imported in a similar fashion:
 
@@ -251,6 +356,12 @@ Similarly, you can temporarily switch to a device using the ``with`` context:
 
 Trying to perform operations on an array stored on a different GPU will result in an error:
 
+.. warning::
+   The below code block should **not** be run on Frontier, as it causes problems for the
+   subsequent code blocks further below. With recent updates to CuPy, peer access is
+   enabled by default, which "passes" the below error. This causes problems with
+   AMD GPUs, resulting in inaccurate data.
+
 .. code-block:: python
 
    >>> with cp.cuda.Device(0):
@@ -295,8 +406,12 @@ In CuPy, all CUDA operations are enqueued onto the current stream, and the queue
 This can result in some GPU operations finishing before some CPU operations.
 As CuPy streams are out of the scope of this guide, you can find additional information in the `CuPy User Guide <https://docs.cupy.dev/en/stable/user_guide/index.html>`__.
 
-NumPy Speed Comparison
-======================
+NumPy Speed Comparison (Summit/Andes only)
+==========================================
+
+.. warning::
+   As noted in `AMD+CuPy limitations <https://docs.cupy.dev/en/stable/install.html#limitations>`__,
+   data sizes explored here hang. So, this section currently does not apply to Frontier.
 
 Now that you know how to use CuPy, time to see the actual benefits that CuPy provides for large datasets.
 More specifically, let's see how much faster CuPy can be than NumPy on Summit.
@@ -387,7 +502,7 @@ Example "submit_timings.lsf" batch script:
    module load cuda/11.0.3
    module load python
 
-   source activate /ccs/proj/<project_id>/<user_id>/conda_envs/summit/cupy-summit
+   source activate /ccs/proj/<project_id>/<user_id>/envs/summit/cupy-summit
    export CUPY_CACHE_DIR="${MEMBERWORK}/<project_id>/.cupy/kernel_cache"
 
    jsrun -n1 -g1 python3 timings.py
