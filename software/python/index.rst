@@ -6,9 +6,9 @@ Python on OLCF Systems
 .. warning::
     Currently, Crusher and Frontier do **NOT** have Anaconda/Conda modules.
     To use conda, you will have to download and install Miniconda on your own
-    (see `Miniconda Documentation <https://docs.conda.io/en/latest/miniconda.html>`__).
-    Alternatively, you can use Python's inherent virtual environments ``venv``
-    feature with the ``cray-python`` module instead.  For more details on ``venv``, 
+    (see our :doc:`Installing Miniconda Guide </software/python/miniconda>`).
+    Alternatively, you can use Python's native virtual environments ``venv``
+    feature with the ``cray-python`` module.  For more details on ``venv``, 
     see `Python's Official Documentation <https://docs.python.org/3/tutorial/venv.html>`__.
     Contact help@olcf.ornl.gov if conda is required for your workflow, or if you
     have any issues.
@@ -48,9 +48,10 @@ For users interested in using the machine learning ``open-ce`` module (formerly
 ``ibm-wml-ce``) on Summit, see our :doc:`/software/analytics/ibm-wml-ce` page.
 
 .. warning::
-    Currently, Crusher and Frontier do **NOT** have Anaconda/Conda modules 
-    (see warning at top of this page). If you decide to install a personal Miniconda on
-    Frontier, the conda workflow described on this page (and others) still applies.
+    Currently, Crusher and Frontier do **NOT** have Anaconda/Conda modules
+    (see warning at top of this page).
+    If you decide to :doc:`install a personal Miniconda on Frontier </software/python/miniconda>`,
+    the conda workflow described on this page (and others) still applies.
     Otherwise, you will have to use the ``venv`` workflow described below.
 
 .. _python-guides:
@@ -67,15 +68,20 @@ Below is a list of guides created for using Python on OLCF systems.
    conda_basics
    parallel_h5py
    cupy
+   miniconda
 
 * :doc:`Conda Basics Guide </software/python/conda_basics>`: Goes over the basic workflow and commands of Conda **(Summit/Andes/Frontier)**
-* :doc:`Installing mpi4py and h5py Guide </software/python/parallel_h5py>`: Teaches you how to install parallel-enabled h5py and mpi4py **(Summit/Andes)**
-* :doc:`Installing CuPy Guide </software/python/cupy>`: Teaches you how to install CuPy **(Summit/Andes)**
+* :doc:`Installing mpi4py and h5py Guide </software/python/parallel_h5py>`: Teaches you how to install parallel-enabled h5py and mpi4py **(Summit/Andes/Frontier)**
+* :doc:`Installing CuPy Guide </software/python/cupy>`: Teaches you how to install CuPy **(Summit/Andes/Frontier)**
+* :doc:`Installing Miniconda Guide </software/python/miniconda>`: Teaches you how to install Miniconda **(Frontier only)**
 
 .. note::
    For newer users to conda, it is highly recommended to view our :doc:`Conda
    Basics Guide </software/python/conda_basics>`, where a :ref:`conda-quick`
    list is provided.
+
+.. note::
+   The Frontier sections below assume you are not using a :doc:`personal Miniconda on Frontier </software/python/miniconda>`.
 
 .. _python-mods:
 
@@ -101,7 +107,6 @@ To start using Python, all you need to do is load the module:
    .. code-block:: bash
 
       $ module load cray-python
-
 
 
 Base Environment
@@ -481,12 +486,12 @@ Best Practices
     install packages into the clone. To clone an environment, you must use the
     ``--clone <env_to_clone>`` flag when creating a new conda environment. An
     example for cloning the base environment into a specific directory called
-    ``conda_envs/summit/`` in your "Project Home" on Summit is provided below:
+    ``envs/summit/`` in your "Project Home" on Summit is provided below:
 
     .. code-block:: bash
 
-       $ conda create -p /ccs/proj/<project_id>/<user_id>/conda_envs/summit/baseclone-summit --clone base
-       $ source activate /ccs/proj/<project_id>/<user_id>/conda_envs/summit/baseclone-summit
+       $ conda create -p /ccs/proj/<project_id>/<user_id>/envs/summit/baseclone-summit --clone base
+       $ source activate /ccs/proj/<project_id>/<user_id>/envs/summit/baseclone-summit
 
 * **Cloning the "base environment" using venv**:
 
@@ -523,16 +528,16 @@ Best Practices
 
     .. code-block:: bash
 
-       $ conda config --append envs_dirs /ccs/proj/<project_id>/<user_id>/conda_envs/summit
+       $ conda config --append envs_dirs /ccs/proj/<project_id>/<user_id>/envs/summit
 
     This will create a ``.condarc`` file in your ``$HOME`` directory if you do not have
     one already, which will now contain this new envs_dirs location.  This will now
     enable you to use the ``--name env_name`` flag when using conda commands for
     environments stored in the ``summit`` directory, instead of having to use the
-    ``-p /ccs/proj/<project_id>/<user_id>/conda_envs/summit/env_name``
+    ``-p /ccs/proj/<project_id>/<user_id>/envs/summit/env_name``
     flag and specifying the full path to the environment.  For example, you can do
     ``source activate my_env`` instead of ``source activate
-    /ccs/proj/<project_id>/<user_id>/conda_envs/summit/my_env``.
+    /ccs/proj/<project_id>/<user_id>/envs/summit/my_env``.
 
 * **Make note of and clean your pip cache location**:
 

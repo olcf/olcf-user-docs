@@ -5,6 +5,7 @@ Conda Basics
 
 .. warning::
    Because there is no conda module on Frontier, this guide only applies if you installed a personal Miniconda first.
+   See our :doc:`Installing Miniconda Guide </software/python/miniconda>` for more details.
 
 This guide has been shortened and adapted from a challenge in OLCF's `Hands-On with Summit <https://github.com/olcf/hands-on-with-summit>`__ GitHub repository (`Python: Conda Basics <https://github.com/olcf/hands-on-with-summit/tree/master/challenges/Python_Conda_Basics>`__).
 
@@ -17,7 +18,7 @@ Overview
 
 This guide introduces a user to the basic workflow of using conda environments, as well as providing an example of how to create a conda environment that uses a different version of Python than the base environment uses on Summit.
 Although Summit is being used in this guide, all of the concepts still apply to other OLCF systems.
-If using Frontier, this assumes you already have installed your own version of conda (e.g., by installing Miniconda).
+If using Frontier, this assumes you already have installed your own version of conda (e.g., by :doc:`installing Miniconda </software/python/miniconda>`).
 
 Inspecting and setting up an environment
 ========================================
@@ -85,7 +86,7 @@ To do so, create a new environment using the ``conda create`` command:
 
 .. code-block:: bash
 
-   $ conda create -p /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/conda_envs/summit/py3711-summit python=3.7.11
+   $ conda create -p /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/envs/summit/py3711-summit python=3.7.11
 
 The ``-p`` flag specifies the desired path and name of your new virtual environment.
 The directory structure is case sensitive, so be sure to insert ``<YOUR_PROJECT_ID>`` as lowercase.
@@ -108,7 +109,7 @@ Downloads of the fresh packages will start and eventually you should see somethi
    #
    # To activate this environment, use
    #
-   #     $ conda activate /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/conda_envs/summit/py3711-summit
+   #     $ conda activate /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/envs/summit/py3711-summit
    #
    # To deactivate an active environment, use
    #
@@ -119,7 +120,7 @@ Let's activate the new environment:
 
 .. code-block:: bash
 
-   $ source activate /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/conda_envs/summit/py3711-summit
+   $ source activate /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/envs/summit/py3711-summit
 
 The path to the environment should now be displayed in "( )" at the beginning of your terminal lines, which indicate that you are currently using that specific conda environment.
 And if you check with ``conda env list`` again, you should see that the ``*`` marker has moved to your newly activated environment:
@@ -130,7 +131,7 @@ And if you check with ``conda env list`` again, you should see that the ``*`` ma
 
    # conda environments:
    #
-                         *  /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/conda_envs/summit/py3711-summit
+                         *  /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/envs/summit/py3711-summit
    base                     /sw/summit/python/3.8/anaconda3/2020.07-rhel8
 
 Installing packages
@@ -220,8 +221,8 @@ Additional Tips
 
     .. code-block:: bash
 
-       $ conda create -p /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/conda_envs/summit/baseclone-summit --clone base
-       $ source activate /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/conda_envs/summit/baseclone-summit
+       $ conda create -p /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/envs/summit/baseclone-summit --clone base
+       $ source activate /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/envs/summit/baseclone-summit
 
 * Adding known environment locations:
 
@@ -239,11 +240,11 @@ Additional Tips
 
     .. code-block:: bash
 
-       $ conda config --append envs_dirs /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/conda_envs/summit
+       $ conda config --append envs_dirs /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/envs/summit
 
     This will create a ``.condarc`` file in your ``$HOME`` directory if you do not have one already, which will now contain this new envs_dirs location.
-    This will now enable you to use the ``--name env_name`` flag when using conda commands for environments stored in the ``summit`` directory, instead of having to use the ``-p /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/conda_envs/summit/env_name`` flag and specifying the full path to the environment.
-    For example, you can do ``source activate py3711-summit`` instead of ``source activate /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/conda_envs/summit/py3711-summit``.
+    This will now enable you to use the ``--name env_name`` flag when using conda commands for environments stored in the ``summit`` directory, instead of having to use the ``-p /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/envs/summit/env_name`` flag and specifying the full path to the environment.
+    For example, you can do ``source activate py3711-summit`` instead of ``source activate /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/envs/summit/py3711-summit``.
 
 * Exporting (sharing) an environment:
 
