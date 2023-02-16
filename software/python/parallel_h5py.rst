@@ -26,6 +26,12 @@ In this guide, you will:
 * Learn how to install parallel h5py
 * Test your build with Python scripts
 
+OLCF Systems this guide applies to:
+
+* Summit
+* Andes
+* Frontier
+
 Parallel HDF5
 =============
 
@@ -287,7 +293,7 @@ Example "submit_hello" batch script:
       #SBATCH -A <PROJECT_ID>
       #SBATCH -J mpi4py
       #SBATCH -N 1
-      #SBATCH -p batch
+      #SBATCH -p gpu
       #SBATCH -t 0:05:00
 
       cd $SLURM_SUBMIT_DIR
@@ -317,7 +323,7 @@ Example "submit_hello" batch script:
 
       module load PrgEnv-gnu
       module load hdf5
-      module load cray-python
+      export PATH="/path/to/your/miniconda/bin:$PATH"
 
       source activate /ccs/proj/<project_id>/<user_id>/envs/frontier/h5pympi-frontier
 
@@ -417,7 +423,7 @@ Example "submit_h5py" batch script:
       #SBATCH -A <PROJECT_ID>
       #SBATCH -J h5py
       #SBATCH -N 1
-      #SBATCH -p batch
+      #SBATCH -p gpu
       #SBATCH -t 0:05:00
 
       cd $SLURM_SUBMIT_DIR
@@ -447,7 +453,7 @@ Example "submit_h5py" batch script:
 
       module load PrgEnv-gnu
       module load hdf5
-      module load cray-python
+      export PATH="/path/to/your/miniconda/bin:$PATH"
 
       source activate /ccs/proj/<project_id>/<user_id>/envs/frontier/h5pympi-frontier
 
