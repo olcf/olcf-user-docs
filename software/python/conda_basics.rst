@@ -20,6 +20,12 @@ This guide introduces a user to the basic workflow of using conda environments, 
 Although Summit is being used in this guide, all of the concepts still apply to other OLCF systems.
 If using Frontier, this assumes you already have installed your own version of conda (e.g., by :doc:`installing Miniconda </software/python/miniconda>`).
 
+OLCF Systems this guide applies to: 
+
+* Summit
+* Andes
+* Frontier (if using ``conda``)
+
 Inspecting and setting up an environment
 ========================================
 

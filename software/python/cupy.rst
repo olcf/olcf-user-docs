@@ -6,7 +6,7 @@ Installing CuPy
 .. warning::
    This guide has been adapted for Frontier following ``venv`` syntax. If you
    are using a personal :doc:`Miniconda distribution on Frontier </software/python/miniconda>`, 
-   the workflow will be similar to the Summit/Andes ``conda`` scenario.  If
+   the workflow will be similar to the Summit ``conda`` scenario.  If
    that is your use-case, then ignore the mention of the ``cray-python`` module in
    the workflow (other modules still apply).
 
@@ -19,13 +19,18 @@ Overview
 ========
 
 This guide teaches you how to build CuPy from source into a custom virtual environment.
-On Summit and Andes, this is done using ``conda``, while on Frontier this is done using ``venv``.
+On Summit, this is done using ``conda``, while on Frontier this is done using ``venv``.
 
 In this guide, you will:
 
 * Learn how to install CuPy
 * Learn the basics of CuPy
 * Compare speeds to NumPy
+
+OLCF Systems this guide applies to:
+
+* Summit
+* Frontier
 
 CuPy
 ====
@@ -67,16 +72,8 @@ First, load the gnu compiler module (most Python packages assume GCC), relevant 
 
    .. code-block:: bash
 
-      $ module load gcc/7.5.0
+      $ module load gcc/7.5.0 # might work with other GCC versions
       $ module load cuda/11.0.3
-      $ module load python
-
-.. tabbed:: Andes
-
-   .. code-block:: bash
-
-      $ module load gcc/6.5.0
-      $ module load cuda/11.0.2
       $ module load python
 
 .. tabbed:: Frontier
@@ -91,19 +88,13 @@ First, load the gnu compiler module (most Python packages assume GCC), relevant 
    .. note::
       If you are using a :doc:`Miniconda distribution on Frontier </software/python/miniconda>`, the above ``module load cray-python`` should not be loaded.
 
-Loading a python module puts you in a "base" environment, but you need to create a new environment using the ``conda create`` command (Summit/Andes) or the ``venv`` command (Frontier):
+Loading a python module puts you in a "base" environment, but you need to create a new environment using the ``conda create`` command (Summit) or the ``venv`` command (Frontier):
 
 .. tabbed:: Summit
 
    .. code-block:: bash
 
       $ conda create -p /ccs/proj/<project_id>/<user_id>/envs/summit/cupy-summit python=3.9
-
-.. tabbed:: Andes
-
-   .. code-block:: bash
-
-      $ conda create -p /ccs/proj/<project_id>/<user_id>/envs/andes/cupy-andes python=3.9
 
 .. tabbed:: Frontier
 
@@ -123,12 +114,6 @@ After following the prompts for creating your new environment, you can now activ
 
       $ source activate /ccs/proj/<project_id>/<user_id>/envs/summit/cupy-summit
 
-.. tabbed:: Andes
-
-   .. code-block:: bash
-
-      $ source activate /ccs/proj/<project_id>/<user_id>/envs/andes/cupy-andes
-
 .. tabbed:: Frontier
 
    .. code-block:: bash
@@ -141,54 +126,22 @@ CuPy depends on NumPy, so let's install an optimized version of NumPy into your 
 
    .. code-block:: bash
 
-      $ conda install -c defaults --override-channels numpy
-
-.. tabbed:: Andes
-
-   .. code-block:: bash
-
-      $ conda install -c defaults --override-channels numpy
+      $ conda install -c defaults --override-channels numpy scipy
 
 .. tabbed:: Frontier
 
    .. code-block:: bash
 
       $ pip install --no-cache-dir --upgrade pip
-      $ pip install numpy --no-cache-dir
+      $ pip install numpy scipy --no-cache-dir
 
 After following the prompts, NumPy and its linear algebra dependencies should successfully install.
-
-Next, install SciPy.
 SciPy is an optional dependency, but it would allow you to use the additional SciPy-based routines in CuPy:
-
-.. tabbed:: Summit
-
-   .. code-block:: bash
-
-      $ conda install scipy
-
-.. tabbed:: Andes
-
-   .. code-block:: bash
-
-      $ conda install scipy
-
-.. tabbed:: Frontier
-
-   .. code-block:: bash
-
-      $ pip install scipy --no-cache-dir
 
 Finally, install CuPy from source into your environment.
 To make sure that you are building from source, and not a pre-compiled binary, use ``pip``:
 
 .. tabbed:: Summit
-
-   .. code-block:: bash
-
-      $ CC=gcc NVCC=nvcc pip install --no-cache-dir --no-binary=cupy cupy
-
-.. tabbed:: Andes
 
    .. code-block:: bash
 
@@ -406,7 +359,7 @@ In CuPy, all CUDA operations are enqueued onto the current stream, and the queue
 This can result in some GPU operations finishing before some CPU operations.
 As CuPy streams are out of the scope of this guide, you can find additional information in the `CuPy User Guide <https://docs.cupy.dev/en/stable/user_guide/index.html>`__.
 
-NumPy Speed Comparison (Summit/Andes only)
+NumPy Speed Comparison (Summit only)
 ==========================================
 
 .. warning::
@@ -477,35 +430,40 @@ Before asking for a compute node, change into your GPFS scratch directory:
    $ cd cupy_test
 
 Let's see the boosts explicitly by running the ``timings.py`` script.
-To do so, you must submit ``submit_timings.lsf`` to the queue:
+To do so, you must submit ``submit_timings`` to the queue:
 
-.. code-block:: bash
+.. tabbed:: Summit
 
-   $ bsub -L $SHELL submit_timings.lsf
+   .. code-block:: bash
 
-Example "submit_timings.lsf" batch script:
+      $ bsub -L $SHELL submit_timings.lsf
 
-.. code-block:: bash
+Example "submit_timings" batch script:
 
-   #!/bin/bash
-   #BSUB -P <PROJECT_ID>
-   #BSUB -W 00:05
-   #BSUB -nnodes 1
-   #BSUB -J cupy_timings
-   #BSUB -o cupy_timings.%J.out
-   #BSUB -e cupy_timings.%J.err
+.. tabbed:: Summit
 
-   cd $LSB_OUTDIR
-   date
+   .. code-block:: bash
 
-   module load gcc/7.5.0
-   module load cuda/11.0.3
-   module load python
+      #!/bin/bash
+      #BSUB -P <PROJECT_ID>
+      #BSUB -W 00:05
+      #BSUB -nnodes 1
+      #BSUB -J cupy_timings
+      #BSUB -o cupy_timings.%J.out
+      #BSUB -e cupy_timings.%J.err
 
-   source activate /ccs/proj/<project_id>/<user_id>/envs/summit/cupy-summit
-   export CUPY_CACHE_DIR="${MEMBERWORK}/<project_id>/.cupy/kernel_cache"
+      cd $LSB_OUTDIR
+      date
 
-   jsrun -n1 -g1 python3 timings.py
+      module load gcc/7.5.0
+      module load cuda/11.0.3
+      module load python
+
+      source activate /ccs/proj/<project_id>/<user_id>/envs/summit/cupy-summit
+      export CUPY_CACHE_DIR="${MEMBERWORK}/<project_id>/.cupy/kernel_cache"
+
+      jsrun -n1 -g1 python3 timings.py
+
 
 After the job completes, in ``cupy_timings.<JOB_ID>.out`` you will see something similar to:
 
