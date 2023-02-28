@@ -124,7 +124,7 @@ For more information on connecting to OLCF resources, see :ref:`connecting-to-ol
 Data and Storage
 ================
 
-For more detailed information about center-wide file systems and data archiving available on Frontier, please refer to the pages on :ref:`data-storage-and-transfers`. The subsections below give a quick overview of NFS, Lustre, GPFS, and HPSS storage spaces as well as the on node NVMe "Burst Buffers" (SSDs).
+For more detailed information about center-wide file systems and data archiving available on Frontier, please refer to the pages on :ref:`data-storage-and-transfers`. The subsections below give a quick overview of NFS, Lustre,and HPSS storage spaces as well as the on node NVMe "Burst Buffers" (SSDs).
 
 NFS
 ---
@@ -151,25 +151,6 @@ Lustre
 +---------------------+----------------------------------------------+------------------------+-------------+--------+---------+---------+------------+------------------+
 
 
-
-
-
-GPFS
-----
-
-+---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
-| Area                | Path                                        | Type           | Permissions |  Quota | Backups | Purged  | Retention  | On Compute Nodes |
-+=====================+=============================================+================+=============+========+=========+=========+============+==================+
-| Member Work         | ``/gpfs/alpine/[projid]/scratch/[userid]``  | Spectrum Scale | 700         |  50 TB | No      | 90 days | N/A        | Yes              |
-+---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
-| Project Work        | ``/gpfs/alpine/[projid]/proj-shared``       | Spectrum Scale | 770         |  50 TB | No      | 90 days | N/A        | Yes              |
-+---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
-| World Work          | ``/gpfs/alpine/[projid]/world-shared``      | Spectrum Scale | 775         |  50 TB | No      | 90 days | N/A        | Yes              |
-+---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
-
-
-.. note::
-    When the Orion Lustre Filesystem comes into production, Frontier will no longer connect to Alpine GPFS. Details will be added to this section as they become available.
 
 HPSS Archival Storage
 ---------------------
