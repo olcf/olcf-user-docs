@@ -124,7 +124,7 @@ For more information on connecting to OLCF resources, see :ref:`connecting-to-ol
 Data and Storage
 ================
 
-For more detailed information about center-wide file systems and data archiving available on Frontier, please refer to the pages on :ref:`data-storage-and-transfers`. The subsections below give a quick overview of NFS, GPFS, and HPSS storage spaces as well as the on node NVMe "Burst Buffers" (SSDs).
+For more detailed information about center-wide file systems and data archiving available on Frontier, please refer to the pages on :ref:`data-storage-and-transfers`. The subsections below give a quick overview of NFS, Lustre, GPFS, and HPSS storage spaces as well as the on node NVMe "Burst Buffers" (SSDs).
 
 NFS
 ---
@@ -136,20 +136,21 @@ NFS
 +---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
 | Project Home        | ``/ccs/proj/[projid]``                      | NFS            | 770         |  50 GB | Yes     | No      | 90 days    | Read-only        |
 +---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
-
-
+  
 Lustre
 ----
 
-+---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
-| Area                | Path                                        | Type           | Permissions |  Quota | Backups | Purged  | Retention  | On Compute Nodes |
-+=====================+=============================================+================+=============+========+=========+=========+============+==================+
-| Member Work         | ``/lustre/orion/[projid]/scratch/[userid]``  | Lustre and HPE ClusterStor | 700         |  50 TB | No      | 90 days | N/A        | Yes              |
-+---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
-| Project Work        | ``/lustre/orion/[projid]/proj-shared``       | Lustre and HPE ClusterStor | 770         |  50 TB | No      | 90 days | N/A        | Yes              |
-+---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
-| World Work          | ``/lustre/orion/[projid]/world-shared``      | Lustre and HPE ClusterStor | 775         |  50 TB | No      | 90 days | N/A        | Yes              |
-+---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
++---------------------+----------------------------------------------+------------------------+-------------+--------+---------+---------+------------+------------------+
+| Area                | Path                                         | Type                   | Permissions |  Quota | Backups | Purged  | Retention  | On Compute Nodes |
++=====================+==============================================+========================+=============+========+=========+=========+============+==================+
+| Member Work         | ``/lustre/orion/[projid]/scratch/[userid]``  | Lustre HPE ClusterStor | 700         |  50 TB | No      | 90 days | N/A        | Yes              |
++---------------------+----------------------------------------------+------------------------+-------------+--------+---------+---------+------------+------------------+
+| Project Work        | ``/lustre/orion/[[projid]/proj-shared``      | Lustre HPE ClusterStor | 770         |  50 TB | No      | 90 days | N/A        | Yes              |
++---------------------+----------------------------------------------+------------------------+-------------+--------+---------+---------+------------+------------------+
+| World Work          | ``/lustre/orion/[[projid]/world-shared``     | Lustre HPE ClusterStor | 775         |  50 TB | No      | 90 days | N/A        | Yes              |
++---------------------+----------------------------------------------+------------------------+-------------+--------+---------+---------+------------+------------------+
+
+
 
 
 
@@ -167,9 +168,8 @@ GPFS
 +---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
 
 
-
 .. note::
-When the Orion Lustre Filesystem comes into production, Frontier will no longer connect to Alpine GPFS. Details will be added to this section as they become available.
+    When the Orion Lustre Filesystem comes into production, Frontier will no longer connect to Alpine GPFS. Details will be added to this section as they become available.
 
 HPSS Archival Storage
 ---------------------
