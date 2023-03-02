@@ -27,45 +27,53 @@ Each project has a Project Home area on NFS, multiple Work areas on Spectrum Sca
 
 .. _data-filesystem-summary:
 
-+--------------------------------+---------------------------------------------+---------+----------------+-------------+--------+---------+---------+------------+------------------+
-| Area                           | Path                                        | Enclave | Type           | Permissions |  Quota | Backups | Purged  | Retention  | On Compute Nodes |
-+================================+=============================================+=========+================+=============+========+=========+=========+============+==================+
-| User Home                      | ``/ccs/home/[userid]``                      | M1, M2  | NFS            | User set    |  50 GB | Yes     | No      | 90 days    | Read-only        |
-+--------------------------------+---------------------------------------------+---------+----------------+-------------+--------+---------+---------+------------+------------------+
-| User Archive [#f1]_            | ``/home/[userid]``                          | M1      | HPSS           | User set    |  2TB   | No      | No      | 90 days    | No               |
-+--------------------------------+---------------------------------------------+---------+----------------+-------------+--------+---------+---------+------------+------------------+
-| User Archive [#f2]_            | ``/home/[userid]``                          | M1      | HPSS           | 700         |  N/A   | N/A     | N/A     | N/A        | No               |
-+--------------------------------+---------------------------------------------+---------+----------------+-------------+--------+---------+---------+------------+------------------+
-| Project Home                   | ``/ccs/proj/[projid]``                      | M1, M2  | NFS            | 770         |  50 GB | Yes     | No      | 90 days    | Read-only        |
-+--------------------------------+---------------------------------------------+---------+----------------+-------------+--------+---------+---------+------------+------------------+
-| Member Work                    | ``/gpfs/alpine/[projid]/scratch/[userid]``  | M1, M2  | Spectrum Scale | 700 [#f3]_  |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write       |
-+--------------------------------+---------------------------------------------+---------+----------------+-------------+--------+---------+---------+------------+------------------+
-| Project Work                   | ``/gpfs/alpine/[projid]/proj-shared``       | M1, M2  | Spectrum Scale | 770         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write       |
-+--------------------------------+---------------------------------------------+---------+----------------+-------------+--------+---------+---------+------------+------------------+
-| World Work                     | ``/gpfs/alpine/[projid]/world-shared``      | M1      | Spectrum Scale | 775         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write       |
-+--------------------------------+---------------------------------------------+---------+----------------+-------------+--------+---------+---------+------------+------------------+
-| Member Archive                 | ``/hpss/prod/[projid]/users/$USER``         | M1      | HPSS           | 700         | 100 TB | No      | No      | 90 days    | No               |
-+--------------------------------+---------------------------------------------+---------+----------------+-------------+--------+---------+---------+------------+------------------+
-| Project Archive                | ``/hpss/prod/[projid]/proj-shared``         | M1      | HPSS           | 770         | 100 TB | No      | No      | 90 days    | No               |
-+--------------------------------+---------------------------------------------+---------+----------------+-------------+--------+---------+---------+------------+------------------+
-| World Archive                  | ``/hpss/prod/[projid]/world-shared``        | M1      | HPSS           | 775         | 100 TB | No      | No      | 90 days    | No               |
-+--------------------------------+---------------------------------------------+---------+----------------+-------------+--------+---------+---------+------------+------------------+
-| Moderate Enhanced User Home    | ``/gpfs/arx/[projid]/home/[userid]``        | ME      | Spectrum Scale | 700         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write       |
-+--------------------------------+---------------------------------------------+---------+----------------+-------------+--------+---------+---------+------------+------------------+
-| Moderate Enhanced Member Work  | ``/gpfs/arx/[projid]/scratch/[userid]``     | ME      | Spectrum Scale | 700         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write       |
-+--------------------------------+---------------------------------------------+---------+----------------+-------------+--------+---------+---------+------------+------------------+
-| Moderate Enhanced Project Work | ``/gpfs/arx/[projid]/proj-shared/[userid]`` | ME      | Spectrum Scale | 770         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write       |
-+--------------------------------+---------------------------------------------+---------+----------------+-------------+--------+---------+---------+------------+------------------+
-| Open User Home                 | ``/ccsopen/home/[userid]``                  | O       | NFS            | User set    |  50 GB | Yes     | No      | 90 days    | Read-only        |
-+--------------------------------+---------------------------------------------+---------+----------------+-------------+--------+---------+---------+------------+------------------+
-| Open Project Home              | ``/ccsopen/proj/[projid]``                  | O       | NFS            | 770         |  50 GB | Yes     | No      | 90 days    | Read-only        |
-+--------------------------------+---------------------------------------------+---------+----------------+-------------+--------+---------+---------+------------+------------------+
-| Open Member Work               | ``/gpfs/wolf/[projid]/scratch/[userid]``    | O       | Spectrum Scale | 700 [#f3]_  |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write       |
-+--------------------------------+---------------------------------------------+---------+----------------+-------------+--------+---------+---------+------------+------------------+
-| Open Project Work              | ``/gpfs/wolf/[projid]/proj-shared``         | O       | Spectrum Scale | 770         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write       |
-+--------------------------------+---------------------------------------------+---------+----------------+-------------+--------+---------+---------+------------+------------------+
-| Open World Work                | ``/gpfs/wolf/[projid]/world-shared``        | O       | Spectrum Scale | 775         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write       |
-+--------------------------------+---------------------------------------------+---------+----------------+-------------+--------+---------+---------+------------+------------------+
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+------------------+
+| Area                           | Path                                        | Enclave | Type                   | Permissions |  Quota | Backups | Purged  | Retention  | On Compute Nodes |
++================================+=============================================+=========+========================+=============+========+=========+=========+============+==================+
+| User Home                      | ``/ccs/home/[userid]``                      | M1, M2  | NFS                    | User set    |  50 GB | Yes     | No      | 90 days    | Read-only        |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+------------------+
+| User Archive [#f1]_            | ``/home/[userid]``                          | M1      | HPSS                   | User set    |  2TB   | No      | No      | 90 days    | No               |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+------------------+
+| User Archive [#f2]_            | ``/home/[userid]``                          | M1      | HPSS                   | 700         |  N/A   | N/A     | N/A     | N/A        | No               |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+------------------+
+| Project Home                   | ``/ccs/proj/[projid]``                      | M1, M2  | NFS                    | 770         |  50 GB | Yes     | No      | 90 days    | Read-only        |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+------------------+
+| Orion Member Work              | ``/lustre/orion/[projid]/scratch/[userid]`` | M1,M2   | Lustre HPE ClusterStor | 700         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write       |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+------------------+
+| Orion Project Work             | ``/lustre/orion/[projid]/proj-shared``      | M1,M2   | Lustre HPE ClusterStor | 770         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write       |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+------------------+
+| Orion World Work               | ``/lustre/orion/[projid]/world-shared``     | M1,M2   | Lustre HPE ClusterStor | 775         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write       |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+------------------+
+| Alpine Member Work             | ``/gpfs/alpine/[projid]/scratch/[userid]``  | M1, M2  | Spectrum Scale.        | 700 [#f3]_  |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write       |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+------------------+
+| Alpine Project Work            | ``/gpfs/alpine/[projid]/proj-shared``       | M1, M2  | Spectrum Scale         | 770         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write       |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+------------------+
+| Alpine World Work              | ``/gpfs/alpine/[projid]/world-shared``      | M1      | Spectrum Scale         | 775         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write       |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+------------------+
+| Member Archive                 | ``/hpss/prod/[projid]/users/$USER``         | M1      | HPSS                   | 700         | 100 TB | No      | No      | 90 days    | No               |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+------------------+
+| Project Archive                | ``/hpss/prod/[projid]/proj-shared``         | M1      | HPSS                   | 770         | 100 TB | No      | No      | 90 days    | No               |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+------------------+
+| World Archive                  | ``/hpss/prod/[projid]/world-shared``        | M1      | HPSS                   | 775         | 100 TB | No      | No      | 90 days    | No               |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+------------------+
+| Moderate Enhanced User Home    | ``/gpfs/arx/[projid]/home/[userid]``        | ME      | Spectrum Scale         | 700         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write       |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+------------------+
+| Moderate Enhanced Member Work  | ``/gpfs/arx/[projid]/scratch/[userid]``     | ME      | Spectrum Scale         | 700         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write       |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+------------------+
+| Moderate Enhanced Project Work | ``/gpfs/arx/[projid]/proj-shared/[userid]`` | ME      | Spectrum Scale.        | 770         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write       |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+------------------+
+| Open User Home                 | ``/ccsopen/home/[userid]``                  | O       | NFS                    | User set    |  50 GB | Yes     | No      | 90 days    | Read-only        |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+------------------+
+| Open Project Home              | ``/ccsopen/proj/[projid]``                  | O       | NFS                    | 770         |  50 GB | Yes     | No      | 90 days    | Read-only        |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+------------------+
+| Open Member Work               | ``/gpfs/wolf/[projid]/scratch/[userid]``    | O       | Spectrum Scale         | 700 [#f3]_  |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write       |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+------------------+
+| Open Project Work              | ``/gpfs/wolf/[projid]/proj-shared``         | O       | Spectrum Scale         | 770         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write       |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+------------------+
+| Open World Work                | ``/gpfs/wolf/[projid]/world-shared``        | O       | Spectrum Scale         | 775         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write       |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+------------------+
+
+
 
 | **Area -** The general name of the storage area.
 | **Path -** The path (symlink) to the storage area's directory.
@@ -109,6 +117,14 @@ On Summit, Andes, and the DTNs, additional paths to the various project-centric 
 - Member Work Directory:  ``/gpfs/alpine/scratch/[userid]/[projid]`` or ``$MEMBERWORK/[projid]``
 - Project Work Directory: ``/gpfs/alpine/proj-shared/[projid]`` or ``$PROJWORK/[projid]``
 - World Work Directory: ``/gpfs/alpine/world-shared/[projid]`` or ``$WORLDWORK/[projid]``
+
+On Frontier these paths point to Orion:
+
+- Member Work Orion Directory:  ``/lustre/orion/scratch/[userid]/[projid]`` or ``$MEMBERWORK/[projid]``
+- Project Work Orion  Directory: ``/lustre/orion/proj-shared/[projid]`` or ``$PROJWORK/[projid]``
+- World Work Orion Directory: ``/lustre/orion/world-shared/[projid]`` or ``$WORLDWORK/[projid]``
+
+
 
 .. _data-user-centric-areas:
 
@@ -334,6 +350,53 @@ Data Retention
 By default, the OLCF does not guarantee lifetime data retention on any OLCF resources. Following a user account deactivation or project end, user and project data in non-purged areas will be retained for 90 days. After this timeframe, the OLCF retains the right to delete data. Data in purged areas remains subject to normal purge policies.
 
 
+.._data-orion-lustre-hpe-clusterstor-filesystem
+
+***************************************
+Orion Lustre HPE ClusterStor Filesystem 
+***************************************
+
+Frontier mounts Orion, a parallel filesystem based on Lustre and HPE ClusterStor, with a 679 PB usable namespace (/lustre/orion/). In addition to Frontier, Orion is available on the OLCF's data transfer nodes, Andes, and some other smaller resources. It is not available from Summit. Files older than 90 days are purged from Orion.
+
+Orion is a cluster of servers with approximately 500 nodes. Each node plays a role in providing a POSIX namespace for users (/lustre/orion/). A file on Lustre consists of one or more components that may hit one or more servers. Lustre has a distributed lock management process for concurrent access to files or regions within files. 
+
+Orion has three performance tiers:
+
+* A flash-based performance tier of 5,400 nonvolatile memory express (NVMe) devices that provides 11.5 petabytes (PB) of capacity at peak read-write speeds of 10 TB/s.
+* A hard-disk-based capacity tier that provides 679 PB at peak read speeds of 5.5 TB/s and peak write speeds of 4.6 TB/s.
+* A flash-based metadata tier of 480 NVMe devices provides an additional capacity of 10 PB.
+
+================================================
+Orion Performance Tiers and File Striping Policy
+================================================
+
+Lustre, in addition to other servers and components, is composed of Objects Storage Targets (OSTs) on which the data for files is stored. A file may be "striped" or divided over multiple OSTs. Striping provides the ability to store files that are larger than the space available on any single OST and allows a larger I/O bandwidth than could be managed by a single OST. Striping is one of the main differences between Frontier's Orion Lustre and Summit's Alpine GPFS because GPFS has no concept of striping exposed to the user. For Orion, files are striped between object storage targets (OST) in the three capacity tiers to achieve the best performance. Below, we describe this automatic file striping policy and its motivations.
+
+Orion uses a feature called Data-on-Metadata-Trarget (DoM), where a portion of the file is stored along with the file’s metadata. Currently, directories are configured to store up to the first 256 KB of a file on the metadata tier using DoM. This reduces contention and provides better performance for small file I/O. Orion uses a feature called Progressive File Layout (PFL) to change the striping of a file as it grows. For example, a file smaller than 8 MB will be striped to a single OST, and larger files will be striped across multiple OSTs, taking advantage of more hardware resources. As files grow larger, they are automatically striped between the storage tiers.
+OLCF is refining the automatic file striping policy to optimize I/O performance for users.
+
+.. note::
+   Because of the complexity of file striping between Orion's performance tiers, users should refrain from attempting to manually control file striping. If you feel that the default file striping on Orion is not meeting your needs, please contact OLCF-help so we can work with you to understand your application's I/O performance.
+
+============================================   
+I/O Patterns that Benefit from File Striping
+============================================
+
+Lustre's file striping will most likely improve performance for applications that read or write to a single (or multiple) large shared files.
+
+Striping will likely have little or no performance benefit for:
+
+* Serial I/O, where a single processor performs all the I/O
+* Multiple nodes perform I/O but access files at different times.
+* Multiple nodes perform I/O simultaneously to different files that are small (each < 100 MB)
+* I/O that uses one file per process
+
+=====
+Purge
+=====
+
+To keep the Lustre file system exceptionally performant, files that have not been accessed (e.g., read) or modified within 90 days in the project and user areas are purged. Please make sure that valuable data is moved off of these systems regularly. See HPSS Data Archival System for information about using the HSI and HTAR utilities and Globus to archive data on HPSS.
+
 
 .. _data-alpine-ibm-spectrum-scale-filesystem:
 
@@ -349,9 +412,9 @@ Summit mounts a POSIX-based IBM Spectrum Scale parallel filesystem called Alpine
 
    Figure 1. An example of the NDS servers on Summit
 
-=====================================
-Performance under non-ideal workloads
-=====================================
+============================================
+Alpine Performance under non-ideal workloads
+============================================
 
 The I/O performance can be lower than the optimal one when you save one single shared file with non-optimal I/O pattern. Moreover, the previous performance results are achieved under an ideal system, the system is dedicated, and a specific number of compute nodes are used. The file system is shared across many users; the I/O performance can vary because other users that perform heavy I/O as also executing large scale jobs and stress the interconnection network.  Finally, if the I/O pattern is not aligned, then the I/O performance can be significantly lower than the ideal one.  Similar, related to the number of the concurrent users, is applied for the metadata operations, they can be lower than the expected performance.
 
@@ -365,13 +428,15 @@ Tips
 
                    ``#BSUB -alloc_flags maximizegpfs``
 
-======================================================
-Major difference between Lustre and IBM Spectrum Scale
-======================================================
+======================================================================
+Major difference between Lustre HPE ClusterStor and IBM Spectrum Scale
+======================================================================
 
 The file systems have many technical differences, but we will mention only what a user needs to be familiar with:
 
-- On Summit, there is no concept of striping from the user point of view, the user uses the Alpine storage without the need to declare the striping for files/directories. The GPFS will handle the workload, the file system was tuned during the installation.
+- On Summit, there is no concept of striping from the user point of view. The GPFS will handle the workload, the file system was tuned during the installation. 
+- On Frontier, Orion does have striping, but because of the complexity of file striping between Orion's performance tiers, users should refrain from attempting to manually control file striping. If you feel that the default file striping on Orion is not meeting your needs, please contact OLCF-help so we can work with you to understand your application's I/O performance.
+
 
 
 
