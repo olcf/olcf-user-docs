@@ -358,7 +358,7 @@ Orion Lustre HPE ClusterStor Filesystem
 
 Frontier mounts Orion, a parallel filesystem based on Lustre and HPE ClusterStor, with a 679 PB usable namespace (/lustre/orion/). In addition to Frontier, Orion is available on the OLCF's data transfer nodes, Andes, and some other smaller resources. It is not available from Summit. Files older than 90 days are purged from Orion.
 
-Orion is a cluster of servers with approximately 650 nodes. Each node plays a role in providing a POSIX namespace for users (/lustre/orion/). A file on Lustre consists of one or more components that may hit one or more servers. Lustre has a distributed lock management process for concurrent access to files or regions within files. 
+Orion is a cluster of servers with approximately 500 nodes. Each node plays a role in providing a POSIX namespace for users (/lustre/orion/). A file on Lustre consists of one or more components that may hit one or more servers. Lustre has a distributed lock management process for concurrent access to files or regions within files. 
 
 Orion has three performance tiers:
 
@@ -372,12 +372,12 @@ Orion Performance Tiers and File Striping Policy
 
 Lustre, in addition to other servers and components, is composed of Objects Storage Targets (OSTs) on which the data for files is stored. A file may be "striped" or divided over multiple OSTs. Striping provides the ability to store files that are larger than the space available on any single OST and allows a larger I/O bandwidth than could be managed by a single OST. Striping is one of the main differences between Frontier's Orion Lustre and Summit's Alpine GPFS because GPFS has no concept of striping exposed to the user. For Orion, files are striped between object storage targets (OST) in the three capacity tiers to achieve the best performance. Below, we describe this automatic file striping policy and its motivations.
 
-Orion uses a feature called Data-on-Metadata-Trarget (DoM), where a portion of the file is stored along with the file’s metadata. Currently, directories are configured to store up to the first 256 KB of a file on the metadata tier using DoM. This reduces contention and provides better performance for small file I/O. Orion uses a feature called Progressive File Layout (PFL) to change the striping of a file as it grows. For example, a file smaller than 8 MB will be striped to a single OST, and larger files will be striped across multiple OSTs, taking advantage of more hardware resources. As files grow larger, they are automatically striped between the performance tiers.
-
+Orion uses a feature called Data-on-Metadata-Trarget (DoM), where a portion of the file is stored along with the file’s metadata. Currently, directories are configured to store up to the first 256 KB of a file on the metadata tier using DoM. This reduces contention and provides better performance for small file I/O. Orion uses a feature called Progressive File Layout (PFL) to change the striping of a file as it grows. For example, a file smaller than 8 MB will be striped to a single OST, and larger files will be striped across multiple OSTs, taking advantage of more hardware resources. As files grow larger, they are automatically striped between the storage tiers.
 OLCF is refining the automatic file striping policy to optimize I/O performance for users.
 
 .. note::
    Because of the complexity of file striping between Orion's performance tiers, users should refrain from attempting to manually control file striping. If you feel that the default file striping on Orion is not meeting your needs, please contact OLCF-help so we can work with you to understand your application's I/O performance.
+
 ============================================   
 I/O Patterns that Benefit from File Striping
 ============================================
@@ -412,9 +412,9 @@ Summit mounts a POSIX-based IBM Spectrum Scale parallel filesystem called Alpine
 
    Figure 1. An example of the NDS servers on Summit
 
-=====================================
+============================================
 Alpine Performance under non-ideal workloads
-=====================================
+============================================
 
 The I/O performance can be lower than the optimal one when you save one single shared file with non-optimal I/O pattern. Moreover, the previous performance results are achieved under an ideal system, the system is dedicated, and a specific number of compute nodes are used. The file system is shared across many users; the I/O performance can vary because other users that perform heavy I/O as also executing large scale jobs and stress the interconnection network.  Finally, if the I/O pattern is not aligned, then the I/O performance can be significantly lower than the ideal one.  Similar, related to the number of the concurrent users, is applied for the metadata operations, they can be lower than the expected performance.
 
