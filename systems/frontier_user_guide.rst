@@ -90,7 +90,7 @@ The Frontier nodes are connected with [4x] HPE Slingshot 200 Gbps (25 GB/s) NICs
 File Systems
 ------------
 
-Frontier is connected to Orion, a parallel filesystem based on Lustre and HPE ClusterStor, with a 679 PB usable namespace (/lustre/orion/). In addition to Frontier, Orion is available on the OLCF's data transfer nodes, Andes, and some other smaller resources. It is not available from Summit. Frontier also has access to the center-wide NFS-based filesystem (which provides user and project home areas). Each compute node has two 1.92TB Non-Volatile Memory storage devices. See :ref:`frontier-data-storage` for more information. 
+Frontier is connected to Orion, a parallel filesystem based on Lustre and HPE ClusterStor, with a 679 PB usable namespace (/lustre/orion/). In addition to Frontier, Orion is available on the OLCF's data transfer nodes, Andes, and some other smaller resources. It is not available from Summit. Data will not be automatically transferred from Alpine to Orion. Frontier also has access to the center-wide NFS-based filesystem (which provides user and project home areas). Each compute node has two 1.92TB Non-Volatile Memory storage devices. See :ref:`frontier-data-storage` for more information. 
 
 Frontier connects to the center’s High Performance Storage System (HPSS) - for user and project archival storage - users can log in to the :ref:`dtn-user-guide` to move data to/from HPSS.
 
@@ -124,6 +124,14 @@ For more information on connecting to OLCF resources, see :ref:`connecting-to-ol
 Data and Storage
 ================
 
+Transition from Alpine to Orion
+-------------------------------
+
+* Frontier mounts Orion, a parallel filesystem based on Lustre and HPE ClusterStor, with a 679 PB usable namespace (/lustre/orion/). In addition to Frontier, Orion is available on the OLCF's data transfer nodes, Andes, and some other smaller resources. It is not available from Summit. Frontier will not mount Alpine when Orion is in production. 
+* Data will not be automatically transferred from Alpine to Orion. Users should consider the data needed from Alpine and transfer it. Globus is the preferred method and there is access to both Orion and Alpine through the Globus OLCF DTN endpoint. Use of HPSS to specifically stage data for the Alpine to Orion transfer is discouraged. 
+* On Alpine there was no user-exposed concept of file striping, the process of dividing a file between the storage elements of the filesystem. Orion uses a feature called Progressive File Layout (PFL) that changes the striping of files as they grow. Because of this, we ask users not to manually adjust the file striping. If you feel the default striping behavior of Orion is not meeting your needs, please contact help@olcf.ornl.gov
+* As with Alpine, files older than 90 days are purged from Orion.  Please plan your data management and lifecycle at OLCF before generating the data. 
+
 For more detailed information about center-wide file systems and data archiving available on Frontier, please refer to the pages on :ref:`data-storage-and-transfers`. The subsections below give a quick overview of NFS, Lustre,and HPSS storage spaces as well as the on node NVMe "Burst Buffers" (SSDs).
 
 NFS
@@ -138,7 +146,7 @@ NFS
 +---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
   
 Lustre
-----
+------
 
 +---------------------+----------------------------------------------+------------------------+-------------+--------+---------+---------+------------+------------------+
 | Area                | Path                                         | Type                   | Permissions |  Quota | Backups | Purged  | Retention  | On Compute Nodes |
