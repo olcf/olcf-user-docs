@@ -366,7 +366,7 @@ different platforms, including the AMD MI250X. This means that developers can wr
 very minimal changes be able to run their code in any environment.  The API is very
 similar to CUDA, so if you're already familiar with CUDA there is almost no additional
 work to learn HIP. See `here <https://www.olcf.ornl.gov/preparing-for-frontier/>`_ for a series
-of tutorials on programming with HIP and also converting existing CUDA code with HIP wit `hipify tool
+of tutorials on programming with HIP and also converting existing CUDA code to HIP with the `hipify tools
 <https://github.com/ROCm-Developer-Tools/HIPIFY>`_ .
 
 
