@@ -280,7 +280,7 @@ on how the accelerators are connected to each other, to the CPU, and to the netw
 
 .. note::
 
-   The X+X GB/s notation describes bidirectional bandwidth, meaning X GB/s in each directions.
+   The X+X GB/s notation describes bidirectional bandwidth, meaning X GB/s in each direction.
 
 ..
   TODO: unified memory? If mi250x has it, what is it and how does it work
@@ -312,8 +312,6 @@ different things.
 Blocks (workgroups), Threads (work items), Grids, Wavefronts
 ------------------------------------------------------------
 
-..
-  TODO: make a decision of if we should commit to using AMD terminology or NVIDIA terminology in our documentation and training
   
 
 When kernels are launched on a GPU, a "grid" of thread blocks are created, where the
@@ -364,11 +362,12 @@ HIP
 The Heterogeneous Interface for Portability (HIP) is AMD’s dedicated GPU programming
 environment for designing high performance kernels on GPU hardware. HIP is a C++ runtime
 API and programming language that allows developers to create portable applications on
-different platforms. This means that developers can write their GPU applications and with
-very minimal changes be able to run their code in any environment.  The API is very similar
-to CUDA, so if you're already familiar with CUDA there is almost no additional work to
-learn HIP.
-
+different platforms, including the AMD MI250X. This means that developers can write their GPU applications and with
+very minimal changes be able to run their code in any environment.  The API is very
+similar to CUDA, so if you're already familiar with CUDA there is almost no additional
+work to learn HIP. See `here <https://www.olcf.ornl.gov/preparing-for-frontier/>`_ for a series
+of tutorials on programming with HIP and also converting existing CUDA code to HIP with the `hipify tools
+<https://github.com/ROCm-Developer-Tools/HIPIFY>`_ .
 
 
 Programming Environment
