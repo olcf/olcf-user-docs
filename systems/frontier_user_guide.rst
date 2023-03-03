@@ -721,6 +721,7 @@ Compute nodes are the appropriate place for long-running, computationally-intens
 .. note::
   Unlike Summit and Titan, there are no launch/batch nodes on Frontier. This means your batch script runs on a node allocated to you rather than a shared node. You still must use the job launcher (srun) to run parallel jobs across all of your nodes, but serial tasks need not be launched with srun.
 
+.. _frontier-simple:
 
 Simplified Node Layout
 ----------------------
@@ -739,6 +740,25 @@ For a given physical core, the blue box represents the logical core of the
 first hardware thread, where the grey box represents the logical core of the
 second hardware thread.
 
+.. _frontier-lownoise:
+
+Low-noise Mode Layout
+^^^^^^^^^^^^^^^^^^^^^
+
+Frontier uses low-noise mode and core specialization (``-S`` flag at job
+allocation, e.g., ``sbatch``).  Low-noise mode constrains all system processes
+to core 0.  Core specialization (by default, ``-S 8``) reserves the first core
+in each L3 region.  This prevents the user running on the core that system
+processes are constrained to.  This also means that there are only 56
+allocatable cores by default instead of 64. Therefore, this modifies the
+simplified node layout to:
+
+.. image:: /images/Frontier_Node_Diagram_Simple_lownoise.png
+   :align: center
+   :width: 100%
+   :alt: Simplified Frontier node architecture diagram (low-noise mode)
+
+To override this default layout (not recommended), set ``-S 0`` at job allocation.
 
 Slurm
 -----
@@ -875,7 +895,7 @@ The table below summarizes options for submitted jobs. Unless otherwise noted, t
 +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
 | ``--reservation``      | ``#SBATCH --reservation=MyReservation.1``  | Instructs Slurm to run a job on nodes that are part of the specified reservation.    |
 +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-| ``-S``                 | ``#SBATCH -S 8``                           | Instructs Slurm to reserve a specific number of cores per node.                      |
+| ``-S``                 | ``#SBATCH -S 8``                           | Instructs Slurm to reserve a specific number of cores per node (default is 8).       |
 |                        |                                            | Reserved cores cannot be used by the application.                                    |
 +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
 
@@ -1155,6 +1175,8 @@ The job name and output options have been removed since stdout/stderr are typica
 +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
 | ``-c, --cpus-per-task=<ncpus>``                        | | Logical cores per MPI task (default is 1)                                                                    |
 |                                                        | | When used with ``--threads-per-core=1``: ``-c`` is equivalent to *physical* cores per task                   |
+|                                                        | | By default, when ``-c > 1``, additional cores per task are distributed within one L3 region                  |
+|                                                        |   first before filling a different L3 region.                                                                  |
 +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
 | ``--cpu-bind=threads``                                 | | Bind tasks to CPUs.                                                                                          |
 |                                                        | | ``threads`` - (default, recommended) Automatically generate masks binding tasks to threads.                  |
@@ -1243,6 +1265,16 @@ srun commands) they intend to use in their actual jobs.
   <https://code.ornl.gov/olcf/hello_jobstep>`__) will be used to clarify the GPU
   mappings.
 
+Additionally, it may be helpful to cross reference the
+:ref:`simplified Frontier node diagram <frontier-simple>` -- specifically the 
+:ref:`low-noise mode diagram <frontier-lownoise>`.
+
+.. warning::
+
+   Unless specified otherwise, the examples below assume the default low-noise
+   core specialization setting (``-S 8``).  This means that there are only 56
+   allocatable cores by default instead of 64.  See the :ref:`frontier-lownoise`
+   section for more details.  Set ``-S 0`` at job allocation to override this setting.
 
 .. _frontier-cpu-map:
 
@@ -1288,14 +1320,14 @@ The below ``srun`` command will achieve the intended 8 MPI "round-robin" layout:
     $ export OMP_NUM_THREADS=1
     $ srun -N1 -n8 -c1 --cpu-bind=threads --threads-per-core=1 -m block:cyclic ./hello_mpi_omp | sort
 
-    MPI 000 - OMP 000 - HWT 000 - Node frontier144
-    MPI 001 - OMP 000 - HWT 008 - Node frontier144
-    MPI 002 - OMP 000 - HWT 016 - Node frontier144
-    MPI 003 - OMP 000 - HWT 024 - Node frontier144
-    MPI 004 - OMP 000 - HWT 032 - Node frontier144
-    MPI 005 - OMP 000 - HWT 040 - Node frontier144
-    MPI 006 - OMP 000 - HWT 048 - Node frontier144
-    MPI 007 - OMP 000 - HWT 056 - Node frontier144
+    MPI 000 - OMP 000 - HWT 001 - Node frontier00144
+    MPI 001 - OMP 000 - HWT 009 - Node frontier00144
+    MPI 002 - OMP 000 - HWT 017 - Node frontier00144
+    MPI 003 - OMP 000 - HWT 025 - Node frontier00144
+    MPI 004 - OMP 000 - HWT 033 - Node frontier00144
+    MPI 005 - OMP 000 - HWT 041 - Node frontier00144
+    MPI 006 - OMP 000 - HWT 049 - Node frontier00144
+    MPI 007 - OMP 000 - HWT 057 - Node frontier00144
 
 .. image:: /images/Frontier_Node_Diagram_Simple_mpiRR.png
    :align: center
@@ -1324,7 +1356,7 @@ As you can see in the node diagram above, this results in the 8 MPI tasks
 (outlined in different colors) being distributed "vertically" across L3
 sockets.
 
-8 MPI Ranks (packed)
+7 MPI Ranks (packed)
 """"""""""""""""""""
 
 Instead, you can assign MPI ranks so that the L3 regions are filled in a
@@ -1338,21 +1370,20 @@ the ``-m block:block`` flag, specifically the ``block`` setting provided for
 the "socket distribution". This ensures that the MPI tasks will be distributed
 in a packed manner.
 
-The below ``srun`` command will achieve the intended 8 MPI "packed" layout:
+The below ``srun`` command will achieve the intended 7 MPI "packed" layout:
 
 .. code-block:: bash
 
     $ export OMP_NUM_THREADS=1
-    $ srun -N1 -n8 -c1 --cpu-bind=threads --threads-per-core=1 -m block:block ./hello_mpi_omp | sort
+    $ srun -N1 -n7 -c1 --cpu-bind=threads --threads-per-core=1 -m block:block ./hello_mpi_omp | sort
 
-    MPI 000 - OMP 000 - HWT 000 - Node frontier144
-    MPI 001 - OMP 000 - HWT 001 - Node frontier144
-    MPI 002 - OMP 000 - HWT 002 - Node frontier144
-    MPI 003 - OMP 000 - HWT 003 - Node frontier144
-    MPI 004 - OMP 000 - HWT 004 - Node frontier144
-    MPI 005 - OMP 000 - HWT 005 - Node frontier144
-    MPI 006 - OMP 000 - HWT 006 - Node frontier144
-    MPI 007 - OMP 000 - HWT 007 - Node frontier144
+    MPI 000 - OMP 000 - HWT 001 - Node frontier00144
+    MPI 001 - OMP 000 - HWT 002 - Node frontier00144
+    MPI 002 - OMP 000 - HWT 003 - Node frontier00144
+    MPI 003 - OMP 000 - HWT 004 - Node frontier00144
+    MPI 004 - OMP 000 - HWT 005 - Node frontier00144
+    MPI 005 - OMP 000 - HWT 006 - Node frontier00144
+    MPI 006 - OMP 000 - HWT 007 - Node frontier00144
 
 .. image:: /images/Frontier_Node_Diagram_Simple_mpiPacked.png
    :align: center
@@ -1362,10 +1393,11 @@ Breaking down the ``srun`` command, the only difference than the previous exampl
 
 * ``-m block:block``: distribute the tasks in a block layout across nodes (default), and in a **block** (packed) socket layout
 
-As you can see in the node diagram above, this results in the 8 MPI tasks
+As you can see in the node diagram above, this results in the 7 MPI tasks
 (outlined in different colors) being distributed "horizontally" *within* a
 socket, rather than being spread across different L3 sockets like with the
-previous example.
+previous example. However, if an 8th task was requested it would be assigned
+to the next L3 region on core 009.
 
 .. _frontier-multi-map:
 
@@ -1379,15 +1411,6 @@ threads can be assigned to additional MPI tasks, this is not recommended. It is
 highly recommended to only use 1 MPI task per physical core and to use OpenMP
 threads instead on any additional logical cores gained when using both hardware
 threads.
-
-.. note::
-
-    Frontier uses low-noise mode and core specialization (``-S`` flag at job allocation, e.g., ``sbatch``).
-    Low-noise mode constrains all system processes to core 0.
-    Core specialization (by default, ``-S 8``) reserves the first core in each L3 region.
-    This prevents the user running on the core that system processes are constrained to.
-    This also means that there are only 56 allocatable cores by default.
-
 
 The following examples cover multithreading with hybrid MPI+OpenMP
 applications.  In these examples, Slurm's :ref:`frontier-interactive` method
@@ -1427,10 +1450,10 @@ ranks launched, the ``srun`` flag ``-n`` can be used.
     Explicitly set OMP_WAIT_POLICY=PASSIVE or ACTIVE to suppress this message.
     Set CRAY_OMP_CHECK_AFFINITY=TRUE to print detailed thread-affinity messages.
 
-    MPI 000 - OMP 000 - HWT 000 - Node frontier001
-    MPI 000 - OMP 001 - HWT 000 - Node frontier001
-    MPI 001 - OMP 000 - HWT 008 - Node frontier001
-    MPI 001 - OMP 001 - HWT 008 - Node frontier001
+    MPI 000 - OMP 000 - HWT 001 - Node frontier001
+    MPI 000 - OMP 001 - HWT 001 - Node frontier001
+    MPI 001 - OMP 000 - HWT 009 - Node frontier001
+    MPI 001 - OMP 001 - HWT 009 - Node frontier001
 
 The first thing to notice here is the ``WARNING`` about oversubscribing the
 available CPU cores. Also, the output shows each MPI rank did spawn 2 OpenMP
@@ -1460,18 +1483,18 @@ will be mapped to unique hardware threads on separate physical CPU cores.
     $ export OMP_NUM_THREADS=2
     $ srun -N1 -n2 -c2 ./hello_mpi_omp | sort
 
-    MPI 000 - OMP 000 - HWT 000 - Node frontier001
-    MPI 000 - OMP 001 - HWT 001 - Node frontier001
-    MPI 001 - OMP 000 - HWT 008 - Node frontier001
-    MPI 001 - OMP 001 - HWT 009 - Node frontier001
+    MPI 000 - OMP 000 - HWT 001 - Node frontier001
+    MPI 000 - OMP 001 - HWT 002 - Node frontier001
+    MPI 001 - OMP 000 - HWT 009 - Node frontier001
+    MPI 001 - OMP 001 - HWT 010 - Node frontier001
 
 Now the output shows that each OpenMP thread ran on its own physical CPU core.
 More specifically (see the Frontier Compute Node diagram), OpenMP thread 000 of
-MPI rank 000 ran on logical core 000 (i.e., physical CPU core 00), OpenMP
-thread 001 of MPI rank 000 ran on logical core 001 (i.e., physical CPU core
-01), OpenMP thread 000 of MPI rank 001 ran on logical core 008 (i.e., physical
-CPU core 08), and OpenMP thread 001 of MPI rank 001 ran on logical core 009
-(i.e., physical CPU core 09) - as intended.
+MPI rank 000 ran on logical core 001 (i.e., physical CPU core 01), OpenMP
+thread 001 of MPI rank 000 ran on logical core 002 (i.e., physical CPU core
+02), OpenMP thread 000 of MPI rank 001 ran on logical core 009 (i.e., physical
+CPU core 09), and OpenMP thread 001 of MPI rank 001 ran on logical core 010
+(i.e., physical CPU core 10) - as intended.
 
 **Third attempt - Using multiple threads per core**
 
@@ -1489,15 +1512,15 @@ amount of **logical** cores (i.e., it is no longer equivalent to 1 physical core
     $ export OMP_NUM_THREADS=2
     $ srun -N1 -n2 -c2 ./hello_mpi_omp | sort
 
-    MPI 000 - OMP 000 - HWT 000 - Node frontier001
-    MPI 000 - OMP 001 - HWT 064 - Node frontier001
-    MPI 001 - OMP 000 - HWT 008 - Node frontier001
-    MPI 001 - OMP 001 - HWT 072 - Node frontier001
+    MPI 000 - OMP 000 - HWT 001 - Node frontier001
+    MPI 000 - OMP 001 - HWT 065 - Node frontier001
+    MPI 001 - OMP 000 - HWT 009 - Node frontier001
+    MPI 001 - OMP 001 - HWT 073 - Node frontier001
 
 Comparing this output to the Frontier Compute Node diagram, we see that each
 pair of OpenMP threads is contained within a single physical core. MPI rank 000
-ran on logical cores 000 and 064 (i.e. physical CPU core 00) and MPI rank
-001 ran on logical cores 008 and 072 (i.e. physical CPU core 08).
+ran on logical cores 001 and 065 (i.e. physical CPU core 01) and MPI rank
+001 ran on logical cores 009 and 073 (i.e. physical CPU core 09).
 
 .. _frontier-gpu-map:
 
@@ -1550,9 +1573,19 @@ available we should bind the task to the CPU closest to the allocated GPU.
 .. code-block:: bash
 
     $ export OMP_NUM_THREADS=1
-    $ srun -N1 -n1 -c1 --cpu-bind=map_cpu:48 --gpus=1 ./hello_jobstep
+    $ srun -N1 -n1 -c1 --cpu-bind=map_cpu:49 --gpus=1 ./hello_jobstep
 
-    MPI 000 - OMP 000 - HWT 048 - Node frontier001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 000 - OMP 000 - HWT 049 - Node frontier001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+
+Alternatively, you can combine the ``--gpus-per-task`` flag with ``--gpu-bind``:
+
+.. code-block:: bash
+
+    $ export OMP_NUM_THREADS=1
+    $ srun -N1 -n1 -c1 --gpus-per-task=1 --gpu-bind=closest ./hello_jobstep
+
+    MPI 000 - OMP 000 - HWT 049 - Node frontier001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+
 
 **Example 1: 8 MPI ranks - each with 2 OpenMP threads and 1 GPU (single-node)**
 
@@ -1572,22 +1605,22 @@ accomplish the GPU mapping, two new ``srun`` options will be used:
     $ export OMP_NUM_THREADS=2
     $ srun -N1 -n8 -c2 --gpus-per-node=8 --gpu-bind=closest ./hello_jobstep | sort
 
-    MPI 000 - OMP 000 - HWT 000 - Node frontier001 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
-    MPI 000 - OMP 001 - HWT 001 - Node frontier001 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
-    MPI 001 - OMP 000 - HWT 008 - Node frontier001 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
-    MPI 001 - OMP 001 - HWT 009 - Node frontier001 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
-    MPI 002 - OMP 000 - HWT 016 - Node frontier001 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
-    MPI 002 - OMP 001 - HWT 017 - Node frontier001 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
-    MPI 003 - OMP 000 - HWT 024 - Node frontier001 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
-    MPI 003 - OMP 001 - HWT 025 - Node frontier001 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
-    MPI 004 - OMP 000 - HWT 032 - Node frontier001 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
-    MPI 004 - OMP 001 - HWT 033 - Node frontier001 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
-    MPI 005 - OMP 000 - HWT 040 - Node frontier001 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
-    MPI 005 - OMP 001 - HWT 041 - Node frontier001 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
-    MPI 006 - OMP 000 - HWT 048 - Node frontier001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
-    MPI 006 - OMP 001 - HWT 049 - Node frontier001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
-    MPI 007 - OMP 000 - HWT 056 - Node frontier001 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
-    MPI 007 - OMP 001 - HWT 057 - Node frontier001 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 000 - OMP 000 - HWT 001 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 000 - OMP 001 - HWT 002 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 001 - OMP 000 - HWT 009 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 001 - OMP 001 - HWT 010 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 002 - OMP 000 - HWT 017 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 002 - OMP 001 - HWT 018 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 003 - OMP 000 - HWT 025 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 003 - OMP 001 - HWT 026 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 004 - OMP 000 - HWT 033 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 004 - OMP 001 - HWT 034 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 005 - OMP 000 - HWT 041 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 005 - OMP 001 - HWT 042 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 006 - OMP 000 - HWT 049 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 006 - OMP 001 - HWT 050 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 007 - OMP 000 - HWT 057 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 007 - OMP 001 - HWT 058 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
 
 The output from the program contains a lot of information, so let's unpack it.
 First, there are different IDs associated with the GPUs so it is important to
@@ -1641,38 +1674,38 @@ is a very straightforward exercise of changing the number of nodes to 2
     $ export OMP_NUM_THREADS=2
     $ srun -N2 -n16 -c2 --gpus-per-node=8 --gpu-bind=closest ./hello_jobstep | sort
 
-    MPI 000 - OMP 000 - HWT 000 - Node frontier001 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
-    MPI 000 - OMP 001 - HWT 001 - Node frontier001 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
-    MPI 001 - OMP 000 - HWT 008 - Node frontier001 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
-    MPI 001 - OMP 001 - HWT 009 - Node frontier001 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
-    MPI 002 - OMP 000 - HWT 016 - Node frontier001 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
-    MPI 002 - OMP 001 - HWT 017 - Node frontier001 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
-    MPI 003 - OMP 000 - HWT 024 - Node frontier001 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
-    MPI 003 - OMP 001 - HWT 025 - Node frontier001 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
-    MPI 004 - OMP 000 - HWT 032 - Node frontier001 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
-    MPI 004 - OMP 001 - HWT 033 - Node frontier001 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
-    MPI 005 - OMP 000 - HWT 040 - Node frontier001 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
-    MPI 005 - OMP 001 - HWT 041 - Node frontier001 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
-    MPI 006 - OMP 000 - HWT 048 - Node frontier001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
-    MPI 006 - OMP 001 - HWT 049 - Node frontier001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
-    MPI 007 - OMP 000 - HWT 056 - Node frontier001 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
-    MPI 007 - OMP 001 - HWT 057 - Node frontier001 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
-    MPI 008 - OMP 000 - HWT 000 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
-    MPI 008 - OMP 001 - HWT 001 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
-    MPI 009 - OMP 000 - HWT 008 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
-    MPI 009 - OMP 001 - HWT 009 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
-    MPI 010 - OMP 000 - HWT 016 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
-    MPI 010 - OMP 001 - HWT 017 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
-    MPI 011 - OMP 000 - HWT 024 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
-    MPI 011 - OMP 001 - HWT 025 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
-    MPI 012 - OMP 000 - HWT 032 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
-    MPI 012 - OMP 001 - HWT 033 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
-    MPI 013 - OMP 000 - HWT 040 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
-    MPI 013 - OMP 001 - HWT 041 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
-    MPI 014 - OMP 000 - HWT 048 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
-    MPI 014 - OMP 001 - HWT 049 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
-    MPI 015 - OMP 000 - HWT 056 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
-    MPI 015 - OMP 001 - HWT 057 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 000 - OMP 000 - HWT 001 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 000 - OMP 001 - HWT 002 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 001 - OMP 000 - HWT 009 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 001 - OMP 001 - HWT 010 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 002 - OMP 000 - HWT 017 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 002 - OMP 001 - HWT 018 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 003 - OMP 000 - HWT 025 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 003 - OMP 001 - HWT 026 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 004 - OMP 000 - HWT 033 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 004 - OMP 001 - HWT 034 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 005 - OMP 000 - HWT 041 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 005 - OMP 001 - HWT 042 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 006 - OMP 000 - HWT 049 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 006 - OMP 001 - HWT 050 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 007 - OMP 000 - HWT 057 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 007 - OMP 001 - HWT 058 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 008 - OMP 000 - HWT 001 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 008 - OMP 001 - HWT 002 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 009 - OMP 000 - HWT 009 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 009 - OMP 001 - HWT 010 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 010 - OMP 000 - HWT 017 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 010 - OMP 001 - HWT 018 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 011 - OMP 000 - HWT 025 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 011 - OMP 001 - HWT 026 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 012 - OMP 000 - HWT 033 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 012 - OMP 001 - HWT 034 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 013 - OMP 000 - HWT 041 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 013 - OMP 001 - HWT 042 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 014 - OMP 000 - HWT 049 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 014 - OMP 001 - HWT 050 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 015 - OMP 000 - HWT 057 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 015 - OMP 001 - HWT 058 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
 
 **Example 3: 8 MPI ranks - each with 2 OpenMP threads and 1 *specific* GPU (single-node)**
 
@@ -1688,22 +1721,22 @@ the MPI ranks are mapped to GPUs, where the form of the comma-separated list is
     $ export OMP_NUM_THREADS=2
     $ srun -N1 -n8 -c2 --gpus-per-node=8 --gpu-bind=map_gpu:4,5,2,3,6,7,0,1 ./hello_jobstep | sort
 
-    MPI 000 - OMP 000 - HWT 000 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
-    MPI 000 - OMP 001 - HWT 001 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
-    MPI 001 - OMP 000 - HWT 008 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
-    MPI 001 - OMP 001 - HWT 009 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
-    MPI 002 - OMP 000 - HWT 016 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
-    MPI 002 - OMP 001 - HWT 017 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
-    MPI 003 - OMP 000 - HWT 024 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
-    MPI 003 - OMP 001 - HWT 025 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
-    MPI 004 - OMP 000 - HWT 032 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
-    MPI 004 - OMP 001 - HWT 033 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
-    MPI 005 - OMP 000 - HWT 040 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
-    MPI 005 - OMP 001 - HWT 041 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
-    MPI 006 - OMP 000 - HWT 048 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
-    MPI 006 - OMP 001 - HWT 049 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
-    MPI 007 - OMP 000 - HWT 056 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
-    MPI 007 - OMP 001 - HWT 057 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 000 - OMP 000 - HWT 001 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 000 - OMP 001 - HWT 002 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 001 - OMP 000 - HWT 009 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 001 - OMP 001 - HWT 010 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 002 - OMP 000 - HWT 017 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 002 - OMP 001 - HWT 018 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 003 - OMP 000 - HWT 025 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 003 - OMP 001 - HWT 026 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 004 - OMP 000 - HWT 033 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 004 - OMP 001 - HWT 034 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 005 - OMP 000 - HWT 041 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 005 - OMP 001 - HWT 042 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 006 - OMP 000 - HWT 049 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 006 - OMP 001 - HWT 050 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 007 - OMP 000 - HWT 057 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 007 - OMP 001 - HWT 058 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
 
 Here, the output is the same as the results from Example 1. This is because the
 8 GPU IDs in the comma-separated list happen to specify the GPUs within the
@@ -1727,38 +1760,39 @@ by changing the number of nodes to 2 (``-N2``) and the number of MPI ranks to
     $ export OMP_NUM_THREADS=2
     $ srun -N2 -n16 -c2 --gpus-per-node=8 --gpu-bind=map_gpu:4,5,2,3,6,7,0,1 ./hello_jobstep | sort
     
-    MPI 000 - OMP 000 - HWT 000 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
-    MPI 000 - OMP 001 - HWT 001 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
-    MPI 001 - OMP 000 - HWT 008 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
-    MPI 001 - OMP 001 - HWT 009 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
-    MPI 002 - OMP 000 - HWT 016 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
-    MPI 002 - OMP 001 - HWT 017 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
-    MPI 003 - OMP 000 - HWT 024 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
-    MPI 003 - OMP 001 - HWT 025 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
-    MPI 004 - OMP 000 - HWT 032 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
-    MPI 004 - OMP 001 - HWT 033 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
-    MPI 005 - OMP 000 - HWT 040 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
-    MPI 005 - OMP 001 - HWT 041 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
-    MPI 006 - OMP 000 - HWT 048 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
-    MPI 006 - OMP 001 - HWT 049 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
-    MPI 007 - OMP 000 - HWT 056 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
-    MPI 007 - OMP 001 - HWT 057 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
-    MPI 008 - OMP 000 - HWT 000 - Node frontier004 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
-    MPI 008 - OMP 001 - HWT 001 - Node frontier004 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
-    MPI 009 - OMP 000 - HWT 008 - Node frontier004 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
-    MPI 009 - OMP 001 - HWT 009 - Node frontier004 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
-    MPI 010 - OMP 000 - HWT 016 - Node frontier004 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
-    MPI 010 - OMP 001 - HWT 017 - Node frontier004 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
-    MPI 011 - OMP 000 - HWT 024 - Node frontier004 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
-    MPI 011 - OMP 001 - HWT 025 - Node frontier004 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
-    MPI 012 - OMP 000 - HWT 032 - Node frontier004 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
-    MPI 012 - OMP 001 - HWT 033 - Node frontier004 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
-    MPI 013 - OMP 000 - HWT 040 - Node frontier004 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
-    MPI 013 - OMP 001 - HWT 041 - Node frontier004 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
-    MPI 014 - OMP 000 - HWT 048 - Node frontier004 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
-    MPI 014 - OMP 001 - HWT 049 - Node frontier004 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
-    MPI 015 - OMP 000 - HWT 056 - Node frontier004 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
-    MPI 015 - OMP 001 - HWT 057 - Node frontier004 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 000 - OMP 000 - HWT 001 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 000 - OMP 001 - HWT 002 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 001 - OMP 000 - HWT 009 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 001 - OMP 001 - HWT 010 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 002 - OMP 000 - HWT 017 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 002 - OMP 001 - HWT 018 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 003 - OMP 000 - HWT 025 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 003 - OMP 001 - HWT 026 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 004 - OMP 000 - HWT 033 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 004 - OMP 001 - HWT 034 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 005 - OMP 000 - HWT 041 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 005 - OMP 001 - HWT 042 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 006 - OMP 000 - HWT 049 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 006 - OMP 001 - HWT 050 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 007 - OMP 000 - HWT 057 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 007 - OMP 001 - HWT 058 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 008 - OMP 000 - HWT 001 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 008 - OMP 001 - HWT 002 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 009 - OMP 000 - HWT 009 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 009 - OMP 001 - HWT 010 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 010 - OMP 000 - HWT 017 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 010 - OMP 001 - HWT 018 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 011 - OMP 000 - HWT 025 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 011 - OMP 001 - HWT 026 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 012 - OMP 000 - HWT 033 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 012 - OMP 001 - HWT 034 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 013 - OMP 000 - HWT 041 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 013 - OMP 001 - HWT 042 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 014 - OMP 000 - HWT 049 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 014 - OMP 001 - HWT 050 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 015 - OMP 000 - HWT 057 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 015 - OMP 001 - HWT 058 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+
 
 Mapping multiple MPI ranks to a single GPU
 """"""""""""""""""""""""""""""""""""""""""
@@ -1787,22 +1821,22 @@ the node are shared by 2 MPI ranks. To accomplish this GPU mapping, a new
     $ export OMP_NUM_THREADS=1
     $ srun -N1 -n16 -c1 --ntasks-per-gpu=2 --gpu-bind=closest ./hello_jobstep | sort
 
-    MPI 000 - OMP 000 - HWT 000 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
-    MPI 001 - OMP 000 - HWT 008 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
-    MPI 002 - OMP 000 - HWT 016 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
-    MPI 003 - OMP 000 - HWT 024 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
-    MPI 004 - OMP 000 - HWT 032 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
-    MPI 005 - OMP 000 - HWT 040 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
-    MPI 006 - OMP 000 - HWT 048 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
-    MPI 007 - OMP 000 - HWT 056 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
-    MPI 008 - OMP 000 - HWT 001 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
-    MPI 009 - OMP 000 - HWT 009 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
-    MPI 010 - OMP 000 - HWT 017 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
-    MPI 011 - OMP 000 - HWT 025 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
-    MPI 012 - OMP 000 - HWT 033 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
-    MPI 013 - OMP 000 - HWT 041 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
-    MPI 014 - OMP 000 - HWT 049 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
-    MPI 015 - OMP 000 - HWT 057 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 000 - OMP 000 - HWT 001 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 001 - OMP 000 - HWT 009 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 002 - OMP 000 - HWT 017 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 003 - OMP 000 - HWT 025 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 004 - OMP 000 - HWT 033 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 005 - OMP 000 - HWT 041 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 006 - OMP 000 - HWT 049 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 007 - OMP 000 - HWT 057 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 008 - OMP 000 - HWT 002 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 009 - OMP 000 - HWT 010 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 010 - OMP 000 - HWT 018 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 011 - OMP 000 - HWT 026 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 012 - OMP 000 - HWT 034 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 013 - OMP 000 - HWT 042 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 014 - OMP 000 - HWT 050 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 015 - OMP 000 - HWT 058 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
 
 
 The output shows the round-robin (``cyclic``) distribution of MPI ranks to
@@ -1820,41 +1854,50 @@ This example is an extension of Example 5 to run on 2 nodes.
     $ export OMP_NUM_THREADS=1
     $ srun -N2 -n32 -c1 --ntasks-per-gpu=2 --gpu-bind=closest ./hello_jobstep | sort
 
-    MPI 000 - OMP 000 - HWT 000 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
-    MPI 001 - OMP 000 - HWT 008 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
-    MPI 002 - OMP 000 - HWT 016 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
-    MPI 003 - OMP 000 - HWT 024 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
-    MPI 004 - OMP 000 - HWT 032 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
-    MPI 005 - OMP 000 - HWT 040 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
-    MPI 006 - OMP 000 - HWT 048 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
-    MPI 007 - OMP 000 - HWT 056 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
-    MPI 008 - OMP 000 - HWT 004 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
-    MPI 009 - OMP 000 - HWT 012 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
-    MPI 010 - OMP 000 - HWT 020 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
-    MPI 011 - OMP 000 - HWT 028 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
-    MPI 012 - OMP 000 - HWT 036 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
-    MPI 013 - OMP 000 - HWT 044 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
-    MPI 014 - OMP 000 - HWT 052 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
-    MPI 015 - OMP 000 - HWT 060 - Node frontier002 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
-    MPI 016 - OMP 000 - HWT 000 - Node frontier004 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
-    MPI 017 - OMP 000 - HWT 008 - Node frontier004 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
-    MPI 018 - OMP 000 - HWT 016 - Node frontier004 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
-    MPI 019 - OMP 000 - HWT 024 - Node frontier004 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
-    MPI 020 - OMP 000 - HWT 034 - Node frontier004 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
-    MPI 021 - OMP 000 - HWT 041 - Node frontier004 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
-    MPI 022 - OMP 000 - HWT 048 - Node frontier004 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
-    MPI 023 - OMP 000 - HWT 056 - Node frontier004 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
-    MPI 024 - OMP 000 - HWT 006 - Node frontier004 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
-    MPI 025 - OMP 000 - HWT 012 - Node frontier004 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
-    MPI 026 - OMP 000 - HWT 021 - Node frontier004 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
-    MPI 027 - OMP 000 - HWT 028 - Node frontier004 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
-    MPI 028 - OMP 000 - HWT 036 - Node frontier004 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
-    MPI 029 - OMP 000 - HWT 044 - Node frontier004 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
-    MPI 030 - OMP 000 - HWT 052 - Node frontier004 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
-    MPI 031 - OMP 000 - HWT 060 - Node frontier004 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 000 - OMP 000 - HWT 001 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 001 - OMP 000 - HWT 009 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 002 - OMP 000 - HWT 017 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 003 - OMP 000 - HWT 025 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 004 - OMP 000 - HWT 033 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 005 - OMP 000 - HWT 041 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 006 - OMP 000 - HWT 049 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 007 - OMP 000 - HWT 057 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 008 - OMP 000 - HWT 002 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 009 - OMP 000 - HWT 010 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 010 - OMP 000 - HWT 018 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 011 - OMP 000 - HWT 026 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 012 - OMP 000 - HWT 034 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 013 - OMP 000 - HWT 042 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 014 - OMP 000 - HWT 050 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 015 - OMP 000 - HWT 058 - Node frontier04975 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 016 - OMP 000 - HWT 001 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 017 - OMP 000 - HWT 009 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 018 - OMP 000 - HWT 017 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 019 - OMP 000 - HWT 025 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 020 - OMP 000 - HWT 033 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 021 - OMP 000 - HWT 041 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 022 - OMP 000 - HWT 049 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 023 - OMP 000 - HWT 057 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 024 - OMP 000 - HWT 002 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 025 - OMP 000 - HWT 010 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 026 - OMP 000 - HWT 018 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 027 - OMP 000 - HWT 026 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 028 - OMP 000 - HWT 034 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 029 - OMP 000 - HWT 042 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 030 - OMP 000 - HWT 050 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 031 - OMP 000 - HWT 058 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
 
 
 **Example 7: 16 MPI ranks - where 2 ranks share a GPU (packed, single-node)**
+
+.. warning::
+
+    This example assumes the use of a core specialization of ``-S 0``.  Because
+    Frontier's default core specialization (``-S 8``) reserves the first core in
+    each L3 region, the "packed" mode can be problematic because the 7 cores
+    available in each L3 region won't necessarily divide evenly. This can lead to
+    tasks potentially spanning multiple L3 regions with its assigned cores, which
+    creates problems when Slurm tries to assign GPUs to a given task.
 
 This example launches 16 MPI ranks (``-n16``), each with 4 physical CPU cores
 (``-c4``) to launch 1 OpenMP thread (``OMP_NUM_THREADS=1``) on. The MPI ranks
@@ -1918,6 +1961,15 @@ in the second L3 cache region with GPU 5, and so on.
 
 **Example 8: 32 MPI ranks - where 2 ranks share a GPU (packed, multi-node)**
 
+.. warning::
+
+    This example assumes the use of a core specialization of ``-S 0``.  Because
+    Frontier's default core specialization (``-S 8``) reserves the first core in
+    each L3 region, the "packed" mode can be problematic because the 7 cores
+    available in each L3 region won't necessarily divide evenly. This can lead to
+    tasks potentially spanning multiple L3 regions with its assigned cores, which
+    creates problems when Slurm tries to assign GPUs to a given task.
+
 This example is an extension of Example 7 to use 2 compute nodes. With the
 appropriate changes put in place in Example 7, it is a straightforward exercise
 to change to using 2 nodes (``-N2``) and 32 MPI ranks (``-n32``).
@@ -1960,8 +2012,76 @@ to change to using 2 nodes (``-N2``) and 32 MPI ranks (``-n32``).
     MPI 030 - OMP 000 - HWT 056 - Node frontier004 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
     MPI 031 - OMP 000 - HWT 060 - Node frontier004 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
 
+**Example 9: 56 MPI ranks - where 7 ranks share a GPU (packed, single-node)**
 
-**Example 9: 4 independent and simultaneous job steps in a single allocation**
+An alternative solution to Example 7 and 8's ``-S 8`` issue is to use ``-c 1``
+instead.  There is no problem when running with 1 core per MPI rank (i.e., 7
+ranks per GPU) because the task can’t span multiple L3s.
+
+.. code:: bash
+
+    $ export OMP_NUM_THREADS=1
+    $ srun -N1 -n56 -c1 --ntasks-per-gpu=7 --gpu-bind=closest --distribution=*:block ./hello_jobstep | sort
+
+    MPI 000 - OMP 000 - HWT 001 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 001 - OMP 000 - HWT 002 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 002 - OMP 000 - HWT 003 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 003 - OMP 000 - HWT 004 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 004 - OMP 000 - HWT 005 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 005 - OMP 000 - HWT 006 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 006 - OMP 000 - HWT 007 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 007 - OMP 000 - HWT 009 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 008 - OMP 000 - HWT 010 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 009 - OMP 000 - HWT 011 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 010 - OMP 000 - HWT 012 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 011 - OMP 000 - HWT 013 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 012 - OMP 000 - HWT 014 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 013 - OMP 000 - HWT 015 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 014 - OMP 000 - HWT 017 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 015 - OMP 000 - HWT 018 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 016 - OMP 000 - HWT 019 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 017 - OMP 000 - HWT 020 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 018 - OMP 000 - HWT 021 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 019 - OMP 000 - HWT 022 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 020 - OMP 000 - HWT 023 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 021 - OMP 000 - HWT 025 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 022 - OMP 000 - HWT 026 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 023 - OMP 000 - HWT 027 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 024 - OMP 000 - HWT 028 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 025 - OMP 000 - HWT 029 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 026 - OMP 000 - HWT 030 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 027 - OMP 000 - HWT 031 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 028 - OMP 000 - HWT 033 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 029 - OMP 000 - HWT 034 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 030 - OMP 000 - HWT 035 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 031 - OMP 000 - HWT 036 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 032 - OMP 000 - HWT 037 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 033 - OMP 000 - HWT 038 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 034 - OMP 000 - HWT 039 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 035 - OMP 000 - HWT 041 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 036 - OMP 000 - HWT 042 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 037 - OMP 000 - HWT 043 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 038 - OMP 000 - HWT 044 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 039 - OMP 000 - HWT 045 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 040 - OMP 000 - HWT 046 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 041 - OMP 000 - HWT 047 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 042 - OMP 000 - HWT 049 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 043 - OMP 000 - HWT 050 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 044 - OMP 000 - HWT 051 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 045 - OMP 000 - HWT 052 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 046 - OMP 000 - HWT 053 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 047 - OMP 000 - HWT 054 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 048 - OMP 000 - HWT 055 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 049 - OMP 000 - HWT 057 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 050 - OMP 000 - HWT 058 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 051 - OMP 000 - HWT 059 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 052 - OMP 000 - HWT 060 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 053 - OMP 000 - HWT 061 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 054 - OMP 000 - HWT 062 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+    MPI 055 - OMP 000 - HWT 063 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+
+
+**Example 10: 4 independent and simultaneous job steps in a single allocation**
 
 This example shows how to run multiple job steps simultaneously in a single
 allocation. The example below demonstrates running 4 independent, single rank
@@ -1988,10 +2108,10 @@ Output:
 
 .. code:: bash
 
-   MPI 000 - OMP 000 - HWT 003 - Node frontier25 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
-   MPI 000 - OMP 000 - HWT 001 - Node frontier25 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
-   MPI 000 - OMP 000 - HWT 002 - Node frontier25 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID 48
-   MPI 000 - OMP 000 - HWT 000 - Node frontier25 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
+   MPI 000 - OMP 000 - HWT 004 - Node frontier25 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
+   MPI 000 - OMP 000 - HWT 002 - Node frontier25 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID 87
+   MPI 000 - OMP 000 - HWT 003 - Node frontier25 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID 48
+   MPI 000 - OMP 000 - HWT 001 - Node frontier25 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
 
 .. note::
 
