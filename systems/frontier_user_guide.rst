@@ -1328,7 +1328,7 @@ The below ``srun`` command will achieve the intended 8 MPI "round-robin" layout:
     MPI 006 - OMP 000 - HWT 049 - Node frontier00144
     MPI 007 - OMP 000 - HWT 057 - Node frontier00144
 
-.. image:: /images/Frontier_Node_Diagram_Simple_mpiRR.png
+.. image:: /images/Frontier_Node_Diagram_Simple_lownoise_mpiRR.png
    :align: center
    :width: 100%
 
@@ -1384,7 +1384,7 @@ The below ``srun`` command will achieve the intended 7 MPI "packed" layout:
     MPI 005 - OMP 000 - HWT 006 - Node frontier00144
     MPI 006 - OMP 000 - HWT 007 - Node frontier00144
 
-.. image:: /images/Frontier_Node_Diagram_Simple_mpiPacked.png
+.. image:: /images/Frontier_Node_Diagram_Simple_lownoise_mpiPacked.png
    :align: center
    :width: 100%
 
