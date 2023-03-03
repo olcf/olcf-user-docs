@@ -1215,20 +1215,24 @@ Here is a simple example of a file ``sbcast`` from a user's scratch space on GPF
     echo "*****ORIGINAL FILE*****"
     cat test.txt
     echo "***********************"
-    ls -lh ./test.txt
 
-    # SBCAST file from GPFS to NVMe
+    # SBCAST file from GPFS to NVMe -- NOTE: ``-C nvme`` is required to use the NVMe drive
     sbcast -pf test.txt /mnt/bb/$USER/test.txt
     if [ ! "$?" == "0" ]; then
         # CHECK EXIT CODE. When SBCAST fails, it may leave partial files on the compute nodes, and if you continue to launch srun,
         # your application may pick up partially complete shared library files, which would give you confusing errors.
         echo "SBCAST failed!"
+        exit 1
     fi
 
+    echo
+    echo "*****DISPLAYING FILES ON EACH NODE IN THE ALLOCATION*****"
     # Check to see if file exists
     srun -N ${SLURM_NNODES} -n ${SLURM_NNODES} --ntasks-per-node=1 bash -c "echo \"\$(hostname): \$(ls -lh /mnt/bb/$USER/test.txt)\""
+    echo "*********************************************************"
 
-    echo " "
+    echo
+    # Showing the file on the current node -- this will be the same on all other nodes in the allocation
     echo "*****SBCAST FILE ON CURRENT NODE******"
     cat /mnt/bb/$USER/test.txt
     echo "**************************************"
@@ -1238,15 +1242,17 @@ and here is the output from that script:
 
 .. code:: bash
 
-    Fri 03 Mar 2023 09:43:00 AM EST
-
+    Fri 03 Mar 2023 03:43:30 PM EST
+    
     *****ORIGINAL FILE*****
     This is an example file
     ***********************
-    -rw-r--r-- 1 hagertnl hagertnl 24 Mar  3 09:43 ./test.txt
-    borg093: -rw-r--r-- 1 hagertnl hagertnl 24 Mar  3 09:43 /mnt/bb/hagertnl/test.txt
-    borg094: -rw-r--r-- 1 hagertnl hagertnl 24 Mar  3 09:43 /mnt/bb/hagertnl/test.txt
 
+    *****DISPLAYING FILES ON EACH NODE IN THE ALLOCATION*****
+    crusher001: -rw-r--r-- 1 hagertnl hagertnl 24 Mar  3 15:43 /mnt/bb/hagertnl/test.txt
+    crusher002: -rw-r--r-- 1 hagertnl hagertnl 24 Mar  3 15:43 /mnt/bb/hagertnl/test.txt
+    *********************************************************
+    
     *****SBCAST FILE ON CURRENT NODE******
     This is an example file
     **************************************
@@ -1286,24 +1292,31 @@ and here is the output from that script:
     echo "*****SOURCE FILE*****"
     cat test.c
     echo "*********************"
-    ls -lh ./test.c
+
+    echo
+    echo "Compiling source file..."
     cc -o ./hello_mpi test.c
     ls -lh ./hello_mpi
 
-    echo "*****ldd ./hello_mpi*****"
-    ldd ./hello_mpi
+    exe="hello_mpi"
+
+    echo "*****ldd ./${exe}*****"
+    ldd ./${exe}
     echo "*************************"
 
-    # SBCAST executable from GPFS to NVMe
+    # SBCAST executable from GPFS to NVMe -- NOTE: ``-C nvme`` is needed in SBATCH headers to use the NVMe drive
     # NOTE: dlopen'd files will NOT be picked up by sbcast
-    sbcast --send-libs --exclude=NONE -pf hello_mpi /mnt/bb/$USER/hello_mpi
+    sbcast --send-libs --exclude=NONE -pf ${exe} /mnt/bb/$USER/${exe}
     if [ ! "$?" == "0" ]; then
         # CHECK EXIT CODE. When SBCAST fails, it may leave partial files on the compute nodes, and if you continue to launch srun,
         # your application may pick up partially complete shared library files, which would give you confusing errors.
         echo "SBCAST failed!"
+        exit 1
     fi
 
-    # For versioned libraries like libhsa-runtime and libamdhip, you may need to also run this command, where ${exe} is the name of your executable:
+    # Some applications may expect a generic name of certain libraries (ie, `libamdhip64.so` instead of `libamdhip64.so.5`)
+    # You may need to use an `srun` line like this to add sym-links on each node
+    # The 2 most common cases are `libhsa-runtime64.so` and `libamdhip64.so`
     # srun -N ${SLURM_NNODES} -n ${SLURM_NNODES} --ntasks-per-node=1 --label -D /mnt/bb/$USER/${exe}_libs \
     #   bash -c "if [ -f libhsa-runtime64.so.1 ]; then ln -s libhsa-runtime64.so.1 libhsa-runtime64.so; fi;
     #            if [ -f libamdhip64.so.5 ]; then ln -s libamdhip64.so.5 libamdhip64.so; fi"
@@ -1311,26 +1324,32 @@ and here is the output from that script:
     # Check to see if file exists
     echo "*****ls -lh /mnt/bb/$USER*****"
     ls -lh /mnt/bb/$USER/
-    echo "*****ls -lh /mnt/bb/$USER/hello_mpi_libs*****"
-    ls -lh /mnt/bb/$USER/hello_mpi_libs
+    echo "*****ls -lh /mnt/bb/$USER/${exe}_libs*****"
+    ls -lh /mnt/bb/$USER/${exe}_libs
 
-    # Shortening the LD_LIBRARY_PATH can have significant benefits for overhead at startup
-    # The latter portion (pkg-config ... libfabric) is required because libfabric dlopen's many libraries
-    # SBCAST only sends libraries that are detected by `ld`
-    export LD_LIBRARY_PATH="/mnt/bb/$USER/hello_mpi_libs:$(pkg-config --variable=libdir libfabric)"
+    # SBCAST sends all libraries detected by `ld`, and stores them in the same directory in each node's node-local storage
+    # Any libraries opened by `dlopen` are NOT sent, since they are not known by `ld` at run-time.
+    # A prime example: the latter portion (pkg-config ... libfabric) is required because libfabric.so dlopen's many libraries
 
-    echo "*****ldd /mnt/bb/$USER/hello_mpi*****"
-    ldd /mnt/bb/$USER/hello_mpi
+    # All required libraries are in 2 total directories - this can have significant benefit at scale
+    export LD_LIBRARY_PATH="/mnt/bb/$USER/${exe}_libs:$(pkg-config --variable=libdir libfabric)"
+
+    # RocBLAS has over 1,000 device libraries that may be `dlopen`'d by RocBLAS during a run.
+    # It's impractical to SBCAST all of these, so you can set this path instead, if you use RocBLAS:
+    #export ROCBLAS_TENSILE_LIBPATH=${ROCM_PATH}/lib/rocblas/library
+
+    echo "*****ldd /mnt/bb/$USER/${exe}*****"
+    ldd /mnt/bb/$USER/${exe}
     echo "*************************************"
 
-    srun -N ${SLURM_NNODES} -n ${SLURM_NNODES} --ntasks-per-node=1 /mnt/bb/$USER/hello_mpi
+    srun -N ${SLURM_NNODES} -n ${SLURM_NNODES} --ntasks-per-node=1 /mnt/bb/$USER/${exe}
 
 
 and here is the output from that script:
 
 .. code:: bash
 
-    Fri 03 Mar 2023 10:09:30 AM EST
+    Fri 03 Mar 2023 03:55:01 PM EST
     
     *****SOURCE FILE*****
     #include <stdio.h>
@@ -1345,8 +1364,9 @@ and here is the output from that script:
       return 0;
     }
     *********************
-    -rw-r--r-- 1 hagertnl hagertnl 288 Mar  3 10:09 ./test.c
-    -rwxr-xr-x 1 hagertnl hagertnl 20K Mar  3 10:09 ./hello_mpi
+
+    Compiling source file...
+    -rwxr-xr-x 1 hagertnl hagertnl 20K Mar  3 15:55 ./hello_mpi
     *****ldd ./hello_mpi*****
     	linux-vdso.so.1 (0x00007fffeda02000)
     	libdl.so.2 => /lib64/libdl.so.2 (0x00007fffed5d6000)
@@ -1401,8 +1421,8 @@ and here is the output from that script:
     *************************
     *****ls -lh /mnt/bb/hagertnl*****
     total 24K
-    -rwxr-xr-x 1 hagertnl hagertnl  20K Mar  3 10:09 hello_mpi
-    drwx------ 2 hagertnl hagertnl 4.0K Mar  3 10:09 hello_mpi_libs
+    -rwxr-xr-x 1 hagertnl hagertnl  20K Mar  3 15:55 hello_mpi
+    drwx------ 2 hagertnl hagertnl 4.0K Mar  3 15:55 hello_mpi_libs
     *****ls -lh /mnt/bb/hagertnl/hello_mpi_libs*****
     total 102M
     -rwxr-xr-x 1 hagertnl hagertnl 198K Jul 20  2022 ld-linux-x86-64.so.2
