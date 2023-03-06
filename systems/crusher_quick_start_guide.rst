@@ -391,27 +391,12 @@ This section shows how to compile HIP codes using the Cray compiler wrappers and
 HIP + OpenMP CPU Threading
 --------------------------
 
-This section shows how to compile HIP + OpenMP CPU threading hybrid codes.
-
-.. note::
-
-    Make sure the ``craype-accel-amd-gfx90a`` module is loaded when compiling HIP with the Cray compiler wrappers.
-
-+----------+-----------+-----------------------------------------------------------------------------------------------------------------------------------+
-| Vendor   | Compiler  | Compile/Link Flags, Header Files, and Libraries                                                                                   |
-+==========+===========+===================================================================================================================================+
-| AMD/Cray | ``CC``    | | ``CFLAGS = -std=c++11 -D__HIP_ROCclr__ -D__HIP_ARCH_GFX90A__=1 --rocm-path=${ROCM_PATH} --offload-arch=gfx90a -x hip -fopenmp`` |
-|          |           | | ``LFLAGS = --rocm-path=${ROCM_PATH}``                                                                                           |
-|          |           | | ``-L${ROCM_PATH}/lib -lamdhip64``                                                                                               |
-|          +-----------+-----------------------------------------------------------------------------------------------------------------------------------+
-|          | ``hipcc`` | | Can be used to directly compile HIP source files, add ``-fopenmp`` flag to enable OpenMP threading                              |
-|          |           | | To explicitly target AMD MI250X, use ``--amdgpu-target=gfx90a``                                                                 |
-+----------+-----------+-----------------------------------------------------------------------------------------------------------------------------------+
-| GNU      | ``CC``    | | The GNU compilers cannot be used to compile HIP code, so all HIP kernels must be separated from CPU code.                       |
-|          |           | | During compilation, all non-HIP files must be compiled with ``CC`` while HIP kernels must be compiled with ``hipcc``.           |
-|          |           | | Then linking must be performed with the ``CC`` wrapper.                                                                         |
-|          |           | | NOTE: When using ``cmake``, HIP code must currently be compiled using ``amdclang++`` instead of ``hipcc``.                      |
-+----------+-----------+-----------------------------------------------------------------------------------------------------------------------------------+
+This section describes how to compile HIP + OpenMP CPU threading hybrid codes.
+For all compiler toolchains, HIP kernels and kernel launch calls (ie ``hipLaunchKernelGGL``) cannot be implemented in the same file that requires ``-fopenmp``.
+HIP API calls (``hipMalloc``, ``hipMemcpy``) are allowed in files that require ``-fopenmp``.
+HIP source files should be compiled into object files using the instructions in the ``HIP`` section, with the ``-c`` flag added to generate an object file.
+OpenMP and other non-HIP source files should be compiled into object files using the instructions in the ``OpenMP`` section.
+Then these object files should be linked using the following link flags: ``-fopenmp -L${ROCM_PATH}/lib -lamdhip64``.
 
 
 ----
