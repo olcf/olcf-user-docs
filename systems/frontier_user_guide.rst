@@ -474,7 +474,7 @@ Cray, AMD, and GCC compilers are provided through modules on Frontier. The Cray 
 |        |                         |                 +----------+-------------------+---------------------------------+
 |        |                         |                 | Fortran  | ``ftn``           | ``crayftn``                     |
 +--------+-------------------------+-----------------+----------+-------------------+---------------------------------+
-| AMD    | ``PrgEnv-amd``          | ``rocm``        | C        | ``cc``            | ``amdclang``                    |
+| AMD    | ``PrgEnv-amd``          | ``amd``         | C        | ``cc``            | ``amdclang``                    |
 |        |                         |                 +----------+-------------------+---------------------------------+
 |        |                         |                 | C++      | ``CC``            | ``amdclang++``                  |
 |        |                         |                 +----------+-------------------+---------------------------------+
@@ -493,8 +493,35 @@ Cray Programming Environment and Compiler Wrappers
 
 Cray provides ``PrgEnv-<compiler>`` modules (e.g., ``PrgEnv-cray``) that load compatible components of a specific compiler toolchain. The components include the specified compiler as well as MPI, LibSci, and other libraries. Loading the ``PrgEnv-<compiler>`` modules also defines a set of compiler wrappers for that compiler toolchain that automatically add include paths and link in libraries for Cray software. Compiler wrappers are provided for C (``cc``), C++ (``CC``), and Fortran (``ftn``).
 
+For example, to load the AMD programming environment, do: 
+
+.. code:: bash
+    
+    module load PrgEnv-amd
+
+This module will setup your programming environment with paths to software and libraries that are compatible with AMD compilers.
+
 .. note::
    Use the ``-craype-verbose`` flag to display the full include and link information used by the Cray compiler wrappers. This must be called on a file to see the full output (e.g., ``CC -craype-verbose test.cpp``).
+
+
+Exposing The ROCm Toolchain to your Programming Environment
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If you need to add the tools and libraries related to ROCm, the framework for targeting AMD GPUs, to your path, you will need to use a version of ROCm that is compatible with your programming environment.
+
+The following modules help you expose the ROCm Toolchain to your programming Environment: 
+
+
++-----------------------------------+------------------------------------------+--------------------------------------------------------------+
+| Programming Environment Module    | Module that gets you ROCm Toolchain      | How you load it:                                             |
+|                                   |                                          |                                                              |
++===================================+==========================================+==============================================================+
+| ``PrgEnv-amd``                    |  ``amd``                                 | amd  is loaded automatically with ``module load PrgEnv-amd`` |
++-----------------------------------+------------------------------------------+--------------------------------------------------------------+
+| ``PrgEnv-cray`` or ``PrgEnv-gnu`` |  ``amd-mixed``                           | ``module load amd-mixed``                                    |
++-----------------------------------+------------------------------------------+--------------------------------------------------------------+
+
 
 MPI
 ---
@@ -510,35 +537,46 @@ The MPI implementation available on Frontier is Cray's MPICH, which is "GPU-awar
 |                |                |                                                     | | ``-I${MPICH_DIR}/include``                                                  |
 +----------------+----------------+-----------------------------------------------------+-------------------------------------------------------------------------------+
 
+.. note:: 
+   
+    hipcc requires the ROCm Toolclain, See :ref:`exposing-the-rocm-toolchain-to-your-programming-environment`
+
+   
+
 GPU-Aware MPI
 ^^^^^^^^^^^^^
 
-To use GPU-aware Cray MPICH, users must set the following modules and environment variables:
+To use GPU-aware Cray MPICH, with Frontier's PrgEnv modules, users must set the following modules and environment variables:
+
+If using ``PrgEnv-amd``:
 
 .. code:: bash
     
     module load craype-accel-amd-gfx90a
-    module load rocm
-
+    
     export MPICH_GPU_SUPPORT_ENABLED=1
+    
+    
+If using ``PrgEnv-cray`` or ``PrgEnv-gnu`` :   
+
+.. code:: bash
+    
+    module load craype-accel-amd-gfx90a
+    module load amd-mixed
+    
+    export MPICH_GPU_SUPPORT_ENABLED=1    
+    
 
 .. note::
 
     There are extra steps needed to enable GPU-aware MPI on Frontier, which depend on the compiler that is used (see 1. and 2. below).
     
-
 1. Compiling with the Cray compiler wrappers, ``cc`` or ``CC``
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-To use GPU-aware Cray MPICH with the Cray compiler wrappers, the following environment variables must be set before compiling. These variables are automatically set by the ``cray-mpich`` modulefile:
-
-.. code:: bash
-
-    ## These must be set before compiling so the executable picks up GTL
-    PE_MPICH_GTL_DIR_amd_gfx90a="-L${CRAY_MPICH_ROOTDIR}/gtl/lib"
-    PE_MPICH_GTL_LIBS_amd_gfx90a="-lmpi_gtl_hsa"
-
-In addition, the following header files and libraries must be included:
+When using GPU-aware Cray MPICH with the Cray compiler wrappers, most of the needed libraries are automatically linked through the environment variables. 
+ 
+Though, the following header files and libraries must be included explicitly:
 
 .. code:: bash
 
@@ -547,37 +585,35 @@ In addition, the following header files and libraries must be included:
 
 where the include path implies that ``#include <hip/hip_runtime.h>`` is included in the source file.
 
+
+
 2. Compiling with ``hipcc``
 """""""""""""""""""""""""""
 
-To use GPU-aware Cray MPICH with ``hipcc``, users must include appropriate headers, libraries, and flags:
+To use ``hipcc'' with GPU-aware Cray MPICH, use the following environment variables to setup the needed header files and libraries. 
 
 .. code:: bash
 
+
     -I${MPICH_DIR}/include
-    -L${MPICH_DIR}/lib -lmpi -L${CRAY_MPICH_ROOTDIR}/gtl/lib -lmpi_gtl_hsa
+    -L${MPICH_DIR}/lib -lmpi ${PE_MPICH_GTL_DIR_amd_gfx90a} ${PE_MPICH_GTL_LIBS_amd_gfx90a}
 
     HIPFLAGS = --amdgpu-target=gfx90a
+    
 
 Determining the Compatibility of Cray MPICH and ROCm
 """"""""""""""""""""""""""""""""""""""""""""""""""""
 
 Releases of ``cray-mpich`` are each built with a specific version of ROCm, and compatibility across multiple versions is not guaranteed. OLCF will maintain compatible default modules when possible. If using non-default modules, you can determine compatibility by reviewing the *Product and OS Dependencies* section in the ``cray-mpich`` release notes. This can be displayed by running ``module show cray-mpich/<version>``. If the notes indicate compatibility with *AMD ROCM X.Y or later*, only use ``rocm/X.Y.Z`` modules. If using a non-default version of ``cray-mpich``, you must add ``${CRAY_MPICH_ROOTDIR}/gtl/lib`` to either your ``LD_LIBRARY_PATH`` at run time or your executable's rpath at build time.
 
-The compatibility table below was determined by linker testing with all current combinations of ``cray-mpich`` and ``rocm`` modules on Frontier.
+The compatibility table below was determined by linker testing with all current combinations of ``cray-mpich`` and ROCm-related modules on Frontier.
 
 +------------+---------------------+
 | cray-mpich |        ROCm         |
 +============+=====================+
-|   8.1.12   |    4.5.2, 4.5.0     |
-+------------+---------------------+
-|   8.1.14   |    4.5.2, 4.5.0     |
-+------------+---------------------+
-|   8.1.15   | 5.1.0, 5.0.2, 5.0.0 |
-+------------+---------------------+
-|   8.1.16   | 5.1.0, 5.0.2, 5.0.0 |
-+------------+---------------------+
 |   8.1.17   | 5.1.0, 5.0.2, 5.0.0 |
++------------+---------------------+
+|   8.1.23   | 5.1.0, 5.0.2, 5.0.0 |
 +------------+---------------------+
 
 OpenMP
@@ -594,7 +630,7 @@ This section shows how to compile with OpenMP using the different compilers cove
 |        |          | Fortran   | ``ftn`` (wraps ``crayftn``)                  | | ``-homp``                         |
 |        |          |           |                                              | | ``-fopenmp`` (alias)              |
 +--------+----------+-----------+----------------------------------------------+-------------------------------------+
-| AMD    | ``rocm`` | | C       | | ``cc`` (wraps ``amdclang``)                | ``-fopenmp``                        |
+| AMD    | ``amd`` | | C       | | ``cc`` (wraps ``amdclang``)                | ``-fopenmp``                        |
 |        |          | | C++     | | ``CC`` (wraps ``amdclang++``)              |                                     |
 |        |          | | Fortran | | ``ftn`` (wraps ``amdflang``)               |                                     |
 +--------+----------+-----------+----------------------------------------------+-------------------------------------+
@@ -621,7 +657,7 @@ This section shows how to compile with OpenMP Offload using the different compil
 |        |          | Fortran   | ``ftn`` (wraps ``crayftn``)                  | | ``-homp``                                  |
 |        |          |           |                                              | | ``-fopenmp`` (alias)                       |
 +--------+----------+-----------+----------------------------------------------+----------------------------------------------+
-| AMD    | ``rocm`` | | C       | | ``cc`` (wraps ``amdclang``)                | ``-fopenmp``                                 |
+| AMD    | ``amd`` | | C       | | ``cc`` (wraps ``amdclang``)                | ``-fopenmp``                                 |
 |        |          | | C\+\+   | | ``CC`` (wraps ``amdclang++``)              |                                              |
 |        |          | | Fortran | | ``ftn`` (wraps ``amdflang``)               |                                              |
 |        |          |           | | ``hipcc`` (requires flags below)           |                                              |
@@ -655,6 +691,11 @@ This section shows how to compile HIP codes using the Cray compiler wrappers and
 |                   | | To explicitly target AMD MI250X, use ``--amdgpu-target=gfx90a``                                                        |
 +-------------------+--------------------------------------------------------------------------------------------------------------------------+
 
+.. note:: 
+   
+    hipcc requires the ROCm Toolclain, See :ref:`exposing-the-rocm-toolchain-to-your-programming-environment`
+
+
 HIP + OpenMP CPU Threading
 --------------------------
 
@@ -680,6 +721,9 @@ This section shows how to compile HIP + OpenMP CPU threading hybrid codes.
 |          |           | | NOTE: When using ``cmake``, HIP code must currently be compiled using ``amdclang++`` instead of ``hipcc``.                      |
 +----------+-----------+-----------------------------------------------------------------------------------------------------------------------------------+
 
+.. note:: 
+   
+    hipcc requires the ROCm Toolclain, See :ref:`exposing-the-rocm-toolchain-to-your-programming-environment`
 
 ----
 
