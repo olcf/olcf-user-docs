@@ -1087,8 +1087,11 @@ Submission script:
     #SBATCH -t 10
 
     srun -N1 -c1 --gpus-per-task=1 --exact ./hello_jobstep &
+    sleep 1
     srun -N1 -c1 --gpus-per-task=1 --exact ./hello_jobstep &
+    sleep 1
     srun -N1 -c1 --gpus-per-task=1 --exact ./hello_jobstep &
+    sleep 1
     srun -N1 -c1 --gpus-per-task=1 --exact ./hello_jobstep &
     wait
 
@@ -1104,7 +1107,7 @@ Output:
 
 .. note::
 
-   The ``--exact`` parameter is important to avoid the error message ``srun: Job <job id> step creation temporarily disabled, retrying (Requested nodes are busy)``. The ``wait`` command is also critical, or your job script and allocation will immediately end after launching your jobs in the background.
+   The ``--exact`` parameter is important to avoid the error message ``srun: Job <job id> step creation temporarily disabled, retrying (Requested nodes are busy)``. The ``wait`` command is also critical, or your job script and allocation will immediately end after launching your jobs in the background. The ``sleep`` command is currently required to work around a known issue that causes MPICH ERROR. See :ref:`crusher-known-issues` for more information and alternative workarounds. ``sleep`` will no longer be needed in a future update.
 
 .. note::
 
