@@ -852,6 +852,7 @@ Most users will find batch jobs an easy way to use the system, as they allow you
 
 Since all compute resources are managed and scheduled by Slurm, it is not possible to simply log into the system and immediately begin running parallel codes interactively. Rather, you must request the appropriate resources from Slurm and, if necessary, wait for them to become available. This is done through an "interactive batch" job. Interactive batch jobs are submitted with the ``salloc`` command. Resources are requested via the same options that are passed via ``#SBATCH`` in a regular batch script (but without the ``#SBATCH`` prefix). For example, to request an interactive batch job with the same resources that the batch script above requests, you would use ``salloc -A ABC123 -J RunSim123 -t 1:00:00 -p batch -N 1024``. Note there is no option for an output file...you are running interactively, so standard output and standard error will be displayed to the terminal.
 
+.. _common-slurm-options:
 
 Common Slurm Options
 --------------------
@@ -895,6 +896,19 @@ The table below summarizes options for submitted jobs. Unless otherwise noted, t
 +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
 | ``-S``                 | ``#SBATCH -S 8``                           | Instructs Slurm to reserve a specific number of cores per node (default is 8).       |
 |                        |                                            | Reserved cores cannot be used by the application.                                    |
++------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+| ``--signal``           | ``#SBATCH --signal=USR1@300``              || Send the given signal to a job the specified time (in seconds) seconds before the   |
+|                        |                                            | job reaches its walltime. The signal can be by name or by number (i.e. both 10 and   |
+|                        |                                            | USR1 would send SIGUSR1).                                                            |
+|                        |                                            ||                                                                                     |
+|                        |                                            || Signaling a job can be used, for example, to force a job to write a checkpoint just |
+|                        |                                            | before Slurm kills the job (note that this option only sends the signal; the user    |
+|                        |                                            | must still make sure their job script traps the signal and handles it in the desired |
+|                        |                                            | manner).                                                                             |
+|                        |                                            ||                                                                                     |
+|                        |                                            || When used with ``sbatch``, the signal can be prefixed by "B:"                       |
+|                        |                                            | (e.g. ``--signal=B:USR1@300``) to tell Slurm to signal only the batch shell;         |
+|                        |                                            | otherwise all processes will be signaled.                                            |
 +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
 
 
@@ -1103,9 +1117,7 @@ There may also be occasions where you want to modify a job that's waiting in the
 ``scancel``: Cancel or Signal a Job
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Slurm allows you to signal a job with the ``scancel`` command. Typically, this is used to remove a job from the queue. In this use case, you do not need to specify a signal and can simply provide the jobid. For example, ``scancel 12345``.
-
-In addition to removing a job from the queue, the command gives you the ability to send other signals to the job with the ``-s`` option. For example, if you want to send ``SIGUSR1`` to a job, you would use ``scancel -s USR1 12345``.
+In addition to the ``--signal`` option for the ``sbatch``/``salloc`` commands described :ref:`above <common-slurm-options>`, the ``scancel`` command can be used to manually signal a job. Typically, this is used to remove a job from the queue. In this use case, you do not need to specify a signal and can simply provide the jobid (i.e. ``scancel 12345``). If you want to send some other signal to the job, use ``scancel`` the with the ``-s`` option. The ``-s`` option allows signals to be specified either by number or by name. Thus, if you want to send ``SIGUSR1`` to a job, you would use ``scancel -s 10 12345`` or ``scancel -s USR1 12345``. 
 
 
 ``squeue``: View the Queue
@@ -1113,11 +1125,11 @@ In addition to removing a job from the queue, the command gives you the ability 
 
 The ``squeue`` command is used to show the batch queue. You can filter the level of detail through several command-line options. For example:
 
-+------------------------+------------------------------------------------+
-| ``squeue -l``          | Show all jobs currently in the queue           |
-+------------------------+------------------------------------------------+
-| ``squeue -l -u $USER`` | Show all of *your* jobs currently in the queue |
-+------------------------+------------------------------------------------+
++--------------------------+------------------------------------------------+
+| ``squeue -l``            | Show all jobs currently in the queue           |
++--------------------------+------------------------------------------------+
+| | ``squeue -l -u $USER`` | Show all of *your* jobs currently in the queue |
++--------------------------+------------------------------------------------+
 
 
 ``sacct``: Get Job Accounting Information
