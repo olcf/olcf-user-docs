@@ -2266,6 +2266,15 @@ and here is the output from that script:
         exit 1
     fi
 
+    # If you intend to use `rocprof`, you also need to send the ROCm profiling library.
+    #sbcast -pf ${ROCM_PATH}/hsa-amd-aqlprofile/lib/libhsa-amd-aqlprofile64.so /mnt/bb/$USER/${exe}_libs/libhsa-amd-aqlprofile64.so
+    #if [ ! "$?" == "0" ]; then
+        # CHECK EXIT CODE. When SBCAST fails, it may leave partial files on the compute nodes, and if you continue to launch srun,
+        # your application may pick up partially complete shared library files, which would give you confusing errors.
+        #echo "SBCAST failed!"
+        #exit 1
+    #fi
+
     # Some applications may expect a generic name of certain libraries (ie, `libamdhip64.so` instead of `libamdhip64.so.5`)
     # You may need to use an `srun` line like this to add sym-links on each node
     # The 2 most common cases are `libhsa-runtime64.so` and `libamdhip64.so`
@@ -2630,6 +2639,12 @@ For a simple view of kernels being run, ``rocprof --stats --timestamp on`` is a 
 With the ``--stats`` option enabled, ``rocprof`` will generate a file that is named ``results.stats.csv`` by default, but named ``<output>.stats.csv`` if the ``-o`` flag is supplied.
 This file will list all kernels being run, the number of times they are run, the total duration and the average duration (in nanoseconds) of the kernel, and the GPU usage percentage.
 More detailed infromation on ``rocprof`` profiling modes can be found at `ROCm Profiler <https://rocmdocs.amd.com/en/latest/ROCm_Tools/ROCm-Tools.html>`__ documentation.
+
+.. note::
+
+    If you are using ``sbcast``, you need to explicitly ``sbcast`` the AQL profiling library found in ``${ROCM_PATH}/hsa-amd-aqlprofile/lib/libhsa-amd-aqlprofile64.so``.
+    A symbolic link to this library can also be found in ``${ROCM_PATH}/lib``.
+    Alternatively, you may leave ``${ROCM_PATH}/lib`` in your ``LD_LIBRARY_PATH``.
 
 
 Roofline Profiling with the ROCm Profiler
