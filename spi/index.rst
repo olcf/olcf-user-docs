@@ -142,6 +142,7 @@ Similar to the non-SPI resources, SPI resources reqiure two-factor authenticatio
 Also similar to non-SPI resources, you will connect directly to the SPI resources through ssh.  
 
 ORNL's KDI users are an exception and can not by policy log directly into SPI resources.  KDI users, please follow the KDI documented procedures:
+
 #.  Login to https://kdivdi.ornl.gov with your KDI issued credentials
 #.  Launch the Putty Application
 #.  Enter the hostname "citadel.ccs.ornl.gov" and click Open
