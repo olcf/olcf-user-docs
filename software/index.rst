@@ -16,6 +16,6 @@ Software
    UMS/index
    workflows/index
    e4s
-   spack_env/index
+   spack_environments
    viz_tools/index
    containers_on_summit
