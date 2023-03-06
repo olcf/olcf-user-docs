@@ -546,7 +546,7 @@ The MPI implementation available on Frontier is Cray's MPICH, which is "GPU-awar
 GPU-Aware MPI
 ^^^^^^^^^^^^^
 
-To use GPU-aware Cray MPICH, users must set the following modules and environment variables:
+To use GPU-aware Cray MPICH, with Frontier's PrgEnv modules, users must set the following modules and environment variables:
 
 If using ``PrgEnv-amd``:
 
@@ -575,11 +575,11 @@ If using ``PrgEnv-cray`` or ``PrgEnv-gnu`` :
 1. Compiling with the Cray compiler wrappers, ``cc`` or ``CC``
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-To use GPU-aware Cray MPICH with the Cray compiler wrappers, the following environment variables must be set before compiling. These variables are automatically set by the ``cray-mpich`` modulefile:
+When using GPU-aware Cray MPICH with the Cray compiler wrappers, the following environment variables are automatically set by the ``cray-mpich`` modulefile:
 
 .. code:: bash
 
-    ## These must be set before compiling so the executable picks up GTL
+    ## These are set so the executable picks up GTL
     PE_MPICH_GTL_DIR_amd_gfx90a="-L${CRAY_MPICH_ROOTDIR}/gtl/lib"
     PE_MPICH_GTL_LIBS_amd_gfx90a="-lmpi_gtl_hsa"
 
@@ -609,20 +609,14 @@ Determining the Compatibility of Cray MPICH and ROCm
 
 Releases of ``cray-mpich`` are each built with a specific version of ROCm, and compatibility across multiple versions is not guaranteed. OLCF will maintain compatible default modules when possible. If using non-default modules, you can determine compatibility by reviewing the *Product and OS Dependencies* section in the ``cray-mpich`` release notes. This can be displayed by running ``module show cray-mpich/<version>``. If the notes indicate compatibility with *AMD ROCM X.Y or later*, only use ``rocm/X.Y.Z`` modules. If using a non-default version of ``cray-mpich``, you must add ``${CRAY_MPICH_ROOTDIR}/gtl/lib`` to either your ``LD_LIBRARY_PATH`` at run time or your executable's rpath at build time.
 
-The compatibility table below was determined by linker testing with all current combinations of ``cray-mpich`` and ``rocm`` modules on Frontier.
+The compatibility table below was determined by linker testing with all current combinations of ``cray-mpich`` and ROCm-related modules on Frontier.
 
 +------------+---------------------+
 | cray-mpich |        ROCm         |
 +============+=====================+
-|   8.1.12   |    4.5.2, 4.5.0     |
-+------------+---------------------+
-|   8.1.14   |    4.5.2, 4.5.0     |
-+------------+---------------------+
-|   8.1.15   | 5.1.0, 5.0.2, 5.0.0 |
-+------------+---------------------+
-|   8.1.16   | 5.1.0, 5.0.2, 5.0.0 |
-+------------+---------------------+
 |   8.1.17   | 5.1.0, 5.0.2, 5.0.0 |
++------------+---------------------+
+|   8.1.23   | 5.1.0, 5.0.2, 5.0.0 |
 +------------+---------------------+
 
 OpenMP
@@ -639,7 +633,7 @@ This section shows how to compile with OpenMP using the different compilers cove
 |        |          | Fortran   | ``ftn`` (wraps ``crayftn``)                  | | ``-homp``                         |
 |        |          |           |                                              | | ``-fopenmp`` (alias)              |
 +--------+----------+-----------+----------------------------------------------+-------------------------------------+
-| AMD    | ``rocm`` | | C       | | ``cc`` (wraps ``amdclang``)                | ``-fopenmp``                        |
+| AMD    | ``amd`` | | C       | | ``cc`` (wraps ``amdclang``)                | ``-fopenmp``                        |
 |        |          | | C++     | | ``CC`` (wraps ``amdclang++``)              |                                     |
 |        |          | | Fortran | | ``ftn`` (wraps ``amdflang``)               |                                     |
 +--------+----------+-----------+----------------------------------------------+-------------------------------------+
@@ -666,7 +660,7 @@ This section shows how to compile with OpenMP Offload using the different compil
 |        |          | Fortran   | ``ftn`` (wraps ``crayftn``)                  | | ``-homp``                                  |
 |        |          |           |                                              | | ``-fopenmp`` (alias)                       |
 +--------+----------+-----------+----------------------------------------------+----------------------------------------------+
-| AMD    | ``rocm`` | | C       | | ``cc`` (wraps ``amdclang``)                | ``-fopenmp``                                 |
+| AMD    | ``amd`` | | C       | | ``cc`` (wraps ``amdclang``)                | ``-fopenmp``                                 |
 |        |          | | C\+\+   | | ``CC`` (wraps ``amdclang++``)              |                                              |
 |        |          | | Fortran | | ``ftn`` (wraps ``amdflang``)               |                                              |
 |        |          |           | | ``hipcc`` (requires flags below)           |                                              |
@@ -700,6 +694,11 @@ This section shows how to compile HIP codes using the Cray compiler wrappers and
 |                   | | To explicitly target AMD MI250X, use ``--amdgpu-target=gfx90a``                                                        |
 +-------------------+--------------------------------------------------------------------------------------------------------------------------+
 
+.. note:: 
+   
+    hipcc requires the ROCm Toolclain, See :ref:`exposing-the-rocm-toolchain-to-your-programming-environment`
+
+
 HIP + OpenMP CPU Threading
 --------------------------
 
@@ -725,6 +724,9 @@ This section shows how to compile HIP + OpenMP CPU threading hybrid codes.
 |          |           | | NOTE: When using ``cmake``, HIP code must currently be compiled using ``amdclang++`` instead of ``hipcc``.                      |
 +----------+-----------+-----------------------------------------------------------------------------------------------------------------------------------+
 
+.. note:: 
+   
+    hipcc requires the ROCm Toolclain, See :ref:`exposing-the-rocm-toolchain-to-your-programming-environment`
 
 ----
 
