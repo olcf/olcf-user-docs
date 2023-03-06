@@ -474,7 +474,7 @@ Cray, AMD, and GCC compilers are provided through modules on Frontier. The Cray 
 |        |                         |                 +----------+-------------------+---------------------------------+
 |        |                         |                 | Fortran  | ``ftn``           | ``crayftn``                     |
 +--------+-------------------------+-----------------+----------+-------------------+---------------------------------+
-| AMD    | ``PrgEnv-amd``          | ``rocm``        | C        | ``cc``            | ``amdclang``                    |
+| AMD    | ``PrgEnv-amd``          | ``amd``         | C        | ``cc``            | ``amdclang``                    |
 |        |                         |                 +----------+-------------------+---------------------------------+
 |        |                         |                 | C++      | ``CC``            | ``amdclang++``                  |
 |        |                         |                 +----------+-------------------+---------------------------------+
@@ -493,8 +493,35 @@ Cray Programming Environment and Compiler Wrappers
 
 Cray provides ``PrgEnv-<compiler>`` modules (e.g., ``PrgEnv-cray``) that load compatible components of a specific compiler toolchain. The components include the specified compiler as well as MPI, LibSci, and other libraries. Loading the ``PrgEnv-<compiler>`` modules also defines a set of compiler wrappers for that compiler toolchain that automatically add include paths and link in libraries for Cray software. Compiler wrappers are provided for C (``cc``), C++ (``CC``), and Fortran (``ftn``).
 
+For example, to load the AMD programming environment, do: 
+
+.. code:: bash
+    
+    module load PrgEnv-amd
+
+This module will setup your programming environment with paths to software and libraries that are compatible with AMD compilers.
+
 .. note::
    Use the ``-craype-verbose`` flag to display the full include and link information used by the Cray compiler wrappers. This must be called on a file to see the full output (e.g., ``CC -craype-verbose test.cpp``).
+
+
+Exposing The ROCm Toolchain to your Programming Environment
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If you need to add the tools and libraries related to ROCm, the framework for targeting AMD GPUs, to your path, you will need to use a version of ROCm that is compatible with your programming environment.
+
+The following modules help you expose the ROCm Toolchain to your programming Environment: 
+
+
++-----------------------------------+------------------------------------------+--------------------------------------------------------------+
+| Programming Environment Module    | Module that gets you ROCm Toolchain      | How you load it:                                             |
+|                                   |                                          |                                                              |
++===================================+==========================================+==============================================================+
+| ``PrgEnv-amd``                    |  ``amd``                                 | amd  is loaded automatically with ``module load PrgEnv-amd`` |
++-----------------------------------+------------------------------------------+--------------------------------------------------------------+
+| ``PrgEnv-cray`` or ``PrgEnv-gnu`` |  ``amd-mixed``                           | ``module load amd-mixed``                                    |
++-----------------------------------+------------------------------------------+--------------------------------------------------------------+
+
 
 MPI
 ---
@@ -510,17 +537,35 @@ The MPI implementation available on Frontier is Cray's MPICH, which is "GPU-awar
 |                |                |                                                     | | ``-I${MPICH_DIR}/include``                                                  |
 +----------------+----------------+-----------------------------------------------------+-------------------------------------------------------------------------------+
 
+.. note:: 
+   
+    hipcc requires the ROCm Toolclain, See :ref:`exposing-the-rocm-toolchain-to-your-programming-environment`
+
+   
+
 GPU-Aware MPI
 ^^^^^^^^^^^^^
 
 To use GPU-aware Cray MPICH, users must set the following modules and environment variables:
 
+If using ``PrgEnv-amd``:
+
 .. code:: bash
     
     module load craype-accel-amd-gfx90a
-    module load rocm
-
+    
     export MPICH_GPU_SUPPORT_ENABLED=1
+    
+    
+If using ``PrgEnv-cray`` or ``PrgEnv-gnu`` :   
+
+.. code:: bash
+    
+    module load craype-accel-amd-gfx90a
+    module load amd-mixed
+    
+    export MPICH_GPU_SUPPORT_ENABLED=1    
+    
 
 .. note::
 
