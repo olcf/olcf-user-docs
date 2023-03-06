@@ -6,6 +6,38 @@ Frontier User Guide
 
 .. _system_overview:
 
+
+.. note::
+
+  Notable differences between Summit and Frontier:
+
+  Orion scratch filesystem 
+    Frontier mounts Orion, a parallel filesystem based on Lustre and HPE ClusterStor, with a 679 PB usable namespace. Frontier will not mount Alpine and Summit will not mount Orion. Data will not be automatically transferred from Alpine to Orion, so we recommend that users move only needed data between the file systems with Globus.
+
+    See the :ref:`frontier-data-storage` section for more information.
+
+  Cray Programming Environment
+    Frontier utilizes the Cray Programming Environment.  Many aspects including LMOD are similar to Summit's environment.  But Cray's compiler wrappers and the Cray and AMD compilers are worth noting.
+
+    See the :ref:`frontier-compilers` section for more information.
+
+  AMD GPUs
+    Each frontier node has 4 AMD MI250X accelerators with two Graphic Compute Dies (GCDs) in each accelerator. The system identifies each GCD as an independent device (so for simplicity we use the term GPU when we talk about a GCD) for a total of 8 GPUs per node (compared to Summit's 6 Nvidia V100 GPUs per node). Each pair of GPUs is associated with a particular NUMA domain (see node diagram) which might affect how your application should lay out data and computation. Since these are AMD devices, code written in Nvidia's CUDA language will not work as is. They need to be converted to use HIP, which is AMD's GPU programming framework, or should be converted to some other GPU framework that supports AMD GPUs as a backend e.g. OpenMP Offload, Kokkos, RAJA etc .
+
+    See the :ref:`amd-gpus` section for more information.
+
+  Slurm batch scheduler
+    Frontier uses SchedMD's Slurm Workload Manager for job scheduling instead of IBM's LSF. Slurm provides similar functionality to LSF, albeit with different commands.  Notable are the separation in batch script submission (sbatch) and interactive batch submission (salloc).
+
+    See the :ref:`frontier-slurm` section for more infomation including a LSF to Slurm command comparison.
+
+  Srun job launcher
+    Frontier uses Slurm's job launcher, srun, which can be used instead of Summit's jsrun to lauch parallel jobs within a batch script.  Overall functionality is similar, but commands are notably different. Frontier's compute node layout should also be considered when selecting job layout.
+
+    See the :ref:`frontier-srun` section for more information.
+    
+
+
 System Overview
 ===============
 
