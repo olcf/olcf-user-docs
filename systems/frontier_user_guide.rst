@@ -22,7 +22,7 @@ Frontier User Guide
     See the :ref:`frontier-compilers` section for more information.
 
   AMD GPUs
-    Each frontier node has 4 AMD MI250X accelerators with two Graphic Compute Dies (GCDs) in each accelerator. The system identifies each GCD as an independent device (so for simplicity we use the term GPU when we talk about a GCD) for a total of 8 GPUs per node (compared to Summit's 6 Nvidia V100 GPUs per node). Each pair of GPUs is associated with a particular NUMA domain (see node diagram) which might affect how your application should lay out data and computation. Since these are AMD devices, code written in Nvidia's CUDA language will not work as is. They need to be converted to use HIP, which is AMD's GPU programming framework, or should be converted to some other GPU framework that supports AMD GPUs as a backend e.g. OpenMP Offload, Kokkos, RAJA etc .
+    Each frontier node has 4 AMD MI250X accelerators with two Graphic Compute Dies (GCDs) in each accelerator. The system identifies each GCD as an independent device (so for simplicity we use the term GPU when we talk about a GCD) for a total of 8 GPUs per node (compared to Summit's 6 Nvidia V100 GPUs per node). Each pair of GPUs is associated with a particular NUMA domain (see node diagram in :ref:`frontier-nodes` section) which might affect how your application should lay out data and computation. Since these are AMD devices, code written in Nvidia's CUDA language will not work as is. They need to be converted to use HIP, which is AMD's GPU programming framework, or should be converted to some other GPU framework that supports AMD GPUs as a backend e.g. OpenMP Offload, Kokkos, RAJA etc .
 
     See the :ref:`amd-gpus` section for more information.
 
@@ -32,7 +32,7 @@ Frontier User Guide
     See the :ref:`frontier-slurm` section for more infomation including a LSF to Slurm command comparison.
 
   Srun job launcher
-    Frontier uses Slurm's job launcher, srun, which can be used instead of Summit's jsrun to lauch parallel jobs within a batch script.  Overall functionality is similar, but commands are notably different. Frontier's compute node layout should also be considered when selecting job layout.
+    Frontier uses Slurm's job launcher, srun, which can be used instead of Summit's jsrun to launch parallel jobs within a batch script.  Overall functionality is similar, but commands are notably different. Frontier's compute node layout should also be considered when selecting job layout.
 
     See the :ref:`frontier-srun` section for more information.
     
@@ -401,6 +401,12 @@ of tutorials on programming with HIP and also converting existing CUDA code to H
 <https://github.com/ROCm-Developer-Tools/HIPIFY>`_ .
 
 
+See the :ref:`frontier-compilers` section for information on compiling for AMD GPUs, and
+see the :ref:`tips-and-tricks-for-gpus` section for detailed information to keep in mind
+to run more efficiently on AMD GPUs.
+
+
+
 Programming Environment
 =======================
 
@@ -458,6 +464,7 @@ Modules with dependencies are only available when the underlying dependencies, s
 +------------------------------------------+--------------------------------------------------------------------------------------+
 | ``module spider <string>``               | Searches for modulefiles containing ``<string>``                                     |
 +------------------------------------------+--------------------------------------------------------------------------------------+
+
 
 Compilers
 ---------
@@ -536,6 +543,8 @@ This module will setup your programming environment with paths to software and l
 .. note::
    Use the ``-craype-verbose`` flag to display the full include and link information used by the Cray compiler wrappers. This must be called on a file to see the full output (e.g., ``CC -craype-verbose test.cpp``).
 
+
+.. _exposing-the-rocm-toolchain-to-your-programming-environment:
 
 Exposing The ROCm Toolchain to your Programming Environment
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -622,7 +631,7 @@ where the include path implies that ``#include <hip/hip_runtime.h>`` is included
 2. Compiling with ``hipcc``
 """""""""""""""""""""""""""
 
-To use ``hipcc'' with GPU-aware Cray MPICH, use the following environment variables to setup the needed header files and libraries. 
+To use ``hipcc`` with GPU-aware Cray MPICH, use the following environment variables to setup the needed header files and libraries. 
 
 .. code:: bash
 
@@ -662,7 +671,7 @@ This section shows how to compile with OpenMP using the different compilers cove
 |        |          | Fortran   | ``ftn`` (wraps ``crayftn``)                  | | ``-homp``                         |
 |        |          |           |                                              | | ``-fopenmp`` (alias)              |
 +--------+----------+-----------+----------------------------------------------+-------------------------------------+
-| AMD    | ``amd`` | | C       | | ``cc`` (wraps ``amdclang``)                | ``-fopenmp``                        |
+| AMD    | ``amd``  | | C       | | ``cc`` (wraps ``amdclang``)                | ``-fopenmp``                        |
 |        |          | | C++     | | ``CC`` (wraps ``amdclang++``)              |                                     |
 |        |          | | Fortran | | ``ftn`` (wraps ``amdflang``)               |                                     |
 +--------+----------+-----------+----------------------------------------------+-------------------------------------+
@@ -689,7 +698,7 @@ This section shows how to compile with OpenMP Offload using the different compil
 |        |          | Fortran   | ``ftn`` (wraps ``crayftn``)                  | | ``-homp``                                  |
 |        |          |           |                                              | | ``-fopenmp`` (alias)                       |
 +--------+----------+-----------+----------------------------------------------+----------------------------------------------+
-| AMD    | ``amd`` | | C       | | ``cc`` (wraps ``amdclang``)                | ``-fopenmp``                                 |
+| AMD    | ``amd``  | | C       | | ``cc`` (wraps ``amdclang``)                | ``-fopenmp``                                 |
 |        |          | | C\+\+   | | ``CC`` (wraps ``amdclang++``)              |                                              |
 |        |          | | Fortran | | ``ftn`` (wraps ``amdflang``)               |                                              |
 |        |          |           | | ``hipcc`` (requires flags below)           |                                              |
@@ -2913,6 +2922,250 @@ where
 
 
 ----
+
+
+.. _tips-and-tricks-for-gpus:
+
+Tips, Tricks, and Things to Know for AMD GPUs
+=============================================
+
+This section details 'tips and tricks' and information of interest to users when porting from Summit to Crusher.
+
+Using reduced precision (FP16 and BF16 datatypes)
+-------------------------------------------------
+Users leveraging BF16 and FP16 datatypes for applications such as ML/AI training and low-precision matrix multiplication should be aware that the AMD MI250X GPU has different denormal handling than the V100 GPUs on Summit. On the MI250X, the V_DOT2 and the matrix instructions for FP16 and BF16 flush input and output denormal values to zero. FP32 and FP64 MFMA instructions do not flush input and output denormal values to zero. 
+
+When training deep learning models using FP16 precision, some models may fail to converge with FP16 denorms flushed to zero. This occurs in operations encountering denormal values, and so is more likely to occur in FP16 because of a small dynamic range. BF16 numbers have a larger dynamic range than FP16 numbers and are less likely to encounter denormal values.
+
+AMD has provided a solution in ROCm 5.0 which modifies the behavior of Tensorflow, PyTorch, and rocBLAS. This modification starts with FP16 input values, casting the intermediate FP16 values to BF16, and then casting back to FP16 output after the accumulate FP32 operations. In this way, the input and output types are unchanged. The behavior is enabled by default in machine learning frameworks. This behavior requires user action in rocBLAS, via a special enum type. For more information, see the rocBLAS link below. 
+
+If you encounter significant differences when running using reduced precision, explore replacing non-converging models in FP16 with BF16, because of the greater dynamic range in BF16. We recommend using BF16 for ML models in general. If you have further questions or encounter issues, contact help@olcf.ornl.gov.
+
+Additional information on MI250X reduced precision can be found at:
+  * The MI250X ISA specification details the flush to zero denorm behavior at: https://developer.amd.com/wp-content/resources/CDNA2_Shader_ISA_18November2021.pdf (See page 41 and 46)
+  * AMD rocBLAS library reference guide details this behavior at: https://rocblas.readthedocs.io/en/master/API_Reference_Guide.html#mi200-gfx90a-considerations
+
+Enabling GPU Page Migration
+---------------------------
+The AMD MI250X and operating system on Crusher supports unified virtual addressing across the entire host and device memory, and automatic page migration between CPU and GPU memory. Migratable, universally addressable memory is sometimes called 'managed' or 'unified' memory, but neither of these terms fully describes how memory may behave on Crusher. In the following section we'll discuss how the heterogenous memory space on a Crusher node is surfaced within your application.
+
+The accessibility of memory from GPU kernels and whether pages may migrate depends three factors: how the memory was allocated; the XNACK operating mode of the GPU; whether the kernel was compiled to support page migration. The latter two factors are intrinsically linked, as the MI250X GPU operating mode restricts the types of kernels which may run.
+
+XNACK (pronounced X-knack) refers to the AMD GPU's ability to retry memory accesses that fail due to a page fault. The XNACK mode of an MI250X can be changed by setting the environment variable ``HSA_XNACK`` before starting a process that uses the GPU. Valid values are 0 (disabled) and 1 (enabled), and all processes connected to a GPU must use the same XNACK setting. The default MI250X on Crusher is ``HSA_XNACK=0``.
+
+If ``HSA_XNACK=0``, page faults in GPU kernels are not handled and will terminate the kernel. Therefore all memory locations accessed by the GPU must either be resident in the GPU HBM or mapped by the HIP runtime. Memory regions may be migrated between the host DDR4 and GPU HBM using explicit HIP library functions such as ``hipMemAdvise`` and ``hipPrefetchAsync``, but memory will not be automatically migrated based on access patterns alone.
+
+If ``HSA_XNACK=1``, page faults in GPU kernels will trigger a page table lookup. If the memory location can be made accessible to the GPU, either by being migrated to GPU HBM or being mapped for remote access, the appropriate action will occur and the access will be replayed. Page migration  will happen between CPU DDR4 and GPU HBM according to page touch. The exceptions are if the programmer uses a HIP library call such as ``hipPrefetchAsync`` to request migration, or if a preferred location is set via ``hipMemAdvise``, or if GPU HBM becomes full and the page must forcibly be evicted back to CPU DDR4 to make room for other data.
+
+..
+   If ``HSA_XNACK=1``, page faults in GPU kernels will trigger a page table lookup. If the memory location can be made accessible to the GPU, either by being migrated to GPU HBM or being mapped for remote access, the appropriate action will occur and the access will be replayed. Once a memory region has been migrated to GPU HBM it typically stays there rather than migrating back to CPU DDR4. The exceptions are if the programmer uses a HIP library call such as ``hipPrefetchAsync`` to request migration, or if GPU HBM becomes full and the page must forcibly be evicted back to CPU DDR4 to make room for other data.
+
+
+Migration of Memory by Allocator and XNACK Mode
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Most applications that use "managed" or "unified" memory on other platforms will want to enable XNACK to take advantage of automatic page migration on Crusher. The following table shows how common allocators currently behave with XNACK enabled. The behavior of a specific memory region may vary from the default if the programmer uses certain API calls.
+
+
+.. note::
+   The page migration behavior summarized by the following tables represents the current, observable behavior. Said behavior will likely change in the near future.
+
+    ..
+       CPU accesses to migratable memory may behave differently than other platforms you're used to. On Crusher, pages will not migrate from GPU HBM to CPU DDR4 based on access patterns alone. Once a page has migrated to GPU HBM it will remain there even if the CPU accesses it, and all accesses which do not resolve in the CPU cache will occur over the Infinity Fabric between the AMD "Optimized 3rd Gen EPYC" CPU and AMD MI250X GPU. Pages will only *automatically* migrate back to CPU DDR4 if they are forcibly evicted to free HBM capacity, although programmers may use HIP APIs to manually migrate memory regions.
+
+``HSA_XNACK=1`` **Automatic Page Migration Enabled**
+
+..
+   +---------------------------------------------+---------------------------+--------------------------------------------+----------------------------------------------------+
+   | Allocator                                   | Initial Physical Location | CPU Access after GPU First Touch           | Default Behavior for GPU Access                    |
+   +=============================================+===========================+============================================+====================================================+
+   | System Allocator (malloc,new,allocate, etc) | Determined by first touch | Zero copy read/write                       | Migrate to GPU HBM on touch, then local read/write |
+   +---------------------------------------------+---------------------------+--------------------------------------------+----------------------------------------------------+
+   | hipMallocManaged                            | GPU HBM                   | Zero copy read/write                       | Populate in  GPU HBM, then local read/write        |
+   +---------------------------------------------+---------------------------+--------------------------------------------+----------------------------------------------------+
+   | hipHostMalloc                               | CPU DDR4                  | Local read/write                           | Zero copy read/write over Infinity Fabric          |
+   +---------------------------------------------+---------------------------+--------------------------------------------+----------------------------------------------------+
+   | hipMalloc                                   | GPU HBM                   | Zero copy read/write over Inifinity Fabric | Local read/write                                   |
+   +---------------------------------------------+---------------------------+--------------------------------------------+----------------------------------------------------+
+
++---------------------------------------------+---------------------------+--------------------------------------------+----------------------------------------------------+
+| Allocator                                   | Initial Physical Location | CPU Access after GPU First Touch           | Default Behavior for GPU Access                    |
++=============================================+===========================+============================================+====================================================+
+| System Allocator (malloc,new,allocate, etc) | CPU DDR4                  | Migrate to CPU DDR4 on touch               | Migrate to GPU HBM on touch                        |
++---------------------------------------------+---------------------------+--------------------------------------------+----------------------------------------------------+
+| hipMallocManaged                            | CPU DDR4                  | Migrate to CPU DDR4 on touch               | Migrate to GPU HBM on touch                        |
++---------------------------------------------+---------------------------+--------------------------------------------+----------------------------------------------------+
+| hipHostMalloc                               | CPU DDR4                  | Local read/write                           | Zero copy read/write over Infinity Fabric          |
++---------------------------------------------+---------------------------+--------------------------------------------+----------------------------------------------------+
+| hipMalloc                                   | GPU HBM                   | Zero copy read/write over Inifinity Fabric | Local read/write                                   |
++---------------------------------------------+---------------------------+--------------------------------------------+----------------------------------------------------+
+   
+Disabling XNACK will not necessarily result in an application failure, as most types of memory can still be accessed by the AMD "Optimized 3rd Gen EPYC" CPU and AMD MI250X GPU. In most cases, however, the access will occur in a zero-copy fashion over the Infinity Fabric. The exception is memory allocated through standard system allocators such as ``malloc``, which cannot be accessed directly from GPU kernels without previously being registered via a HIP runtime call such as ``hipHostRegister``. Access to malloc'ed and unregistered memory from GPU kernels will result in fatal unhandled page faults. The table below shows how common allocators behave with XNACK disabled.
+
+``HSA_XNACK=0`` **Automatic Page Migration Disabled**
+
++---------------------------------------------+---------------------------+--------------------------------------------+---------------------------------------------+
+| Allocator                                   | Initial Physical Location | Default Behavior for CPU Access            | Default Behavior for GPU Access             | 
++=============================================+===========================+============================================+=============================================+
+| System Allocator (malloc,new,allocate, etc) | CPU DDR4                  | Local read/write                           | Fatal Unhandled Page Fault                  |
++---------------------------------------------+---------------------------+--------------------------------------------+---------------------------------------------+
+| hipMallocManaged                            | CPU DDR4                  | Zero copy read/write over Infinity Fabric  | Local read/write                            |
++---------------------------------------------+---------------------------+--------------------------------------------+---------------------------------------------+
+| hipHostMalloc                               | CPU DDR4                  | Local read/write                           | Zero copy read/write over Infinity Fabric   |
++---------------------------------------------+---------------------------+--------------------------------------------+---------------------------------------------+
+| hipMalloc                                   | GPU HBM                   | Zero copy read/write over Inifinity Fabric | Local read/write                            |
++---------------------------------------------+---------------------------+--------------------------------------------+---------------------------------------------+
+
+Compiling HIP kernels for specific XNACK modes
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Although XNACK is a capability of the MI250X GPU, it does require that kernels be able to recover from page faults. Both the ROCm and CCE HIP compilers will default to generating code that runs correctly with both XNACK enabled and disabled. Some applications may benefit from using the following compilation options to target specific XNACK modes.
+
+| ``hipcc --amdgpu-target=gfx90a`` or ``CC --offload-arch=gfx90a -x hip``
+|   Kernels are compiled to a single "xnack any" binary, which will run correctly with both XNACK enabled and XNACK disabled.
+
+| ``hipcc --amdgpu-target=gfx90a:xnack+`` or ``CC --offload-arch=gfx90a:xnack+ -x hip``
+|   Kernels are compiled in "xnack plus" mode and will *only* be able to run on GPUs with ``HSA_XNACK=1`` to enable XNACK. Performance may be better than "xnack any", but attempts to run with XNACK disabled will fail.
+
+| ``hipcc --amdgpu-target=gfx90a:xnack-`` or ``CC --offload-arch=gfx90a:xnack- -x hip``
+|   Kernels are compiled in "xnack minus" mode and will *only* be able to run on GPUs with ``HSA_XNACK=0`` and XNACK disabled. Performance may be better than "xnack any", but attempts to run with XNACK enabled will fail.
+
+| ``hipcc --amdgpu-target=gfx90a:xnack- --amdgpu-target=gfx90a:xnack+ -x hip`` or ``CC --offload-arch=gfx90a:xnack- --offload-arch=gfx90a:xnack+ -x hip``
+|   Two versions of each kernel will be generated, one that runs with XNACK disabled and one that runs if XNACK is enabled. This is different from "xnack any" in that two versions of each kernel are compiled and HIP picks the appropriate one at runtime, rather than there being a single version compatible with both. A "fat binary" compiled in this way will have the same performance of "xnack+" with ``HSA_XNACK=1`` and as "xnack-" with ``HSA_XNACK=0``, but the final executable will be larger since it contains two copies of every kernel.
+
+If the HIP runtime cannot find a kernel image that matches the XNACK mode of the device, it will fail with ``hipErrorNoBinaryForGpu``.
+
+.. code::
+
+    $ HSA_XNACK=0 srun -n 1 -N 1 -t 1 ./xnack_plus.exe
+    "hipErrorNoBinaryForGpu: Unable to find code object for all current devices!"
+    srun: error: crusher002: task 0: Aborted
+    srun: launch/slurm: _step_signal: Terminating StepId=74100.0
+
+
+..
+    NOTE: This works in my shell because I used cpan to install the URI::Encode perl modules.
+    This won't work generically unless those get installed, so commenting out this block now.
+
+    The AMD tool `roc-obj-ls` will let you see what code objects are in a binary.
+
+    .. code::
+        $ hipcc --amdgpu-target=gfx90a:xnack+ square.hipref.cpp -o xnack_plus.exe
+        $ roc-obj-ls -v xnack_plus.exe
+        Bundle# Entry ID:                                                              URI:
+        1       host-x86_64-unknown-linux                                           file://xnack_plus.exe#offset=8192&size=0
+        1       hipv4-amdgcn-amd-amdhsa--gfx90a:xnack+                              file://xnack_plus.exe#offset=8192&size=9752
+
+    If no XNACK flag is specificed at compilation the default is "xnack any", and objects in `roc-obj-ls` with not have an XNACK mode specified.
+
+    .. code::
+        $ hipcc --amdgpu-target=gfx90a square.hipref.cpp -o xnack_any.exe
+        $ roc-obj-ls -v xnack_any.exe
+        Bundle# Entry ID:                                                              URI:
+        1       host-x86_64-unknown-linux                                           file://xnack_any.exe#offset=8192&size=0
+        1       hipv4-amdgcn-amd-amdhsa--gfx90a                                     file://xnack_any.exe#offset=8192&size=9752
+
+One way to diagnose ``hipErrorNoBinaryForGpu`` messages is to set the environment variable ``AMD_LOG_LEVEL`` to 1 or greater:
+
+.. code::
+    
+    $ AMD_LOG_LEVEL=1 HSA_XNACK=0 srun -n 1 -N 1 -t 1 ./xnack_plus.exe
+    :1:rocdevice.cpp            :1573: 43966598070 us: HSA_AMD_AGENT_INFO_SVM_DIRECT_HOST_ACCESS query failed.
+    :1:rocdevice.cpp            :1573: 43966598762 us: HSA_AMD_AGENT_INFO_SVM_DIRECT_HOST_ACCESS query failed.
+    :1:rocdevice.cpp            :1573: 43966599392 us: HSA_AMD_AGENT_INFO_SVM_DIRECT_HOST_ACCESS query failed.
+    :1:rocdevice.cpp            :1573: 43966599970 us: HSA_AMD_AGENT_INFO_SVM_DIRECT_HOST_ACCESS query failed.
+    :1:rocdevice.cpp            :1573: 43966600550 us: HSA_AMD_AGENT_INFO_SVM_DIRECT_HOST_ACCESS query failed.
+    :1:rocdevice.cpp            :1573: 43966601109 us: HSA_AMD_AGENT_INFO_SVM_DIRECT_HOST_ACCESS query failed.
+    :1:rocdevice.cpp            :1573: 43966601673 us: HSA_AMD_AGENT_INFO_SVM_DIRECT_HOST_ACCESS query failed.
+    :1:rocdevice.cpp            :1573: 43966602248 us: HSA_AMD_AGENT_INFO_SVM_DIRECT_HOST_ACCESS query failed.
+    :1:hip_code_object.cpp      :460 : 43966602806 us: hipErrorNoBinaryForGpu: Unable to find code object for all current devices!
+    :1:hip_code_object.cpp      :461 : 43966602810 us:   Devices:
+    :1:hip_code_object.cpp      :464 : 43966602811 us:     amdgcn-amd-amdhsa--gfx90a:sramecc+:xnack- - [Not Found]
+    :1:hip_code_object.cpp      :464 : 43966602811 us:     amdgcn-amd-amdhsa--gfx90a:sramecc+:xnack- - [Not Found]
+    :1:hip_code_object.cpp      :464 : 43966602812 us:     amdgcn-amd-amdhsa--gfx90a:sramecc+:xnack- - [Not Found]
+    :1:hip_code_object.cpp      :464 : 43966602813 us:     amdgcn-amd-amdhsa--gfx90a:sramecc+:xnack- - [Not Found]
+    :1:hip_code_object.cpp      :464 : 43966602813 us:     amdgcn-amd-amdhsa--gfx90a:sramecc+:xnack- - [Not Found]
+    :1:hip_code_object.cpp      :464 : 43966602814 us:     amdgcn-amd-amdhsa--gfx90a:sramecc+:xnack- - [Not Found]
+    :1:hip_code_object.cpp      :464 : 43966602814 us:     amdgcn-amd-amdhsa--gfx90a:sramecc+:xnack- - [Not Found]
+    :1:hip_code_object.cpp      :464 : 43966602815 us:     amdgcn-amd-amdhsa--gfx90a:sramecc+:xnack- - [Not Found]
+    :1:hip_code_object.cpp      :468 : 43966602816 us:   Bundled Code Objects:
+    :1:hip_code_object.cpp      :485 : 43966602817 us:     host-x86_64-unknown-linux - [Unsupported]
+    :1:hip_code_object.cpp      :483 : 43966602818 us:     hipv4-amdgcn-amd-amdhsa--gfx90a:xnack+ - [code object v4 is amdgcn-amd-amdhsa--gfx90a:xnack+]
+    "hipErrorNoBinaryForGpu: Unable to find code object for all current devices!"
+    srun: error: crusher129: task 0: Aborted
+    srun: launch/slurm: _step_signal: Terminating StepId=74102.0
+
+The above log messages indicate the type of image required by each device, given its current mode (``amdgcn-amd-amdhsa--gfx90a:sramecc+:xnack-``) and the images found in the binary (``hipv4-amdgcn-amd-amdhsa--gfx90a:xnack+``).
+
+----
+
+Floating-Point (FP) Atomic Operations and Coarse/Fine Grained Memory Allocations
+--------------------------------------------------------------------------------
+
+The Crusher system, equipped with CDNA2-based architecture MI250X cards, offers a coherent host interface that enables advanced memory and unique cache coherency capabilities.
+The AMD driver leverages the Heterogeneous Memory Management (HMM) support in the Linux kernel to perform seamless page migrations to/from CPU/GPUs.
+This new capability comes with a memory model that needs to be understood completely to avoid unexpected behavior in real applications. For more details, please visit the previous section.
+
+AMD GPUs can allocate two different types of memory locations: 1) Coarse grained and 2) Fine grained.
+
+**Coarse grained** memory is only guaranteed to be coherent outside of GPU kernels that modify it, enabling higher performance memory operations. Changes applied to coarse-grained memory by a GPU kernel are  only visible to the rest of the system (CPU or other GPUs) when the kernel has completed. A GPU kernel is only guaranteed to see changes applied to coarse grained memory by the rest of the system (CPU or other GPUs) if those changes were made before the kernel launched.
+
+**Fine grained** memory allows CPUs and GPUs to synchronize (via atomics) and coherently communicate with each other while the GPU kernel is running, allowing more advanced programming patterns. The additional visibility impacts the performance of fine grained allocated memory.
+
+The fast hardware-based Floating point (FP) atomic operations available on MI250X are assumed to be working on coarse grained memory regions; when these instructions are applied to a fine-grained memory region, they will silently produce a no-op. To avoid returning incorrect results, the compiler never emits hardware-based FP atomics instructions by default, even when applied to coarse grained memory regions. Currently, users can use the `-munsafe-fp-atomics` flag to force the compiler to emit hardware-based FP atomics.
+Using hardware-based FP atomics translates in a substantial performance improvement over the default choice.
+
+Users applying floating point atomic operations (e.g., atomicAdd) on memory regions allocated via regular hipMalloc() can safely apply the `-munsafe-fp-atomics` flags to their codes to get the best possible performance and leverage hardware supported floating point atomics.
+Atomic operations supported in hardware on non-FP datatypes  (e.g., INT32) will work correctly regardless of the nature of the memory region used.
+
+In ROCm-5.1 and earlier versions, the flag `-munsafe-fp-atomics` is interpreted as a suggestion by the compiler, whereas from ROCm-5.2 the flag will always enforce the use of fast hardware-based FP atomics.
+
+The following tables summarize the result granularity of various combinations of allocators, flags and arguments.
+
+For ``hipHostMalloc()``, the following table shows the nature of the memory returned based on the flag passed as argument.
+
++----------------------+---------------------------+-----------------+
+| API                  | Flag                      | Results         |
++======================+===========================+=================+
+| hipHostMalloc()      | hipHostMallocDefault      |  Fine grained   |
++----------------------+---------------------------+-----------------+
+| hipHostMalloc()      | hipHostMallocNonCoherent  | Coarse grained  |
++----------------------+---------------------------+-----------------+
+
+The following table shows the nature of the memory returned based on the flag passed as argument to ``hipExtMallocWithFlags()``.
+
++---------------------------+------------------------------+-------------------------+
+| API                       |  Flag                        |  Result                 |
++===========================+==============================+=========================+
+| hipExtMallocWithFlags()   | hipDeviceMallocDefault       |  Coarse grained         |
++---------------------------+------------------------------+-------------------------+
+| hipExtMallocWithFlags()   | hipDeviceMallocFinegrained   |  Fine grained           |
++---------------------------+------------------------------+-------------------------+
+
+Finally, the following table summarizes the nature of the memory returned based on the flag passed as argument to ``hipMallocManaged()`` and the use of CPU regular ``malloc()`` routine with the possible use of ``hipMemAdvise()``.
+
++----------------------+---------------------------------------------+-------------------------+
+| API                  |  MemAdvice                                  |  Result                 |
++======================+=============================================+=========================+
+| hipMallocManaged()   |                                             |  Fine grained           |
++----------------------+---------------------------------------------+-------------------------+
+| hipMallocManaged()   | hipMemAdvise (hipMemAdviseSetCoarseGrain)   |  Coarse grained         |
++----------------------+---------------------------------------------+-------------------------+
+| malloc()             |                                             |  Fine grained           |
++----------------------+---------------------------------------------+-------------------------+
+| malloc()             | hipMemAdvise (hipMemAdviseSetCoarseGrain)   |  Coarse grained         |
++----------------------+---------------------------------------------+-------------------------+
+
+
+Performance considerations for LDS FP atomicAdd()
+-------------------------------------------------
+
+Hardware FP atomic operations performed in LDS memory are usually always faster than an equivalent CAS loop, in particular when contention on LDS memory locations is high.
+Because of a hardware design choice, FP32 LDS atomicAdd() operations can be slower than equivalent FP64 LDS atomicAdd(), in particular when contention on memory locations is low (e.g. random access pattern).
+The aforementioned behavior is only true for FP atomicAdd() operations. Hardware atomic operations for CAS/Min/Max on FP32 are usually faster than the FP64 counterparts.
+In cases when contention is very low, a FP32 CAS loop implementing an atomicAdd() operation could be faster than an hardware FP32 LDS atomicAdd().
+Applications using single precision FP atomicAdd() are encouraged to experiment with the use of double precision to evaluate the trade-off between high atomicAdd() performance vs. potential lower occupancy due to higher LDS usage.
+
+
 
 Known Issues
 ============
