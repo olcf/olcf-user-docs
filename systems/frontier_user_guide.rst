@@ -571,19 +571,12 @@ If using ``PrgEnv-cray`` or ``PrgEnv-gnu`` :
 
     There are extra steps needed to enable GPU-aware MPI on Frontier, which depend on the compiler that is used (see 1. and 2. below).
     
-
 1. Compiling with the Cray compiler wrappers, ``cc`` or ``CC``
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-When using GPU-aware Cray MPICH with the Cray compiler wrappers, the following environment variables are automatically set by the ``cray-mpich`` modulefile:
-
-.. code:: bash
-
-    ## These are set so the executable picks up GTL
-    PE_MPICH_GTL_DIR_amd_gfx90a="-L${CRAY_MPICH_ROOTDIR}/gtl/lib"
-    PE_MPICH_GTL_LIBS_amd_gfx90a="-lmpi_gtl_hsa"
-
-In addition, the following header files and libraries must be included:
+When using GPU-aware Cray MPICH with the Cray compiler wrappers, most of the needed libraries are automatically linked through the environment variables. 
+ 
+Though, the following header files and libraries must be included explicitly:
 
 .. code:: bash
 
@@ -592,17 +585,21 @@ In addition, the following header files and libraries must be included:
 
 where the include path implies that ``#include <hip/hip_runtime.h>`` is included in the source file.
 
+
+
 2. Compiling with ``hipcc``
 """""""""""""""""""""""""""
 
-To use GPU-aware Cray MPICH with ``hipcc``, users must include appropriate headers, libraries, and flags:
+To use ``hipcc'' with GPU-aware Cray MPICH, use the following environment variables to setup the needed header files and libraries. 
 
 .. code:: bash
 
+
     -I${MPICH_DIR}/include
-    -L${MPICH_DIR}/lib -lmpi -L${CRAY_MPICH_ROOTDIR}/gtl/lib -lmpi_gtl_hsa
+    -L${MPICH_DIR}/lib -lmpi ${PE_MPICH_GTL_DIR_amd_gfx90a} ${PE_MPICH_GTL_LIBS_amd_gfx90a}
 
     HIPFLAGS = --amdgpu-target=gfx90a
+    
 
 Determining the Compatibility of Cray MPICH and ROCm
 """"""""""""""""""""""""""""""""""""""""""""""""""""
