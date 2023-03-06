@@ -557,7 +557,7 @@ If using ``PrgEnv-amd``:
     export MPICH_GPU_SUPPORT_ENABLED=1
     
     
-If using ``PrgEnv-cray`` or ``PrgEnv-gnu`` :   
+If using ``PrgEnv-cray``:   
 
 .. code:: bash
     
