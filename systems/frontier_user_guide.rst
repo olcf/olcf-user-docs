@@ -32,14 +32,14 @@ Frontier User Guide
     See the :ref:`amd-hip` section for more information and links about HIP.
 
   Slurm batch scheduler
-    Frontier uses SchedMD's Slurm Workload Manager for job scheduling instead of IBM's LSF. Slurm provides similar functionality to LSF, albeit with different commands.  Notable are the separation in batch script submission (sbatch) and interactive batch submission (salloc).
+    Frontier uses SchedMD's Slurm Workload Manager for job scheduling instead of IBM's LSF. Slurm provides similar functionality to LSF, albeit with different commands.  Notable are the separation in batch script submission (``sbatch``) and interactive batch submission (``salloc``).
 
     See the :ref:`frontier-slurm` section for more infomation including a LSF to Slurm command comparison.
 
   Srun job launcher
-    Frontier uses Slurm's job launcher, srun, which can be used instead of Summit's jsrun to launch parallel jobs within a batch script.  Overall functionality is similar, but commands are notably different. Frontier's compute node layout should also be considered when selecting job layout.
+    Frontier uses Slurm's job launcher, ``srun``, instead of Summit's ``jsrun`` to launch parallel jobs within a batch script.  Overall functionality is similar, but commands are notably different. Frontier's :ref:`compute node layout <frontier-simple>` should also be considered when selecting job layout.
 
-    See the :ref:`frontier-srun` section for more information.
+    See the :ref:`frontier-srun` section for more ``srun`` information, and see :ref:`frontier-mapping` for ``srun`` examples on Frontier.
     
 
 
@@ -105,18 +105,18 @@ Login, Launch, and Compute. While all of these are similar in terms of
 hardware (see: :ref:`frontier-nodes`), they differ considerably in their intended
 use.
 
-+-------------+----------------------------------------------------------------------------------+
-| Node Type   | Description                                                                      |
-+=============+==================================================================================+
-| Login       | When you connect to Frontier, you're placed on a login node. This                |
-|             | is the place to write/edit/compile your code, manage data, submit jobs, etc. You |
-|             | should never launch parallel jobs from a login node nor should you run threaded  |
-|             | jobs on a login node. Login nodes are shared resources that are in use by many   |
-|             | users simultaneously.                                                            |
-+-------------+----------------------------------------------------------------------------------+
-| Compute     | Most of the nodes on Frontier are compute nodes. These are where                 |
-|             | your parallel job executes. They're accessed via the srun command.               |
-+-------------+----------------------------------------------------------------------------------+
++-------------+--------------------------------------------------------------------------------------+
+| Node Type   | Description                                                                          |
++=============+======================================================================================+
+| Login       | When you connect to Frontier, you're placed on a login node. This                    |
+|             | is the place to write/edit/compile your code, manage data, submit jobs, etc. You     |
+|             | should never launch parallel jobs from a login node nor should you run threaded      |
+|             | jobs on a login node. Login nodes are shared resources that are in use by many       |
+|             | users simultaneously.                                                                |
++-------------+--------------------------------------------------------------------------------------+
+| Compute     | Most of the nodes on Frontier are compute nodes. These are where                     |
+|             | your parallel job executes. They're accessed via the ``srun`` command.               |
++-------------+--------------------------------------------------------------------------------------+
 
 
 System Interconnect
@@ -127,7 +127,7 @@ The Frontier nodes are connected with [4x] HPE Slingshot 200 Gbps (25 GB/s) NICs
 File Systems
 ------------
 
-Frontier is connected to Orion, a parallel filesystem based on Lustre and HPE ClusterStor, with a 679 PB usable namespace (/lustre/orion/). In addition to Frontier, Orion is available on the OLCF's data transfer nodes, Andes, and some other smaller resources. It is not available from Summit. Data will not be automatically transferred from Alpine to Orion. Frontier also has access to the center-wide NFS-based filesystem (which provides user and project home areas). Each compute node has two 1.92TB Non-Volatile Memory storage devices. See :ref:`frontier-data-storage` for more information. 
+Frontier is connected to Orion, a parallel filesystem based on Lustre and HPE ClusterStor, with a 679 PB usable namespace (``/lustre/orion/``). In addition to Frontier, Orion is available on the OLCF's data transfer nodes, Andes, and some other smaller resources. It is not available from Summit. Data will not be automatically transferred from Alpine to Orion. Frontier also has access to the center-wide NFS-based filesystem (which provides user and project home areas). Each compute node has two 1.92TB Non-Volatile Memory storage devices. See :ref:`frontier-data-storage` for more information. 
 
 Frontier connects to the center’s High Performance Storage System (HPSS) - for user and project archival storage - users can log in to the :ref:`dtn-user-guide` to move data to/from HPSS.
 
@@ -810,7 +810,7 @@ Compute nodes are the appropriate place for long-running, computationally-intens
   Compute-intensive, memory-intensive, or other disruptive processes running on login nodes may be killed without warning.
 
 .. note::
-  Unlike Summit and Titan, there are no launch/batch nodes on Frontier. This means your batch script runs on a node allocated to you rather than a shared node. You still must use the job launcher (srun) to run parallel jobs across all of your nodes, but serial tasks need not be launched with srun.
+  Unlike Summit and Titan, there are no launch/batch nodes on Frontier. This means your batch script runs on a node allocated to you rather than a shared node. You still must use the job launcher (``srun``) to run parallel jobs across all of your nodes, but serial tasks need not be launched with ``srun``.
 
 .. _frontier-simple:
 
@@ -1315,7 +1315,7 @@ The job name and output options have been removed since stdout/stderr are typica
 +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
 
 
-Below is a comparison table between srun and jsrun.
+Below is a comparison table between ``srun`` and ``jsrun``.
 
 +----------------------------------------------+---------------------------+-------------------------+
 | Option                                       | jsrun (Summit)            | srun  (Frontier)        |
@@ -1357,7 +1357,7 @@ threads (e.g., OpenMP threads) to the CPUs and GPUs on Frontier.
 
 Users are highly encouraged to use the CPU- and GPU-mapping programs used in
 the following sections to check their understanding of the job steps (i.e.,
-srun commands) they intend to use in their actual jobs.
+``srun`` commands) they intend to use in their actual jobs.
 
 * For the :ref:`frontier-cpu-map` and :ref:`frontier-multi-map` sections:
 
