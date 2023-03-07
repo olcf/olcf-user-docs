@@ -277,6 +277,7 @@ And here is the output from the script:
     frontier0123
     ***********************
 
+.. _amd-gpus:
 
 AMD GPUs
 ========
@@ -850,6 +851,8 @@ simplified node layout to:
 
 To override this default layout (not recommended), set ``-S 0`` at job allocation.
 
+.. _frontier-slurm:
+
 Slurm
 -----
 
@@ -1245,6 +1248,7 @@ The ``sacct`` command gives detailed information about jobs currently in the que
 In addition to holding, releasing, and updating the job, the ``scontrol`` command can show detailed job information via the ``show job`` subcommand. For example, ``scontrol show job 12345``.
 
 
+.. _frontier-srun:
 
 Srun
 ----------------------
