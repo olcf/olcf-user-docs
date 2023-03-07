@@ -22,9 +22,14 @@ Frontier User Guide
     See the :ref:`frontier-compilers` section for more information.
 
   AMD GPUs
-    Each frontier node has 4 AMD MI250X accelerators with two Graphic Compute Dies (GCDs) in each accelerator. The system identifies each GCD as an independent device (so for simplicity we use the term GPU when we talk about a GCD) for a total of 8 GPUs per node (compared to Summit's 6 Nvidia V100 GPUs per node). Each pair of GPUs is associated with a particular NUMA domain (see node diagram in :ref:`frontier-nodes` section) which might affect how your application should lay out data and computation. Since these are AMD devices, code written in Nvidia's CUDA language will not work as is. They need to be converted to use HIP, which is AMD's GPU programming framework, or should be converted to some other GPU framework that supports AMD GPUs as a backend e.g. OpenMP Offload, Kokkos, RAJA etc .
+    Each frontier node has 4 AMD MI250X accelerators with two Graphic Compute Dies (GCDs) in each accelerator. The system identifies each GCD as an independent device (so for simplicity we use the term GPU when we talk about a GCD) for a total of 8 GPUs per node (compared to Summit's 6 Nvidia V100 GPUs per node). Each pair of GPUs is associated with a particular NUMA domain (see node diagram in :ref:`frontier-nodes` section) which might affect how your application should lay out data and computation.
 
     See the :ref:`amd-gpus` section for more information.
+
+  Programming Models
+    Since Frontier uses AMD GPUs, code written in Nvidia's CUDA language will not work as is. They need to be converted to use HIP, which is AMD's GPU programming framework, or should be converted to some other GPU framework that supports AMD GPUs as a backend e.g. `OpenMP Offload <https://enccs.github.io/openmp-gpu/introduction/>`_, `Kokkos <https://kokkos.github.io/>`_, `RAJA <https://github.com/LLNL/RAJA>`_, `OCCA <https://libocca.org>`_, `SYCL <https://www.khronos.org/sycl/>`_/`DPC++ <https://github.com/intel/llvm>`_ etc .
+
+    See the :ref:`amd-hip` section for more information and links about HIP.
 
   Slurm batch scheduler
     Frontier uses SchedMD's Slurm Workload Manager for job scheduling instead of IBM's LSF. Slurm provides similar functionality to LSF, albeit with different commands.  Notable are the separation in batch script submission (sbatch) and interactive batch submission (salloc).
@@ -387,6 +392,8 @@ wavefronts and also maintains 256 registers where each register is 64 4-byte wid
 entries. 
 
 
+.. _amd-hip:
+
 HIP
 ---
 
@@ -402,7 +409,7 @@ of tutorials on programming with HIP and also converting existing CUDA code to H
 
 
 See the :ref:`frontier-compilers` section for information on compiling for AMD GPUs, and
-see the :ref:`tips-and-tricks-for-gpus` section for detailed information to keep in mind
+see the :ref:`tips-and-tricks` section for some detailed information to keep in mind
 to run more efficiently on AMD GPUs.
 
 
@@ -2924,12 +2931,12 @@ where
 ----
 
 
-.. _tips-and-tricks-for-gpus:
+.. _tips-and-tricks:
 
-Tips, Tricks, and Things to Know for AMD GPUs
-=============================================
+Tips and Tricks
+===============
 
-This section details 'tips and tricks' and information of interest to users when porting from Summit to Crusher.
+This section details 'tips and tricks' and information of interest to users when porting from Summit to Frontier.
 
 Using reduced precision (FP16 and BF16 datatypes)
 -------------------------------------------------
