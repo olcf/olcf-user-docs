@@ -2817,7 +2817,7 @@ Below is an example that generates a profile and loads the results in their GUI-
 .. code:: bash
 
     module use /gpfs/alpine/csc322/world-shared/modulefiles/ppc64le
-    module load hpctoolkit/2022.10.01
+    module load hpctoolkit
 
     # 1. Profile and trace an application using CPU time and GPU performance counters
     jsrun <jsrun_options> hpcrun -o <measurement_dir> -t -e CPUTIME -e gpu=nvidia <application>
@@ -2831,7 +2831,7 @@ Below is an example that generates a profile and loads the results in their GUI-
     # 4. Understand performance issues by analyzing profiles and traces with the GUI
     hpcviewer <database_dir>
 
-A quick summary of HPCToolkit options can be found in the `HPCTookit wiki page <https://gitlab.com/hpctoolkit/hpctoolkit/-/wikis/home>`__. More detailed information on HPCToolkit can be found in the `HPCToolkit User's Manual <http://hpctoolkit.org/manual/HPCToolkit-users-manual.pdf>`__.
+A quick summary of HPCToolkit options can be found in the `HPCTookit wiki page <https://gitlab.com/hpctoolkit/hpctoolkit/-/wikis/HPCToolkit-cheat-sheet>`__. More detailed information on HPCToolkit can be found in the `HPCToolkit User's Manual <http://hpctoolkit.org/manual/HPCToolkit-users-manual.pdf>`__.
 
 .. note::
 
