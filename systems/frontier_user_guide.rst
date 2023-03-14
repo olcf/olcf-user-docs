@@ -657,13 +657,13 @@ Releases of ``cray-mpich`` are each built with a specific version of ROCm, and c
 
 The compatibility table below was determined by linker testing with all current combinations of ``cray-mpich`` and ROCm-related modules on Frontier.
 
-+------------+---------------------+
-| cray-mpich |        ROCm         |
-+============+=====================+
-|   8.1.17   | 5.1.0, 5.0.2, 5.0.0 |
-+------------+---------------------+
-|   8.1.23   | 5.1.0, 5.0.2, 5.0.0 |
-+------------+---------------------+
++------------+----------------------------+
+| cray-mpich |            ROCm            |
++============+============================+
+|   8.1.17   | 5.4.0, 5.3.0, 5.2.0, 5.1.0 |
++------------+----------------------------+
+|   8.1.23   | 5.4.0, 5.3.0, 5.2.0, 5.1.0 |
++------------+----------------------------+
 
 OpenMP
 ------
