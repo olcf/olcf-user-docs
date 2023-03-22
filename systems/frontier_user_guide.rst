@@ -3176,7 +3176,16 @@ The aforementioned behavior is only true for FP atomicAdd() operations. Hardware
 In cases when contention is very low, a FP32 CAS loop implementing an atomicAdd() operation could be faster than an hardware FP32 LDS atomicAdd().
 Applications using single precision FP atomicAdd() are encouraged to experiment with the use of double precision to evaluate the trade-off between high atomicAdd() performance vs. potential lower occupancy due to higher LDS usage.
 
+Porting Guide
+=============
 
+.. toctree::
+   :maxdepth: 1
+   :hidden:  
+ 
+   misc_guides/test_guide
+
+* :doc:`Test Guide </systems/misc_guides/test_guide>`: Testing a separate guide page similar to python docs 
 
 Known Issues
 ============
