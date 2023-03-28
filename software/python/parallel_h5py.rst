@@ -296,6 +296,8 @@ Example "submit_hello" batch script:
       #SBATCH -p gpu
       #SBATCH -t 0:05:00
 
+      unset SLURM_EXPORT_ENV
+
       cd $SLURM_SUBMIT_DIR
       date
 
@@ -317,6 +319,8 @@ Example "submit_hello" batch script:
       #SBATCH -N 1
       #SBATCH -p batch
       #SBATCH -t 0:05:00
+
+      unset SLURM_EXPORT_ENV
 
       cd $SLURM_SUBMIT_DIR
       date
@@ -426,6 +430,8 @@ Example "submit_h5py" batch script:
       #SBATCH -p gpu
       #SBATCH -t 0:05:00
 
+      unset SLURM_EXPORT_ENV
+
       cd $SLURM_SUBMIT_DIR
       date
 
@@ -447,6 +453,8 @@ Example "submit_h5py" batch script:
       #SBATCH -N 1
       #SBATCH -p batch
       #SBATCH -t 0:05:00
+
+      unset SLURM_EXPORT_ENV
 
       cd $SLURM_SUBMIT_DIR
       date
