@@ -390,10 +390,12 @@ parallel-enabled Python, and you *do not* need to specify ``srun`` if you are
 running a serial application.
 
 Similar to Summit (see above), ``$PATH`` issues are known to occur if not
-submitting from a fresh login shell, which can result in the wrong
-environment being detected. To avoid this, you must use the ``--export=NONE``
-flag, which ensures that no previously set environment variables are passed
-into the batch job:
+submitting from a fresh login shell, which can result in the wrong environment
+being detected. To avoid this, you must use the ``--export=NONE`` flag during
+job submission and use ``unset SLURM_EXPORT_ENV`` in your job script (before
+calling ``srun``), which ensures that no previously set environment variables
+are passed into the batch job, but makes sure that ``srun`` can still find your
+python path:
 
 .. code-block:: bash
 
@@ -412,6 +414,8 @@ inside the batch script. An example batch script for is provided below:
       #SBATCH -N 1
       #SBATCH -p batch
       #SBATCH -t 0:05:00
+
+      unset SLURM_EXPORT_ENV
 
       cd $SLURM_SUBMIT_DIR
       date
@@ -432,6 +436,8 @@ inside the batch script. An example batch script for is provided below:
       #SBATCH -N 1
       #SBATCH -p batch
       #SBATCH -t 0:05:00
+
+      unset SLURM_EXPORT_ENV
 
       cd $SLURM_SUBMIT_DIR
       date

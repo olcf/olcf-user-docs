@@ -518,11 +518,12 @@ script:
 
 
 When using Python environments with SLURM, it is always recommended to submit a
-batch script using the ``export=NONE`` flag to avoid ``$PATH`` issues; however,
-this means that previously set environment variables are **NOT** passed into
-the batch job, so you will have to set them again (and load modules again) if
-they are required by your workflow. Alternatively, you can try submitting your
-batch script from a fresh login shell.
+batch script using the ``export=NONE`` flag to avoid ``$PATH`` issues and use
+``unset SLURM_EXPORT_ENV`` in your job script (before calling ``srun``);
+however, this means that previously set environment variables are **NOT**
+passed into the batch job, so you will have to set them again (and load modules
+again) if they are required by your workflow. Alternatively, you can try
+submitting your batch script from a fresh login shell.
 
 .. code-block:: bash
 
@@ -541,6 +542,8 @@ Below are example batch scripts for running on Andes and Crusher:
         #SBATCH -N 1
         #SBATCH -t 0:05:00
         #SBATCH -p batch
+
+        unset SLURM_EXPORT_ENV
 
         cd $SLURM_SUBMIT_DIR
         date
@@ -578,6 +581,8 @@ Below are example batch scripts for running on Andes and Crusher:
         #SBATCH -N 1
         #SBATCH -t 0:05:00
         #SBATCH -p batch
+
+        unset SLURM_EXPORT_ENV
 
         cd $SLURM_SUBMIT_DIR
         date
