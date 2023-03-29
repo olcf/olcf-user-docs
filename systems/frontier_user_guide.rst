@@ -410,10 +410,10 @@ of tutorials on programming with HIP and also converting existing CUDA code to H
 
 Things To Remember When Programming for AMD GPUs
 ------------------------------------------------
-* The MI250X has different denormal handling for FP16 and BF16 datatypes, which is relevant for ML training. Prefer using the BF16 over the FP16 datatype for ML models as you are more likely to encounter denormal values with FP16 (which get flushed to zero, causing failure in convergence for some ML models). See more :ref:`here <using-reduced-precision>`.
-* Memory can be automatically migrated to GPU from CPU on a page fault if XNACK operating mode is set.  No need to explicitly migrate data or provide managed memory. This is useful if you're migrating code from a programming model that relied on 'unified' or 'managed' memory. See more :ref:`here <enabling-gpu-page-migration>`. Information about how memory is accessed based on the allocator used and the XNACK mode can be found :ref:`here <migration-of-memory-allocator-xnack>`.
-* HIP has two kinds of memory allocations, coarse grained and fine grained, with tradeoffs between performance and coherence. Particularly relevant if you want to ues the hardware FP atomic instructions. See more :ref:`here <fp-atomic-ops-coarse-fine-allocations>`.
-* FP32 atomicAdd operations on Local Data Store (i.e. block shared memory) can be slower than the equivalent FP64 operations. See more :ref:`here  <performance-lds-atomicadd>`.
+* The MI250X has different denormal handling for FP16 and BF16 datatypes, which is relevant for ML training. Prefer using the BF16 over the FP16 datatype for ML models as you are more likely to encounter denormal values with FP16 (which get flushed to zero, causing failure in convergence for some ML models). See more in :ref:`using-reduced-precision`.
+* Memory can be automatically migrated to GPU from CPU on a page fault if XNACK operating mode is set.  No need to explicitly migrate data or provide managed memory. This is useful if you're migrating code from a programming model that relied on 'unified' or 'managed' memory. See more in :ref:`enabling-gpu-page-migration`. Information about how memory is accessed based on the allocator used and the XNACK mode can be found in :ref:`migration-of-memory-allocator-xnack`.
+* HIP has two kinds of memory allocations, coarse grained and fine grained, with tradeoffs between performance and coherence. Particularly relevant if you want to ues the hardware FP atomic instructions. See more in :ref:`fp-atomic-ops-coarse-fine-allocations`.
+* FP32 atomicAdd operations on Local Data Store (i.e. block shared memory) can be slower than the equivalent FP64 operations. See more in :ref:`performance-lds-atomicadd`.
 
 
 
@@ -754,7 +754,7 @@ This section shows how to compile HIP codes using the Cray compiler wrappers and
     hipcc requires the ROCm Toolclain, See :ref:`exposing-the-rocm-toolchain-to-your-programming-environment`
 
 .. note::
-   Information about compiling code for different XNACK modes (which control page migration between GPU and CPU memory) can be found :ref:`here <compiling-hip-kernels-for-xnack-modes>`.
+   Information about compiling code for different XNACK modes (which control page migration between GPU and CPU memory) can be found in the :ref:`compiling-hip-kernels-for-xnack-modes` section.
 
 
 HIP + OpenMP CPU Threading
@@ -3130,6 +3130,7 @@ The above log messages indicate the type of image required by each device, given
 ----
 
 .. _fp-atomic-ops-coarse-fine-allocations:
+
 Floating-Point (FP) Atomic Operations and Coarse/Fine Grained Memory Allocations
 --------------------------------------------------------------------------------
 
