@@ -408,6 +408,15 @@ work to learn HIP. See `here <https://www.olcf.ornl.gov/preparing-for-frontier/>
 of tutorials on programming with HIP and also converting existing CUDA code to HIP with the `hipify tools
 <https://github.com/ROCm-Developer-Tools/HIPIFY>`_ .
 
+Things To Remember When Programming for AMD GPUs
+------------------------------------------------
+* The MI250X has different denormal handling for FP16 and BF16 datatypes, which is relevant for ML training. Prefer using the BF16 over the FP16 datatype for ML models as you are more likely to encounter denormal values with FP16 (which get flushed to zero, causing failure in convergence for some ML models). See more :ref:`here <using-reduced-precision>`.
+* Memory can be automatically migrated to GPU from CPU on a page fault if XNACK operating mode is set.  No need to explicitly migrate data or provide managed memory. This is useful if you're migrating code from a programming model that relied on 'unified' or 'managed' memory. See more :ref:`here <enabling-gpu-page-migration>`. Information about how memory is accessed based on the allocator used and the XNACK mode can be found :ref:`here <migration-of-memory-allocator-xnack>`.
+* HIP has two kinds of memory allocations, coarse grained and fine grained, with tradeoffs between performance and coherence. Particularly relevant if you want to ues the hardware FP atomic instructions. See more :ref:`here <fp-atomic-ops-coarse-fine-allocations>`.
+* FP32 atomicAdd operations on Local Data Store (i.e. block shared memory) can be slower than the equivalent FP64 operations. See more :ref:`here  <performance-lds-atomicadd>`.
+
+
+
 
 See the :ref:`frontier-compilers` section for information on compiling for AMD GPUs, and
 see the :ref:`tips-and-tricks` section for some detailed information to keep in mind
@@ -743,6 +752,9 @@ This section shows how to compile HIP codes using the Cray compiler wrappers and
 .. note:: 
    
     hipcc requires the ROCm Toolclain, See :ref:`exposing-the-rocm-toolchain-to-your-programming-environment`
+
+.. note::
+   Information about compiling code for different XNACK modes (which control page migration between GPU and CPU memory) can be found :ref:`here <compiling-hip-kernels-for-xnack-modes>`.
 
 
 HIP + OpenMP CPU Threading
@@ -2942,6 +2954,8 @@ Tips and Tricks
 
 This section details 'tips and tricks' and information of interest to users when porting from Summit to Frontier.
 
+.. _using-reduced-precision:
+
 Using reduced precision (FP16 and BF16 datatypes)
 -------------------------------------------------
 Users leveraging BF16 and FP16 datatypes for applications such as ML/AI training and low-precision matrix multiplication should be aware that the AMD MI250X GPU has different denormal handling than the V100 GPUs on Summit. On the MI250X, the V_DOT2 and the matrix instructions for FP16 and BF16 flush input and output denormal values to zero. FP32 and FP64 MFMA instructions do not flush input and output denormal values to zero. 
@@ -2955,6 +2969,8 @@ If you encounter significant differences when running using reduced precision, e
 Additional information on MI250X reduced precision can be found at:
   * The MI250X ISA specification details the flush to zero denorm behavior at: https://developer.amd.com/wp-content/resources/CDNA2_Shader_ISA_18November2021.pdf (See page 41 and 46)
   * AMD rocBLAS library reference guide details this behavior at: https://rocblas.readthedocs.io/en/master/API_Reference_Guide.html#mi200-gfx90a-considerations
+
+.. _enabling-gpu-page-migration:
 
 Enabling GPU Page Migration
 ---------------------------
@@ -2971,6 +2987,8 @@ If ``HSA_XNACK=1``, page faults in GPU kernels will trigger a page table lookup.
 ..
    If ``HSA_XNACK=1``, page faults in GPU kernels will trigger a page table lookup. If the memory location can be made accessible to the GPU, either by being migrated to GPU HBM or being mapped for remote access, the appropriate action will occur and the access will be replayed. Once a memory region has been migrated to GPU HBM it typically stays there rather than migrating back to CPU DDR4. The exceptions are if the programmer uses a HIP library call such as ``hipPrefetchAsync`` to request migration, or if GPU HBM becomes full and the page must forcibly be evicted back to CPU DDR4 to make room for other data.
 
+
+.. _migration-of-memory-allocator-xnack:
 
 Migration of Memory by Allocator and XNACK Mode
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -3026,6 +3044,8 @@ Disabling XNACK will not necessarily result in an application failure, as most t
 +---------------------------------------------+---------------------------+--------------------------------------------+---------------------------------------------+
 | hipMalloc                                   | GPU HBM                   | Zero copy read/write over Inifinity Fabric | Local read/write                            |
 +---------------------------------------------+---------------------------+--------------------------------------------+---------------------------------------------+
+
+.. _compiling-hip-kernels-for-xnack-modes:
 
 Compiling HIP kernels for specific XNACK modes
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -3109,6 +3129,7 @@ The above log messages indicate the type of image required by each device, given
 
 ----
 
+.. _fp-atomic-ops-coarse-fine-allocations:
 Floating-Point (FP) Atomic Operations and Coarse/Fine Grained Memory Allocations
 --------------------------------------------------------------------------------
 
@@ -3166,6 +3187,8 @@ Finally, the following table summarizes the nature of the memory returned based 
 | malloc()             | hipMemAdvise (hipMemAdviseSetCoarseGrain)   |  Coarse grained         |
 +----------------------+---------------------------------------------+-------------------------+
 
+
+.. _performance-lds-atomicadd:
 
 Performance considerations for LDS FP atomicAdd()
 -------------------------------------------------
