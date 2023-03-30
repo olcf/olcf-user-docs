@@ -171,19 +171,29 @@ Transition from Alpine to Orion
 
 For more detailed information about center-wide file systems and data archiving available on Frontier, please refer to the pages on :ref:`data-storage-and-transfers`. The subsections below give a quick overview of NFS, Lustre,and HPSS storage spaces as well as the on node NVMe "Burst Buffers" (SSDs).
 
-NFS
----
+NFS Filesystem 
+--------------
 
-+---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------+
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
 | Area                | Path                                        | Type           | Permissions |  Quota | Backups | Purged  | Retention  | On Compute Nodes |
-+=====================+=============================================+================+=============+========+=========+=========+============+============+
-| User Home           | ``/ccs/home/[userid]``                      | NFS            | User set    |  50 GB | Yes     | No      | 90 days    | Yes        |
-+---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------+
-| Project Home        | ``/ccs/proj/[projid]``                      | NFS            | 770         |  50 GB | Yes     | No      | 90 days    | Yes        |
-+---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------+
-  
-Lustre
-------
++=====================+=============================================+================+=============+========+=========+=========+============+==================+
+| User Home           | ``/ccs/home/[userid]``                      | NFS            | User set    |  50 GB | Yes     | No      | 90 days    | Yes              |
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
+| Project Home        | ``/ccs/proj/[projid]``                      | NFS            | 770         |  50 GB | Yes     | No      | 90 days    | Yes              |
++---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
+
+
+.. note::
+
+    Though the NFS filesystem's User Home and Project Home areas are read/write from Frontier's compute nodes, 
+    we strongly recommend that users launch and run jobs from the Lustre Orion parallel filesystem 
+    instead due to its larger storage capacity and superior performance. Please see below for Lustre 
+    Orion filesystem storage areas and paths.
+
+
+
+Lustre Filesystem 
+-----------------
 
 +---------------------+----------------------------------------------+------------------------+-------------+--------+---------+---------+------------+------------------+
 | Area                | Path                                         | Type                   | Permissions |  Quota | Backups | Purged  | Retention  | On Compute Nodes |
