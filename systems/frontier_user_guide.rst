@@ -181,7 +181,11 @@ NFS
 +---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------+
 | Project Home        | ``/ccs/proj/[projid]``                      | NFS            | 770         |  50 GB | Yes     | No      | 90 days    | Yes        |
 +---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------+
-  
+.. note::
+
+    Though NFS User Home and NFS Project Home are read/write from Frontier's compute nodes, we strongly recommend that users launch and run jobs from the Lustre Orion parallel filesystem instead due to its larger storage capacity and superior performance. Please see below for Lustre Orion filesystem Areas and Paths.
+
+
 Lustre
 ------
 
