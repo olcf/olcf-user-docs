@@ -171,7 +171,7 @@ Transition from Alpine to Orion
 
 For more detailed information about center-wide file systems and data archiving available on Frontier, please refer to the pages on :ref:`data-storage-and-transfers`. The subsections below give a quick overview of NFS, Lustre,and HPSS storage spaces as well as the on node NVMe "Burst Buffers" (SSDs).
 
-NFS
+NFS Filesystem 
 ---
 
 +---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------+
@@ -181,12 +181,17 @@ NFS
 +---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------+
 | Project Home        | ``/ccs/proj/[projid]``                      | NFS            | 770         |  50 GB | Yes     | No      | 90 days    | Yes        |
 +---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------+
+
 .. note::
 
-    Though NFS User Home and NFS Project Home are read/write from Frontier's compute nodes, we strongly recommend that users launch and run jobs from the Lustre Orion parallel filesystem instead due to its larger storage capacity and superior performance. Please see below for Lustre Orion filesystem Areas and Paths.
+    Though the NFS filesystem's User Home and Project Home areas are read/write from Frontier's compute nodes, 
+    we strongly recommend that users launch and run jobs from the Lustre Orion parallel filesystem 
+    instead due to its larger storage capacity and superior performance. Please see below for Lustre 
+    Orion filesystem storage areas and paths.
 
 
-Lustre
+
+Lustre Filesystem 
 ------
 
 +---------------------+----------------------------------------------+------------------------+-------------+--------+---------+---------+------------+------------------+
