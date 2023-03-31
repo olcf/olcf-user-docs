@@ -1128,21 +1128,20 @@ please contact the OLCF User Assistance Center.
 Debugging
 =========
 
-Arm DDT
+Linaro DDT
 -------
 
-Arm DDT is an advanced debugging tool used for scalar, multi-threaded,
+Linaro DDT is an advanced debugging tool used for scalar, multi-threaded,
 and large-scale parallel applications. In addition to traditional
 debugging features (setting breakpoints, stepping through code,
 examining variables), DDT also supports attaching to already-running
 processes and memory debugging. In-depth details of DDT can be found in
-the `Official DDT User
-Guide <https://www.allinea.com/user-guide/forge/userguide.html>`__, and
+the `Official DDT User Guide <https://www.linaroforge.com/documentation/>`__, and
 instructions for how to use it on OLCF systems can be found on the
-`Forge (DDT/MAP) Software Page <https://www.olcf.ornl.gov/software_package/forge/>`__. DDT is the
+`Forge (DDT/MAP) Software Page <https://docs.olcf.ornl.gov/software/debugging/index.html#linaro-forge-ddt>`__. DDT is the
 OLCF's recommended debugging software for large parallel applications.
 
-One of the most useful features of DDT is its remote debugging feature. This allows you to connect to a debugging session on Andes from a client running on your workstation. The local client provides much faster interaction than you would have if using the graphical client on Andes. For guidance in setting up the remote client see `this tutorial <https://www.olcf.ornl.gov/tutorials/forge-remote-client-setup-and-usage/>`__. While that tutorial uses Summit as an example, it should be easily adaptable to Andes.
+One of the most useful features of DDT is its remote debugging feature. This allows you to connect to a debugging session on Andes from a client running on your workstation. The local client provides much faster interaction than you would have if using the graphical client on Andes. For guidance in setting up the remote client see the `Forge (DDT/MAP) Software Page <https://docs.olcf.ornl.gov/software/debugging/index.html>`__.
 
 GDB
 ---
@@ -1150,13 +1149,21 @@ GDB
 `GDB <https://www.gnu.org/software/gdb/>`__, the GNU Project Debugger,
 is a command-line debugger useful for traditional debugging and
 investigating code crashes. GDB lets you debug programs written in Ada,
-C, C++, Objective-C, Pascal (and many other languages). GDB is available
-on andes via the ``gdb`` module:
+C, C++, Objective-C, Pascal (and many other languages). 
+
+GDB is available on andes via the ``gdb`` module:
 
 .. code::
 
     module load gdb
 
+To use GDB to debug your application run:
+
+.. code::
+
+    gdb ./path_to_executable
+
+Additional information about GDB usage can befound on the `GDB Documentation Page <https://www.sourceware.org/gdb/documentation/>`__.
 
 Valgrind
 --------
