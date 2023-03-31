@@ -590,6 +590,8 @@ The following modules help you expose the ROCm Toolchain to your programming En
 | ``PrgEnv-cray`` or ``PrgEnv-gnu`` |  ``amd-mixed``                           | ``module load amd-mixed``                                    |
 +-----------------------------------+------------------------------------------+--------------------------------------------------------------+
 
+.. note::
+    Both the CCE and ROCm compilers are Clang-based, so please be sure to use consistent (major) Clang versions when using them together. You can check which version of Clang is being used with CCE and ROCm by giving the ``--version`` flag to ``CC`` and ``hipcc``, respectively.
 
 MPI
 ---
