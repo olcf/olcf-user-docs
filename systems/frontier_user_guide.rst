@@ -40,8 +40,14 @@ Frontier User Guide
     Frontier uses Slurm's job launcher, ``srun``, instead of Summit's ``jsrun`` to launch parallel jobs within a batch script.  Overall functionality is similar, but commands are notably different. Frontier's :ref:`compute node layout <frontier-simple>` should also be considered when selecting job layout.
 
     See the :ref:`frontier-srun` section for more ``srun`` information, and see :ref:`frontier-mapping` for ``srun`` examples on Frontier.
-    
 
+  OLCF Support 
+    If you encounter any issues or have questions, please contact the OLCF via the following:
+    
+    * Email us at help@olcf.ornl.gov
+    * Contact your OLCF liaison
+    * Sign-up to attend `OLCF Office Hours <https://www.olcf.ornl.gov/olcf-office-hours/>`_
+ 
 
 System Overview
 ===============

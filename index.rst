@@ -14,6 +14,7 @@ OLCF User Documentation
 
     * `Submit a Support Ticket <https://www.olcf.ornl.gov/for-users/getting-started/submit-ticket/>`_
     * Email us at help@olcf.ornl.gov
+    * Sign-up to attend `OLCF Office Hours <https://www.olcf.ornl.gov/olcf-office-hours/>`_
 
 This technical documentation is a reference for the user community to
 efficiently use OLCF compute and storage resources.
