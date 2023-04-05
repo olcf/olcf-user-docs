@@ -470,11 +470,13 @@ Globus has restriction of 8 active transfers across all the users. Each user has
 Using Globus to move data to Orion 
 ==================================
 
-This example is intended to help users who are making the transition from Summit to Frontier to move their data between Alpine GPFS and Orion Lustre. 
+The following example is intended to help users who are making the transition from Summit to Frontier to move their data between Alpine GPFS and Orion Lustre. We strongly recommend using Globus for this transfer as it is the method that is most efficient for users and that causes the least contention on filesystems and data transfer nodes. 
 
-To move data between Alpine and Orion:
+Here is a recording of an example transfer from Alpine to Orion using Globus and the OLCF DTN: `Using Globus to Move Data to Orion <https://vimeo.com/manage/videos/814973734>`_. 
 
-1.	Login to globus.org using your globus ID and password. If you do not have a globusID, set one up here: https://www.globusid.org/create?viewlocale=en_US. 
+Below is a summary of the steps in the recording for using Globus to move data between Alpine GPFS and Orion Lustre:
+
+1.	Login to globus.org using your globus ID and password. If you do not have a globusID, set one up here: ` Generate a globusID <https://www.globusid.org/create?viewlocale=en_US>`_.
 
 2.	Once you are logged in, Globus will open the “File Manager” page. Click the left side “Collection” text field in the File Manager and type “OLCF DTN”. 
 3.	When prompted, authenticate into the OLCF DTN endpoint using your OLCF username and PIN followed by your RSA passcode. 
