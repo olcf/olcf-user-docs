@@ -476,7 +476,7 @@ Here is a recording of an example transfer from Alpine to Orion using Globus and
 
 Below is a summary of the steps in the recording for using Globus to move data between Alpine GPFS and Orion Lustre:
 
-1.	Login to `globus.org <https://www.globus.org>`_ using your globus ID and password. If you do not have a globusID, set one up here: ` Generate a globusID <https://www.globusid.org/create?viewlocale=en_US>`_.
+1.	Login to `globus.org <https://www.globus.org>`_ using your globus ID and password. If you do not have a globusID, set one up here: `Generate a globusID <https://www.globusid.org/create?viewlocale=en_US>`_.
 
 2.	Once you are logged in, Globus will open the “File Manager” page. Click the left side “Collection” text field in the File Manager and type “OLCF DTN”. 
 3.	When prompted, authenticate into the OLCF DTN endpoint using your OLCF username and PIN followed by your RSA passcode. 
