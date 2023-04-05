@@ -467,8 +467,26 @@ Three Globus Endpoints have been established for OLCF resources. These are "OLCF
 
 Globus has restriction of 8 active transfers across all the users. Each user has a limit of 3 active transfers, so it is required to transfer a lot of data on each transfer than less data across many transfers. If a folder is constituted with mixed files including thousands of small files (less than 1MB each one), it would be better to tar the small files.  Otherwise, if the files are larger, Globus will handle them. 
 
-Globus Example
-==============
+Using Globus to move data to Orion 
+==================================
+
+This example is intended to help users who are making the transition from Summit to Frontier to move their data between Alpine and Orion. 
+
+To move data between Alpine and Orion:
+1.	Login to globus.org using your globus ID and password. If you do not have a globusID, set one up here: https://www.globusid.org/create?viewlocale=en_US. 
+
+2.	Once you are logged in, Globus will open the “File Manager” page. Click the left side “Collection” text field in the File Manager and type “OLCF DTN”. 
+3.	When prompted, authenticate into the OLCF DTN endpoint using your OLCF username and PIN followed by your RSA passcode. 
+4.	Click in the left side “Path” box in the File Manager and enter the path to your data on Alpine. For example, `/gpfs/alpine/stf007/proj-shared/my_alpine_data.` You should see a list of your files and folders under the left “Path” Box.
+5.	Click on all files or folders that you want to transfer in the list. This will highlight them. 
+6.	Click on the right side “Collection” box in the File Manager and type “OLCF DTN” 
+7.	Click in the right side “Path” box and enter the path where you want to put your data on Orion, for example, `/lustre/orion/stf007/proj-shared/my_orion_data`
+8.	Click the left "Start" button. 
+9.	Click on “Activity“ in the left blue menu bar to monitor your transfer. Globus will send you an email when the transfer is complete.
+
+
+General Globus Example
+======================
 
 - Visit www.globus.org and login
 
