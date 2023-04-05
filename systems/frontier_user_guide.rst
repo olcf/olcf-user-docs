@@ -1166,7 +1166,7 @@ The ``batch`` queue is the default queue for production work on Frontier. Most w
 
 The ``debug`` quality of service (QOS) class can be used to access Frontier's compute resources for short non-production debug tasks. The QOS provides a higher priority compare to jobs of the same job size bin in production queues. Production work and job chaining using the ``debug`` QOS is prohibited. Each user is limited to one job in any state at any one point. Attempts to submit multiple jobs to this QOS will be rejected upon job submission.
 
-To submit a job to the ``debug`` QOS, add the `-q debug` option to your `sbatch` or `salloc` command or `#SBATCH -q debug` to your job script.
+To submit a job to the ``debug`` QOS, add the `-q debug` option to your ``sbatch`` or ``salloc`` command or ``#SBATCH -q debug`` to your job script.
 
 
 Allocation Overuse Policy
