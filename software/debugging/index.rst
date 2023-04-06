@@ -58,9 +58,9 @@ Configuration
 
     #. Enter the details of your remote hosts:
 
-    .. figure:: /images/ddt_config_summit.png
-        :align: center
-        :width: 800
+        .. figure:: /images/ddt_config_summit.png
+            :align: center
+            :width: 800
 
         * (Optionally) enter a name for your remote connection (otherwise the host name will be used)
 
@@ -141,9 +141,9 @@ Configuration
 
     #. Enter the details of your remote hosts:
 
-    .. figure:: /images/ddt_config_andes.png
-        :align: center
-        :width: 800
+        .. figure:: /images/ddt_config_andes.png
+            :align: center
+            :width: 800
 
         * (Optionally) enter a name for your remote connection (otherwise the host name will be used)
 
@@ -224,8 +224,8 @@ Configuration
 
     #. Enter the details of your remote hosts:
 
-    .. figure:: /images/ddt_remote_script.png
-        :align: center
+        .. figure:: /images/ddt_remote_script.png
+            :align: center
 
         * (Optionally) enter a name for your remote connection (otherwise the host name will be used)
 
