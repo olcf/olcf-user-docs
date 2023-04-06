@@ -19,3 +19,4 @@ Software
    spack_environments
    viz_tools/index
    containers_on_summit
+   debugging/index

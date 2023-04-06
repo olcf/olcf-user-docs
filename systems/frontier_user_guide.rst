@@ -2602,21 +2602,60 @@ For a full list of software availability and latest news at the OLCF, please ref
 Debugging
 ============
 
-ARM DDT
--------
+Linaro DDT
+----------
 
-Arm DDT is an advanced debugging tool used for scalar, multi-threaded,
+Linaro DDT is an advanced debugging tool used for scalar, multi-threaded,
 and large-scale parallel applications. In addition to traditional
 debugging features (setting breakpoints, stepping through code,
 examining variables), DDT also supports attaching to already-running
 processes and memory debugging. In-depth details of DDT can be found in
-the `Official DDT User
-Guide <https://www.allinea.com/user-guide/forge/userguide.html>`__, and
-instructions for how to use it on OLCF systems can be found on the
-`Forge (DDT/MAP) Software Page <https://www.olcf.ornl.gov/software_package/forge/>`__. DDT is the
+the `Official DDT User Guide <https://www.linaroforge.com/documentation/>`__, and
+instructions for how to use it on OLCF systems can be found on the :doc:`Debugging Software </software/debugging/index>` page. DDT is the
 OLCF's recommended debugging software for large parallel applications.
 
-One of the most useful features of DDT is its remote debugging feature. This allows you to connect to a debugging session on Frontier from a client running on your workstation. The local client provides much faster interaction than you would have if using the graphical client on Frontier. For guidance in setting up the remote client see `this tutorial <https://www.olcf.ornl.gov/tutorials/forge-remote-client-setup-and-usage/>`__.
+One of the most useful features of DDT is its remote debugging feature. This allows you to connect to a debugging session on Frontier from a client running on your workstation. The local client provides much faster interaction than you would have if using the graphical client on Frontier. For guidance in setting up the remote client see the :doc:`Debugging Software </software/debugging/index>` page.
+
+GDB
+---
+
+`GDB <https://www.gnu.org/software/gdb/>`__, the GNU Project Debugger,
+is a command-line debugger useful for traditional debugging and
+investigating code crashes. GDB lets you debug programs written in Ada,
+C, C++, Objective-C, Pascal (and many other languages). 
+
+GDB is availableon Summit under all compiler families:
+
+.. code::
+
+    module load gdb
+
+To use GDB to debug your application run:
+
+.. code::
+
+    gdb ./path_to_executable
+
+Additional information about GDB usage can befound on the `GDB Documentation Page <https://www.sourceware.org/gdb/documentation/>`__.
+
+Valgrind4hpc
+------------
+
+Valgrind4hpc is a Valgrind-based debugging tool to aid in the detection of memory leaks
+and errors in parallel applications. Valgrind4hpc aggregates any duplicate
+messages across ranks to help provide an understandable picture of
+program behavior. Valgrind4hpc manages starting and redirecting output from many
+copies of Valgrind, as well as deduplicating and filtering Valgrind messages.
+If your program can be debugged with Valgrind, it can be debugged with
+Valgrind4hpc.
+
+Valgrind4hpc is available on Frontier under all compiler families:
+
+.. code::
+
+    module load valgrind4hpc
+
+Additional information about Valgrind4hpc usage can be found on the `HPE Cray Programming Environment User Guide Page <https://support.hpe.com/hpesc/public/docDisplay?docId=a00115110en_us&page=Debug_Applications_With_valgrind4hpc_To_Find_Common_Errors.html>`__.
 
 
 Profiling Applications
