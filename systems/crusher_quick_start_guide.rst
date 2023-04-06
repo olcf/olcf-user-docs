@@ -2080,6 +2080,28 @@ Applications using single precision FP atomicAdd() are encouraged to experiment 
 System Updates 
 ============== 
 
+2023-04-05
+----------
+
+On Wednesday, April 5, 2023, the Crusher TDS was upgraded to a new software stack.  A summary of the changes is included below. 
+ * The operating system was upgraded to Cray OS 2.4 based on SLES 15.4.
+ * HPE/Cray Programming Environment (PE):
+     * PE 22.12 was installed and is now default. This PE includes the following components:
+         * Cray MPICH 8.1.23
+         * Cray Libsci 22.12.1.1
+         * CCE 15.0.0
+     * PE 23.03 is now also available and includes:
+         * Cray MPICH 8.1.25
+         * Cray Libsci 23.02.1.1
+         * CCE 15.0.1
+ * ROCm: 
+     * ROCm 5.3.0 is now default.
+     * ROCm 5.4.0 and 5.4.3 are available.
+ * File Systems:
+     * The Orion Lustre parallel file system is now available on Crusher. 
+     * The Alpine GPFS file system remains available but will be permanently unmounted from Crusher on Tuesday, April 18, 2023. Please begin moving your data to the Orion file system as soon as possible.
+
+
 2022-12-29 
 ---------- 
 
