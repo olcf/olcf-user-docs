@@ -2949,11 +2949,11 @@ Additional information on MI250X reduced precision can be found at:
 
 Enabling GPU Page Migration
 ---------------------------
-The AMD MI250X and operating system on Crusher supports unified virtual addressing across the entire host and device memory, and automatic page migration between CPU and GPU memory. Migratable, universally addressable memory is sometimes called 'managed' or 'unified' memory, but neither of these terms fully describes how memory may behave on Crusher. In the following section we'll discuss how the heterogenous memory space on a Crusher node is surfaced within your application.
+The AMD MI250X and operating system on Frontier supports unified virtual addressing across the entire host and device memory, and automatic page migration between CPU and GPU memory. Migratable, universally addressable memory is sometimes called 'managed' or 'unified' memory, but neither of these terms fully describes how memory may behave on Frontier. In the following section we'll discuss how the heterogenous memory space on a Frontier node is surfaced within your application.
 
 The accessibility of memory from GPU kernels and whether pages may migrate depends three factors: how the memory was allocated; the XNACK operating mode of the GPU; whether the kernel was compiled to support page migration. The latter two factors are intrinsically linked, as the MI250X GPU operating mode restricts the types of kernels which may run.
 
-XNACK (pronounced X-knack) refers to the AMD GPU's ability to retry memory accesses that fail due to a page fault. The XNACK mode of an MI250X can be changed by setting the environment variable ``HSA_XNACK`` before starting a process that uses the GPU. Valid values are 0 (disabled) and 1 (enabled), and all processes connected to a GPU must use the same XNACK setting. The default MI250X on Crusher is ``HSA_XNACK=0``.
+XNACK (pronounced X-knack) refers to the AMD GPU's ability to retry memory accesses that fail due to a page fault. The XNACK mode of an MI250X can be changed by setting the environment variable ``HSA_XNACK`` before starting a process that uses the GPU. Valid values are 0 (disabled) and 1 (enabled), and all processes connected to a GPU must use the same XNACK setting. The default MI250X on Frontier is ``HSA_XNACK=0``.
 
 If ``HSA_XNACK=0``, page faults in GPU kernels are not handled and will terminate the kernel. Therefore all memory locations accessed by the GPU must either be resident in the GPU HBM or mapped by the HIP runtime. Memory regions may be migrated between the host DDR4 and GPU HBM using explicit HIP library functions such as ``hipMemAdvise`` and ``hipPrefetchAsync``, but memory will not be automatically migrated based on access patterns alone.
 
@@ -2968,14 +2968,14 @@ If ``HSA_XNACK=1``, page faults in GPU kernels will trigger a page table lookup.
 Migration of Memory by Allocator and XNACK Mode
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Most applications that use "managed" or "unified" memory on other platforms will want to enable XNACK to take advantage of automatic page migration on Crusher. The following table shows how common allocators currently behave with XNACK enabled. The behavior of a specific memory region may vary from the default if the programmer uses certain API calls.
+Most applications that use "managed" or "unified" memory on other platforms will want to enable XNACK to take advantage of automatic page migration on Frontier. The following table shows how common allocators currently behave with XNACK enabled. The behavior of a specific memory region may vary from the default if the programmer uses certain API calls.
 
 
 .. note::
    The page migration behavior summarized by the following tables represents the current, observable behavior. Said behavior will likely change in the near future.
 
     ..
-       CPU accesses to migratable memory may behave differently than other platforms you're used to. On Crusher, pages will not migrate from GPU HBM to CPU DDR4 based on access patterns alone. Once a page has migrated to GPU HBM it will remain there even if the CPU accesses it, and all accesses which do not resolve in the CPU cache will occur over the Infinity Fabric between the AMD "Optimized 3rd Gen EPYC" CPU and AMD MI250X GPU. Pages will only *automatically* migrate back to CPU DDR4 if they are forcibly evicted to free HBM capacity, although programmers may use HIP APIs to manually migrate memory regions.
+       CPU accesses to migratable memory may behave differently than other platforms you're used to. On Frontier, pages will not migrate from GPU HBM to CPU DDR4 based on access patterns alone. Once a page has migrated to GPU HBM it will remain there even if the CPU accesses it, and all accesses which do not resolve in the CPU cache will occur over the Infinity Fabric between the AMD "Optimized 3rd Gen EPYC" CPU and AMD MI250X GPU. Pages will only *automatically* migrate back to CPU DDR4 if they are forcibly evicted to free HBM capacity, although programmers may use HIP APIs to manually migrate memory regions.
 
 ``HSA_XNACK=1`` **Automatic Page Migration Enabled**
 
@@ -3044,7 +3044,7 @@ If the HIP runtime cannot find a kernel image that matches the XNACK mode of the
 
     $ HSA_XNACK=0 srun -n 1 -N 1 -t 1 ./xnack_plus.exe
     "hipErrorNoBinaryForGpu: Unable to find code object for all current devices!"
-    srun: error: crusher002: task 0: Aborted
+    srun: error: frontier002: task 0: Aborted
     srun: launch/slurm: _step_signal: Terminating StepId=74100.0
 
 
@@ -3097,7 +3097,7 @@ One way to diagnose ``hipErrorNoBinaryForGpu`` messages is to set the environmen
     :1:hip_code_object.cpp      :485 : 43966602817 us:     host-x86_64-unknown-linux - [Unsupported]
     :1:hip_code_object.cpp      :483 : 43966602818 us:     hipv4-amdgcn-amd-amdhsa--gfx90a:xnack+ - [code object v4 is amdgcn-amd-amdhsa--gfx90a:xnack+]
     "hipErrorNoBinaryForGpu: Unable to find code object for all current devices!"
-    srun: error: crusher129: task 0: Aborted
+    srun: error: frontier129: task 0: Aborted
     srun: launch/slurm: _step_signal: Terminating StepId=74102.0
 
 The above log messages indicate the type of image required by each device, given its current mode (``amdgcn-amd-amdhsa--gfx90a:sramecc+:xnack-``) and the images found in the binary (``hipv4-amdgcn-amd-amdhsa--gfx90a:xnack+``).
@@ -3109,7 +3109,7 @@ The above log messages indicate the type of image required by each device, given
 Floating-Point (FP) Atomic Operations and Coarse/Fine Grained Memory Allocations
 --------------------------------------------------------------------------------
 
-The Crusher system, equipped with CDNA2-based architecture MI250X cards, offers a coherent host interface that enables advanced memory and unique cache coherency capabilities.
+The Frontier system, equipped with CDNA2-based architecture MI250X cards, offers a coherent host interface that enables advanced memory and unique cache coherency capabilities.
 The AMD driver leverages the Heterogeneous Memory Management (HMM) support in the Linux kernel to perform seamless page migrations to/from CPU/GPUs.
 This new capability comes with a memory model that needs to be understood completely to avoid unexpected behavior in real applications. For more details, please visit the previous section.
 
