@@ -472,6 +472,10 @@ Using Globus to move data to Orion
 
 The following example is intended to help users who are making the transition from Summit to Frontier to move their data between Alpine GPFS and Orion Lustre. We strongly recommend using Globus for this transfer as it is the method that is most efficient for users and that causes the least contention on filesystems and data transfer nodes. 
 
+.. note::
+   Globus does not preserve file permissions. Files transferred with globus inherit the permissions of the destination directory. 
+
+
 Here is a recording of an example transfer from Alpine to Orion using Globus and the OLCF DTN: `Using Globus to Move Data to Orion <https://vimeo.com/manage/videos/814973734>`_. 
 
 Below is a summary of the steps in the recording for using Globus to move data between Alpine GPFS and Orion Lustre:
