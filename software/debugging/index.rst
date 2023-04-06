@@ -338,7 +338,7 @@ More information on its use on OLCF systems can be found below.
 
 .. tabbed:: Andes
 
-    GDB is availableon andes via the ``gdb`` module:
+    GDB is available on Andes via the ``gdb`` module:
 
     .. code::
 
@@ -354,7 +354,7 @@ More information on its use on OLCF systems can be found below.
 
 .. tabbed:: Frontier
 
-    GDB is availableon Summit under all compiler families:
+    GDB is available on Frontier under all compiler families:
 
     .. code::
 
@@ -366,7 +366,7 @@ More information on its use on OLCF systems can be found below.
 
         gdb ./path_to_executable
 
-    dditional information about GDB usage can befound on the `GDB Documentation Page <https://www.sourceware.org/gdb/documentation/>`__.
+    Additional information about GDB usage can befound on the `GDB Documentation Page <https://www.sourceware.org/gdb/documentation/>`__.
 
 
 ********
