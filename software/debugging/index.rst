@@ -22,15 +22,15 @@ The section below demonstrates configuration of the remote client and Reverse Co
 Download
 ========
 
-.. tabbed:: Summit
+**Summit**
 
     You can download the remote client (version 21.1.x) from the `Linaro Forge <https://www.linaroforge.com/downloadForge/>`_ page.
 
-.. tabbed:: Andes
+**Andes**
 
     You can download the remote client (version 22.0.x) from the `Linaro Forge Older Versions <https://www.linaroforge.com/downloadForge_OldVersion/>`_ page.
 
-.. tabbed:: Frontier
+**Frontier**
 
     You can download the remote client (version 22.1.x) from the `Linaro Forge <https://www.linaroforge.com/downloadForge/>`_ page.
 
@@ -46,10 +46,6 @@ Installation
 Configuration
 =============
 
-.. note::
-
-    Andes currently runs an older version of Forge (22.0.2) which is not compatible with the latest versions of the remote client (22.1.x). If you are using Andes, you will need to download the older version (version 22.0.x) of the remote client from the `Linaro Forge Older Versions <https://www.linaroforge.com/downloadForge_OldVersion/>`_ page as seen in the Download instructions above.
-
 .. tabbed:: Summit
 
     #. Once installed, launch the Forge DDT client on your local machine.
@@ -64,6 +60,7 @@ Configuration
 
     .. figure:: /images/ddt_config_summit.png
         :align: center
+        :width: 800
 
         * (Optionally) enter a name for your remote connection (otherwise the host name will be used)
 
@@ -81,10 +78,58 @@ Configuration
 
     .. figure:: /images/ddt_launch_summit.png
         :align: center
+        :width: 400
 
     Once connected, Forge will look and behave as usual, but will launch jobs, browse for files, and use/set the configuration on the remote system. The “Reverse Connect” feature, described below, is also available.
 
+    **Reverse Connect**
+
+    For example, if you have a batch script containing:
+
+    .. code-block:: bash
+
+        jsrun -n 24 -g 1 ./miniWeather_mpi_openacc
+
+    You could edit this to:
+
+    .. code-block:: bash
+
+        module load forge/22.1.1
+        ddt --connect jsrun -n 24 -g 1 ./miniWeather_mpi_openacc
+
+    When your job is executed, the ``ddt --connect`` command will establish a connection with your already-running remote client (must be running before launching the job). This provides a convenient way for the remote client to access a job within the batch system, and more importantly, avoids the need to explicitly tell DDT or MAP about any program parameters, environment variables, or module files required.
+
+    **Reverse Connect Setup Instructions**
+
+    #. Launch the Forge remote client and connect to a remote host using the steps above. Once connected, this client will monitor for new connections.
+
+    .. figure:: /images/ddt_launch_summit.png
+        :align: center
+        :width: 400
+
+    #. In a separate terminal, load the ``forge/22.1.1`` module, and run a ``ddt --connect`` command via the batch system (e.g. by editing and running a job script, or running with an interactive shell).
+
+        .. code-block:: bash
+
+            module load forge/22.1.1
+            dt --connect jsrun -n 24 -g 1 ./miniWeather_mpi_openacc
+
+    #. The remote client will notify you of a new connection.
+
+    .. figure:: /images/ddt_reverse_prompt.png
+        :align: center
+
+    #. Once accepted, you can configure some final debugging options before launching the program.
+
+    .. figure:: /images/ddt_run_options.png
+        :align: center
+
+    #. Click “Run”, and DDT will start your session.
+
 .. tabbed:: Andes
+    
+    .. note::
+        Andes currently runs an older version of Forge (22.0.2) which is not compatible with the latest versions of the remote client (22.1.x). If you are using Andes, you will need to download the older version (version 22.0.x) of the remote client from the `Linaro Forge Older Versions <https://www.linaroforge.com/downloadForge_OldVersion/>`_ page as seen in the Download instructions above.
 
     #. Once installed, launch the Forge DDT client on your local machine.
 
@@ -98,6 +143,7 @@ Configuration
 
     .. figure:: /images/ddt_config_andes.png
         :align: center
+        :width: 800
 
         * (Optionally) enter a name for your remote connection (otherwise the host name will be used)
 
@@ -115,8 +161,56 @@ Configuration
 
     .. figure:: /images/ddt_launch_andes.png
         :align: center
+        :width: 400
 
     Once connected, Forge will look and behave as usual, but will launch jobs, browse for files, and use/set the configuration on the remote system. The “Reverse Connect” feature, described below, is also available.
+
+    **Reverse Connect**
+
+    For example, if you have a batch script containing:
+
+    .. code-block:: bash
+
+        srun -n 2 ./hello_mpi_omp
+
+    You could edit this to:
+
+    .. code-block:: bash
+
+        module load forge/22.0.2
+        ddt --connect srun -n 2 ./hello_mpi_omp
+
+    When your job is executed, the ``ddt --connect`` command will establish a connection with your already-running remote client (must be running before launching the job). This provides a convenient way for the remote client to access a job within the batch system, and more importantly, avoids the need to explicitly tell DDT or MAP about any program parameters, environment variables, or module files required.
+
+    **Reverse Connect Setup Instructions**
+     
+
+    #. Launch the Forge remote client and connect to a remote host using the steps above. Once connected, this client will monitor for new connections.
+
+    .. figure:: /images/ddt_launch_andes.png
+        :align: center
+        :width: 400
+
+    #. In a separate terminal, load the ``forge/22.0.2`` module, and run a ``ddt --connect`` command via the batch system (e.g. by editing and running a job script, or running with an interactive shell).
+
+        .. code-block:: bash
+
+            module load forge/22.0.2
+            ddt --connect srun -n 2 ./hello_mpi_omp
+
+    #. The remote client will notify you of a new connection.
+
+    .. figure:: /images/ddt_reverse_prompt_andes.png
+        :align: center
+        :width: 400
+
+    #. Once accepted, you can configure some final debugging options before launching the program.
+
+    .. figure:: /images/ddt_run_options_andes.png
+        :align: center
+        :width: 600
+
+    #. Click “Run”, and DDT will start your session.
 
 .. tabbed:: Frontier
 
@@ -130,7 +224,7 @@ Configuration
 
     #. Enter the details of your remote hosts:
 
-    .. figure:: /images/ddt_config_frontier.png
+    .. figure:: /images/ddt_remote_script.png
         :align: center
 
         * (Optionally) enter a name for your remote connection (otherwise the host name will be used)
@@ -149,126 +243,29 @@ Configuration
 
     .. figure:: /images/ddt_launch_frontier.png
         :align: center
+        :width: 400
 
-    Once connected, Forge will look and behave as usual, but will launch jobs, browse for files, and use/set the configuration on the remote system. The “Reverse Connect” feature, described below, is also available.
+    Once connected to a remote host, “Reverse Connect” allows launching of jobs to be launched with DDT and MAP from your usual launch environment, with a minor modification to your existing launch command.
 
-Reverse Connect
-===============
-
-Once connected to a remote host, “Reverse Connect” allows launching of jobs to be launched with DDT and MAP from your usual launch environment, with a minor modification to your existing launch command.
-
-.. tabbed:: Summit
+    **Reverse Connect**
 
     For example, if you have a batch script containing:
 
     .. code-block:: bash
 
-        jsrun -n 24 -g 1 ./miniWeather_mpi_openacc
-
-    You could edit this to:
-
-    .. code-block:: bash
-
-        module load forge/22.1.1
-        ddt --connect jsrun -n 24 -g 1 ./miniWeather_mpi_openacc
-
-    When your job is executed, the ``ddt --connect`` command will establish a connection with your already-running remote client (must be running before launching the job). This provides a convenient way for the remote client to access a job within the batch system, and more importantly, avoids the need to explicitly tell DDT or MAP about any program parameters, environment variables, or module files required.
-
-.. tabbed:: Andes
-
-    For example, if you have a batch script containing:
-
-    .. code-block:: bash
-
-        srun -n 2 ./hello_mpi_omp
+        srun -n 8 ./hello_mpi_omp
 
     You could edit this to:
 
     .. code-block:: bash
 
         module load forge/22.0.2
-        ddt --connect srun -n 2 ./hello_mpi_omp
+        ddt --connect srun -n 8 ./hello_mpi_omp
 
     When your job is executed, the ``ddt --connect`` command will establish a connection with your already-running remote client (must be running before launching the job). This provides a convenient way for the remote client to access a job within the batch system, and more importantly, avoids the need to explicitly tell DDT or MAP about any program parameters, environment variables, or module files required.
 
-.. tabbed:: Frontier
-
-    For example, if you have a batch script containing:
-
-    .. code-block:: bash
-
-        srun -n 24 --cpu-bind=cores ./a.out
-
-    You could edit this to:
-
-    .. code-block:: bash
-
-        module load forge/22.0.2
-        ddt --connect srun -n 24 --cpu-bind=cores ./a.out
-
-    When your job is executed, the ``ddt --connect`` command will establish a connection with your already-running remote client (must be running before launching the job). This provides a convenient way for the remote client to access a job within the batch system, and more importantly, avoids the need to explicitly tell DDT or MAP about any program parameters, environment variables, or module files required.
-
-Reverse Connect Setup Instructions
-----------------------------------
-
-.. tabbed:: Summit
-
-    #. Launch the Forge remote client and connect to a remote host using the steps above. Once connected, this client will monitor for new connections.
-
-    .. figure:: /images/ddt_launch_summit.png
-        :align: center
-        :width: 400
-
-    #. In a separate terminal, load the ``forge/22.1.1`` module, and run a ``ddt --connect`` command via the batch system (e.g. by editing and running a job script, or running with an interactive shell).
-
-    .. code-block:: bash
-
-        module load forge/22.1.1
-        ddt --connect jsrun -n 24 -g 1 ./miniWeather_mpi_openacc
-
-    #. The remote client will notify you of a new connection.
-
-    .. figure:: /images/ddt_reverse_prompt.png
-        :align: center
-
-    #. Once accepted, you can configure some final debugging options before launching the program.
-
-    .. figure:: /images/ddt_run_options.png
-        :align: center
-
-    #. Click “Run”, and DDT will start your session.
-
-.. tabbed:: Andes
-
-    #. Launch the Forge remote client and connect to a remote host using the steps above. Once connected, this client will monitor for new connections.
-
-    .. figure:: /images/ddt_launch_andes.png
-        :align: center
-        :width: 400
-
-    #. In a separate terminal, load the ``forge/22.0.2`` module, and run a ``ddt --connect`` command via the batch system (e.g. by editing and running a job script, or running with an interactive shell).
-
-    .. code-block:: bash
-
-        module load forge/22.0.2
-        ddt --connect srun -n 2 ./hello_mpi_omp
-
-    #. The remote client will notify you of a new connection.
-
-    .. figure:: /images/ddt_reverse_prompt_andes.png
-        :align: center
-        :width: 400
-
-    #. Once accepted, you can configure some final debugging options before launching the program.
-
-    .. figure:: /images/ddt_run_options_andes.png
-        :align: center
-        :width: 600
-
-    #. Click “Run”, and DDT will start your session.
-
-.. tabbed:: Frontier
-
+    **Reverse Connect Setup Instructions**
+     
     Prior to launching the reverse connect you will need to set a couple of environment variables so the connection request gets routed correctly. The following export vars will need to be sourced in your batch script prior to srun or you can just
     source them prior to obtaining your node allocation.
 
@@ -281,11 +278,9 @@ Reverse Connect Setup Instructions
     Also, if you plan on running the Forge client from your local machine (i.e. laptop), you will need to create a bash file containing the above environment vars. The file can be saved in ``/ccs/home/<user>``. Once created and saved, you will
     enter the path to the file in the Forge Remote Launch setup window next to ``Remote Script`` as shown below.
 
-    .. figure:: /images/Forge_remote_connect_remote_script.jpeg
+    .. figure:: /images/ddt_remote_script.png
            :align: center
-           :width: 500
-
-
+           :width: 800
 
     #. Launch the Forge remote client and connect to a remote host using the steps above. Once connected, this client will monitor for new connections.
 
@@ -295,23 +290,24 @@ Reverse Connect Setup Instructions
 
     #. In a separate terminal, load the ``forge/22.1.1`` module, and run a ``ddt --connect`` command via the batch system (e.g. by editing and running a job script, or running with an interactive shell).
 
-    .. code-block:: bash
+        .. code-block:: bash
 
-        module load forge/22.1.1
-        ddt --connect srun -n 8 --cpu-bind=cores ./a.out
+            module load forge/22.1.1
+            ddt --connect srun -n 8 ./hello_mpi_omp
 
     #. The remote client will notify you of a new connection.
 
-    .. figure:: /images/ddt_reverse_prompt.png
+    .. figure:: /images/ddt_reverse_prompt_frontier.png
         :align: center
+        :width: 400
 
     #. Once accepted, you can configure some final debugging options before launching the program.
 
-    .. figure:: /images/ddt_run_options.png
+    .. figure:: /images/ddt_run_options_frontier.png
         :align: center
+        :width: 600
 
     #. Click “Run”, and DDT will start your session.
-
 
 *******
 GNU GDB

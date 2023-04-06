@@ -2483,11 +2483,10 @@ debugging features (setting breakpoints, stepping through code,
 examining variables), DDT also supports attaching to already-running
 processes and memory debugging. In-depth details of DDT can be found in
 the `Official DDT User Guide <https://www.linaroforge.com/documentation/>`__, and
-instructions for how to use it on OLCF systems can be found on the
-`Forge (DDT/MAP) Software Page <https://docs.olcf.ornl.gov/software/debugging/index.html#linaro-forge-ddt>`__. DDT is the
+instructions for how to use it on OLCF systems can be found on the :doc:`Debugging Software </software/debugging/index>` page. DDT is the
 OLCF's recommended debugging software for large parallel applications.
 
-One of the most useful features of DDT is its remote debugging feature. This allows you to connect to a debugging session on Frontier from a client running on your workstation. The local client provides much faster interaction than you would have if using the graphical client on Frontier. For guidance in setting up the remote client see the `Forge (DDT/MAP) Software Page <https://docs.olcf.ornl.gov/software/debugging/index.html>`__.
+One of the most useful features of DDT is its remote debugging feature. This allows you to connect to a debugging session on Frontier from a client running on your workstation. The local client provides much faster interaction than you would have if using the graphical client on Frontier. For guidance in setting up the remote client see the :doc:`Debugging Software </software/debugging/index>` page.
 
 GDB
 ---
