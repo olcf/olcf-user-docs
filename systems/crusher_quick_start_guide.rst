@@ -1133,21 +1133,21 @@ Each Crusher compute node has [2x] 1.92 TB NVMe devices (SSDs) with a peak seque
 
     date
 
-    # Change directory to user scratch space (GPFS)
-    cd /gpfs/alpine/<projid>/scratch/<userid>
+    # Change directory to user scratch space (Orion)
+    cd /lustre/orion/<projid>/scratch/<userid>
 
     echo " "
     echo "*****ORIGINAL FILE*****"
     cat test.txt
     echo "***********************"
 
-    # Move file from GPFS to SSD
+    # Move file from Orion to SSD
     mv test.txt /mnt/bb/<userid>
 
     # Edit file from compute node
     srun -n1 hostname >> /mnt/bb/<userid>/test.txt
 
-    # Move file from SSD back to GPFS
+    # Move file from SSD back to Orion
     mv /mnt/bb/<userid>/test.txt .
 
     echo " "
@@ -1178,10 +1178,10 @@ Tips for Launching at Scale
 SBCAST your executable and libraries
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Slurm contains a utility called ``sbcast``. This program takes a file and broadcasts it to all nodes to node-local storage (ie, ``/tmp``, NVMe).
+Slurm contains a utility called ``sbcast``. This program takes a file and broadcasts it to each node's node-local storage (ie, ``/tmp``, NVMe).
 This is useful for sharing large input files, binaries and shared libraries, while reducing the overhead on shared file systems and overhead at startup.
-This is highly recommended at scale if you have multiple shared libraries on GPFS/NFS file systems.
-Here is a simple example of a file ``sbcast`` from a user's scratch space on GPFS to each node's NVMe drive:
+This is highly recommended at scale if you have multiple shared libraries on Lustre/NFS file systems.
+Here is a simple example of a file ``sbcast`` from a user's scratch space on Lustre to each node's NVMe drive:
 
 .. code:: bash
 
@@ -1196,8 +1196,8 @@ Here is a simple example of a file ``sbcast`` from a user's scratch space on GPF
 
     date
 
-    # Change directory to user scratch space (GPFS)
-    cd /gpfs/alpine/<projid>/scratch/<userid>
+    # Change directory to user scratch space (Orion)
+    cd /lustre/orion/<projid>/scratch/<userid>
 
     echo "This is an example file" > test.txt
     echo
@@ -1205,7 +1205,7 @@ Here is a simple example of a file ``sbcast`` from a user's scratch space on GPF
     cat test.txt
     echo "***********************"
 
-    # SBCAST file from GPFS to NVMe -- NOTE: ``-C nvme`` is required to use the NVMe drive
+    # SBCAST file from Orion to NVMe -- NOTE: ``-C nvme`` is required to use the NVMe drive
     sbcast -pf test.txt /mnt/bb/$USER/test.txt
     if [ ! "$?" == "0" ]; then
         # CHECK EXIT CODE. When SBCAST fails, it may leave partial files on the compute nodes, and if you continue to launch srun,
