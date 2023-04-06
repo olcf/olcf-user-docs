@@ -1,4 +1,4 @@
-.. _debugging:
+.. _software_debugging:
 
 #########
 Debugging
@@ -423,8 +423,7 @@ Valgrind
     profiling tools. The most popular is Memcheck, a memory checking tool
     which can detect many common memory errors such as:
 
-        - Touching memory you shouldn’t (eg. overrunning heap block boundaries,
-        or reading/writing freed memory).
+        - Touching memory you shouldn’t (eg. overrunning heap block boundaries, or reading/writing freed memory).
         - Using values before they have been initialized.
         - Incorrect freeing of memory, such as double-freeing heap blocks.
         - Memory leaks.

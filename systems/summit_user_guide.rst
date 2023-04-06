@@ -2475,7 +2475,7 @@ Debugging
 =========
 
 Linaro DDT
--------
+----------
 
 Linaro DDT is an advanced debugging tool used for scalar, multi-threaded,
 and large-scale parallel applications. In addition to traditional

@@ -2616,7 +2616,7 @@ Debugging
 ============
 
 Linaro DDT
--------
+----------
 
 Linaro DDT is an advanced debugging tool used for scalar, multi-threaded,
 and large-scale parallel applications. In addition to traditional
@@ -2652,7 +2652,7 @@ To use GDB to debug your application run:
 Additional information about GDB usage can befound on the `GDB Documentation Page <https://www.sourceware.org/gdb/documentation/>`__.
 
 Valgrind4hpc
---------
+------------
 
 Valgrind4hpc is a Valgrind-based debugging tool to aid in the detection of memory leaks
 and errors in parallel applications. Valgrind4hpc aggregates any duplicate
