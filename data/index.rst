@@ -467,14 +467,19 @@ Three Globus Endpoints have been established for OLCF resources. These are "OLCF
 
 Globus has restriction of 8 active transfers across all the users. Each user has a limit of 3 active transfers, so it is required to transfer a lot of data on each transfer than less data across many transfers. If a folder is constituted with mixed files including thousands of small files (less than 1MB each one), it would be better to tar the small files.  Otherwise, if the files are larger, Globus will handle them. 
 
-Using Globus to move data to Orion 
+Using Globus to Move Data to Orion 
 ==================================
 
 The following example is intended to help users who are making the transition from Summit to Frontier to move their data between Alpine GPFS and Orion Lustre. We strongly recommend using Globus for this transfer as it is the method that is most efficient for users and that causes the least contention on filesystems and data transfer nodes. 
 
+.. note::
+  
+  Globus does not preserve file permissions. Files transferred with globus inherit the permissions of the destination directory. 
+
+
 Here is a recording of an example transfer from Alpine to Orion using Globus and the OLCF DTN: `Using Globus to Move Data to Orion <https://vimeo.com/manage/videos/814973734>`_. 
 
-Below is a summary of the steps in the recording for using Globus to move data between Alpine GPFS and Orion Lustre:
+Below is a summary of the steps for data transfer given in the recording:
 
 1.	Login to `globus.org <https://www.globus.org>`_ using your globus ID and password. If you do not have a globusID, set one up here: 
 `Generate a globusID <https://www.globusid.org/create?viewlocale=en_US>`_. 
