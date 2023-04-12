@@ -57,16 +57,6 @@ Currently Available User-Managed Software
   | ums015     | DPC++ for HIP  | Gordon Brown (gordon@codeplay.com)         |                                                                                |
   +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
   
-.. tabbed:: Spock
-
-  **Currently Available User-Managed Software on Spock**
-  
-  +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
-  | Project    | Packages       | Point of Contact                           | Information                                                                    |
-  +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
-  | ums015     | DPC++ for HIP  | Gordon Brown (gordon@codeplay.com)         |                                                                                |
-  +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
-
 .. tabbed:: Crusher
 
   **Currently Available User-Managed Software on Crusher**
@@ -127,45 +117,6 @@ to gain access to that project’s provided software. For example:
       ums/default (L)
     ...
 
-.. tabbed:: Spock
-
-  .. code::
-  
-    ## Find the base UMS module on Spock:
-    > module avail ums
-    ----------------- /sw/spock/modulefiles ------------------
-      ums/default
-  
-    ## Load the UMS project access modules:
-    > module load ums
-  
-    ## See the newly available UMS projects:
-    > module avail ums
-    ----------------- /sw/spock/ums/modulefiles/ -------------------
-      ums-abc123/default
-      ums001/default
-  
-    ----------------- /sw/spock/modulefiles ------------------
-      ums/default (L)
-  
-    ## Gain access to a UMS project's provided modules:
-    > module load ums-abc123
-  
-    ## See the provided UMS project's modules (truncated output):
-    > module avail
-    ...
-    --------------- /sw/spock/ums/ums-abc123/modules ---------------
-      abc123/1.0
-      abc123/1.1
-  
-    ----------------- /sw/spock/ums/modulefiles/ -------------------
-      ums-abc123/default (L)
-      ums001/default
-  
-    ----------------- /sw/spock/modulefiles ------------------
-      ums/default (L)
-    ...
-  
 .. tabbed:: Crusher
 
   .. code::
