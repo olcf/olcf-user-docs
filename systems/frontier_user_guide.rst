@@ -2318,6 +2318,10 @@ SBCAST your executable and libraries
 Slurm contains a utility called ``sbcast``. This program takes a file and broadcasts it to each node's node-local storage (ie, ``/tmp``, NVMe).
 This is useful for sharing large input files, binaries and shared libraries, while reducing the overhead on shared file systems and overhead at startup.
 This is highly recommended at scale if you have multiple shared libraries on Lustre/NFS file systems.
+
+SBCASTing a single file
+"""""""""""""""""""""""
+
 Here is a simple example of a file ``sbcast`` from a user's scratch space on Lustre to each node's NVMe drive:
 
 .. code:: bash
@@ -2384,6 +2388,9 @@ and here is the output from that script:
     **************************************
 
 
+SBCASTing a binary with libraries stored on shared file systems
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 ``sbcast`` also handles binaries and their libraries:
 
 .. code:: bash
@@ -2409,7 +2416,7 @@ and here is the output from that script:
     ldd ./${exe}
     echo "*************************"
 
-    # SBCAST executable from GPFS to NVMe -- NOTE: ``-C nvme`` is needed in SBATCH headers to use the NVMe drive
+    # SBCAST executable from Orion to NVMe -- NOTE: ``-C nvme`` is needed in SBATCH headers to use the NVMe drive
     # NOTE: dlopen'd files will NOT be picked up by sbcast
     # SBCAST automatically excludes several directories: /lib,/usr/lib,/lib64,/usr/lib64,/opt
     #   - These directories are node-local and are very fast to read from, so SBCASTing them isn't critical
@@ -2613,11 +2620,84 @@ and here is the output from that script:
     	libpcre.so.1 => /usr/lib64/libpcre.so.1 (0x00007ffef4abe000)
     *************************************
 
-
-
 Notice that the libraries are sent to the ``${exe}_libs`` directory in the same prefix as the executable.
 Once libraries are here, you cannot tell where they came from, so consider doing an ``ldd`` of your executable prior to ``sbcast``.
-Some libraries still resolved to paths outside of ``/mnt/bb``, and the reason for that is that the executable had several paths in ``RPATH``.
+
+
+Alternative: SBCASTing a binary with all libraries
+""""""""""""""""""""""""""""""""""""""""""""""""""
+
+As mentioned above, you can alternatively use ``--exclude=NONE`` on ``sbcast`` to send all libraries along with the binary.
+Using ``--exclude=NONE`` requires more effort but substantially simplifies the linker configuration at run-time.
+A job script for the previous example, modified for sending all libraries is shown below.
+
+.. code:: bash
+
+    #!/bin/bash
+    #SBATCH -A <projid>
+    #SBATCH -J sbcast_binary_to_nvme
+    #SBATCH -o %x-%j.out
+    #SBATCH -t 00:05:00
+    #SBATCH -p batch
+    #SBATCH -N 2
+    #SBATCH -C nvme
+
+    date
+
+    # Change directory to user scratch space (Orion)
+    cd /lustre/orion/<projid>/scratch/<userid>
+
+    # For this example, I use a HIP-enabled LAMMPS binary, with dependencies to MPI, HIP, and HWLOC
+    exe="lmp"
+
+    echo "*****ldd ./${exe}*****"
+    ldd ./${exe}
+    echo "*************************"
+
+    # SBCAST executable from Orion to NVMe -- NOTE: ``-C nvme`` is needed in SBATCH headers to use the NVMe drive
+    # NOTE: dlopen'd files will NOT be picked up by sbcast
+    sbcast --send-libs --exclude=NONE -pf ${exe} /mnt/bb/$USER/${exe}
+    if [ ! "$?" == "0" ]; then
+        # CHECK EXIT CODE. When SBCAST fails, it may leave partial files on the compute nodes, and if you continue to launch srun,
+        # your application may pick up partially complete shared library files, which would give you confusing errors.
+        echo "SBCAST failed!"
+        exit 1
+    fi
+
+    # Check to see if file exists
+    echo "*****ls -lh /mnt/bb/$USER*****"
+    ls -lh /mnt/bb/$USER/
+    echo "*****ls -lh /mnt/bb/$USER/${exe}_libs*****"
+    ls -lh /mnt/bb/$USER/${exe}_libs
+
+    # SBCAST sends all libraries detected by `ld` (minus any excluded), and stores them in the same directory in each node's node-local storage
+    # Any libraries opened by `dlopen` are NOT sent, since they are not known by the linker at run-time.
+
+    # All required libraries now reside in /mnt/bb/$USER/${exe}_libs
+    export LD_LIBRARY_PATH="/mnt/bb/$USER/${exe}_libs"
+
+    # libfabric dlopen's several libraries:
+    export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:$(pkg-config --variable=libdir libfabric)"
+
+    # cray-mpich dlopen's libhsa-runtime64.so and libamdhip64.so (non-versioned), so symlink on each node:
+    srun -N ${SLURM_NNODES} -n ${SLURM_NNODES} --ntasks-per-node=1 --label -D /mnt/bb/$USER/${exe}_libs \
+        bash -c "if [ -f libhsa-runtime64.so.1 ]; then ln -s libhsa-runtime64.so.1 libhsa-runtime64.so; fi;
+        if [ -f libamdhip64.so.5 ]; then ln -s libamdhip64.so.5 libamdhip64.so; fi"
+
+    # RocBLAS has over 1,000 device libraries that may be `dlopen`'d by RocBLAS during a run.
+    # It's impractical to SBCAST all of these, so you can set this path instead, if you use RocBLAS:
+    #export ROCBLAS_TENSILE_LIBPATH=${ROCM_PATH}/lib/rocblas/library
+
+    # You may notice that some libraries are still linked from /sw/crusher, even after SBCASTing.
+    # This is because the Spack-build modules use RPATH to find their dependencies. This behavior cannot be changed.
+    echo "*****ldd /mnt/bb/$USER/${exe}*****"
+    ldd /mnt/bb/$USER/${exe}
+    echo "*************************************"
+
+
+Some libraries still resolved to paths outside of ``/mnt/bb``, and the reason for that is that the executable may have several paths in ``RPATH``.
+
+
 
 ----
 
