@@ -10,6 +10,10 @@ Installing mpi4py and h5py
    this guide assumes that you are using a personal
    :doc:`Miniconda distribution on Frontier </software/python/miniconda>`.
 
+.. note::
+   For ``venv`` users only interested in installing ``mpi4py``, the ``pip``
+   command in this guide is still accurate.
+
 This guide has been adapted from a challenge in OLCF's `Hands-On with Summit <https://github.com/olcf/hands-on-with-summit>`__ GitHub repository (`Python: Parallel HDF5 <https://github.com/olcf/hands-on-with-summit/tree/master/challenges/Python_Parallel_HDF5>`__).
 
 .. note::
@@ -109,7 +113,7 @@ Loading a python module puts you in a "base" environment, but you need to create
 
    .. code-block:: bash
 
-      $ conda create -p /ccs/proj/<project_id>/<user_id>/envs/frontier/h5pympi-frontier python=3.8
+      $ conda create -p /ccs/proj/<project_id>/<user_id>/envs/frontier/h5pympi-frontier python=3.8 libssh -c conda-forge
 
 .. note::
    As noted in the :doc:`/software/python/index` page, it is highly recommended to create new environments in the "Project Home" directory.
