@@ -2416,7 +2416,7 @@ SBCASTing a binary with libraries stored on shared file systems
     ldd ./${exe}
     echo "*************************"
 
-    # SBCAST executable from GPFS to NVMe -- NOTE: ``-C nvme`` is needed in SBATCH headers to use the NVMe drive
+    # SBCAST executable from Orion to NVMe -- NOTE: ``-C nvme`` is needed in SBATCH headers to use the NVMe drive
     # NOTE: dlopen'd files will NOT be picked up by sbcast
     # SBCAST automatically excludes several directories: /lib,/usr/lib,/lib64,/usr/lib64,/opt
     #   - These directories are node-local and are very fast to read from, so SBCASTing them isn't critical
