@@ -2318,6 +2318,10 @@ SBCAST your executable and libraries
 Slurm contains a utility called ``sbcast``. This program takes a file and broadcasts it to each node's node-local storage (ie, ``/tmp``, NVMe).
 This is useful for sharing large input files, binaries and shared libraries, while reducing the overhead on shared file systems and overhead at startup.
 This is highly recommended at scale if you have multiple shared libraries on Lustre/NFS file systems.
+
+SBCASTing a single file
+"""""""""""""""""""""""
+
 Here is a simple example of a file ``sbcast`` from a user's scratch space on Lustre to each node's NVMe drive:
 
 .. code:: bash
@@ -2383,6 +2387,9 @@ and here is the output from that script:
     This is an example file
     **************************************
 
+
+SBCASTing a binary with libraries stored on shared file systems
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 ``sbcast`` also handles binaries and their libraries:
 
@@ -2616,7 +2623,11 @@ and here is the output from that script:
 Notice that the libraries are sent to the ``${exe}_libs`` directory in the same prefix as the executable.
 Once libraries are here, you cannot tell where they came from, so consider doing an ``ldd`` of your executable prior to ``sbcast``.
 
-As mentioned above, you can use ``--exclude=NONE`` on ``sbcast`` to send all libraries along with the binary.
+
+Alternative: SBCASTing a binary with all libraries
+""""""""""""""""""""""""""""""""""""""""""""""""""
+
+As mentioned above, you can alternatively use ``--exclude=NONE`` on ``sbcast`` to send all libraries along with the binary.
 Using ``--exclude=NONE`` requires more effort but substantially simplifies the linker configuration at run-time.
 A job script for the previous example, modified for sending all libraries is shown below.
 

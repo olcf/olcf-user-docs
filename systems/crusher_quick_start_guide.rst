@@ -1181,6 +1181,10 @@ SBCAST your executable and libraries
 Slurm contains a utility called ``sbcast``. This program takes a file and broadcasts it to each node's node-local storage (ie, ``/tmp``, NVMe).
 This is useful for sharing large input files, binaries and shared libraries, while reducing the overhead on shared file systems and overhead at startup.
 This is highly recommended at scale if you have multiple shared libraries on Lustre/NFS file systems.
+
+SBCASTing a single file
+"""""""""""""""""""""""
+
 Here is a simple example of a file ``sbcast`` from a user's scratch space on Lustre to each node's NVMe drive:
 
 .. code:: bash
@@ -1247,8 +1251,73 @@ and here is the output from that script:
     **************************************
 
 
+SBCASTing a binary with libraries stored on shared file systems
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 ``sbcast`` also handles binaries and their libraries:
 
+.. code:: bash
+
+    #!/bin/bash
+    #SBATCH -A <projid>
+    #SBATCH -J sbcast_binary_to_nvme
+    #SBATCH -o %x-%j.out
+    #SBATCH -t 00:05:00
+    #SBATCH -p batch
+    #SBATCH -N 2
+    #SBATCH -C nvme
+
+    date
+
+    # Change directory to user scratch space (Orion)
+    cd /lustre/orion/<projid>/scratch/<userid>
+
+    # For this example, I use a HIP-enabled LAMMPS binary, with dependencies to MPI, HIP, and HWLOC
+    exe="lmp"
+
+    echo "*****ldd ./${exe}*****"
+    ldd ./${exe}
+    echo "*************************"
+
+    # SBCAST executable from Orion to NVMe -- NOTE: ``-C nvme`` is needed in SBATCH headers to use the NVMe drive
+    # NOTE: dlopen'd files will NOT be picked up by sbcast
+    # SBCAST automatically excludes several directories: /lib,/usr/lib,/lib64,/usr/lib64,/opt
+    #   - These directories are node-local and are very fast to read from, so SBCASTing them isn't critical
+    #   - see ``$ scontrol show config | grep BcastExclude`` for current list
+    #   - OLCF-provided libraries in ``/sw`` are not on the exclusion list. ``/sw`` is an NFS shared file system
+    #   - To override, add ``--exclude=NONE`` to arguments
+    sbcast --send-libs -pf ${exe} /mnt/bb/$USER/${exe}
+    if [ ! "$?" == "0" ]; then
+        # CHECK EXIT CODE. When SBCAST fails, it may leave partial files on the compute nodes, and if you continue to launch srun,
+        # your application may pick up partially complete shared library files, which would give you confusing errors.
+        echo "SBCAST failed!"
+        exit 1
+    fi
+
+    # Check to see if file exists
+    echo "*****ls -lh /mnt/bb/$USER*****"
+    ls -lh /mnt/bb/$USER/
+    echo "*****ls -lh /mnt/bb/$USER/${exe}_libs*****"
+    ls -lh /mnt/bb/$USER/${exe}_libs
+
+    # SBCAST sends all libraries detected by `ld` (minus any excluded), and stores them in the same directory in each node's node-local storage
+    # Any libraries opened by `dlopen` are NOT sent, since they are not known by the linker at run-time.
+
+    # At minimum: prepend the node-local path to LD_LIBRARY_PATH to pick up the SBCAST libraries
+    # It is also recommended that you **remove** any paths that you don't need, like those that contain the libraries that you just SBCAST'd
+    # Failure to remove may result in unnecessary calls to stat shared file systems
+    export LD_LIBRARY_PATH="/mnt/bb/$USER/${exe}_libs:${LD_LIBRARY_PATH}"
+
+    # If you SBCAST **all** your libraries (ie, `--exclude=NONE`), you may use the following line:
+    #export LD_LIBRARY_PATH="/mnt/bb/$USER/${exe}_libs:$(pkg-config --variable=libdir libfabric)"
+    # Use with caution -- certain libraries may use ``dlopen`` at runtime, and that is NOT covered by sbcast
+    # If you use this option, we recommend you contact OLCF Help Desk for the latest list of additional steps required
+
+    # You may notice that some libraries are still linked from /sw/frontier, even after SBCASTing.
+    # This is because the Spack-build modules use RPATH to find their dependencies.
+    echo "*****ldd /mnt/bb/$USER/${exe}*****"
+    ldd /mnt/bb/$USER/${exe}
+    echo "*************************************"
 
 
 and here is the output from that script:
@@ -1414,10 +1483,11 @@ and here is the output from that script:
     	libpcre.so.1 => /usr/lib64/libpcre.so.1 (0x00007ffef4abe000)
     *************************************
 
-
-
 Notice that the libraries are sent to the ``${exe}_libs`` directory in the same prefix as the executable.
 Once libraries are here, you cannot tell where they came from, so consider doing an ``ldd`` of your executable prior to ``sbcast``.
+
+Alternative: SBCASTing a binary with all libraries
+""""""""""""""""""""""""""""""""""""""""""""""""""
 
 As mentioned above, you can use ``--exclude=NONE`` on ``sbcast`` to send all libraries along with the binary.
 Using ``--exclude=NONE`` requires more effort but substantially simplifies the linker configuration at run-time.
