@@ -101,22 +101,24 @@ Loading a python module puts you in a "base" environment, but you need to create
 
    .. code-block:: bash
 
-      $ conda create -p /ccs/proj/<project_id>/<user_id>/envs/summit/h5pympi-summit python=3.8
+      $ conda create -p /ccs/proj/<project_id>/<user_id>/envs/summit/h5pympi-summit python=3.8 numpy
 
 .. tabbed:: Andes
 
    .. code-block:: bash
 
-      $ conda create -p /ccs/proj/<project_id>/<user_id>/envs/andes/h5pympi-andes python=3.8
+      $ conda create -p /ccs/proj/<project_id>/<user_id>/envs/andes/h5pympi-andes python=3.8 numpy
 
 .. tabbed:: Frontier
 
    .. code-block:: bash
 
-      $ conda create -p /ccs/proj/<project_id>/<user_id>/envs/frontier/h5pympi-frontier python=3.8 libssh -c conda-forge
+      $ conda create -p /ccs/proj/<project_id>/<user_id>/envs/frontier/h5pympi-frontier python=3.8 libssh numpy -c conda-forge
 
 .. note::
    As noted in the :doc:`/software/python/index` page, it is highly recommended to create new environments in the "Project Home" directory.
+
+NumPy is installed ahead of time because h5py depends on it.
 
 After following the prompts for creating your new environment, you can now activate it:
 
@@ -171,30 +173,6 @@ Installing h5py
 ===============
 
 Next, install h5py from source.
-Because h5py depends on NumPy, install an optimized version of the NumPy package:
-
-.. tabbed:: Summit
-
-   .. code-block:: bash
-
-      $ conda install -c defaults --override-channels numpy
-
-.. tabbed:: Andes
-
-   .. code-block:: bash
-
-      $ conda install -c defaults --override-channels numpy
-
-.. tabbed:: Frontier
-
-   .. code-block:: bash
-
-      $ conda install -c defaults --override-channels numpy
-
-The ``-c defaults --override-channels`` flags ensure that conda will search for NumPy only on the "defaults" channel.
-Installing NumPy in this manner results in an optimized NumPy that is built against linear algebra libraries, which performs operations much faster.
-
-Next, you are finally ready to install h5py from source:
 
 .. tabbed:: Summit
 
