@@ -11,10 +11,11 @@ Frontier User Guide
 
   Notable differences between Summit and Frontier:
 
-  Orion scratch filesystem 
+  Orion scratch filesystem
     Frontier mounts Orion, a parallel filesystem based on Lustre and HPE ClusterStor, with a 679 PB usable namespace. Frontier will not mount Alpine and Summit will not mount Orion. Data will not be automatically transferred from Alpine to Orion, so we recommend that users move only needed data between the file systems with Globus.
 
     See the :ref:`frontier-data-storage` section or this `recording <https://vimeo.com/manage/videos/814973734>`_ for more information. 
+   
   Cray Programming Environment
     Frontier utilizes the Cray Programming Environment.  Many aspects including LMOD are similar to Summit's environment.  But Cray's compiler wrappers and the Cray and AMD compilers are worth noting.
 
@@ -915,9 +916,9 @@ To override this default layout (not recommended), set ``-S 0`` at job allocatio
 Slurm
 -----
 
-Frontier uses SchedMD's Slurm workload manager for scheduling jobs. Proir systems used different schedulers (Summit used IBM's LSF, many others used Moab). While most of these systems provide similar functionality, but with different commands/options. A comparison of a few important commands is below, but SchedMD provides a more complete reference in their `Rosetta Stone of Workload Managers <https://slurm.schedmd.com/rosetta.pdf>`__.
+Frontier uses SchedMD's Slurm Workload Manager for scheduling and managing jobs. Slurm maintains similar functionality to other schedulers such as IBM's LSF, but provides unique control of Frontier's resources through custom commands and options specific to Slurm. A few important commands can be found in the conversion table below, but please visit SchedMD's `Rosetta Stone of Workload Managers <https://slurm.schedmd.com/rosetta.pdf>`__ for a more complete conversion reference. 
 
-Slurm documentation for each command is available on the system via the ``man`` utility as well as on the web at `<https://slurm.schedmd.com/man_index.html>`__. Additional documentation is available at `<https://slurm.schedmd.com/documentation.html>`__.
+Slurm documentation for each command is available via the ``man`` utility, and on the web at `<https://slurm.schedmd.com/man_index.html>`__. Additional documentation is available at `<https://slurm.schedmd.com/documentation.html>`__.
 
 Some common Slurm commands are summarized in the table below. More complete examples are given in the Monitoring and Modifying Batch Jobs section of this guide.
 
