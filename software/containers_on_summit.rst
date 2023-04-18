@@ -95,12 +95,14 @@ Building a Simple Image
      FROM quay.io/centos/centos:stream8
      RUN dnf -y install epel-release && dnf -y install fakeroot
      RUN fakeroot dnf upgrade -y && fakeroot dnf update -y
-     RUN fakeroot dnf install -y wget hostname
+     RUN fakeroot dnf install -y wget hostname libevent
      ENTRYPOINT ["/bin/bash"]
 
 .. note::
    You will notice the use of the fakeroot command when doing package installs with dnf. This is necessary as some some package installations require root permissions on container which the container builder does not have. So fakeroot allows dnf to think it is running as root and allows the installation to succeed.
-     
+
+.. note::
+   Singularity requires libevent installed in any container you build in order for it to work correctly with the jsrun job launcher.
 
 - Build the container image with ``podman build -t simple -f simple.dockerfile .``.
 
