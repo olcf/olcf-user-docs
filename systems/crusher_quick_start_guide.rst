@@ -1133,21 +1133,21 @@ Each Crusher compute node has [2x] 1.92 TB NVMe devices (SSDs) with a peak seque
 
     date
 
-    # Change directory to user scratch space (GPFS)
-    cd /gpfs/alpine/<projid>/scratch/<userid>
+    # Change directory to user scratch space (Orion)
+    cd /lustre/orion/<projid>/scratch/<userid>
 
     echo " "
     echo "*****ORIGINAL FILE*****"
     cat test.txt
     echo "***********************"
 
-    # Move file from GPFS to SSD
+    # Move file from Orion to SSD
     mv test.txt /mnt/bb/<userid>
 
     # Edit file from compute node
     srun -n1 hostname >> /mnt/bb/<userid>/test.txt
 
-    # Move file from SSD back to GPFS
+    # Move file from SSD back to Orion
     mv /mnt/bb/<userid>/test.txt .
 
     echo " "
@@ -1178,10 +1178,14 @@ Tips for Launching at Scale
 SBCAST your executable and libraries
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Slurm contains a utility called ``sbcast``. This program takes a file and broadcasts it to all nodes to node-local storage (ie, ``/tmp``, NVMe).
+Slurm contains a utility called ``sbcast``. This program takes a file and broadcasts it to each node's node-local storage (ie, ``/tmp``, NVMe).
 This is useful for sharing large input files, binaries and shared libraries, while reducing the overhead on shared file systems and overhead at startup.
-This is highly recommended at scale if you have multiple shared libraries on GPFS/NFS file systems.
-Here is a simple example of a file ``sbcast`` from a user's scratch space on GPFS to each node's NVMe drive:
+This is highly recommended at scale if you have multiple shared libraries on Lustre/NFS file systems.
+
+SBCASTing a single file
+"""""""""""""""""""""""
+
+Here is a simple example of a file ``sbcast`` from a user's scratch space on Lustre to each node's NVMe drive:
 
 .. code:: bash
 
@@ -1196,8 +1200,8 @@ Here is a simple example of a file ``sbcast`` from a user's scratch space on GPF
 
     date
 
-    # Change directory to user scratch space (GPFS)
-    cd /gpfs/alpine/<projid>/scratch/<userid>
+    # Change directory to user scratch space (Orion)
+    cd /lustre/orion/<projid>/scratch/<userid>
 
     echo "This is an example file" > test.txt
     echo
@@ -1205,7 +1209,7 @@ Here is a simple example of a file ``sbcast`` from a user's scratch space on GPF
     cat test.txt
     echo "***********************"
 
-    # SBCAST file from GPFS to NVMe -- NOTE: ``-C nvme`` is required to use the NVMe drive
+    # SBCAST file from Orion to NVMe -- NOTE: ``-C nvme`` is required to use the NVMe drive
     sbcast -pf test.txt /mnt/bb/$USER/test.txt
     if [ ! "$?" == "0" ]; then
         # CHECK EXIT CODE. When SBCAST fails, it may leave partial files on the compute nodes, and if you continue to launch srun,
@@ -1247,6 +1251,9 @@ and here is the output from that script:
     **************************************
 
 
+SBCASTing a binary with libraries stored on shared file systems
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 ``sbcast`` also handles binaries and their libraries:
 
 .. code:: bash
@@ -1262,38 +1269,254 @@ and here is the output from that script:
 
     date
 
-    # Change directory to user scratch space (GPFS)
-    cd /gpfs/alpine/<projid>/scratch/<userid>
+    # Change directory to user scratch space (Orion)
+    cd /lustre/orion/<projid>/scratch/<userid>
 
-    echo '#include <stdio.h>' > test.c
-    echo '#include <mpi.h>' >> test.c
-    echo '' >> test.c
-    echo 'int main(int argc, char **argv) {' >> test.c
-    echo '  int rank, numprocs;' >> test.c
-    echo '  MPI_Init(&argc, &argv);' >> test.c
-    echo '  MPI_Comm_rank(MPI_COMM_WORLD, &rank);' >> test.c
-    echo '  MPI_Comm_size(MPI_COMM_WORLD, &numprocs);' >> test.c
-    echo '  printf("Hello from rank %d of %d\n",rank,numprocs);' >> test.c
-    echo '  MPI_Finalize();' >> test.c
-    echo '  return 0;' >> test.c
-    echo '}' >> test.c
-    echo
-    echo "*****SOURCE FILE*****"
-    cat test.c
-    echo "*********************"
-
-    echo
-    echo "Compiling source file..."
-    cc -o ./hello_mpi test.c
-    ls -lh ./hello_mpi
-
-    exe="hello_mpi"
+    # For this example, I use a HIP-enabled LAMMPS binary, with dependencies to MPI, HIP, and HWLOC
+    exe="lmp"
 
     echo "*****ldd ./${exe}*****"
     ldd ./${exe}
     echo "*************************"
 
-    # SBCAST executable from GPFS to NVMe -- NOTE: ``-C nvme`` is needed in SBATCH headers to use the NVMe drive
+    # SBCAST executable from Orion to NVMe -- NOTE: ``-C nvme`` is needed in SBATCH headers to use the NVMe drive
+    # NOTE: dlopen'd files will NOT be picked up by sbcast
+    # SBCAST automatically excludes several directories: /lib,/usr/lib,/lib64,/usr/lib64,/opt
+    #   - These directories are node-local and are very fast to read from, so SBCASTing them isn't critical
+    #   - see ``$ scontrol show config | grep BcastExclude`` for current list
+    #   - OLCF-provided libraries in ``/sw`` are not on the exclusion list. ``/sw`` is an NFS shared file system
+    #   - To override, add ``--exclude=NONE`` to arguments
+    sbcast --send-libs -pf ${exe} /mnt/bb/$USER/${exe}
+    if [ ! "$?" == "0" ]; then
+        # CHECK EXIT CODE. When SBCAST fails, it may leave partial files on the compute nodes, and if you continue to launch srun,
+        # your application may pick up partially complete shared library files, which would give you confusing errors.
+        echo "SBCAST failed!"
+        exit 1
+    fi
+
+    # Check to see if file exists
+    echo "*****ls -lh /mnt/bb/$USER*****"
+    ls -lh /mnt/bb/$USER/
+    echo "*****ls -lh /mnt/bb/$USER/${exe}_libs*****"
+    ls -lh /mnt/bb/$USER/${exe}_libs
+
+    # SBCAST sends all libraries detected by `ld` (minus any excluded), and stores them in the same directory in each node's node-local storage
+    # Any libraries opened by `dlopen` are NOT sent, since they are not known by the linker at run-time.
+
+    # At minimum: prepend the node-local path to LD_LIBRARY_PATH to pick up the SBCAST libraries
+    # It is also recommended that you **remove** any paths that you don't need, like those that contain the libraries that you just SBCAST'd
+    # Failure to remove may result in unnecessary calls to stat shared file systems
+    export LD_LIBRARY_PATH="/mnt/bb/$USER/${exe}_libs:${LD_LIBRARY_PATH}"
+
+    # If you SBCAST **all** your libraries (ie, `--exclude=NONE`), you may use the following line:
+    #export LD_LIBRARY_PATH="/mnt/bb/$USER/${exe}_libs:$(pkg-config --variable=libdir libfabric)"
+    # Use with caution -- certain libraries may use ``dlopen`` at runtime, and that is NOT covered by sbcast
+    # If you use this option, we recommend you contact OLCF Help Desk for the latest list of additional steps required
+
+    # You may notice that some libraries are still linked from /sw/frontier, even after SBCASTing.
+    # This is because the Spack-build modules use RPATH to find their dependencies.
+    echo "*****ldd /mnt/bb/$USER/${exe}*****"
+    ldd /mnt/bb/$USER/${exe}
+    echo "*************************************"
+
+
+and here is the output from that script:
+
+.. code:: bash
+
+    Tue 28 Mar 2023 05:01:41 PM EDT
+    *****ldd ./lmp*****
+    	linux-vdso.so.1 (0x00007fffeda02000)
+    	libgcc_s.so.1 => /lib64/libgcc_s.so.1 (0x00007fffed5bb000)
+    	libpthread.so.0 => /lib64/libpthread.so.0 (0x00007fffed398000)
+    	libm.so.6 => /lib64/libm.so.6 (0x00007fffed04d000)
+    	librt.so.1 => /lib64/librt.so.1 (0x00007fffece44000)
+    	libamdhip64.so.4 => /opt/rocm-4.5.2/lib/libamdhip64.so.4 (0x00007fffec052000)
+    	libmpi_cray.so.12 => /opt/cray/pe/lib64/libmpi_cray.so.12 (0x00007fffe96cc000)
+    	libmpi_gtl_hsa.so.0 => /opt/cray/pe/lib64/libmpi_gtl_hsa.so.0 (0x00007fffe9469000)
+    	libhsa-runtime64.so.1 => /opt/rocm-5.3.0/lib/libhsa-runtime64.so.1 (0x00007fffe8fdc000)
+    	libhwloc.so.15 => /sw/crusher/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/hwloc-2.5.0-4p6jkgf5ez6wr27pytkzyptppzpugu3e/lib/libhwloc.so.15 (0x00007fffe8d82000)
+    	libdl.so.2 => /lib64/libdl.so.2 (0x00007fffe8b7e000)
+    	libhipfft.so => /opt/rocm-5.3.0/lib/libhipfft.so (0x00007fffed9d2000)
+    	libstdc++.so.6 => /usr/lib64/libstdc++.so.6 (0x00007fffe875b000)
+    	libc.so.6 => /lib64/libc.so.6 (0x00007fffe8366000)
+    	/lib64/ld-linux-x86-64.so.2 (0x00007fffed7da000)
+    	libamd_comgr.so.2 => /opt/rocm-5.3.0/lib/libamd_comgr.so.2 (0x00007fffe06e0000)
+    	libnuma.so.1 => /usr/lib64/libnuma.so.1 (0x00007fffe04d4000)
+    	libfabric.so.1 => /opt/cray/libfabric/1.15.2.0/lib64/libfabric.so.1 (0x00007fffe01e2000)
+    	libatomic.so.1 => /usr/lib64/libatomic.so.1 (0x00007fffdffd9000)
+    	libpmi.so.0 => /opt/cray/pe/lib64/libpmi.so.0 (0x00007fffdfdd7000)
+    	libpmi2.so.0 => /opt/cray/pe/lib64/libpmi2.so.0 (0x00007fffdfb9e000)
+    	libquadmath.so.0 => /usr/lib64/libquadmath.so.0 (0x00007fffdf959000)
+    	libmodules.so.1 => /opt/cray/pe/lib64/cce/libmodules.so.1 (0x00007fffed9b5000)
+    	libfi.so.1 => /opt/cray/pe/lib64/cce/libfi.so.1 (0x00007fffdf3b4000)
+    	libcraymath.so.1 => /opt/cray/pe/lib64/cce/libcraymath.so.1 (0x00007fffed8ce000)
+    	libf.so.1 => /opt/cray/pe/lib64/cce/libf.so.1 (0x00007fffed83b000)
+    	libu.so.1 => /opt/cray/pe/lib64/cce/libu.so.1 (0x00007fffdf2ab000)
+    	libcsup.so.1 => /opt/cray/pe/lib64/cce/libcsup.so.1 (0x00007fffed832000)
+    	libamdhip64.so.5 => /opt/rocm-5.3.0/lib/libamdhip64.so.5 (0x00007fffdda8a000)
+    	libelf.so.1 => /usr/lib64/libelf.so.1 (0x00007fffdd871000)
+    	libdrm.so.2 => /usr/lib64/libdrm.so.2 (0x00007fffdd65d000)
+    	libdrm_amdgpu.so.1 => /usr/lib64/libdrm_amdgpu.so.1 (0x00007fffdd453000)
+    	libpciaccess.so.0 => /sw/crusher/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/libpciaccess-0.16-6evcvl74myxfxdrddmnsvbc7sgfx6s5j/lib/libpciaccess.so.0 (0x00007fffdd24a000)
+    	libxml2.so.2 => /sw/crusher/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/libxml2-2.9.12-h7fe2yauotu3xit7rsaixaowd3noknur/lib/libxml2.so.2 (0x00007fffdcee6000)
+    	librocfft.so.0 => /opt/rocm-5.3.0/lib/librocfft.so.0 (0x00007fffdca1a000)
+    	libz.so.1 => /lib64/libz.so.1 (0x00007fffdc803000)
+    	libtinfo.so.6 => /lib64/libtinfo.so.6 (0x00007fffdc5d5000)
+    	libcxi.so.1 => /usr/lib64/libcxi.so.1 (0x00007fffdc3b0000)
+    	libcurl.so.4 => /usr/lib64/libcurl.so.4 (0x00007fffdc311000)
+    	libjson-c.so.3 => /usr/lib64/libjson-c.so.3 (0x00007fffdc101000)
+    	libpals.so.0 => /opt/cray/pe/lib64/libpals.so.0 (0x00007fffdbefc000)
+    	libgfortran.so.5 => /opt/cray/pe/gcc-libs/libgfortran.so.5 (0x00007fffdba50000)
+    	liblzma.so.5 => /sw/crusher/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/xz-5.2.5-zwra4gpckelt5umczowf3jtmeiz3yd7u/lib/liblzma.so.5 (0x00007fffdb82a000)
+    	libiconv.so.2 => /sw/crusher/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/libiconv-1.16-coz5dzhtoeq5unhjirayfn2xftnxk43l/lib/libiconv.so.2 (0x00007fffdb52e000)
+    	librocfft-device-0.so.0 => /opt/rocm-5.3.0/lib/librocfft-device-0.so.0 (0x00007fffa11a0000)
+    	librocfft-device-1.so.0 => /opt/rocm-5.3.0/lib/librocfft-device-1.so.0 (0x00007fff6491b000)
+    	librocfft-device-2.so.0 => /opt/rocm-5.3.0/lib/librocfft-device-2.so.0 (0x00007fff2a828000)
+    	librocfft-device-3.so.0 => /opt/rocm-5.3.0/lib/librocfft-device-3.so.0 (0x00007ffef7eee000)
+    	libnghttp2.so.14 => /usr/lib64/libnghttp2.so.14 (0x00007ffef7cc6000)
+    	libidn2.so.0 => /usr/lib64/libidn2.so.0 (0x00007ffef7aa9000)
+    	libssh.so.4 => /usr/lib64/libssh.so.4 (0x00007ffef783b000)
+    	libpsl.so.5 => /usr/lib64/libpsl.so.5 (0x00007ffef7629000)
+    	libssl.so.1.1 => /usr/lib64/libssl.so.1.1 (0x00007ffef758a000)
+    	libcrypto.so.1.1 => /usr/lib64/libcrypto.so.1.1 (0x00007ffef724a000)
+    	libgssapi_krb5.so.2 => /usr/lib64/libgssapi_krb5.so.2 (0x00007ffef6ff8000)
+    	libldap_r-2.4.so.2 => /usr/lib64/libldap_r-2.4.so.2 (0x00007ffef6da4000)
+    	liblber-2.4.so.2 => /usr/lib64/liblber-2.4.so.2 (0x00007ffef6b95000)
+    	libzstd.so.1 => /usr/lib64/libzstd.so.1 (0x00007ffef6865000)
+    	libbrotlidec.so.1 => /usr/lib64/libbrotlidec.so.1 (0x00007ffef6659000)
+    	libunistring.so.2 => /usr/lib64/libunistring.so.2 (0x00007ffef62d6000)
+    	libjitterentropy.so.3 => /usr/lib64/libjitterentropy.so.3 (0x00007ffef60cf000)
+    	libkrb5.so.3 => /usr/lib64/libkrb5.so.3 (0x00007ffef5df6000)
+    	libk5crypto.so.3 => /usr/lib64/libk5crypto.so.3 (0x00007ffef5bde000)
+    	libcom_err.so.2 => /lib64/libcom_err.so.2 (0x00007ffef59da000)
+    	libkrb5support.so.0 => /usr/lib64/libkrb5support.so.0 (0x00007ffef57cb000)
+    	libresolv.so.2 => /lib64/libresolv.so.2 (0x00007ffef55b3000)
+    	libsasl2.so.3 => /usr/lib64/libsasl2.so.3 (0x00007ffef5396000)
+    	libbrotlicommon.so.1 => /usr/lib64/libbrotlicommon.so.1 (0x00007ffef5175000)
+    	libkeyutils.so.1 => /usr/lib64/libkeyutils.so.1 (0x00007ffef4f70000)
+    	libselinux.so.1 => /lib64/libselinux.so.1 (0x00007ffef4d47000)
+    	libpcre.so.1 => /usr/lib64/libpcre.so.1 (0x00007ffef4abe000)
+    *************************
+    *****ls -lh /mnt/bb/hagertnl*****
+    total 236M
+    -rwxr-xr-x 1 hagertnl hagertnl 236M Mar 28 17:01 lmp
+    drwx------ 2 hagertnl hagertnl  114 Mar 28 17:01 lmp_libs
+    *****ls -lh /mnt/bb/hagertnl/lmp_libs*****
+    total 9.2M
+    -rwxr-xr-x 1 hagertnl hagertnl 1.6M Oct  6  2021 libhwloc.so.15
+    -rwxr-xr-x 1 hagertnl hagertnl 1.6M Oct  6  2021 libiconv.so.2
+    -rwxr-xr-x 1 hagertnl hagertnl 783K Oct  6  2021 liblzma.so.5
+    -rwxr-xr-x 1 hagertnl hagertnl 149K Oct  6  2021 libpciaccess.so.0
+    -rwxr-xr-x 1 hagertnl hagertnl 5.2M Oct  6  2021 libxml2.so.2
+    *****ldd /mnt/bb/hagertnl/lmp*****
+    	linux-vdso.so.1 (0x00007fffeda02000)
+    	libgcc_s.so.1 => /lib64/libgcc_s.so.1 (0x00007fffed5bb000)
+    	libpthread.so.0 => /lib64/libpthread.so.0 (0x00007fffed398000)
+    	libm.so.6 => /lib64/libm.so.6 (0x00007fffed04d000)
+    	librt.so.1 => /lib64/librt.so.1 (0x00007fffece44000)
+    	libamdhip64.so.4 => /opt/rocm-4.5.2/lib/libamdhip64.so.4 (0x00007fffec052000)
+    	libmpi_cray.so.12 => /opt/cray/pe/lib64/libmpi_cray.so.12 (0x00007fffe96cc000)
+    	libmpi_gtl_hsa.so.0 => /opt/cray/pe/lib64/libmpi_gtl_hsa.so.0 (0x00007fffe9469000)
+    	libhsa-runtime64.so.1 => /opt/rocm-5.3.0/lib/libhsa-runtime64.so.1 (0x00007fffe8fdc000)
+    	libhwloc.so.15 => /mnt/bb/hagertnl/lmp_libs/libhwloc.so.15 (0x00007fffe8d82000)
+    	libdl.so.2 => /lib64/libdl.so.2 (0x00007fffe8b7e000)
+    	libhipfft.so => /opt/rocm-5.3.0/lib/libhipfft.so (0x00007fffed9d2000)
+    	libstdc++.so.6 => /usr/lib64/libstdc++.so.6 (0x00007fffe875b000)
+    	libc.so.6 => /lib64/libc.so.6 (0x00007fffe8366000)
+    	/lib64/ld-linux-x86-64.so.2 (0x00007fffed7da000)
+    	libamd_comgr.so.2 => /opt/rocm-5.3.0/lib/libamd_comgr.so.2 (0x00007fffe06e0000)
+    	libnuma.so.1 => /usr/lib64/libnuma.so.1 (0x00007fffe04d4000)
+    	libfabric.so.1 => /opt/cray/libfabric/1.15.2.0/lib64/libfabric.so.1 (0x00007fffe01e2000)
+    	libatomic.so.1 => /usr/lib64/libatomic.so.1 (0x00007fffdffd9000)
+    	libpmi.so.0 => /opt/cray/pe/lib64/libpmi.so.0 (0x00007fffdfdd7000)
+    	libpmi2.so.0 => /opt/cray/pe/lib64/libpmi2.so.0 (0x00007fffdfb9e000)
+    	libquadmath.so.0 => /usr/lib64/libquadmath.so.0 (0x00007fffdf959000)
+    	libmodules.so.1 => /opt/cray/pe/lib64/cce/libmodules.so.1 (0x00007fffed9b5000)
+    	libfi.so.1 => /opt/cray/pe/lib64/cce/libfi.so.1 (0x00007fffdf3b4000)
+    	libcraymath.so.1 => /opt/cray/pe/lib64/cce/libcraymath.so.1 (0x00007fffed8ce000)
+    	libf.so.1 => /opt/cray/pe/lib64/cce/libf.so.1 (0x00007fffed83b000)
+    	libu.so.1 => /opt/cray/pe/lib64/cce/libu.so.1 (0x00007fffdf2ab000)
+    	libcsup.so.1 => /opt/cray/pe/lib64/cce/libcsup.so.1 (0x00007fffed832000)
+    	libamdhip64.so.5 => /opt/rocm-5.3.0/lib/libamdhip64.so.5 (0x00007fffdda8a000)
+    	libelf.so.1 => /usr/lib64/libelf.so.1 (0x00007fffdd871000)
+    	libdrm.so.2 => /usr/lib64/libdrm.so.2 (0x00007fffdd65d000)
+    	libdrm_amdgpu.so.1 => /usr/lib64/libdrm_amdgpu.so.1 (0x00007fffdd453000)
+    	libpciaccess.so.0 => /sw/crusher/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/libpciaccess-0.16-6evcvl74myxfxdrddmnsvbc7sgfx6s5j/lib/libpciaccess.so.0 (0x00007fffdd24a000)
+    	libxml2.so.2 => /sw/crusher/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/libxml2-2.9.12-h7fe2yauotu3xit7rsaixaowd3noknur/lib/libxml2.so.2 (0x00007fffdcee6000)
+    	librocfft.so.0 => /opt/rocm-5.3.0/lib/librocfft.so.0 (0x00007fffdca1a000)
+    	libz.so.1 => /lib64/libz.so.1 (0x00007fffdc803000)
+    	libtinfo.so.6 => /lib64/libtinfo.so.6 (0x00007fffdc5d5000)
+    	libcxi.so.1 => /usr/lib64/libcxi.so.1 (0x00007fffdc3b0000)
+    	libcurl.so.4 => /usr/lib64/libcurl.so.4 (0x00007fffdc311000)
+    	libjson-c.so.3 => /usr/lib64/libjson-c.so.3 (0x00007fffdc101000)
+    	libpals.so.0 => /opt/cray/pe/lib64/libpals.so.0 (0x00007fffdbefc000)
+    	libgfortran.so.5 => /opt/cray/pe/gcc-libs/libgfortran.so.5 (0x00007fffdba50000)
+    	liblzma.so.5 => /sw/crusher/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/xz-5.2.5-zwra4gpckelt5umczowf3jtmeiz3yd7u/lib/liblzma.so.5 (0x00007fffdb82a000)
+    	libiconv.so.2 => /sw/crusher/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/libiconv-1.16-coz5dzhtoeq5unhjirayfn2xftnxk43l/lib/libiconv.so.2 (0x00007fffdb52e000)
+    	librocfft-device-0.so.0 => /opt/rocm-5.3.0/lib/librocfft-device-0.so.0 (0x00007fffa11a0000)
+    	librocfft-device-1.so.0 => /opt/rocm-5.3.0/lib/librocfft-device-1.so.0 (0x00007fff6491b000)
+    	librocfft-device-2.so.0 => /opt/rocm-5.3.0/lib/librocfft-device-2.so.0 (0x00007fff2a828000)
+    	librocfft-device-3.so.0 => /opt/rocm-5.3.0/lib/librocfft-device-3.so.0 (0x00007ffef7eee000)
+    	libnghttp2.so.14 => /usr/lib64/libnghttp2.so.14 (0x00007ffef7cc6000)
+    	libidn2.so.0 => /usr/lib64/libidn2.so.0 (0x00007ffef7aa9000)
+    	libssh.so.4 => /usr/lib64/libssh.so.4 (0x00007ffef783b000)
+    	libpsl.so.5 => /usr/lib64/libpsl.so.5 (0x00007ffef7629000)
+    	libssl.so.1.1 => /usr/lib64/libssl.so.1.1 (0x00007ffef758a000)
+    	libcrypto.so.1.1 => /usr/lib64/libcrypto.so.1.1 (0x00007ffef724a000)
+    	libgssapi_krb5.so.2 => /usr/lib64/libgssapi_krb5.so.2 (0x00007ffef6ff8000)
+    	libldap_r-2.4.so.2 => /usr/lib64/libldap_r-2.4.so.2 (0x00007ffef6da4000)
+    	liblber-2.4.so.2 => /usr/lib64/liblber-2.4.so.2 (0x00007ffef6b95000)
+    	libzstd.so.1 => /usr/lib64/libzstd.so.1 (0x00007ffef6865000)
+    	libbrotlidec.so.1 => /usr/lib64/libbrotlidec.so.1 (0x00007ffef6659000)
+    	libunistring.so.2 => /usr/lib64/libunistring.so.2 (0x00007ffef62d6000)
+    	libjitterentropy.so.3 => /usr/lib64/libjitterentropy.so.3 (0x00007ffef60cf000)
+    	libkrb5.so.3 => /usr/lib64/libkrb5.so.3 (0x00007ffef5df6000)
+    	libk5crypto.so.3 => /usr/lib64/libk5crypto.so.3 (0x00007ffef5bde000)
+    	libcom_err.so.2 => /lib64/libcom_err.so.2 (0x00007ffef59da000)
+    	libkrb5support.so.0 => /usr/lib64/libkrb5support.so.0 (0x00007ffef57cb000)
+    	libresolv.so.2 => /lib64/libresolv.so.2 (0x00007ffef55b3000)
+    	libsasl2.so.3 => /usr/lib64/libsasl2.so.3 (0x00007ffef5396000)
+    	libbrotlicommon.so.1 => /usr/lib64/libbrotlicommon.so.1 (0x00007ffef5175000)
+    	libkeyutils.so.1 => /usr/lib64/libkeyutils.so.1 (0x00007ffef4f70000)
+    	libselinux.so.1 => /lib64/libselinux.so.1 (0x00007ffef4d47000)
+    	libpcre.so.1 => /usr/lib64/libpcre.so.1 (0x00007ffef4abe000)
+    *************************************
+
+Notice that the libraries are sent to the ``${exe}_libs`` directory in the same prefix as the executable.
+Once libraries are here, you cannot tell where they came from, so consider doing an ``ldd`` of your executable prior to ``sbcast``.
+
+Alternative: SBCASTing a binary with all libraries
+""""""""""""""""""""""""""""""""""""""""""""""""""
+
+As mentioned above, you can use ``--exclude=NONE`` on ``sbcast`` to send all libraries along with the binary.
+Using ``--exclude=NONE`` requires more effort but substantially simplifies the linker configuration at run-time.
+A job script for the previous example, modified for sending all libraries is shown below.
+
+.. code:: bash
+
+    #!/bin/bash
+    #SBATCH -A <projid>
+    #SBATCH -J sbcast_binary_to_nvme
+    #SBATCH -o %x-%j.out
+    #SBATCH -t 00:05:00
+    #SBATCH -p batch
+    #SBATCH -N 2
+    #SBATCH -C nvme
+
+    date
+
+    # Change directory to user scratch space (Orion)
+    cd /lustre/orion/<projid>/scratch/<userid>
+
+    # For this example, I use a HIP-enabled LAMMPS binary, with dependencies to MPI, HIP, and HWLOC
+    exe="lmp"
+
+    echo "*****ldd ./${exe}*****"
+    ldd ./${exe}
+    echo "*************************"
+
+    # SBCAST executable from Orion to NVMe -- NOTE: ``-C nvme`` is needed in SBATCH headers to use the NVMe drive
     # NOTE: dlopen'd files will NOT be picked up by sbcast
     sbcast --send-libs --exclude=NONE -pf ${exe} /mnt/bb/$USER/${exe}
     if [ ! "$?" == "0" ]; then
@@ -1303,234 +1526,38 @@ and here is the output from that script:
         exit 1
     fi
 
-    # If you intend to use `rocprof`, you also need to send the ROCm profiling library.
-    #sbcast -pf ${ROCM_PATH}/hsa-amd-aqlprofile/lib/libhsa-amd-aqlprofile64.so /mnt/bb/$USER/${exe}_libs/libhsa-amd-aqlprofile64.so
-    #if [ ! "$?" == "0" ]; then
-        # CHECK EXIT CODE. When SBCAST fails, it may leave partial files on the compute nodes, and if you continue to launch srun,
-        # your application may pick up partially complete shared library files, which would give you confusing errors.
-        #echo "SBCAST failed!"
-        #exit 1
-    #fi
-
-    # Some applications may expect a generic name of certain libraries (ie, `libamdhip64.so` instead of `libamdhip64.so.5`)
-    # You may need to use an `srun` line like this to add sym-links on each node
-    # The 2 most common cases are `libhsa-runtime64.so` and `libamdhip64.so`
-    # srun -N ${SLURM_NNODES} -n ${SLURM_NNODES} --ntasks-per-node=1 --label -D /mnt/bb/$USER/${exe}_libs \
-    #   bash -c "if [ -f libhsa-runtime64.so.1 ]; then ln -s libhsa-runtime64.so.1 libhsa-runtime64.so; fi;
-    #            if [ -f libamdhip64.so.5 ]; then ln -s libamdhip64.so.5 libamdhip64.so; fi"
-
     # Check to see if file exists
     echo "*****ls -lh /mnt/bb/$USER*****"
     ls -lh /mnt/bb/$USER/
     echo "*****ls -lh /mnt/bb/$USER/${exe}_libs*****"
     ls -lh /mnt/bb/$USER/${exe}_libs
 
-    # SBCAST sends all libraries detected by `ld`, and stores them in the same directory in each node's node-local storage
-    # Any libraries opened by `dlopen` are NOT sent, since they are not known by `ld` at run-time.
-    # A prime example: the latter portion (pkg-config ... libfabric) is required because libfabric.so dlopen's many libraries
+    # SBCAST sends all libraries detected by `ld` (minus any excluded), and stores them in the same directory in each node's node-local storage
+    # Any libraries opened by `dlopen` are NOT sent, since they are not known by the linker at run-time.
 
-    # All required libraries are in 2 total directories - this can have significant benefit at scale
-    export LD_LIBRARY_PATH="/mnt/bb/$USER/${exe}_libs:$(pkg-config --variable=libdir libfabric)"
+    # All required libraries now reside in /mnt/bb/$USER/${exe}_libs
+    export LD_LIBRARY_PATH="/mnt/bb/$USER/${exe}_libs"
+
+    # libfabric dlopen's several libraries:
+    export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:$(pkg-config --variable=libdir libfabric)"
+
+    # cray-mpich dlopen's libhsa-runtime64.so and libamdhip64.so (non-versioned), so symlink on each node:
+    srun -N ${SLURM_NNODES} -n ${SLURM_NNODES} --ntasks-per-node=1 --label -D /mnt/bb/$USER/${exe}_libs \
+        bash -c "if [ -f libhsa-runtime64.so.1 ]; then ln -s libhsa-runtime64.so.1 libhsa-runtime64.so; fi;
+        if [ -f libamdhip64.so.5 ]; then ln -s libamdhip64.so.5 libamdhip64.so; fi"
 
     # RocBLAS has over 1,000 device libraries that may be `dlopen`'d by RocBLAS during a run.
     # It's impractical to SBCAST all of these, so you can set this path instead, if you use RocBLAS:
     #export ROCBLAS_TENSILE_LIBPATH=${ROCM_PATH}/lib/rocblas/library
 
+    # You may notice that some libraries are still linked from /sw/crusher, even after SBCASTing.
+    # This is because the Spack-build modules use RPATH to find their dependencies. This behavior cannot be changed.
     echo "*****ldd /mnt/bb/$USER/${exe}*****"
     ldd /mnt/bb/$USER/${exe}
     echo "*************************************"
 
-    srun -N ${SLURM_NNODES} -n ${SLURM_NNODES} --ntasks-per-node=1 /mnt/bb/$USER/${exe}
 
-
-and here is the output from that script:
-
-.. code:: bash
-
-    Fri 03 Mar 2023 03:55:01 PM EST
-    
-    *****SOURCE FILE*****
-    #include <stdio.h>
-    #include <mpi.h>
-    int main(int argc, char **argv) {
-      int rank, numprocs;
-      MPI_Init(&argc, &argv);
-      MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-      MPI_Comm_size(MPI_COMM_WORLD, &numprocs);
-      printf("Hello from rank %d of %d\n",rank,numprocs);
-      MPI_Finalize();
-      return 0;
-    }
-    *********************
-
-    Compiling source file...
-    -rwxr-xr-x 1 hagertnl hagertnl 20K Mar  3 15:55 ./hello_mpi
-    *****ldd ./hello_mpi*****
-    	linux-vdso.so.1 (0x00007fffeda02000)
-    	libdl.so.2 => /lib64/libdl.so.2 (0x00007fffed5d6000)
-    	libmpi_cray.so.12 => /opt/cray/pe/lib64/libmpi_cray.so.12 (0x00007fffeac50000)
-    	libxpmem.so.0 => /opt/cray/xpmem/default/lib64/libxpmem.so.0 (0x00007fffeaa4d000)
-    	libquadmath.so.0 => /opt/cray/pe/gcc-libs/libquadmath.so.0 (0x00007fffea806000)
-    	libmodules.so.1 => /opt/cray/pe/cce/15.0.0/cce/x86_64/lib/libmodules.so.1 (0x00007fffed9c6000)
-    	libfi.so.1 => /opt/cray/pe/cce/15.0.0/cce/x86_64/lib/libfi.so.1 (0x00007fffea261000)
-    	libcraymath.so.1 => /opt/cray/pe/cce/15.0.0/cce/x86_64/lib/libcraymath.so.1 (0x00007fffed8df000)
-    	libf.so.1 => /opt/cray/pe/cce/15.0.0/cce/x86_64/lib/libf.so.1 (0x00007fffed84c000)
-    	libu.so.1 => /opt/cray/pe/cce/15.0.0/cce/x86_64/lib/libu.so.1 (0x00007fffea158000)
-    	libcsup.so.1 => /opt/cray/pe/cce/15.0.0/cce/x86_64/lib/libcsup.so.1 (0x00007fffed843000)
-    	libc.so.6 => /lib64/libc.so.6 (0x00007fffe9d63000)
-    	/lib64/ld-linux-x86-64.so.2 (0x00007fffed7da000)
-    	libfabric.so.1 => /opt/cray/libfabric/1.15.2.0/lib64/libfabric.so.1 (0x00007fffe9a71000)
-    	libatomic.so.1 => /opt/cray/pe/gcc-libs/libatomic.so.1 (0x00007fffe9869000)
-    	libpthread.so.0 => /lib64/libpthread.so.0 (0x00007fffe9646000)
-    	librt.so.1 => /lib64/librt.so.1 (0x00007fffe943d000)
-    	libpmi.so.0 => /opt/cray/pe/lib64/libpmi.so.0 (0x00007fffe923b000)
-    	libpmi2.so.0 => /opt/cray/pe/lib64/libpmi2.so.0 (0x00007fffe9002000)
-    	libm.so.6 => /lib64/libm.so.6 (0x00007fffe8cb7000)
-    	libgfortran.so.5 => /opt/cray/pe/gcc-libs/libgfortran.so.5 (0x00007fffe880b000)
-    	libstdc++.so.6 => /opt/cray/pe/gcc-libs/libstdc++.so.6 (0x00007fffe83f9000)
-    	libgcc_s.so.1 => /opt/cray/pe/gcc-libs/libgcc_s.so.1 (0x00007fffe81e0000)
-    	libcxi.so.1 => /usr/lib64/libcxi.so.1 (0x00007fffe7fbb000)
-    	libcurl.so.4 => /usr/lib64/libcurl.so.4 (0x00007fffe7d1d000)
-    	libjson-c.so.3 => /usr/lib64/libjson-c.so.3 (0x00007fffe7b0d000)
-    	libpals.so.0 => /opt/cray/pe/lib64/libpals.so.0 (0x00007fffe7908000)
-    	libnghttp2.so.14 => /usr/lib64/libnghttp2.so.14 (0x00007fffe76e0000)
-    	libidn2.so.0 => /usr/lib64/libidn2.so.0 (0x00007fffe74c3000)
-    	libssh.so.4 => /usr/lib64/libssh.so.4 (0x00007fffe7255000)
-    	libpsl.so.5 => /usr/lib64/libpsl.so.5 (0x00007fffe7043000)
-    	libssl.so.1.1 => /usr/lib64/libssl.so.1.1 (0x00007fffe6da5000)
-    	libcrypto.so.1.1 => /usr/lib64/libcrypto.so.1.1 (0x00007fffe686b000)
-    	libgssapi_krb5.so.2 => /usr/lib64/libgssapi_krb5.so.2 (0x00007fffe6619000)
-    	libldap_r-2.4.so.2 => /usr/lib64/libldap_r-2.4.so.2 (0x00007fffe63c5000)
-    	liblber-2.4.so.2 => /usr/lib64/liblber-2.4.so.2 (0x00007fffe61b6000)
-    	libzstd.so.1 => /usr/lib64/libzstd.so.1 (0x00007fffe5e86000)
-    	libbrotlidec.so.1 => /usr/lib64/libbrotlidec.so.1 (0x00007fffe5c7a000)
-    	libz.so.1 => /lib64/libz.so.1 (0x00007fffe5a63000)
-    	libunistring.so.2 => /usr/lib64/libunistring.so.2 (0x00007fffe56e0000)
-    	libkrb5.so.3 => /usr/lib64/libkrb5.so.3 (0x00007fffe5407000)
-    	libk5crypto.so.3 => /usr/lib64/libk5crypto.so.3 (0x00007fffe51ef000)
-    	libcom_err.so.2 => /lib64/libcom_err.so.2 (0x00007fffe4feb000)
-    	libkrb5support.so.0 => /usr/lib64/libkrb5support.so.0 (0x00007fffe4ddc000)
-    	libresolv.so.2 => /lib64/libresolv.so.2 (0x00007fffe4bc4000)
-    	libsasl2.so.3 => /usr/lib64/libsasl2.so.3 (0x00007fffe49a7000)
-    	libbrotlicommon.so.1 => /usr/lib64/libbrotlicommon.so.1 (0x00007fffe4786000)
-    	libkeyutils.so.1 => /usr/lib64/libkeyutils.so.1 (0x00007fffe4581000)
-    	libselinux.so.1 => /lib64/libselinux.so.1 (0x00007fffe4358000)
-    	libpcre.so.1 => /usr/lib64/libpcre.so.1 (0x00007fffe40cf000)
-    *************************
-    *****ls -lh /mnt/bb/hagertnl*****
-    total 24K
-    -rwxr-xr-x 1 hagertnl hagertnl  20K Mar  3 15:55 hello_mpi
-    drwx------ 2 hagertnl hagertnl 4.0K Mar  3 15:55 hello_mpi_libs
-    *****ls -lh /mnt/bb/hagertnl/hello_mpi_libs*****
-    total 102M
-    -rwxr-xr-x 1 hagertnl hagertnl 198K Jul 20  2022 ld-linux-x86-64.so.2
-    -rwxr-xr-x 1 hagertnl hagertnl 139K Aug 14  2021 libatomic.so.1
-    -rwxr-xr-x 1 hagertnl hagertnl 131K Nov 29  2021 libbrotlicommon.so.1
-    -rwxr-xr-x 1 hagertnl hagertnl  46K Nov 29  2021 libbrotlidec.so.1
-    -rwxr-xr-x 1 hagertnl hagertnl  15K May  2  2022 libcom_err.so.2
-    -rwxr-xr-x 1 hagertnl hagertnl 1.5M Oct 26 23:48 libcraymath.so.1
-    -rwxr-xr-x 1 hagertnl hagertnl 3.3M Jul  4  2022 libcrypto.so.1.1
-    -rwxr-xr-x 1 hagertnl hagertnl 2.2M Jul 20  2022 libc.so.6
-    -rwxr-xr-x 1 hagertnl hagertnl  37K Oct 26 23:44 libcsup.so.1
-    -rwxr-xr-x 1 hagertnl hagertnl 630K Jul  4  2022 libcurl.so.4
-    -rwxr-xr-x 1 hagertnl hagertnl 334K Jan  4 17:34 libcxi.so.1
-    -rwxr-xr-x 1 hagertnl hagertnl  18K Jul 20  2022 libdl.so.2
-    -rwxr-xr-x 1 hagertnl hagertnl 7.5M Jan  4 15:50 libfabric.so.1
-    -rwxr-xr-x 1 hagertnl hagertnl 6.1M Oct 26 23:49 libfi.so.1
-    -rwxr-xr-x 1 hagertnl hagertnl 649K Oct 26 23:48 libf.so.1
-    -rw-r--r-- 1 hagertnl hagertnl 432K Aug 14  2021 libgcc_s.so.1
-    -rwxr-xr-x 1 hagertnl hagertnl 8.4M Aug 14  2021 libgfortran.so.5
-    -rwxr-xr-x 1 hagertnl hagertnl 327K May  7  2022 libgssapi_krb5.so.2
-    -rwxr-xr-x 1 hagertnl hagertnl 115K Dec 22  2020 libidn2.so.0
-    -rwxr-xr-x 1 hagertnl hagertnl  63K Jan 14  2022 libjson-c.so.3
-    -rwxr-xr-x 1 hagertnl hagertnl  92K May  7  2022 libk5crypto.so.3
-    -rwxr-xr-x 1 hagertnl hagertnl  19K Nov 23  2021 libkeyutils.so.1
-    -rwxr-xr-x 1 hagertnl hagertnl 868K May  7  2022 libkrb5.so.3
-    -rwxr-xr-x 1 hagertnl hagertnl  60K May  7  2022 libkrb5support.so.0
-    -rwxr-xr-x 1 hagertnl hagertnl  60K May  6  2022 liblber-2.4.so.2
-    -rwxr-xr-x 1 hagertnl hagertnl 328K May  6  2022 libldap_r-2.4.so.2
-    -rwxr-xr-x 1 hagertnl hagertnl 2.9M Oct 26 23:49 libmodules.so.1
-    -rwxr-xr-x 1 hagertnl hagertnl  43M Nov 29 13:36 libmpi_cray.so.12
-    -rwxr-xr-x 1 hagertnl hagertnl 1.4M Jul 20  2022 libm.so.6
-    -rwxr-xr-x 1 hagertnl hagertnl 159K Jun  8  2021 libnghttp2.so.14
-    -rwxr-xr-x 1 hagertnl hagertnl  59K Nov 21 16:21 libpals.so.0
-    -rwxr-xr-x 1 hagertnl hagertnl 547K Jun 23  2022 libpcre.so.1
-    -rwxr-xr-x 1 hagertnl hagertnl 738K Nov 29 15:30 libpmi2.so.0
-    -rwxr-xr-x 1 hagertnl hagertnl 7.9K Nov 29 15:30 libpmi.so.0
-    -rwxr-xr-x 1 hagertnl hagertnl  71K Apr 27  2022 libpsl.so.5
-    -rwxr-xr-x 1 hagertnl hagertnl 159K Jul 20  2022 libpthread.so.0
-    -rwxr-xr-x 1 hagertnl hagertnl 938K Aug 14  2021 libquadmath.so.0
-    -rwxr-xr-x 1 hagertnl hagertnl  99K Jul 20  2022 libresolv.so.2
-    -rwxr-xr-x 1 hagertnl hagertnl  44K Jul 20  2022 librt.so.1
-    -rwxr-xr-x 1 hagertnl hagertnl 116K Feb 22  2022 libsasl2.so.3
-    -rwxr-xr-x 1 hagertnl hagertnl 156K May  7  2022 libselinux.so.1
-    -rwxr-xr-x 1 hagertnl hagertnl 440K May  7  2022 libssh.so.4
-    -rwxr-xr-x 1 hagertnl hagertnl 634K Jul  4  2022 libssl.so.1.1
-    -rwxr-xr-x 1 hagertnl hagertnl  15M Aug 14  2021 libstdc++.so.6
-    -rwxr-xr-x 1 hagertnl hagertnl 1.6M Apr  1  2021 libunistring.so.2
-    -rwxr-xr-x 1 hagertnl hagertnl 1.5M Oct 26 23:48 libu.so.1
-    -rwxr-xr-x 1 hagertnl hagertnl  12K Dec 11 10:53 libxpmem.so.0
-    -rwxr-xr-x 1 hagertnl hagertnl  91K Mar 28  2022 libz.so.1
-    -rwxr-xr-x 1 hagertnl hagertnl 1.2M May  7  2022 libzstd.so.1
-    *****ldd /mnt/bb/hagertnl/hello_mpi*****
-    	linux-vdso.so.1 (0x00007fffeda02000)
-    	libdl.so.2 => /mnt/bb/hagertnl/hello_mpi_libs/libdl.so.2 (0x00007fffed5d6000)
-    	libmpi_cray.so.12 => /mnt/bb/hagertnl/hello_mpi_libs/libmpi_cray.so.12 (0x00007fffeac50000)
-    	libxpmem.so.0 => /mnt/bb/hagertnl/hello_mpi_libs/libxpmem.so.0 (0x00007fffeaa4d000)
-    	libquadmath.so.0 => /opt/cray/pe/gcc-libs/libquadmath.so.0 (0x00007fffea806000)
-    	libmodules.so.1 => /opt/cray/pe/cce/15.0.0/cce/x86_64/lib/libmodules.so.1 (0x00007fffed9e1000)
-    	libfi.so.1 => /opt/cray/pe/cce/15.0.0/cce/x86_64/lib/libfi.so.1 (0x00007fffea261000)
-    	libcraymath.so.1 => /opt/cray/pe/cce/15.0.0/cce/x86_64/lib/libcraymath.so.1 (0x00007fffed8fa000)
-    	libf.so.1 => /opt/cray/pe/cce/15.0.0/cce/x86_64/lib/libf.so.1 (0x00007fffed867000)
-    	libu.so.1 => /opt/cray/pe/cce/15.0.0/cce/x86_64/lib/libu.so.1 (0x00007fffea158000)
-    	libcsup.so.1 => /opt/cray/pe/cce/15.0.0/cce/x86_64/lib/libcsup.so.1 (0x00007fffed85e000)
-    	libc.so.6 => /mnt/bb/hagertnl/hello_mpi_libs/libc.so.6 (0x00007fffe9d63000)
-    	/lib64/ld-linux-x86-64.so.2 (0x00007fffed7da000)
-    	libfabric.so.1 => /mnt/bb/hagertnl/hello_mpi_libs/libfabric.so.1 (0x00007fffe9a71000)
-    	libatomic.so.1 => /opt/cray/pe/gcc-libs/libatomic.so.1 (0x00007fffe9869000)
-    	libpthread.so.0 => /mnt/bb/hagertnl/hello_mpi_libs/libpthread.so.0 (0x00007fffe9646000)
-    	librt.so.1 => /mnt/bb/hagertnl/hello_mpi_libs/librt.so.1 (0x00007fffe943d000)
-    	libpmi.so.0 => /mnt/bb/hagertnl/hello_mpi_libs/libpmi.so.0 (0x00007fffe923b000)
-    	libpmi2.so.0 => /mnt/bb/hagertnl/hello_mpi_libs/libpmi2.so.0 (0x00007fffe9002000)
-    	libm.so.6 => /mnt/bb/hagertnl/hello_mpi_libs/libm.so.6 (0x00007fffe8cb7000)
-    	libgfortran.so.5 => /mnt/bb/hagertnl/hello_mpi_libs/libgfortran.so.5 (0x00007fffe880b000)
-    	libstdc++.so.6 => /mnt/bb/hagertnl/hello_mpi_libs/libstdc++.so.6 (0x00007fffe83f9000)
-    	libgcc_s.so.1 => /mnt/bb/hagertnl/hello_mpi_libs/libgcc_s.so.1 (0x00007fffe81e0000)
-    	libcxi.so.1 => /mnt/bb/hagertnl/hello_mpi_libs/libcxi.so.1 (0x00007fffe7fbb000)
-    	libcurl.so.4 => /mnt/bb/hagertnl/hello_mpi_libs/libcurl.so.4 (0x00007fffe7d1d000)
-    	libjson-c.so.3 => /mnt/bb/hagertnl/hello_mpi_libs/libjson-c.so.3 (0x00007fffe7b0d000)
-    	libpals.so.0 => /mnt/bb/hagertnl/hello_mpi_libs/libpals.so.0 (0x00007fffe7908000)
-    	libnghttp2.so.14 => /mnt/bb/hagertnl/hello_mpi_libs/libnghttp2.so.14 (0x00007fffe76e0000)
-    	libidn2.so.0 => /mnt/bb/hagertnl/hello_mpi_libs/libidn2.so.0 (0x00007fffe74c3000)
-    	libssh.so.4 => /mnt/bb/hagertnl/hello_mpi_libs/libssh.so.4 (0x00007fffe7255000)
-    	libpsl.so.5 => /mnt/bb/hagertnl/hello_mpi_libs/libpsl.so.5 (0x00007fffe7043000)
-    	libssl.so.1.1 => /mnt/bb/hagertnl/hello_mpi_libs/libssl.so.1.1 (0x00007fffe6da5000)
-    	libcrypto.so.1.1 => /mnt/bb/hagertnl/hello_mpi_libs/libcrypto.so.1.1 (0x00007fffe686b000)
-    	libgssapi_krb5.so.2 => /mnt/bb/hagertnl/hello_mpi_libs/libgssapi_krb5.so.2 (0x00007fffe6619000)
-    	libldap_r-2.4.so.2 => /mnt/bb/hagertnl/hello_mpi_libs/libldap_r-2.4.so.2 (0x00007fffe63c5000)
-    	liblber-2.4.so.2 => /mnt/bb/hagertnl/hello_mpi_libs/liblber-2.4.so.2 (0x00007fffe61b6000)
-    	libzstd.so.1 => /mnt/bb/hagertnl/hello_mpi_libs/libzstd.so.1 (0x00007fffe5e86000)
-    	libbrotlidec.so.1 => /mnt/bb/hagertnl/hello_mpi_libs/libbrotlidec.so.1 (0x00007fffe5c7a000)
-    	libz.so.1 => /mnt/bb/hagertnl/hello_mpi_libs/libz.so.1 (0x00007fffe5a63000)
-    	libunistring.so.2 => /mnt/bb/hagertnl/hello_mpi_libs/libunistring.so.2 (0x00007fffe56e0000)
-    	libkrb5.so.3 => /mnt/bb/hagertnl/hello_mpi_libs/libkrb5.so.3 (0x00007fffe5407000)
-    	libk5crypto.so.3 => /mnt/bb/hagertnl/hello_mpi_libs/libk5crypto.so.3 (0x00007fffe51ef000)
-    	libcom_err.so.2 => /mnt/bb/hagertnl/hello_mpi_libs/libcom_err.so.2 (0x00007fffe4feb000)
-    	libkrb5support.so.0 => /mnt/bb/hagertnl/hello_mpi_libs/libkrb5support.so.0 (0x00007fffe4ddc000)
-    	libresolv.so.2 => /mnt/bb/hagertnl/hello_mpi_libs/libresolv.so.2 (0x00007fffe4bc4000)
-    	libsasl2.so.3 => /mnt/bb/hagertnl/hello_mpi_libs/libsasl2.so.3 (0x00007fffe49a7000)
-    	libbrotlicommon.so.1 => /mnt/bb/hagertnl/hello_mpi_libs/libbrotlicommon.so.1 (0x00007fffe4786000)
-    	libkeyutils.so.1 => /mnt/bb/hagertnl/hello_mpi_libs/libkeyutils.so.1 (0x00007fffe4581000)
-    	libselinux.so.1 => /mnt/bb/hagertnl/hello_mpi_libs/libselinux.so.1 (0x00007fffe4358000)
-    	libpcre.so.1 => /mnt/bb/hagertnl/hello_mpi_libs/libpcre.so.1 (0x00007fffe40cf000)
-    *************************************
-    Hello from rank 1 of 2
-    Hello from rank 0 of 2
-
-
-Notice that the libraries are sent to the ``${exe}_libs`` directory in the same prefix as the executable.
-Once libraries are here, you cannot tell where they came from, so consider doing an ``ldd`` of your executable prior to ``sbcast``.
-Some libraries still resolved to paths outside of ``/mnt/bb``, and the reason for that is that the executable had several paths in ``RPATH``.
+Some libraries still resolved to paths outside of ``/mnt/bb``, and the reason for that is that the executable may have several paths in ``RPATH``.
 
 ----
 
@@ -2079,6 +2106,28 @@ Applications using single precision FP atomicAdd() are encouraged to experiment 
 
 System Updates 
 ============== 
+
+2023-04-05
+----------
+
+On Wednesday, April 5, 2023, the Crusher TDS was upgraded to a new software stack.  A summary of the changes is included below. 
+ * The operating system was upgraded to Cray OS 2.4 based on SLES 15.4.
+ * HPE/Cray Programming Environment (PE):
+     * PE 22.12 was installed and is now default. This PE includes the following components:
+         * Cray MPICH 8.1.23
+         * Cray Libsci 22.12.1.1
+         * CCE 15.0.0
+     * PE 23.03 is now also available and includes:
+         * Cray MPICH 8.1.25
+         * Cray Libsci 23.02.1.1
+         * CCE 15.0.1
+ * ROCm: 
+     * ROCm 5.3.0 is now default.
+     * ROCm 5.4.0 and 5.4.3 are available.
+ * File Systems:
+     * The Orion Lustre parallel file system is now available on Crusher. 
+     * The Alpine GPFS file system remains available but will be permanently unmounted from Crusher on Tuesday, April 18, 2023. Please begin moving your data to the Orion file system as soon as possible.
+
 
 2022-12-29 
 ---------- 

@@ -120,11 +120,19 @@ There is a limited number of minutes per month that can be reserved on each
 device. Reservations are supported on these devices with these monthly
 allocations:
 
-  * ibmq_toronto, 2400 minutes per month 
-
   * ibmq_kolkata, 2400 minutes per month
 
   * ibmq_jakarta, 480 minutes per month
+
+In order to make the most efficient use of reservation allocations:
+
+* Reservations requests must be submitted  the project Principle Investigator
+  (PI) to help@olcf.ornl.gov
+
+* Requests for reservations must include technical justification.  
+
+* Once submitted, requests will be sent to the Quantum Resource Utilization 
+  Council (QRUC) for consideration.
 
 Checking System Availability & Capability
 =========================================
@@ -153,3 +161,5 @@ Additional Resources
 ====================
 
 * `IBM's Documentation <https://quantum-computing.ibm.com/docs/>`__
+
+* `IBM Quantum Insider <https://quantum-growth.edunext.io/courses/course-v1:quantum-growth+IQN-seminar-series+2021_H2/about/>`__
