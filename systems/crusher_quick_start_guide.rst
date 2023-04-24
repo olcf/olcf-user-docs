@@ -86,10 +86,10 @@ For more information on connecting to OLCF resources, see :ref:`connecting-to-ol
 Data and Storage
 ================
 
-For more detailed information about center-wide file systems and data archiving available on Crusher, please refer to the pages on :ref:`data-storage-and-transfers`, but the two subsections below give a quick overview of NFS and GPFS storage spaces.
+For more detailed information about center-wide file systems and data archiving available on Crusher, please refer to the pages on :ref:`data-storage-and-transfers`, but the two subsections below give a quick overview of NFS and Lustre storage spaces.
 
-NFS
----
+NFS Filesystem
+----
 
 +---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
 | Area                | Path                                        | Type           | Permissions |  Quota | Backups | Purged  | Retention  | On Compute Nodes |
@@ -99,18 +99,19 @@ NFS
 | Project Home        | ``/ccs/proj/[projid]``                      | NFS            | 770         |  50 GB | Yes     | No      | 90 days    | Read-only        |
 +---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
 
-GPFS
+Lustre Filesystem
 ----
 
-+---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
-| Area                | Path                                        | Type           | Permissions |  Quota | Backups | Purged  | Retention  | On Compute Nodes |
-+=====================+=============================================+================+=============+========+=========+=========+============+==================+
-| Member Work         | ``/gpfs/alpine/[projid]/scratch/[userid]``  | Spectrum Scale | 700         |  50 TB | No      | 90 days | N/A        | Yes              |
-+---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
-| Project Work        | ``/gpfs/alpine/[projid]/proj-shared``       | Spectrum Scale | 770         |  50 TB | No      | 90 days | N/A        | Yes              |
-+---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
-| World Work          | ``/gpfs/alpine/[projid]/world-shared``      | Spectrum Scale | 775         |  50 TB | No      | 90 days | N/A        | Yes              |
-+---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
++---------------------+---------------------------------------------+------------------------+-------------+--------+---------+---------+------------+------------------+
+| Area                | Path                                        | Type                   | Permissions |  Quota | Backups | Purged  | Retention  | On Compute Nodes |
++=====================+=============================================+========================+=============+========+=========+=========+============+==================+
+| Member Work         | ``/lustre/orion/[projid]/scratch/[userid]`` | Lustre HPE ClusterStor | 700         |  50 TB | No      | 90 days | N/A        | Yes              |
++---------------------+---------------------------------------------+------------------------+-------------+--------+---------+---------+------------+------------------+
+| Project Work        | ``/lustre/orion/[projid]/proj-shared``      | Lustre HPE ClusterStor | 770         |  50 TB | No      | 90 days | N/A        | Yes              |
++---------------------+---------------------------------------------+------------------------+-------------+--------+---------+---------+------------+------------------+
+| World Work          | ``/lustre/orion/[projid]/world-shared``     | Lustre HPE ClusterStor | 775         |  50 TB | No      | 90 days | N/A        | Yes              |
++---------------------+---------------------------------------------+------------------------+-------------+--------+---------+---------+------------+------------------+
+
 
 ----
 
