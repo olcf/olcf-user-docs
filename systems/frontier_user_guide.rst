@@ -1761,7 +1761,30 @@ Alternatively, you can combine the ``--gpus-per-task`` flag with ``--gpu-bind``:
     MPI 000 - OMP 000 - HWT 049 - Node frontier001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
 
 
-**Example 1: 8 MPI ranks - each with 2 OpenMP threads and 1 GPU (single-node)**
+**Example 1: 8 MPI ranks - each with 1 OpenMP thread, 1 GPU, and 7 cores (single-node)**
+
+This example launches 8 MPI ranks (``-n8``), each with 7 physical CPU cores
+(``-c7``) and 1 OpenMP thread (``OMP_NUM_THREADS=1``). Because of Frontier's
+default core specialization (``-S 8``), this effectively maps all remaining 7
+cores in a given L3 cache region to a given GPU. If desired, the additional
+cores can also be used with more OpenMP threads until all cores are filled.
+
+.. code-block:: bash
+
+    $ export OMP_NUM_THREADS=1
+    $ srun -N1 -n8 -c7 --cpu-bind=threads --threads-per-core=1 --gpus-per-task=1 --gpu-bind=closest -m block:cyclic ./hello_jobstep | sort
+
+    MPI 000 - OMP 000 - HWT 007 - Node frontier05717 - RT_GPU_ID 0 - GPU_ID 4 - Bus_ID d1
+    MPI 001 - OMP 000 - HWT 015 - Node frontier05717 - RT_GPU_ID 0 - GPU_ID 5 - Bus_ID d6
+    MPI 002 - OMP 000 - HWT 023 - Node frontier05717 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID c9
+    MPI 003 - OMP 000 - HWT 031 - Node frontier05717 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID ce
+    MPI 004 - OMP 000 - HWT 039 - Node frontier05717 - RT_GPU_ID 0 - GPU_ID 6 - Bus_ID d9
+    MPI 005 - OMP 000 - HWT 047 - Node frontier05717 - RT_GPU_ID 0 - GPU_ID 7 - Bus_ID de
+    MPI 006 - OMP 000 - HWT 055 - Node frontier05717 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c1
+    MPI 007 - OMP 000 - HWT 063 - Node frontier05717 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
+
+
+**Example 2: 8 MPI ranks - each with 2 OpenMP threads and 1 GPU (single-node)**
 
 This example launches 8 MPI ranks (``-n8``), each with 2 physical CPU cores
 (``-c2``) to launch 2 OpenMP threads (``OMP_NUM_THREADS=2``) on. In addition,
@@ -1837,9 +1860,9 @@ ensured that the closest GPU to each rank was the one used.
    line in the diagram) to GPU 4. This is an important distinction that can affect
    performance if not considered carefully. 
 
-**Example 2: 16 MPI ranks - each with 2 OpenMP threads and 1 GPU (multi-node)**
+**Example 3: 16 MPI ranks - each with 2 OpenMP threads and 1 GPU (multi-node)**
 
-This example will extend Example 1 to run on 2 nodes. As the output shows, it
+This example will extend Example 2 to run on 2 nodes. As the output shows, it
 is a very straightforward exercise of changing the number of nodes to 2
 (``-N2``) and the number of MPI ranks to 16 (``-n16``).
 
@@ -1881,9 +1904,9 @@ is a very straightforward exercise of changing the number of nodes to 2
     MPI 015 - OMP 000 - HWT 057 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
     MPI 015 - OMP 001 - HWT 058 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
 
-**Example 3: 8 MPI ranks - each with 2 OpenMP threads and 1 *specific* GPU (single-node)**
+**Example 4: 8 MPI ranks - each with 2 OpenMP threads and 1 *specific* GPU (single-node)**
 
-This example will be very similar to Example 1, but instead of using
+This example will be very similar to Example 2, but instead of using
 ``--gpu-bind=closest`` to map each MPI rank to the closest GPU,
 ``--gpu-bind=map_gpu`` will be used to map each MPI rank to a *specific* GPU.
 The ``map_gpu`` option takes a comma-separated list of GPU IDs to specify how
@@ -1912,7 +1935,7 @@ the MPI ranks are mapped to GPUs, where the form of the comma-separated list is
     MPI 007 - OMP 000 - HWT 057 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
     MPI 007 - OMP 001 - HWT 058 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
 
-Here, the output is the same as the results from Example 1. This is because the
+Here, the output is the same as the results from Example 2. This is because the
 8 GPU IDs in the comma-separated list happen to specify the GPUs within the
 same L3 cache region that the MPI ranks are in. So MPI 000 is mapped to GPU 4,
 MPI 001 is mapped to GPU 5, etc.
@@ -1923,9 +1946,9 @@ mapping. For example, if the order of the GPU IDs in the ``map_gpu`` option is
 reversed, the MPI ranks and the GPUs they are mapped to would be in different
 L3 cache regions, which could potentially lead to poorer performance.
 
-**Example 4: 16 MPI ranks - each with 2 OpenMP threads and 1 *specific* GPU (multi-node)**
+**Example 5: 16 MPI ranks - each with 2 OpenMP threads and 1 *specific* GPU (multi-node)**
 
-Extending Examples 2 and 3 to run on 2 nodes is also a straightforward exercise
+Extending Examples 3 and 4 to run on 2 nodes is also a straightforward exercise
 by changing the number of nodes to 2 (``-N2``) and the number of MPI ranks to
 16 (``-n16``).
 
@@ -1980,7 +2003,7 @@ unless otherwise specified.
    On AMD's MI250X, multi-process service (MPS) is not needed since multiple
    MPI ranks per GPU is supported natively.
 
-**Example 5: 16 MPI ranks - where 2 ranks share a GPU (round-robin, single-node)**
+**Example 6: 16 MPI ranks - where 2 ranks share a GPU (round-robin, single-node)**
 
 This example launches 16 MPI ranks (``-n16``), each with 1 physical CPU core
 (``-c1``) to launch 1 OpenMP thread (``OMP_NUM_THREADS=1``) on. The MPI ranks
@@ -2019,9 +2042,9 @@ regions* (the default distribution). The GPU mapping is a consequence of where
 the MPI ranks are distributed; ``--gpu-bind=closest`` simply maps the GPU in an
 L3 cache region to the MPI ranks in the same L3 region.
 
-**Example 6: 32 MPI ranks - where 2 ranks share a GPU (round-robin, multi-node)**
+**Example 7: 32 MPI ranks - where 2 ranks share a GPU (round-robin, multi-node)**
 
-This example is an extension of Example 5 to run on 2 nodes.
+This example is an extension of Example 6 to run on 2 nodes.
 
 .. code:: bash
 
@@ -2062,7 +2085,7 @@ This example is an extension of Example 5 to run on 2 nodes.
     MPI 031 - OMP 000 - HWT 058 - Node frontier04976 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
 
 
-**Example 7: 16 MPI ranks - where 2 ranks share a GPU (packed, single-node)**
+**Example 8: 16 MPI ranks - where 2 ranks share a GPU (packed, single-node)**
 
 .. warning::
 
@@ -2076,7 +2099,7 @@ This example is an extension of Example 5 to run on 2 nodes.
 This example launches 16 MPI ranks (``-n16``), each with 4 physical CPU cores
 (``-c4``) to launch 1 OpenMP thread (``OMP_NUM_THREADS=1``) on. The MPI ranks
 will be assigned to GPUs in a packed fashion so that each of the 8 GPUs on the
-node are shared by 2 MPI ranks. Similar to Example 5, ``-ntasks-per-gpu=2``
+node are shared by 2 MPI ranks. Similar to Example 6, ``-ntasks-per-gpu=2``
 will be used, but a new ``srun`` flag will be used to change the default
 round-robin (``cyclic``) distribution of MPI ranks across NUMA domains:
 
@@ -2103,7 +2126,7 @@ round-robin (``cyclic``) distribution of MPI ranks across NUMA domains:
    ``1``, all 8 MPI ranks would be "packed" into the first L3 region, where the
    "closest" GPU would be GPU 4 - the only GPU in that L3 region.
 
-   Notice that this is not a workaround like in Example 6, but a requirement
+   Notice that this is not a workaround like in Example 7, but a requirement
    due to the ``block`` distribution of MPI ranks across NUMA domains.
 
 .. code:: bash
@@ -2133,7 +2156,7 @@ number of physical CPU cores available to each MPI rank is to place the first
 two MPI ranks in the first L3 cache region with GPU 4, the next two MPI ranks
 in the second L3 cache region with GPU 5, and so on.
 
-**Example 8: 32 MPI ranks - where 2 ranks share a GPU (packed, multi-node)**
+**Example 9: 32 MPI ranks - where 2 ranks share a GPU (packed, multi-node)**
 
 .. warning::
 
@@ -2144,8 +2167,8 @@ in the second L3 cache region with GPU 5, and so on.
     tasks potentially spanning multiple L3 regions with its assigned cores, which
     creates problems when Slurm tries to assign GPUs to a given task.
 
-This example is an extension of Example 7 to use 2 compute nodes. With the
-appropriate changes put in place in Example 7, it is a straightforward exercise
+This example is an extension of Example 8 to use 2 compute nodes. With the
+appropriate changes put in place in Example 8, it is a straightforward exercise
 to change to using 2 nodes (``-N2``) and 32 MPI ranks (``-n32``).
 
 .. code:: bash
@@ -2186,9 +2209,9 @@ to change to using 2 nodes (``-N2``) and 32 MPI ranks (``-n32``).
     MPI 030 - OMP 000 - HWT 056 - Node frontier004 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
     MPI 031 - OMP 000 - HWT 060 - Node frontier004 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
 
-**Example 9: 56 MPI ranks - where 7 ranks share a GPU (packed, single-node)**
+**Example 10: 56 MPI ranks - where 7 ranks share a GPU (packed, single-node)**
 
-An alternative solution to Example 7 and 8's ``-S 8`` issue is to use ``-c 1``
+An alternative solution to Example 8 and 9's ``-S 8`` issue is to use ``-c 1``
 instead.  There is no problem when running with 1 core per MPI rank (i.e., 7
 ranks per GPU) because the task can’t span multiple L3s.
 
@@ -2255,7 +2278,7 @@ ranks per GPU) because the task can’t span multiple L3s.
     MPI 055 - OMP 000 - HWT 063 - Node frontier08413 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID c6
 
 
-**Example 10: 4 independent and simultaneous job steps in a single allocation**
+**Example 11: 4 independent and simultaneous job steps in a single allocation**
 
 This example shows how to run multiple job steps simultaneously in a single
 allocation. The example below demonstrates running 4 independent, single rank
