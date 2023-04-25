@@ -89,7 +89,7 @@ Data and Storage
 For more detailed information about center-wide file systems and data archiving available on Crusher, please refer to the pages on :ref:`data-storage-and-transfers`, but the two subsections below give a quick overview of NFS and Lustre storage spaces.
 
 NFS Filesystem
-----
+--------------
 
 +---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
 | Area                | Path                                        | Type           | Permissions |  Quota | Backups | Purged  | Retention  | On Compute Nodes |
@@ -100,7 +100,7 @@ NFS Filesystem
 +---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
 
 Lustre Filesystem
-----
+-----------------
 
 +---------------------+---------------------------------------------+------------------------+-------------+--------+---------+---------+------------+------------------+
 | Area                | Path                                        | Type                   | Permissions |  Quota | Backups | Purged  | Retention  | On Compute Nodes |
