@@ -205,6 +205,14 @@ Cray, AMD, and GCC compilers are provided through modules on Crusher. The Cray a
 |        |                         |                 | Fortran  | ``ftn``           | ``${GCC_PATH}/bin/gfortran``    |
 +--------+-------------------------+-----------------+----------+-------------------+---------------------------------+
 
+The AMD compiler toolchain automatically exposes the ROCm runtime and device libraries, which enable execution on the GPU.
+To expose the ROCm libraries when using Cray or GCC compiler toolchains, use the ``amd-mixed`` module.
+
+.. note::
+
+    The ``amd-mixed`` and ``rocm`` module are generally identical, but using the ``amd-mixed`` module guarantees that the ROCm libraries loaded are supported by the Cray Programming Environment.
+    ``amd-mixed`` only provides supported ROCm versions.
+
 
 Cray Programming Environment and Compiler Wrappers
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -353,7 +361,7 @@ This section shows how to compile with OpenMP Offload using the different compil
 
 .. note::
 
-    Make sure the ``craype-accel-amd-gfx90a`` module is loaded when using OpenMP offload. If using CCE, also load ``amd-mixed``.
+    Make sure the ``craype-accel-amd-gfx90a`` module is loaded when using OpenMP offload. If using the Cray compiler, also load an ``amd-mixed`` module.
 
 +--------+----------+-----------+----------------------------------------------+----------------------------------------------+
 | Vendor | Module   | Language  | Compiler                                     | OpenMP flag (GPU)                            |
@@ -382,7 +390,7 @@ This section shows how to compile HIP codes using the Cray compiler wrappers and
 
 .. note::
 
-    Make sure the ``craype-accel-amd-gfx90a`` module is loaded when compiling HIP with the Cray compiler wrappers.
+    Make sure the ``craype-accel-amd-gfx90a`` and ``amd-mixed`` modules are loaded when compiling HIP with the Cray compiler wrappers.
 
 +-------------------+--------------------------------------------------------------------------------------------------------------------------+
 | Compiler          | Compile/Link Flags, Header Files, and Libraries                                                                          |
