@@ -400,6 +400,25 @@ HIP source files should be compiled into object files using the instructions in 
 OpenMP and other non-HIP source files should be compiled into object files using the instructions in the ``OpenMP`` section.
 Then these object files should be linked using the following link flags: ``-fopenmp -L${ROCM_PATH}/lib -lamdhip64``.
 
+SYCL
+----
+
+This section shows how to compile SYCL codes using the DPC++ compiler.
+
+.. note::
+
+    Make sure the ``ums ums015 dpcpp`` module is loaded when compiling SYCL with ``clang`` or ``clang++``.
+
++-------------------+--------------------------------------------------------------------------------------------------------------------------+
+| Compiler          | Compile/Link Flags, Header Files, and Libraries                                                                          |
++===================+==========================================================================================================================+
+| | ``clang``       | | ``CFLAGS = -fsycl -fsycl-targets=amdgcn-amd-amdhsa -Xsycl-target-backend --offload-arch=gfx90a ``                      |
+| | ``clang++``     | |                                                                                                                        |
++-------------------+--------------------------------------------------------------------------------------------------------------------------+
+
+.. note::
+
+    These compilers are built weekly from the latest open-source rather than releases. As such, these compilers will get new features and updates quickly but may break on occasion. If you experience regressions, please load an older version of the module rather than the latest.
 
 ----
 
