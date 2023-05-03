@@ -2878,7 +2878,7 @@ Below is an example that generates a profile and loads the results in their GUI-
 
 .. note::
 
-    A full list of available HPCToolkit versions can be seen with the ``module spider hpctookit`` command.
+    A full list of available HPCToolkit versions can be seen with the ``module spider hpctoolkit`` command.
 
 .. code:: bash
 
