@@ -24,6 +24,38 @@ Select "User Managed Software Program" from the drop down menu to begin.
 Currently Available User-Managed Software
 -----------------------------------------
 
+.. tabbed:: Frontier
+
+  **Currently Available User-Managed Software on Frontier**
+  
+  +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
+  | Project    | Packages       | Point of Contact                           | Information                                                                    |
+  +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
+  | ums012     | AMD AFAR       | Felipe Jaramillo (cabarcas@udel.edu)       | AMD ROCM AFAR compiler based on AMD development                                |
+  |            |                |                                            |                                                                                |
+  |            | LLVM           | Sunita Chandrasekaran (schandra@udel.edu)  | LLVM Development builds                                                        |
+  +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
+  | ums014     | UPC++          | Paul H. Hargrove (phhargrove@lbl.gov)      | UPC++ library                                                                  |
+  |            |                |                                            |                                                                                |
+  |            |                |                                            | Issue Tracker:     https://upcxx.lbl.gov/issues                                |
+  |            |                |                                            |                                                                                |
+  |            |                |                                            | Support Forum:     https://groups.google.com/g/upcxx                           |
+  +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
+
+.. tabbed:: Crusher
+
+  **Currently Available User-Managed Software on Crusher**
+  
+  +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
+  | Project    | Packages       | Point of Contact                           | Information                                                                    |
+  +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
+  | ums012     | SOLLVE         | Felipe Jaramillo (cabarcas@udel.edu)       | AMD ROCM AFAR compiler based on AMD development                                |
+  |            |                |                                            |                                                                                |
+  |            | LLVM           | Sunita Chandrasekaran (schandra@udel.edu)  | LLVM Development builds                                                        |
+  +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
+  | ums015     | DPC++ for HIP  | Gordon Brown (gordon@codeplay.com)         |                                                                                |
+  +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
+
 .. tabbed:: Summit
 
   **Currently Available User-Managed Software on Summit**
@@ -50,27 +82,15 @@ Currently Available User-Managed Software
   +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
   | ums013     | Julia          | Valentin Churavy  (vchuravy@mit.edu)       | https://julialang.org                                                          |
   +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
-  | ums014     | UPC++          | Paul H. Hargrove (phhargrove@lbl.gov)      | Issue Tracker:     https://upcxx.lbl.gov/issues                                |
+  | ums014     | UPC++          | Paul H. Hargrove (phhargrove@lbl.gov)      | UPC++ library                                                                  |
+  |            |                |                                            |                                                                                |
+  |            |                |                                            | Issue Tracker:     https://upcxx.lbl.gov/issues                                |
   |            |                |                                            |                                                                                |
   |            |                |                                            | Support Forum:     https://groups.google.com/g/upcxx                           |
   +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
   | ums015     | DPC++ for HIP  | Gordon Brown (gordon@codeplay.com)         |                                                                                |
   +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
   
-.. tabbed:: Crusher
-
-  **Currently Available User-Managed Software on Crusher**
-  
-  +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
-  | Project    | Packages       | Point of Contact                           | Information                                                                    |
-  +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
-  | ums012     | SOLLVE         | Felipe Jaramillo (cabarcas@udel.edu)       |                                                                                |
-  |            |                |                                            |                                                                                |
-  |            | LLVM           | Sunita Chandrasekaran (schandra@udel.edu)  |                                                                                |
-  +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
-  | ums015     | DPC++ for HIP  | Gordon Brown (gordon@codeplay.com)         |                                                                                |
-  +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
-
 Usage
 -----
 
