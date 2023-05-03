@@ -412,7 +412,7 @@ This section shows how to compile SYCL codes using the DPC++ compiler.
 +-------------------+--------------------------------------------------------------------------------------------------------------------------+
 | Compiler          | Compile/Link Flags, Header Files, and Libraries                                                                          |
 +===================+==========================================================================================================================+
-| | ``clang``       | | ``CFLAGS = -fsycl -fsycl-targets=amdgcn-amd-amdhsa -Xsycl-target-backend --offload-arch=gfx90a ``                      |
+| | ``clang``       | | ``CFLAGS = -fsycl -fsycl-targets=amdgcn-amd-amdhsa -Xsycl-target-backend --offload-arch=gfx90a``                       |
 | | ``clang++``     | |                                                                                                                        |
 +-------------------+--------------------------------------------------------------------------------------------------------------------------+
 
