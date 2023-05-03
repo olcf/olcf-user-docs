@@ -350,7 +350,7 @@ Data Retention
 By default, the OLCF does not guarantee lifetime data retention on any OLCF resources. Following a user account deactivation or project end, user and project data in non-purged areas will be retained for 90 days. After this timeframe, the OLCF retains the right to delete data. Data in purged areas remains subject to normal purge policies.
 
 
-.._data-orion-lustre-hpe-clusterstor-filesystem
+.. _data-orion-lustre-hpe-clusterstor-filesystem:
 
 ***************************************
 Orion Lustre HPE ClusterStor Filesystem 
