@@ -2876,11 +2876,14 @@ Programming models supported by HPCToolkit include MPI, OpenMP, OpenACC, CUDA, O
 
 Below is an example that generates a profile and loads the results in their GUI-based viewer.
 
+.. note::
+
+    A full list of available HPCToolkit versions can be seen with the ``module spider hpctoolkit`` command.
+
 .. code:: bash
 
-    module use /gpfs/alpine/csc322/world-shared/modulefiles/x86_64 
-    module load hpctoolkit 
-    
+    module load hpctoolkit/2022.05.15-rocm 
+
     # 1. Profile and trace an application using CPU time and GPU performance counters 
     srun <srun_options> hpcrun -o <measurement_dir> -t -e CPUTIME -e gpu=amd <application> 
 
