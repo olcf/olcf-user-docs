@@ -463,9 +463,17 @@ Transferring Data
 Globus
 ============
 
-Three Globus Endpoints have been established for OLCF resources. These are "OLCF DTN", "OLCF HPSS", and "NCCS Open DTN". The "OLCF DTN" endpoint provides access to User/Project Home areas as well as the Alpine filesystem, the "OLCF HPSS" endpoint provides access to HPSS, and the "NCCS Open DTN" endpoint provides access to the Open User/Project Home areas and the Wolf filesystem. By selecting one of these endpoints and some offsite endpoint, you can use Globus to transfer data to/from that storage area at OLCF. By selecting the "OLCF DTN" and "OLCF HPSS" endpoints, you can transfer data between HPSS and one of our other filesystems. The example below shows the latter, although it should be relatively easy to adapt this example to a transfer from some other endpoint to "OLCF DTN" or "OLCF HPSS".
+Three Globus Endpoints have been established for OLCF resources. These are "OLCF DTN", "OLCF HPSS", and "NCCS Open DTN". The "OLCF DTN" endpoint provides access to User/Project Home areas as well as the Alpine filesystem, the "OLCF HPSS" endpoint provides access to HPSS, and the "NCCS Open DTN" endpoint provides access to the Open User/Project Home areas and the Wolf filesystem. By selecting one of these endpoints and some offsite endpoint, you can use Globus to transfer data to/from that storage area at OLCF. By selecting the "OLCF DTN" and "OLCF HPSS" endpoints, you can transfer data between HPSS and one of our other filesystems. 
 
-Globus has restriction of 8 active transfers across all the users. Each user has a limit of 3 active transfers, so it is required to transfer a lot of data on each transfer than less data across many transfers. If a folder is constituted with mixed files including thousands of small files (less than 1MB each one), it would be better to tar the small files.  Otherwise, if the files are larger, Globus will handle them. 
+**Globus Warnings:** 
+
+* Globus transfers do not preserve file permissions. Arriving files will have (rw-r--r--) permissions, meaning arriving files will have *user* read and write permissions and *group* and *world* read permissions. Note that the arriving files will not have any execute permissions, so you will need to use chmod to reset execute permissions before running a Globus-transferred executable.
+
+* Globus will overwrite files at the destination with identically named source files. This is done without warning.
+
+* Globus has restriction of 8 active transfers across all the users. Each user has a limit of 3 active transfers, so it is required to transfer a lot of data on each transfer than less data across many transfers. 
+
+* If a folder is constituted with mixed files including thousands of small files (less than 1MB each one), it would be better to tar the small files.  Otherwise, if the files are larger, Globus will handle them. 
 
 Using Globus to Move Data to Orion 
 ==================================
@@ -474,7 +482,7 @@ The following example is intended to help users who are making the transition fr
 
 .. note::
   
-  Globus does not preserve file permissions. Files transferred with globus inherit the permissions of the destination directory. 
+ Globus does not preserve file permissions and will overwrite destination files with identically named sources files without warning.
 
 
 Here is a recording of an example transfer from Alpine to Orion using Globus and the OLCF DTN: `Using Globus to Move Data to Orion <https://vimeo.com/manage/videos/814973734>`_. 
