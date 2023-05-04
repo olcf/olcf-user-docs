@@ -465,7 +465,7 @@ Globus
 
 Three Globus Endpoints have been established for OLCF resources. These are "OLCF DTN", "OLCF HPSS", and "NCCS Open DTN". The "OLCF DTN" endpoint provides access to User/Project Home areas as well as the Alpine filesystem, the "OLCF HPSS" endpoint provides access to HPSS, and the "NCCS Open DTN" endpoint provides access to the Open User/Project Home areas and the Wolf filesystem. By selecting one of these endpoints and some offsite endpoint, you can use Globus to transfer data to/from that storage area at OLCF. By selecting the "OLCF DTN" and "OLCF HPSS" endpoints, you can transfer data between HPSS and one of our other filesystems. 
 
-Warnings: 
+*Globus Warnings:* 
 
 * Globus transfers do not preserve file permissions. Arriving files will have (rw-r--r--) permissions, meaning user read and write permissions and group and world read permissions. Note that the arriving files will not have any execute permissions, so you will need to use chmod to reset execute permissions before running a Globus-transferred executable.
 
