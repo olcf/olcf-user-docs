@@ -482,7 +482,7 @@ The following example is intended to help users who are making the transition fr
 
 .. note::
   
-  Globus does not preserve file permissions. Files transferred with globus inherit the permissions of the destination directory. 
+ Globus does not preserve file permissions and will overwrite destination files with identically named sources files without warning.
 
 
 Here is a recording of an example transfer from Alpine to Orion using Globus and the OLCF DTN: `Using Globus to Move Data to Orion <https://vimeo.com/manage/videos/814973734>`_. 
