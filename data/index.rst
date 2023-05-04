@@ -467,7 +467,7 @@ Three Globus Endpoints have been established for OLCF resources. These are "OLCF
 
 **Globus Warnings:** 
 
-* Globus transfers do not preserve file permissions. Arriving files will have (rw-r--r--) permissions, meaning user read and write permissions and group and world read permissions. Note that the arriving files will not have any execute permissions, so you will need to use chmod to reset execute permissions before running a Globus-transferred executable.
+* Globus transfers do not preserve file permissions. Arriving files will have (rw-r--r--) permissions, meaning arriving files will have *user* read and write permissions and *group* and *world* read permissions. Note that the arriving files will not have any execute permissions, so you will need to use chmod to reset execute permissions before running a Globus-transferred executable.
 
 * Globus will overwrite files at the destination with identically named source files. This is done without warning.
 
