@@ -3359,7 +3359,18 @@ The aforementioned behavior is only true for FP atomicAdd() operations. Hardware
 In cases when contention is very low, a FP32 CAS loop implementing an atomicAdd() operation could be faster than an hardware FP32 LDS atomicAdd().
 Applications using single precision FP atomicAdd() are encouraged to experiment with the use of double precision to evaluate the trade-off between high atomicAdd() performance vs. potential lower occupancy due to higher LDS usage.
 
+------
 
+System Updates 
+============== 
+
+2023-05-09
+----------
+
+On Tuesday, May 9, 2023, the `darshan-runtime` modulefile was added to `DefApps` and is now loaded by default on Frontier. This module will allow users to profile the I/O of their applications with minimal impact. The logs are available to users on the Orion file system in `/lustre/orion/darshan/<system>/<yyyy>/<mm>/<dd>`. Unloading `darshan-runtime` is recommended for users profiling their applications with other profilers to prevent conflicts.
+
+
+------
 
 Known Issues
 ============
