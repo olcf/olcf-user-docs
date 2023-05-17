@@ -648,6 +648,8 @@ The MPI implementation available on Frontier is Cray's MPICH, which is "GPU-awar
 | Cray MPICH     | ``cray-mpich`` | ``cc``, ``CC``, ``ftn`` (Cray compiler wrappers)    | MPI header files and linking is built into the Cray compiler wrappers         |
 |                |                +-----------------------------------------------------+-------------------------------------------------------------------------------+
 |                |                | ``hipcc``                                           | | ``-L${MPICH_DIR}/lib -lmpi``                                                |
+|                |                |                                                     | | ``${CRAY_XPMEM_POST_LINK_OPTS} -lxpmem``                                    |
+|                |                |                                                     | | ``${PE_MPICH_GTL_DIR_amd_gfx90a} ${PE_MPICH_GTL_LIBS_amd_gfx90a}``          |
 |                |                |                                                     | | ``-I${MPICH_DIR}/include``                                                  |
 +----------------+----------------+-----------------------------------------------------+-------------------------------------------------------------------------------+
 
@@ -710,7 +712,9 @@ To use ``hipcc`` with GPU-aware Cray MPICH, use the following environment variab
 
 
     -I${MPICH_DIR}/include
-    -L${MPICH_DIR}/lib -lmpi ${PE_MPICH_GTL_DIR_amd_gfx90a} ${PE_MPICH_GTL_LIBS_amd_gfx90a}
+    -L${MPICH_DIR}/lib -lmpi \
+      ${CRAY_XPMEM_POST_LINK_OPTS} -lxpmem \
+      ${PE_MPICH_GTL_DIR_amd_gfx90a} ${PE_MPICH_GTL_LIBS_amd_gfx90a}
 
     HIPFLAGS = --amdgpu-target=gfx90a
     
