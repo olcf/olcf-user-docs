@@ -6,7 +6,25 @@ Software News
 This page lists significant changes to software provided on OLCF systems. The
 most recent changes are listed first.
 
+----
 
+.. raw:: html
+
+   <p style="font-size:20px"><b>Frontier: Darshan Runtime 3.4.0 (May 10, 2023)</b></p>
+
+The Darshan Runtime modulefile `darshan-runtime/3.4.0` on Frontier is now loaded by default. This module will allow users to profile the I/O of their applications with minimal impact. The logs are available to users on the Orion file system in `/lustre/orion/darshan/<system>/<yyyy>/<mm>/<dd>`. 
+
+Unloading `darshan-runtime` modulefile is recommended for users profiling their applications with other profilers to prevent conflicts.
+
+Please make a note of this change and contact help@olcf.ornl.gov with any issues or questions.
+
+.. csv-table::
+    :header: "Package", "Version"
+
+
+    "darshan-runtime", "3.4.0"
+    
+----
 
 ----
 
