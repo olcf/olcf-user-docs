@@ -5,7 +5,7 @@ Spock Quick-Start Guide
 ***********************
 
 .. warning::
-    **The Spock Early Access System will be decommissioned on March 15, 2023.** The
+    **The Spock Early Access System was decommissioned on March 15, 2023.** The
     file systems available on Spock are still accessible from the Home server and
     the Data Transfer Nodes (DTN), so all your data will remain accessible. If you
     do not have access to other OLCF systems, your project will move to data-only
