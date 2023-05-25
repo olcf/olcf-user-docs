@@ -41,7 +41,7 @@ Currently Available User-Managed Software
   |            |                |                                            |                                                                                |
   |            |                |                                            | Support Forum:     https://groups.google.com/g/upcxx                           |
   +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
-  | ums022     | Visit          | Eric Brugger (brugger1@llnl.gov)           | Visit Visualization and Analysis Tool                                          |
+  | ums022     | VisIt          | Eric Brugger (brugger1@llnl.gov)           | VisIt Visualization and Analysis Tool                                          |
   +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
   | ums023     | HPCToolkit     | John Crummey (johnmc@rice.edu)             | Performance measurement and analysis tools                                     |
   +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
