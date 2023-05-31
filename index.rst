@@ -27,6 +27,17 @@ guidelines for :ref:`getting-help`.
 OLCF Office Hours
 ---------------------
 
+Would your project team like direct access to OLCF, AMD, and HPE staff for current issues or questions you might have about
+running your application/software on Frontier? If so, we are offering office hours every Monday from 2-3 PM EDT and Wednesday
+from 1-2 PM EDT. During each session, (up to) 5 teams will move into their own Zoom breakout room to discuss their question/issue
+directly with the appropriate OLCF, AMD, and HPE staff. Topics can be anything from issues building your code, non-ideal
+performance, node failures, etc.
+
+To help ensure proper expertise available to discuss your issue, please follow the below steps to let us know about your
+issue and request an available time slot.
+
+If you encounter issues during sign-up, please contact help@olcf.ornl.gov.
+
     * Login to your Moderate account at `myOLCF <https://my.olcf.ornl.gov/login>`_
     * Expand the OFFICE HOURS dropdown (on the sidebar navigation)
     * There are 2 options to select: **Schedule a Time** and **View Your Scheduled Office Hour(s)**
