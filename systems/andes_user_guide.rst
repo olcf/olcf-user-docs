@@ -120,9 +120,9 @@ Environment management with lmod
 --------------------------------
 
 The *modules* software package allows you to dynamically modify your user
-environment by using pre-written *modulefiles*. environment modules are provided
+environment by using pre-written *modulefiles*. Environment modules are provided
 through `Lmod <https://lmod.readthedocs.io/en/latest/>`__, a Lua-based module
-system for dynamically altering shell environments.  by managing changes to the
+system for dynamically altering shell environments.  By managing changes to the
 shell’s environment variables (such as ``path``, ``ld_library_path``, and
 ``pkg_config_path``), Lmod allows you to alter the software available in your
 shell environment without the risk of creating package and version combinations
@@ -205,7 +205,7 @@ Defining custom module collections
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Lmod supports caching commonly used collections of environment modules on a
-per-user basis in ``$home/.lmod.d``. to create a collection called "NAME" from
+per-user basis in ``$home/.lmod.d``. To create a collection called "NAME" from
 the currently loaded modules, simply call ``module save NAME``. omitting "NAME"
 will set the user’s default collection. Saved collections can be recalled and
 examined with the commands summarized in the following table.
@@ -233,7 +233,7 @@ examined with the commands summarized in the following table.
 .. note::
     In order to avoid conflicts between user-defined collections
     on multiple compute systems that share a home file system (e.g.
-    ``/ccs/home/[username]``), lmod appends the hostname of each system to the
+    ``/ccs/home/[username]``), Lmod appends the hostname of each system to the
     files saved in in your ``~/.lmod.d`` directory (using the environment
     variable ``lmod_system_name``). This ensures that only collections
     appended with the name of the current system are visible.
@@ -255,13 +255,13 @@ details on existing installs.
 Compiling
 =========
 
-Compiling code on andes is typical of commodity or beowulf-style hpc linux
+Compiling code on andes is typical of commodity or Beowulf-style HPC Linux
 clusters.
 
 Available compilers
 -------------------
 
-The following compilers are available on andes:
+The following compilers are available on Andes:
 
 - `intel <https://www.olcf.ornl.gov/software_package/intel/>`__, intel composer xe (default)
 - `pgi <https://www.olcf.ornl.gov/software_package/pgi/>`__, the portland group compilar suite
