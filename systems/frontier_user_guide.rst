@@ -1433,7 +1433,7 @@ Process and Thread Mapping Examples
 -----------------------------------
 
 This section describes how to map processes (e.g., MPI ranks) and process
-threads (e.g., OpenMP threads) to the CPUs and GPUs on Frontier.
+threads (e.g., OpenMP threads) to the CPUs, GPUs, and NICs on Frontier.
 
 Users are highly encouraged to use the CPU- and GPU-mapping programs used in
 the following sections to check their understanding of the job steps (i.e.,
@@ -2344,6 +2344,28 @@ As mentioned previously, all GPUs are accessible by all MPI ranks by default,
 so it is possible to *programatically* map any combination of GPUs to MPI
 ranks. It should be noted however that Cray MPICH does not support GPU-aware
 MPI for multiple GPUs per rank, so this binding is not suggested.
+
+NIC Mapping
+^^^^^^^^^^^
+
+As shown in the `Frontier Node Diagram
+<https://docs.olcf.ornl.gov/_images/Frontier_Node_Diagram.jpg>`_, each of the 4
+NICs on a compute node is connected to a specific MI250X, and each MI250X is
+(in turn) connected to a specific NUMA domain - so each NUMA domain is
+correlated to a specific NIC. By default, processes (e.g., MPI ranks) that are
+mapped to CPU cores in a specific NUMA domain are mapped (by CrayMPICH) to the
+NIC that is correlated to that NUMA domain. 
+
+.. note::
+
+    If a user attempts to map a process to a set of cores that span more than 1
+    NUMA domain using the default NIC mapping, they will see an error such as 
+    ``MPICH ERROR: Unable to use a NIC_POLICY of 'NUMA'. Rank 0 is not confined 
+    to a single NUMA node.``. This is expected behavior for the default NIC
+    policy.
+
+The default behavior can be changed by using the ``MPICH_OFI_NIC_POLICY`` environment variable (see ``man mpi`` for available options).
+
 
 Tips for Launching at Scale
 ---------------------------
