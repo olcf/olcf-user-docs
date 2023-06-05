@@ -1764,7 +1764,7 @@ Before jumping into the examples, it is helpful to understand the output from th
 +---------------+-----------------------------------------------------------------------------------------------+
 | ``OMP``       | OpenMP thread ID                                                                              |
 +---------------+-----------------------------------------------------------------------------------------------+
-| ``HWT``       | GPU hardware thread the MPI rank or OpenMP thread ran on                                      |
+| ``HWT``       | CPU hardware thread the MPI rank or OpenMP thread ran on                                      |
 +---------------+-----------------------------------------------------------------------------------------------+
 | ``Node``      | Compute node the MPI rank or OpenMP thread ran on                                             |
 +---------------+-----------------------------------------------------------------------------------------------+
