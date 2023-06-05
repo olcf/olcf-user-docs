@@ -1764,7 +1764,7 @@ Before jumping into the examples, it is helpful to understand the output from th
 +---------------+-----------------------------------------------------------------------------------------------+
 | ``OMP``       | OpenMP thread ID                                                                              |
 +---------------+-----------------------------------------------------------------------------------------------+
-| ``HWT``       | GPU hardware thread the MPI rank or OpenMP thread ran on                                      |
+| ``HWT``       | CPU hardware thread the MPI rank or OpenMP thread ran on                                      |
 +---------------+-----------------------------------------------------------------------------------------------+
 | ``Node``      | Compute node the MPI rank or OpenMP thread ran on                                             |
 +---------------+-----------------------------------------------------------------------------------------------+
@@ -2130,8 +2130,8 @@ round-robin (``cyclic``) distribution of MPI ranks across NUMA domains:
 +------------------------------------------------+-----------------------------------------------------------------------------------------------+
 | Slurm Option                                   | Description                                                                                   |
 +================================================+===============================================================================================+
-| ```--distribution=<value>[:<value>][:<value>]` | Specifies the distribution of MPI ranks across compute nodes, sockets                         |
-|                                                |  (L3 cache regions on Frontier), and cores, respectively. The default values are              |
+| ``--distribution=<value>[:<value>][:<value>]`` | Specifies the distribution of MPI ranks across compute nodes, sockets                         |
+|                                                | (L3 cache regions on Frontier), and cores, respectively. The default values are               |
 |                                                | ``block:cyclic:cyclic``, which is where the ``cyclic`` assignment comes from in the previous  |
 |                                                | examples.                                                                                     |
 +------------------------------------------------+-----------------------------------------------------------------------------------------------+

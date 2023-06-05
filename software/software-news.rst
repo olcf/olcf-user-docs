@@ -26,8 +26,6 @@ Please make a note of this change and contact help@olcf.ornl.gov with any issues
     
 ----
 
-----
-
 .. raw:: html
 
    <p style="font-size:20px"><b>Summit: Darshan Runtime 3.4.0-lite (December 28, 2022)</b></p>
