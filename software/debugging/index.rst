@@ -217,14 +217,17 @@ Configuration
 
     **Reverse Connect Setup Instructions**
      
-    Prior to launching the reverse connect you will need to set a couple of environment variables so the connection request gets routed correctly. The following environment variables will need to be sourced in your batch script prior to srun or you can just source them prior to obtaining your node allocation. The easiest way to do this is to simply create a file in your home directory ``/ccs/home/<user>/forge_remote_connect_vars.sh`` or something similar, with the following contents. 
+    Prior to launching the reverse connect you will need to set a couple of environment variables so the connection request gets routed correctly. The following export vars will need to be sourced in your batch script prior to srun or you can just source them prior to obtaining your node allocation.
+    
 
     .. code-block:: bash
 
            export ALLINEA_CONFIG_DIR=<Somewhere on the Filesystem that can be accessed by the compute nodes i.e. /lustre/orion/<project>>
            export ALLINEA_REVERSE_CONNECT_DIR=<Somewhere on the Filesystem that can be accessed by the compute nodes i.e. /lustre/orion/<project>>
+ 
+ Also, if you plan on running the Forge client from your local machine (i.e. laptop), you will need to create a bash file containing the above environment vars. The file can be saved in /ccs/home/<user>. Once created and saved, you will enter the path to the file in the Forge Remote Launch setup window next to Remote Script as shown below.
 
-    Make sure you set actual paths for the above environment variables.
+    **Make sure you set actual paths for the above environment variables.**
 
     **Local client setup**
     
