@@ -83,7 +83,7 @@ order so as to provide fair sharing among all users of the device, to prevent
 individual projects or users from monopolizing a given backend.  
 
 All OLCF users have access to the "premium" (>=20 qubits) and "open" (<20
-qubit) devices.  Since most of the opne devices are shared with the public,
+qubit) devices.  Since most of the open devices are shared with the public,
 queue times will often be longer than the queues for the larger devices.
 
 Submitting Jobs
@@ -126,7 +126,7 @@ allocations:
 
 In order to make the most efficient use of reservation allocations:
 
-* Reservations requests must be submitted  the project Principle Investigator
+* Reservations requests must be submitted to the project Principle Investigator
   (PI) to help@olcf.ornl.gov
 
 * Requests for reservations must include technical justification.  
