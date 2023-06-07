@@ -602,7 +602,7 @@ Globus is most frequently used to facilitate data transfer between two instituti
 HSI
 ==========
 
-HSI (Hierarchial Storage Interface) is sued to transfer data to/from OLCF systems and HPSS. When retrieving data from a tar archive larger than 1 TB, we recommend that you pull only the files that you need rather than the full archive.  Examples of this will be given in the htar section below. Issuing the command ``hsi`` will start HSI in interactive mode. Alternatively, you can use:
+HSI (Hierarchial Storage Interface) is used to transfer data to/from OLCF systems and HPSS. When retrieving data from a tar archive larger than 1 TB, we recommend that you pull only the files that you need rather than the full archive.  Examples of this will be given in the htar section below. Issuing the command ``hsi`` will start HSI in interactive mode. Alternatively, you can use:
 
      ``hsi [options] command(s)``
 
