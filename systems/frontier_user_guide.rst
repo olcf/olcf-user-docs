@@ -162,6 +162,14 @@ To connect to Frontier, ``ssh`` to ``frontier.olcf.ornl.gov``. For example:
 
 For more information on connecting to OLCF resources, see :ref:`connecting-to-olcf`.
 
+By default, connecting to Frontier will automatically place the user on a random login node. If you need to access a specific login node, you will ``ssh`` to that node after your intial connection to Frontier.
+
+.. code-block:: bash
+
+    [<username>@login12.frontier ~]$ ssh <username>@login01.frontier.olcf.ornl.gov
+
+Users can connect to any of the 17 Frontier login nodes by replacing ``login01`` with their login node of choice.
+
 ----
 
 .. _frontier-data-storage:
