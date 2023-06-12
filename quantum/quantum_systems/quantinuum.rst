@@ -19,12 +19,11 @@ instructions on how to gain access, see our :doc:`Quantum Access
 Features
 --------
 
-The complete set of Quantinuum System Model H1's hardware specifications and
-operations, can be found in the *Quantinuum System Model H1 Product Data Sheet*
-on the `Quantinuum User Portal <https://um.qapi.quantinuum.com/>`__. Features
-include, but are not limited to:
+The complete set of Quantinuum System Model H1 and Model H2 hardware specifications and
+operations, can be found in the *Quantinuum System Model H1 Product Data Sheet* and the 
+*Quantinuum System Model H2 Product Data Sheet* on the `Quantinuum User Portal <https://um.qapi.quantinuum.com/>`__. Features include, but are not limited to:
 
-* N ≥ 20 qubit trapped-ion based quantum computer
+* N ≤ 32 qubit trapped-ion based quantum computers
 
 * All-to-all connectivity
 
@@ -88,7 +87,7 @@ users submitted code to the real quantum hardware.
 Allocations & Credit Usage
 ==========================
 
-Running a job on the System Model H1 family of hardware requires Quantinuum
+Running a job on the System Model H1 family and System Model H2 hardware requires Quantinuum
 Credits. Additional information on credit usage can be found in the *Quantinuum Systems User Guide* under the
 *Examples* tab on the `Quantinuum User Portal <https://um.qapi.quantinuum.com/>`__.
 Due to increased demand and to make the most efficient use of credits, the following allocating policy will go into effect starting October 1st 2022:
@@ -99,10 +98,13 @@ Due to increased demand and to make the most efficient use of credits, the follo
 
 * Requests will be evaluated based on the provided technical justification, programmatic efficiency, and machine availability. The effective usage of prior allocations by the project will also be considered.
 
-* Allocations will be granted on a monthly basis to maximize the availability of the machine. Please note that allocations do not carry over to the next month and must be consumed in the month granted.
+* Allocations will be granted on a monthly basis to maximize the availability of the H1 family and H2 machines. Please note that allocations do not carry over to the next month and must be consumed in the month granted.
  
+* Allocation requests requiring 20 qubits and under will be considered for H1 family machines, and allocation requests requiring 21-32 qubits will be considered for H2.
+
 Allocation requests for the following month must be submitted no later than the 25th of the preceding month.  The uptime schedule is available on the *Calendar* tab of the `Quantinuum User Portal <https://um.qapi.quantinuum.com/>`__. 
 
+Due to hardware emulation complexity, jobs using 29-32 qubits are likely to experience significantly slowed execution times. 
 
 Software
 ========
