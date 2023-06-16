@@ -16,7 +16,7 @@ The install process is rather simple (with a few notable warnings, see :ref:`Cau
    ./Miniconda3-latest-Linux-x86_64.sh -u -p ~/miniconda_frontier
 
 * The ``-p`` flag specifies the prefix path for where to install miniconda.
-* The ``-u`` updates any current installations at the ``-p`` location (not necessary if you didn't do a "mkdir" beforehand)
+* The ``-u`` updates any current installations at the ``-p`` location (not necessary if you didn't do a "mkdir" beforehand).
 
 .. _miniconda-notes:
 
@@ -59,4 +59,4 @@ An additional recommendation is to set things to not activate your base environm
    # Only needs to be run once after exporting conda into your PATH
    conda config --set auto_activate_base false
 
-As always, if you encounter issue, don't hesitate to contact help@olcf.ornl.gov
+As always, if you encounter issues, don't hesitate to contact help@olcf.ornl.gov
