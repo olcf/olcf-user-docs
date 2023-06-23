@@ -651,26 +651,26 @@ The following table summarizes frequently-used options to Slurm:
 | -e               | #SBATCH -e <filename>             | Writes standard error to ``<name>`` instead               |
 |                  |                                   | of ``<job_script>.e$SLURM_JOB_UID``.                      |
 +------------------+-----------------------------------+-----------------------------------------------------------+
-| \\-\\-mail-type  | #SBATCH \\-\\-mail-type=FAIL      | Sends email to the submitter when the job fails.          |
+| \-\-mail-type    | #SBATCH \-\-mail-type=FAIL        | Sends email to the submitter when the job fails.          |
 +------------------+-----------------------------------+-----------------------------------------------------------+
-|                  | #SBATCH \\-\\-mail-type=BEGIN     | Sends email to the submitter when the job begins.         |
+|                  | #SBATCH \-\-mail-type=BEGIN       | Sends email to the submitter when the job begins.         |
 +------------------+-----------------------------------+-----------------------------------------------------------+
-|                  | #SBATCH \\-\\-mail-type=END       | Sends email to the submitter when the job ends.           |
+|                  | #SBATCH \-\-mail-type=END         | Sends email to the submitter when the job ends.           |
 +------------------+-----------------------------------+-----------------------------------------------------------+
-| \\-\\-mail-user  | #SBATCH \\-\\-mail-user=<address> | Specifies email address to use for                        |
+| \-\-mail-user    | #SBATCH \-\-mail-user=<address>   | Specifies email address to use for                        |
 |                  |                                   | ``--mail-type`` options.                                  |
 +------------------+-----------------------------------+-----------------------------------------------------------+
 | -J               | #SBATCH -J <name>                 | Sets the job name to ``<name>`` instead of the            |
 |                  |                                   | name of the job script.                                   |
 +------------------+-----------------------------------+-----------------------------------------------------------+
-|\\-\\-get-user-env| #SBATCH \\-\\-get-user-env        | Exports all environment variables from the                |
+|\-\-get-user-env  | #SBATCH \-\-get-user-env          | Exports all environment variables from the                |
 |                  |                                   | submitting shell into the batch job shell.                |
 |                  |                                   | Since the login nodes differ from the service             |
 |                  |                                   | nodes, using the ``–get-user-env`` option is              |
 |                  |                                   | **not recommended**. Users should create the              |
 |                  |                                   | needed environment within the batch job.                  |
 +------------------+-----------------------------------+-----------------------------------------------------------+
-| \\-\\-mem=0      | #SBATCH \\-\\-mem=0               | Declare to use all the available memory of the node       |
+| \-\-mem=0        | #SBATCH \-\-mem=0                 | Declare to use all the available memory of the node       |
 +------------------+-----------------------------------+-----------------------------------------------------------+
 
 .. note::
