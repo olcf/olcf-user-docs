@@ -1970,7 +1970,7 @@ Disabling XNACK will not necessarily result in an application failure, as most t
 +=============================================+===========================+============================================+=============================================+
 | System Allocator (malloc,new,allocate, etc) | CPU DDR4                  | Local read/write                           | Fatal Unhandled Page Fault                  |
 +---------------------------------------------+---------------------------+--------------------------------------------+---------------------------------------------+
-| hipMallocManaged                            | CPU DDR4                  | Zero copy read/write over Infinity Fabric  | Local read/write                            |
+| hipMallocManaged                            | CPU DDR4                  | Local read/write                           | Zero copy read/write over Infinity Fabric   |
 +---------------------------------------------+---------------------------+--------------------------------------------+---------------------------------------------+
 | hipHostMalloc                               | CPU DDR4                  | Local read/write                           | Zero copy read/write over Infinity Fabric   |
 +---------------------------------------------+---------------------------+--------------------------------------------+---------------------------------------------+

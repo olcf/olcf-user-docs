@@ -41,6 +41,16 @@ Currently Available User-Managed Software
   |            |                |                                            |                                                                                |
   |            |                |                                            | Support Forum:     https://groups.google.com/g/upcxx                           |
   +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
+  | ums022     | VisIt          | Eric Brugger (brugger1@llnl.gov)           | VisIt Visualization and Analysis Tool                                          |
+  +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
+  | ums023     | HPCToolkit     | Wileam Phan (wil.phan@rice.edu)            | HPCToolkit Performance measurement and analysis tools                          |
+  |            |                |                                            |                                                                                |
+  |            |                | John Mellor-Crummey (johnmc@rice.edu)      | Website:           http://hpctoolkit.org/                                      |
+  |            |                |                                            |                                                                                |
+  |            |                |                                            | Issue Tracker:     https://gitlab.com/hpctoolkit/hpctoolkit/-/issues           |
+  |            |                |                                            |                                                                                |
+  |            |                |                                            | Mailing List:      hpctoolkit-forum@rice.edu                                   |
+  +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
 
 .. tabbed:: Crusher
 
