@@ -162,4 +162,4 @@ Additional Resources
 
 * `IBM's Documentation <https://quantum-computing.ibm.com/docs/>`__
 
-* `IBM Quantum Insider <https://quantum-growth.edunext.io/courses/course-v1:quantum-growth+IQN-seminar-series+2021_H2/about/>`__
+* `IBM Quantum Insider <https://thequantuminsider.com/2022/11/09/ibm-quantum-computing/>`__
