@@ -41,6 +41,10 @@ Currently Available User-Managed Software
   |            |                |                                            |                                                                                |
   |            |                |                                            | Support Forum:     https://groups.google.com/g/upcxx                           |
   +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
+  | ums022     | VisIt          | Eric Brugger (brugger1@llnl.gov)           | VisIt Visualization and Analysis Tool                                          |
+  +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
+  | ums023     | HPCToolkit     | John Mellor-Crummey (johnmc@rice.edu)      | Performance measurement and analysis tools                                     |
+  +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
 
 .. tabbed:: Crusher
 
