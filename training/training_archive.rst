@@ -13,6 +13,7 @@ The table below lists presentations given at previous OLCF training events. For 
    :header: "Date", "Title", "Speaker", "Event", "Presentation"
    :widths: 12 22 22 22 22
 
+    "2023-06-28", "Blender on Frontier", "Michael Sandoval (OLCF)", `Blender on Frontier <https://www.olcf.ornl.gov/calendar/userconcall-june2023/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/Blender_on_Frontier_published.pdf>`__ | `recording <https://vimeo.com/840891737>`__)
     "2023-06-15", "AI Training Series: AI for Science at Scale - Introduction", "Sajal Dash, Junqi Yin, Wes Brewer (OLCF)", `AI for Science at Scale - Introduction <https://www.olcf.ornl.gov/calendar/ai-for-science-at-scale-intro/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/AI-For-Science-at-Scale-Introduction.pdf>`__ | `recording <https://vimeo.com/836918490>`__)
     "2023-05-31", "OLCF Storage and Orion Best Practices", "Suzanne Parete-Koon and Jesse Hanley (OLCF)", `May 2023 OLCF User Conference Call <https://www.olcf.ornl.gov/calendar/userconcall-may2023/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/May2023_Usercall_OLCFStorage.pdf>`__ | `recording <https://vimeo.com/833369509>`__)  
     "2023-05-24", "Julia for High Performance Computing Tutorial", "William Godoy (ORNL)", `Julia for High Performance Computing Tutorial <https://www.olcf.ornl.gov/calendar/julia-for-high-performance-computing-tutorial/>`__, (`recording <https://vimeo.com/830368460>`__)
