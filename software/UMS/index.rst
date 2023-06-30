@@ -65,6 +65,14 @@ Currently Available User-Managed Software
   +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
   | ums015     | DPC++ for HIP  | Gordon Brown (gordon@codeplay.com)         |                                                                                |
   +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
+  | ums023     | HPCToolkit     | Wileam Phan (wil.phan@rice.edu)            | HPCToolkit Performance measurement and analysis tools                          |
+  |            |                |                                            |                                                                                |
+  |            |                | John Mellor-Crummey (johnmc@rice.edu)      | Website:           http://hpctoolkit.org/                                      |
+  |            |                |                                            |                                                                                |
+  |            |                |                                            | Issue Tracker:     https://gitlab.com/hpctoolkit/hpctoolkit/-/issues           |
+  |            |                |                                            |                                                                                |
+  |            |                |                                            | Mailing List:      hpctoolkit-forum@rice.edu                                   |
+  +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
 
 .. tabbed:: Summit
 
