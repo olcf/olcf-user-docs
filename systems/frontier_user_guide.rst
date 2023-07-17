@@ -3420,6 +3420,22 @@ The aforementioned behavior is only true for FP atomicAdd() operations. Hardware
 In cases when contention is very low, a FP32 CAS loop implementing an atomicAdd() operation could be faster than an hardware FP32 LDS atomicAdd().
 Applications using single precision FP atomicAdd() are encouraged to experiment with the use of double precision to evaluate the trade-off between high atomicAdd() performance vs. potential lower occupancy due to higher LDS usage.
 
+Library considerations with atomic operations
+---------------------------------------------
+
+Some functionality provided by the rocBLAS and hipBLAS libraries use atomic operations to improve performance by default. This can cause results to not be bit-wise reproducible.
+Functions that may use atomic operations include: gemv, hemv, and symv. These functions introduced atomic operations in ROCm 5.5. Under some circumstances gemm, gemm_ex, trsm, and trsv may also use atomic operations.
+If it is necessary to have bit-wise reproducible results from these libraries, it is recommended to turn the atomic operations off by setting the mode via the rocBLAS or hipBLAS handle:
+
+.. code-block:: c++
+
+    ...
+    rocblas_create_handle(handle);
+    rocblas_set_atomics_mode(handle, rocblas_atomics_not_allowed);
+
+    hipblasCreate(&handle);
+    hipblasSetAtomicsMode(handle, HIPBLAS_ATOMICS_NOT_ALLOWED);
+
 ------
 
 System Updates 
