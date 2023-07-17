@@ -3424,7 +3424,8 @@ Library considerations with atomic operations
 ---------------------------------------------
 
 Some functionality provided by the rocBLAS and hipBLAS libraries use atomic operations to improve performance by default. This can cause results to not be bit-wise reproducible.
-Functions that may use atomic operations include: gemv, hemv, and symv. These functions introduced atomic operations in ROCm 5.5. Under some circumstances gemm, gemm_ex, trsm, and trsv may also use atomic operations.
+Level 2 functions that may use atomic operations include: gemv, hemv, and symv, which introduced atomic operations in ROCm 5.5. All of the Level 3 functions, along with Level 2 trsv, may use atomic operations where dependent
+on gemm. Atomic operations are used for problem sizes where they are shown to improve performance.
 If it is necessary to have bit-wise reproducible results from these libraries, it is recommended to turn the atomic operations off by setting the mode via the rocBLAS or hipBLAS handle:
 
 .. code-block:: c++
