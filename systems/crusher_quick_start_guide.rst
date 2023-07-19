@@ -2144,6 +2144,7 @@ On Tuesday, July 18, 2023, Frontier was upgraded to a new version of the system 
 ----------
 
 On Wednesday, April 5, 2023, the Crusher TDS was upgraded to a new software stack.  A summary of the changes is included below. 
+
 -  The operating system was upgraded to Cray OS 2.4 based on SLES 15.4.
 -  HPE/Cray Programming Environment (PE):
     -  PE 22.12 was installed and is now default. This PE includes the following components:
