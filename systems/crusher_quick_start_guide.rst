@@ -2133,7 +2133,7 @@ System Updates
 
 2023-07-18
 ----------
-On Tuesday, July 18, 2023, Frontier was upgraded to a new version of the system software stack. During the upgrade, the following changes took place:
+On Tuesday, July 18, 2023, the Crusher TDS was upgraded to a new version of the system software stack. During the upgrade, the following changes took place:
 
 -  The system was upgraded to Cray OS 2.5, Slingshot Host Software 2.0.2-112, and the AMD GPU 6.0.5 device driver (ROCm 5.5.1 release).
 -  ROCm 5.5.1 is now available via the ``rocm/5.5.1`` modulefile.
