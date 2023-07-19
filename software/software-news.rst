@@ -12,7 +12,10 @@ most recent changes are listed first.
 
    <p style="font-size:20px"><b>Frontier and Crusher: System Software Upgrade (July 18, 2023)</b></p>
 
-The Crusher TDS and Frontier systems were upgraded to a new version of the system software stack. This stack introduces ROCm 5.5.1 and HPE/Cray Programming Environment 23.05. For more information, please see:  `<https://docs.olcf.ornl.gov/systems/crusher_quick_start_guide.html#system-updates>`_ and `<https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#system-updates>`_.
+The Crusher TDS and Frontier systems were upgraded to a new version of the system software stack. This stack introduces ROCm 5.5.1 and HPE/Cray Programming Environment 23.05. For more information, please see:
+
+-  `Crusher System Updates <https://docs.olcf.ornl.gov/systems/crusher_quick_start_guide.html#system-updates>`_
+-  `Frontier System Updates <https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#system-updates>`_.
 
 Please contact help@olcf.ornl.gov with any issues or questions.
     
