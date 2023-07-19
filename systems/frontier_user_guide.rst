@@ -3445,10 +3445,10 @@ System Updates
 2023-07-18
 ----------
 On Tuesday, July 18, 2023, Frontier was upgraded to a new version of the system software stack. During the upgrade, the following changes took place:
--  The system was upgraded to Cray OS 2.5, Slingshot Host Software 2.0.2-112, and the AMD GPU 6.0.5 device driver (ROCm 5.5.1 release).
--  ROCm 5.5.1 is now available via the ``rocm/5.5.1`` modulefile.
--  HPE/Cray Programming Environments (PE) 23.05 is now available via the ``cpe/23.05`` modulefile.
--  HPE/Cray PE 23.05 introduces support for ROCm 5.5.1. However, due to issues identified during testing, ROCm 5.3.0 and HPE/Cray PE 22.12 remain as default.
+ * The system was upgraded to Cray OS 2.5, Slingshot Host Software 2.0.2-112, and the AMD GPU 6.0.5 device driver (ROCm 5.5.1 release).
+ * ROCm 5.5.1 is now available via the ``rocm/5.5.1`` modulefile.
+ * HPE/Cray Programming Environments (PE) 23.05 is now available via the ``cpe/23.05`` modulefile.
+ * HPE/Cray PE 23.05 introduces support for ROCm 5.5.1. However, due to issues identified during testing, ROCm 5.3.0 and HPE/Cray PE 22.12 remain as default.
 
 2023-05-09
 ----------
