@@ -3,8 +3,7 @@
 VisIt
 *****
 
-.. note::
-    Scalable rendering issue fixed on Andes. Please use VisIt version 3.2.2.
+.. note:: VisIt is now available on Frontier through the UMS022 module.
 
 Overview
 ========
@@ -30,6 +29,7 @@ Recommended VisIt versions on our systems:
 
 * Summit: VisIt 3.1.4
 * Andes: VisIt 3.2.2
+* Frontier: VisIt 3.3.3
 
 .. warning::
     Using a different version than what is listed above is not guaranteed to work properly.
@@ -110,6 +110,57 @@ Restart VisIt, and go to Options→Host Profiles. Select “New Host”
 	the number of processors if memory is not an issue. See the
         :ref:`visit-modify-host` section below for how to add a ``gpu`` partition
         launch profile on Andes.
+
+.. tabbed:: Frontier
+
+    **For Frontier:**
+
+    - **Host nickname**: ``Frontier`` (this is arbitrary)
+    - **Remote hostname**: ``frontier.olcf.ornl.gov`` (required)
+    - **Host name aliases**: ``login#`` (required)
+    - **Maximum Nodes**: Unchecked
+    - **Maximum processors**: Unchecked (arbitrary)
+    - **Path to VisIt Installation**: ``/sw/frontier/ums/ums022/linux-sles15-zen3/gcc-11.2.0/visit-3.3.3-zfoh2caq5tbshlvtujditymjizstvewe/`` (required)
+    - **Username**: Your OLCF Username (required)
+    - **Tunnel data connections through SSH**: Checked (required)
+
+    Under the “Launch Profiles” tab create a launch profile. Most of these values
+    are arbitrary
+
+    - **Profile Name**: ``batch`` (arbitrary)
+    - **Timeout**: 480 (arbitrary)
+    - **Number of threads per task**: 0 (arbitrary, but not tested
+      with OMP/pthread support)
+    - **Additional arguments**: blank (arbitrary)
+
+    Under the “Parallel” Tab:
+
+    - **Launch parallel engine**: Checked (required)
+    - Launch Tab:
+
+        - **Parallel launch method**:
+          ``sbatch/srun`` (required)
+        - **Partition/Pool/Queue**: ``batch`` (required)
+        - **Number of processors**: 1 (arbitrary, but
+          high number may lead to OOM errors) (max is 56)
+        - **Number of nodes**: 1 (arbitrary)
+        - **Bank/Account**: Your OLCF project to use (required)
+        - **Time Limit**: 01:00:00 (arbitrary, ``HH:MM:SS``)
+        - **Machine file**: Unchecked (required – Lets VisIt get
+          the nodelist from the scheduler)
+        - **Constraints**: Unchecked
+    - Advanced tab – All boxes unchecked
+    - GPU Acceleration
+
+        - **Use cluster’s graphics cards**: Unchecked
+
+    Click “Apply” and make sure to save the settings (Options/Save Settings).
+    Exit and re-launch VisIt.
+
+    .. note::
+        If you want to use the ``debug`` QOS on Frontier, you can add ``-q debug``
+        to the "Launcher arguments" section under the "Advanced" tab (make sure
+        to also check the "Launcher arguments" box).
 
 .. tabbed:: Summit
 
@@ -233,10 +284,10 @@ Once you have VisIt installed and set up on your local computer:
 -  Once specified, the server side of VisIt will be launched, and you
    can interact with your data.
 
-The above procedure can also be followed to connect to Summit, with the main
-difference being the number of available processors (recall that Summit has 42
-physical cores per node). The time limit syntax for Andes and Summit also
-differ. Summit uses the format HH:MM while Andes follows HH:MM:SS.
+The above procedure can also be followed to connect to Summit or Frontier, with
+the main difference being the number of available processors. The time limit
+syntax for Andes, Summit, and Frontier also differ. Summit uses the format
+HH:MM while Andes and Frontier follow HH:MM:SS.
 
 Please do not run VisIt's GUI client from an OLCF machine. You will get much 
 better performance if you install a client on your workstation and launch 
@@ -277,32 +328,54 @@ job will submit to.
     submit the above lines in a batch script. However, you will wait in the queue
     twice, so this is not recommended. Alternatively, one can use Andes.
 
-**For Andes (Slurm Script):**
+**For Andes/Frontier (Slurm Script):**
 
-.. code-block:: bash
-   :linenos:
+.. tabbed:: Andes
 
-   #!/bin/bash
-   #SBATCH -A XXXYYY
-   #SBATCH -J visit_test
-   #SBATCH -N 1
-   #SBATCH -p gpu
-   #SBATCH -t 0:05:00
+    .. code-block:: bash
+       :linenos:
 
-   cd $SLURM_SUBMIT_DIR
-   date
+       #!/bin/bash
+       #SBATCH -A XXXYYY
+       #SBATCH -J visit_test
+       #SBATCH -N 1
+       #SBATCH -p gpu
+       #SBATCH -t 0:05:00
 
-   module load visit
+       cd $SLURM_SUBMIT_DIR
+       date
 
-   visit -nowin -cli -v 3.2.2 -l srun -np 28 -nn 1 -s visit_example.py
+       module load visit
+
+       visit -nowin -cli -v 3.2.2 -l srun -np 28 -nn 1 -s visit_example.py
+
+.. tabbed:: Frontier
+
+    .. code-block:: bash
+       :linenos:
+
+       #!/bin/bash
+       #SBATCH -A XXXYYY
+       #SBATCH -J visit_test
+       #SBATCH -N 1
+       #SBATCH -p batch
+       #SBATCH -t 0:05:00
+
+       cd $SLURM_SUBMIT_DIR
+       date
+
+       module load ums
+       module load ums022
+
+       visit -nowin -cli -v 3.3.3 -l srun -np 28 -nn 1 -s visit_example.py
 
 Following one of the methods above will submit a batch job for five minutes to
-either the batch partition on Summit or the gpu partition on Andes. Once the
-batch job makes its way through the queue, the script will launch VisIt 3.1.4 or 3.2.2
-(specified with the **-v** flag, required on Andes) and execute a python script
-called ``visit_example.py`` (specified with the **-s** flag, required if using
-a Python script). Note that the **-nowin -cli** options are also required,
-which launches the CLI and tells VisIt to not launch the GUI. Although a Python
+either Summit, Andes, or Frontier.  Once the batch job makes its way through
+the queue, the script will launch VisIt version X.Y.Z (specified with the
+**-v** flag, required on Andes) and execute a python script called
+``visit_example.py`` (specified with the **-s** flag, required if using a
+Python script). Note that the **-nowin -cli** options are also required, which
+launches the CLI and tells VisIt to not launch the GUI. Although a Python
 script is used for this example, not calling the **-s** flag will launch the
 CLI in the form of a Python shell, which can be useful for interactive batch
 jobs.  The **-np** and **-nn** flags represent the number of processors and
