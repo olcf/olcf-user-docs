@@ -44,8 +44,8 @@ from `Kitware <https://www.paraview.org/download/>`__.
 
 Recommended ParaView versions on our systems:
 
-* Summit: ParaView 5.9.1, 5.10.0
-* Andes: ParaView 5.9.1, 5.10.0
+* Summit: ParaView 5.9.1, 5.10.0, 5.11.0
+* Andes: ParaView 5.9.1, 5.10.0, 5.11.0
 
 .. warning::
     Using a different version than what is listed above is not guaranteed to work properly.
@@ -69,6 +69,8 @@ connected to. For example, to see these modules on Summit:
     paraview/5.9.1-osmesa
     paraview/5.10.0-egl
     paraview/5.10.0-osmesa
+    paraview/5.11.0-egl
+    paraview/5.11.0-osmesa
 
     [user@login4.summit ~]$ module load paraview/5.9.1-egl
 
@@ -391,58 +393,58 @@ PvBatch (one of the Python interfaces available in ParaView). PvBatch accepts
 commands from Python scripts and will run in parallel using MPI. Example
 batch scripts, along with a working Python example, are provided below.
 
-**For Andes:**
+.. tabbed:: Andes
 
-.. code-block:: bash
-   :linenos:
+    .. code-block:: bash
+       :linenos:
 
-   #!/bin/bash
-   #SBATCH -A XXXYYY
-   #SBATCH -J para_test
-   #SBATCH -N 1
-   #SBATCH -p batch
-   #SBATCH -t 0:05:00
+       #!/bin/bash
+       #SBATCH -A XXXYYY
+       #SBATCH -J para_test
+       #SBATCH -N 1
+       #SBATCH -p batch
+       #SBATCH -t 0:05:00
 
-   cd $SLURM_SUBMIT_DIR
-   date
+       cd $SLURM_SUBMIT_DIR
+       date
 
-   module load paraview/5.9.1-osmesa
+       module load paraview/5.11.0-osmesa
 
-   srun -n 28 pvbatch para_example.py
+       srun -n 28 pvbatch para_example.py
 
-**For Summit:**
+.. tabbed:: Summit
 
-.. code-block:: bash
-   :linenos:
+    .. code-block:: bash
+       :linenos:
 
-   #!/bin/bash
-   #BSUB -P XXXYYY
-   #BSUB -W 00:05
-   #BSUB -nnodes 1
-   #BSUB -J para_test
-   #BSUB -o para_test.%J.out
-   #BSUB -e para_test.%J.err
+       #!/bin/bash
+       #BSUB -P XXXYYY
+       #BSUB -W 00:05
+       #BSUB -nnodes 1
+       #BSUB -J para_test
+       #BSUB -o para_test.%J.out
+       #BSUB -e para_test.%J.err
 
-   cd $LSB_OUTDIR
-   date
+       cd $LSB_OUTDIR
+       date
 
-   module load paraview/5.9.1-osmesa
+       module load paraview/5.11.0-osmesa
 
-   # Set up flags for jsrun
-   export NNODES=$(($(cat $LSB_DJOB_HOSTFILE | uniq | wc -l)-1))
-   export NCORES_PER_NODE=28
-   export NGPU_PER_NODE=0
-   export NRS_PER_NODE=1
-   export NMPI_PER_RS=28
-   export NCORES_PER_RS=$(($NCORES_PER_NODE/$NRS_PER_NODE))
-   export NGPU_PER_RS=$(($NGPU_PER_NODE/$NRS_PER_NODE))
-   export NRS=$(($NNODES*$NRS_PER_NODE))
+       # Set up flags for jsrun
+       export NNODES=$(($(cat $LSB_DJOB_HOSTFILE | uniq | wc -l)-1))
+       export NCORES_PER_NODE=28
+       export NGPU_PER_NODE=0
+       export NRS_PER_NODE=1
+       export NMPI_PER_RS=28
+       export NCORES_PER_RS=$(($NCORES_PER_NODE/$NRS_PER_NODE))
+       export NGPU_PER_RS=$(($NGPU_PER_NODE/$NRS_PER_NODE))
+       export NRS=$(($NNODES*$NRS_PER_NODE))
 
-   jsrun -n ${NRS} -r ${NRS_PER_NODE} -a ${NMPI_PER_RS} -g ${NGPU_PER_RS} -c ${NCORES_PER_RS} pvbatch para_example.py
+       jsrun -n ${NRS} -r ${NRS_PER_NODE} -a ${NMPI_PER_RS} -g ${NGPU_PER_RS} -c ${NCORES_PER_RS} pvbatch para_example.py
 
 .. warning::
     If you plan on using the EGL version of the ParaView module (e.g.,
-    paraview/5.9.1-egl), then you must be connected to the GPUs. On Andes,
+    paraview/5.11.0-egl), then you must be connected to the GPUs. On Andes,
     this is done by using the gpu partition via ``#SBATCH -p gpu``, while 
     on Summit the ``-g`` flag in the ``jsrun`` command must be greater 
     than zero.
@@ -486,7 +488,7 @@ The following script renders a 3D sphere colored by the ID (rank) of each MPI ta
    # Set Colorbar Properties
    display.SetScalarBarVisibility(curr_view,True) # Show bar
    scalarBar = GetScalarBar(cmap, curr_view)      # Get bar's properties
-   scalarBar.WindowLocation = 'AnyLocation'       # Allows free movement
+   scalarBar.WindowLocation = 'Any Location'       # Allows free movement
    scalarBar.Orientation = 'Horizontal'           # Switch from Vertical to Horizontal
    scalarBar.Position = [0.15,0.80]               # Bar Position in [x,y]
    scalarBar.LabelFormat = '%.0f'                 # Format of tick labels
@@ -496,6 +498,8 @@ The following script renders a 3D sphere colored by the ID (rank) of each MPI ta
    # Render scene and save resulting image
    Render()
    SaveScreenshot('pvbatch-test.png',ImageResolution=[1080, 1080])
+
+.. warning:: For older versions of ParaView (e.g., ``5.9.1``), line 23 should be ``'AnyLocation'`` (no space).
 
 .. image:: /images/paraview_example_1.png
    :align: center
