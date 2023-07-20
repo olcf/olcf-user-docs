@@ -121,22 +121,22 @@ project has been created, and provided with the project ID and system
 allocation details. At this time, project participants may apply for
 user accounts.
 
-Guidance on Summit Allocation Requests
--------------------------------------------
+Guidance on Frontier Allocation Requests
+----------------------------------------
 
-Summit delivers 8 times the computational performance of Titan’s 18,688
-nodes, using only 4,608 nodes. Like Titan, Summit has a hybrid
-architecture, and each node contains multiple IBM POWER9 CPUs and NVIDIA
-Volta GPUs all connected together with NVIDIA’s high-speed NVLink. The
-peak node performance is 42 teraflops per node with 512 gigabytes of
-DDR4 memory, 96 gigabytes of HPM2 memory, and 1,600 gigabytes of
-non-volatile memory. To provide a high rate of I/O throughput, the nodes
-are connected in a non-blocking fat-tree using a dual-rail Mellanox EDR
-InfiniBand interconnect. The OLCF Director's Discretionary (DD) program
-allocates approximately 10% of the available Summit hours in a calendar
-year. **Summit is allocated in *node* hours, and a typical DD project is
-awarded between 15,000 - 20,000 *node* hours.** For more information
-about Summit, please visit the :ref:`summit-user-guide`.
+Frontier has a total of 9,408 AMD compute nodes, with each node consisting of
+[1x] 64-core AMD “Optimized 3rd Gen EPYC” CPU with access to 512 GB of DDR4
+memory. Each node also contains [4x] AMD MI250X accelerators, each with 2
+Graphics Compute Dies (GCDs) for a total of 8 GCDs per node. The programmer can
+think of the 8 GCDs as 8 separate GPUs, each having 64 GB of high-bandwidth
+memory (HBM2E). The CPU is connected to each GCD via Infinity Fabric CPU-GPU,
+allowing a peak host-to-device (H2D) and device-to-host (D2H) bandwidth of
+36+36 GB/s. The 2 GCDs on the same MI250X are connected with Infinity Fabric
+GPU-GPU with a peak bandwidth of 200 GB/s. The OLCF Director's Discretionary
+(DD) program allocates approximately 10% of the available Frontier hours in a
+calendar year. **Frontier is allocated in *node* hours, and a typical DD
+project is awarded between 15,000 - 20,000 *node* hours.** For more information
+about Frontier, please visit the :ref:`frontier-user-guide`.
 
 .. _applying-for-a-user-account:
 
