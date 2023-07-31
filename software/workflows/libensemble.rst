@@ -8,7 +8,7 @@ libEnsemble
 Overview
 ========
 
-libEnsemble is a complete :ref:`Python<py-index>` toolkit for steering dynamic ensembles of calculations. 
+`libEnsemble <https://github.com/Libensemble/libensemble>`__ is a complete :ref:`Python<py-index>` toolkit for steering dynamic ensembles of calculations.
 Workflows are highly portable and detect/integrate heterogeneous resources with little effort. For instance,
 libEnsemble can automatically detect, assign, and reassign allocated GPUs to ensemble members.
 
