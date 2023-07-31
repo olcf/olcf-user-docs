@@ -82,13 +82,20 @@ Example Code
     H, persis_info, flag = libE(sim_specs, gen_specs, exit_criteria, persis_info, libE_specs=libE_specs)
 
 
-Simple Job Submission
-=====================
+Job Submission
+==============
+
+libEnsemble can run on/across the compute nodes of Frontier using either Python's ``multiprocessing``
+or MPI via ``mpi4py``. libEnsemble will detect available nodes and GPUs from the Slurm environment.
 
 Start an interactive session::
 
-  $ salloc --nodes=1 -A <project_id> --time=00:10:00
+  $ salloc --nodes=2 -A <project_id> --time=00:10:00
 
-Within the session::
+Within the session (``multiprocessing``, all processes on first node)::
 
   $ python my_libensemble_script.py --comms local --nworkers 8
+
+Or (MPI, processes distributed)::
+
+  $ srun -n 8 --ntasks-per-node=4 python my_libensemble_script.py
