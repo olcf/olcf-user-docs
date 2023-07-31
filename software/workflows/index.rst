@@ -80,6 +80,8 @@ you will find a list of current frameworks natively supported in our
 +------------------------------------------------+-------------+
 | :ref:`Swift/T<workflows-swiftt>`               | Summit      |
 +------------------------------------------------+-------------+
+| :ref:`libEnsemble<workflows-libensemble>`      | All         |
++------------------------------------------------+-------------+
 
 ---------
 
@@ -96,4 +98,5 @@ Workflow Systems
    parsl
    pmake
    swift_t
+   libensemble
 

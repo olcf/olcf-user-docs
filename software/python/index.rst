@@ -1,3 +1,4 @@
+.. _py-index:
 
 ***********************
 Python on OLCF Systems
