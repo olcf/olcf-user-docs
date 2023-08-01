@@ -51,9 +51,13 @@ Setup authoring environment
 
     $ sphinx-build -E . _build
 
+   Or::
+
+    $ make html
+
 #. Locally preview the generated web pages
 
-   Start a webserver on something like ``localhost:8080`` that points at
+   Start a webserver on ``localhost:8080`` that points at
    your ``olcf-user-docs/_build`` directory. For example, using busybox::
 
         $ busybox httpd -p 127.0.0.1:8080 -h /home/ubuntu/olcf-user-docs/_build
@@ -64,7 +68,11 @@ Setup authoring environment
         $ python3 -m http.server 8080
         ## you may add the option --bind 127.0.0.1 to bind only on the localhost address 
 
-   Open a broswer and type ``localhost:8080`` into the address bar to view the web pages.
+   Open a browser and type ``localhost:8080`` into the address bar to view the web pages.
+
+   On macOS::
+
+        $ open _build/html/index.html
 
 Edit the docs
 -------------------------
