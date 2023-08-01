@@ -8,9 +8,10 @@ libEnsemble
 Overview
 ========
 
-`libEnsemble <https://github.com/Libensemble/libensemble>`__ is a complete :ref:`Python<py-index>` toolkit for steering dynamic ensembles of calculations.
-Workflows are highly portable and detect/integrate heterogeneous resources with little effort. For instance,
-libEnsemble can automatically detect, assign, and reassign allocated GPUs to ensemble members.
+`libEnsemble <https://github.com/Libensemble/libensemble>`__ is a complete :ref:`Python<py-index>` toolkit for
+steering dynamic ensembles of calculations. Workflows are highly portable and detect/integrate heterogeneous
+resources with little effort. For instance, libEnsemble can automatically detect, assign, and reassign allocated
+processors and GPUs to ensemble members.
 
 Users select or supply **generator** and **simulator** functions to express their ensembles; the generator
 typically steers the ensemble based on prior simulator results. Such functions can also launch and monitor
@@ -44,6 +45,9 @@ For an example that runs a small ensemble with an application that offloads work
 this `GPU App Tutorial <https://libensemble.readthedocs.io/en/main/tutorials/forces_gpu_tutorial.html>`__.
 
 Additional information on compiling/running the above sample GPU app is available `here <https://libensemble.readthedocs.io/en/main/platforms/frontier.html#example>`__.
+
+See `this video <https://www.youtube.com/watch?v=XHXcslDORjU>`__ for an example workflow on :ref:`Spock<spock-quick-start-guide>`.
+The channel will soon publish a Frontier-specific guide.
 
 Example Code
 ============
@@ -85,17 +89,14 @@ Example Code
 Job Submission
 ==============
 
-libEnsemble can run on/across the compute nodes of Frontier using either Python's ``multiprocessing``
-or MPI via ``mpi4py``. libEnsemble will detect available nodes and GPUs from the Slurm environment.
+Upon initialization, libEnsemble will detect available nodes and GPUs from the Slurm environment, and 
+allocate those resources towards application-launches.
 
 Start an interactive session::
 
   $ salloc --nodes=2 -A <project_id> --time=00:10:00
 
-Within the session (``multiprocessing``, all processes on first node)::
+Within the session (``multiprocessing`` comms, all processes on first node)::
 
   $ python my_libensemble_script.py --comms local --nworkers 8
 
-Or (MPI, processes distributed)::
-
-  $ srun -n 8 --ntasks-per-node=4 python my_libensemble_script.py
