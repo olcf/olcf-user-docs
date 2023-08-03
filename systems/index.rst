@@ -7,6 +7,7 @@ Systems
 .. toctree::
    :maxdepth: 2
 
+   2023_olcf_system_changes
    frontier_user_guide
    summit_user_guide
    citadel_user_guide
