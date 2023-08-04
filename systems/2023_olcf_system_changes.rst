@@ -17,8 +17,6 @@ Please pay attention to the following key dates as you plan your science campaig
 
    * - Date
      - Event
-   * - :ref:`September<summit_proposals_open>` 
-     - Submission system opens for 2024 Summit proposals.
    * - :ref:`Dec 18<summit_last_day_batch>` 
      - Last day to execute batch jobs on Summit.
    * - :ref:`Dec 18<andes_last_day_batch>` 
@@ -27,25 +25,12 @@ Please pay attention to the following key dates as you plan your science campaig
      - Alpine becomes read-only and available only from DTNs. **Please do not wait, begin transferring your Lustre data now.** 
    * - :ref:`Jan 01<alpine_decom>`
      - Alpine decommissioned.  **ALL REMAINING DATA WILL BE PERMANENTLY DELETED** 
-   * - :ref:`Early 2024<summit_return_to_service>`
-     - Summit available for projects with 2024 allocation. 
-   * - :ref:`Early 2024<alpine_ii_available>`
-     - Alpine II filesystem available. 
 
 
 
 
 
-.. _summit_proposals_open:
 
-Sep, 2023 - Submission system opens for 2024 Summit proposals  
---------------------------------------------------------------
-
-Submission system opens for 2024 Summit proposals that will be scheduled to start in early 2024 and can run to mid-October.  We welcome previous INCITE, ALCC, DD, ECP, or other computationally ready projects to submit proposals for time on Summit that are relevant to the DOE mission.
-
-Timeline
-    * Proposals accepted beginning early September (details will be posted once the submission system becomes available)
-    * Following a review period, projects will be notified in November and expected to start early 2024.
 
 .. _summit_last_day_batch:
 
@@ -56,7 +41,6 @@ Your project may continue to submit jobs on Summit through your current project'
 
 Summit will accept batch jobs prior to 08:00 on December 18, but only batch jobs that will complete prior to 08:00 Dec 18 will run.  All batch jobs remaining in the queue at 08:00, Dec 18 will be deleted.
 
-Summit will be returned to service in early 2024 with a new filesystem and made available to projects with a 2024 Summit allocation.
 
 .. _andes_last_day_batch:
 
@@ -124,29 +108,5 @@ Due to the large amount of data on the filesystems, we strongly urge you to star
 
 
 
-.. _summit_return_to_service:
 
-Early 2024 - Summit available for projects with 2024 allocation. 
------------------------------------------------------------------
-
-Summit will be returned to service early 2024.
-
-Projects awarded a 2024 Summit allocation will be able to log into Summit and submit batch jobs once the system has been made available.
-
-
-.. note::
-  Please note, Summit will mount a new filesystem once returned to service.
-    * Data stored on Alpine at the time of its decommission on January 01 will not be available.
-    * Users will be responsible for transferring data onto Summit's new filesystem
-
-
-
-.. _alpine_ii_available:
-
-Early 2024 - Alpine II filesystem available
------------------------------------------------------------------
- 
-Alpine II will be available early 2024.
-
-The previous center-wide GPFS scratch filesystem, Alpine, will be decommissioned in January 2024. A new scratch filesystem will be made available for projects with 2024 Summit allocations in early 2024. Users will be responsible for transferring any needed data onto the new scratch filesystem once available.  
 
