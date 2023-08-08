@@ -17,19 +17,19 @@ information on how to use Python modules and conda environments on OLCF
 systems, see our :doc:`Python on OLCF Systems page</software/python/index>`, 
 and our :doc:`Conda Basics guide </software/python/conda_basics>`.
 
-Currently, Crusher and Frontier do **NOT** have Anaconda/Conda modules.  To use
-conda, you will have to download and install Miniconda on your own
-(see `Miniconda Documentation <https://docs.conda.io/en/latest/miniconda.html>`__).
-Alternatively, you can use Python's inherent virtual environments ``venv``
-feature with the ``cray-python`` module instead, which is what we use below.
-For more details on ``venv``, see `Python's Official Documentation
+Currently, Frontier does **NOT** have an Anaconda/Conda module.  To use conda,
+you will have to download and install Miniconda on your own (see our
+:doc:`Installing Miniconda Guide </software/python/miniconda>`).
+Alternatively, you can use Python's native virtual environments ``venv``
+feature with the ``cray-python`` module (as we will explore in the guides
+below).  For more details on ``venv``, see `Python's Official Documentation
 <https://docs.python.org/3/tutorial/venv.html>`__.  Contact help@olcf.ornl.gov
 if conda is required for your workflow, or if you have any issues.
 
 .. warning::
 
     Currently, the install steps listed below only work for our x86_64 based
-    systems (Andes, Crusher, Frontier, etc.). The steps can be explored on Summit,
+    systems (Andes, Frontier, etc.). The steps can be explored on Summit,
     but -- due to Summit's Power architecture -- is not recommended or guaranteed
     to work.
 
@@ -54,7 +54,7 @@ See these links for more details:
 
 * `<https://qiskit.org/documentation/getting_started.html>`__
 * `<https://qiskit.org/documentation/intro_tutorial1.html>`__
-* `<https://github.com/Qiskit/qiskit-ibmq-provider#configure-your-ibm-quantum-credentials>`__
+* `<https://qiskit.org/ecosystem/ibm-provider/tutorials/Migration_Guide_from_qiskit-ibmq-provider.html>`__
 * `<https://quantum-computing.ibm.com/lab/docs/iql/manage/account/ibmq>`__
 
 .. tabbed:: Andes
@@ -65,116 +65,105 @@ See these links for more details:
         $ source activate base
         $ conda create -n ENV_NAME python=3.9 # works for python 3.7, 3.8, 3.9 (minimal support for 3.10)
         $ conda activate ENV_NAME
-        $ pip install numpy qiskit matplotlib --no-cache-dir
+        $ pip install qiskit qiskit-ibm-runtime qiskit-aer --no-cache-dir
 
-.. tabbed:: Crusher
+.. tabbed:: Frontier
 
     .. code-block:: bash
 
-        ## Load cray-python module
         $ module load cray-python
-
-        ## Create a virtual environment called ENV_NAME
         $ python3 -m venv ENV_NAME
-
-        ## Activate the virtual environment
         $ source ENV_NAME/bin/activate
-
-        ## Install numpy, qiskit, matplotlib
-        (ENV_NAME)$ python3 -m pip install numpy qiskit matplotlib --no-cache-dir
+        $ python3 -m pip install qiskit qiskit-ibm-runtime qiskit-aer --no-cache-dir
 
 
 Qiskit - Code Example
 ---------------------
 
 Below is a simple code example to test if things installed properly.  Note that
-methods for either using Qiskit as a simulator or on an actual IBM backend
-(lines 10 through 29) are listed.
+methods for either using Qiskit Runtime or ``IBMProvider`` are provided.
 
 .. note::
 
     Your IBMQ API Token is listed on your IBM dashboard at `<https://quantum-computing.ibm.com/>`__ .
 
-.. code-block:: python
-    :linenos:
+.. tabbed:: IBMProvider
 
-    import numpy as np
-    import time
-    from qiskit import IBMQ
-    from qiskit import QuantumCircuit, transpile
-    from qiskit.providers.aer import QasmSimulator
-    from qiskit.visualization import plot_histogram
-    from qiskit.providers.jobstatus import JobStatus
-     
-     
-    #### IF YOU HAVE AN IBMQ ACCOUNT (using an actual backend) #####
-     
-    # Add your IBMQ account credentials (found on IBM dashboard)
-    IBMQ.save_account('API_TOKEN_GOES_HERE') # only needs to be run once
-    IBMQ.load_account()
-     
-    # List your IBM "providers" (similar to OLCF projects)
-    print(IBMQ.providers())
-     
-    # Set the provider you want to use
-    # Note: 'ibm-q' hub (the default IBM hub) does not require a "project", but the 'ibm-q-ornl' hub (the ORNL QCUP hub) does
-    my_provider = IBMQ.get_provider(hub='ibm-q-ornl', project='csc431')
-     
-    # List your available "backends" from the set provider (the actual machines)
-    print(my_provider.backends())
-     
-    # Set the machine you want to use (must be listed in above printout)
-    backend = my_provider.get_backend('ibmq_qasm_simulator')
-     
-    ######################################
-     
-    # Use Aer's qasm_simulator (works even without IBMQ account, don't have to wait in a queue)
-    backend = QasmSimulator()
-     
-    # Create a Quantum Circuit acting on the q register
-    circuit = QuantumCircuit(2, 2)
-     
-    # Add a H gate on qubit 0
-    circuit.h(0)
-     
-    # Add a CX (CNOT) gate on control qubit 0 and target qubit 1
-    circuit.cx(0, 1)
-     
-    # Map the quantum measurement to the classical bits
-    circuit.measure([0,1], [0,1])
-     
-    # compile the circuit down to low-level QASM instructions
-    # supported by the backend (not needed for simple circuits)
-    compiled_circuit = transpile(circuit, backend)
-     
-    # Execute the circuit on the qasm simulator
-    job = backend.run(compiled_circuit, shots=1000)
-     
-    # Make a "waiting in queue" message
-    while job.status() is not JobStatus.DONE:
+    .. code-block:: python
+
+        import numpy as np
+        from qiskit import QuantumCircuit, transpile
+        from qiskit.providers.aer import QasmSimulator
+        from qiskit_ibm_provider import IBMProvider
+
+        #### IF YOU HAVE AN IBMQ ACCOUNT (using an actual backend) #####
+
+        # Save account credentials
+        #IBMProvider.save_account(TOKEN)
+
+        # Load default account credentials
+        provider = IBMProvider()
+
+        # Print instances (different hub/group/project options)
+        print( provider.instances() )
+
+        # Load a specific hub/group/project.
+        #provider = IBMProvider(instance="ibm-q-ornl/ornl/csc431")
+
+        # Print available backends
+        print( provider.backends() )
+
+        ######################################
+
+        backend = QasmSimulator() #works with backend.run()
+
+        circuit = QuantumCircuit(2, 2)
+        circuit.h(0)
+        circuit.cx(0, 1)
+        circuit.measure([0,1], [0,1])
+        compiled_circuit = transpile(circuit, backend)
+
+        job = backend.run(compiled_circuit, shots=1000)
+
         print("Job status is", job.status() )
-        time.sleep(30)
-     
-    print("Job status is", job.status() )
-     
-    # Grab results from the job
-    result = job.result()
-     
-    # Returns counts
-    counts = result.get_counts(compiled_circuit)
-    print("\nTotal count for 00 and 11 are:",counts)
-     
-    # Draw the circuit
-    print(circuit.draw())
+        result = job.result()
 
-.. note::
+        counts = result.get_counts(compiled_circuit)
+        print("\nTotal count for 00 and 11 are:",counts)
 
-    Although the above script shows you how to use your IBMQ account
-    credentials to reach an IBM backend (lines 10-29), the above code instead runs
-    using the built-in QASM simulator by default so that you don't have to wait in
-    a queue. To use the actual IBM machines, you would just comment out line number
-    32.
+        # Draw the circuit
+        print(circuit.draw())
 
+.. tabbed:: Runtime
+
+    .. code-block:: python
+
+        import numpy as np
+        from qiskit import QuantumCircuit, transpile
+        from qiskit_ibm_runtime import QiskitRuntimeService, Session, Sampler
+
+        #QiskitRuntimeService.save_account(channel="ibm_quantum", token="API TOKEN GOES HERE", overwrite=True)
+        service = QiskitRuntimeService(channel="ibm_quantum", instance="ibm-q-ornl/ornl/csc431")
+
+        backend = service.backend("ibmq_qasm_simulator", instance="ibm-q-ornl/ornl/csc431") #does not work with backend.run()
+
+        circuit = QuantumCircuit(2, 2)
+        circuit.h(0)
+        circuit.cx(0, 1)
+        circuit.measure([0,1], [0,1])
+        compiled_circuit = transpile(circuit, backend)
+
+        sampl = Sampler(backend)
+        job = sampl.run(compiled_circuit,shots=1000)
+
+        print("Job status is", job.status() )
+        result = job.result()
+
+        probs = result.quasi_dists
+        print("\nProbabilities for 00 and 11 are:",probs)
+
+        # Draw the circuit
+        print(circuit.draw())
 
 After running the above script using your Qiskit environment, you should
 see something like this:
@@ -231,7 +220,7 @@ Versions may vary.
 .. warning::
 
     Newer versions than those used in the install instructions below are
-    known to work on Andes; however, on Crusher, newer versions of libffi than
+    known to work on Andes; however, on Frontier, newer versions of libffi than
     3.2.1 are known to cause problems.
 
 .. tabbed:: Andes
@@ -240,7 +229,7 @@ Versions may vary.
 
         $ module load gcc cmake
 
-.. tabbed:: Crusher
+.. tabbed:: Frontier
 
     .. code-block:: bash
 
@@ -331,21 +320,14 @@ Finally, you are ready to install pyQuil:
         $ conda activate ENV_NAME
         $ pip install pyquil --no-cache-dir
 
-.. tabbed:: Crusher
+.. tabbed:: Frontier
 
     .. code-block:: bash
 
-        ## Load cray-python module
         $ module load cray-python
-
-        ## Create a virtual environment called ENV_NAME
         $ python3 -m venv ENV_NAME
-
-        ## Activate the virtual environment
         $ source ENV_NAME/bin/activate
-
-        ## Install pyquil
-        (ENV_NAME)$ python3 -m pip install pyquil --no-cache-dir
+        $ python3 -m pip install pyquil --no-cache-dir
 
 
 PyQuil - Setting up Servers
@@ -443,21 +425,14 @@ On our systems, the install method is relatively simple:
         $ conda create -n ENV_NAME python=3.9 pennylane -c conda-forge
         $ conda activate ENV_NAME
 
-.. tabbed:: Crusher
+.. tabbed:: Frontier
 
     .. code-block:: bash
 
-        ## Load cray-python module
         $ module load cray-python
-
-        ## Create a virtual environment called ENV_NAME
         $ python3 -m venv ENV_NAME
-
-        ## Activate the virtual environment
         $ source ENV_NAME/bin/activate
-
-        ## Install pennylane
-        (ENV_NAME)$ python3 -m pip install pennylane --upgrade --no-cache-dir
+        $ python3 -m pip install pennylane --upgrade --no-cache-dir
 
 
 PennyLane - Code Example
@@ -530,7 +505,7 @@ submitting your batch script from a fresh login shell.
     $ sbatch --export=NONE submit.sl
 
 
-Below are example batch scripts for running on Andes and Crusher:
+Below are example batch scripts for running on Andes and Frontier:
 
 .. tabbed:: Andes
 
@@ -571,7 +546,7 @@ Below are example batch scripts for running on Andes and Crusher:
         #export PATH="/ccs/home/YOUR_USERNAME/rigetti/forest-sdk_2.23.0-linux-barebones:$PATH"
         #quilc -P -S > quilc.log 2>&1 & qvm -S > qvm.log 2>&1 & python3 script.py ; kill $(jobs -p)
 
-.. tabbed:: Crusher
+.. tabbed:: Frontier
 
     .. code-block:: bash
 
