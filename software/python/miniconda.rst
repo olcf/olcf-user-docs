@@ -27,7 +27,13 @@ While running the installer, you will be prompted with something like this:
 
 ``Do you wish the installer to initialize Miniconda3 by running conda init? [yes|no]``
 
-If "yes", your ``.bashrc`` (or equivalent shell configuration file) will be updated with something like this:
+It is **MUCH SAFER** to answer "no" and to just export the ``PATH`` manually when on Frontier to avoid clashing:
+
+.. code-block:: bash
+
+   export PATH="/path/to/your/miniconda/bin:$PATH"
+
+If you answer "yes", your ``.bashrc`` (or equivalent shell configuration file) will be updated with something like this:
 
 .. code-block:: bash
 
@@ -42,12 +48,6 @@ If "yes", your ``.bashrc`` (or equivalent shell configuration file) will be upda
 
 .. warning::
    By default, this will always initialize conda upon login, which clashes with other Python installations (e.g., if you use the anaconda modules on other OLCF systems).
-
-It is **MUCH SAFER** to say "no" and to just export the ``PATH`` manually when on Frontier to avoid clashing:
-
-.. code-block:: bash
-
-   export PATH="/path/to/your/miniconda/bin:$PATH"
 
 .. note::
    If your ``.bashrc`` already has a similar block of code (e.g., from other OLCF modules), then it will **NOT** modify your ``bashrc``

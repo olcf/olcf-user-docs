@@ -6,7 +6,7 @@ Installing CuPy
 .. warning::
    This guide has been adapted for Frontier following ``venv`` syntax. If you
    are using a personal :doc:`Miniconda distribution on Frontier </software/python/miniconda>`, 
-   the workflow will be similar to the Summit ``conda`` scenario.  If
+   the workflow will be similar to the Summit or Andes ``conda`` scenario.  If
    that is your use-case, then ignore the mention of the ``cray-python`` module in
    the workflow (other modules still apply).
 
@@ -19,7 +19,7 @@ Overview
 ========
 
 This guide teaches you how to build CuPy from source into a custom virtual environment.
-On Summit, this is done using ``conda``, while on Frontier this is done using ``venv``.
+On Summit and Andes, this is done using ``conda``, while on Frontier this is done using ``venv``.
 
 In this guide, you will:
 
@@ -31,6 +31,7 @@ OLCF Systems this guide applies to:
 
 * Summit
 * Frontier
+* Andes
 
 CuPy
 ====
@@ -73,7 +74,7 @@ First, load the gnu compiler module (most Python packages assume GCC), relevant 
    .. code-block:: bash
 
       $ module load gcc/7.5.0 # might work with other GCC versions
-      $ module load cuda/11.0.3
+      $ module load cuda/11.0.2
       $ module load python
 
 .. tabbed:: Frontier
@@ -81,26 +82,40 @@ First, load the gnu compiler module (most Python packages assume GCC), relevant 
    .. code-block:: bash
 
       $ module load PrgEnv-gnu
-      $ module load rocm/5.3.0
+      $ module load amd-mixed/5.3.0
       $ module load craype-accel-amd-gfx90a
       $ module load cray-python # only if not using Miniconda on Frontier
 
    .. note::
       If you are using a :doc:`Miniconda distribution on Frontier </software/python/miniconda>`, the above ``module load cray-python`` should not be loaded.
 
-Loading a python module puts you in a "base" environment, but you need to create a new environment using the ``conda create`` command (Summit) or the ``venv`` command (Frontier):
+.. tabbed:: Andes
+
+   .. code-block:: bash
+
+      $ module load gcc/9.3.0 # works with older GCC versions if using cuda/10.2.89
+      $ module load cuda/11.0.2
+      $ module load python
+
+Loading a python module puts you in a "base" environment, but you need to create a new environment using the ``conda create`` command (Summit and Andes) or the ``venv`` command (Frontier):
 
 .. tabbed:: Summit
 
    .. code-block:: bash
 
-      $ conda create -p /ccs/proj/<project_id>/<user_id>/envs/summit/cupy-summit python=3.9
+      $ conda create -p /ccs/proj/<project_id>/<user_id>/envs/summit/cupy-summit python=3.10
 
 .. tabbed:: Frontier
 
    .. code-block:: bash
 
       $ python3 -m venv /ccs/proj/<project_id>/<user_id>/envs/frontier/cupy-frontier
+
+.. tabbed:: Andes
+
+   .. code-block:: bash
+
+      $ conda create -p /ccs/proj/<project_id>/<user_id>/envs/andes/cupy-andes python=3.10
 
 
 .. note::
@@ -120,6 +135,12 @@ After following the prompts for creating your new environment, you can now activ
 
       $ source /ccs/proj/<project_id>/<user_id>/envs/frontier/cupy-frontier/bin/activate
 
+.. tabbed:: Andes
+
+   .. code-block:: bash
+
+      $ source activate /ccs/proj/<project_id>/<user_id>/envs/andes/cupy-andes
+
 CuPy depends on NumPy, so let's install an optimized version of NumPy into your fresh environment:
 
 .. tabbed:: Summit
@@ -135,11 +156,23 @@ CuPy depends on NumPy, so let's install an optimized version of NumPy into your 
       $ pip install --no-cache-dir --upgrade pip
       $ pip install numpy scipy --no-cache-dir
 
+.. tabbed:: Andes
+
+   .. code-block:: bash
+
+      $ conda install -c defaults --override-channels numpy scipy
+
 After following the prompts, NumPy and its linear algebra dependencies should successfully install.
 SciPy is an optional dependency, but it would allow you to use the additional SciPy-based routines in CuPy:
 
 Finally, install CuPy from source into your environment.
 To make sure that you are building from source, and not a pre-compiled binary, use ``pip``:
+
+.. warning::
+    CuPy v13.0.0 removed support for CUDA 10.2, 11.0, and 11.1.
+    Please try installing CuPy<13.0.0 if you run into issues with older CUDA versions.
+    See `CuPy Release Notes <https://github.com/cupy/cupy/releases>`__ for more details
+    and other compatibility changes.
 
 .. tabbed:: Summit
 
@@ -156,6 +189,23 @@ To make sure that you are building from source, and not a pre-compiled binary, u
       $ export HCC_AMDGPU_TARGET=gfx90a
       $ CC=gcc pip install --no-cache-dir --no-binary=cupy cupy
 
+.. tabbed:: Andes
+
+   .. code-block:: bash
+
+      $ salloc -A PROJECT_ID -N1 -p gpu -t 01:00:00
+      $ export all_proxy=socks://proxy.ccs.ornl.gov:3128/
+      $ export ftp_proxy=ftp://proxy.ccs.ornl.gov:3128/
+      $ export http_proxy=http://proxy.ccs.ornl.gov:3128/
+      $ export https_proxy=http://proxy.ccs.ornl.gov:3128/
+      $ export no_proxy='localhost,127.0.0.0/8,*.ccs.ornl.gov'
+      $ CC=gcc NVCC=nvcc pip install --no-cache-dir --no-binary=cupy cupy
+
+   .. note::
+       To be able to build CuPy on Andes, you must be within a compute job
+       on the GPU partition (even if you have the cuda module loaded).
+       This allows CuPy to see the GPU properly when linking and building.
+
 The ``CC`` and ``NVCC`` flags ensure that you are passing the correct wrappers, while the various flags for Frontier tell CuPy to build for AMD GPUs.
 Note that, on Summit, if you are using the instructions for installing CuPy with OpenCE below, the ``cuda/11.0.3`` module will automatically be loaded.
 This installation takes, on average, 10-20 minutes to complete (due to building everything from scratch), so don't panic if it looks like the install timed-out.
@@ -163,7 +213,7 @@ Eventually you should see output similar to this (versions will vary):
 
 .. code-block::
 
-   Successfully installed cupy-9.5.0 fastrlock-0.6
+   Successfully installed cupy-12.2.0 fastrlock-0.8.1
 
 Installing CuPy in an OpenCE Environment (Summit only)
 ------------------------------------------------------
@@ -323,10 +373,9 @@ Trying to perform operations on an array stored on a different GPU will result i
    >>> with cp.cuda.Device(1):
    ...    x_gpu_0 * 2  # ERROR: trying to use x_gpu_0 on GPU 1
    ...
-   Traceback (most recent call last):
-   ValueError: Array device must be same as the current device: array device = 0 while current = 1
+   <stdin>:2: PerformanceWarning: The device where the array resides (0) is different from the current device (1). Peer access has been activated automatically.
 
-To solve the above error, you must transfer ``x_gpu_0`` to "Device 1".
+To solve the above warning/error, you must transfer ``x_gpu_0`` to "Device 1".
 A CuPy array can be transferred to a specific GPU using the ``cupy.asarray()`` function while on the specific device:
 
 .. code-block:: python
@@ -489,3 +538,4 @@ Additional Resources
 * `CuPy User Guide <https://docs.cupy.dev/en/stable/user_guide/index.html>`__
 * `CuPy Website <https://cupy.dev/>`__
 * `CuPy API Reference <https://docs.cupy.dev/en/stable/reference/index.html>`__
+* `CuPy Release Notes <https://github.com/cupy/cupy/releases>`__
