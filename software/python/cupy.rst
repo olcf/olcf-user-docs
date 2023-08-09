@@ -373,7 +373,7 @@ Trying to perform operations on an array stored on a different GPU will result i
    >>> with cp.cuda.Device(1):
    ...    x_gpu_0 * 2  # ERROR: trying to use x_gpu_0 on GPU 1
    ...
-   <stdin>:2: PerformanceWarning: The device where the array resides (0) is different from the current device (1). Peer access has been activated automatically.
+   PerformanceWarning: The device where the array resides (0) is different from the current device (1). Peer access has been activated automatically.
 
 To solve the above warning/error, you must transfer ``x_gpu_0`` to "Device 1".
 A CuPy array can be transferred to a specific GPU using the ``cupy.asarray()`` function while on the specific device:
