@@ -238,43 +238,6 @@ Please note that the HPSS is not mounted directly onto Frontier nodes. There are
 | World Archive       | ``/hpss/prod/[projid]/world-shared``        | HPSS           | 775         | 100 TB | No      | No      | 90 days    | No               |
 +---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
 
-Using Globus to Move Data to Orion 
-==================================
-
-The following example is intended to help users who are making the transition from Summit to Frontier to move their data between Alpine GPFS and Orion Lustre. We strongly recommend using Globus for this transfer as it is the method that is most efficient for users and that causes the least contention on filesystems and data transfer nodes. 
-
-.. note::
-  
-  **Globus Warnings:** 
-
-* Globus transfers do not preserve file permissions. Arriving files will have (rw-r--r--) permissions, meaning arriving file will have *user* read and write permissions and *group* and *world* read permissions. Note that the arriving files will not have any execute permissions, so you will need to use chmod to reset execute permissions before running a Globus-transferred executable.
-
-* Globus will overwrite files at the destination with identically named source files. This is done without warning.
-
-* Globus has restriction of 8 active transfers across all the users. Each user has a limit of 3 active transfers, so it is required to transfer a lot of data on each transfer than less data across many transfers. 
-
-* If a folder is constituted with mixed files including thousands of small files (less than 1MB each one), it would be better to tar the small files.  Otherwise, if the files are larger, Globus will handle them. 
-
-
-Here is a recording of an example transfer from Alpine to Orion using Globus and the OLCF DTN: `Using Globus to Move Data to Orion <https://vimeo.com/manage/videos/814973734>`_. 
-
-Below is a summary of the steps for data transfer given in the recording:
-
-1.	Login to `globus.org <https://www.globus.org>`_ using your globus ID and password. If you do not have a globusID, set one up here: 
-`Generate a globusID <https://www.globusid.org/create?viewlocale=en_US>`_. 
-
-
-2.	Once you are logged in, Globus will open the “File Manager” page. Click the left side “Collection” text field in the File Manager and type “OLCF DTN”. 
-3.	When prompted, authenticate into the OLCF DTN endpoint using your OLCF username and PIN followed by your RSA passcode. 
-4.	Click in the left side “Path” box in the File Manager and enter the path to your data on Alpine. For example, `/gpfs/alpine/stf007/proj-shared/my_alpine_data.` You should see a list of your files and folders under the left “Path” Box.
-5.	Click on all files or folders that you want to transfer in the list. This will highlight them. 
-6.	Click on the right side “Collection” box in the File Manager and type “OLCF DTN” 
-7.	Click in the right side “Path” box and enter the path where you want to put your data on Orion, for example, `/lustre/orion/stf007/proj-shared/my_orion_data`
-8.	Click the left "Start" button. 
-9.	Click on “Activity“ in the left blue menu bar to monitor your transfer. Globus will send you an email when the transfer is complete.
-
-
-
 
 NVMe
 ----
@@ -340,6 +303,46 @@ And here is the output from the script:
     This is my file. There are many like it but this one is mine.
     frontier0123
     ***********************
+
+  
+
+Using Globus to Move Data to Orion 
+==================================
+
+The following example is intended to help users who are making the transition from Summit to Frontier to move their data between Alpine GPFS and Orion Lustre. We strongly recommend using Globus for this transfer as it is the method that is most efficient for users and that causes the least contention on filesystems and data transfer nodes. 
+
+.. note::
+  
+  **Globus Warnings:** 
+
+* Globus transfers do not preserve file permissions. Arriving files will have (rw-r--r--) permissions, meaning arriving file will have *user* read and write permissions and *group* and *world* read permissions. Note that the arriving files will not have any execute permissions, so you will need to use chmod to reset execute permissions before running a Globus-transferred executable.
+
+* Globus will overwrite files at the destination with identically named source files. This is done without warning.
+
+* Globus has restriction of 8 active transfers across all the users. Each user has a limit of 3 active transfers, so it is required to transfer a lot of data on each transfer than less data across many transfers. 
+
+* If a folder is constituted with mixed files including thousands of small files (less than 1MB each one), it would be better to tar the small files.  Otherwise, if the files are larger, Globus will handle them. 
+
+
+Here is a recording of an example transfer from Alpine to Orion using Globus and the OLCF DTN: `Using Globus to Move Data to Orion <https://vimeo.com/manage/videos/814973734>`_. 
+
+Below is a summary of the steps for data transfer given in the recording:
+
+1.	Login to `globus.org <https://www.globus.org>`_ using your globus ID and password. If you do not have a globusID, set one up here: 
+`Generate a globusID <https://www.globusid.org/create?viewlocale=en_US>`_. 
+
+
+2.	Once you are logged in, Globus will open the “File Manager” page. Click the left side “Collection” text field in the File Manager and type “OLCF DTN”. 
+3.	When prompted, authenticate into the OLCF DTN endpoint using your OLCF username and PIN followed by your RSA passcode. 
+4.	Click in the left side “Path” box in the File Manager and enter the path to your data on Alpine. For example, `/gpfs/alpine/stf007/proj-shared/my_alpine_data.` You should see a list of your files and folders under the left “Path” Box.
+5.	Click on all files or folders that you want to transfer in the list. This will highlight them. 
+6.	Click on the right side “Collection” box in the File Manager and type “OLCF DTN” 
+7.	Click in the right side “Path” box and enter the path where you want to put your data on Orion, for example, `/lustre/orion/stf007/proj-shared/my_orion_data`
+8.	Click the left "Start" button. 
+9.	Click on “Activity“ in the left blue menu bar to monitor your transfer. Globus will send you an email when the transfer is complete.
+
+
+
 
 .. _amd-gpus:
 
