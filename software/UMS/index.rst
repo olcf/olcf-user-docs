@@ -51,6 +51,12 @@ Currently Available User-Managed Software
   |            |                |                                            |                                                                                |
   |            |                |                                            | Mailing List:      hpctoolkit-forum@rice.edu                                   |
   +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
+  | ums025     | Clacc          | Joel E. Denny (dennyje@ornl.gov)           | Clacc: Clang/LLVM fork to support OpenACC in C/C++                             |
+  |            |                |                                            |                                                                                |
+  |            |                |                                            | General Info:      https://csmd.ornl.gov/project/clacc                         |
+  |            |                |                                            |                                                                                |
+  |            |                |                                            | Source:            https://github.com/llvm-doe-org/llvm-project/tree/clacc/main|
+  +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
 
 .. tabbed:: Crusher
 
