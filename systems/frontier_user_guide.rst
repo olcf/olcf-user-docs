@@ -800,6 +800,34 @@ This section shows how to compile with OpenMP Offload using the different compil
     
     ``-fopenmp -target x86_64-pc-linux-gnu -fopenmp-targets=amdgcn-amd-amdhsa -Xopenmp-target=amdgcn-amd-amdhsa -march=gfx90a``.
 
+
+OpenACC
+------
+
+This section shows how to compile code with OpenACC. Currently only the Cray compiler supports OpenACC for Fortran. The AMD and
+GNU programming environments do not support OpenACC at all.
+C and C++ support for OpenACC is provided by `clacc <https://csmd.ornl.gov/project/clacc>`_ which maintains a fork of the LLVM
+compiler with added support for OpenACC. It can be obtained by loading the UMS modules
+``ums``, ``ums025``, and ``clacc``. 
+
++--------+-------------------+-----------+----------------------------------+-------------------+-------------------------------------+
+| Vendor | Module            | Language  | Compiler                         | Flags             | Support                             |
++========+===================+===========+==================================+===================+=====================================+
+| Cray   | ``cce``           | C, C\+\+  | No support                       |                   |		                      |
+|        |                   |           |                                  |                   |	                              |
+|        |                   +-----------+----------------------------------+-------------------+-------------------------------------+
+|        |                   | Fortran   | ``ftn`` (wraps ``crayftn``)      | | ``-h acc``      | Full support for OpenACC 2.0        |
+|        |                   |           |                                  |                   | Partial support for OpenACC 2.x/3.x |
++--------+-------------------+-----------+----------------------------------+-------------------+-------------------------------------+
+| UMS    | ``PrgEnv-cray``   | C, C\+\+  | ``clang``                        | | ``-fopenacc``   | Experimental. Contact	              |
+| module | ``ums``           |           |                                  |                   |	Joel Denny dennyje@ornl.gov   |
+|        | ``um025``         +-----------+----------------------------------+-------------------+-------------------------------------+
+|        | ``clacc``         | Fortran   | No support                       |                   |                                     |
+|        |                   |           |                                  |                   |                                     |
++--------+-------------------+-----------+----------------------------------+-------------------+-------------------------------------+
+
+
+
 HIP
 ---
 
