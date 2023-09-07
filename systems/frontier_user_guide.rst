@@ -108,9 +108,8 @@ to reserve one core from each L3 cache region, leaving 56 allocatable cores. Set
 Node Types
 ----------
 
-On Frontier, there are three major types of nodes you will encounter:
-Login, Launch, and Compute. While all of these are similar in terms of
-hardware (see: :ref:`frontier-nodes`), they differ considerably in their intended
+On Frontier, there are two major types of nodes you will encounter: Login and Compute. While these are
+similar in terms of hardware (see: :ref:`frontier-nodes`), they differ considerably in their intended
 use.
 
 +-------------+--------------------------------------------------------------------------------------+
