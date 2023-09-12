@@ -20,7 +20,7 @@ run on GPUs. Each team consists of 3 or more developers who are intimately famil
 more mentors with GPU programming expertise. Our mentors come from universities, national laboratories, supercomputing centers, and industry partners. 
 
 .. note::
-   There are a variety of programming models available to program GPUs (e.g. CUDA, OpenACC, OpenMP offloading, etc.) and your are welcome to use any of them at these events.
+   There are a variety of programming models available to program GPUs (e.g. CUDA, OpenACC, OpenMP offloading, etc.) and you are welcome to use any of them at these events.
 
 .. raw:: html
 
@@ -56,13 +56,13 @@ Please visit `openhackathons.org/s/events-overview <https://www.openhackathons.o
 
 
 .. note::
-     The OLCF-supported events are a subset of a larger number of GPU hackathons organized around the world. Look for hackathons with the OLCF logo to find events supported by OLCF.
+     The OLCF-supported events are a subset of a larger number of Open hackathons organized around the world. Look for hackathons with the OLCF logo to find events supported by OLCF.
 
 .. raw:: html
 
    <p style="font-size:20px"><b>Want to be a mentor?</b></p>
 
-If you would like more information about how you can volunteer to mentor a team at an upcoming GPU hackathon, please visit our `Become a Mentor <https://www.openhackathons.org/s/mentor>`__ page.
+If you would like more information about how you can volunteer to mentor a team at an upcoming Open/GPU hackathon, please visit our `Become a Mentor <https://www.openhackathons.org/s/mentor>`__ page.
 
 .. raw:: html
 
