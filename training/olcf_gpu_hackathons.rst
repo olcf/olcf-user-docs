@@ -20,7 +20,7 @@ run on GPUs. Each team consists of 3 or more developers who are intimately famil
 more mentors with GPU programming expertise. Our mentors come from universities, national laboratories, supercomputing centers, and industry partners. 
 
 .. note::
-   There are a variety of programming models available to program GPUs (e.g. CUDA, OpenACC, OpenMP offloading, etc.) and your are welcome to use any of them at these events.
+   There are a variety of programming models available to program GPUs (e.g. CUDA, OpenACC, OpenMP offloading, etc.) and you are welcome to use any of them at these events.
 
 .. raw:: html
 
@@ -52,20 +52,20 @@ To recreate this environment in a virtual setting, we will be using Zoom + Slack
 
 First, you must decide which event you'd like to attend (use link below to find a hackathon whose dates make sense for your team), and then submit a short proposal form describing your application and team. The organizing committee will then review all proposals after the call for that event closes and select the teams they believe are best suited for the event. 
 
-Please visit `gpuhackathons.org/events <https://gpuhackathons.org/events>`__ to see the current list of events (new ones added throughout the year) and their proposal deadlines. To submit a proposal, click on the event you'd like to attend and submit the form.
+Please visit `openhackathons.org/s/events-overview <https://www.openhackathons.org/s/events-overview>`__ to see the current list of events (new ones added throughout the year) and their proposal deadlines. To submit a proposal, click on the event you'd like to attend and submit the form.
 
 
 .. note::
-     The OLCF-supported events are a subset of a larger number of GPU hackathons organized around the world. Look for hackathons with the OLCF logo to find events supported by OLCF.
+     The OLCF-supported events are a subset of a larger number of Open hackathons organized around the world. Look for hackathons with the OLCF logo to find events supported by OLCF.
 
 .. raw:: html
 
    <p style="font-size:20px"><b>Want to be a mentor?</b></p>
 
-If you would like more information about how you can volunteer to mentor a team at an upcoming GPU hackathon, please visit our `Become a Mentor <https://gpuhackathons.org/become-mentor>`__ page.
+If you would like more information about how you can volunteer to mentor a team at an upcoming Open/GPU hackathon, please visit our `Become a Mentor <https://www.openhackathons.org/s/mentor>`__ page.
 
 .. raw:: html
 
    <p style="font-size:20px"><b>Who can I contact with questions?</b></p>
 
-If you have any questions about the OLCF GPU Hackathon Series, please contact Tom Papatheodore (`papatheodore@ornl.gov <mailto:papatheodore@ornl.gov>`__).
+If you have any questions about the OLCF GPU Hackathon Series, please contact OLCF Help at (`help@olcf.ornl.gov  <mailto:help@olcf.ornl.gov>`__).
