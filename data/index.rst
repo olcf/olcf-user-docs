@@ -356,7 +356,7 @@ By default, the OLCF does not guarantee lifetime data retention on any OLCF reso
 Orion Lustre HPE ClusterStor Filesystem 
 ***************************************
 
-Frontier mounts Orion, a parallel filesystem based on Lustre and HPE ClusterStor, with a 679 PB usable namespace (/lustre/orion/). In addition to Frontier, Orion is available on the OLCF's data transfer nodes, Andes, and some other smaller resources. It is not available from Summit. Files older than 90 days are purged from Orion.
+Frontier mounts Orion, a parallel filesystem based on Lustre and HPE ClusterStor, with a 679 PB usable namespace (/lustre/orion/). In addition to Frontier, Orion is available on the OLCF's data transfer nodes. It is not available from Summit. Files older than 90 days are purged from Orion.
 
 Orion is a cluster of servers with approximately 500 nodes. Each node plays a role in providing a POSIX namespace for users (/lustre/orion/). A file on Lustre consists of one or more components that may hit one or more servers. Lustre has a distributed lock management process for concurrent access to files or regions within files. 
 
