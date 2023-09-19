@@ -25,7 +25,10 @@ Please pay attention to the following key dates as you plan your science campaig
      - Alpine becomes read-only and available only from DTNs. **Please do not wait, begin transferring your Lustre data now.** 
    * - :ref:`Jan 01<alpine_decom>`
      - Alpine decommissioned.  **ALL REMAINING DATA WILL BE PERMANENTLY DELETED** 
-
+   * - :ref:`Early 2024<summit_return_to_service>`
+     - Summit available for projects with 2024 allocation. 
+   * - :ref:`Early 2024<alpine_ii_available>`
+     - Alpine II filesystem available. 
 
 
 
@@ -107,6 +110,32 @@ Due to the large amount of data on the filesystems, we strongly urge you to star
   Jan 01, all remaining Alpine data will be **PERMANENTLY DELETED**.  Do not wait to move needed data.
 
 
+
+.. _summit_return_to_service:
+
+Early 2024 - Summit available for projects with 2024 allocation. 
+-----------------------------------------------------------------
+
+Summit will be returned to service early 2024.
+
+Projects awarded a 2024 Summit allocation will be able to log into Summit and submit batch jobs once the system has been made available.
+
+
+.. note::
+  Please note, Summit will mount a new filesystem once returned to service.
+    * Data stored on Alpine at the time of its decommission on January 01 will not be available.
+    * Users will be responsible for transferring data onto Summit's new filesystem
+
+
+
+.. _alpine_ii_available:
+
+Early 2024 - Alpine II filesystem available
+-----------------------------------------------------------------
+ 
+Alpine II will be available early 2024.
+
+The previous center-wide GPFS scratch filesystem, Alpine, will be decommissioned in January 2024. A new scratch filesystem will be made available for projects with 2024 Summit allocations in early 2024. Users will be responsible for transferring any needed data onto the new scratch filesystem once available.  
 
 
 
