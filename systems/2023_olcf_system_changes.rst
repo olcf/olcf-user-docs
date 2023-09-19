@@ -17,6 +17,8 @@ Please pay attention to the following key dates as you plan your science campaig
 
    * - Date
      - Event
+   * - :ref:`Sep 19<summit_proposals_open>` 
+     - Submission system opens for 2024 Summit proposals.
    * - :ref:`Dec 18<summit_last_day_batch>` 
      - Last day to execute batch jobs on Summit.
    * - :ref:`Dec 18<andes_last_day_batch>` 
@@ -33,6 +35,24 @@ Please pay attention to the following key dates as you plan your science campaig
 
 
 
+
+.. _summit_proposals_open:
+
+Sep 19, 2023 - Submission system opens for 2024 Summit proposals  
+--------------------------------------------------------------
+
+The Department of Energy is extending Summit operations through October 2024, enabling researchers to pursue projects on one of the world’s leading AI-enabled open science supercomputing platforms.  OLCF will allocate Summit through new programs for calendar year 2024.
+
+SummitPLUS is one of the new allocation programs that will be used to allocate a significant portion of the system for 2024. The program is open to researchers from academia, government laboratories, federal agencies, and industry. We welcome proposals for computationally ready projects from investigators who are new to Summit, as well as from previous INCITE, ALCC, DD, ECP awardees and projects. We encourage proposals on emerging paradigms for computational campaigns including data-intensive science and AI/ML.
+
+Individuals or teams interested in SummitPLUS must submit a proposal through the https://my.olcf.ornl.gov/ portal from September 19 to October 30.  Once on the portal, go to “New Accounts” across the top and then “Project Application”. Choose the SummitPLUS form from the dropdown list.
+
+Summit will continue to be allocated in node hours, and a typical SummitPLUS award will be between 100,000 – 250,000 node hours. The proposals will undergo review and the OLCF will notify awardees in mid-to-late November. Projects are anticipated to start in mid-to-late January 2024.
+
+Timeline
+    * Proposals accepted beginning September 19
+    * Proposals will undergo review and the OLCF will notify awardees in mid-to-late November.
+    * Projects are anticipated to start in mid-to-late January 2024.
 
 
 .. _summit_last_day_batch:
