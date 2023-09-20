@@ -3481,7 +3481,6 @@ On Tuesday, September 19, 2023, Frontier's system software was upgraded. The fol
 -  HPE/Cray Programming Environments (PE) 23.09 is now available via the ``cpe/23.09`` modulefile.
 -  ROCm 5.3.0 and HPE/Cray PE 22.12 remain as default.
 
-
 2023-07-18
 ----------
 On Tuesday, July 18, 2023, Frontier was upgraded to a new version of the system software stack. During the upgrade, the following changes took place:
