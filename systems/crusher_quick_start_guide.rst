@@ -1885,6 +1885,84 @@ where
     BytesRead = 32 * TCC\_EA\_RDREQ\_32B\_sum + 64 * (TCC\_EA\_RDREQ\_sum - TCC\_EA\_RDREQ\_32B\_sum)
 
 
+Omnitrace
+---------
+
+OLCF provides installations of AMD's `Omnitrace <https://github.com/AMDResearch/omnitrace>`_ profiling tools on Frontier.
+AMD provides documentation on the usage of Omnitrace at `<https://amdresearch.github.io/omnitrace/>`_.
+This section details the installation and common pitfalls of the ``omnitrace`` module on Frontier.
+
+Unlike ``omniperf``, the ``omnitrace`` module only relies on a ROCm module (``amd``, ``amd-mixed``, or ``rocm``).
+A ROCm module must be loaded before being able to do view or load the ``omnitrace`` module.
+As a rule of thumb, always load the ``omnitrace`` module last (especially after you load a ROCm module like ``amd``, ``rocm``, ``amd-mixed``).
+If you load a new version of ROCm, you will need to re-load ``omnitrace``.
+
+To use ``omnitrace``, you may use the following commands
+
+.. code::
+
+    module load amd-mixed
+    module load omnitrace
+
+
+Omniperf
+--------
+
+OLCF provides installations of AMD's `Omniperf <https://github.com/AMDResearch/omniperf>`_ profiling tools on Frontier.
+AMD provides documentation on the usage of Omniperf at `<https://amdresearch.github.io/omniperf/>`_.
+This section details the installation and common pitfalls of the ``omniperf`` module on Frontier.
+
+The ``omniperf`` module relies on two other modules -- a ROCm module (``amd``, ``amd-mixed``, or ``rocm``) and optionally a ``cray-python`` module.
+A ROCm module must be loaded before being able to do view or load the ``omniperf`` module.
+As for ``cray-python``, ``omniperf`` is a Python script and has several dependencies that cannot be met by the system's default Python, and are not met by the default ``cray-python`` installation.
+As such, you must either (1) load the ``cray-python`` module or (2) satisfy the Python dependencies in your own Python environment (ie, in a Conda environment).
+
+As a rule of thumb, always load the ``omniperf`` module last (especially after you load a ROCm module like ``amd``, ``rocm``, ``amd-mixed``).
+If you load a new version of ROCm, you will need to re-load ``omniperf``.
+
+Using ``cray-python``
+^^^^^^^^^^^^^^^^^^^^^
+
+To use ``omniperf`` with ``cray-python``, you may use the following commands:
+
+.. code::
+
+    module load amd-mixed
+    module load cray-python
+    module load omniperf
+
+No more work is needed on your part -- ``omniperf`` points to a directory that contains pre-built libraries for the ``cray-python`` version you are running.
+It is **critically** important that if you load a different version of ROCm or ``cray-python`` that you re-load ``omniperf``.
+
+.. note::
+
+    Omniperf requires relatively new versions of many dependencies.
+    Installing dependencies may break some currently installed packages that require older versions of the dependencies.
+    It is recommended that you use the newest ``cray-python`` modules available.
+
+
+Using your own Python
+^^^^^^^^^^^^^^^^^^^^^
+
+To use ``omniperf`` with your own Python installation, you must first install the dependencies of Omniperf in your Python's environment.
+To do so, use the ``requirements.txt`` file in the `Omniperf GitHub Repo <https://github.com/AMDResearch/omniperf>`_.
+You may install the dependencies using a command like:
+
+.. code::
+
+    python3 -m pip install -r requirements.txt
+
+Once you have installed the dependencies, you may load ``omniperf`` using commands like:
+
+.. code::
+
+    # Your Python environment should be active by this point
+    module load amd-mixed
+    module load omniperf
+
+Again, it is **critically** important that if you load a different version of ROCm that you re-load ``omniperf``.
+
+
 ----
 
 Notable Differences between Summit and Crusher
