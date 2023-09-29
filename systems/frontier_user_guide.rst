@@ -2894,8 +2894,8 @@ Additional information about Valgrind4hpc usage can be found on the `HPE Cray Pr
 Omnitrace
 ---------
 
-OLCF provides installations of AMD's [Omnitrace](https://github.com/AMDResearch/omnitrace) profiling tools on Frontier.
-AMD provides documentation on the usage of Omnitrace at [](https://amdresearch.github.io/omnitrace/).
+OLCF provides installations of AMD's `Omnitrace <https://github.com/AMDResearch/omnitrace>`_ profiling tools on Frontier.
+AMD provides documentation on the usage of Omnitrace at `<https://amdresearch.github.io/omnitrace/>`_.
 This section details the installation and common pitfalls of the ``omnitrace`` module on Frontier.
 
 Unlike ``omniperf``, the ``omnitrace`` module only relies on a ROCm module (``amd``, ``amd-mixed``, or ``rocm``).
@@ -3217,8 +3217,8 @@ where
 Omniperf
 --------
 
-OLCF provides installations of AMD's [Omniperf](https://github.com/AMDResearch/omniperf) profiling tools on Frontier.
-AMD provides documentation on the usage of Omniperf at [](https://amdresearch.github.io/omniperf/).
+OLCF provides installations of AMD's `Omniperf <https://github.com/AMDResearch/omniperf>`_ profiling tools on Frontier.
+AMD provides documentation on the usage of Omniperf at `<https://amdresearch.github.io/omniperf/>`_.
 This section details the installation and common pitfalls of the ``omniperf`` module on Frontier.
 
 The ``omniperf`` module relies on two other modules -- a ROCm module (``amd``, ``amd-mixed``, or ``rocm``) and optionally a ``cray-python`` module.
@@ -3254,7 +3254,7 @@ Using your own Python
 ^^^^^^^^^^^^^^^^^^^^^
 
 To use ``omniperf`` with your own Python installation, you must first install the dependencies of Omniperf in your Python's environment.
-To do so, use the ``requirements.txt`` file in the [Omniperf GitHub Repo](https://github.com/AMDResearch/omniperf).
+To do so, use the ``requirements.txt`` file in the `Omniperf GitHub Repo <https://github.com/AMDResearch/omniperf>`_.
 You may install the dependencies using a command like:
 
 .. code::
