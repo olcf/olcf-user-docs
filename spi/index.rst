@@ -9,8 +9,24 @@ The OLCF's **Scalable Protected Infrastructure (SPI)** provides resources and pr
 
 The SPI utilizes a mixture of existing resources combined with specialized resources targeted at SPI workloads.  Because of this, many processes used within the SPI are very similar to those used for standard non-SPI.  This page lists the differences you may see when using OLCF resources to execute SPI workflows.  The page will also point to sections within the site where more information on standard non-SPI use can be found.
 
+What is Citadel
+----------------
+
+The National Center for Computational Science (NCCS) and the Oak Ridge Leadership Computing Facility (OLCF) have implemented the CITADEL security framework as **part of their Scalable Protected Infrastructure (SPI)**. This infrastructure provides resources and protocols that enable researchers to process protected data at scale. With the CITADEL framework, **researchers can use the OLCF’s large HPC resources to compute** data containing protected health information (PHI), personally identifiable information (PII), data protected under International Traffic in Arms Regulations, and other types of data that require privacy.
+
+.. note::
+  With the CITADEL framework, researchers can use the OLCF’s large HPC resources including Frontier and Summit to compute data containing protected health information (PHI), personally identifiable information (PII), data protected under International Traffic in Arms Regulations, and other types of data that require privacy.
+
+The NCCS CITADEL security framework was originally conceived to facilitate the large-scale analysis of protected health information (PHI) data from the US Department of Veterans Affairs' (VA) Million Veteran Program. The NCCS SPI team, with assistance from ORNL Risk Management and ORNL’s Information Technology Services Division (ITSD), refined the initial prototype and expanded CITADEL's capabilities to accommodate a diverse array of programs, projects, and sponsors.
+
+Although the facility already adheres to the National Institute of Standards and Technology’s security and privacy controls for moderate Official Use Only data, CITADEL was crafted to enforce security measures for handling vast datasets that encompass types of data necessitating heightened privacy safeguards on systems overseen by the Oak Ridge Leadership Computing Facility (OLCF). Extra precautions have been taken to manage private data such that it cannot be accessed by other researchers or used by other projects. For example, HIPAA-protected data for a project sponsored by the VA will be kept absolutely separate from HIPAA-protected data for a projected sponsored by the Centers for Medicare and Medicaid Services (CMS).
+
+CITADEL, having undergone comprehensive technical-, legal-, and policy-oriented reviews and received third-party accreditation, has presented new possibilities for research projects that previously could not access utilize OLCF systems due to the nature of their data.  
+
+
+
 New User QuickStart
---------------------
+====================
 
 If you are new to the OLCF or the OLCF's SPI, this page can help get you started.  Below are some of the high-level steps needed to begin use of the OLCF's SPI:
 
@@ -18,7 +34,7 @@ If you are new to the OLCF or the OLCF's SPI, this page can help get you started
 #.  :ref:`Request a user account<spi-user-accounts>`.  Once an allocation (project) has been approved, each member of the project must request an account to use the project's allocated resources.
 #.  :ref:`Whitelist your IPs<spi-whitelisting-ip>`.  Access to the SPI resources is limited to IPs that have been whitelisted by the OLCF.  The only exception is for projects using KDI resources.  If your project also uses KDI resources, you will use the KDI access procedures and do not need to provide your IP to the OLCF.
 #.  :ref:`Transfer needed data<spi-data-transfer>` to the SPI filesystems.  The SPI resources mount filesystems unique to the SPI.  Needed data, code, and libraries must be transferred into the SPI using the SPI's Data Transfer Nodes.
-#.  :ref:`Build and run on Citadel<spi-compute-citadel>`.  Citadel is front end for the OLCF's Summit resource.  Its resources and programming environment mirror Summit.  You can ssh into Citadel to build for and execute jobs on Summit's compute resources.
+#.  :ref:`Build and run on Citadel<spi-compute-citadel>`.  Citadel is front end for the OLCF's HPC resources.  Its resources and programming environment mirror Summit and Frontier.  You can ssh into Summit and Frontier's Citadel login nodes to build for and execute jobs on the system's compute resources.
 
 
 Notable Differences 
@@ -30,7 +46,7 @@ If you have a standard non-SPI account(s) on other OLCF resources, the differenc
 -  :ref:`Direct access to SPI resources requires your IP to be whitelisted<spi-whitelisting-ip>` by the OLCF.  Before accessing SPI resources, you must contact help@olcf.ornl.gov and provide you system's IP.  If your project also uses KDI resources, you will use the KDI procedure and do not need to provide your IP to the OLCF.
 -  :ref:`SPI resources mount SPI filesystems<spi-file-systems>`.  The SPI resources do not mount the non-SPI's scratch filesystems, home areas, or mass storage.  
 -  :ref:`SPI compute resources cannot access external resources<spi-data-transfer>`.  Needed data must be transferred to the SPI resources through the SPI's DTN.
--  :ref:`The Citadel login nodes<spi-compute-citadel>` and batch queues must be used to access Summit for SPI workflows.
+-  :ref:`The Citadel login nodes<spi-compute-citadel>` and batch queues must be used to access Summit and Frontier for SPI workflows.
 
 
 Allocations and User Accounts
@@ -41,7 +57,7 @@ Allocations and User Accounts
 Allocations (Projects)
 -----------------------
 
-Similar to standard OLCF workflows, to run SPI workflows on OLCF resources, you will first need an approved project.  The project will be given an allocation(s) that will allow resource access and use.  The first step to requesting an allocation is to complete the project request form.  The form will initiate the process that includes peer review, export control review, agreements, and others.  Once submitted, members of the OLCF accounts team will help walk you through the process.
+Similar to standard OLCF workflows, to run SPI workflows on OLCF resources, you will first need an approved project.  The project will be awarded an allocation(s) that will allow resource access and use.  The first step to requesting an allocation is to complete the project request form.  The form will initiate the process that includes peer review, export control review, agreements, and others.  Once submitted, members of the OLCF accounts team will help walk you through the process.
 
 
 Requesting a New Allocation (Project)
@@ -80,20 +96,22 @@ The OLCF SPI provides compute, filesystem, and data transfer resources.
 
 :ref:`Compute<spi-compute-citadel>`
 -------------------------------------
-The SPI provides access to the OLCF's Summit resource for compute.  To safely separate SPI and non-SPI workflows, SPI workflows must use a separate login node named :ref:`Citadel<spi-compute-citadel>`.  Citadel provides a login node specifically for SPI workflows.  
+**Summit** and **Frontier** are available for SPI workloads.  The :ref:`Citadel<spi-compute-citadel>` framework provides the ability to use the OLCF's existing HPC resources for SPI frameworks.  
 
-The login node used by Citadel mirrors the Summit login nodes in hardare and software.  The login node also provides access to the same compute resources as are accessible from Summit.  
+Please see the :ref:`Citadel<spi-compute-citadel>` section for more details on connecting and using Summit and Frontier for your SPI workloads.
 
-Similar to Summit, accessing the compute nodes is accomplished through the batch system.  Separate batch queues must be used to access the compute resources and ensure the compute resourcs are configured for SPI workflows.
 
 :ref:`File Systems<spi-file-systems>`
 -------------------------------------
-To safely separate SPI and non-SPI workflows, the SPI resources only mount a GPFS resource named :ref:`Arx<spi-file-systems>`.  The Arx filesystem provides both the home and scratch filesystems for SPI resources.
+To safely separate SPI and non-SPI workflows, the SPI resources only mount a GPFS resource named :ref:`Arx<spi-file-systems>`.  The Arx filesystem provides both the home and scratch filesystems for Citadel resources.
+
+Please see the :ref:`Arx<spi-file-systems>` section for more details.
 
 :ref:`Data Transfer<spi-data-transfer>`
 ---------------------------------------
-The SPI provides separate :ref:`Data Transfer Nodes<spi-data-transfer>` configured specifically for SPI workflows.  The nodes are not directly accessible for login but are accessible through the Globus tool.  The SPI DTNs mount the same Arx filesystem available on the SPI compute resources.  Globus is the prefered method to transfer data into and out of the SPI resources.
+The SPI provides separate :ref:`Data Transfer Nodes<spi-data-transfer>` configured specifically for SPI workflows.  The nodes are not directly accessible for login but are accessible through the Globus tool.  The SPI DTNs mount the same Arx filesystem available on the SPI compute resources.  Globus is the preferred method to transfer data into and out of the SPI resources.
 
+Please see the :ref:`Data Transfer Nodes<spi-data-transfer>` section for more details. 
 
 IP Whitelisting
 ================
@@ -131,17 +149,40 @@ The tool may also return you current IP which may change if not static. For thes
 Citadel
 ========
 
-The SPI resource, **Citadel**, utilizes Summit's compute resources but adds measures to ensure separation of SPI and non-SPI workflows and data. The :ref:`Summit User Guide<summit-documentation-resources>` provides documentation on system details and use.  Because Citadel is largely a front end for Summit, you can use the Summit documentation when using Citadel.  This section describes some of the notable differences in using Summit directly and through the SPI's Citadel.  It should be used in combination with the :ref:`Summit User Guide<summit-user-guide>` .
+The **Citadel** framework allows use of the OLCF's existing HPC resources **Summit** and **Frontier** for SPI workflows.  Citadel adds measures to ensure separation of SPI and non-SPI workflows and data. This section provides differences when using OLCF resources for SPI and non-SPI workflows.  Because the Citadel framework just adds another security layer to existing HPC resources, many system use methods are the same between SPI and non-SPI workflows.  For example, compiling, batch scheduling, and job layout are the same between the two security enclaves.  Because of this, the existing resource user guides still cover the majority of system use methods.  
+
+.. note:: This section covers differences between SPI and non-SPI workflows, but the existing resource user guides cover the majority of system use methods.  Please use the :ref:`Summit User Guide<summit-documentation-resources>` and :ref:`Frontier User Guide<frontier-user-guide>` for resource use details.
+
+
+.. _citadel-login-nodes:
+
+Login Nodes
+------------
+To help separate data and processes, the Citadel framework provides separate login nodes to reach Summit and Frontier's compute resources: 
+
++----------------+---------------------------------------+-------------------------------------------------------------------------------------+
+| Resource       |  Citadel Login Node Name              |  Example                                                                            |
++================+=======================================+=====================================================================================+
+| Summit         | spilogin1.ccs.ornl.gov                |  ``ssh username_projID_mde@spilogin1.ccs.ornl.gov``                                 |
++----------------+---------------------------------------+-------------------------------------------------------------------------------------+
+| Frontier       | frontierspi.olcf.ornl.gov             |  ``ssh username_projID_mde@frontierspi.olcf.ornl.gov``                              |
++----------------+---------------------------------------+-------------------------------------------------------------------------------------+
+
+.. note:: The Citadel login nodes must be used to submit SPI jobs to Summit and Frontier's compute resources and access the SPI specific filesystem.
+
+The login nodes listed above mirrors the Summit and Frontier login nodes in hardware and software.  The login node also provides access to the same compute resources as are accessible from Summit and Frontier's non-SPI workflows.  
+
+The Citadel login nodes cannot access the external network and are only accessible from whitelisted IP addresses.
 
 
 Connecting 
-----------
+-----------
 
-Similar to the non-SPI resources, SPI resources reqiure two-factor authentication.  If you are new to the center, you will receive a SecurID fob during the account approval/creation process.  If you are an existing user of non-SPI resources, you can use the same SecurID fob and PIN used on your non-SPI account.  
+Similar to the non-SPI resources, SPI resources require two-factor authentication.  If you are new to the center, you will receive a SecurID fob during the account approval/creation process.  If you are an existing user of non-SPI resources, you can use the same SecurID fob and PIN used on your non-SPI account.  
 
 Also similar to non-SPI resources, you will connect directly to the SPI resources through ssh.  
 
-ORNL's KDI users are an exception and can not by policy log directly into SPI resources.  KDI users, please follow the KDI documented procedures:
+ORNL's KDI users are an exception and cannot, by policy, log directly into SPI resources.  KDI users, please follow the KDI documented procedures:
 
 #.  Login to https://kdivdi.ornl.gov with your KDI issued credentials
 #.  Launch the Putty Application
@@ -157,45 +198,39 @@ In order to help ensure data separation, each SPI user is given a unique userid 
 For users with accounts on non-SPI resources, you will use the same SecurID fob and PIN, but you must specify your unique SPI userID when you connect.  The ID will be used to place you in the proper UNIX groups allowing access to the project specific data, directories, and allocation.
 
 
-Login Nodes
-------------
-To help separate data and processes, SPI use separate login nodes, ``citadel.ccs.ornl.gov``, to reach Summit’s compute resources. 
 
-.. note:: The Citadel login node must be used to submit SPI jobs to Summit’s compute resources and access the SPI specific filesystem.
-
-The login node used by Citadel mirrors the Summit login nodes in hardware and software.  The login node also provides access to the same compute resources as are accessible from Summit.  
-
-The Citadel login nodes cannot access the external network and are only accessible from whitelisted IP addresses.
 
 
 Building Software
 ------------------
 
-The user environment on the Citadel login nodes mirrors the Summit login nodes.  Code build for/on Summit, should also run on Citadel. Third party software, compilers, and libraries provided on Summit will also be available from Citadel. The :ref:`Summit User Guide<summit-user-guide>` can be used when building workflows for Citadel.  
+The user environment on the Summit/Frontier :ref:`Citadel login nodes<citadel-login-nodes>` login nodes mirror the non-SPI Summit/Frontier login nodes.  Because of this, codes built for/on the non-SPI Summit/Frontier will also run on the resource within the Citadel framework.  Similarly, third party software, compilers, and libraries provided on the non-SPI Summit/Frontier will also be available from the resource within the Citadel framework. The :ref:`Summit User Guide<summit-user-guide>` and :ref:`Frontier User Guide<frontier-user-guide>` can be used when building workflows for the non-SPI as well as the Citadel framework.  
 
-.. warning:: The Citadel login nodes can not access the internet.  This may impact build workflows that attempt to access external repositories.
 
-Because the Citadel login nodes cannot reach repositories external to the system, you may need to alter your build workflows.  For these cases, you may be able to retrieve needed data. For cases where this is not possible, you can reach out to help@olcf.ornl.gov and request login access to Summit.  We can provide Summit login access by creating a sister project on Summit. You can then login to Summit to build your code and copy it to ``/sw/summit/mde/abc123_mde`` where ``abc123_mde`` is replaced by your Citadel project. This location is writable from Summit but only readable from Citadel. If the source code and data is small enough, you can also use the ``scp`` command from your whitelisted IP system to copy the data onto the Citadel login nodes directly.
+External Repositories
+^^^^^^^^^^^^^^^^^^^^^^
+The Citadel framework prevents login and compute resources from accessing the internet.  Because of this, :ref:`Citadel login nodes<citadel-login-nodes>` cannot reach repositories external to the system.  If your build workflow attempts to access external repositories, you may need to alter your build workflows to use data stored locally.  For cases where you are unable to modify your workflow to use only local data, please reach out to help@olcf.ornl.gov.  We may be able to help by providing a partner project on Summit/Frontier.  The partner project would provide login access to the non-SPI Summit/Frontier login nodes and a build location that is writable from the non-SPI Summit/Frontier and read-only from within the Citadel framework.  For example the partner project would provide the ability to build on Summit/Frontier in ``/sw/summit/mde/abc123_mde`` where ``abc123_mde`` is replaced by your Citadel project. This location is writable from Summit/Frontier but only readable from within the Citadel framework.
 
-More information on building codes for Citadel including programming environments, compilers, and available software can be found on :ref:`Summit User Guide<summit-user-guide>`. 
+.. warning:: Login and compute resources in the Citadel framework can not access the internet.  This may impact workflows that attempt to access external repositories.
+
+
+More information on building codes for Citadel including programming environments, compilers, and available software can be found on :ref:`Summit User Guide<summit-user-guide>` and :ref:`Frontier User Guide<frontier-user-guide>`. 
 
 
 Running Batch Jobs
 -------------------
 
-Citadel and Summit share compute resources.  However, compute resources are reconfigured for SPI workloads to protect data.  To access the compute resources, you must first log into Citadel.  From Citadel you can access the compute nodes through the batch system as you would from Summit.  The notable difference between Summit and Citadel batch submission is the requirement to use SPI specific batch queues. SPI batch jobs must specify one of the following SPI specific batch queues:
+The Citadel framework allows use of the Summit/Frontier compute resources but adds additional layers of security to ensure data protection.  To ensure proper configuration and protection access to the compute resources, the following batch queue(s) must be used from the :ref:`Citadel login nodes<citadel-login-nodes>`:
 
 -  batch-spi
--  debug-spi
--  batch-hm-spi
 
-The batch queues mirror the purpose of the similarly named Summit queues. Details on each queue can be found in the :ref:`Summit User Guide<summit-user-guide>`. The SPI queues must be used to launch batch jobs from the Citadel nodes and can not be used directly from the moderate enclave Summit login nodes.
+The batch queues mirror the purpose of the similarly named Summit/Frontier queues. Details on each queue can be found in the :ref:`Summit User Guide<summit-user-guide>` and :ref:`Frontier User Guide<frontier-user-guide>`. The SPI queues must be used to launch batch jobs from the :ref:`Citadel login nodes<citadel-login-nodes>` and can not be used directly from the non-SPI Summit/Frontier login nodes.
 
-.. note:: To access Summit's compute resources for SPI workflows, you must first log into Citadel and then submit a batch job to one of the SPI specific batch queues.
+.. note:: To access Summit and Frontier's compute resources for SPI workflows, you must first log into a :ref:`Citadel login node<citadel-login-nodes>` and then submit a batch job to one of the SPI specific batch queues.
 
-Use of the queues will trigger configuration changes to the Summit compute nodes to allow enhanced data protection. Compute nodes will be booted before and after each SPI batch job. Compute nodes will be booted into an image that mounts only the Arx filesystem. The image will also restrict connections. Please note: the reboot process may cause a slight delay in job startup.
+Use of the SPI queue will trigger configuration changes to the compute nodes to allow enhanced data protection. Compute nodes will be booted before and after each SPI batch job. Compute nodes will be booted into an image that mounts only the Arx filesystem. The image will also restrict connections. **Please note:** the reboot process may cause a slight delay in job startup.
 
-More details on batch job submission through LSF and launching a parallel job through jsrun can be found on :ref:`Summit User Guide<summit-user-guide>`.
+More details on batch job submission through LSF and launching a parallel job through jsrun can be found on :ref:`Summit User Guide<summit-user-guide>` and :ref:`Frontier User Guide<frontier-user-guide>`.
 
 .. _spi-file-systems:
 
