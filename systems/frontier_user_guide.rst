@@ -3550,6 +3550,13 @@ If it is necessary to have bit-wise reproducible results from these libraries, i
 System Updates 
 ============== 
 
+2023-10-03
+----------
+On Tuesday, October 3, 2023, Frontier's system software was upgraded. The following changes took place:
+
+-  The system was to the AMD GPU 6.1.5 device driver (ROCm 5.6.1 release).
+-  Slurm was upgraded to version 23.02.5
+
 2023-09-19
 ----------
 On Tuesday, September 19, 2023, Frontier's system software was upgraded. The following changes took place:
