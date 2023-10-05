@@ -10,4 +10,5 @@ Quantum Systems
    ibm_quantum
    rigetti
    quantinuum
+   ionq
 
