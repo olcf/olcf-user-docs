@@ -39,7 +39,7 @@ Please pay attention to the following key dates as you plan your science campaig
 .. _summit_proposals_open:
 
 Sep 19, 2023 - Submission system opens for 2024 Summit proposals  
---------------------------------------------------------------
+----------------------------------------------------------------
 
 The Department of Energy is extending Summit operations through October 2024, enabling researchers to pursue projects on one of the world’s leading AI-enabled open science supercomputing platforms.  OLCF will allocate Summit through new programs for calendar year 2024.
 
