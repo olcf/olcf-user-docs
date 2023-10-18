@@ -46,8 +46,7 @@ this `GPU App Tutorial <https://libensemble.readthedocs.io/en/main/tutorials/for
 
 Additional information on compiling/running the above sample GPU app is available `here <https://libensemble.readthedocs.io/en/main/platforms/frontier.html#example>`__.
 
-See `this video <https://www.youtube.com/watch?v=XHXcslDORjU>`__ for an example workflow on :ref:`Spock<spock-quick-start-guide>`.
-The channel will soon publish a Frontier-specific guide.
+See `this video <https://www.youtube.com/watch?v=H2fmbZ6DnVc>`__ for an example dynamic-resources workflow on Frontier.
 
 Example Code
 ============
