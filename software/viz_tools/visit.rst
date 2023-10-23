@@ -5,6 +5,8 @@ VisIt
 
 .. note:: VisIt is now available on Frontier through the UMS022 module.
 
+.. note:: VisIt 3.3.3 is now available on Andes.
+
 Overview
 ========
 
@@ -28,7 +30,7 @@ OLCF resources. VisIt for your local computer can be obtained here:
 Recommended VisIt versions on our systems:
 
 * Summit: VisIt 3.1.4
-* Andes: VisIt 3.2.2
+* Andes: VisIt 3.3.3
 * Frontier: VisIt 3.3.3
 
 .. warning::
@@ -347,7 +349,7 @@ job will submit to.
 
        module load visit
 
-       visit -nowin -cli -v 3.2.2 -l srun -np 28 -nn 1 -s visit_example.py
+       visit -nowin -cli -v 3.3.3 -l srun -np 28 -nn 1 -s visit_example.py
 
 .. tabbed:: Frontier
 
@@ -501,7 +503,7 @@ capture".
 Using VisIt on Summit is also an option, as the scalable rendering problem is
 currently not an issue on Summit (as of Sept. 2021).
 
-As of February 2022, this issue on Andes has been fixed (must use VisIt 3.2.2).
+As of February 2022, this issue on Andes has been fixed (must use VisIt 3.2.2 or higher).
 
 SSH error after accepting passcode (duplicate host profile bug)
 ---------------------------------------------------------------
