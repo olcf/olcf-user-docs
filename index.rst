@@ -9,13 +9,13 @@ OLCF User Documentation
 
 This technical documentation is a reference for the user community to efficiently use OLCF compute and storage resources.
 
-If you have any questions, please reference the ':doc:`support/index`' section, or click the email link in the top left. 
+If you have any questions, please reference the :doc:`support/index` section, or click the email link in the top left. 
 
 Have an idea to improve this documentation? See :doc:`contributing/index`.
 
 
 
-Need Our Help?
+Need Support?
 ---------------------
 
 .. toctree::

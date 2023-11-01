@@ -1,35 +1,44 @@
 ###########################
-Contact Us
+Contact & Support
 ###########################
 
 OLCF User Assistance Center
 ----------------------------
 
-    The `OLCF User Assistance Center <https://www.olcf.ornl.gov/for-users/user-assistance/>`_ remains open and available for support.  
-    Users should follow normal support procedures when reporting issues or requesting help.
+The OLCF User Assistance Center is open Monday through Friday (9am-5pm EST) to support our users.    
+Users should follow normal support procedures when reporting issues or requesting help.
 
-    * `Submit a Support Ticket <https://www.olcf.ornl.gov/for-users/getting-started/submit-ticket/>`_
-    * Email us at help@olcf.ornl.gov
-    * Sign-up to attend `OLCF Office Hours`_
-
+    * Email us at  help@olcf.ornl.gov
+    * `Submit a Support Ticket <https://www.olcf.ornl.gov/for-users/getting-started/submit-ticket/>`_ via webform. 
 
 When submitting a ticket to help@olcf.ornl.gov requesting help, you will likely
 get faster resolution by supporting a few best practices:
 
-- Where possible, provide helpful details that can help speed the process. For
-  example: Project ID, relevant directories, job scripts, jobIDs, modules at
-  compile/runtime, host name, etc.
-- When replying to a ticket, do not modify the subject line.
-- Do not piggyback unrelated questions on existing tickets. This leads to slower
-  response times and inflates ticket history.
-- Do not open multiple tickets on the same unresolved topic. Doing so can
-  fragment resources and slow down the time to resolution.
-- Please do not respond to previous tickets with new, unrelated issues. This can
-  slow down response time and make finding relevant information harder thereby
-  slowing down time to resolution.
-- Let us know if you've solved the issue yourself (and let us know what worked!)
-- MOST IMPORTANT: do not hesitate to contact us (help@olcf.ornl.gov); we will
-  work through the details with you.
+  - Where possible, provide helpful details that can help speed the process. For
+    example: Project ID, relevant directories, job scripts, jobIDs, modules at
+    compile/runtime, host name, etc.
+  - When replying to a ticket, do not modify the subject line.
+  - Do not piggyback unrelated questions on existing tickets. This leads to slower
+    response times and inflates ticket history.
+  - Do not open multiple tickets on the same unresolved topic. Doing so can
+    fragment resources and slow down the time to resolution.
+  - Please do not respond to previous tickets with new, unrelated issues. This can
+    slow down response time and make finding relevant information harder thereby
+    slowing down time to resolution.
+  - Let us know if you've solved the issue yourself (and let us know what worked!)
+  - MOST IMPORTANT: do not hesitate to contact us (help@olcf.ornl.gov); we will
+    work through the details with you.
+
+
+RSA Phone Line
+---------------
+Are you in need of assistance with RSA? Have you forgotten your PIN or are you locked out of your account? You can call the OLCF RSA Phone line
+for quick assistance with anything related to RSA. 
+
+**Phone:** 865-241-6536 
+
+And as always, you can email help@olcf.ornl.gov if you prefer email for assistance. 
+
 
 OLCF Office Hours
 ---------------------
@@ -58,4 +67,32 @@ If you encounter issues during sign-up, please contact help@olcf.ornl.gov.
      `MY PROJECTS` dropdown on the top of the page.
 
 
+Communication to Users
+-----------------------
 
+System statuses
+    System statuses can be found on the `Center Status <https://www.olcf.ornl.gov/for-users/center-status/>`_ page. 
+    Alternatively, The `OLCF homepage <http://www.olcf.ornl.gov/>`_ includes a listing of our major compute resources and their current availability, as well as upcoming downtimes. 
+    Similarly, the status of a particular system can be found on its respective System User Guide. 
+    When a system’s state changes (up to down, or down to up), an automated message is sent to the system’s notice mailing list.
+
+Weekly Updates
+    Each week, typically on Wednesday morning, an email announcing the next week’s scheduled outages is sent to all users. 
+    This message also includes meeting announcements and other items of interest to all OLCF users.
+
+Mailing Lists
+    Our primary systems each have two mailing lists, Announcement and Notice. 
+
+    Announcement lists provide users with email messages of general interest (system upgrades, long-term outages, etc.) 
+    Since the mailing frequency is low and the information sent is important to all users, users are automatically subscribed to the appropriate Announcement lists when their account is created and are required to remain members of these lists as long as the account remains active.
+    Notice lists provide a higher-volume email notification system. A system’s Notice list will automatically announce system state changes and other notable system events. 
+    Users who are actively using a system are automatically added to a system’s Notice list. 
+    When a system changes state (up to down, or down to up), an automated email is sent to members of the system’s notice list. We also send additional notable issues and time sensitive events to these lists.
+
+    Available Notice lists include: rhea-notice, and spider-notice. If you wish to be added or removed, please contact help@olcf.ornl.gov.
+
+myOLCF
+    To assist users in managing their project allocations and system usage, we provide the My OLCF web application. My OLCF can be accessed at https://my.olcf.ornl.gov/ with a valid OLCF username and SecurID fob passcode. 
+    MyOLCF provides valuable information about projects and the ability to renew or request new access.
+
+    Additional information about myOLCF can be found in the :ref:`myOLCF` section. 

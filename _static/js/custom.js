@@ -20,9 +20,11 @@ $( document ).ready(function() {
 
   // Insert "Help email" below html_logo in sidebar navigation
   var help_link = document.createElement("a");
-  var help_link_text = document.createTextNode("Need Help? Contact us.");
+  var help_link_text = document.createTextNode("Need Help? Contact us. ");
+  var email_link_text = document.createTextNode(" help@olcf.ornl.gov");
   help_link.appendChild(help_link_text);
-  help_link.setAttribute("href", "https://olcf.ornl.gov");
+  help_link.appendChild(email_link_text);
+  help_link.setAttribute("href","/html/support/index.html");
   
   wysidenavsearch = document.querySelector("body > div > nav > div > div.wy-side-nav-search > a");
   wysidenavsearch.appendChild(help_link);
