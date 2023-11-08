@@ -30,14 +30,15 @@ get faster resolution by supporting a few best practices:
     work through the details with you.
 
 
-RSA Phone Line
+Authentication Support
 ---------------
-Are you in need of assistance with RSA? Have you forgotten your PIN or are you locked out of your account? You can call the OLCF RSA Phone line
-for quick assistance with anything related to RSA. 
+If you are needing assistance with logging into OLCF systems, you can contact our **24/7 phone line**. The phone operators will be able to help you unlock your token, reset your pin, or 
+navigate out of next-token mode any hour of the day. 
 
-**Phone:** 865-241-6536 
+    **Phone:** 865-241-6536
 
-And as always, you can email help@olcf.ornl.gov if you prefer email for assistance. 
+If you prefer to submit a ticket for assistance, User Assistance staff will respond to your email during business hours. 
+
 
 
 OLCF Office Hours
