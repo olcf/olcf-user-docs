@@ -18,16 +18,16 @@ $( document ).ready(function() {
   aside.appendChild(separator);
   aside.appendChild(olcf_link);
 
-  // Insert Project Name "OLCF User Documentation" below html_logo in sidebar navigation
-  var project_name_link = document.createElement("a");
-  var project_name_text = document.createTextNode(" OLCF User Documentation");
-  project_name_link.appendChild(project_name_text);
-  project_name_link.setAttribute("href", "https://docs.olcf.ornl.gov");
-  project_name_link.classList.add("icon");
-  project_name_link.classList.add("icon-home");
+  // Insert "Help email" below html_logo in sidebar navigation
+  var help_link = document.createElement("a");
+  var help_link_text = document.createTextNode("Need Help? Contact us. ");
+  var email_link_text = document.createTextNode(" help@olcf.ornl.gov");
+  help_link.appendChild(help_link_text);
+  help_link.appendChild(email_link_text);
+  help_link.setAttribute("href","/html/support/index.html");
+  
   wysidenavsearch = document.querySelector("body > div > nav > div > div.wy-side-nav-search > a");
-  wysidenavsearch.appendChild(project_name_link);
-
+  wysidenavsearch.appendChild(help_link);
 
   // For any external links in the main navigation, append the FontAwesome external link icon.
   function iconize_external_links(nav_level){
