@@ -24,7 +24,7 @@ $( document ).ready(function() {
   var email_link_text = document.createTextNode(" help@olcf.ornl.gov");
   help_link.appendChild(help_link_text);
   help_link.appendChild(email_link_text);
-  help_link.setAttribute("href","/html/support/index.html");
+  help_link.setAttribute("href","https://docs.olcf.ornl.gov/support/index.html");
   
   wysidenavsearch = document.querySelector("body > div > nav > div > div.wy-side-nav-search > a");
   wysidenavsearch.appendChild(help_link);
