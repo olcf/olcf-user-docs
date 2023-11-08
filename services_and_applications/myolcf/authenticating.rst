@@ -21,3 +21,15 @@ OLCF Open Accounts
 OLCF Open user accounts, i.e., users that authenticate to OLCF systems with a password,
 cannot access myOLCF at this time, as we are still investigating the feasibility of
 supporting password-only authentication.
+
+OLCF Enhanced Accounts
+----------------------
+
+Although OLCF Enhanced user accounts, cannot access myOLCF at this time, they will soon be able to.
+
+**Enhanced Project Special Requirements:**
+
+Enhanced Project PIs need to provide the center with allowable IP ranges before they can use their projects.
+This can be done by accessing the 'IP Allow List' section, under the 'Settings' tab, of myOLCF.
+Our networking team will then configure firewalls to allow access.
+
