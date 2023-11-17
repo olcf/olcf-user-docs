@@ -163,9 +163,9 @@ To help separate data and processes, the Citadel framework provides separate log
 +----------------+---------------------------------------+-------------------------------------------------------------------------------------+
 | Resource       |  Citadel Login Node Name              |  Example                                                                            |
 +================+=======================================+=====================================================================================+
-| Summit         | citadel.ccs.ornl.gov                |  ``ssh username_projID_mde@citadel.ccs.ornl.gov``                                 |
+| Summit         | citadel.ccs.ornl.gov                  |  ``ssh username_projID_mde@citadel.ccs.ornl.gov``                                   |
 +----------------+---------------------------------------+-------------------------------------------------------------------------------------+
-| Frontier       | spilogin1.frontier.olcf.ornl.gov, spilogin2.frontier.olcf.ornl.gov             |  ``ssh username_projID_mde@spilogin1.frontier.olcf.ornl.gov``                              |
+| Frontier       | spilogin[1,2].frontier.olcf.ornl.gov  |  ``ssh username_projID_mde@spilogin1.frontier.olcf.ornl.gov``                       |
 +----------------+---------------------------------------+-------------------------------------------------------------------------------------+
 
 .. note:: The Citadel login nodes must be used to submit SPI jobs to Summit and Frontier's compute resources and access the SPI specific filesystem.
