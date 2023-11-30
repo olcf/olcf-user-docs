@@ -378,9 +378,12 @@ OLCF is refining the automatic file striping policy to optimize I/O performance 
 .. note::
    Because of the complexity of file striping between Orion's performance tiers, users should refrain from attempting to manually control file striping, unless they are writing single files in excess of 512 GB in size. 
 
+===============================================================
+Striping Recommendations for Large Single-shared-file Workloads 
+===============================================================
+
 Some sufficiently large (>512 GB per file) single-shared-file workloads may benefit from explicit striping. Below are some reccomendations: 
 
-Striping Recommendations for Large Single-shared-file Workloads 
 +---------+--------------------------------------------+
 | Size    | Stripe Command                             |
 +=========+============================================+
