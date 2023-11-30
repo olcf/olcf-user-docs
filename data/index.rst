@@ -398,7 +398,7 @@ Some sufficiently large (>512 GB per file) single-shared-file workloads may bene
    When manually setting striping you must specify -p capacity with the stripe command. Otherwise, Orion defaults to using the performance tier, which isn't optimized for handling larger single files. 
 
 
-If you feel that the default file striping on Orion or the recommended striping for large single-shared-file workloads is not meeting your needs, please contact OLCF-Help so that we can work with you to understand your application's I/O performance.
+If you feel that the default file striping on Orion or the recommended striping for large single-shared-file workloads is not meeting your needs, please contact OLCF-help so that we can work with you to understand your application's I/O performance.
 
 
 ============================================   
