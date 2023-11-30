@@ -376,11 +376,11 @@ Orion uses a feature called Data-on-Metadata-Trarget (DoM), where a portion of t
 OLCF is refining the automatic file striping policy to optimize I/O performance for users.
 
 .. note::
-   Because of the complexity of file striping between Orion's performance tiers, users should refrain from attempting to manually control file striping, unless they are writing single files in excess of 512 GB in size. If you feel that the default file striping on Orion is not meeting your needs, please contact OLCF-help so we can work with you to understand your application's I/O performance.
+   Because of the complexity of file striping between Orion's performance tiers, users should refrain from attempting to manually control file striping, unless they are writing single files in excess of 512 GB in size. 
 
 Some sufficiently large (>512 GB per file) single-shared-file workloads may benefit from explicit striping. Below are some reccomendations: 
 
-
+Striping Recommendations for Large Single-shared-file Workloads 
 +---------+--------------------------------------------+
 | Size    | Stripe Command                             |
 +=========+============================================+
@@ -397,6 +397,8 @@ Some sufficiently large (>512 GB per file) single-shared-file workloads may bene
 .. note::
    When manually setting striping you must specify -p capacity with the stripe command. Otherwise, Orion defaults to using the performance tier, which isn't optimized for handling larger single files. 
 
+
+If you feel that the default file striping on Orion or the recommended striping for large single-shared-file workloads is not meeting your needs, please contact OLCF-Help so that we can work with you to understand your application's I/O performance.
 
 
 ============================================   
