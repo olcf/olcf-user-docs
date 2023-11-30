@@ -380,21 +380,22 @@ OLCF is refining the automatic file striping policy to optimize I/O performance 
 
 Some sufficiently large (>512 GB per file) single-shared-file workloads may benefit from explicit striping. Below are some reccomendations: 
 
+
 +---------+--------------------------------------------+
 | Size    | Stripe Command                             |
 +=========+============================================+
-| 512 GB+ | ``lfs setstripe -c 8 -p capacity -S 16M``  |
+| 512 GB+ | lfs setstripe -c 8 -p capacity -S 16M      |
 +---------+--------------------------------------------+
-| 1 TB+   | ``lfs setstripe -c 16 -p capacity -S 16M`` |
+| 1 TB+   | lfs setstripe -c 16 -p capacity -S 16M     |
 +---------+--------------------------------------------+
-| 8 TB+   | ``lfs setstripe -c 64 -p capacity -S 16M`` |
+| 8 TB+   | lfs setstripe -c 64 -p capacity -S 16M     |
 +---------+--------------------------------------------+
-| 16 TB+  | ``lfs setstripe -c 128 -p capacity -S 16M``|
+| 16 TB+  | lfs setstripe -c 128 -p capacity -S 16M    |
 +---------+--------------------------------------------+
 
 
 .. note::
-	When manually setting striping you must specify `-p capacity` with the stripe command. Otherwise, Orion defaults to using the performance tier, which isn't optimized for handling larger single files. 
+   When manually setting striping you must specify -p capacity with the stripe command. Otherwise, Orion defaults to using the performance tier, which isn't optimized for handling larger single files. 
 
 
 
