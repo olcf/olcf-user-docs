@@ -2209,6 +2209,13 @@ Applications using single precision FP atomicAdd() are encouraged to experiment 
 System Updates 
 ============== 
 
+2023-12-05
+----------
+On Tuesday, December 5, 2023, Crusher's system software was upgraded. The following changes took place:
+
+-  ROCm 5.7.1 is now available via the ``rocm/5.7.1`` modulefile.
+-  Flux 0.56.0 is now available via the ``flux/0.56.0`` modulefile.
+
 2023-10-03
 ----------
 On Tuesday, October 3, 2023, Crusher's system software was upgraded. The following changes took place:
