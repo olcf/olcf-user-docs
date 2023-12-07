@@ -51,6 +51,10 @@ Currently Available User-Managed Software
   |            |                |                                            |                                                                                |
   |            |                |                                            | Mailing List:      hpctoolkit-forum@rice.edu                                   |
   +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
+  | ums024     | Open MPI       | Thomas Naughton (naughtont@ornl.gov)       | Open MPI for Exascale -- MPI library                                           |
+  |            |                |                                            |                                                                                |
+  |            |                | Amir Shehata (shehataa@ornl.gov)           | Issue Tracker:     https://github.com/OMPI-X/platforms/issues                  |
+  +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
   | ums025     | Clacc          | Joel E. Denny (dennyje@ornl.gov)           | Clacc: Clang/LLVM fork to support OpenACC in C/C++                             |
   |            |                |                                            |                                                                                |
   |            |                |                                            | General Info:      https://csmd.ornl.gov/project/clacc                         |
@@ -78,6 +82,10 @@ Currently Available User-Managed Software
   |            |                |                                            | Issue Tracker:     https://gitlab.com/hpctoolkit/hpctoolkit/-/issues           |
   |            |                |                                            |                                                                                |
   |            |                |                                            | Mailing List:      hpctoolkit-forum@rice.edu                                   |
+  +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
+  | ompix      | Open MPI       | Thomas Naughton (naughtont@ornl.gov)       | Open MPI for Exascale -- MPI library                                           |
+  |            |                |                                            |                                                                                |
+  |            |                | Amir Shehata (shehataa@ornl.gov)           | Issue Tracker:     https://github.com/OMPI-X/platforms/issues                  |
   +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
 
 .. tabbed:: Summit
@@ -114,7 +122,7 @@ Currently Available User-Managed Software
   +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
   | ums015     | DPC++ for HIP  | Gordon Brown (gordon@codeplay.com)         |                                                                                |
   +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
-  
+
 Usage
 -----
 
