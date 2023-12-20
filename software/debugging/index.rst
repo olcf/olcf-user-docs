@@ -298,15 +298,7 @@ Configuration
         If you're needing to debug an MPI+HIP code that you compile with the Cray compiler wrapper, you may want to unload the darshan-runtime module and then recompile your code. If you don't do this, Forge will error out when you start a debugging session with the ROCm option selected.
 
     .. note::
-       If you wish to set a break point inside a GPU kernel and step into it when debugging, you need to make sure the following environment variables are also set before you call ``ddt --connect``:
-
-       .. code::
-
-           export HSA_TOOLS_LIB=$ROCM_PATH/lib/librocm-debug-agent.so.2
-           export HSA_ENABLE_DEBUG=1
-           export ROCM_DEBUG_AGENT_OPTIONS="--all --save-code-objects --log-level=info"
-
-       Stepping inside a GPU kernel is only supported for the amd-mixed/5.6.0 at this time. Loading other rocm modules will lead to GPU driver mismatch errors. Documentation on GPU debugging with DDT can be found `here <https://docs.linaroforge.com/23.1/html/forge/ddt/gpu_debugging/index.html>`__ . 
+       Setting a breakpoint inside a GPU kernel is only supported for the amd-mixed/5.6.0 at this time. Loading other rocm modules will lead to GPU driver mismatch errors. Documentation on GPU debugging with DDT can be found `here <https://docs.linaroforge.com/23.1/html/forge/ddt/gpu_debugging/index.html>`__ . 
 
 
 
