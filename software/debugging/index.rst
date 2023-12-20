@@ -32,7 +32,7 @@ Download
 
 **Frontier**
 
-    You can download the remote client (version 22.1.x) from the `Linaro Forge <https://www.linaroforge.com/downloadForge/>`_ page.
+    You can download the remote client (version 23.1) from the `Linaro Forge <https://www.linaroforge.com/downloadForge/>`_ page.
 
 Installation
 ============
@@ -249,7 +249,7 @@ Configuration
 
             * If the host you wish to connect to requires connecting through a gateway machine, you can enter ``user@hostname1`` ``user@hostname2`` (where ``hostname1`` is the gateway and ``hostname2`` is the final destination).
 
-        * In the ``Remote Installation Directory`` box, enter the remote path to the Linaro Forge installation (To find the path for a version of Forge, load the forge/22.1.1 module file in a terminal and run ``echo $DDT_HOME``)
+        * In the ``Remote Installation Directory`` box, enter the remote path to the Linaro Forge installation (To find the path for a version of Forge, load the forge/23.1 module file in a terminal and run ``echo $DDT_HOME``)
 
 
         * For the remaining fields, the default values will work for the vast majority of setups. See the `Linaro Forge documentation <https://www.linaroforge.com/documentation/>`_ for more information on these fields.
@@ -270,7 +270,7 @@ Configuration
 
     **Reverse Connect**
    
-    #. In a separate terminal where you are logged into Frontier, load the ``forge/22.1.1`` module, and run a ``ddt --connect`` command via the batch system (e.g. by editing and running a job script, or running with an interactive shell).
+    #. In a separate terminal where you are logged into Frontier, load the ``forge/23.1`` module, and run a ``ddt --connect`` command via the batch system (e.g. by editing and running a job script, or running with an interactive shell).
 
         .. code-block:: bash
 
