@@ -469,7 +469,7 @@ The file systems have many technical differences, but we will mention only what 
 HPSS Data Archival System
 **************************
 
-There are two methods of moving data to/from HPSS. The more traditional method is via the command-line utilities ``hsi`` and ``htar``. These commands are available from most OLCF systems. Recently, we added the capability of using Globus to move data to/from HPSS. HPSS is available via the "OLCF HPSS" Globus endpoint. By connecting to that endpoint and the "OLCF DTN" endpoint, you can transfer files between HPSS and other OLCF filesystems. By connecting to "OLCF HPSS" and some other endpoint, you can transfer files to/from an offsite location to HPSS. More details on various transfer methods are available in the :ref:`data-transferring-data` section.
+There are two methods of moving data to/from HPSS. The more traditional method is via the command-line utilities ``hsi`` and ``htar``. These commands are available from most OLCF systems. Recently, we added the capability of using Globus to move data to/from HPSS. HPSS is available via the "OLCF HPSS (Globus 5)" Globus endpoint. By connecting to that endpoint and the "OLCF DTN (Globus 5)" endpoint, you can transfer files between HPSS and other OLCF filesystems. By connecting to "OLCF HPSS (Globus 5)" and some other endpoint, you can transfer files to/from an offsite location to HPSS. More details on various transfer methods are available in the :ref:`data-transferring-data` section.
 
 HPSS is optimized for large files. Ideally, we recommend sending files 768GB or larger to HPSS. HPSS will handle small files, but write and read performance will be negatively affected with files smaller than 512 MB. We recommend combining small files prior to tranfer. Alternatively you can use ``htar`` to combine them and create the ``.tar`` file directly on HPSS.
 
@@ -486,7 +486,9 @@ Transferring Data
 Globus
 ============
 
-Three Globus Endpoints have been established for OLCF resources. These are "OLCF DTN", "OLCF HPSS", and "NCCS Open DTN". The "OLCF DTN" endpoint provides access to User/Project Home areas as well as the Alpine filesystem, the "OLCF HPSS" endpoint provides access to HPSS, and the "NCCS Open DTN" endpoint provides access to the Open User/Project Home areas and the Wolf filesystem. By selecting one of these endpoints and some offsite endpoint, you can use Globus to transfer data to/from that storage area at OLCF. By selecting the "OLCF DTN" and "OLCF HPSS" endpoints, you can transfer data between HPSS and one of our other filesystems. 
+Three Globus Endpoints have been established for OLCF resources. These are "OLCF DTN (Globus 5)", "OLCF HPSS (Globus 5)", and "NCCS Open DTN". The "OLCF DTN (Globus 5)" endpoint provides access to User/Project Home areas as well as the Alpine filesystem, the "OLCF HPSS (Globus 5)" endpoint provides access to HPSS, and the "NCCS Open DTN" endpoint provides access to the Open User/Project Home areas and the Wolf filesystem. By selecting one of these endpoints and some offsite endpoint, you can use Globus to transfer data to/from that storage area at OLCF. By selecting the "OLCF DTN (Globus 5)" and "OLCF HPSS (Globus 5)" endpoints, you can transfer data between HPSS and one of our other filesystems. 
+
+
 
 **Globus Warnings:** 
 
@@ -508,7 +510,7 @@ The following example is intended to help users who are making the transition fr
  Globus does not preserve file permissions and will overwrite destination files with identically named sources files without warning.
 
 
-Here is a recording of an example transfer from Alpine to Orion using Globus and the OLCF DTN: `Using Globus to Move Data to Orion <https://vimeo.com/manage/videos/814973734>`_. 
+Here is a recording of an example transfer from Alpine to Orion using Globus and the OLCF DTN (Globus 5): `Using Globus to Move Data to Orion <https://vimeo.com/manage/videos/814973734>`_. 
 
 Below is a summary of the steps for data transfer given in the recording:
 
@@ -516,11 +518,11 @@ Below is a summary of the steps for data transfer given in the recording:
 `Generate a globusID <https://www.globusid.org/create?viewlocale=en_US>`_. 
 
 
-2.	Once you are logged in, Globus will open the “File Manager” page. Click the left side “Collection” text field in the File Manager and type “OLCF DTN”. 
-3.	When prompted, authenticate into the OLCF DTN endpoint using your OLCF username and PIN followed by your RSA passcode. 
+2.	Once you are logged in, Globus will open the “File Manager” page. Click the left side “Collection” text field in the File Manager and type “OLCF DTN (Globus 5)”. 
+3.	When prompted, authenticate into the OLCF DTN (Globus 5) endpoint using your OLCF username and PIN followed by your RSA passcode. 
 4.	Click in the left side “Path” box in the File Manager and enter the path to your data on Alpine. For example, `/gpfs/alpine/stf007/proj-shared/my_alpine_data.` You should see a list of your files and folders under the left “Path” Box.
 5.	Click on all files or folders that you want to transfer in the list. This will highlight them. 
-6.	Click on the right side “Collection” box in the File Manager and type “OLCF DTN” 
+6.	Click on the right side “Collection” box in the File Manager and type “OLCF DTN (Globus 5)” 
 7.	Click in the right side “Path” box and enter the path where you want to put your data on Orion, for example, `/lustre/orion/stf007/proj-shared/my_orion_data`
 8.	Click the left "Start" button. 
 9.	Click on “Activity“ in the left blue menu bar to monitor your transfer. Globus will send you an email when the transfer is complete.
@@ -541,7 +543,7 @@ General Globus Example
 .. image:: /images/globus_organization.png
    :align: center
 
-- Search for the endpoint **OLCF DTN**
+- Search for the endpoint **OLCF DTN (Globus 5)**
 
 .. image:: /images/search_endpoint1.png
    :align: center
@@ -554,7 +556,7 @@ General Globus Example
 .. image:: /images/globus_first_endpoint.png
    :align: center
 
-- Open a second panel to declare the new endpoint called **OLCF HPSS** and use
+- Open a second panel to declare the new endpoint called **OLCF HPSS (Globus 5)** and use
   the appropriate path for HPSS
 
 .. image:: /images/globus_second_endpoint_hpss.png
