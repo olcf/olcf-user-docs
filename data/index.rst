@@ -444,10 +444,8 @@ Major difference between Lustre HPE ClusterStor and IBM Spectrum Scale
 
 The file systems have many technical differences, but we will mention only what a user needs to be familiar with:
 
-- On Summit, there is no concept of striping from the user point of view. The GPFS will handle the workload, the file system was tuned during the installation. 
+- On Summit, there was no concept of striping from the user point of view. The GPFS handled the workload, the file system was tuned during the installation. 
 - On Frontier, Orion does have striping, but because of the complexity of file striping between Orion's performance tiers, users should refrain from attempting to manually control file striping. If you feel that the default file striping on Orion is not meeting your needs, please contact OLCF-help so we can work with you to understand your application's I/O performance.
-
-
 
 
 .. _data-hpss:
