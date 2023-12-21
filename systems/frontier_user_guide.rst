@@ -316,16 +316,24 @@ The following example is intended to help users move data to and from the Orion 
 
 Below is a summary of the steps for data transfer using Globus:
 
-#1.  Login to `globus.org <https://www.globus.org>`_ using your globus ID and password. If you do not have a globusID, set one up here:
+# 1.  Login to `globus.org <https://www.globus.org>`_ using your globus ID and password. If you do not have a globusID, set one up here:
 `Generate a globusID <https://www.globusid.org/create?viewlocale=en_US>`_.
-#2.  Once you are logged in, Globus will open the “File Manager” page. Click the left side “Collection” text field in the File Manager and type “OLCF DTN (Globus 5)”.
-#3.  When prompted, authenticate into the OLCF DTN (Globus 5) endpoint using your OLCF username and PIN followed by your RSA passcode.
-#4.  Click in the left side “Path” box in the File Manager and enter the path to your data on Orion. For example, `/lustre/orion/stf007/proj-shared/my_orion_data`. You should see a list of your files and folders under the left “Path” Box.
-#5.  Click on all files or folders that you want to transfer in the list. This will highlight them.
-#6.  Click on the right side “Collection” box in the File Manager and type the name of a second endpoint at OLCF or at another institution. You can transfer data between different paths on the Orion filesystem with this method too; Just use the OLCF DTN (Globus 5) endpoint again in the right side “Collection” box.
-#7.  Click in the right side “Path” box and enter the path where you want to put your data on the second endpoint's filesystem.
-#8.  Click the left "Start" button.
-#9.  Click on “Activity“ in the left blue menu bar to monitor your transfer. Globus will send you an email when the transfer is complete.
+
+# 2.  Once you are logged in, Globus will open the “File Manager” page. Click the left side “Collection” text field in the File Manager and type “OLCF DTN (Globus 5)”.
+
+# 3.  When prompted, authenticate into the OLCF DTN (Globus 5) endpoint using your OLCF username and PIN followed by your RSA passcode.
+
+# 4.  Click in the left side “Path” box in the File Manager and enter the path to your data on Orion. For example, `/lustre/orion/stf007/proj-shared/my_orion_data`. You should see a list of your files and folders under the left “Path” Box.
+
+# 5.  Click on all files or folders that you want to transfer in the list. This will highlight them.
+
+# 6.  Click on the right side “Collection” box in the File Manager and type the name of a second endpoint at OLCF or at another institution. You can transfer data between different paths on the Orion filesystem with this method too; Just use the OLCF DTN (Globus 5) endpoint again in the right side “Collection” box.
+
+# 7.  Click in the right side “Path” box and enter the path where you want to put your data on the second endpoint's filesystem.
+
+# 8.  Click the left "Start" button.
+
+# 9.  Click on “Activity“ in the left blue menu bar to monitor your transfer. Globus will send you an email when the transfer is complete.
 
 **Globus Warnings:**
 
