@@ -352,19 +352,19 @@ By default, the OLCF does not guarantee lifetime data retention on any OLCF reso
 
 .. _data-orion-lustre-hpe-clusterstor-filesystem:
 
-.. ***************************************
-.. Orion Lustre HPE ClusterStor Filesystem 
-.. ***************************************
+***************************************
+Orion Lustre HPE ClusterStor Filesystem 
+***************************************
 
-.. Frontier mounts Orion, a parallel filesystem based on Lustre and HPE ClusterStor, with a 679 PB usable namespace (/lustre/orion/). In addition to Frontier, Orion is available on the OLCF's data transfer nodes. It is not available from Summit. Files older than 90 days are purged from Orion.
+Frontier mounts Orion, a parallel filesystem based on Lustre and HPE ClusterStor, with a 679 PB usable namespace (/lustre/orion/). In addition to Frontier, Orion is available on the OLCF's data transfer nodes. It is not available from Summit. Files older than 90 days are purged from Orion.
 
-.. Orion is a cluster of servers with approximately 500 nodes. Each node plays a role in providing a POSIX namespace for users (/lustre/orion/).  .. A file on Lustre consists of one or more components that may hit one or more servers. Lustre has a distributed lock management process for concurrent access to files or regions within files. 
+Orion is a cluster of servers with approximately 500 nodes. Each node plays a role in providing a POSIX namespace for users (/lustre/orion/).  .. A file on Lustre consists of one or more components that may hit one or more servers. Lustre has a distributed lock management process for concurrent access to files or regions within files. 
 
-.. Orion has three performance tiers:
+Orion has three performance tiers:
 
-.. * A flash-based performance tier of 5,400 nonvolatile memory express (NVMe) devices that provides 11.5 petabytes (PB) of capacity at peak read-write speeds of 10 TB/s.
-.. * A hard-disk-based capacity tier that provides 679 PB at peak read speeds of 5.5 TB/s and peak write speeds of 4.6 TB/s.
-.. * A flash-based metadata tier of 480 NVMe devices provides an additional capacity of 10 PB.
+* A flash-based performance tier of 5,400 nonvolatile memory express (NVMe) devices that provides 11.5 petabytes (PB) of capacity at peak read-write speeds of 10 TB/s.
+* A hard-disk-based capacity tier that provides 679 PB at peak read speeds of 5.5 TB/s and peak write speeds of 4.6 TB/s.
+* A flash-based metadata tier of 480 NVMe devices provides an additional capacity of 10 PB.
 
 ================================================
 Orion Performance Tiers and File Striping Policy
@@ -423,33 +423,33 @@ To keep the Lustre file system exceptionally performant, files that have not bee
 
 .. _data-alpine-ibm-spectrum-scale-filesystem:
 
-************************************
-Alpine IBM Spectrum Scale Filesystem
-************************************
+.. ************************************
+.. Alpine IBM Spectrum Scale Filesystem
+.. ************************************
 
-Summit mounts a POSIX-based IBM Spectrum Scale parallel filesystem called Alpine. Alpine's maximum capacity is 250 PB. It is consisted of 77 IBM Elastic Storage Server (ESS) GL4 nodes running IBM Spectrum Scale 5.x which are called Network Shared Disk (NSD) servers. Each IBM ESS GL4 node, is a scalable storage unit (SSU), constituted by two dual-socket IBM POWER9 storage servers, and a 4X EDR InfiniBand network for up to 100Gbit/sec of networking bandwidth.  The maximum performance of the final production system will be about 2.5 TB/s for sequential I/O and 2.2 TB/s for random I/O under FPP mode, which means each process, writes its own file. Metada operations are improved with around to minimum 50,000 file access per sec and aggregated up to 2.6 million accesses of 32KB small files.  
+.. Summit mounts a POSIX-based IBM Spectrum Scale parallel filesystem called Alpine. Alpine's maximum capacity is 250 PB. It is consisted of 77  IBM Elastic Storage Server (ESS) GL4 nodes running IBM Spectrum Scale 5.x which are called Network Shared Disk (NSD) servers. Each IBM ESS GL4 node, is a scalable storage unit (SSU), constituted by two dual-socket IBM POWER9 storage servers, and a 4X EDR InfiniBand network for up to 100Gbit/sec of networking bandwidth.  The maximum performance of the final production system will be about 2.5 TB/s for sequential I/O and 2.2 TB/s for random I/O under FPP mode, which means each process, writes its own file. Metada operations are improved with around to minimum 50,000 file access per sec and aggregated up to 2.6 million accesses of 32KB small files.  
 
 
-.. figure:: /images/summit_nds_final.png
-   :align: center
+.. .. figure:: /images/summit_nds_final.png
+..    :align: center
 
-   Figure 1. An example of the NDS servers on Summit
+..    Figure 1. An example of the NDS servers on Summit
 
-============================================
-Alpine Performance under non-ideal workloads
-============================================
+.. ============================================
+.. Alpine Performance under non-ideal workloads
+.. ============================================
 
-The I/O performance can be lower than the optimal one when you save one single shared file with non-optimal I/O pattern. Moreover, the previous performance results are achieved under an ideal system, the system is dedicated, and a specific number of compute nodes are used. The file system is shared across many users; the I/O performance can vary because other users that perform heavy I/O as also executing large scale jobs and stress the interconnection network.  Finally, if the I/O pattern is not aligned, then the I/O performance can be significantly lower than the ideal one.  Similar, related to the number of the concurrent users, is applied for the metadata operations, they can be lower than the expected performance.
+.. The I/O performance can be lower than the optimal one when you save one single shared file with non-optimal I/O pattern. Moreover, the previous performance results are achieved under an ideal system, the system is dedicated, and a specific number of compute nodes are used. The file system is shared across many users; the I/O performance can vary because other users that perform heavy I/O as also executing large scale jobs and stress the interconnection network.  Finally, if the I/O pattern is not aligned, then the I/O performance can be significantly lower than the ideal one.  Similar, related to the number of the concurrent users, is applied for the metadata operations, they can be lower than the expected performance.
 
-====
-Tips
-====
+.. ====
+.. Tips
+.. ====
 
-- For best performance on the IBM Spectrum Scale filesystem, use large page aligned I/O and asynchronous reads and writes. The filesystem blocksize is 16MB, the minimum fragment size is 16K so when a file under 16K is stored, it will still use 16K of the disk. Writing files of 16 MB or larger, will achieve better performance. All files are striped across LUNs which are distributed across all IO servers.
+.. - For best performance on the IBM Spectrum Scale filesystem, use large page aligned I/O and asynchronous reads and writes. The filesystem blocksize is 16MB, the minimum fragment size is 16K so when a file under 16K is stored, it will still use 16K of the disk. Writing files of 16 MB or larger, will achieve better performance. All files are striped across LUNs which are distributed across all IO servers.
 
-- If your application occupies up to two compute nodes and it requires a significant number of I/O operations, you could try to add the following flag in your job script  file and investigate if the total execution time is decreased. This flag could cause worse results, it depends on the application.
-
-                   ``#BSUB -alloc_flags maximizegpfs``
+.. - If your application occupies up to two compute nodes and it requires a significant number of I/O operations, you could try to add the following flag in your job script  file and investigate if the total execution time is decreased. This flag could cause worse results, it depends on the application.
+.. 
+..                    ``#BSUB -alloc_flags maximizegpfs``
 
 ======================================================================
 Major difference between Lustre HPE ClusterStor and IBM Spectrum Scale
