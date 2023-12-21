@@ -44,12 +44,12 @@ Each project has a Project Home area on NFS, multiple Work areas on Spectrum Sca
 +--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
 | Orion World Work               | ``/lustre/orion/[projid]/world-shared``     | M1,M2   | Lustre HPE ClusterStor | 775         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
 +--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
-| Alpine Member Work             | ``/gpfs/alpine/[projid]/scratch/[userid]``  | M1, M2  | Spectrum Scale.        | 700 [#f3]_  |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
-+--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
-| Alpine Project Work            | ``/gpfs/alpine/[projid]/proj-shared``       | M1, M2  | Spectrum Scale         | 770         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
-+--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
-| Alpine World Work              | ``/gpfs/alpine/[projid]/world-shared``      | M1      | Spectrum Scale         | 775         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
-+--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
+.. | Alpine Member Work             | ``/gpfs/alpine/[projid]/scratch/[userid]``  | M1, M2  | Spectrum Scale.        | 700 [#f3]_  |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
+.. +--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
+.. | Alpine Project Work            | ``/gpfs/alpine/[projid]/proj-shared``       | M1, M2  | Spectrum Scale         | 770         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
+.. +--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
+.. | Alpine World Work              | ``/gpfs/alpine/[projid]/world-shared``      | M1      | Spectrum Scale         | 775         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
+.. +--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
 | Member Archive                 | ``/hpss/prod/[projid]/users/$USER``         | M1      | HPSS                   | 700         | 100 TB | No      | No      | 90 days    | No                                      |
 +--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
 | Project Archive                | ``/hpss/prod/[projid]/proj-shared``         | M1      | HPSS                   | 770         | 100 TB | No      | No      | 90 days    | No                                      |
@@ -112,13 +112,13 @@ Each project has a Project Home area on NFS, multiple Work areas on Spectrum Sca
 .. [#f4] Retention is not applicable as files will follow purge cycle.
 
 
-On Summit, Andes, and the DTNs, additional paths to the various project-centric work areas are available via the following symbolic links and/or environment variables:
+.. On Summit, Andes, and the DTNs, additional paths to the various project-centric work areas are available via the following symbolic links and/or environment variables:
 
-- Member Work Directory:  ``/gpfs/alpine/scratch/[userid]/[projid]`` or ``$MEMBERWORK/[projid]``
-- Project Work Directory: ``/gpfs/alpine/proj-shared/[projid]`` or ``$PROJWORK/[projid]``
-- World Work Directory: ``/gpfs/alpine/world-shared/[projid]`` or ``$WORLDWORK/[projid]``
+.. - Member Work Directory:  ``/gpfs/alpine/scratch/[userid]/[projid]`` or ``$MEMBERWORK/[projid]``
+.. - Project Work Directory: ``/gpfs/alpine/proj-shared/[projid]`` or ``$PROJWORK/[projid]``
+.. - World Work Directory: ``/gpfs/alpine/world-shared/[projid]`` or ``$WORLDWORK/[projid]``
 
-On Frontier these paths point to Orion:
+On Frontier additional paths to the various project-centric work areas are available via the following symbolic links and/or environment variables:
 
 - Member Work Orion Directory:  ``/lustre/orion/scratch/[userid]/[projid]`` or ``$MEMBERWORK/[projid]``
 - Project Work Orion  Directory: ``/lustre/orion/proj-shared/[projid]`` or ``$PROJWORK/[projid]``
