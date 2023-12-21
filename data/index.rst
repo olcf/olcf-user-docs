@@ -489,97 +489,44 @@ Globus
 Three Globus Endpoints have been established for OLCF resources. These are "OLCF DTN (Globus 5)", "OLCF HPSS (Globus 5)", and "NCCS Open DTN". The "OLCF DTN (Globus 5)" endpoint provides access to User/Project Home areas as well as the Alpine filesystem, the "OLCF HPSS (Globus 5)" endpoint provides access to HPSS, and the "NCCS Open DTN" endpoint provides access to the Open User/Project Home areas and the Wolf filesystem. By selecting one of these endpoints and some offsite endpoint, you can use Globus to transfer data to/from that storage area at OLCF. By selecting the "OLCF DTN (Globus 5)" and "OLCF HPSS (Globus 5)" endpoints, you can transfer data between HPSS and one of our other filesystems. 
 
 
+.. note::
+   After January 8, the globus v4 endpoints will no longer be supported. Please use the OLCF HPSS (Globus 5) and OLCF DTN (Globus 5) endpoints.
+
 
 **Globus Warnings:** 
 
 * Globus transfers do not preserve file permissions. Arriving files will have (rw-r--r--) permissions, meaning arriving files will have *user* read and write permissions and *group* and *world* read permissions. Note that the arriving files will not have any execute permissions, so you will need to use chmod to reset execute permissions before running a Globus-transferred executable.
 
+
 * Globus will overwrite files at the destination with identically named source files. This is done without warning.
 
 * Globus has restriction of 8 active transfers across all the users. Each user has a limit of 3 active transfers, so it is required to transfer a lot of data on each transfer than less data across many transfers. 
 
-* If a folder is constituted with mixed files including thousands of small files (less than 1MB each one), it would be better to tar the small files.  Otherwise, if the files are larger, Globus will handle them. 
+* If a folder is constituted with mixed files including thousands of small files (less than 1MB each one), it would be better to tar the smallfiles.  Otherwise, if the files are larger, Globus will handle them. 
 
-Using Globus to Move Data to Orion 
-==================================
 
-The following example is intended to help users who are making the transition from Summit to Frontier to move their data between Alpine GPFS and Orion Lustre. We strongly recommend using Globus for this transfer as it is the method that is most efficient for users and that causes the least contention on filesystems and data transfer nodes. 
+Using Globus to Move Data Between Endpoints 
+===========================================
 
+The following example is intended to help users move data to and from the Orion filesystem.
+ 
 .. note::
   
  Globus does not preserve file permissions and will overwrite destination files with identically named sources files without warning.
+ 
 
+Below is a summary of the steps for data transfer using Globus:
 
-Here is a recording of an example transfer from Alpine to Orion using Globus and the OLCF DTN (Globus 5): `Using Globus to Move Data to Orion <https://vimeo.com/manage/videos/814973734>`_. 
-
-Below is a summary of the steps for data transfer given in the recording:
-
-1.	Login to `globus.org <https://www.globus.org>`_ using your globus ID and password. If you do not have a globusID, set one up here: 
+1.      Login to `globus.org <https://www.globus.org>`_ using your globus ID and password. If you do not have a globusID, set one up here: 
 `Generate a globusID <https://www.globusid.org/create?viewlocale=en_US>`_. 
-
-
-2.	Once you are logged in, Globus will open the “File Manager” page. Click the left side “Collection” text field in the File Manager and type “OLCF DTN (Globus 5)”. 
-3.	When prompted, authenticate into the OLCF DTN (Globus 5) endpoint using your OLCF username and PIN followed by your RSA passcode. 
-4.	Click in the left side “Path” box in the File Manager and enter the path to your data on Alpine. For example, `/gpfs/alpine/stf007/proj-shared/my_alpine_data.` You should see a list of your files and folders under the left “Path” Box.
-5.	Click on all files or folders that you want to transfer in the list. This will highlight them. 
-6.	Click on the right side “Collection” box in the File Manager and type “OLCF DTN (Globus 5)” 
-7.	Click in the right side “Path” box and enter the path where you want to put your data on Orion, for example, `/lustre/orion/stf007/proj-shared/my_orion_data`
-8.	Click the left "Start" button. 
-9.	Click on “Activity“ in the left blue menu bar to monitor your transfer. Globus will send you an email when the transfer is complete.
-
-
-General Globus Example
-======================
-
-- Visit www.globus.org and login
-
-.. image:: /images/globus_first_page.png
-   :align: center
-
-- Then select the organization that you belong, if you don't work for ORNL, do
-  not select ORNL. If your organization is not in the list, create a Globus
-  account
-
-.. image:: /images/globus_organization.png
-   :align: center
-
-- Search for the endpoint **OLCF DTN (Globus 5)**
-
-.. image:: /images/search_endpoint1.png
-   :align: center
-
-.. image:: /images/search_endpoint2.png
-   :align: center
-
-- Declare path
-
-.. image:: /images/globus_first_endpoint.png
-   :align: center
-
-- Open a second panel to declare the new endpoint called **OLCF HPSS (Globus 5)** and use
-  the appropriate path for HPSS
-
-.. image:: /images/globus_second_endpoint_hpss.png
-   :align: center
-
-.. image:: /images/globus_second_endpoint_hpss2.png
-   :align: center
-
-- Select your file/folder and click start. Then an activity report will appear
-  and you can click on it to see the status. When the transfer is finished or
-  failed, you will receive an email
-
-.. image:: /images/globus_select_start.png
-   :align: center
-
-.. image:: /images/globus_activity.png
-   :align: center
-
-.. image:: /images/globus_activity_information.png
-   :align: center
-
-.. image:: /images/globus_activity_done.png
-   :align: center
+2.      Once you are logged in, Globus will open the “File Manager” page. Click the left side “Collection” text field in the File Manager and type “OLCF DTN (Globus 5)”.
+3.      When prompted, authenticate into the OLCF DTN (Globus 5) endpoint using your OLCF username and PIN followed by your RSA passcode.
+4.      Click in the left side “Path” box in the File Manager and enter the path to your data on Orion. For example, `/lustre/orion/stf007/proj-shared/my_orion_data`. You should see a list of your files and folders under the left “Path” Box.
+5.      Click on all files or folders that you want to transfer in the list. This will highlight them.
+6.      Click on the right side “Collection” box in the File Manager and type the name of a second endpoint at OLCF or at another institution. You can transfer data between different paths on the Orion filesystem with this method too; Just use the OLCF DTN (Globus 5) endpoint again in the right side “Collection” box. 
+7.      Click in the right side “Path” box and enter the path where you want to put your data on the second endpoint's filesystem.  
+8.      Click the left "Start" button.
+9.      Click on “Activity“ in the left blue menu bar to monitor your transfer. Globus will send you an email when the transfer is complete.
 
 
 Using Globus From Your Local Workstation
