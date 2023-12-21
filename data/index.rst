@@ -490,7 +490,7 @@ Three Globus Endpoints have been established for OLCF resources. These are "OLCF
 
 
 .. note::
-   After January 8, the globus v4 endpoints will no longer be supported. Please use the OLCF HPSS (Globus 5) and OLCF DTN (Globus 5) endpoints.
+   After January 8, the Globus v4 endpoints will no longer be supported. Please use the OLCF HPSS (Globus 5) and OLCF DTN (Globus 5) endpoints.
 
 
 **Globus Warnings:** 
