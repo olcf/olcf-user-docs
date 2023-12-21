@@ -38,7 +38,7 @@ Examples
 ========
 
 For a very simple example of using libEsemble 
-see the `Simple Sine Tutorial <https://libensemble.readthedocs.io/en/main/tutorials/local_sine_tutorial.html>`__
+see this `Simple Tutorial <https://libensemble.readthedocs.io/en/main/tutorials/local_sine_tutorial.html>`__
 on libEnsemble's `documentation <https://libensemble.readthedocs.io/en/main/index.html>`__.
 
 For an example that runs a small ensemble with an application that offloads work to a GPU, see
@@ -46,44 +46,48 @@ this `GPU App Tutorial <https://libensemble.readthedocs.io/en/main/tutorials/for
 
 Additional information on compiling/running the above sample GPU app is available `here <https://libensemble.readthedocs.io/en/main/platforms/frontier.html#example>`__.
 
-See `this video <https://www.youtube.com/watch?v=XHXcslDORjU>`__ for an example workflow on :ref:`Spock<spock-quick-start-guide>`.
-The channel will soon publish a Frontier-specific guide.
+See `this video <https://www.youtube.com/watch?v=H2fmbZ6DnVc>`__ for an example dynamic-resources workflow on Frontier.
 
 Example Code
 ============
 
 .. code-block:: python
+  :linenos:
 
-    import numpy as np
-    from tutorial_gen import gen_random_sample
-    from tutorial_sim import sim_find_sine
+  import numpy as np
 
-    from libensemble.libE import libE
-    from libensemble.tools import add_unique_random_streams
+  from libensemble import Ensemble
+  from libensemble.gen_funcs.sampling import uniform_random_sample
+  from libensemble.sim_funcs.six_hump_camel import six_hump_camel
+  from libensemble.specs import ExitCriteria, GenSpecs, SimSpecs
+  from libensemble.tools import add_unique_random_streams
 
-    libE_specs = {"nworkers": 4, "comms": "local"}
+  if __name__ == "__main__":
 
-    gen_specs = {
-        "gen_f": gen_random_sample,  # Our generator function
-        "out": [("x", float, (1,))],  # gen_f output (name, type, size).
-        "user": {
-            "lower": np.array([-3]),  # random sampling lower bound
-            "upper": np.array([3]),  # random sampling upper bound
-            "gen_batch_size": 5,  # number of values gen_f will generate per call
-        },
-    }
+      sampling = Ensemble(parse_args=True)
+      sampling.sim_specs = SimSpecs(
+          sim_f=six_hump_camel,
+          inputs=["x"],
+          outputs=[("f", float)],
+      )
 
-    sim_specs = {
-        "sim_f": sim_find_sine,  # Our simulator function
-        "in": ["x"],  # Input field names. 'x' from gen_f output
-        "out": [("y", float)],  # sim_f output. 'y' = sine('x')
-    }
+      sampling.gen_specs = GenSpecs(
+          gen_f=uniform_random_sample,
+          outputs=[("x", float, (2,))],
+          user={
+              "gen_batch_size": 500,
+              "lb": np.array([-3, -2]),
+              "ub": np.array([3, 2]),
+          },
+      )
 
-    persis_info = add_unique_random_streams({}, 5)  # Initialize manager/workers random streams
+      sampling.persis_info = add_unique_random_streams({}, sampling.nworkers + 1)
+      sampling.exit_criteria = ExitCriteria(sim_max=101)
+      sampling.run()
+      sampling.save_output(__file__)
 
-    exit_criteria = {"sim_max": 80}  # Stop libEnsemble after 80 simulations
-
-    H, persis_info, flag = libE(sim_specs, gen_specs, exit_criteria, persis_info, libE_specs=libE_specs)
+      if sampling.is_manager:
+          print("Some output data:\n", sampling.H[["x", "f"]][:10])
 
 
 Job Submission
@@ -98,5 +102,5 @@ Start an interactive session::
 
 Within the session (``multiprocessing`` comms, all processes on first node)::
 
-  $ python my_libensemble_script.py --comms local --nworkers 8
+  $ python my_libensemble_script.py --comms local --nworkers 9
 
