@@ -32,7 +32,7 @@ Download
 
 **Frontier**
 
-    You can download the remote client (version 22.1.x) from the `Linaro Forge <https://www.linaroforge.com/downloadForge/>`_ page.
+    You can download the remote client (version 23.1) from the `Linaro Forge <https://www.linaroforge.com/downloadForge/>`_ page.
 
 Installation
 ============
@@ -249,7 +249,7 @@ Configuration
 
             * If the host you wish to connect to requires connecting through a gateway machine, you can enter ``user@hostname1`` ``user@hostname2`` (where ``hostname1`` is the gateway and ``hostname2`` is the final destination).
 
-        * In the ``Remote Installation Directory`` box, enter the remote path to the Linaro Forge installation (To find the path for a version of Forge, load the forge/22.1.1 module file in a terminal and run ``echo $DDT_HOME``)
+        * In the ``Remote Installation Directory`` box, enter the remote path to the Linaro Forge installation (To find the path for a version of Forge, load the forge/23.1 module file in a terminal and run ``echo $DDT_HOME``)
 
 
         * For the remaining fields, the default values will work for the vast majority of setups. See the `Linaro Forge documentation <https://www.linaroforge.com/documentation/>`_ for more information on these fields.
@@ -270,11 +270,11 @@ Configuration
 
     **Reverse Connect**
    
-    #. In a separate terminal where you are logged into Frontier, load the ``forge/22.1.1`` module, and run a ``ddt --connect`` command via the batch system (e.g. by editing and running a job script, or running with an interactive shell).
+    #. In a separate terminal where you are logged into Frontier, load the ``forge/23.1`` module, and run a ``ddt --connect`` command via the batch system (e.g. by editing and running a job script, or running with an interactive shell).
 
         .. code-block:: bash
 
-            module load forge/22.1.1
+            module load forge/23.1
             ddt --connect srun -n 8 ./hello_mpi_omp
 
     #. The remote client will notify you of a new connection.
@@ -296,6 +296,9 @@ Configuration
 
     .. note::
         If you're needing to debug an MPI+HIP code that you compile with the Cray compiler wrapper, you may want to unload the darshan-runtime module and then recompile your code. If you don't do this, Forge will error out when you start a debugging session with the ROCm option selected.
+
+    .. note::
+       Setting a breakpoint inside a GPU kernel is only supported for the amd-mixed/5.6.0 at this time. Loading other rocm modules will lead to GPU driver mismatch errors. Documentation on GPU debugging with DDT can be found `here <https://docs.linaroforge.com/23.1/html/forge/ddt/gpu_debugging/index.html>`__ . 
 
 
 
