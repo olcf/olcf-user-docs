@@ -68,7 +68,6 @@ Each project has a Project Home area on NFS, multiple Work areas on Spectrum Sca
 +--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
 
 
-
 | **Area -** The general name of the storage area.
 | **Path -** The path (symlink) to the storage area's directory.
 | **Enclave -** The security enclave where the path is available. There are several security enclaves:
