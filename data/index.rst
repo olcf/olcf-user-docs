@@ -331,12 +331,6 @@ Information
 
 Although there are no hard quota limits for project storage, an upper storage limit should be reported in the project request. The available space of a project can be modified upon request.
 
-=====
-Purge
-=====
-
-To keep the Spectrum Scale file system exceptionally performant, files that have not been accessed (e.g. read) or modified in the project and user areas are purged at the intervals shown in the :ref:`Filesystem Summary Table <data-filesystem-summary>` above. Please make sure that valuable data is moved off of these systems regularly. See :ref:`data-hpss` for information about using the HSI and HTAR utilities to archive data on HPSS. 
-
 ================
 Special Requests
 ================
