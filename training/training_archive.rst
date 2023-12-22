@@ -13,6 +13,7 @@ The table below lists presentations given at previous OLCF training events. For 
    :header: "Date", "Title", "Speaker", "Event", "Presentation"
    :widths: 12 22 22 22 22
 
+    "2023-12-06", "Quantum Computing User Program", "Michael Sandoval (OLCF)", `December 2023 OLCF User Conference Call <https://www.olcf.ornl.gov/calendar/userconcall-dec2023/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/QCUP_summary2023.pdf>`__ | `recording <https://vimeo.com/891948281>`__)
     "2023-10-16", "HIP Training Series: GPU Profiling (Performance Profile: Omniperf)", "Ian Bogle (AMD), Cole Ramos (AMD)", `HIP Training Series <https://www.olcf.ornl.gov/hip-training-series/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/HIP_Training_Series_2023-Omniperf_Slidedeck.pdf>`__ | `recording <https://vimeo.com/881862090?share=copy>`__)
     "2023-10-12", "AI Training Series: AI for Science at Scale - Part 2", "Sajal Dash (OLCF)", `AI for Science at Scale - Part 2 <https://www.olcf.ornl.gov/calendar/ai-training-series-ai-for-science-at-scale-part-2/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/AIforSciencePart2.pdf>`__ | `recording <https://vimeo.com/873844751>`__)
     "2023-10-02", "HIP Training Series: GPU Profiling (Performance Timelines: Rocprof and Omnitrace)", "Suyash Tandon (AMD)", `HIP Training Series <https://www.olcf.ornl.gov/hip-training-series/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/04-GPUProfiling-Performance-timelines.pdf>`__ | `recording <https://vimeo.com/870442108?share=copy>`__)
