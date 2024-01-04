@@ -31,7 +31,7 @@ get faster resolution by supporting a few best practices:
 
 
 Authentication Support
----------------
+----------------------
 If you are needing assistance with logging into OLCF systems, you can contact our **24/7 phone line**. The phone operators will be able to help you unlock your token, reset your pin, or 
 navigate out of next-token mode any hour of the day. 
 
