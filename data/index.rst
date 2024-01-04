@@ -525,42 +525,13 @@ Below is a summary of the steps for data transfer using Globus:
 Using Globus From Your Local Workstation
 ========================================
 
-Globus is most frequently used to facilitate data transfer between two institutional filesystems. However, it can also be used to facilitate data transfer involving an individual workstation or laptop. The following instructions demonstrate creating a local Globus endpoint, and initiating a transfer from it to the OLCF's Alpine GPFS filesystem.
+Globus is most frequently used to facilitate data transfer between two institutional filesystems. However, it can also be used to facilitate data transfer involving an individual workstation or laptop. The following instructions demonstrate creating a local Globus endpoint on your computer. 
 
-- Visit https://www.globus.org/globus-connect-personal and Install Globus Connect Personal, it is available for Windows, Mac, and Linux.
+- Visit https://app.globus.org/collections/gcp, login into globus, and Install Globus Connect Personal, it is available for Windows, Mac, and Linux.
 
-- Make note of the endpoint name given during setup. In this example, the endpoint is *laptop_gmarkom*.
+- Follow the given instructions for setting up an endpoint on your computer, noting the name of the endpoint that you setup. 
 
-- When the installation has finished, click on the Globus icon and select *Web: Transfer Files* as below
-
-.. image:: /images/globus_personal1.png
-   :align: center
-
-- Globus will ask you to login. If your institution does not have an organizational login, you may choose to either *Sign in with Google* or *Sign in with ORCiD iD*.
-
-.. image:: /images/globus_google.png
-   :align: center
-
-- In the main Globus web page, select the two-panel view, then set the source and destination endpoints. (Left/Right order does not matter)
-
-.. image:: /images/globus_laptop_summit.png
-   :align: center
-
-- Next, navigate to the appropriate source and destination paths to select the files you want to transfer. Click the "Start" button to begin the transfer.
-
-.. image:: /images/globus_laptop_transfer.png
-   :align: center
-
-- An activity report will appear, and you can click on it to see the status of the transfer.
-
-.. image:: /images/globus_laptop_activity.png
-   :align: center
-
-
--  Various information about the transfer is shown in the activity report. You will receive an email once the transfer is finished, including if it fails for any reason.
-
-.. image:: /images/globus_laptop_activity_done.png
-   :align: center
+- Once the endpoint is setup and globus is installed on your computer, you can search for and access the endpoint from the globus web interface just like any other endpoint, however your computer must be connected to the internet and globus must be actively running on it for the transfer to happen.
 
 
 ==========
