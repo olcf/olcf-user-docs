@@ -204,7 +204,7 @@ Users are granted HPSS access if they are members of projects with Project Archi
 User Archive Accounting
 -----------------------
 
-Each file and directory on HPSS is associated with an HPSS storage allocation. Storage allocations are normally associated with one of the user's projects; however, legacy usage (from files stored to User Archive areas prior to January 14, 2020) may instead be associated with the user or a 'legacy' project. To check storage allocation usage, use the comand ``showusage -s hpss`` from an OLCF resource such as Summit or Andes. 
+Each file and directory on HPSS is associated with an HPSS storage allocation. Storage allocations are normally associated with one of the user's projects; however, legacy usage (from files stored to User Archive areas prior to January 14, 2020) may instead be associated with the user or a 'legacy' project. To check storage allocation usage, use the comand ``showusage -s hpss`` from an OLCF resource such as Frontier or Andes. 
 
 For information on usage and best practices for HPSS, please see the :ref:`data-hpss` section.
 
@@ -688,7 +688,7 @@ For more information about ``htar``, execute ``man htar``.
 Command-Line/Terminal Tools
 ========================================
 
-Command-line tools such as ``scp`` and ``rsync`` can be used to transfer data from outside OLCF.  In general, when transferring data into or out of OLCF from the command line, it's best to initiate the transfer from outside OLCF. If moving many small files, it can be beneficial to compress them into a single archive file, then transfer just the one archive file. When using command-line tools, you should use the :ref:`Data Transfer Nodes <dtn-user-guide>` rather than systems like Summit or Andes.
+Command-line tools such as ``scp`` and ``rsync`` can be used to transfer data from outside OLCF.  In general, when transferring data into or out of OLCF from the command line, it's best to initiate the transfer from outside OLCF. If moving many small files, it can be beneficial to compress them into a single archive file, then transfer just the one archive file. When using command-line tools, you should use the :ref:`Data Transfer Nodes <dtn-user-guide>` rather than systems like Frontier or Andes.
 
 * ``scp`` - secure copy (remote file copy program)
 
