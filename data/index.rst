@@ -44,12 +44,6 @@ Each project has a Project Home area on NFS, multiple Work areas on Spectrum Sca
 +--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
 | Orion World Work               | ``/lustre/orion/[projid]/world-shared``     | M1,M2   | Lustre HPE ClusterStor | 775         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
 +--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
-| Alpine Member Work             | ``/gpfs/alpine/[projid]/scratch/[userid]``  | M1, M2  | Spectrum Scale.        | 700 [#f3]_  |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
-+--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
-| Alpine Project Work            | ``/gpfs/alpine/[projid]/proj-shared``       | M1, M2  | Spectrum Scale         | 770         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
-+--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
-| Alpine World Work              | ``/gpfs/alpine/[projid]/world-shared``      | M1      | Spectrum Scale         | 775         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
-+--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
 | Member Archive                 | ``/hpss/prod/[projid]/users/$USER``         | M1      | HPSS                   | 700         | 100 TB | No      | No      | 90 days    | No                                      |
 +--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
 | Project Archive                | ``/hpss/prod/[projid]/proj-shared``         | M1      | HPSS                   | 770         | 100 TB | No      | No      | 90 days    | No                                      |
@@ -72,7 +66,6 @@ Each project has a Project Home area on NFS, multiple Work areas on Spectrum Sca
 +--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
 | Open World Work                | ``/gpfs/wolf/[projid]/world-shared``        | O       | Spectrum Scale         | 775         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
 +--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
-
 
 
 | **Area -** The general name of the storage area.
@@ -112,13 +105,13 @@ Each project has a Project Home area on NFS, multiple Work areas on Spectrum Sca
 .. [#f4] Retention is not applicable as files will follow purge cycle.
 
 
-On Summit, Andes, and the DTNs, additional paths to the various project-centric work areas are available via the following symbolic links and/or environment variables:
+.. On Summit, Andes, and the DTNs, additional paths to the various project-centric work areas are available via the following symbolic links and/or environment variables:
 
-- Member Work Directory:  ``/gpfs/alpine/scratch/[userid]/[projid]`` or ``$MEMBERWORK/[projid]``
-- Project Work Directory: ``/gpfs/alpine/proj-shared/[projid]`` or ``$PROJWORK/[projid]``
-- World Work Directory: ``/gpfs/alpine/world-shared/[projid]`` or ``$WORLDWORK/[projid]``
+.. - Member Work Directory:  ``/gpfs/alpine/scratch/[userid]/[projid]`` or ``$MEMBERWORK/[projid]``
+.. - Project Work Directory: ``/gpfs/alpine/proj-shared/[projid]`` or ``$PROJWORK/[projid]``
+.. - World Work Directory: ``/gpfs/alpine/world-shared/[projid]`` or ``$WORLDWORK/[projid]``
 
-On Frontier these paths point to Orion:
+On Frontier additional paths to the various project-centric work areas are available via the following symbolic links and/or environment variables:
 
 - Member Work Orion Directory:  ``/lustre/orion/scratch/[userid]/[projid]`` or ``$MEMBERWORK/[projid]``
 - Project Work Orion  Directory: ``/lustre/orion/proj-shared/[projid]`` or ``$PROJWORK/[projid]``
@@ -211,7 +204,7 @@ Users are granted HPSS access if they are members of projects with Project Archi
 User Archive Accounting
 -----------------------
 
-Each file and directory on HPSS is associated with an HPSS storage allocation. Storage allocations are normally associated with one of the user's projects; however, legacy usage (from files stored to User Archive areas prior to January 14, 2020) may instead be associated with the user or a 'legacy' project. To check storage allocation usage, use the comand ``showusage -s hpss`` from an OLCF resource such as Summit or Andes. 
+Each file and directory on HPSS is associated with an HPSS storage allocation. Storage allocations are normally associated with one of the user's projects; however, legacy usage (from files stored to User Archive areas prior to January 14, 2020) may instead be associated with the user or a 'legacy' project. To check storage allocation usage, use the comand ``showusage -s hpss`` from an OLCF resource such as Frontier or Andes. 
 
 For information on usage and best practices for HPSS, please see the :ref:`data-hpss` section.
 
@@ -331,12 +324,6 @@ Information
 
 Although there are no hard quota limits for project storage, an upper storage limit should be reported in the project request. The available space of a project can be modified upon request.
 
-=====
-Purge
-=====
-
-To keep the Spectrum Scale file system exceptionally performant, files that have not been accessed (e.g. read) or modified in the project and user areas are purged at the intervals shown in the :ref:`Filesystem Summary Table <data-filesystem-summary>` above. Please make sure that valuable data is moved off of these systems regularly. See :ref:`data-hpss` for information about using the HSI and HTAR utilities to archive data on HPSS. 
-
 ================
 Special Requests
 ================
@@ -358,7 +345,7 @@ Orion Lustre HPE ClusterStor Filesystem
 
 Frontier mounts Orion, a parallel filesystem based on Lustre and HPE ClusterStor, with a 679 PB usable namespace (/lustre/orion/). In addition to Frontier, Orion is available on the OLCF's data transfer nodes. It is not available from Summit. Files older than 90 days are purged from Orion.
 
-Orion is a cluster of servers with approximately 500 nodes. Each node plays a role in providing a POSIX namespace for users (/lustre/orion/). A file on Lustre consists of one or more components that may hit one or more servers. Lustre has a distributed lock management process for concurrent access to files or regions within files. 
+Orion is a cluster of servers with approximately 500 nodes. Each node plays a role in providing a POSIX namespace for users (/lustre/orion/).  .. A file on Lustre consists of one or more components that may hit one or more servers. Lustre has a distributed lock management process for concurrent access to files or regions within files. 
 
 Orion has three performance tiers:
 
@@ -423,33 +410,33 @@ To keep the Lustre file system exceptionally performant, files that have not bee
 
 .. _data-alpine-ibm-spectrum-scale-filesystem:
 
-************************************
-Alpine IBM Spectrum Scale Filesystem
-************************************
+.. ************************************
+.. Alpine IBM Spectrum Scale Filesystem
+.. ************************************
 
-Summit mounts a POSIX-based IBM Spectrum Scale parallel filesystem called Alpine. Alpine's maximum capacity is 250 PB. It is consisted of 77 IBM Elastic Storage Server (ESS) GL4 nodes running IBM Spectrum Scale 5.x which are called Network Shared Disk (NSD) servers. Each IBM ESS GL4 node, is a scalable storage unit (SSU), constituted by two dual-socket IBM POWER9 storage servers, and a 4X EDR InfiniBand network for up to 100Gbit/sec of networking bandwidth.  The maximum performance of the final production system will be about 2.5 TB/s for sequential I/O and 2.2 TB/s for random I/O under FPP mode, which means each process, writes its own file. Metada operations are improved with around to minimum 50,000 file access per sec and aggregated up to 2.6 million accesses of 32KB small files.  
+.. Summit mounts a POSIX-based IBM Spectrum Scale parallel filesystem called Alpine. Alpine's maximum capacity is 250 PB. It is consisted of 77  IBM Elastic Storage Server (ESS) GL4 nodes running IBM Spectrum Scale 5.x which are called Network Shared Disk (NSD) servers. Each IBM ESS GL4 node, is a scalable storage unit (SSU), constituted by two dual-socket IBM POWER9 storage servers, and a 4X EDR InfiniBand network for up to 100Gbit/sec of networking bandwidth.  The maximum performance of the final production system will be about 2.5 TB/s for sequential I/O and 2.2 TB/s for random I/O under FPP mode, which means each process, writes its own file. Metada operations are improved with around to minimum 50,000 file access per sec and aggregated up to 2.6 million accesses of 32KB small files.  
 
 
-.. figure:: /images/summit_nds_final.png
-   :align: center
+.. .. figure:: /images/summit_nds_final.png
+..    :align: center
 
-   Figure 1. An example of the NDS servers on Summit
+..    Figure 1. An example of the NDS servers on Summit
 
-============================================
-Alpine Performance under non-ideal workloads
-============================================
+.. ============================================
+.. Alpine Performance under non-ideal workloads
+.. ============================================
 
-The I/O performance can be lower than the optimal one when you save one single shared file with non-optimal I/O pattern. Moreover, the previous performance results are achieved under an ideal system, the system is dedicated, and a specific number of compute nodes are used. The file system is shared across many users; the I/O performance can vary because other users that perform heavy I/O as also executing large scale jobs and stress the interconnection network.  Finally, if the I/O pattern is not aligned, then the I/O performance can be significantly lower than the ideal one.  Similar, related to the number of the concurrent users, is applied for the metadata operations, they can be lower than the expected performance.
+.. The I/O performance can be lower than the optimal one when you save one single shared file with non-optimal I/O pattern. Moreover, the previous performance results are achieved under an ideal system, the system is dedicated, and a specific number of compute nodes are used. The file system is shared across many users; the I/O performance can vary because other users that perform heavy I/O as also executing large scale jobs and stress the interconnection network.  Finally, if the I/O pattern is not aligned, then the I/O performance can be significantly lower than the ideal one.  Similar, related to the number of the concurrent users, is applied for the metadata operations, they can be lower than the expected performance.
 
-====
-Tips
-====
+.. ====
+.. Tips
+.. ====
 
-- For best performance on the IBM Spectrum Scale filesystem, use large page aligned I/O and asynchronous reads and writes. The filesystem blocksize is 16MB, the minimum fragment size is 16K so when a file under 16K is stored, it will still use 16K of the disk. Writing files of 16 MB or larger, will achieve better performance. All files are striped across LUNs which are distributed across all IO servers.
+.. - For best performance on the IBM Spectrum Scale filesystem, use large page aligned I/O and asynchronous reads and writes. The filesystem blocksize is 16MB, the minimum fragment size is 16K so when a file under 16K is stored, it will still use 16K of the disk. Writing files of 16 MB or larger, will achieve better performance. All files are striped across LUNs which are distributed across all IO servers.
 
-- If your application occupies up to two compute nodes and it requires a significant number of I/O operations, you could try to add the following flag in your job script  file and investigate if the total execution time is decreased. This flag could cause worse results, it depends on the application.
-
-                   ``#BSUB -alloc_flags maximizegpfs``
+.. - If your application occupies up to two compute nodes and it requires a significant number of I/O operations, you could try to add the following flag in your job script  file and investigate if the total execution time is decreased. This flag could cause worse results, it depends on the application.
+.. 
+..                    ``#BSUB -alloc_flags maximizegpfs``
 
 ======================================================================
 Major difference between Lustre HPE ClusterStor and IBM Spectrum Scale
@@ -457,10 +444,8 @@ Major difference between Lustre HPE ClusterStor and IBM Spectrum Scale
 
 The file systems have many technical differences, but we will mention only what a user needs to be familiar with:
 
-- On Summit, there is no concept of striping from the user point of view. The GPFS will handle the workload, the file system was tuned during the installation. 
+- On Summit, there was no concept of striping from the user point of view. The GPFS handled the workload, the file system was tuned during the installation. 
 - On Frontier, Orion does have striping, but because of the complexity of file striping between Orion's performance tiers, users should refrain from attempting to manually control file striping. If you feel that the default file striping on Orion is not meeting your needs, please contact OLCF-help so we can work with you to understand your application's I/O performance.
-
-
 
 
 .. _data-hpss:
@@ -469,7 +454,7 @@ The file systems have many technical differences, but we will mention only what 
 HPSS Data Archival System
 **************************
 
-There are two methods of moving data to/from HPSS. The more traditional method is via the command-line utilities ``hsi`` and ``htar``. These commands are available from most OLCF systems. Recently, we added the capability of using Globus to move data to/from HPSS. HPSS is available via the "OLCF HPSS" Globus endpoint. By connecting to that endpoint and the "OLCF DTN" endpoint, you can transfer files between HPSS and other OLCF filesystems. By connecting to "OLCF HPSS" and some other endpoint, you can transfer files to/from an offsite location to HPSS. More details on various transfer methods are available in the :ref:`data-transferring-data` section.
+There are two methods of moving data to/from HPSS. The more traditional method is via the command-line utilities ``hsi`` and ``htar``. These commands are available from most OLCF systems. Recently, we added the capability of using Globus to move data to/from HPSS. HPSS is available via the "OLCF HPSS (Globus 5)" Globus endpoint. By connecting to that endpoint and the "OLCF DTN (Globus 5)" endpoint, you can transfer files between HPSS and other OLCF filesystems. By connecting to "OLCF HPSS (Globus 5)" and some other endpoint, you can transfer files to/from an offsite location to HPSS. More details on various transfer methods are available in the :ref:`data-transferring-data` section.
 
 HPSS is optimized for large files. Ideally, we recommend sending files 768GB or larger to HPSS. HPSS will handle small files, but write and read performance will be negatively affected with files smaller than 512 MB. We recommend combining small files prior to tranfer. Alternatively you can use ``htar`` to combine them and create the ``.tar`` file directly on HPSS.
 
@@ -486,139 +471,67 @@ Transferring Data
 Globus
 ============
 
-Three Globus Endpoints have been established for OLCF resources. These are "OLCF DTN", "OLCF HPSS", and "NCCS Open DTN". The "OLCF DTN" endpoint provides access to User/Project Home areas as well as the Alpine filesystem, the "OLCF HPSS" endpoint provides access to HPSS, and the "NCCS Open DTN" endpoint provides access to the Open User/Project Home areas and the Wolf filesystem. By selecting one of these endpoints and some offsite endpoint, you can use Globus to transfer data to/from that storage area at OLCF. By selecting the "OLCF DTN" and "OLCF HPSS" endpoints, you can transfer data between HPSS and one of our other filesystems. 
+Three Globus Endpoints have been established for OLCF resources. These are "OLCF DTN (Globus 5)", "OLCF HPSS (Globus 5)", and "NCCS Open DTN (Globus 5)". The "OLCF DTN (Globus 5)" endpoint provides access to User/Project Home areas as well as the Orion filesystem, the "OLCF HPSS (Globus 5)" endpoint provides access to HPSS, and the "NCCS Open DTN (Globus 5)" endpoint provides access to the Open User/Project Home areas and the Wolf filesystem. By selecting one of these endpoints and some offsite endpoint, you can use Globus to transfer data to/from that storage area at OLCF. By selecting the "OLCF DTN (Globus 5)" and "OLCF HPSS (Globus 5)" endpoints, you can transfer data between HPSS and one of our other filesystems. 
+
+
+.. note::
+   After January 8, the Globus v4 endpoints will no longer be supported. Please use the OLCF HPSS (Globus 5) and OLCF DTN (Globus 5) endpoints.
+
 
 **Globus Warnings:** 
 
 * Globus transfers do not preserve file permissions. Arriving files will have (rw-r--r--) permissions, meaning arriving files will have *user* read and write permissions and *group* and *world* read permissions. Note that the arriving files will not have any execute permissions, so you will need to use chmod to reset execute permissions before running a Globus-transferred executable.
 
+
 * Globus will overwrite files at the destination with identically named source files. This is done without warning.
 
 * Globus has restriction of 8 active transfers across all the users. Each user has a limit of 3 active transfers, so it is required to transfer a lot of data on each transfer than less data across many transfers. 
 
-* If a folder is constituted with mixed files including thousands of small files (less than 1MB each one), it would be better to tar the small files.  Otherwise, if the files are larger, Globus will handle them. 
+* If a folder is constituted with mixed files including thousands of small files (less than 1MB each one), it would be better to tar the smallfiles.  Otherwise, if the files are larger, Globus will handle them. 
 
-Using Globus to Move Data to Orion 
-==================================
 
-The following example is intended to help users who are making the transition from Summit to Frontier to move their data between Alpine GPFS and Orion Lustre. We strongly recommend using Globus for this transfer as it is the method that is most efficient for users and that causes the least contention on filesystems and data transfer nodes. 
+Using Globus to Move Data Between Endpoints 
+===========================================
 
+The following example is intended to help users move data to and from the Orion filesystem.
+ 
 .. note::
   
  Globus does not preserve file permissions and will overwrite destination files with identically named sources files without warning.
+ 
 
-
-Here is a recording of an example transfer from Alpine to Orion using Globus and the OLCF DTN: `Using Globus to Move Data to Orion <https://vimeo.com/manage/videos/814973734>`_. 
-
-Below is a summary of the steps for data transfer given in the recording:
+Below is a summary of the steps for data transfer using Globus:
 
 1.	Login to `globus.org <https://www.globus.org>`_ using your globus ID and password. If you do not have a globusID, set one up here: 
 `Generate a globusID <https://www.globusid.org/create?viewlocale=en_US>`_. 
 
+2.	Once you are logged in, Globus will open the “File Manager” page. Click the left side “Collection” text field in the File Manager and type “OLCF DTN (Globus 5)”.
 
-2.	Once you are logged in, Globus will open the “File Manager” page. Click the left side “Collection” text field in the File Manager and type “OLCF DTN”. 
-3.	When prompted, authenticate into the OLCF DTN endpoint using your OLCF username and PIN followed by your RSA passcode. 
-4.	Click in the left side “Path” box in the File Manager and enter the path to your data on Alpine. For example, `/gpfs/alpine/stf007/proj-shared/my_alpine_data.` You should see a list of your files and folders under the left “Path” Box.
-5.	Click on all files or folders that you want to transfer in the list. This will highlight them. 
-6.	Click on the right side “Collection” box in the File Manager and type “OLCF DTN” 
-7.	Click in the right side “Path” box and enter the path where you want to put your data on Orion, for example, `/lustre/orion/stf007/proj-shared/my_orion_data`
-8.	Click the left "Start" button. 
+3.	When prompted, authenticate into the OLCF DTN (Globus 5) endpoint using your OLCF username and PIN followed by your RSA passcode.
+
+4.	Click in the left side “Path” box in the File Manager and enter the path to your data on Orion. For example, `/lustre/orion/stf007/proj-shared/my_orion_data`. You should see a list of your files and folders under the left “Path” Box.
+
+5.	Click on all files or folders that you want to transfer in the list. This will highlight them.
+
+6.	Click on the right side “Collection” box in the File Manager and type the name of a second endpoint at OLCF or at another institution. You can transfer data between different paths on the Orion filesystem with this method too; Just use the OLCF DTN (Globus 5) endpoint again in the right side “Collection” box. 
+
+7.	Click in the right side “Path” box and enter the path where you want to put your data on the second endpoint's filesystem. 
+
+8.	Click the left "Start" button.
+
 9.	Click on “Activity“ in the left blue menu bar to monitor your transfer. Globus will send you an email when the transfer is complete.
-
-
-General Globus Example
-======================
-
-- Visit www.globus.org and login
-
-.. image:: /images/globus_first_page.png
-   :align: center
-
-- Then select the organization that you belong, if you don't work for ORNL, do
-  not select ORNL. If your organization is not in the list, create a Globus
-  account
-
-.. image:: /images/globus_organization.png
-   :align: center
-
-- Search for the endpoint **OLCF DTN**
-
-.. image:: /images/search_endpoint1.png
-   :align: center
-
-.. image:: /images/search_endpoint2.png
-   :align: center
-
-- Declare path
-
-.. image:: /images/globus_first_endpoint.png
-   :align: center
-
-- Open a second panel to declare the new endpoint called **OLCF HPSS** and use
-  the appropriate path for HPSS
-
-.. image:: /images/globus_second_endpoint_hpss.png
-   :align: center
-
-.. image:: /images/globus_second_endpoint_hpss2.png
-   :align: center
-
-- Select your file/folder and click start. Then an activity report will appear
-  and you can click on it to see the status. When the transfer is finished or
-  failed, you will receive an email
-
-.. image:: /images/globus_select_start.png
-   :align: center
-
-.. image:: /images/globus_activity.png
-   :align: center
-
-.. image:: /images/globus_activity_information.png
-   :align: center
-
-.. image:: /images/globus_activity_done.png
-   :align: center
 
 
 Using Globus From Your Local Workstation
 ========================================
 
-Globus is most frequently used to facilitate data transfer between two institutional filesystems. However, it can also be used to facilitate data transfer involving an individual workstation or laptop. The following instructions demonstrate creating a local Globus endpoint, and initiating a transfer from it to the OLCF's Alpine GPFS filesystem.
+Globus is most frequently used to facilitate data transfer between two institutional filesystems. However, it can also be used to facilitate data transfer involving an individual workstation or laptop. The following instructions demonstrate creating a local Globus endpoint on your computer. 
 
-- Visit https://www.globus.org/globus-connect-personal and Install Globus Connect Personal, it is available for Windows, Mac, and Linux.
+- Visit https://app.globus.org/collections/gcp, login into globus, and Install Globus Connect Personal, it is available for Windows, Mac, and Linux.
 
-- Make note of the endpoint name given during setup. In this example, the endpoint is *laptop_gmarkom*.
+- Follow the given instructions for setting up an endpoint on your computer, noting the name of the endpoint that you setup. 
 
-- When the installation has finished, click on the Globus icon and select *Web: Transfer Files* as below
-
-.. image:: /images/globus_personal1.png
-   :align: center
-
-- Globus will ask you to login. If your institution does not have an organizational login, you may choose to either *Sign in with Google* or *Sign in with ORCiD iD*.
-
-.. image:: /images/globus_google.png
-   :align: center
-
-- In the main Globus web page, select the two-panel view, then set the source and destination endpoints. (Left/Right order does not matter)
-
-.. image:: /images/globus_laptop_summit.png
-   :align: center
-
-- Next, navigate to the appropriate source and destination paths to select the files you want to transfer. Click the "Start" button to begin the transfer.
-
-.. image:: /images/globus_laptop_transfer.png
-   :align: center
-
-- An activity report will appear, and you can click on it to see the status of the transfer.
-
-.. image:: /images/globus_laptop_activity.png
-   :align: center
-
-
--  Various information about the transfer is shown in the activity report. You will receive an email once the transfer is finished, including if it fails for any reason.
-
-.. image:: /images/globus_laptop_activity_done.png
-   :align: center
+- Once the endpoint is setup and globus is installed on your computer, you can search for and access the endpoint from the globus web interface just like any other endpoint, however your computer must be connected to the internet and globus must be actively running on it for the transfer to happen.
 
 
 ==========
@@ -746,7 +659,7 @@ For more information about ``htar``, execute ``man htar``.
 Command-Line/Terminal Tools
 ========================================
 
-Command-line tools such as ``scp`` and ``rsync`` can be used to transfer data from outside OLCF.  In general, when transferring data into or out of OLCF from the command line, it's best to initiate the transfer from outside OLCF. If moving many small files, it can be beneficial to compress them into a single archive file, then transfer just the one archive file. When using command-line tools, you should use the :ref:`Data Transfer Nodes <dtn-user-guide>` rather than systems like Summit or Andes.
+Command-line tools such as ``scp`` and ``rsync`` can be used to transfer data from outside OLCF.  In general, when transferring data into or out of OLCF from the command line, it's best to initiate the transfer from outside OLCF. If moving many small files, it can be beneficial to compress them into a single archive file, then transfer just the one archive file. When using command-line tools, you should use the :ref:`Data Transfer Nodes <dtn-user-guide>` rather than systems like Frontier or Andes.
 
 * ``scp`` - secure copy (remote file copy program)
 

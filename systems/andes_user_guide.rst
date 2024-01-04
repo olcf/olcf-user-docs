@@ -82,7 +82,7 @@ For more information on connecting to OLCF resources, see :ref:`connecting-to-ol
 File systems
 ------------
 
-The OLCF's center-wide :ref:`data-alpine-ibm-spectrum-scale-filesystem` name Alpine
+The OLCF's center-wide :ref:`data-orion-lustre-hpe-clusterstor-filesystem` name Orion
 is available on Andes for computational work.  An NFS-based file system provides
 :ref:`data-user-home-directories-nfs` and :ref:`data-project-home-directories-nfs`.
 Additionally, the OLCF's :ref:`data-hpss` provides archival spaces.
