@@ -10,10 +10,11 @@ to get the necessary configuration injected into the container at runtime.
   :header: "Cluster", "Annotation", "Value", "Mounts"
   :widths: 5, 8, 5, 25
 
-  "Marble", "ccs.ornl.gov/fs", "olcf", "/ccs/sw, /ccs/home, /ccs/sys, /ccs/proj, /gpfs/alpine"
   "Marble", "ccs.ornl.gov/fs", "orion", "/ccs/sw, /ccs/home, /ccs/sys, /ccs/proj, /lustre/orion"
   "Onyx", "ccs.ornl.gov/fs", "ccsopen", "/ccsopen/sw, /ccsopen/home, /ccsopen/proj, /gpfs/wolf"
   "Onyx", "ccs.ornl.gov/fs", "themis", "/ccsopen/sw, /ccsopen/home, /ccsopen/proj, /nl/themis"
+
+For each of the following examples, replace "ccs.ornl.gov/fs=olcf" or "ccs.ornl.gov/fs: olcf" with an annotation from the above list.
 
 If you already have a Deployment running you can add the annotation with the client
 
@@ -80,3 +81,10 @@ Full example of a deployment mounting the OLCF shared filesystems:
 .. note::
   There are no requirements in the container image in order to mount OLCF filesystems
 
+The following annotations have been retired and should no longer be used in workloads in OpenShift.
+
+.. csv-table::
+  :header: "Cluster", "Annotation", "Value", "Mounts"
+  :widths: 5, 8, 5, 25
+
+  "Marble", "ccs.ornl.gov/fs", "olcf", "/ccs/sw, /ccs/home, /ccs/sys, /ccs/proj, /gpfs/alpine"
