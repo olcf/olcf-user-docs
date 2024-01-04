@@ -471,7 +471,7 @@ Transferring Data
 Globus
 ============
 
-Three Globus Endpoints have been established for OLCF resources. These are "OLCF DTN (Globus 5)", "OLCF HPSS (Globus 5)", and "NCCS Open DTN (Globus 5". The "OLCF DTN (Globus 5)" endpoint provides access to User/Project Home areas as well as the Orion filesystem, the "OLCF HPSS (Globus 5)" endpoint provides access to HPSS, and the "NCCS Open DTN (Globus 5)" endpoint provides access to the Open User/Project Home areas and the Wolf filesystem. By selecting one of these endpoints and some offsite endpoint, you can use Globus to transfer data to/from that storage area at OLCF. By selecting the "OLCF DTN (Globus 5)" and "OLCF HPSS (Globus 5)" endpoints, you can transfer data between HPSS and one of our other filesystems. 
+Three Globus Endpoints have been established for OLCF resources. These are "OLCF DTN (Globus 5)", "OLCF HPSS (Globus 5)", and "NCCS Open DTN (Globus 5)". The "OLCF DTN (Globus 5)" endpoint provides access to User/Project Home areas as well as the Orion filesystem, the "OLCF HPSS (Globus 5)" endpoint provides access to HPSS, and the "NCCS Open DTN (Globus 5)" endpoint provides access to the Open User/Project Home areas and the Wolf filesystem. By selecting one of these endpoints and some offsite endpoint, you can use Globus to transfer data to/from that storage area at OLCF. By selecting the "OLCF DTN (Globus 5)" and "OLCF HPSS (Globus 5)" endpoints, you can transfer data between HPSS and one of our other filesystems. 
 
 
 .. note::
