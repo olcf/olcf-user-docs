@@ -33,9 +33,7 @@ via Infinity Fabric (xGMI), allowing for a peak device-to-device bandwidth of
 sequential read and write speeds of 6900 MB/s and 4200 MB/s, respectively.
 
 .. note::
-    The X+X GB/s values for bandwidths above represent bi-directional bandwidths.
-    So, for example, the Infinity Fabric connecting any two GPUs allows peak data
-    transfers of 46 GB/s *in both directions simultaneously*.
+    The X+X GB/s values for bandwidths above represent bi-directional bandwidths. So, for example, the Infinity Fabric connecting any two GPUs allows peak data transfers of 46 GB/s *in both directions simultaneously*.
 
 .. image:: /images/Defiant_Node.jpg
    :align: center
