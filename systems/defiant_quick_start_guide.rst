@@ -582,53 +582,30 @@ Slurm Compute Node Partitions
 -----------------------------
 
 Defiant's compute nodes are separated into 2 Slurm partitions (queues): 1 for
-CAAR projects and 1 for ECP projects. Please see the tables below for details.
+CPU jobs and 1 for GPU. Please see the tables below for details.
 
 .. note::
-    If CAAR or ECP teams require a temporary exception to this policy, please
-    email help@olcf.ornl.gov with your request and it will be given to the OLCF
-    Resource Utilization Council (RUC) for review.
-
-CAAR Partition
-^^^^^^^^^^^^^^
-
-The CAAR partition consists of 24 total compute nodes. On a per-project basis,
-each user can have 1 running and 1 eligible job at a time, with no limit on the
-number of jobs submitted.
-
-+-----------------+--------------+
-| Number of Nodes | Max Walltime |
-+=================+==============+
-| 1 - 4           | 3 hours      |
-+-----------------+--------------+
-| 5 - 16          | 1 hour       |
-+-----------------+--------------+
-
-
-ECP Partition
-^^^^^^^^^^^^^
-
-The ECP partition consists of 12 total compute nodes. On a per-project basis,
-each user can have 1 running and 1 eligible job at a time, with up to 5 jobs
-submitted.
-
-+-----------------+--------------+
-| Number of Nodes | Max Walltime |
-+=================+==============+
-| 1 - 4           | 3 hours      |
-+-----------------+--------------+
+   Hold for partition info.
 
 Process and Thread Mapping
 --------------------------
 
-This section describes how to map processes (e.g., MPI ranks) and process threads (e.g., OpenMP threads) to the CPUs and GPUs on Defiant. The :ref:`defiant-compute-nodes` diagram will be helpful when reading this section to understand which hardware threads your processes and threads run on. 
+This section describes how to map processes (e.g., MPI ranks) and process 
+threads (e.g., OpenMP threads) to the CPUs and GPUs on Defiant. The 
+:ref:`defiant-compute-nodes` diagram will be helpful when reading this section
+to understand which hardware threads your processes and threads run on. 
 
 CPU Mapping
 ^^^^^^^^^^^
 
-In this sub-section, a simple MPI+OpenMP "Hello, World" program (`hello_mpi_omp <https://code.ornl.gov/olcf/hello_mpi_omp>`__) will be used to clarify the mappings. Slurm's :ref:`interactive` method was used to request an allocation of 1 compute node for these examples: ``salloc -A <project_id> -t 30 -p <parition> -N 1``
+In this sub-section, a simple MPI+OpenMP "Hello, World" program 
+(`hello_mpi_omp <https://code.ornl.gov/olcf/hello_mpi_omp>`__) will be used to
+clarify the mappings. Slurm's :ref:`interactive` method was used to request an
+allocation of 1 compute node for these examples: 
+``salloc -A <project_id> -t 30 -p <parition> -N 1``
 
-The ``srun`` options used in this section are (see ``man srun`` for more information):
+The ``srun`` options used in this section are (see ``man srun`` for more 
+information):
 
 +----------------------------------+-------------------------------------------------------------------------------------------------------+
 | ``-c, --cpus-per-task=<ncpus>``  | | Request that ``ncpus`` be allocated per process (default is 1).                                     |
@@ -644,16 +621,21 @@ The ``srun`` options used in this section are (see ``man srun`` for more informa
 
 .. note::
 
-    In the ``srun`` man page (and so the table above), threads refers to hardware threads.
+    In the ``srun`` man page (and so the table above), threads refers 
+    to hardware threads.
 
 2 MPI ranks - each with 2 OpenMP threads
 """"""""""""""""""""""""""""""""""""""""
 
-In this example, the intent is to launch 2 MPI ranks, each of which spawn 2 OpenMP threads, and have all of the 4 OpenMP threads run on different physical CPU cores.
+In this example, the intent is to launch 2 MPI ranks, each of which spawn 
+2 OpenMP threads, and have all of the 4 OpenMP threads run on different 
+physical CPU cores.
 
 **First (INCORRECT) attempt**
 
-To set the number of OpenMP threads spawned per MPI rank, the ``OMP_NUM_THREADS`` environment variable can be used. To set the number of MPI ranks launched, the ``srun`` flag ``-n`` can be used.
+To set the number of OpenMP threads spawned per MPI rank, the 
+``OMP_NUM_THREADS`` environment variable can be used. To set the number 
+of MPI ranks launched, the ``srun`` flag ``-n`` can be used.
 
 .. code-block:: bash
 
@@ -674,11 +656,24 @@ To set the number of OpenMP threads spawned per MPI rank, the ``OMP_NUM_THREADS`
     MPI 001 - OMP 000 - HWT 016 - Node defiant01
     MPI 001 - OMP 001 - HWT 016 - Node defiant01
 
-The first thing to notice here is the ``WARNING`` about oversubscribing the available CPU cores. Also, the output shows each MPI rank did spawn 2 OpenMP threads, but both OpenMP threads ran on the same hardware thread (for a given MPI rank). This was not the intended behavior; each OpenMP thread was meant to run on its own physical CPU core.
+The first thing to notice here is the ``WARNING`` about oversubscribing the 
+available CPU cores. Also, the output shows each MPI rank did spawn 2 OpenMP
+threads, but both OpenMP threads ran on the same hardware thread (for a given
+MPI rank). This was not the intended behavior; each OpenMP thread was meant
+to run on its own physical CPU core.
 
 **Second (CORRECT) attempt**
 
-By default, each MPI rank is allocated only 1 hardware thread, so both OpenMP threads only have that 1 hardware thread to run on - hence the WARNING and undesired behavior. In order for each OpenMP thread to run on its own physical CPU core, each MPI rank should be given 2 hardware thread (``-c 2``) - since, by default, only 1 hardware thread per physical CPU core is enabled (this would need to be ``-c 4`` if ``--threads-per-core=2`` instead of the default of ``1``. The OpenMP threads will be mapped to unique physical CPU cores unless there are not enough physical CPU cores available, in which case the remaining OpenMP threads will share hardware threads and a WARNING will be issued as shown in the previous example.
+By default, each MPI rank is allocated only 1 hardware thread, so both OpenMP
+threads only have that 1 hardware thread to run on - hence the WARNING and 
+undesired behavior. In order for each OpenMP thread to run on its own physical
+CPU core, each MPI rank should be given 2 hardware thread (``-c 2``) - since,
+by default, only 1 hardware thread per physical CPU core is enabled (this would
+need to be ``-c 4`` if ``--threads-per-core=2`` instead of the default of ``1``.
+The OpenMP threads will be mapped to unique physical CPU cores unless there are
+not enough physical CPU cores available, in which case the remaining OpenMP
+threads will share hardware threads and a WARNING will be issued as shown in
+the previous example.
 
 .. code-block:: bash
 
@@ -691,18 +686,34 @@ By default, each MPI rank is allocated only 1 hardware thread, so both OpenMP th
     MPI 001 - OMP 001 - HWT 017 - Node defiant13
 
 
-Now the output shows that each OpenMP thread ran on (one of the hardware threads of) its own physical CPU cores. More specifically (see the Defiant Compute Node diagram), OpenMP thread 000 of MPI rank 000 ran on hardware thread 000 (i.e., physical CPU core 00), OpenMP thread 001 of MPI rank 000 ran on hardware thread 001 (i.e., physical CPU core 01), OpenMP thread 000 of MPI rank 001 ran on hardware thread 016 (i.e., physical CPU core 16), and OpenMP thread 001 of MPI rank 001 ran on hardware thread 017 (i.e., physical CPU core 17) - as expected.
+Now the output shows that each OpenMP thread ran on (one of the hardware
+threads of) its own physical CPU cores. More specifically (see the Defiant
+Compute Node diagram), OpenMP thread 000 of MPI rank 000 ran on hardware thread
+000 (i.e., physical CPU core 00), OpenMP thread 001 of MPI rank 000 ran on
+hardware thread 001 (i.e., physical CPU core 01), OpenMP thread 000 of MPI
+rank 001 ran on hardware thread 016 (i.e., physical CPU core 16), and OpenMP
+thread 001 of MPI rank 001 ran on hardware thread 017 (i.e., physical CPU core
+17) - as expected.
 
 .. note::
 
-    There are many different ways users might choose to perform these mappings, so users are encouraged to clone the ``hello_mpi_omp`` program and test whether or not processes and threads are running where intended.
+    There are many different ways users might choose to perform these mappings,
+    so users are encouraged to clone the ``hello_mpi_omp`` program and test
+    whether or not processes and threads are running where intended.
 
 GPU Mapping
 ^^^^^^^^^^^
 
-In this sub-section, an MPI+OpenMP+HIP "Hello, World" program (`hello_jobstep <https://code.ornl.gov/olcf/hello_jobstep>`__) will be used to clarify the GPU mappings. Again, Slurm's :ref:`interactive` method was used to request an allocation of 2 compute node for these examples: ``salloc -A <project_id> -t 30 -p <parition> -N 2``. The CPU mapping part of this example is very similar to the example used above in the CPU Mapping sub-section, so the focus here will be on the GPU mapping part.
+In this sub-section, an MPI+OpenMP+HIP "Hello, World" program
+(`hello_jobstep <https://code.ornl.gov/olcf/hello_jobstep>`__) will be used to
+clarify the GPU mappings. Again, Slurm's :ref:`interactive` method was used to
+request an allocation of 2 compute node for these examples:
+``salloc -A <project_id> -t 30 -p <parition> -N 2``. The CPU mapping part of
+this example is very similar to the example used above in the CPU Mapping 
+sub-section, so the focus here will be on the GPU mapping part.
 
-The following ``srun`` options will be used in the examples below. See ``man srun`` for a complete list of options and more information.
+The following ``srun`` options will be used in the examples below. See 
+``man srun`` for a complete list of options and more information.
 
 +------------------------------------------------+--------------------------------------------------------------------------------------------------------------+
 | ``--gpus-per-task``                            | Specify the number of GPUs required for the job on each task to be spawned in the job's resource allocation. |
@@ -723,25 +734,40 @@ The following ``srun`` options will be used in the examples below. See ``man sru
 +------------------------------------------------+--------------------------------------------------------------------------------------------------------------+
 
 .. note::
-    In general, GPU mapping can be accomplished in different ways. For example, an application might map MPI ranks to GPUs programmatically within the code using, say, ``hipSetDevice``. In this case, since all GPUs on a node are available to all MPI ranks on that node by default, there might not be a need to map to GPUs using Slurm (just do it in the code). However, in another application, there might be a reason to make only a subset of GPUs available to the MPI ranks on a node. It is this latter case that the following examples refer to.
+    In general, GPU mapping can be accomplished in different ways. For example, an
+    application might map MPI ranks to GPUs programmatically within the code using, 
+    say, ``hipSetDevice``. In this case, since all GPUs on a node are available to 
+    all MPI ranks on that node by default, there might not be a need to map to GPUs 
+    using Slurm (just do it in the code). However, in another application, there 
+    might be a reason to make only a subset of GPUs available to the MPI ranks on a
+    node. It is this latter case that the following examples refer to.
 
 Mapping 1 task per GPU
 """"""""""""""""""""""
 
-In the following examples, each MPI rank (and its OpenMP threads) will be mapped to a single GPU.
+In the following examples, each MPI rank (and its OpenMP threads) will be mapped
+to a single GPU.
 
 **Example 1: 4 MPI ranks - each with 2 OpenMP threads and 1 GPU (single-node)**
 
-This example launches 4 MPI ranks (``-n4``), each with 2 physical CPU cores (``-c2``) to launch 2 OpenMP threads (``OMP_NUM_THREADS=2``) on. In addition, each MPI rank (and its 2 OpenMP threads) should have access to only 1 GPU. To accomplish the GPU mapping, two new ``srun`` options will be used:
+This example launches 4 MPI ranks (``-n4``), each with 2 physical CPU cores
+(``-c2``) to launch 2 OpenMP threads (``OMP_NUM_THREADS=2``) on. In addition,
+each MPI rank (and its 2 OpenMP threads) should have access to only 1 GPU. To 
+accomplish the GPU mapping, two new ``srun`` options will be used:
 
 * ``--gpus-per-task`` specifies the number of GPUs required for the job on each task
 * ``--gpu-bind=closest`` binds each task to the GPU which is closest.
 
 .. note::
-    To further clarify, ``--gpus-per-task`` does not actually bind GPUs to MPI ranks. It allocates GPUs to the job step. The ``--gpu-bind=closest`` is what actually maps a specific GPU to each rank; namely, the "closest" one, which is the GPU on the same NUMA domain as the CPU core the MPI rank is running on (see the :ref:`defiant-compute-nodes` section).
+    To further clarify, ``--gpus-per-task`` does not actually bind GPUs to MPI ranks.
+    It allocates GPUs to the job step. The ``--gpu-bind=closest`` is what actually 
+    maps a specific GPU to each rank; namely, the "closest" one, which is the GPU on 
+    the same NUMA domain as the CPU core the MPI rank is running on 
+    (see the :ref:`defiant-compute-nodes` section).
 
 .. note::
-    Without these additional flags, all MPI ranks would have access to all GPUs (which is the default behavior).
+    Without these additional flags, all MPI ranks would have access to all GPUs 
+    (which is the default behavior).
 
 .. code-block:: bash
 
@@ -757,7 +783,16 @@ This example launches 4 MPI ranks (``-n4``), each with 2 physical CPU cores (``-
     MPI 003 - OMP 000 - HWT 048 - Node defiant13 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
     MPI 003 - OMP 001 - HWT 049 - Node defiant13 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
 
-The output contains different IDs associated with the GPUs so it is important to first describe these IDs before moving on. ``GPU_ID`` is the node-level (or global) GPU ID, which is labeled as one might expect from looking at a node diagram: 0, 1, 2, 3. ``RT_GPU_ID`` is the HIP runtime GPU ID, which can be thought of as each MPI rank's local GPU ID numbering (with zero-based indexing). So in the output above, each MPI rank has access to 1 unique GPU - where MPI 000 has access to GPU 0, MPI 001 has access to GPU 1, etc., but all MPI ranks show a HIP runtime GPU ID of 0. The reason is that each MPI rank only "sees" one GPU and so the HIP runtime labels it as "0", even though it might be global GPU ID 0, 1, 2, or 3. The GPU's bus ID is included to definitively show that different GPUs are being used. 
+The output contains different IDs associated with the GPUs so it is important to
+first describe these IDs before moving on. ``GPU_ID`` is the node-level (or global)
+GPU ID, which is labeled as one might expect from looking at a node diagram:
+0, 1, 2, 3. ``RT_GPU_ID`` is the HIP runtime GPU ID, which can be thought of as
+each MPI rank's local GPU ID numbering (with zero-based indexing). So in the output
+above, each MPI rank has access to 1 unique GPU - where MPI 000 has access to GPU 0,
+MPI 001 has access to GPU 1, etc., but all MPI ranks show a HIP runtime GPU ID of 0.
+The reason is that each MPI rank only "sees" one GPU and so the HIP runtime labels
+it as "0", even though it might be global GPU ID 0, 1, 2, or 3. The GPU's bus ID
+is included to definitively show that different GPUs are being used. 
 
 Here is a summary of the different GPU IDs reported by the example program:
 
@@ -765,11 +800,16 @@ Here is a summary of the different GPU IDs reported by the example program:
 * ``RT_GPU_ID`` is the HIP runtime GPU ID (as reported from, say ``hipGetDevice``).
 * ``Bus_ID`` is the physical bus ID associated with the GPUs. Comparing the bus IDs is meant to definitively show that different GPUs are being used.
 
-So the job step (i.e., ``srun`` command) used above gave the desired output. Each MPI rank spawned 2 OpenMP threads and had access to a unique GPU. The ``--gpus-per-task=1`` allocated 1 GPU for each MPI rank and the ``--gpu-bind=closest`` ensured that the closest GPU to each rank was the one used.
+So the job step (i.e., ``srun`` command) used above gave the desired output. Each
+MPI rank spawned 2 OpenMP threads and had access to a unique GPU. The 
+``--gpus-per-task=1`` allocated 1 GPU for each MPI rank and the ``--gpu-bind=closest``
+ensured that the closest GPU to each rank was the one used.
 
 **Example 2: 8 MPI ranks - each with 2 OpenMP threads and 1 GPU (multi-node)**
 
-This example will extend Example 1 to run on 2 nodes. As the output shows, it is a very straightforward exercise of changing the number of nodes to 2 (``-N2``) and the number of MPI ranks to 8 (``-n8``).
+This example will extend Example 1 to run on 2 nodes. As the output shows, it is a
+very straightforward exercise of changing the number of nodes to 2 (``-N2``) and 
+the number of MPI ranks to 8 (``-n8``).
 
 .. code-block:: bash
 
@@ -795,7 +835,11 @@ This example will extend Example 1 to run on 2 nodes. As the output shows, it is
 
 **Example 3: 4 MPI ranks - each with 2 OpenMP threads and 1 *specific* GPU (single-node)**
 
-This example will be very similar to Example 1, but instead of using ``--gpu-bind=closest`` to map each MPI rank to the closest GPU, ``--gpu-bind=map_gpu`` will be used to map each MPI rank to a *specific* GPU. The ``map_gpu`` option takes a comma-separated list of GPU IDs to specify how the MPI ranks are mapped to GPUs, where the form of the comma-separated list is ``<gpu_id_for_task_0>, <gpu_id_for_task_1>,...``.
+This example will be very similar to Example 1, but instead of using
+``--gpu-bind=closest`` to map each MPI rank to the closest GPU, ``--gpu-bind=map_gpu``
+will be used to map each MPI rank to a *specific* GPU. The ``map_gpu`` option takes a
+comma-separated list of GPU IDs to specify how the MPI ranks are mapped to GPUs, where
+the form of the comma-separated list is ``<gpu_id_for_task_0>, <gpu_id_for_task_1>,...``.
 
 .. code:: bash
 
@@ -812,9 +856,16 @@ This example will be very similar to Example 1, but instead of using ``--gpu-bin
     MPI 003 - OMP 001 - HWT 049 - Node defiant13 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
 
 
-Here, the output is the same as the results from Example 1. This is because the 4 GPU IDs in the comma-separated list happen to specify the GPUs within the same NUMA domains that the MPI ranks are in. So MPI 000 is mapped to GPU 0, MPI 001 is mapped to GPU 1, etc.
+Here, the output is the same as the results from Example 1. This is because the 4 GPU
+IDs in the comma-separated list happen to specify the GPUs within the same NUMA domains
+that the MPI ranks are in. So MPI 000 is mapped to GPU 0, MPI 001 is mapped to GPU 1,
+etc.
 
-While this level of control over mapping MPI ranks to GPUs might be useful for some applications, it is always important to consider the implication of the mapping. For example, if the order of the GPU IDs in the ``map_gpu`` option is reversed, the MPI ranks and the GPUs they are mapped to would be in different NUMA domains, which could potentially lead to poorer performance.
+While this level of control over mapping MPI ranks to GPUs might be useful for some
+applications, it is always important to consider the implication of the mapping. For
+example, if the order of the GPU IDs in the ``map_gpu`` option is reversed, the MPI
+ranks and the GPUs they are mapped to would be in different NUMA domains, which
+could potentially lead to poorer performance.
 
 .. code:: bash
 
@@ -830,14 +881,16 @@ While this level of control over mapping MPI ranks to GPUs might be useful for s
     MPI 003 - OMP 000 - HWT 048 - Node defiant13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
     MPI 003 - OMP 001 - HWT 049 - Node defiant13 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID c9
 
-Here, notice that MPI 000 now maps to GPU 3, MPI 001 maps to GPU 2, etc., so the MPI ranks are not in the same NUMA domains as the GPUs they are mapped to.
+Here, notice that MPI 000 now maps to GPU 3, MPI 001 maps to GPU 2, etc., so the MPI
+ranks are not in the same NUMA domains as the GPUs they are mapped to.
 
 .. note::
     Again, this particular example would NOT be a very good mapping of GPUs to MPI ranks though. E.g., notice that MPI rank 000 is running on NUMA node 0, whereas GPU 3 is on NUMA node 3. Again, see the :ref:`defiant-compute-nodes` section for NUMA descriptions.
 
 **Example 4: 8 MPI ranks - each with 2 OpenMP threads and 1 *specific* GPU (multi-node)**
 
-Extending Examples 2 and 3 to run on 2 nodes is also a straightforward exercise by changing the number of nodes to 2 (``-N2``) and the number of MPI ranks to 8 (``-n8``).
+Extending Examples 2 and 3 to run on 2 nodes is also a straightforward exercise by
+changing the number of nodes to 2 (``-N2``) and the number of MPI ranks to 8 (``-n8``).
 
 .. code:: bash
 
@@ -864,7 +917,8 @@ Extending Examples 2 and 3 to run on 2 nodes is also a straightforward exercise 
 Mapping multiple MPI ranks to a single GPU
 """"""""""""""""""""""""""""""""""""""""""
 
-In the following examples, 2 MPI ranks will be mapped to 1 GPU. For the sake of brevity, ``OMP_NUM_THREADS`` will be set to ``1``, so ``-c1`` will be used unless otherwise specified.
+In the following examples, 2 MPI ranks will be mapped to 1 GPU. For the sake of brevity,
+``OMP_NUM_THREADS`` will be set to ``1``, so ``-c1`` will be used unless otherwise specified.
 
 .. note::
 
@@ -872,7 +926,10 @@ In the following examples, 2 MPI ranks will be mapped to 1 GPU. For the sake of 
 
 **Example 5: 8 MPI ranks - where 2 ranks share a GPU (round-robin, single-node)**
 
-This example launches 8 MPI ranks (``-n8``), each with 1 physical CPU core (``-c1``) to launch 1 OpenMP thread (``OMP_NUM_THREADS=1``) on. The MPI ranks will be assigned to GPUs in a round-robin fashion so that each of the 4 GPUs on the node are shared by 2 MPI ranks. To accomplish this GPU mapping, a new ``srun`` option will be used:
+This example launches 8 MPI ranks (``-n8``), each with 1 physical CPU core (``-c1``)
+to launch 1 OpenMP thread (``OMP_NUM_THREADS=1``) on. The MPI ranks will be assigned
+to GPUs in a round-robin fashion so that each of the 4 GPUs on the node are shared
+by 2 MPI ranks. To accomplish this GPU mapping, a new ``srun`` option will be used:
 
 * ``--ntasks-per-gpu`` specifies the number of MPI ranks that will share access to a GPU.
 
@@ -890,7 +947,11 @@ This example launches 8 MPI ranks (``-n8``), each with 1 physical CPU core (``-c
     MPI 006 - OMP 000 - HWT 033 - Node defiant13 - RT_GPU_ID 0 - GPU_ID 2 - Bus_ID 48
     MPI 007 - OMP 000 - HWT 049 - Node defiant13 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
 
-The output shows the round-robin (``cyclic``) distribution of MPI ranks to GPUs. In fact, it is a round-robin distribution of MPI ranks *to NUMA domains* (the default distribution). The GPU mapping is a consequence of where the MPI ranks are distributed; ``--gpu-bind=closest`` simply maps the GPU in a NUMA domain to the MPI ranks in the same NUMA domain.
+The output shows the round-robin (``cyclic``) distribution of MPI ranks to GPUs.
+In fact, it is a round-robin distribution of MPI ranks *to NUMA domains* 
+(the default distribution). The GPU mapping is a consequence of where the MPI ranks
+are distributed; ``--gpu-bind=closest`` simply maps the GPU in a NUMA domain to the 
+MPI ranks in the same NUMA domain.
 
 **Example 6: 16 MPI ranks - where 2 ranks share a GPU (round-robin, multi-node)**
 
@@ -924,7 +985,12 @@ This example is an extension of Example 5 to run on 2 nodes.
 
 **Example 7: 8 MPI ranks - where 2 ranks share a GPU (packed, single-node)**
 
-This example launches 8 MPI ranks (``-n8``), each with 8 physical CPU cores (``-c8``) to launch 1 OpenMP thread (``OMP_NUM_THREADS=1``) on. The MPI ranks will be assigned to GPUs in a packed fashion so that each of the 4 GPUs on the node are shared by 2 MPI ranks. Similar to Example 5, ``-ntasks-per-gpu=2`` will be used, but a new ``srun`` flag will be used to change the default round-robin (``cyclic``) distribution of MPI ranks across NUMA domains:
+This example launches 8 MPI ranks (``-n8``), each with 8 physical CPU cores (``-c8``)
+to launch 1 OpenMP thread (``OMP_NUM_THREADS=1``) on. The MPI ranks will be assigned
+to GPUs in a packed fashion so that each of the 4 GPUs on the node are shared by 2 
+MPI ranks. Similar to Example 5, ``-ntasks-per-gpu=2`` will be used, but a new ``srun``
+flag will be used to change the default round-robin (``cyclic``) distribution of MPI 
+ranks across NUMA domains:
 
 * ``--distribution=<value>:[<value>]:[<value>]`` specifies the distribution of MPI ranks across compute nodes, sockets (NUMA domains on Defiant), and cores, respectively. The default values are ``block:cyclic:cyclic``, which is where the ``cyclic`` assignment comes from in the previous examples.
 
@@ -952,11 +1018,15 @@ This example launches 8 MPI ranks (``-n8``), each with 8 physical CPU cores (``-
     MPI 006 - OMP 000 - HWT 049 - Node defiant13 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
     MPI 007 - OMP 000 - HWT 057 - Node defiant13 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 09
 
-The overall effect of using ``--distribution=*:block`` and increasing the number of physical CPU cores available to each MPI rank is to place the first two MPI ranks in NUMA 0 with GPU 0, the next two MPI ranks in NUMA 1 with GPU 1, and so on.
+The overall effect of using ``--distribution=*:block`` and increasing the number of 
+physical CPU cores available to each MPI rank is to place the first two MPI ranks in 
+NUMA 0 with GPU 0, the next two MPI ranks in NUMA 1 with GPU 1, and so on.
 
 **Example 8: 16 MPI ranks - where 2 ranks share a GPU (packed, multi-node)**
 
-This example is an extension of Example 7 to use 2 compute nodes. With the appropriate changes put in place in Example 7, it is a straightforward exercise to change to using 2 nodes (``-N2``) and 16 MPI ranks (``-n16``).
+This example is an extension of Example 7 to use 2 compute nodes. With the appropriate 
+changes put in place in Example 7, it is a straightforward exercise to change to using
+2 nodes (``-N2``) and 16 MPI ranks (``-n16``).
 
 .. code:: bash
 
@@ -983,7 +1053,11 @@ This example is an extension of Example 7 to use 2 compute nodes. With the appro
 Multiple GPUs per MPI rank
 """"""""""""""""""""""""""
 
-As mentioned previously, all GPUs are accessible by all MPI ranks by default, so it is possible to *programatically* map any combination of MPI ranks to GPUs. However, there is currently no way to use Slurm to map multiple GPUs to a single MPI rank. If this functionality is needed for an application, please submit a ticket by emailing help@olcf.ornl.gov.
+As mentioned previously, all GPUs are accessible by all MPI ranks by default, so it 
+is possible to *programatically* map any combination of MPI ranks to GPUs. However,
+there is currently no way to use Slurm to map multiple GPUs to a single MPI rank. If 
+this functionality is needed for an application, please submit a ticket by 
+emailing help@olcf.ornl.gov.
 
 
 .. note::
@@ -993,7 +1067,12 @@ As mentioned previously, all GPUs are accessible by all MPI ranks by default, so
 NVMe Usage
 ----------
 
-Each Defiant compute node has [2x] 3.2 TB NVMe devices (SSDs) with a peak sequential performance of 6900 MB/s (read) and 4200 MB/s (write). To use the NVMe, users must request access during job allocation using the ``-C nvme`` option to ``sbatch``, ``salloc``, or ``srun``. Once the devices have been granted to a job, users can access them at ``/mnt/bb/<userid>``. Users are responsible for moving data to/from the NVMe before/after their jobs. Here is a simple example script:
+Each Defiant compute node has [2x] 3.2 TB NVMe devices (SSDs) with a peak sequential 
+performance of 6900 MB/s (read) and 4200 MB/s (write). To use the NVMe, users must 
+request access during job allocation using the ``-C nvme`` option to 
+``sbatch``, ``salloc``, or ``srun``. Once the devices have been granted to a job, 
+users can access them at ``/mnt/bb/<userid>``. Users are responsible for moving data 
+to/from the NVMe before/after their jobs. Here is a simple example script:
 
 .. code:: bash
 
