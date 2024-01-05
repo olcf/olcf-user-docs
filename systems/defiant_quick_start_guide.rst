@@ -33,7 +33,9 @@ via Infinity Fabric (xGMI), allowing for a peak device-to-device bandwidth of
 sequential read and write speeds of 6900 MB/s and 4200 MB/s, respectively.
 
 .. note::
-    The X+X GB/s values for bandwidths above represent bi-directional bandwidths. So, for example, the Infinity Fabric connecting any two GPUs allows peak data transfers of 46 GB/s *in both directions simultaneously*.
+    The X+X GB/s values for bandwidths above represent bi-directional bandwidths.
+    So, for example, the Infinity Fabric connecting any two GPUs allows peak data
+    transfers of 46 GB/s *in both directions simultaneously*.
 
 .. image:: /images/Defiant_Node.jpg
    :align: center
@@ -192,27 +194,27 @@ and AMD compilers are both based on LLVM/Clang. The system GCC (version 7.5.0) c
     It is highly recommended to use the Cray compiler wrappers (``cc``, ``CC``, and ``ftn``) whenever possible. See the next section for more details.
 
 
-+--------+-------------------------+-----------------+----------+-------------------+---------------------------------+
-| Vendor | Programming Environment | Compiler Module | Language | Compiler Wrapper  | Compiler                        |
-+========+=========================+=================+==========+===================+=================================+ 
-| Cray   | ``PrgEnv-cray``         | ``cce``         | C        | ``cc``            | ``craycc``                      |
-|        |                         |                 +----------+-------------------+---------------------------------+
-|        |                         |                 | C++      | ``CC``            | ``craycxx`` or ``crayCC``       |
-|        |                         |                 +----------+-------------------+---------------------------------+
-|        |                         |                 | Fortran  | ``ftn``           | ``crayftn``                     |
-+--------+-------------------------+-----------------+----------+-------------------+---------------------------------+
-| AMD    | ``PrgEnv-amd``          | ``rocm``        | C        | ``cc``            | ``$ROCM_PATH/llvm/bin/clang``   |
-|        |                         |                 +----------+-------------------+---------------------------------+
-|        |                         |                 | C++      | ``CC``            | ``$ROCM_PATH/llvm/bin/clang++`` |
-|        |                         |                 +----------+-------------------+---------------------------------+
-|        |                         |                 | Fortran  | ``ftn``           | ``$ROCM_PATH/llvm/bin/flang``   |
-+--------+-------------------------+-----------------+----------+-------------------+---------------------------------+
-| GCC    | ``PrgEnv-gnu``          | ``gcc``         | C        | ``cc``            | ``$GCC_PATH/bin/gcc``           |
-|        |                         |                 +----------+-------------------+---------------------------------+
-|        |                         |                 | C++      | ``CC``            | ``$GCC_PATH/bin/g++``           |
-|        |                         |                 +----------+-------------------+---------------------------------+
-|        |                         |                 | Fortran  | ``ftn``           | ``$GCC_PATH/bin/gfortran``      |
-+--------+-------------------------+-----------------+----------+-------------------+---------------------------------+
++--------+-------------------------+-----------------+----------+-------------------+------------------------------------+
+| Vendor | Programming Environment | Compiler Module | Language | Compiler Wrapper  | Compiler                           |
++========+=========================+=================+==========+===================+====================================+ 
+| Cray   | ``PrgEnv-cray``         | ``cce``         | C        | ``cc``            | ``craycc``                         |
+|        |                         |                 +----------+-------------------+------------------------------------+
+|        |                         |                 | C++      | ``CC``            | ``craycxx`` or ``crayCC``          |
+|        |                         |                 +----------+-------------------+------------------------------------+
+|        |                         |                 | Fortran  | ``ftn``           | ``crayftn``                        |
++--------+-------------------------+-----------------+----------+-------------------+------------------------------------+
+| AMD    | ``PrgEnv-amd``          | ``amd``         | C        | ``cc``            | ``amdclang``                       |
+|        |                         |                 +----------+-------------------+------------------------------------+
+|        |                         |                 | C++      | ``CC``            | ``amdclang++``                     |
+|        |                         |                 +----------+-------------------+------------------------------------+
+|        |                         |                 | Fortran  | ``ftn``           | ``amdflang``                       |
++--------+-------------------------+-----------------+----------+-------------------+------------------------------------+
+| GCC    | ``PrgEnv-gnu``          | ``gcc``         | C        | ``cc``            | ``$GCC_PATH/bin/gcc``              |
+|        |                         |                 +----------+-------------------+------------------------------------+
+|        |                         |                 | C++      | ``CC``            | ``$GCC_PATH/bin/g++``              |
+|        |                         |                 +----------+-------------------+------------------------------------+
+|        |                         |                 | Fortran  | ``ftn``           | ``$GCC_PATH/bin/gfortran``         |
++--------+-------------------------+-----------------+----------+-------------------+------------------------------------+
 
 
 Cray Programming Environment and Compiler Wrappers
@@ -227,7 +229,9 @@ for Cray software. Compiler wrappers are provided for C (``cc``), C++ (``CC``),
 and Fortran (``ftn``).
 
 .. note::
-   Use the ``-craype-verbose`` flag to display the full include and link information used by the Cray compiler wrappers. This must be called on a file to see the full output (e.g., ``CC -craype-verbose test.cpp``).
+   Use the ``-craype-verbose`` flag to display the full include and link information
+   used by the Cray compiler wrappers. This must be called on a file to see the full
+   output (e.g., ``CC -craype-verbose test.cpp``).
 
 MPI
 ---
@@ -260,22 +264,29 @@ MPI
 GPU-Aware MPI
 ^^^^^^^^^^^^^
 
-To use GPU-aware Cray MPICH, there are currently some extra steps needed in addition to the table above, which depend on the compiler that is used.
+To use GPU-aware Cray MPICH, there are currently some extra steps needed in
+addition to the table above, which depend on the compiler that is used.
 
 1. Compiling with the Cray compiler wrappers, ``cc`` or ``CC``
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-To use GPU-aware Cray MPICH with the Cray compiler wrappers, users must load specific modules, set some environment variables, and include appropriate headers and libraries. The following modules and environment variables must be set:
+To use GPU-aware Cray MPICH with the Cray compiler wrappers, users must load
+specific modules, set some environment variables, and include appropriate headers
+and libraries. The following modules and environment variables must be set:
 
 .. note:: 
 
-    Setting ``MPICH_SMP_SINGLE_COPY_MODE=CMA`` is required as a temporary workaround due to a `known issue <https://docs.olcf.ornl.gov/systems/defiant_quick_start_guide.html#olcfdev-138-gpu-aware-cray-mpich-can-cause-hang-in-some-codes>`__. Users should make a note of where they set this environment variable (if e.g., set in a script) since it should NOT be set once the known issue has been resolved.
+    Setting ``MPICH_SMP_SINGLE_COPY_MODE=CMA`` is required as a temporary
+    workaround due to a `known issue <https://docs.olcf.ornl.gov/systems/defiant_quick_start_guide.html#olcfdev-138-gpu-aware-cray-mpich-can-cause-hang-in-some-codes>`__.
+    Users should make a note of where they set this environment variable
+    (if e.g., set in a script) since it should NOT be set once the known
+    issue has been resolved.
 
 .. code:: bash
 
     module load craype-accel-amd-gfx908
     module load PrgEnv-cray
-    module load rocm
+    module load amd
 
     ## These must be set before running
     export MPIR_CVAR_GPU_EAGER_DEVICE_MEM=0
@@ -289,18 +300,21 @@ In addition, the following header files and libraries must be included:
     -I${ROCM_PATH}/include
     -L${ROCM_PATH}/lib -lamdhip64 -lhsa-runtime64
 
-where the include path implies that ``#include <hip/hip_runtime.h>`` is included in the source file.
+where the include path implies that ``#include <hip/hip_runtime.h>`` is
+included in the source file.
 
 2. Compiling with ``hipcc``
 """""""""""""""""""""""""""
 
-To use GPU-aware Cray MPICH with ``hipcc``, users must load specific modules, set some environment variables, and include appropriate headers and libraries. The following modules and environment variables must be set:
+To use GPU-aware Cray MPICH with ``hipcc``, users must load specific modules,
+set some environment variables, and include appropriate headers and libraries.
+The following modules and environment variables must be set:
 
 .. code:: bash
 
     module load craype-accel-amd-gfx908
     module load PrgEnv-cray
-    module load rocm
+    module load amd
 
     ## These must be set before running
     export MPIR_CVAR_GPU_EAGER_DEVICE_MEM=0
@@ -330,9 +344,9 @@ covered above.
 |        |          | Fortran   | ``ftn``                                   | | ``-homp``                         | 
 |        |          |           |                                           | | ``-fopenmp`` (alias)              |
 +--------+----------+-----------+-------------------------------------------+-------------------------------------+
-| AMD    | ``rocm`` | | C       | | ``$ROCM_PATH/llvm/bin/clang``           | ``-fopenmp``                        |
-|        |          | | C++     | | ``$ROCM_PATH/llvm/bin/clang++``         |                                     |
-|        |          | | Fortran | | ``ROCM_PATH/llvm/bin/flang``            |                                     |
+| AMD    | ``amd``  | | C       | | ``amdclang``                            | ``-fopenmp``                        |
+|        |          | | C++     | | ``amdclang++``                          |                                     |
+|        |          | | Fortran | | ``amdflang``                            |                                     |
 +--------+----------+-----------+-------------------------------------------+-------------------------------------+
 | GCC    | ``gcc``  | | C       | | ``$GCC_PATH/bin/gcc``                   | ``-fopenmp``                        |
 |        |          | | C++     | | ``$GCC_PATH/bin/g++``                   |                                     |
@@ -357,9 +371,9 @@ This section shows how to compile with OpenMP Offload using the different compil
 |        |          | Fortran   | ``ftn``                                   | | ``-homp``                                  |
 |        |          |           |                                           | | ``-fopenmp`` (alias)                       |
 +--------+----------+-----------+-------------------------------------------+----------------------------------------------+
-| AMD    | ``rocm`` | | C       | | ``$ROCM_PATH/llvm/bin/clang``           | | ``-fopenmp -target x86_64-pc-linux-gnu \`` |
-|        |          | | C\+\+   | | ``$ROCM_PATH/llvm/bin/clang++``         | | ``-fopenmp-targets=amdgcn-amd-amdhsa   \`` |
-|        |          | | Fortran | | ``ROCM_PATH/llvm/bin/flang``            | | ``-Xopenmp-target=amdgcn-amd-amdhsa    \`` |
+| AMD    | ``amd``  | | C       | | ``amdclang``                            | | ``-fopenmp --target=x86_64-pc-linux-gnu \``|
+|        |          | | C\+\+   | | ``amdclang++``                          | | ``-fopenmp-targets=amdgcn-amd-amdhsa   \`` |
+|        |          | | Fortran | | ``amdflang``                            | | ``-Xopenmp-target=amdgcn-amd-amdhsa    \`` |
 |        |          |           | | ``hipcc``                               | | ``-march=gfx908``                          |
 +--------+----------+-----------+-------------------------------------------+----------------------------------------------+
 
@@ -492,7 +506,7 @@ command can be used:
  
    $ srun -n 2 --ntasks-per-node=1 ./a.out
    <output printed to terminal>
-   
+
 Here, ``salloc`` is used to request an allocation of 2 MI100 compute nodes for
 5 minutes. Once the resources become available, the user is granted access to
 the compute nodes (``defiant10`` and ``defiant11`` in this case) and can launch job
