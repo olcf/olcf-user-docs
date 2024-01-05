@@ -46,6 +46,7 @@ Systems
    :maxdepth: 2
 
    systems/index
+   ace_testbed/index
 
 Services and Applications
 -------------------------
@@ -95,6 +96,14 @@ Scalable Protected Infrastructure (SPI)
    :maxdepth: 2
 
    spi/index
+
+ACE Testbed
+---------------
+
+.. toctree::
+   :maxdepth: 2
+
+   ace_testbed/index
 
 How to contribute to this documentation
 -----------------------------------------

@@ -16,5 +16,5 @@ Systems
    dtn_user_guide
    hpss_user_guide
    ascent_user_guide
-   defiant_quick_start_guide
+   spock_quick_start_guide
    crusher_quick_start_guide
