@@ -991,11 +991,13 @@ GPU Partition Policy
 To access the 9 node GPU Partition batch job submissions should request ``-p
 gpu``
 
-+------------+-------------+-------------------------------------------+
-| Node Count |  Duration   |  Policy                                   |
-+============+=============+===========================================+
-| 1-2 Nodes  |  0 - 48 hrs |     max 1 job running **per user**        |
-+------------+-------------+-------------------------------------------+
++-----+---------------+------------+--------------------------------+
+| Bin | Node Count    | Duration   | Policy                         |    
++=====+===============+============+================================+
+| A   | 1 - 2 Nodes   | 0 - 48 hrs |                                |
++-----+---------------+------------+ max 1 job running **per user** |
+| B   | 3 - 8 Nodes   | 0 - 6 hrs  |                                |
++-----+---------------+------------+--------------------------------+
 
 .. note::
     The queue structure was designed based on user feedback and
