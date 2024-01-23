@@ -17,7 +17,7 @@ Kubernetes. The *Slate* service today consists two user facing OpenShift cluster
 Marble Cluster
 ==============
 
-Marble is in the Moderate security enclave and has access to Frontier and Orion Lustre. 
+Marble is in the Moderate security enclave and has access to Frontier and Orion (Lustre). 
 
 Marble is a heterogeneus cluster of 30 nodes with 10 Gigabit ethernet connectivity. Marble
 has a node pool of GPU nodes with 3x NVIDIA V100 each, a node pool with Infiniband connectivity
