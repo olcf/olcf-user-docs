@@ -420,7 +420,7 @@ To keep the Lustre file system exceptionally performant, files that have not bee
 Alpine2 IBM Spectrum Scale Filesystem
 *************************************
 
-Summit mounts a POSIX-based IBM Spectrum Scale parallel filesystem called Alpine2. It has a smaller capacity than its predecessor, Alpine, but is nearly as preformat.
+Summit mounts a POSIX-based IBM Spectrum Scale parallel filesystem called Alpine2. It has a smaller capacity than its predecessor, Alpine, but is nearly as performant.
 
 .. Alpine2's maximum capacity is 250 PB. It is consisted of 77  IBM Elastic Storage Server (ESS) GL4 nodes running IBM Spectrum Scale 5.x which are called Network Shared Disk (NSD) servers. Each IBM ESS GL4 node, is a scalable storage unit (SSU), constituted by two dual-socket IBM POWER9 storage servers, and a 4X EDR InfiniBand network for up to 100Gbit/sec of networking bandwidth.  The maximum performance of the final production system will be about 2.5 TB/s for sequential I/O and 2.2 TB/s for random I/O under FPP mode, which means each process, writes its own file. Metada operations are improved with around to minimum 50,000 file access per sec and aggregated up to 2.6 million accesses of 32KB small files.  
 
