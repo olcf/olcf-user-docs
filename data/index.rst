@@ -44,6 +44,12 @@ Each project has a Project Home area on NFS, multiple Work areas on Spectrum Sca
 +--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
 | Orion World Work               | ``/lustre/orion/[projid]/world-shared``     | M1,M2   | Lustre HPE ClusterStor | 775         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
 +--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
+| Alpine2 Member Work            | ``/gpfs/alpine2/[projid]/scratch/[userid]`` | M1, M2  | Spectrum Scale         | 700 [#f3]_  |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
+| Alpine2 Project Work           | ``/gpfs/alpine2/[projid]/proj-shared``      | M1, M2  | Spectrum Scale         | 770         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
+| Alpine2 World Work             | ``/gpfs/alpine2/[projid]/world-shared``     | M1      | Spectrum Scale         | 775         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
 | Member Archive                 | ``/hpss/prod/[projid]/users/$USER``         | M1      | HPSS                   | 700         | 100 TB | No      | No      | 90 days    | No                                      |
 +--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
 | Project Archive                | ``/hpss/prod/[projid]/proj-shared``         | M1      | HPSS                   | 770         | 100 TB | No      | No      | 90 days    | No                                      |
@@ -290,7 +296,7 @@ Moderate projects without export control restrictions are also allocated project
 Three Project Archive Areas Facilitae Collaboration on Archival Data
 --------------------------------------------------------------------
 
-To facilitate collaboration among researchers, the OLCF provides (3) distinct types of project-centric archival storage areas: *Member Archive* directories, *Project Archive* directories, and *World Archive* directories.  These directories should be used for storage of data not immediately needed in either the Project Home (NFS) areas or Project Work (Alpine) areas and to serve as a location to store backup copies of project-related files.
+To facilitate collaboration among researchers, the OLCF provides (3) distinct types of project-centric archival storage areas: *Member Archive* directories, *Project Archive* directories, and *World Archive* directories.  These directories should be used for storage of data not immediately needed in either the Project Home (NFS) areas or Project Work (Alpine2) areas and to serve as a location to store backup copies of project-related files.
 
 As with the three project work areas, the difference between these three areas lies in the accessibility of data to project members and to researchers outside of the project. Member Archive directories are accessible only by an individual project member by default, Project Archive directories are accessible by all project members, and World Archive directories are readable by any user on the system.
 
@@ -410,33 +416,42 @@ To keep the Lustre file system exceptionally performant, files that have not bee
 
 .. _data-alpine-ibm-spectrum-scale-filesystem:
 
-.. ************************************
-.. Alpine IBM Spectrum Scale Filesystem
-.. ************************************
+*************************************
+Alpine2 IBM Spectrum Scale Filesystem
+*************************************
 
-.. Summit mounts a POSIX-based IBM Spectrum Scale parallel filesystem called Alpine. Alpine's maximum capacity is 250 PB. It is consisted of 77  IBM Elastic Storage Server (ESS) GL4 nodes running IBM Spectrum Scale 5.x which are called Network Shared Disk (NSD) servers. Each IBM ESS GL4 node, is a scalable storage unit (SSU), constituted by two dual-socket IBM POWER9 storage servers, and a 4X EDR InfiniBand network for up to 100Gbit/sec of networking bandwidth.  The maximum performance of the final production system will be about 2.5 TB/s for sequential I/O and 2.2 TB/s for random I/O under FPP mode, which means each process, writes its own file. Metada operations are improved with around to minimum 50,000 file access per sec and aggregated up to 2.6 million accesses of 32KB small files.  
+Summit mounts a POSIX-based IBM Spectrum Scale parallel filesystem called Alpine2. It has a smaller capacity than its predecessor, Alpine, but is nearly as preformat.
+
+.. Alpine2's maximum capacity is 250 PB. It is consisted of 77  IBM Elastic Storage Server (ESS) GL4 nodes running IBM Spectrum Scale 5.x which are called Network Shared Disk (NSD) servers. Each IBM ESS GL4 node, is a scalable storage unit (SSU), constituted by two dual-socket IBM POWER9 storage servers, and a 4X EDR InfiniBand network for up to 100Gbit/sec of networking bandwidth.  The maximum performance of the final production system will be about 2.5 TB/s for sequential I/O and 2.2 TB/s for random I/O under FPP mode, which means each process, writes its own file. Metada operations are improved with around to minimum 50,000 file access per sec and aggregated up to 2.6 million accesses of 32KB small files.  
 
 
-.. .. figure:: /images/summit_nds_final.png
-..    :align: center
+.. figure:: /images/summit_nds_final.png
+   :align: center
 
-..    Figure 1. An example of the NDS servers on Summit
+   Figure 1. An example of the NDS servers on Summit
 
-.. ============================================
-.. Alpine Performance under non-ideal workloads
-.. ============================================
+ =============================================
+ Alpine2 Performance under non-ideal workloads
+ =============================================
 
-.. The I/O performance can be lower than the optimal one when you save one single shared file with non-optimal I/O pattern. Moreover, the previous performance results are achieved under an ideal system, the system is dedicated, and a specific number of compute nodes are used. The file system is shared across many users; the I/O performance can vary because other users that perform heavy I/O as also executing large scale jobs and stress the interconnection network.  Finally, if the I/O pattern is not aligned, then the I/O performance can be significantly lower than the ideal one.  Similar, related to the number of the concurrent users, is applied for the metadata operations, they can be lower than the expected performance.
+The I/O performance can be lower than the optimal one when you save one single shared file 
+with non-optimal I/O pattern. Moreover, the previous performance results are achieved under 
+an ideal system, the system is dedicated, and a specific number of compute nodes are used. 
+The file system is shared across many users; the I/O performance can vary because other users 
+that perform heavy I/O as also executing large scale jobs and stress the interconnection network.  
+Finally, if the I/O pattern is not aligned, then the I/O performance can be significantly lower 
+than the ideal one.  Similar, related to the number of the concurrent users, is applied for the 
+metadata operations, they can be lower than the expected performance.
 
-.. ====
-.. Tips
-.. ====
+====
+Tips
+====
 
-.. - For best performance on the IBM Spectrum Scale filesystem, use large page aligned I/O and asynchronous reads and writes. The filesystem blocksize is 16MB, the minimum fragment size is 16K so when a file under 16K is stored, it will still use 16K of the disk. Writing files of 16 MB or larger, will achieve better performance. All files are striped across LUNs which are distributed across all IO servers.
+- For best performance on the IBM Spectrum Scale filesystem, use large page aligned I/O and asynchronous reads and writes. The filesystem blocksize is 16MB, the minimum fragment size is 16K so when a file under 16K is stored, it will still use 16K of the disk. Writing files of 16 MB or larger, will achieve better performance. All files are striped across LUNs which are distributed across all IO servers.
 
-.. - If your application occupies up to two compute nodes and it requires a significant number of I/O operations, you could try to add the following flag in your job script  file and investigate if the total execution time is decreased. This flag could cause worse results, it depends on the application.
-.. 
-..                    ``#BSUB -alloc_flags maximizegpfs``
+- If your application occupies up to two compute nodes and it requires a significant number of I/O operations, you could try to add the following flag in your job script  file and investigate if the total execution time is decreased. This flag could cause worse results, it depends on the application.
+
+                   ``#BSUB -alloc_flags maximizegpfs``
 
 ======================================================================
 Major difference between Lustre HPE ClusterStor and IBM Spectrum Scale
