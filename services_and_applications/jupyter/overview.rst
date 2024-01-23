@@ -89,8 +89,8 @@ Hardware Resources
     - NCCS filesystem access (GPFS and NFS)
 
     .. note::
-      You have the same filesystem access as if you were on Summit, to both NFS and
-      GPFS, as you will be working under your standard OLCF UID.
+      You have the same filesystem access as if you were on Frontier, to both NFS and
+      Lustre, as you will be working under your standard OLCF UID.
 
 .. tabbed:: Open JupyterHub
 
@@ -289,7 +289,7 @@ The below steps apply for either the CPU or GPU lab.
 .. note::
    Conda environments created this way are only usable in JupyterLab. You can't
    create an environment within JupyterLab and use these environments on other machines
-   like Summit or Andes to run jobs. You will need to recreate the environment separately
+   like Frontier or Andes to run jobs. You will need to recreate the environment separately
    on those machines.
 
 Manually stopping your JupyterLab session

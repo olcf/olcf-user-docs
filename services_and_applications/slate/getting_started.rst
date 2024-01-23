@@ -25,7 +25,7 @@ by emailing **help@olcf.ornl.gov**.
 | - Existing OLCF Project ID
 | - Project PI
 | - Enclave (i.e. Open or Moderate Enclave - Onyx or Marble respectively)
-|   **NOTE:** Summit is in Moderate
+|   **NOTE:** Frontier is in Moderate
 | - Description (i.e. How you will use Slate)
 | - Resource Request (i.e. CPU/Memory/Storage requirements - Default is
 |   8CPU/16GB/50GB respectively)
@@ -39,7 +39,7 @@ able to reach it from your laptop on ORNL WiFi as well as the VPN).
 +-----------------------------------------------------------------------------+-------------------------------------------------------------------------------------+
 | Cluster                                                                     | URL                                                                                 |
 +=============================================================================+=====================================================================================+
-|  Marble (Moderate Production cluster with access to Summit/Alpine)          | `Marble Web Console - https://marble.ccs.ornl.gov <https://marble.ccs.ornl.gov/>`_  |
+|  Marble (Moderate Production cluster with access to Frontier/Orion)         | `Marble Web Console - https://marble.ccs.ornl.gov <https://marble.ccs.ornl.gov/>`_  |
 +-----------------------------------------------------------------------------+-------------------------------------------------------------------------------------+
 |  Onyx   (Open Production Cluster with access to Wolf)                       | `Onyx Web Console - https://onyx.ccs.ornl.gov <https://onyx.ccs.ornl.gov/>`_        |
 +-----------------------------------------------------------------------------+-------------------------------------------------------------------------------------+
@@ -102,7 +102,7 @@ Test login with OC Tool
 +-----------------------------------------------------------------------------+--------------------------------------+
 | Cluster                                                                     | URL                                  |
 +=============================================================================+======================================+
-|  Marble (Moderate Production cluster with access to Summit/Alpine)          | `<https://api.marble.ccs.ornl.gov>`_ |
+|  Marble (Moderate Production cluster with access to Frontier/Orion)         | `<https://api.marble.ccs.ornl.gov>`_ |
 +-----------------------------------------------------------------------------+--------------------------------------+
 |  Onyx   (Open Production Cluster with access to Wolf)                       | `<https://api.onyx.ccs.ornl.gov>`_   |
 +-----------------------------------------------------------------------------+--------------------------------------+
