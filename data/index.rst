@@ -430,9 +430,9 @@ Summit mounts a POSIX-based IBM Spectrum Scale parallel filesystem called Alpine
 
    Figure 1. An example of the NDS servers on Summit
 
- =============================================
- Alpine2 Performance under non-ideal workloads
- =============================================
+=============================================
+Alpine2 Performance under non-ideal workloads
+=============================================
 
 The I/O performance can be lower than the optimal one when you save one single shared file 
 with non-optimal I/O pattern. Moreover, the previous performance results are achieved under 
