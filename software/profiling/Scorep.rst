@@ -59,104 +59,110 @@ Below are some basic examples of the different instrumentation scenarios:
 
 .. dropdown:: Serial
 
-    .. tab-item:: C
+    .. tab-set::
 
-        .. code-block:: bash
+        .. tab-item:: C
 
-            $ module unload darshan-runtime
-            $ module load scorep
-            $ module load gcc
-            $ scorep gcc -c test.c
-            $ scorep gcc -o test test.o
+            .. code-block:: bash
 
-    .. tab-item:: C++
+                $ module unload darshan-runtime
+                $ module load scorep
+                $ module load gcc
+                $ scorep gcc -c test.c
+                $ scorep gcc -o test test.o
 
-        .. code-block:: bash
+        .. tab-item:: C++
 
-            $ module unload darshan-runtime
-            $ module load scorep
-            $ module load gcc
-            $ scorep g++ -c test.cpp main.cpp
-            $ scorep g++ -o test test.o main.o
+            .. code-block:: bash
 
-    .. tab-item:: Fortran
+                $ module unload darshan-runtime
+                $ module load scorep
+                $ module load gcc
+                $ scorep g++ -c test.cpp main.cpp
+                $ scorep g++ -o test test.o main.o
 
-        .. code-block:: bash
+        .. tab-item:: Fortran
 
-            $ module unload darshan-runtime
-            $ module load scorep
-            $ module load gcc
-            $ scorep gfortran -c test_def.f90 test.f90 main.f90
-            $ scorep gfortran -o test test_def.o test.o main.o
+            .. code-block:: bash
+
+                $ module unload darshan-runtime
+                $ module load scorep
+                $ module load gcc
+                $ scorep gfortran -c test_def.f90 test.f90 main.f90
+                $ scorep gfortran -o test test_def.o test.o main.o
 
 
 
 .. dropdown:: MPI
 
-    .. tab-item:: C
+    .. tab-set::
 
-        .. code-block:: bash
+        .. tab-item:: C
 
-              $ module unload darshan-runtime
-              $ module load scorep
-              $ module load spectrum-mpi
-              $ module load gcc
-              $ scorep mpicc -c test.c main.c
-              $ scorep mpicc -o test test.o main.o
+            .. code-block:: bash
 
-    .. tab-item:: C++
+                  $ module unload darshan-runtime
+                  $ module load scorep
+                  $ module load spectrum-mpi
+                  $ module load gcc
+                  $ scorep mpicc -c test.c main.c
+                  $ scorep mpicc -o test test.o main.o
 
-        .. code-block:: bash
+        .. tab-item:: C++
 
-              $ module unload darshan-runtime
-              $ module load scorep
-              $ module load spectrum-mpi
-              $ module load gcc
-              $ scorep mpiCC -c test.cpp main.cpp
-              $ scorep mpiCC -o test test.o main.o
+            .. code-block:: bash
 
-    .. tab-item:: Fortran
+                  $ module unload darshan-runtime
+                  $ module load scorep
+                  $ module load spectrum-mpi
+                  $ module load gcc
+                  $ scorep mpiCC -c test.cpp main.cpp
+                  $ scorep mpiCC -o test test.o main.o
 
-        .. code-block:: bash
+        .. tab-item:: Fortran
 
-            $ module unload darshan-runtime
-            $ module load gcc
-            $ module load Scorep
-            $ scorep mpifort -c test.f90
-            $ scorep mpifort -o test test.o
+            .. code-block:: bash
+
+                $ module unload darshan-runtime
+                $ module load gcc
+                $ module load Scorep
+                $ scorep mpifort -c test.f90
+                $ scorep mpifort -o test test.o
 
 
 .. dropdown:: MPI + OpenMP
 
-    .. tab-item:: C
+    .. tab-set::
 
-        .. code-block:: bash
+        .. tab-item:: C
 
-              $ module unload darshan-runtime
-              $ module load scorep
-              $ module load gcc
-              $ scorep mpicc -fopenmp -c test.c main.c
-              $ scorep mpicc -fopenmp -o test test.o main.o
+            .. code-block:: bash
 
-    .. tab-item:: C++
+                  $ module unload darshan-runtime
+                  $ module load scorep
+                  $ module load gcc
+                  $ scorep mpicc -fopenmp -c test.c main.c
+                  $ scorep mpicc -fopenmp -o test test.o main.o
 
-        .. code-block:: bash
+        .. tab-item:: C++
 
-              $ module unload darshan-runtime
-              $ module load scorep
-              $ module load gcc
-              $ scorep mpiCC -fopenmp -c test.cpp main.cpp
-              $ scorep mpiCC -fopenmp -o test test.o main.o
+            .. code-block:: bash
 
-    .. tab-item:: Fortran
+                  $ module unload darshan-runtime
+                  $ module load scorep
+                  $ module load gcc
+                  $ scorep mpiCC -fopenmp -c test.cpp main.cpp
+                  $ scorep mpiCC -fopenmp -o test test.o main.o
 
-        .. code-block:: bash
+        .. tab-item:: Fortran
 
-              $ module unload darshan-runtime
-              $ module load scorep
-              $ module load gcc
-              $ scorep mpifort -pthread -fopenmp -c test.f90
-              $ scorep mpifort -pthread -fopenmp -o test test.o
+            .. code-block:: bash
+
+                  $ module unload darshan-runtime
+                  $ module load scorep
+                  $ module load gcc
+                  $ scorep mpifort -pthread -fopenmp -c test.f90
+                  $ scorep mpifort -pthread -fopenmp -o test test.o
 
 .. dropdown:: CUDA
 
@@ -430,7 +436,7 @@ Now you can manually instrument Score-P to the source code as seen below:
             SCOREP_USER_REGION_DEFINE(my_region)
             SCOREP_USER_REGION_BEGIN(my_region, "foo", SCOREP_USER_REGION_TYPE_COMMON)
          // do something
-      SCOREP_USER_REGION_END(my_region)
+         SCOREP_USER_REGION_END(my_region)
          }
 
 
