@@ -1,4 +1,3 @@
-
 **************************
 Installing mpi4py and h5py
 **************************
@@ -69,51 +68,55 @@ Because of this, it is extremely important that all the modules and environments
 
 First, load the gnu compiler module (most Python packages assume GCC), hdf5 module (necessary for h5py), and the python module (allows you to create a new environment):
 
-.. tabbed:: Summit
+.. tab-set::
 
-   .. code-block:: bash
+   .. tab-item:: Summit
 
-      $ module load gcc
-      $ module load hdf5
-      $ module load python
+      .. code-block:: bash
 
-.. tabbed:: Andes
+         $ module load gcc
+         $ module load hdf5
+         $ module load python
 
-   .. code-block:: bash
+   .. tab-item:: Andes
 
-      $ module load gcc
-      $ module load hdf5
-      $ module load python
+      .. code-block:: bash
 
-.. tabbed:: Frontier
+         $ module load gcc
+         $ module load hdf5
+         $ module load python
 
-   .. code-block:: bash
+   .. tab-item:: Frontier
 
-      $ module load PrgEnv-gnu
-      $ module load hdf5
+      .. code-block:: bash
 
-      # Make sure your personal miniconda installation is in your path
-      $ export PATH="/path/to/your/miniconda/bin:$PATH"
+         $ module load PrgEnv-gnu
+         $ module load hdf5
+
+         # Make sure your personal miniconda installation is in your path
+         $ export PATH="/path/to/your/miniconda/bin:$PATH"
 
 Loading a python module puts you in a "base" environment, but you need to create a new environment using the ``conda create`` command:
 
-.. tabbed:: Summit
+.. tab-set::
 
-   .. code-block:: bash
+   .. tab-item:: Summit
 
-      $ conda create -p /ccs/proj/<project_id>/<user_id>/envs/summit/h5pympi-summit python=3.8 numpy
+      .. code-block:: bash
 
-.. tabbed:: Andes
+         $ conda create -p /ccs/proj/<project_id>/<user_id>/envs/summit/h5pympi-summit python=3.8 numpy
 
-   .. code-block:: bash
+   .. tab-item:: Andes
 
-      $ conda create -p /ccs/proj/<project_id>/<user_id>/envs/andes/h5pympi-andes python=3.8 numpy
+      .. code-block:: bash
 
-.. tabbed:: Frontier
+         $ conda create -p /ccs/proj/<project_id>/<user_id>/envs/andes/h5pympi-andes python=3.8 numpy
 
-   .. code-block:: bash
+   .. tab-item:: Frontier
 
-      $ conda create -p /ccs/proj/<project_id>/<user_id>/envs/frontier/h5pympi-frontier python=3.8 libssh numpy -c conda-forge
+      .. code-block:: bash
+
+         $ conda create -p /ccs/proj/<project_id>/<user_id>/envs/frontier/h5pympi-frontier python=3.8 libssh numpy -c conda-forge
 
 .. note::
    As noted in the :doc:`/software/python/index` page, it is highly recommended to create new environments in the "Project Home" directory.
@@ -122,23 +125,25 @@ NumPy is installed ahead of time because h5py depends on it.
 
 After following the prompts for creating your new environment, you can now activate it:
 
-.. tabbed:: Summit
+.. tab-set::
 
-   .. code-block:: bash
+   .. tab-item:: Summit
 
-      $ source activate /ccs/proj/<project_id>/<user_id>/envs/summit/h5pympi-summit
+      .. code-block:: bash
 
-.. tabbed:: Andes
+         $ source activate /ccs/proj/<project_id>/<user_id>/envs/summit/h5pympi-summit
 
-   .. code-block:: bash
+   .. tab-item:: Andes
 
-      $ source activate /ccs/proj/<project_id>/<user_id>/envs/andes/h5pympi-andes
+      .. code-block:: bash
 
-.. tabbed:: Frontier
+         $ source activate /ccs/proj/<project_id>/<user_id>/envs/andes/h5pympi-andes
 
-   .. code-block:: bash
+   .. tab-item:: Frontier
 
-      $ source activate /ccs/proj/<project_id>/<user_id>/envs/frontier/h5pympi-frontier
+      .. code-block:: bash
+
+         $ source activate /ccs/proj/<project_id>/<user_id>/envs/frontier/h5pympi-frontier
 
 
 Installing mpi4py
@@ -147,23 +152,25 @@ Installing mpi4py
 Now that you have a fresh environment, you will next install mpi4py from source into your new environment.
 To make sure that you are building from source, and not a pre-compiled binary, use ``pip``:
 
-.. tabbed:: Summit
+.. tab-set::
 
-   .. code-block:: bash
+   .. tab-item:: Summit
 
-      $ MPICC="mpicc -shared" pip install --no-cache-dir --no-binary=mpi4py mpi4py
+      .. code-block:: bash
 
-.. tabbed:: Andes
+         $ MPICC="mpicc -shared" pip install --no-cache-dir --no-binary=mpi4py mpi4py
 
-   .. code-block:: bash
+   .. tab-item:: Andes
 
-      $ MPICC="mpicc -shared" pip install --no-cache-dir --no-binary=mpi4py mpi4py
+      .. code-block:: bash
 
-.. tabbed:: Frontier
+         $ MPICC="mpicc -shared" pip install --no-cache-dir --no-binary=mpi4py mpi4py
 
-   .. code-block:: bash
+   .. tab-item:: Frontier
 
-      $ MPICC="cc -shared" pip install --no-cache-dir --no-binary=mpi4py mpi4py
+      .. code-block:: bash
+
+         $ MPICC="cc -shared" pip install --no-cache-dir --no-binary=mpi4py mpi4py
 
 The ``MPICC`` flag ensures that you are using the correct C wrapper for MPI on the system.
 Building from source typically takes longer than a simple ``conda install``, so the download and installation may take a couple minutes.
@@ -174,23 +181,25 @@ Installing h5py
 
 Next, install h5py from source.
 
-.. tabbed:: Summit
+.. tab-set::
 
-   .. code-block:: bash
+   .. tab-item:: Summit
 
-      $ HDF5_MPI="ON" CC=mpicc pip install --no-cache-dir --no-binary=h5py h5py
+      .. code-block:: bash
 
-.. tabbed:: Andes
+         $ HDF5_MPI="ON" CC=mpicc pip install --no-cache-dir --no-binary=h5py h5py
 
-   .. code-block:: bash
+   .. tab-item:: Andes
 
-      $ HDF5_MPI="ON" CC=mpicc pip install --no-cache-dir --no-binary=h5py h5py
+      .. code-block:: bash
 
-.. tabbed:: Frontier
+         $ HDF5_MPI="ON" CC=mpicc pip install --no-cache-dir --no-binary=h5py h5py
 
-   .. code-block:: bash
+   .. tab-item:: Frontier
 
-      $ HDF5_MPI="ON" CC=cc HDF5_DIR=${OLCF_HDF5_ROOT} pip install --no-cache-dir --no-binary=h5py h5py
+      .. code-block:: bash
+
+         $ HDF5_MPI="ON" CC=cc HDF5_DIR=${OLCF_HDF5_ROOT} pip install --no-cache-dir --no-binary=h5py h5py
 
 The ``HDF5_MPI`` flag is the key to telling pip to build h5py with parallel support, while the ``CC`` flag makes sure that you are using the correct C wrapper for MPI.
 This installation will take much longer than both the mpi4py and NumPy installations (5+ minutes if the system is slow).
@@ -223,97 +232,101 @@ Let's test that mpi4py is working properly first by executing the example Python
 
 To do so, submit a job to the batch queue:
 
-.. tabbed:: Summit
+.. tab-set::
 
-   .. code-block:: bash
+   .. tab-item:: Summit
 
-      $ bsub -L $SHELL submit_hello.lsf
+      .. code-block:: bash
 
-.. tabbed:: Andes
+         $ bsub -L $SHELL submit_hello.lsf
 
-   .. code-block:: bash
+   .. tab-item:: Andes
 
-      $ sbatch --export=NONE submit_hello.sl
+      .. code-block:: bash
 
-.. tabbed:: Frontier
+         $ sbatch --export=NONE submit_hello.sl
 
-   .. code-block:: bash
+   .. tab-item:: Frontier
 
-      $ sbatch --export=NONE submit_hello.sl
+      .. code-block:: bash
+
+         $ sbatch --export=NONE submit_hello.sl
 
 
 Example "submit_hello" batch script:
 
-.. tabbed:: Summit
+.. tab-set::
 
-   .. code-block:: bash
+   .. tab-item:: Summit
 
-      #!/bin/bash
-      #BSUB -P <PROJECT_ID>
-      #BSUB -W 00:05
-      #BSUB -nnodes 1
-      #BSUB -J mpi4py
-      #BSUB -o mpi4py.%J.out
-      #BSUB -e mpi4py.%J.err
+      .. code-block:: bash
 
-      cd $LSB_OUTDIR
-      date
+         #!/bin/bash
+         #BSUB -P <PROJECT_ID>
+         #BSUB -W 00:05
+         #BSUB -nnodes 1
+         #BSUB -J mpi4py
+         #BSUB -o mpi4py.%J.out
+         #BSUB -e mpi4py.%J.err
 
-      module load gcc
-      module load hdf5
-      module load python
+         cd $LSB_OUTDIR
+         date
 
-      source activate /ccs/proj/<project_id>/<user_id>/envs/summit/h5pympi-summit
+         module load gcc
+         module load hdf5
+         module load python
 
-      jsrun -n1 -r1 -a42 -c42 python3 hello_mpi.py
+         source activate /ccs/proj/<project_id>/<user_id>/envs/summit/h5pympi-summit
 
-.. tabbed:: Andes
+         jsrun -n1 -r1 -a42 -c42 python3 hello_mpi.py
 
-   .. code-block:: bash
+   .. tab-item:: Andes
 
-      #!/bin/bash
-      #SBATCH -A <PROJECT_ID>
-      #SBATCH -J mpi4py
-      #SBATCH -N 1
-      #SBATCH -p gpu
-      #SBATCH -t 0:05:00
+      .. code-block:: bash
 
-      unset SLURM_EXPORT_ENV
+         #!/bin/bash
+         #SBATCH -A <PROJECT_ID>
+         #SBATCH -J mpi4py
+         #SBATCH -N 1
+         #SBATCH -p gpu
+         #SBATCH -t 0:05:00
 
-      cd $SLURM_SUBMIT_DIR
-      date
+         unset SLURM_EXPORT_ENV
 
-      module load gcc
-      module load hdf5
-      module load python
+         cd $SLURM_SUBMIT_DIR
+         date
 
-      source activate /ccs/proj/<project_id>/<user_id>/envs/andes/h5pympi-andes
+         module load gcc
+         module load hdf5
+         module load python
 
-      srun -n42 python3 hello_mpi.py
+         source activate /ccs/proj/<project_id>/<user_id>/envs/andes/h5pympi-andes
 
-.. tabbed:: Frontier
+         srun -n42 python3 hello_mpi.py
 
-   .. code-block:: bash
+   .. tab-item:: Frontier
 
-      #!/bin/bash
-      #SBATCH -A <PROJECT_ID>
-      #SBATCH -J mpi4py
-      #SBATCH -N 1
-      #SBATCH -p batch
-      #SBATCH -t 0:05:00
+      .. code-block:: bash
 
-      unset SLURM_EXPORT_ENV
+         #!/bin/bash
+         #SBATCH -A <PROJECT_ID>
+         #SBATCH -J mpi4py
+         #SBATCH -N 1
+         #SBATCH -p batch
+         #SBATCH -t 0:05:00
 
-      cd $SLURM_SUBMIT_DIR
-      date
+         unset SLURM_EXPORT_ENV
 
-      module load PrgEnv-gnu
-      module load hdf5
-      export PATH="/path/to/your/miniconda/bin:$PATH"
+         cd $SLURM_SUBMIT_DIR
+         date
 
-      source activate /ccs/proj/<project_id>/<user_id>/envs/frontier/h5pympi-frontier
+         module load PrgEnv-gnu
+         module load hdf5
+         export PATH="/path/to/your/miniconda/bin:$PATH"
 
-      srun -n42 python3 hello_mpi.py
+         source activate /ccs/proj/<project_id>/<user_id>/envs/frontier/h5pympi-frontier
+
+         srun -n42 python3 hello_mpi.py
 
 If mpi4py is working properly, in ``mpi4py.<JOB_ID>.out`` you should see output similar to:
 
@@ -358,96 +371,100 @@ Each MPI task is going to assign their rank value to the "dset" array in Python,
 
 Time to execute "hdf5_parallel.py" by submitting "submit_h5py" to the batch queue:
 
-.. tabbed:: Summit
+.. tab-set::
 
-   .. code-block:: bash
+   .. tab-item:: Summit
 
-      $ bsub -L $SHELL submit_h5py.lsf
+      .. code-block:: bash
 
-.. tabbed:: Andes
+         $ bsub -L $SHELL submit_h5py.lsf
 
-   .. code-block:: bash
+   .. tab-item:: Andes
 
-      $ sbatch --export=NONE submit_h5py.sl
+      .. code-block:: bash
 
-.. tabbed:: Frontier
+         $ sbatch --export=NONE submit_h5py.sl
 
-   .. code-block:: bash
+   .. tab-item:: Frontier
 
-      $ sbatch --export=NONE submit_h5py.sl
+      .. code-block:: bash
+
+         $ sbatch --export=NONE submit_h5py.sl
 
 Example "submit_h5py" batch script:
 
-.. tabbed:: Summit
+.. tab-set::
 
-   .. code-block:: bash
+   .. tab-item:: Summit
 
-      #!/bin/bash
-      #BSUB -P <PROJECT_ID>
-      #BSUB -W 00:05
-      #BSUB -nnodes 1
-      #BSUB -J h5py
-      #BSUB -o h5py.%J.out
-      #BSUB -e h5py.%J.err
+      .. code-block:: bash
 
-      cd $LSB_OUTDIR
-      date
+         #!/bin/bash
+         #BSUB -P <PROJECT_ID>
+         #BSUB -W 00:05
+         #BSUB -nnodes 1
+         #BSUB -J h5py
+         #BSUB -o h5py.%J.out
+         #BSUB -e h5py.%J.err
 
-      module load gcc
-      module load hdf5
-      module load python
+         cd $LSB_OUTDIR
+         date
 
-      source activate /ccs/proj/<project_id>/<user_id>/envs/summit/h5pympi-summit
+         module load gcc
+         module load hdf5
+         module load python
 
-      jsrun -n1 -r1 -a42 -c42 python3 hdf5_parallel.py
+         source activate /ccs/proj/<project_id>/<user_id>/envs/summit/h5pympi-summit
 
-.. tabbed:: Andes
+         jsrun -n1 -r1 -a42 -c42 python3 hdf5_parallel.py
 
-   .. code-block:: bash
+   .. tab-item:: Andes
 
-      #!/bin/bash
-      #SBATCH -A <PROJECT_ID>
-      #SBATCH -J h5py
-      #SBATCH -N 1
-      #SBATCH -p gpu
-      #SBATCH -t 0:05:00
+      .. code-block:: bash
 
-      unset SLURM_EXPORT_ENV
+         #!/bin/bash
+         #SBATCH -A <PROJECT_ID>
+         #SBATCH -J h5py
+         #SBATCH -N 1
+         #SBATCH -p gpu
+         #SBATCH -t 0:05:00
 
-      cd $SLURM_SUBMIT_DIR
-      date
+         unset SLURM_EXPORT_ENV
 
-      module load gcc
-      module load hdf5
-      module load python
+         cd $SLURM_SUBMIT_DIR
+         date
 
-      source activate /ccs/proj/<project_id>/<user_id>/envs/andes/h5pympi-andes
+         module load gcc
+         module load hdf5
+         module load python
 
-      srun -n42 python3 hdf5_parallel.py
+         source activate /ccs/proj/<project_id>/<user_id>/envs/andes/h5pympi-andes
 
-.. tabbed:: Frontier
+         srun -n42 python3 hdf5_parallel.py
 
-   .. code-block:: bash
+   .. tab-item:: Frontier
 
-      #!/bin/bash
-      #SBATCH -A <PROJECT_ID>
-      #SBATCH -J h5py
-      #SBATCH -N 1
-      #SBATCH -p batch
-      #SBATCH -t 0:05:00
+      .. code-block:: bash
 
-      unset SLURM_EXPORT_ENV
+         #!/bin/bash
+         #SBATCH -A <PROJECT_ID>
+         #SBATCH -J h5py
+         #SBATCH -N 1
+         #SBATCH -p batch
+         #SBATCH -t 0:05:00
 
-      cd $SLURM_SUBMIT_DIR
-      date
+         unset SLURM_EXPORT_ENV
 
-      module load PrgEnv-gnu
-      module load hdf5
-      export PATH="/path/to/your/miniconda/bin:$PATH"
+         cd $SLURM_SUBMIT_DIR
+         date
 
-      source activate /ccs/proj/<project_id>/<user_id>/envs/frontier/h5pympi-frontier
+         module load PrgEnv-gnu
+         module load hdf5
+         export PATH="/path/to/your/miniconda/bin:$PATH"
 
-      srun -n42 python3 hdf5_parallel.py
+         source activate /ccs/proj/<project_id>/<user_id>/envs/frontier/h5pympi-frontier
+
+         srun -n42 python3 hdf5_parallel.py
 
 
 Provided there are no errors, you should see "42 MPI ranks have finished writing!" in your output file, and there should be a new file called "output.h5" in your directory.
