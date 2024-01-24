@@ -295,12 +295,11 @@ Configuration
 
         When your job is executed, the ``ddt --connect`` command will establish a connection with your already-running remote client (must be running before launching the job). This provides a convenient way for the remote client to access a job within the batch system, and more importantly, avoids the need to explicitly tell DDT or MAP about any program parameters, environment variables, or module files required.
 
-
         .. note::
             If you're needing to debug an MPI+HIP code that you compile with the Cray compiler wrapper, you may want to unload the darshan-runtime module and then recompile your code. If you don't do this, Forge will error out when you start a debugging session with the ROCm option selected.
 
         .. note::
-        Setting a breakpoint inside a GPU kernel is only supported for the amd-mixed/5.6.0 at this time. Loading other rocm modules will lead to GPU driver mismatch errors. Documentation on GPU debugging with DDT can be found `here <https://docs.linaroforge.com/23.1/html/forge/ddt/gpu_debugging/index.html>`__ . 
+            Setting a breakpoint inside a GPU kernel is only supported for the amd-mixed/5.6.0 at this time. Loading other rocm modules will lead to GPU driver mismatch errors. Documentation on GPU debugging with DDT can be found `here <https://docs.linaroforge.com/23.1/html/forge/ddt/gpu_debugging/index.html>`__ . 
 
 
 
