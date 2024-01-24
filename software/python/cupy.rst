@@ -498,7 +498,9 @@ To do so, you must submit ``submit_timings`` to the queue:
 
          $ bsub -L $SHELL submit_timings.lsf
 
-   Example "submit_timings" batch script:
+Example "submit_timings" batch script:
+
+.. tab-set::
 
    .. tab-item:: Summit
 
