@@ -59,7 +59,7 @@ Below are some basic examples of the different instrumentation scenarios:
 
 .. dropdown:: Serial
 
-    .. tabbed:: C
+    .. tab-item:: C
 
         .. code-block:: bash
 
@@ -69,7 +69,7 @@ Below are some basic examples of the different instrumentation scenarios:
             $ scorep gcc -c test.c
             $ scorep gcc -o test test.o
 
-    .. tabbed:: C++
+    .. tab-item:: C++
 
         .. code-block:: bash
 
@@ -79,7 +79,7 @@ Below are some basic examples of the different instrumentation scenarios:
             $ scorep g++ -c test.cpp main.cpp
             $ scorep g++ -o test test.o main.o
 
-    .. tabbed:: Fortran
+    .. tab-item:: Fortran
 
         .. code-block:: bash
 
@@ -93,7 +93,7 @@ Below are some basic examples of the different instrumentation scenarios:
 
 .. dropdown:: MPI
 
-    .. tabbed:: C
+    .. tab-item:: C
 
         .. code-block:: bash
 
@@ -104,7 +104,7 @@ Below are some basic examples of the different instrumentation scenarios:
               $ scorep mpicc -c test.c main.c
               $ scorep mpicc -o test test.o main.o
 
-    .. tabbed:: C++
+    .. tab-item:: C++
 
         .. code-block:: bash
 
@@ -115,7 +115,7 @@ Below are some basic examples of the different instrumentation scenarios:
               $ scorep mpiCC -c test.cpp main.cpp
               $ scorep mpiCC -o test test.o main.o
 
-    .. tabbed:: Fortran
+    .. tab-item:: Fortran
 
         .. code-block:: bash
 
@@ -128,7 +128,7 @@ Below are some basic examples of the different instrumentation scenarios:
 
 .. dropdown:: MPI + OpenMP
 
-    .. tabbed:: C
+    .. tab-item:: C
 
         .. code-block:: bash
 
@@ -138,7 +138,7 @@ Below are some basic examples of the different instrumentation scenarios:
               $ scorep mpicc -fopenmp -c test.c main.c
               $ scorep mpicc -fopenmp -o test test.o main.o
 
-    .. tabbed:: C++
+    .. tab-item:: C++
 
         .. code-block:: bash
 
@@ -148,7 +148,7 @@ Below are some basic examples of the different instrumentation scenarios:
               $ scorep mpiCC -fopenmp -c test.cpp main.cpp
               $ scorep mpiCC -fopenmp -o test test.o main.o
 
-    .. tabbed:: Fortran
+    .. tab-item:: Fortran
 
         .. code-block:: bash
 
@@ -418,32 +418,34 @@ In addition to automatically profiling and tracing functions, there is also a wa
 
 Now you can manually instrument Score-P to the source code as seen below:
 
-.. tabbed:: C,C++
+.. tab-set::
 
-   .. code::
-      
-      #include <scorep/SCOREP_User.h>
+   .. tab-item:: C,C++
 
-      void foo() {
-         SCOREP_USER_REGION_DEFINE(my_region)
-         SCOREP_USER_REGION_BEGIN(my_region, "foo", SCOREP_USER_REGION_TYPE_COMMON)
-     	 // do something
-	 SCOREP_USER_REGION_END(my_region)
-      }
+      .. code::
+         
+         #include <scorep/SCOREP_User.h>
+
+         void foo() {
+            SCOREP_USER_REGION_DEFINE(my_region)
+            SCOREP_USER_REGION_BEGIN(my_region, "foo", SCOREP_USER_REGION_TYPE_COMMON)
+         // do something
+      SCOREP_USER_REGION_END(my_region)
+         }
 
 
-.. tabbed:: Fortran
+   .. tab-item:: Fortran
 
-   .. code::
-      
-      #include <scorep/SCOREP_User.inc>
+      .. code::
+         
+         #include <scorep/SCOREP_User.inc>
 
-      subroutine foo
-         SCOREP_USER_REGION_DEFINE(my_region)
-         SCOREP_USER_REGION_BEGIN(my_region, "foo", SCOREP_USER_REGION_TYPE_COMMON)
-         ! do something
-         SCOREP_USER_REGION_END(my_region)
-      end subroutine foo
+         subroutine foo
+            SCOREP_USER_REGION_DEFINE(my_region)
+            SCOREP_USER_REGION_BEGIN(my_region, "foo", SCOREP_USER_REGION_TYPE_COMMON)
+            ! do something
+            SCOREP_USER_REGION_END(my_region)
+         end subroutine foo
 
 
 In this case, "my_region" is the handle name of the region which has to be defined with ``SCOREP_USER_REGION_DEFINE``. Additionally, "foo" is the string containing the region's unique name (this is the name that will show up in Vampir) and ``SCOREP_USER_REGION_TYPE_COMMON`` identifies the type of the region. Make note of the header files seen in the above example that are needed to include the Score-P macros. See the `Score-P User Adapter <https://scorepci.pages.jsc.fz-juelich.de/scorep-pipelines/docs/scorep-6.0/html/group__SCOREP__User.html>`_ page for more user configuration options.  
