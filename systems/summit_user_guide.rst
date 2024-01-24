@@ -4,6 +4,20 @@
 Summit User Guide
 ******************
 
+.. note::
+
+  Notable changes to Summit for 2024 allocations:
+
+  Alpine Decomissioned (Jan 01, 2024)
+    Summit's previous scratch filesystem, Alpine, was decommissioned on January 01, 2024.
+
+  New Scratch Filesystem Available (Alpine2)
+    Alpine2, Summit's new GPFS scratch filesystem is now available to replace the previous scratch filesystem.  The new filesystem is mounted on Summit, Andes, and the DTN.  Returning users will need to transfer data onto Apline2 since data on the previous scratch filesystem is no longer available.
+
+  Software Updates
+    Summit's software has been updated.  Returning users should recompile prior to running.
+
+
 
 .. _summit-documentation-resources:
 
