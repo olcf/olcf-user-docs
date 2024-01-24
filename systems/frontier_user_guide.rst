@@ -3557,6 +3557,16 @@ If it is necessary to have bit-wise reproducible results from these libraries, i
 System Updates 
 ============== 
 
+2024-01-23
+----------
+On Tuesday, January 23, 2024, Frontier's system software was upgraded. The following changes took place:
+
+-  ROCm 6.0.0 is now available via the ``rocm/6.0.0`` modulefile.
+-  HPE/Cray Programming Environment (PE) 23.12 is now available via the ``cpe/23.12`` modulefile.
+-  ROCm 5.3.0 and HPE/Cray PE 22.12 remain as default.
+
+Please note that target default versions will be updated to PE 23.12 and ROCm 5.7.1 in the near future. Users are encouraged to try both and report any issues to help@olcf.ornl.gov.
+
 2023-12-05
 ----------
 On Tuesday, December 5, 2023, Frontier's system software was upgraded. The following changes took place:
@@ -3577,7 +3587,7 @@ On Tuesday, September 19, 2023, Frontier's system software was upgraded. The fol
 
 -  The system was upgraded to Slingshot Host Software 2.1.0. 
 -  ROCm 5.6.0 and 5.7.0 are now available via the ``rocm/5.6.0`` and ``rocm/5.7.0`` modulefiles, respectively.
--  HPE/Cray Programming Environments (PE) 23.09 is now available via the ``cpe/23.09`` modulefile.
+-  HPE/Cray Programming Environment (PE) 23.09 is now available via the ``cpe/23.09`` modulefile.
 -  ROCm 5.3.0 and HPE/Cray PE 22.12 remain as default.
 
 2023-07-18
