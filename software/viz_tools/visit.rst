@@ -110,7 +110,7 @@ Restart VisIt, and go to Options→Host Profiles. Select “New Host”
       .. note::
           Users with large datasets may see a slight performance boost by
           using the high-memory ``gpu`` partition or by increasing
-    the number of processors if memory is not an issue. See the
+          the number of processors if memory is not an issue. See the
           :ref:`visit-modify-host` section below for how to add a ``gpu`` partition
           launch profile on Andes.
 
