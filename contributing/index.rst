@@ -15,14 +15,9 @@ Authoring content
 Setup authoring environment
 ----------------------------
 
-.. warning::
-
-    **April 12th, 2023**: Sphinx does not work properly with Python 3.10. So,
-    using a different Python version is recommended.
-
 #. Install Sphinx and the ReadTheDocs theme locally::
 
-        $ pip3 install sphinx sphinx_rtd_theme sphinx-panels==0.6.0 jinja2==3.0 docutils==0.17.1
+        $ pip3 install sphinx sphinx_rtd_theme sphinx-design
 
    This can be in your home area, a virtual environment, container, etc.
 
