@@ -72,41 +72,43 @@ CPU vs. GPU JupyterLab (Available Resources)
 Hardware Resources
 ^^^^^^^^^^^^^^^^^^
 
-.. tabbed:: Moderate JupyterHub
+.. tab-set::
 
-    Each CPU Lab spawned by OLCF's Moderate JupyterHub gets these default resources:
+  .. tab-item:: Moderate JupyterHub
 
-    - 32 CPUs
-    - 32GB Memory
-    - NCCS filesystem access (GPFS and NFS)
+      Each CPU Lab spawned by OLCF's Moderate JupyterHub gets these default resources:
 
-
-    Each GPU Lab gets the following resources:
-
-    - 16 CPUs
-    - 32GB Memory
-    - Nvidia V100 GPU
-    - NCCS filesystem access (GPFS and NFS)
-
-    .. note::
-      You have the same filesystem access as if you were on Frontier, to both NFS and
-      Lustre, as you will be working under your standard OLCF UID.
-
-.. tabbed:: Open JupyterHub
-
-    Each CPU Lab spawned by OLCF's Open JupyterHub gets these default resources:
-
-    - 8 CPUs
-    - 24GB Memory
-    - NCCS Open filesystem access (GPFS and NFS)
+      - 32 CPUs
+      - 32GB Memory
+      - NCCS filesystem access (GPFS and NFS)
 
 
-    Each GPU Lab gets the following resources:
+      Each GPU Lab gets the following resources:
 
-    - Currently unavailable
+      - 16 CPUs
+      - 32GB Memory
+      - Nvidia V100 GPU
+      - NCCS filesystem access (GPFS and NFS)
 
-    .. note::
-      You have the same filesystem access as if you were on Ascent, to both NFS and GPFS.
+      .. note::
+        You have the same filesystem access as if you were on Frontier, to both NFS and
+        Lustre, as you will be working under your standard OLCF UID.
+
+  .. tab-item:: Open JupyterHub
+
+      Each CPU Lab spawned by OLCF's Open JupyterHub gets these default resources:
+
+      - 8 CPUs
+      - 24GB Memory
+      - NCCS Open filesystem access (GPFS and NFS)
+
+
+      Each GPU Lab gets the following resources:
+
+      - Currently unavailable
+
+      .. note::
+        You have the same filesystem access as if you were on Ascent, to both NFS and GPFS.
 
 Software and Libraries
 ^^^^^^^^^^^^^^^^^^^^^^

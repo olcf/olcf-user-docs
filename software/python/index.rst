@@ -91,23 +91,25 @@ Module Usage
 
 To start using Python, all you need to do is load the module:
 
-.. tabbed:: Summit
+.. tab-set::
 
-   .. code-block:: bash
+   .. tab-item:: Summit
 
-      $ module load python
+      .. code-block:: bash
 
-.. tabbed:: Andes
+         $ module load python
 
-   .. code-block:: bash
+   .. tab-item:: Andes
 
-      $ module load python
+      .. code-block:: bash
 
-.. tabbed:: Frontier
+         $ module load python
 
-   .. code-block:: bash
+   .. tab-item:: Frontier
 
-      $ module load cray-python
+      .. code-block:: bash
+
+         $ module load cray-python
 
 
 Base Environment
@@ -126,74 +128,76 @@ To see a full list of the packages installed in the base environment, use
 ``conda list`` on Summit and Andes or ``pip list`` on Frontier.
 A small preview is provided below:
 
-.. tabbed:: Summit
+.. tab-set::
 
-   .. code-block:: bash
+   .. tab-item:: Summit
 
-      $ module load python
-      $ conda list
+      .. code-block:: bash
 
-      # packages in environment at /sw/summit/python/3.8/anaconda3/2020.07-rhel8:
-      #
-      # Name                    Version                   Build  Channel
-      _ipyw_jlab_nb_ext_conf    0.1.0                    py38_0  
-      _libgcc_mutex             0.1                        main  
-      alabaster                 0.7.12                     py_0  
-      anaconda                  2020.07                  py38_0  
-      anaconda-client           1.7.2                    py38_0  
-      anaconda-project          0.8.4                      py_0  
-      asn1crypto                1.3.0                    py38_0  
-      astroid                   2.4.2                    py38_0  
-      astropy                   4.0.1.post1      py38h7b6447c_1
-      .
-      .
-      .  
+         $ module load python
+         $ conda list
 
-.. tabbed:: Andes
+         # packages in environment at /sw/summit/python/3.8/anaconda3/2020.07-rhel8:
+         #
+         # Name                    Version                   Build  Channel
+         _ipyw_jlab_nb_ext_conf    0.1.0                    py38_0  
+         _libgcc_mutex             0.1                        main  
+         alabaster                 0.7.12                     py_0  
+         anaconda                  2020.07                  py38_0  
+         anaconda-client           1.7.2                    py38_0  
+         anaconda-project          0.8.4                      py_0  
+         asn1crypto                1.3.0                    py38_0  
+         astroid                   2.4.2                    py38_0  
+         astropy                   4.0.1.post1      py38h7b6447c_1
+         .
+         .
+         .  
 
-   .. code-block:: bash
+   .. tab-item:: Andes
 
-      $ module load python
-      $ conda list
+      .. code-block:: bash
 
-      # packages in environment at /sw/andes/python/3.7/anaconda-base:
-      #
-      # Name                    Version                   Build  Channel
-      _ipyw_jlab_nb_ext_conf    0.1.0                    py37_0  
-      _libgcc_mutex             0.1                        main  
-      absl-py                   0.11.0                   pypi_0    pypi
-      alabaster                 0.7.12                   py37_0  
-      anaconda                  2020.02                  py37_0  
-      anaconda-client           1.7.2                    py37_0  
-      anaconda-navigator        1.9.12                   py37_0  
-      anaconda-project          0.8.4                      py_0  
-      argh                      0.26.2                   py37_0  
-      .
-      .
-      .
+         $ module load python
+         $ conda list
 
-.. tabbed:: Frontier
+         # packages in environment at /sw/andes/python/3.7/anaconda-base:
+         #
+         # Name                    Version                   Build  Channel
+         _ipyw_jlab_nb_ext_conf    0.1.0                    py37_0  
+         _libgcc_mutex             0.1                        main  
+         absl-py                   0.11.0                   pypi_0    pypi
+         alabaster                 0.7.12                   py37_0  
+         anaconda                  2020.02                  py37_0  
+         anaconda-client           1.7.2                    py37_0  
+         anaconda-navigator        1.9.12                   py37_0  
+         anaconda-project          0.8.4                      py_0  
+         argh                      0.26.2                   py37_0  
+         .
+         .
+         .
 
-   .. code-block:: bash
+   .. tab-item:: Frontier
 
-      $ module load cray-python
-      $ pip list
+      .. code-block:: bash
 
-      Package            Version
-      ------------------ ---------
-      atomicwrites       1.4.0
-      attrs              21.2.0
-      Cython             0.29.24
-      dask               2021.10.0
-      fsspec             2022.3.0
-      importlib-metadata 0.0.0
-      iniconfig          1.1.1
-      locket             0.2.1
-      more-itertools     8.10.0
-      mpi4py             3.1.3
-      .
-      .
-      .
+         $ module load cray-python
+         $ pip list
+
+         Package            Version
+         ------------------ ---------
+         atomicwrites       1.4.0
+         attrs              21.2.0
+         Cython             0.29.24
+         dask               2021.10.0
+         fsspec             2022.3.0
+         importlib-metadata 0.0.0
+         iniconfig          1.1.1
+         locket             0.2.1
+         more-itertools     8.10.0
+         mpi4py             3.1.3
+         .
+         .
+         .
 
 
 .. warning::
@@ -224,50 +228,52 @@ feature instead.
 
 To create and activate an environment:
 
-.. tabbed:: Summit
+.. tab-set::
 
-   .. code-block:: bash
+   .. tab-item:: Summit
 
-      #1. Load the module
-      $ module load python
+      .. code-block:: bash
 
-      #2a. Create "my_env" with Python version X.Y at the desired path
-      $ conda create -p /path/to/my_env python=X.Y
+         #1. Load the module
+         $ module load python
 
-      #2b. Create "my_env" with Python version X.Y with a specific name (defaults to $HOME directory)
-      $ conda create --name my_env python=X.Y
+         #2a. Create "my_env" with Python version X.Y at the desired path
+         $ conda create -p /path/to/my_env python=X.Y
 
-      #3. Activate "my_env"
-      $ source activate /path/to/my_env
+         #2b. Create "my_env" with Python version X.Y with a specific name (defaults to $HOME directory)
+         $ conda create --name my_env python=X.Y
 
-.. tabbed:: Andes
+         #3. Activate "my_env"
+         $ source activate /path/to/my_env
 
-   .. code-block:: bash
+   .. tab-item:: Andes
 
-      #1. Load the module
-      $ module load python
+      .. code-block:: bash
 
-      #2a. Create "my_env" with Python version X.Y at the desired path
-      $ conda create -p /path/to/my_env python=X.Y
+         #1. Load the module
+         $ module load python
 
-      #2b. Create "my_env" with Python version X.Y with a specific name (defaults to $HOME directory)
-      $ conda create --name my_env python=X.Y
+         #2a. Create "my_env" with Python version X.Y at the desired path
+         $ conda create -p /path/to/my_env python=X.Y
 
-      #3. Activate "my_env"
-      $ source activate /path/to/my_env
+         #2b. Create "my_env" with Python version X.Y with a specific name (defaults to $HOME directory)
+         $ conda create --name my_env python=X.Y
 
-.. tabbed:: Frontier
+         #3. Activate "my_env"
+         $ source activate /path/to/my_env
 
-   .. code-block:: bash
+   .. tab-item:: Frontier
 
-      #1. Load the module
-      $ module load cray-python
+      .. code-block:: bash
 
-      #2. Create "my_env" at the desired path (uses same Python version as module)
-      $ python3 -m venv /path/to/my_env
+         #1. Load the module
+         $ module load cray-python
 
-      #3. Activate "my_env"
-      $ source /path/to/my_env/bin/activate
+         #2. Create "my_env" at the desired path (uses same Python version as module)
+         $ python3 -m venv /path/to/my_env
+
+         #3. Activate "my_env"
+         $ source /path/to/my_env/bin/activate
 
 
 .. note::
@@ -281,26 +287,28 @@ To create and activate an environment:
 It is always recommended to deactivate an environment before activating a new one.
 Deactivating an environment can be achieved through:
 
-.. tabbed:: Summit
+.. tab-set::
 
-   .. code-block:: bash
+   .. tab-item:: Summit
 
-      # Deactivate the current environment
-      $ source deactivate
+      .. code-block:: bash
 
-.. tabbed:: Andes
+         # Deactivate the current environment
+         $ source deactivate
 
-   .. code-block:: bash
+   .. tab-item:: Andes
 
-      # Deactivate the current environment
-      $ source deactivate
+      .. code-block:: bash
 
-.. tabbed:: Frontier
+         # Deactivate the current environment
+         $ source deactivate
 
-   .. code-block:: bash
+   .. tab-item:: Frontier
 
-      # Deactivate the current environment
-      $ deactivate
+      .. code-block:: bash
+
+         # Deactivate the current environment
+         $ deactivate
 
 
 How to Run
@@ -405,48 +413,50 @@ python path:
 This means you will have to load your modules and activate your environment
 inside the batch script. An example batch script for is provided below:
 
-.. tabbed:: Frontier
+.. tab-set::
 
-   .. code-block:: bash
+   .. tab-item:: Frontier
 
-      #!/bin/bash
-      #SBATCH -A <PROJECT_ID>
-      #SBATCH -J python
-      #SBATCH -N 1
-      #SBATCH -p batch
-      #SBATCH -t 0:05:00
+      .. code-block:: bash
 
-      unset SLURM_EXPORT_ENV
+         #!/bin/bash
+         #SBATCH -A <PROJECT_ID>
+         #SBATCH -J python
+         #SBATCH -N 1
+         #SBATCH -p batch
+         #SBATCH -t 0:05:00
 
-      cd $SLURM_SUBMIT_DIR
-      date
+         unset SLURM_EXPORT_ENV
 
-      module load cray-python
-      source /path/to/my_env/bin/activate
+         cd $SLURM_SUBMIT_DIR
+         date
 
-      python3 script.py
+         module load cray-python
+         source /path/to/my_env/bin/activate
+
+         python3 script.py
 
 
-.. tabbed:: Andes
+   .. tab-item:: Andes
 
-   .. code-block:: bash
+      .. code-block:: bash
 
-      #!/bin/bash
-      #SBATCH -A <PROJECT_ID>
-      #SBATCH -J python
-      #SBATCH -N 1
-      #SBATCH -p batch
-      #SBATCH -t 0:05:00
+         #!/bin/bash
+         #SBATCH -A <PROJECT_ID>
+         #SBATCH -J python
+         #SBATCH -N 1
+         #SBATCH -p batch
+         #SBATCH -t 0:05:00
 
-      unset SLURM_EXPORT_ENV
+         unset SLURM_EXPORT_ENV
 
-      cd $SLURM_SUBMIT_DIR
-      date
+         cd $SLURM_SUBMIT_DIR
+         date
 
-      module load python
-      source activate my_env
+         module load python
+         source activate my_env
 
-      python3 script.py
+         python3 script.py
 
 
 Interactive Job - Frontier / Andes
@@ -454,23 +464,25 @@ Interactive Job - Frontier / Andes
 
 To use Python in an interactive session on Frontier and Andes:
 
-.. tabbed:: Frontier
+.. tab-set::
 
-   .. code-block:: bash
+   .. tab-item:: Frontier
 
-      $ salloc -A <PROJECT_ID> -N 1 -t 0:05:00
-      $ module load cray-python
-      $ source /path/to/my_env/bin/activate
-      $ python3 script.py
+      .. code-block:: bash
 
-.. tabbed:: Andes
+         $ salloc -A <PROJECT_ID> -N 1 -t 0:05:00
+         $ module load cray-python
+         $ source /path/to/my_env/bin/activate
+         $ python3 script.py
 
-   .. code-block:: bash
+   .. tab-item:: Andes
 
-      $ salloc -A <PROJECT_ID> -N 1 -t 0:05:00
-      $ module load python
-      $ source activate my_env
-      $ python3 script.py
+      .. code-block:: bash
+
+         $ salloc -A <PROJECT_ID> -N 1 -t 0:05:00
+         $ module load python
+         $ source activate my_env
+         $ python3 script.py
 
 
 When in an interactive job, if you want to use an interactive Python prompt and

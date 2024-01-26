@@ -57,24 +57,26 @@ See these links for more details:
 * `<https://qiskit.org/ecosystem/ibm-provider/tutorials/Migration_Guide_from_qiskit-ibmq-provider.html>`__
 * `<https://quantum-computing.ibm.com/lab/docs/iql/manage/account/ibmq>`__
 
-.. tabbed:: Andes
+.. tab-set::
 
-    .. code-block:: bash
+    .. tab-item:: Andes
 
-        $ module load python
-        $ source activate base
-        $ conda create -n ENV_NAME python=3.9 # works for python 3.7, 3.8, 3.9 (minimal support for 3.10)
-        $ conda activate ENV_NAME
-        $ pip install qiskit qiskit-ibm-runtime qiskit-aer --no-cache-dir
+        .. code-block:: bash
 
-.. tabbed:: Frontier
+            $ module load python
+            $ source activate base
+            $ conda create -n ENV_NAME python=3.9 # works for python 3.7, 3.8, 3.9 (minimal support for 3.10)
+            $ conda activate ENV_NAME
+            $ pip install qiskit qiskit-ibm-runtime qiskit-aer --no-cache-dir
 
-    .. code-block:: bash
+    .. tab-item:: Frontier
 
-        $ module load cray-python
-        $ python3 -m venv ENV_NAME
-        $ source ENV_NAME/bin/activate
-        $ python3 -m pip install qiskit qiskit-ibm-runtime qiskit-aer --no-cache-dir
+        .. code-block:: bash
+
+            $ module load cray-python
+            $ python3 -m venv ENV_NAME
+            $ source ENV_NAME/bin/activate
+            $ python3 -m pip install qiskit qiskit-ibm-runtime qiskit-aer --no-cache-dir
 
 
 Qiskit - Code Example
@@ -87,83 +89,85 @@ methods for either using Qiskit Runtime or ``IBMProvider`` are provided.
 
     Your IBMQ API Token is listed on your IBM dashboard at `<https://quantum-computing.ibm.com/>`__ .
 
-.. tabbed:: IBMProvider
+.. tab-set::
 
-    .. code-block:: python
+    .. tab-item:: IBMProvider
 
-        import numpy as np
-        from qiskit import QuantumCircuit, transpile
-        from qiskit.providers.aer import QasmSimulator
-        from qiskit_ibm_provider import IBMProvider
+        .. code-block:: python
 
-        #### IF YOU HAVE AN IBMQ ACCOUNT (using an actual backend) #####
+            import numpy as np
+            from qiskit import QuantumCircuit, transpile
+            from qiskit.providers.aer import QasmSimulator
+            from qiskit_ibm_provider import IBMProvider
 
-        # Save account credentials
-        #IBMProvider.save_account(TOKEN)
+            #### IF YOU HAVE AN IBMQ ACCOUNT (using an actual backend) #####
 
-        # Load default account credentials
-        provider = IBMProvider()
+            # Save account credentials
+            #IBMProvider.save_account(TOKEN)
 
-        # Print instances (different hub/group/project options)
-        print( provider.instances() )
+            # Load default account credentials
+            provider = IBMProvider()
 
-        # Load a specific hub/group/project.
-        #provider = IBMProvider(instance="ibm-q-ornl/ornl/csc431")
+            # Print instances (different hub/group/project options)
+            print( provider.instances() )
 
-        # Print available backends
-        print( provider.backends() )
+            # Load a specific hub/group/project.
+            #provider = IBMProvider(instance="ibm-q-ornl/ornl/csc431")
 
-        ######################################
+            # Print available backends
+            print( provider.backends() )
 
-        backend = QasmSimulator() #works with backend.run()
+            ######################################
 
-        circuit = QuantumCircuit(2, 2)
-        circuit.h(0)
-        circuit.cx(0, 1)
-        circuit.measure([0,1], [0,1])
-        compiled_circuit = transpile(circuit, backend)
+            backend = QasmSimulator() #works with backend.run()
 
-        job = backend.run(compiled_circuit, shots=1000)
+            circuit = QuantumCircuit(2, 2)
+            circuit.h(0)
+            circuit.cx(0, 1)
+            circuit.measure([0,1], [0,1])
+            compiled_circuit = transpile(circuit, backend)
 
-        print("Job status is", job.status() )
-        result = job.result()
+            job = backend.run(compiled_circuit, shots=1000)
 
-        counts = result.get_counts(compiled_circuit)
-        print("\nTotal count for 00 and 11 are:",counts)
+            print("Job status is", job.status() )
+            result = job.result()
 
-        # Draw the circuit
-        print(circuit.draw())
+            counts = result.get_counts(compiled_circuit)
+            print("\nTotal count for 00 and 11 are:",counts)
 
-.. tabbed:: Runtime
+            # Draw the circuit
+            print(circuit.draw())
 
-    .. code-block:: python
+    .. tab-item:: Runtime
 
-        import numpy as np
-        from qiskit import QuantumCircuit, transpile
-        from qiskit_ibm_runtime import QiskitRuntimeService, Session, Sampler
+        .. code-block:: python
 
-        #QiskitRuntimeService.save_account(channel="ibm_quantum", token="API TOKEN GOES HERE", overwrite=True)
-        service = QiskitRuntimeService(channel="ibm_quantum", instance="ibm-q-ornl/ornl/csc431")
+            import numpy as np
+            from qiskit import QuantumCircuit, transpile
+            from qiskit_ibm_runtime import QiskitRuntimeService, Session, Sampler
 
-        backend = service.backend("ibmq_qasm_simulator", instance="ibm-q-ornl/ornl/csc431") #does not work with backend.run()
+            #QiskitRuntimeService.save_account(channel="ibm_quantum", token="API TOKEN GOES HERE", overwrite=True)
+            service = QiskitRuntimeService(channel="ibm_quantum", instance="ibm-q-ornl/ornl/csc431")
 
-        circuit = QuantumCircuit(2, 2)
-        circuit.h(0)
-        circuit.cx(0, 1)
-        circuit.measure([0,1], [0,1])
-        compiled_circuit = transpile(circuit, backend)
+            backend = service.backend("ibmq_qasm_simulator", instance="ibm-q-ornl/ornl/csc431") #does not work with backend.run()
 
-        sampl = Sampler(backend)
-        job = sampl.run(compiled_circuit,shots=1000)
+            circuit = QuantumCircuit(2, 2)
+            circuit.h(0)
+            circuit.cx(0, 1)
+            circuit.measure([0,1], [0,1])
+            compiled_circuit = transpile(circuit, backend)
 
-        print("Job status is", job.status() )
-        result = job.result()
+            sampl = Sampler(backend)
+            job = sampl.run(compiled_circuit,shots=1000)
 
-        probs = result.quasi_dists
-        print("\nProbabilities for 00 and 11 are:",probs)
+            print("Job status is", job.status() )
+            result = job.result()
 
-        # Draw the circuit
-        print(circuit.draw())
+            probs = result.quasi_dists
+            print("\nProbabilities for 00 and 11 are:",probs)
+
+            # Draw the circuit
+            print(circuit.draw())
 
 After running the above script using your Qiskit environment, you should
 see something like this:
@@ -223,18 +227,20 @@ Versions may vary.
     known to work on Andes; however, on Frontier, newer versions of libffi than
     3.2.1 are known to cause problems.
 
-.. tabbed:: Andes
+.. tab-set::
 
-    .. code-block:: bash
+    .. tab-item:: Andes
 
-        $ module load gcc cmake
+        .. code-block:: bash
 
-.. tabbed:: Frontier
+            $ module load gcc cmake
 
-    .. code-block:: bash
+    .. tab-item:: Frontier
 
-        $ module swap PrgEnv-cray PrgEnv-gnu
-        $ module load cmake
+        .. code-block:: bash
+
+            $ module swap PrgEnv-cray PrgEnv-gnu
+            $ module load cmake
 
 
 .. code-block:: bash
@@ -310,24 +316,26 @@ verify that the libraries were installed correctly.
 
 Finally, you are ready to install pyQuil:
 
-.. tabbed:: Andes
+.. tab-set::
 
-    .. code-block:: bash
+    .. tab-item:: Andes
 
-        $ module load python
-        $ source activate base
-        $ conda create -n ENV_NAME python=3.9 # pyQuil requires Python version 3.7, 3.8, or 3.9
-        $ conda activate ENV_NAME
-        $ pip install pyquil --no-cache-dir
+        .. code-block:: bash
 
-.. tabbed:: Frontier
+            $ module load python
+            $ source activate base
+            $ conda create -n ENV_NAME python=3.9 # pyQuil requires Python version 3.7, 3.8, or 3.9
+            $ conda activate ENV_NAME
+            $ pip install pyquil --no-cache-dir
 
-    .. code-block:: bash
+    .. tab-item:: Frontier
 
-        $ module load cray-python
-        $ python3 -m venv ENV_NAME
-        $ source ENV_NAME/bin/activate
-        $ python3 -m pip install pyquil --no-cache-dir
+        .. code-block:: bash
+
+            $ module load cray-python
+            $ python3 -m venv ENV_NAME
+            $ source ENV_NAME/bin/activate
+            $ python3 -m pip install pyquil --no-cache-dir
 
 
 PyQuil - Setting up Servers
@@ -416,23 +424,25 @@ General information of how to install and use PennyLane can be found here:
 
 On our systems, the install method is relatively simple:
 
-.. tabbed:: Andes
+.. tab-set::
 
-    .. code-block:: bash
+    .. tab-item:: Andes
 
-        $ module load python
-        $ source activate base
-        $ conda create -n ENV_NAME python=3.9 pennylane -c conda-forge
-        $ conda activate ENV_NAME
+        .. code-block:: bash
 
-.. tabbed:: Frontier
+            $ module load python
+            $ source activate base
+            $ conda create -n ENV_NAME python=3.9 pennylane -c conda-forge
+            $ conda activate ENV_NAME
 
-    .. code-block:: bash
+    .. tab-item:: Frontier
 
-        $ module load cray-python
-        $ python3 -m venv ENV_NAME
-        $ source ENV_NAME/bin/activate
-        $ python3 -m pip install pennylane --upgrade --no-cache-dir
+        .. code-block:: bash
+
+            $ module load cray-python
+            $ python3 -m venv ENV_NAME
+            $ source ENV_NAME/bin/activate
+            $ python3 -m pip install pennylane --upgrade --no-cache-dir
 
 
 PennyLane - Code Example
@@ -507,86 +517,88 @@ submitting your batch script from a fresh login shell.
 
 Below are example batch scripts for running on Andes and Frontier:
 
-.. tabbed:: Andes
+.. tab-set::
 
-    .. code-block:: bash
+    .. tab-item:: Andes
 
-        #!/bin/bash
-        #SBATCH -A ABC123
-        #SBATCH -J job_name
-        #SBATCH -N 1
-        #SBATCH -t 0:05:00
-        #SBATCH -p batch
+        .. code-block:: bash
 
-        unset SLURM_EXPORT_ENV
+            #!/bin/bash
+            #SBATCH -A ABC123
+            #SBATCH -J job_name
+            #SBATCH -N 1
+            #SBATCH -t 0:05:00
+            #SBATCH -p batch
 
-        cd $SLURM_SUBMIT_DIR
-        date
+            unset SLURM_EXPORT_ENV
 
-        # Set proxy settings so compute nodes can reach internet (required when not using a simulator)
-        # Currently, does not work properly with pyQuil
-        export all_proxy=socks://proxy.ccs.ornl.gov:3128/
-        export ftp_proxy=ftp://proxy.ccs.ornl.gov:3128/
-        export http_proxy=http://proxy.ccs.ornl.gov:3128/
-        export https_proxy=http://proxy.ccs.ornl.gov:3128/
-        export no_proxy='localhost,127.0.0.0/8,*.ccs.ornl.gov'
+            cd $SLURM_SUBMIT_DIR
+            date
 
-        # Load python module and virtual environment
-        module load python
-        source activate base
-        conda activate ENV_NAME
+            # Set proxy settings so compute nodes can reach internet (required when not using a simulator)
+            # Currently, does not work properly with pyQuil
+            export all_proxy=socks://proxy.ccs.ornl.gov:3128/
+            export ftp_proxy=ftp://proxy.ccs.ornl.gov:3128/
+            export http_proxy=http://proxy.ccs.ornl.gov:3128/
+            export https_proxy=http://proxy.ccs.ornl.gov:3128/
+            export no_proxy='localhost,127.0.0.0/8,*.ccs.ornl.gov'
 
-        # For software like Qiskit and PennyLane
-        #python3 script.py
+            # Load python module and virtual environment
+            module load python
+            source activate base
+            conda activate ENV_NAME
 
-        # For pyQuil
-        #export LD_LIBRARY_PATH="/ccs/home/YOUR_USERNAME/lapackblas:$LD_LIBRARY_PATH"
-        #export LD_LIBRARY_PATH="/ccs/home/YOUR_USERNAME/ffi/lib64:$LD_LIBRARY_PATH"
-        #export LD_LIBRARY_PATH="/ccs/home/YOUR_USERNAME/zmq/lib:$LD_LIBRARY_PATH"
-        #export PATH="/ccs/home/YOUR_USERNAME/rigetti/forest-sdk_2.23.0-linux-barebones:$PATH"
-        #quilc -P -S > quilc.log 2>&1 & qvm -S > qvm.log 2>&1 & python3 script.py ; kill $(jobs -p)
+            # For software like Qiskit and PennyLane
+            #python3 script.py
 
-.. tabbed:: Frontier
+            # For pyQuil
+            #export LD_LIBRARY_PATH="/ccs/home/YOUR_USERNAME/lapackblas:$LD_LIBRARY_PATH"
+            #export LD_LIBRARY_PATH="/ccs/home/YOUR_USERNAME/ffi/lib64:$LD_LIBRARY_PATH"
+            #export LD_LIBRARY_PATH="/ccs/home/YOUR_USERNAME/zmq/lib:$LD_LIBRARY_PATH"
+            #export PATH="/ccs/home/YOUR_USERNAME/rigetti/forest-sdk_2.23.0-linux-barebones:$PATH"
+            #quilc -P -S > quilc.log 2>&1 & qvm -S > qvm.log 2>&1 & python3 script.py ; kill $(jobs -p)
 
-    .. code-block:: bash
+    .. tab-item:: Frontier
 
-        #!/bin/bash
-        #SBATCH -A ABC123
-        #SBATCH -J job_name
-        #SBATCH -N 1
-        #SBATCH -t 0:05:00
-        #SBATCH -p batch
+        .. code-block:: bash
 
-        unset SLURM_EXPORT_ENV
+            #!/bin/bash
+            #SBATCH -A ABC123
+            #SBATCH -J job_name
+            #SBATCH -N 1
+            #SBATCH -t 0:05:00
+            #SBATCH -p batch
 
-        cd $SLURM_SUBMIT_DIR
-        date
+            unset SLURM_EXPORT_ENV
 
-        # Set proxy settings so compute nodes can reach internet (required when not using a simulator)
-        # Currently, does not work properly with pyQuil
-        export all_proxy=socks://proxy.ccs.ornl.gov:3128/
-        export ftp_proxy=ftp://proxy.ccs.ornl.gov:3128/
-        export http_proxy=http://proxy.ccs.ornl.gov:3128/
-        export https_proxy=http://proxy.ccs.ornl.gov:3128/
-        export no_proxy='localhost,127.0.0.0/8,*.ccs.ornl.gov'
+            cd $SLURM_SUBMIT_DIR
+            date
 
-        # Load python module and virtual environment
-        module load cray-python
-        source $HOME/ENV_NAME/bin/activate
+            # Set proxy settings so compute nodes can reach internet (required when not using a simulator)
+            # Currently, does not work properly with pyQuil
+            export all_proxy=socks://proxy.ccs.ornl.gov:3128/
+            export ftp_proxy=ftp://proxy.ccs.ornl.gov:3128/
+            export http_proxy=http://proxy.ccs.ornl.gov:3128/
+            export https_proxy=http://proxy.ccs.ornl.gov:3128/
+            export no_proxy='localhost,127.0.0.0/8,*.ccs.ornl.gov'
 
-        # For software like Qiskit and PennyLane
-        #python3 script.py
+            # Load python module and virtual environment
+            module load cray-python
+            source $HOME/ENV_NAME/bin/activate
 
-        # For pyQuil
-        #export LD_LIBRARY_PATH="/ccs/home/YOUR_USERNAME/lapackblas:$LD_LIBRARY_PATH"
-        #export LD_LIBRARY_PATH="/ccs/home/YOUR_USERNAME/ffi/lib64:$LD_LIBRARY_PATH"
-        #export LD_LIBRARY_PATH="/ccs/home/YOUR_USERNAME/zmq/lib:$LD_LIBRARY_PATH"
-        #export PATH="/ccs/home/YOUR_USERNAME/rigetti/forest-sdk_2.23.0-linux-barebones:$PATH"
-        #quilc -P -S > quilc.log 2>&1 & qvm -S > qvm.log 2>&1 & python3 script.py ; kill $(jobs -p)
+            # For software like Qiskit and PennyLane
+            #python3 script.py
+
+            # For pyQuil
+            #export LD_LIBRARY_PATH="/ccs/home/YOUR_USERNAME/lapackblas:$LD_LIBRARY_PATH"
+            #export LD_LIBRARY_PATH="/ccs/home/YOUR_USERNAME/ffi/lib64:$LD_LIBRARY_PATH"
+            #export LD_LIBRARY_PATH="/ccs/home/YOUR_USERNAME/zmq/lib:$LD_LIBRARY_PATH"
+            #export PATH="/ccs/home/YOUR_USERNAME/rigetti/forest-sdk_2.23.0-linux-barebones:$PATH"
+            #quilc -P -S > quilc.log 2>&1 & qvm -S > qvm.log 2>&1 & python3 script.py ; kill $(jobs -p)
 
 
-    .. note::
+        .. note::
 
-        The above assumes you created your Python ``venv`` ``ENV_NAME`` in your ``$HOME`` directory.
+            The above assumes you created your Python ``venv`` ``ENV_NAME`` in your ``$HOME`` directory.
 
 
