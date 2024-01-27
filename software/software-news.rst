@@ -28,7 +28,7 @@ As a result of the upgrade, the following new packages are now default:
 
 Please note the previous software stack remains available and can be accessed by loading the ``DefApps-2023`` modulefile. For convenience, a ``DefApps-2024`` is also provide to restore the most recent version of packages. From the ``DefApps-2023`` environment, users can load the ``DefApps-2024`` modulefile or start a fresh login to reset the environment to the latest versions.
 
-In addition, OpenCE 1.10 is now available for Python 3.9 and 3.11. OpenCE 1.10 is available by loading the ``open-ce/1.10-py39-ibm`` or ``open-ce/1.10-py311-ibm`` modulefiles. Please note that each environment includes a differesent set of Python packages as outlined below.
+In addition, OpenCE 1.10 is now available for Python 3.9 and 3.11. OpenCE 1.10 is available by loading the ``open-ce/1.10.0-py39-ibm`` or ``open-ce/1.10.0-py311-ibm`` modulefiles. Please note that each environment includes a differesent set of Python packages as outlined below.
 
 .. csv-table::
     :header: "Python 3.9 Package", "Version"
