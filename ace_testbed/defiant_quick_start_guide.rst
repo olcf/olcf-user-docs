@@ -476,7 +476,7 @@ In the example script, the lines are:
 | 9    | ``srun`` command to launch parallel job (requesting 4 processes - 2 per node) | 
 +------+-------------------------------------------------------------------------------+
 
-.. _interactive:
+.. _interactive-defiant:
 
 Interactive Jobs
 """"""""""""""""
@@ -1117,6 +1117,214 @@ And here is the output from the script:
     ***********************
 
 ----
+
+
+Container Usage
+===============
+
+
+Defiant provides Apptainer v1.2.5 installed for building and running containers. Defiant
+also provides Podman to build container images if you only have the Dockerfile formats and can't convert
+to the Apptainer format. Later in this section we will discuss how to build a container with Podman
+and then convert it to the Apptainer SIF file format so that it can be run on Defiant. 
+
+.. note::
+   The container docs will continue to evolve and change as we identify better practices and more user friendly
+   methods for using containers on testbed to best suit the needs of the users.
+   If something you're trying no longer works, be sure to come back and check
+   the docs to see if anything has changed.
+
+..
+   Notes on things to do
+   - building with Podman and running with Apptainer
+   - building and running MPI program
+   - building and running MPI with GPU program
+   - building and running gpu aware mpi program
+   - Best practices for building a container with apptainer and building with Podman
+   - multi stage builds
+   - other best practices
+
+Setup before Building
+---------------------
+
+Users will need to set up a file in their home directory
+``/ccsopen/home/<username>/.config/containers/storage.conf`` with the following content:
+::
+
+   [storage]
+   driver = "overlay"
+   graphroot = "/tmp/containers/<user>"
+   
+   [storage.options]
+   additionalimagestores = [
+   ]
+   
+   [storage.options.overlay]
+   ignore_chown_errors = "true"
+   mount_program = "/usr/bin/fuse-overlayfs"
+   mountopt = "nodev,metacopy=on"
+   
+   [storage.options.thinpool]
+
+``<user>`` in the ``graphroot = "/tmp/containers/<user>"`` in the above file should be
+replaced with your username. This will ensure that Podman will use the NVMe mounted in ``/tmp/containers`` for storage during container image builds.
+
+
+Build and Run Workflow
+-----------------------
+
+As an example, let's build and run a very simple container image to demonstrate the workflow.
+
+Building a Simple Image
+^^^^^^^^^^^^^^^^^^^^^^^
+
+- Create a directory called ``simplecontainer`` on home or GPFS and ``cd`` into it.
+- Create a file named ``simple.dockerfile`` with the following contents.
+  ::
+
+     Bootstrap: docker
+     From: opensuse/leap:15.4
+
+     %post
+     zypper install -y wget sudo git gzip gcc-c++ openssh hostname
+
+
+
+- Build the container image with ``apptainer build simple.sif simple.def``.
+
+  * Apptainer builds the container image in the SIF file format. Unlike Podman, Apptainer gives you a single file for your image that you can later run as your container.
+
+.. note::
+   Using opensuse as your ``From`` image is preferred as it does not run into issues when installing packages with the ``zypper`` (until we get to a point where all users have mappings in the ``/etc/subuid`` files which is currently a work in progress).
+
+
+Running a Simple Container in a Batch Job
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+As a simple example, we will run ``hostname`` with the Apptainer container.
+
+- Create a file submit.sl with the contents below.
+  ::
+
+     #!/bin/bash
+     #SBATCH -t00:10:00
+     #SBATCH -A csc266
+     #SBATCH -N2
+     #BATCH -P batch
+     #SBATCH -J simple_container_job
+     #SBATCH -o %x_%j.out
+     #SBATCH -e %x_%j.out
+     
+     
+     srun  -N2 --tasks-per-node=1 apptainer exec  simple.sif hostname
+
+- Submit the job with ``sbatch submit.sl``. This should produce an output that looks like:
+  ::
+
+     defiant14
+     defiant12
+
+
+Note that if you are running multiple tasks per node, for example with
+``srun -N1 --tasks-per-node=2 apptainer exec simple.sif hostname``, Apptainer is running
+an instance of the runtime for each task i.e. the same running container is NOT shared
+between multiple tasks running on the same node.
+
+
+Running an MPI program with an MPI image
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+For running a program that uses MPI, you will need to build your container image
+with MPICH 3.4.2 installed (and also install ROCm if you need GPU functionality). We have a
+`prebuilt image on the code.ornl.gov repository <https://code.ornl.gov/olcfcontainers/olcfbaseimages/container_registry/5647>`_ with
+MPICH 3.4.2 and ROCm 5.5.1. Let's look at an example where we build a container that runs an MPI example based on this image.
+
+- Create a new directory ``mpiexample``.
+- Create a file ``mpiexample.c`` with the following contents.
+  ::
+
+     #include <stdio.h>
+     #include <mpi.h>
+     
+     int main (int argc, char *argv[])
+     {
+     int rank, size;
+     MPI_Comm comm;
+     
+     comm = MPI_COMM_WORLD;
+     MPI_Init (&argc, &argv);
+     MPI_Comm_rank (comm, &rank);
+     MPI_Comm_size (comm, &size);
+     
+     printf("Hello from rank %d\n", rank);
+     
+     MPI_Barrier(comm);
+     MPI_Finalize();
+     }
+
+ - Create a file named ``mpiexample.def`` with the following contents
+   ::
+
+      Bootstrap: docker
+      From: code.ornl.gov:4567/olcfcontainers/olcfbaseimages/defiant/opensusempich342rocm551:latest
+      
+      %files
+      mpiexample.c /app/mpiexample.c
+      
+      
+      %post
+      cd /app && mpicc -o mpiexample mpiexample.c
+
+- Build the container image with ``apptainer build mpiexample.sif mpiexample.def``.
+- Create a submit script ``submit.sl`` with the following contents. The submit script will launch four apptainer tasks across two nodes with MPI running, and prints their rank id the same as if the program was running on bare metal.
+  ::
+
+     #!/bin/bash
+     #SBATCH -t00:10:00
+     #SBATCH -A csc266
+     #SBATCH -N2
+     #SBATCH -J mpiexample
+     #SBATCH -o %x_%j.out
+     #SBATCH -e %x_%j.out
+     
+     
+     module  load amd-mixed/5.5.1
+     module  load cray-mpich/8.1.27
+     module  load cray-mpich-abi/8.1.27
+     
+     
+     export MPICH_OFI_USE_PROVIDER="tcp;ofi_rxm"
+     export MPICH_SMP_SINGLE_COPY_MODE=NONE
+     export APPTAINERENV_LD_LIBRARY_PATH="/opt/cray/pe/mpich/8.1.27/ofi/crayclang/14.0/lib-abi-mpich:/opt/cray/pe/mpich/8.1.27/gtl/lib:/opt/rocm/lib:/opt/rocm/lib64:$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH:/opt/cray/pe/lib64"
+     export APPTAINER_CONTAINLIBS="/usr/lib64/libjansson.so.4,/usr/lib64/libcxi.so.1,/usr/lib64/libjson-c.so.3,/usr/lib64/libdrm_amdgpu.so.1,/usr/lib64/libdrm.so.2,/lib64/libtinfo.so.6,/usr/lib64/libnl-3.so.200"
+     export APPTAINER_BIND=/usr/share/libdrm,/var/spool/slurm,/opt/cray,${PWD}
+     
+     srun  -N2 -n4 --tasks-per-node 2 apptainer exec --env MV2_COMM_WORLD_LOCAL_RANK="$SLURM_LOCALID"  --workdir `pwd` mpiexample.sif /lib64/ld-linux-x86-64.so.2 --preload /opt/cray/pe/mpich/8.1.27/gtl/lib/libmpi_gtl_hsa.so.0:  /app/mpiexample
+
+- You should get output that looks like
+  ::
+
+     <several INFO messages. Can be ignored>
+     ...
+     Hello from rank 1
+     Hello from rank 0
+     Hello from rank 2
+     Hello from rank 3
+
+
+You can view the definition files used to build the base image at the `code.ornl.gov
+repository <https://code.ornl.gov/olcfcontainers/olcfbaseimages>`_ in the
+``defiant`` directory. You can build these yourself (if you want slightly modify
+it) by cloning the repository and running ``./build`` in the individual
+directories in the repository. You'll need to push the image you build on your with Podman to your
+own registry if you wish to then use th
+
+..
+  tabling gpu aware MPI till after we get it working on defiant
+  Running a GPU aware MPI program with OLCF MPI base image
+  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+----------
 
 Getting Help
 ============

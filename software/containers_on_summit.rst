@@ -53,7 +53,6 @@ Singularity provides rootless support but to different extents hence why users n
 a combination of both.
 
 
-
 Setup before Building
 =====================
 
@@ -80,7 +79,7 @@ Users will need to set up a file in their home directory
 replaced with your username. This will ensure that Podman will use the NVMe mounted in ``/tmp/containers`` for storage during container image builds.
 
 
-Build and Run Workflow 
+Build and Run Workflow
 =======================
 
 As an example, let's build and run a very simple container image to demonstrate the workflow.
