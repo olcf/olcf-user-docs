@@ -274,24 +274,15 @@ To use GPU-aware Cray MPICH with the Cray compiler wrappers, users must load
 specific modules, set some environment variables, and include appropriate headers
 and libraries. The following modules and environment variables must be set:
 
-.. note:: 
-
-    Setting ``MPICH_SMP_SINGLE_COPY_MODE=CMA`` is required as a temporary
-    workaround due to a `known issue <https://docs.olcf.ornl.gov/systems/defiant_quick_start_guide.html#olcfdev-138-gpu-aware-cray-mpich-can-cause-hang-in-some-codes>`__.
-    Users should make a note of where they set this environment variable
-    (if e.g., set in a script) since it should NOT be set once the known
-    issue has been resolved.
-
 .. code:: bash
 
     module load craype-accel-amd-gfx908
     module load PrgEnv-cray
-    module load amd
+    module load amd-mixed
 
     ## These must be set before running
     export MPIR_CVAR_GPU_EAGER_DEVICE_MEM=0
     export MPICH_GPU_SUPPORT_ENABLED=1
-    export MPICH_SMP_SINGLE_COPY_MODE=CMA
 
 In addition, the following header files and libraries must be included:
 
