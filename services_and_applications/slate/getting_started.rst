@@ -111,9 +111,9 @@ Test login with OC Tool
 
 .. code-block:: bash
 
-   $ oc login <URL>
+   $ oc login <URL> --username=loginName
 
-After entering the login command above, oc will ask you to obtain an API token and will provide a URL like the following: ``https://oauth-openshift.apps.<CLUSTER>.ccs.ornl.gov/oauth/token/request``.
+where the loginName is your username for the cluster. After entering the login command above, oc will ask you to obtain an API token and will provide a URL like the following: ``https://oauth-openshift.apps.<CLUSTER>.ccs.ornl.gov/oauth/token/request``.
 
 You will need to go to the given URL in your browser, log in with NCCS, click the ``Display Token`` link, copy the command under ``Log in with this token`` and enter it into your terminal.
 
