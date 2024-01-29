@@ -27,13 +27,12 @@ specific module versions:
 
     [user@login2.summit ~]$ module avail open-ce
 
-    ---------------------------------- /sw/summit/modulefiles/core ------------------------------------
-    open-ce-olcf/1.5.2-py39-0                open-ce/1.4.0-py38-0    open-ce/1.5.2-py38-0
-    open-ce-olcf/1.9.1-py39-ibm-alpha        open-ce/1.4.0-py39-0    open-ce/1.5.2-py39-0
-    open-ce/1.2.0-py36-0                     open-ce/1.5.0-py37-0    open-ce/1.10.0-py39-ibm
-    open-ce/1.2.0-py37-0                     open-ce/1.5.0-py38-0    open-ce/1.10.0-py311-ibm
-    open-ce/1.2.0-py38-0                     open-ce/1.5.0-py39-0
-    open-ce/1.4.0-py37-0                     open-ce/1.5.2-py37-0
+    ---------------------------------- /sw/summit/modulefiles/core -----------------------------------
+    open-ce-olcf/1.5.2-py39-0         (D)    open-ce/1.5.0-py37-0    open-ce/1.5.2-py39-0
+    open-ce-olcf/1.9.1-py39-ibm-alpha        open-ce/1.5.0-py38-0    open-ce/1.10.0-py39-ibm  (D)
+    open-ce/1.4.0-py37-0                     open-ce/1.5.0-py39-0    open-ce/1.10.0-py311-ibm
+    open-ce/1.4.0-py38-0                     open-ce/1.5.2-py37-0
+    open-ce/1.4.0-py39-0                     open-ce/1.5.2-py38-0
 
     [user@login2.summit ~]$ module load open-ce/1.10.0-py39-ibm
 
