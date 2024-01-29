@@ -28,7 +28,7 @@ Download
 
 **Andes**
 
-    You can download the remote client (version 22.0.x) from the `Linaro Forge Older Versions <https://www.linaroforge.com/downloadForge_OldVersion/>`_ page.
+    You can download the remote client (version 23.1) from the `Linaro Forge <https://www.linaroforge.com/downloadForge/>`_ page.
 
 **Frontier**
 
@@ -131,31 +131,51 @@ Configuration
     .. tab-item:: Andes
         
         .. note::
-            Andes currently runs an older version of Forge (22.0.2) which is not compatible with the latest versions of the remote client (22.1.x). If you are using Andes, you will need to download the older version (version 22.0.x) of the remote client from the `Linaro Forge Older Versions <https://www.linaroforge.com/downloadForge_OldVersion/>`_ page as seen in the Download instructions above.
+           Andes has Forge/23.1 installed. So make sure to download the corresponding remote client version from  `Linaro Forge <https://www.linaroforge.com/downloadForge/>`_ page.
 
+
+        **Reverse Connect Setup Instructions**
+        
+        Prior to launching the reverse connect you will need to set a couple of environment variables so the connection request gets routed correctly. The following export vars will need to be sourced in your batch script prior to srun or you can just source them prior to obtaining your node allocation.
+        
+
+        .. code-block:: bash
+
+            export ALLINEA_CONFIG_DIR=<Somewhere on the Filesystem that can be accessed by the compute nodes i.e. /lustre/orion/<project>>
+            export ALLINEA_REVERSE_CONNECT_DIR=<Somewhere on the Filesystem that can be accessed by the compute nodes i.e. /lustre/orion/<project>>
+    
+        Also, if you plan on running the Forge client from your local machine (i.e. laptop), you will need to create a bash file containing the above environment vars. The file can be saved in /ccs/home/<user>. Once created and saved, you will enter the path to the file in the Forge Remote Launch setup window next to Remote Script as shown below.
+
+        **Make sure you set actual paths for the above environment variables.**
+
+        **Local client setup**
+        
         #. Once installed, launch the Forge DDT client on your local machine.
 
         #. You can ignore any information about the lack of license, as the license on the remote machine will be used.
 
-        #. When you reach the welcome screen, you should see a “Remote Launch” combo box (with “Off” selected). Select the “Configure” option.
+        #. When you reach the welcome screen, you should see a “Remote Launch” combo box (with “Off” selected). Click on it and select the “Configure” option.
 
         #. Click the "Add" button.
+        
+        #. In the Forge Remote Launch setup window:
 
-        #. Enter the details of your remote hosts:
+            * In the ``Remote Script`` box, Enter the path to the file you created earlier ``/ccs/home/<user>/forge_connect_vars.sh``. 
 
-            .. figure:: /images/ddt_config_andes.png
-                :align: center
-                :width: 800
+            * (Optionally) In the ``Connection Name`` box, enter a name for your remote connection (otherwise the host name will be used)
 
-            * (Optionally) enter a name for your remote connection (otherwise the host name will be used)
-
-            * Enter your username and hostname (e.g. ``username@andes.olcf.ornl.gov``)
+            * In the ``Host Name`` box, enter your username and hostname (e.g. ``username@andes.olcf.ornl.gov``)
 
                 * If the host you wish to connect to requires connecting through a gateway machine, you can enter ``user@hostname1`` ``user@hostname2`` (where ``hostname1`` is the gateway and ``hostname2`` is the final destination).
 
-            * Enter the remote path to the Linaro Forge installation (To find the path for a version of Forge, load the forge/22.0.2 module file in a terminal and run ``echo $DDT_HOME``)
+            * In the ``Remote Installation Directory`` box, enter the remote path to the Linaro Forge installation (To find the path for a version of Forge, load the forge/23.1 module file in a terminal and run ``echo $DDT_HOME``)
+
 
             * For the remaining fields, the default values will work for the vast majority of setups. See the `Linaro Forge documentation <https://www.linaroforge.com/documentation/>`_ for more information on these fields.
+
+        .. figure:: /images/ddt_config_andes.png
+            :align: center
+            :width: 800
 
         #. You may click the "Test Remote Launch" button to test your configuration, or click "OK" to save your configuration.
 
@@ -165,40 +185,16 @@ Configuration
             :align: center
             :width: 400
 
-        Once connected, Forge will look and behave as usual, but will launch jobs, browse for files, and use/set the configuration on the remote system. The “Reverse Connect” feature, described below, is also available.
+        Once connected to a remote host, “Reverse Connect” allows launching of jobs to be launched with DDT and MAP from your usual launch environment, with a minor modification to your existing launch command.
 
         **Reverse Connect**
-
-        For example, if you have a batch script containing:
-
-        .. code-block:: bash
-
-            srun -n 2 ./hello_mpi_omp
-
-        You could edit this to:
-
-        .. code-block:: bash
-
-            module load forge/22.0.2
-            ddt --connect srun -n 2 ./hello_mpi_omp
-
-        When your job is executed, the ``ddt --connect`` command will establish a connection with your already-running remote client (must be running before launching the job). This provides a convenient way for the remote client to access a job within the batch system, and more importantly, avoids the need to explicitly tell DDT or MAP about any program parameters, environment variables, or module files required.
-
-        **Reverse Connect Setup Instructions**
-        
-
-        #. Launch the Forge remote client and connect to a remote host using the steps above. Once connected, this client will monitor for new connections.
-
-        .. figure:: /images/ddt_launch_andes.png
-            :align: center
-            :width: 400
-
-        #. In a separate terminal, load the ``forge/22.0.2`` module, and run a ``ddt --connect`` command via the batch system (e.g. by editing and running a job script, or running with an interactive shell).
+    
+        #. In a separate terminal where you are logged into Andes, load the ``forge/23.1`` module, and run a ``ddt --connect`` command via the batch system (e.g. by editing and running a job script, or running with an interactive shell).
 
             .. code-block:: bash
 
-                module load forge/22.0.2
-                ddt --connect srun -n 2 ./hello_mpi_omp
+                module load forge/23.1
+                ddt --connect srun -n 8 ./mpi_openmp_hello
 
         #. The remote client will notify you of a new connection.
 
@@ -213,6 +209,9 @@ Configuration
             :width: 600
 
         #. Click “Run”, and DDT will start your session.
+
+        When your job is executed, the ``ddt --connect`` command will establish a connection with your already-running remote client (must be running before launching the job). This provides a convenient way for the remote client to access a job within the batch system, and more importantly, avoids the need to explicitly tell DDT or MAP about any program parameters, environment variables, or module files required.
+
 
     .. tab-item:: Frontier
 
