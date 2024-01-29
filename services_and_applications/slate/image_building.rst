@@ -220,9 +220,9 @@ First you have to log into OpenShift
 
 .. code-block:: text
 
-   oc login https://api.<cluster>.ccs.ornl.gov
+   oc login https://api.<cluster>.ccs.ornl.gov --username=loginName
 
-Next you can use your token to log into the integrated registry.
+where the loginName is your username for the cluster. Next you can use your token to log into the integrated registry.
 
 .. code-block:: text
 

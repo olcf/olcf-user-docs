@@ -12,7 +12,7 @@ Prerequisites
 
 * Access to an allocation in Slate, the NCCS Kubernetes service
 * ``oc`` client installed
-* CLI client is logged into the cluster (\ ``oc login https://api.<cluster>.ccs.ornl.gov``\ )
+* CLI client is logged into the cluster (\ ``oc login https://api.<cluster>.ccs.ornl.gov --username=loginName``\ )
 
 Deploy MongoDB
 ^^^^^^^^^^^^^^
