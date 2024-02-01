@@ -638,7 +638,7 @@ The MPI implementation available on Frontier is Cray's MPICH, which is "GPU-awar
 GPU-Aware MPI
 ^^^^^^^^^^^^^
 
-To use GPU-aware Cray MPICH, with Frontier's PrgEnv modules, users must set the following modules and environment variables:
+To use GPU-aware Cray MPICH with Frontier's PrgEnv modules, users must set the following modules and environment variables:
 
 If using ``PrgEnv-amd``:
 
@@ -692,23 +692,48 @@ To use ``hipcc`` with GPU-aware Cray MPICH, use the following environment variab
       ${CRAY_XPMEM_POST_LINK_OPTS} -lxpmem \
       ${PE_MPICH_GTL_DIR_amd_gfx90a} ${PE_MPICH_GTL_LIBS_amd_gfx90a}
 
-    HIPFLAGS = --amdgpu-target=gfx90a
+    HIPFLAGS = --offload-arch=gfx90a
     
 
 Determining the Compatibility of Cray MPICH and ROCm
 """"""""""""""""""""""""""""""""""""""""""""""""""""
 
-Releases of ``cray-mpich`` are each built with a specific version of ROCm, and compatibility across multiple versions is not guaranteed. OLCF will maintain compatible default modules when possible. If using non-default modules, you can determine compatibility by reviewing the *Product and OS Dependencies* section in the ``cray-mpich`` release notes. This can be displayed by running ``module show cray-mpich/<version>``. If the notes indicate compatibility with *AMD ROCM X.Y or later*, only use ``rocm/X.Y.Z`` modules. If using a non-default version of ``cray-mpich``, you must add ``${CRAY_MPICH_ROOTDIR}/gtl/lib`` to either your ``LD_LIBRARY_PATH`` at run time or your executable's rpath at build time.
+Compatibility between Cray MPICH and ROCm is required in order to use GPU-aware MPI.
+Releases of ``cray-mpich`` are each built with a specific version of ROCm, and compatibility across multiple versions is not guaranteed.
+OLCF will maintain compatible default modules when possible.
+If using non-default modules, you can determine compatibility by reviewing the *Product and OS Dependencies* section in the ``cray-mpich`` release notes.
+This can be displayed by running ``module show cray-mpich/<version>``. If the notes indicate compatibility with *AMD ROCM X.Y or later*, only use ``rocm/X.Y.Z`` modules.
 
-The compatibility table below was determined by linker testing with all current combinations of ``cray-mpich`` and ROCm-related modules on Frontier.
+.. note::
 
-+------------+----------------------------+
-| cray-mpich |            ROCm            |
-+============+============================+
-|   8.1.17   | 5.4.0, 5.3.0, 5.2.0, 5.1.0 |
-+------------+----------------------------+
-|   8.1.23   | 5.4.0, 5.3.0, 5.2.0, 5.1.0 |
-+------------+----------------------------+
+    If using a non-default version of ``cray-mpich``, you must *prepend* either ``${CRAY_LD_LIBRARY_PATH}`` or ``${CRAY_MPICH_DIR}/lib`` and ``${CRAY_MPICH_ROOTDIR}/gtl/lib`` (which are a subset of ``${CRAY_LD_LIBRARY_PATH}``) to your ``LD_LIBRARY_PATH`` at run time or your executable's rpath at build time.
+
+The compatibility table below was determined by testing of the linker and basic GPU-aware MPI functions with all current combinations of ``cray-mpich`` and ROCm modules on Frontier.
+Alongside ``cray-mpich``, we load the corresponding ``cpe`` module, which loads other important modules such as ``cray-pmi`` and ``craype``.
+It is strongly encouraged to load a ``cpe`` module when using non-default modules.
+An asterisk indicates the latest officially supported version of ROCm for each ``cray-mpich`` version.
+
++------------+-------+-----------------------------------------------------------------------+
+| cray-mpich |  cpe  |                              ROCm                                     |
++============+=======+=======================================================================+
+|   8.1.17   | 22.06 | 5.4.3, 5.4.0, 5.3.0, 5.2.0, 5.1.0*                                    |
++------------+-------+-----------------------------------------------------------------------+
+|   8.1.23   | 22.12 | 5.4.3, 5.4.0, 5.3.0*, 5.2.0, 5.1.0                                    |
++------------+-------+-----------------------------------------------------------------------+
+|   8.1.25   | 23.03 | 5.4.3, 5.4.0, 5.3.0*, 5.2.0, 5.1.0                                    |
++------------+-------+-----------------------------------------------------------------------+
+|   8.1.26   | 23.05 | 6.0.0, 5.7.1, 5.7.0, 5.6.0, 5.5.1*, 5.4.3, 5.4.0, 5.3.0, 5.2.0, 5.1.0 |
++------------+-------+-----------------------------------------------------------------------+
+|   8.1.27   | 23.09 | 6.0.0, 5.7.1, 5.7.0, 5.6.0, 5.5.1*, 5.4.3, 5.4.0, 5.3.0, 5.2.0, 5.1.0 |
++------------+-------+-----------------------------------------------------------------------+
+|   8.1.30   | 23.12 | 6.0.0, 5.7.1, 5.7.0*, 5.6.0, 5.5.1, 5.4.3, 5.4.0, 5.3.0, 5.2.0, 5.1.0 |
++------------+-------+-----------------------------------------------------------------------+
+
+.. note::
+
+    OLCF recommends using the officially supported ROCm version (with asterisk) for each ``cray-mpich`` version.
+    Newer versions were tested using a sample of MPI operations and there may be undiscovered incompatibility.
+
 
 OpenMP
 ------
@@ -810,7 +835,7 @@ This section shows how to compile HIP codes using the Cray compiler wrappers and
 +-------------------+--------------------------------------------------------------------------------------------------------------------------+
 | ``hipcc``         | | Can be used directly to compile HIP source files.                                                                      |
 |                   | | To see what is being invoked within this compiler driver, issue the command, ``hipcc --verbose``                       |
-|                   | | To explicitly target AMD MI250X, use ``--amdgpu-target=gfx90a``                                                        |
+|                   | | To explicitly target AMD MI250X, use ``--offload-arch=gfx90a``                                                         |
 +-------------------+--------------------------------------------------------------------------------------------------------------------------+
 
 .. note:: 
@@ -838,7 +863,7 @@ This section shows how to compile HIP + OpenMP CPU threading hybrid codes.
 |          |           | | ``-L${ROCM_PATH}/lib -lamdhip64``                                                                                               |
 |          +-----------+-----------------------------------------------------------------------------------------------------------------------------------+
 |          | ``hipcc`` | | Can be used to directly compile HIP source files, add ``-fopenmp`` flag to enable OpenMP threading                              |
-|          |           | | To explicitly target AMD MI250X, use ``--amdgpu-target=gfx90a``                                                                 |
+|          |           | | To explicitly target AMD MI250X, use ``--offload-arch=gfx90a``                                                                  |
 +----------+-----------+-----------------------------------------------------------------------------------------------------------------------------------+
 | GNU      | ``CC``    | | The GNU compilers cannot be used to compile HIP code, so all HIP kernels must be separated from CPU code.                       |
 |          |           | | During compilation, all non-HIP files must be compiled with ``CC`` while HIP kernels must be compiled with ``hipcc``.           |
@@ -3343,16 +3368,16 @@ Compiling HIP kernels for specific XNACK modes
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Although XNACK is a capability of the MI250X GPU, it does require that kernels be able to recover from page faults. Both the ROCm and CCE HIP compilers will default to generating code that runs correctly with both XNACK enabled and disabled. Some applications may benefit from using the following compilation options to target specific XNACK modes.
 
-| ``hipcc --amdgpu-target=gfx90a`` or ``CC --offload-arch=gfx90a -x hip``
+| ``hipcc --offload-arch=gfx90a`` or ``CC --offload-arch=gfx90a -x hip``
 |   Kernels are compiled to a single "xnack any" binary, which will run correctly with both XNACK enabled and XNACK disabled.
 
-| ``hipcc --amdgpu-target=gfx90a:xnack+`` or ``CC --offload-arch=gfx90a:xnack+ -x hip``
+| ``hipcc --offload-arch=gfx90a:xnack+`` or ``CC --offload-arch=gfx90a:xnack+ -x hip``
 |   Kernels are compiled in "xnack plus" mode and will *only* be able to run on GPUs with ``HSA_XNACK=1`` to enable XNACK. Performance may be better than "xnack any", but attempts to run with XNACK disabled will fail.
 
-| ``hipcc --amdgpu-target=gfx90a:xnack-`` or ``CC --offload-arch=gfx90a:xnack- -x hip``
+| ``hipcc --offload-arch=gfx90a:xnack-`` or ``CC --offload-arch=gfx90a:xnack- -x hip``
 |   Kernels are compiled in "xnack minus" mode and will *only* be able to run on GPUs with ``HSA_XNACK=0`` and XNACK disabled. Performance may be better than "xnack any", but attempts to run with XNACK enabled will fail.
 
-| ``hipcc --amdgpu-target=gfx90a:xnack- --amdgpu-target=gfx90a:xnack+ -x hip`` or ``CC --offload-arch=gfx90a:xnack- --offload-arch=gfx90a:xnack+ -x hip``
+| ``hipcc --offload-arch=gfx90a:xnack- --offload-arch=gfx90a:xnack+ -x hip`` or ``CC --offload-arch=gfx90a:xnack- --offload-arch=gfx90a:xnack+ -x hip``
 |   Two versions of each kernel will be generated, one that runs with XNACK disabled and one that runs if XNACK is enabled. This is different from "xnack any" in that two versions of each kernel are compiled and HIP picks the appropriate one at runtime, rather than there being a single version compatible with both. A "fat binary" compiled in this way will have the same performance of "xnack+" with ``HSA_XNACK=1`` and as "xnack-" with ``HSA_XNACK=0``, but the final executable will be larger since it contains two copies of every kernel.
 
 If the HIP runtime cannot find a kernel image that matches the XNACK mode of the device, it will fail with ``hipErrorNoBinaryForGpu``.
@@ -3372,7 +3397,7 @@ If the HIP runtime cannot find a kernel image that matches the XNACK mode of the
     The AMD tool `roc-obj-ls` will let you see what code objects are in a binary.
 
     .. code::
-        $ hipcc --amdgpu-target=gfx90a:xnack+ square.hipref.cpp -o xnack_plus.exe
+        $ hipcc --offload-arch=gfx90a:xnack+ square.hipref.cpp -o xnack_plus.exe
         $ roc-obj-ls -v xnack_plus.exe
         Bundle# Entry ID:                                                              URI:
         1       host-x86_64-unknown-linux                                           file://xnack_plus.exe#offset=8192&size=0
@@ -3381,7 +3406,7 @@ If the HIP runtime cannot find a kernel image that matches the XNACK mode of the
     If no XNACK flag is specificed at compilation the default is "xnack any", and objects in `roc-obj-ls` with not have an XNACK mode specified.
 
     .. code::
-        $ hipcc --amdgpu-target=gfx90a square.hipref.cpp -o xnack_any.exe
+        $ hipcc --offload-arch=gfx90a square.hipref.cpp -o xnack_any.exe
         $ roc-obj-ls -v xnack_any.exe
         Bundle# Entry ID:                                                              URI:
         1       host-x86_64-unknown-linux                                           file://xnack_any.exe#offset=8192&size=0
