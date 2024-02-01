@@ -104,9 +104,12 @@ Building a Simple Image
 .. note::
    Singularity requires libevent installed in any container you build in order for it to work correctly with the jsrun job launcher.
 
-- Build the container image with ``podman build -t simple -f simple.dockerfile .``.
+- Build the container image with ``podman build --net=host -t simple -f simple.dockerfile .``.
 
   * The ``-t`` flag names the container image and the ``-f`` flag indicates the file to use for building the image.
+
+.. note::
+   Podman (v4.1.1) installed on Summit requires the ``--net=host`` option when building a container otherwise it will fail.
 
 - Run ``podman image ls`` to see the list of images. ``localhost/simple`` should be among them. Any container created without an explicit url to a container registry in its name will automatically have the ``localhost`` prefix.
   ::
@@ -130,7 +133,7 @@ If you are familiar with using a container registry like DockerHub, you can use 
 and use Singularity to pull from the registry and build the sif file. Below, we will use DockerHub as the example but there are many
 other container registries that you can use.
 
-- Using the ``simple`` example from the previous section, build the container image with ``podman build -t docker.io/<username>/simple -f simple.dockerfile .`` where ``<username>`` is your user on DockerHub.
+- Using the ``simple`` example from the previous section, build the container image with ``podman build --net=host -t docker.io/<username>/simple -f simple.dockerfile .`` where ``<username>`` is your user on DockerHub.
 
   - ``podman push`` uses the URL in the container image's name to push to the appropriate registry.
 
@@ -191,6 +194,8 @@ As a simple example, we will run ``hostname`` with the Singularity container.
      h41n08
      h41n09
 
+.. note::
+   You may encounter the following in your output ``INFO:    /etc/singularity/ exists; cleanup by system administrator is not complete (see https://apptainer.org/docs/admin/latest/singularity_migration.html)``. This is caused by the Singularity project being renamed to Apptainer. Please ignore the above output. It should not affect any containers you run.
 
 .. _olcf-mpi-base-image:
 
@@ -235,15 +240,15 @@ Let's build an simple MPI example container using the prebuilt MPI base image fr
      COPY mpiexample.c /app
      RUN cd /app && mpicc -o mpiexample mpiexample.c
 
-- The MPI base image only supports gcc/9.1.0 at the moment in order to be able to compile an MPI program during the container build.
+- The MPI base image was compiled using the system gcc (v8.5.0).
   So run the following commands to build the Podman image and convert it to the Singularity format.
   ::
 
      module purge
      module load DefApps
-     module load gcc/9.1.0
+     module unload xl
      module -t list
-     podman build -v $MPI_ROOT:$MPI_ROOT -f mpiexample.dockerfile -t mpiexample:latest .;
+     podman build --net=host -v $MPI_ROOT:$MPI_ROOT -f mpiexample.dockerfile -t mpiexample:latest .;
      podman save -o mpiexampleimage.tar localhost/mpiexample:latest;
      singularity build --disable-cache mpiexampleimage.sif docker-archive://mpiexampleimage.tar;
 
@@ -267,14 +272,14 @@ Let's build an simple MPI example container using the prebuilt MPI base image fr
      
      module purge
      module load DefApps
-     module load  gcc/9.1.0
+     module unload xl
      
-     source /gpfs/alpine/stf007/world-shared/containers/utils/requiredmpilibs.source
+     source /gpfs/alpine2/stf243/world-shared/containers/utils/requiredmpilibs.source
      
      jsrun -n 8 -r4  singularity exec --bind $MPI_ROOT:$MPI_ROOT,/autofs/nccs-svm1_home1,/autofs/nccs-svm1_home1:/ccs/home mpiexampleimage.sif /app/mpiexample
      
      # uncomment the below to run the preinstalled osubenchmarks from the container.
-     #jsrun -n 8 -r 4 singularity exec --bind $MPI_ROOT:$MPI_ROOT,/autofs/nccs-svm1_home1,/autofs/nccs-svm1_home1:/ccs/home mpiimage.sif /osu-micro-benchmarks-5.7/mpi/collective/osu_allgather
+     #jsrun -n 8 -r 4 singularity exec --bind $MPI_ROOT:$MPI_ROOT,/autofs/nccs-svm1_home1,/autofs/nccs-svm1_home1:/ccs/home mpiexampleimage.sif /osu-micro-benchmarks-5.7/mpi/collective/osu_allgather
 
 
 You can view the Dockerfiles used to build the MPI base image at the `code.ornl.gov
@@ -294,7 +299,7 @@ Singularity provides the ability to access the GPUs from the containers, allowin
 The OLCF provided MPI base image already has CUDA libraries preinstalled and can be used for CUDA programs as well. You can pull it with Podman with ``podman pull code.ornl.gov:4567/olcfcontainers/olcfbaseimages/mpiimage-centos-cuda``. 
 
 .. note::
-   The OLCF provided MPI base image currently has CUDA 11.0.3 and CuDNN 8.2. If these don't fit your needs, you can build your own base image by modifying the files from the `code.ornl.gov repository <https://code.ornl.gov/olcfcontainers/olcfbaseimages>`_.
+   The OLCF provided MPI base image currently has CUDA 11.7.1 and CuDNN 8.5. If these don't fit your needs, you can build your own base image by modifying the files from the `code.ornl.gov repository <https://code.ornl.gov/olcfcontainers/olcfbaseimages>`_.
 
 Let's build an simple CUDA example container using the MPI base image from the repository.
 
@@ -355,7 +360,7 @@ Let's build an simple CUDA example container using the MPI base image from the r
 - Run the following commands to build the container image with Podman and convert it to Singularity
   :: 
      
-     podman build -f gpuexample.dockerfile -t gpuexample:latest .;
+     podman build --net=host -f gpuexample.dockerfile -t gpuexample:latest .;
      podman save -o gpuexampleimage.tar localhost/gpuexample:latest;
      singularity build --disable-cache gpuexampleimage.sif docker-archive://gpuexampleimage.tar;
 
@@ -393,6 +398,10 @@ You can run containers with CUDA-aware MPI as well. CUDA-aware MPI allows transf
 data with MPI without needing to copy the data over to CPU memory first. Read more
 :ref:`CUDA-Aware MPI`.
 
+.. note::
+   Due to spectrum-mpi not supporting CUDA >=12 or gcc/12, the provided CUDA-Aware images were built with CUDA 11.7.1 and the system GCC (v8.5.0).
+   Users are welcome to try and use newer versions of CUDA or GCC but they are not supported.
+
 Let's build and run a container that will demonstrate CUDA-aware MPI. 
 
 - Create a new directory ``cudaawarempiexample``.
@@ -418,9 +427,10 @@ Let's build and run a container that will demonstrate CUDA-aware MPI.
      
      module purge
      module load DefApps
-     module load gcc/9.1.0
+     module unload xl
+     module load cuda/11.7.1
      module -t list
-     podman build --build-arg mpi_root=$MPI_ROOT -v $MPI_ROOT:$MPI_ROOT -f cudaawarempiexample.dockerfile -t cudaawarempiexample:latest .;
+     podman build --net=host --build-arg mpi_root=$MPI_ROOT -v $MPI_ROOT:$MPI_ROOT -f cudaawarempiexample.dockerfile -t cudaawarempiexample:latest .;
      podman save -o cudaawarempiexampleimage.tar localhost/cudaawarempiexample:latest;
      singularity build --disable-cache cudaawarempiexampleimage.sif docker-archive://cudaawarempiexampleimage.tar;
 
@@ -447,9 +457,10 @@ Let's build and run a container that will demonstrate CUDA-aware MPI.
      
      module purge
      module load DefApps
-     module load  gcc/9.1.0
+     module unload xl
+     module load cuda/11.7.1
      
-     source /gpfs/alpine/stf007/world-shared/containers/utils/requiredmpilibs.source
+     source /gpfs/alpine2/stf243/world-shared/containers/utils/requiredmpilibs.source
      
      jsrun --smpiargs="-gpu" -n 2 -a 1 -r 1 -c 42 -g 6 singularity exec --nv --bind $MPI_ROOT:$MPI_ROOT,/autofs/nccs-svm1_home1,/autofs/nccs-svm1_home1:/ccs/home cudaawarempiexampleimage.sif /app/pp_cuda_aware
  
