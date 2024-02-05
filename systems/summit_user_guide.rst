@@ -15,7 +15,7 @@ Summit User Guide
     Alpine2, Summit's new GPFS scratch filesystem is now available to replace the previous scratch filesystem.  The new filesystem is mounted on Summit, Andes, and the DTNs.  Returning users will need to transfer data onto Apline2 since data on the previous scratch filesystem is no longer available.
 
   Software Updates
-    Summit's software has been updated.  Returning users should recompile prior to running.
+    Summit's software has been updated.  Returning users should recompile prior to running.  A list of default software updates can be found on https://docs.olcf.ornl.gov/software/software-news.html . Please note the previous software stack remains available and can be accessed by loading the DefApps-2023 modulefile. For convenience, a DefApps-2024 is also provide to restore the most recent version of packages.
 
 
 
