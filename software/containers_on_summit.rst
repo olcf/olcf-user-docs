@@ -5,18 +5,18 @@ Containers on Summit
 ********************
 
 Users can build container images with Podman, convert it to a SIF file, and run the
-container using the Singularity runtime. This page is intended for users with some
+container using the Apptainer runtime. This page is intended for users with some
 familiarity with building and running containers.
 
 Basic Information
 =================
 
-Users will make use of two applications on Summit - Podman and Singularity - in their
+Users will make use of two applications on Summit - Podman and Apptainer - in their
 container build and run workflow. Both are available without needing to load any modules.
 
 Podman is a container framework from Red Hat that functions as a drop in replacement for
 Docker. On Summit, we will use Podman for building container images and converting them
-into tar files for Singularity to use. Podman makes use of Dockerfiles to describe the
+into tar files for Apptainer to use. Podman makes use of Dockerfiles to describe the
 images to be built. We cannot use Podman to run
 containers as it doesn't properly support MPI on Summit, and Podman does not support
 storing its container images on GPFS or NFS.
@@ -39,17 +39,17 @@ using ``podman save`` and stored elsewhere if you wish to preserve your image.
    progress or completed container image build as a tar file or sif file before you close
    a session.
 
-Singularity is a container framework from Sylabs. On Summit, we will use Singularity
+Apptainer is a container framework from Sylabs. On Summit, we will use Apptainer
 solely as the runtime. We will convert the tar files of the container images Podman
 creates into sif files, store those sif files on GPFS, and run them with
-Jsrun. Singularity also allows building images but ordinary users cannot utilize that on
+Jsrun. Apptainer also allows building images but ordinary users cannot utilize that on
 Summit due to additional permissions not allowed for regular users.
 
 Users will be building and running containers on Summit without root permissions
 i.e. containers on Summit are rootless.  This means users can get the benefits of
 containers without needing additional privileges. This is necessary for a shared system
 like Summit. And this is part of the reason why Docker doesn't work on Summit. Podman and
-Singularity provides rootless support but to different extents hence why users need to use
+Apptainer provides rootless support but to different extents hence why users need to use
 a combination of both.
 
 
@@ -102,11 +102,14 @@ Building a Simple Image
    You will notice the use of the fakeroot command when doing package installs with dnf. This is necessary as some some package installations require root permissions on container which the container builder does not have. So fakeroot allows dnf to think it is running as root and allows the installation to succeed.
 
 .. note::
-   Singularity requires libevent installed in any container you build in order for it to work correctly with the jsrun job launcher.
+   Apptainer requires libevent installed in any container you build in order for it to work correctly with the jsrun job launcher.
 
-- Build the container image with ``podman build -t simple -f simple.dockerfile .``.
+- Build the container image with ``podman build --net=host -t simple -f simple.dockerfile .``.
 
   * The ``-t`` flag names the container image and the ``-f`` flag indicates the file to use for building the image.
+
+.. note::
+   Podman (v4.1.1) installed on Summit requires the ``--net=host`` option when building a container otherwise it will fail.
 
 - Run ``podman image ls`` to see the list of images. ``localhost/simple`` should be among them. Any container created without an explicit url to a container registry in its name will automatically have the ``localhost`` prefix.
   ::
@@ -117,7 +120,7 @@ Building a Simple Image
      quay.io/centos/centos  stream8  ad6f8b5e7f64  8 days ago   497 MB
 
 - Convert this Podman container image into a tar file with ``podman save -o simple.tar localhost/simple``.
-- Convert the tar file into a Singularity sif file with  ``singularity build --disable-cache simple.sif docker-archive://simple.tar``
+- Convert the tar file into a Apptainer sif file with  ``apptainer build --disable-cache simple.sif docker-archive://simple.tar``
 
 .. note::
    You will also notice that we use centos:stream8 as our base image in the example. If you're planning on building a container image from scratch instead of using the OLCF MPI base image , use a centos:stream8 image with fakeroot installed as demonstrated above as your starting point (we talk about the OLCF MPI base image later in the :ref:`olcf-mpi-base-image` section). Ubuntu would be difficult to use as a starting point since ``apt-get`` requires root from the get-go, and you can't even do a ``apt-get -y fakeroot`` to get you started. Other distributions haven't been tested. Using centos for this case for now is the most user friendly option).
@@ -127,10 +130,10 @@ Using a Container Registry to Build and Save your Images
 --------------------------------------------------------
 
 If you are familiar with using a container registry like DockerHub, you can use that to save your Podman container images
-and use Singularity to pull from the registry and build the sif file. Below, we will use DockerHub as the example but there are many
+and use Apptainer to pull from the registry and build the sif file. Below, we will use DockerHub as the example but there are many
 other container registries that you can use.
 
-- Using the ``simple`` example from the previous section, build the container image with ``podman build -t docker.io/<username>/simple -f simple.dockerfile .`` where ``<username>`` is your user on DockerHub.
+- Using the ``simple`` example from the previous section, build the container image with ``podman build --net=host -t docker.io/<username>/simple -f simple.dockerfile .`` where ``<username>`` is your user on DockerHub.
 
   - ``podman push`` uses the URL in the container image's name to push to the appropriate registry.
 
@@ -147,22 +150,22 @@ other container registries that you can use.
 
 - Push the container image to the registry with ``podman push docker.io/<username>/simple``.
 
--  You can now create a Singularity sif file with ``singularity build --disable-cache --docker-login simple.sif docker://docker.io/<username>/simple``.
+-  You can now create a Apptainer sif file with ``apptainer build --disable-cache --docker-login simple.sif docker://docker.io/<username>/simple``.
 
-   - This will ask you to enter your Docker username and password again for Singularity to download the image from Dockerhub and convert it to a sif file.
+   - This will ask you to enter your Docker username and password again for Apptainer to download the image from Dockerhub and convert it to a sif file.
 
 .. note::
-   The reason we include the ``--disable-cache`` flag is because Singularity's caching can
+   The reason we include the ``--disable-cache`` flag is because Apptainer's caching can
    fill up your home directory without you realizing it. And if the home directory is
-   full, Singularity builds will fail. If you wish to make use of the cache, you can set
+   full, Apptainer builds will fail. If you wish to make use of the cache, you can set
    the environment variable
-   ``SINGULARITY_CACHEDIR=/tmp/containers/<user>/singularitycache`` or something like that
+   ``APPTAINER_CACHEDIR=/tmp/containers/<user>/apptainercache`` or something like that
    so that the NVMe storage is used as the cache.
 
 Running a Simple Container in a Batch Job
 -----------------------------------------
 
-As a simple example, we will run ``hostname`` with the Singularity container.
+As a simple example, we will run ``hostname`` with the Apptainer container.
 
 - Create a file submit.lsf with the contents below.
   ::
@@ -177,7 +180,7 @@ As a simple example, we will run ``hostname`` with the Singularity container.
      #BSUB -o simple_container_job.%J
      #BSUB -e simple_container_job.%J
 
-     jsrun -n2 singularity exec ./simple.sif hostname
+     jsrun -n2 apptainer exec ./simple.sif hostname
 
 - Submit the job with ``bsub submit.lsf``. This should produce an output that looks like:
   ::
@@ -185,19 +188,21 @@ As a simple example, we will run ``hostname`` with the Singularity container.
      h41n08
      h41n08
 
-  Here, Jsrun starts 2 separate Singularity container runtimes since we pass the -n2 flag to start two processes. Each Singularity container runtime then loads the container image simple.sif and executes the ``hostname`` command from that container. If we had requested 2 nodes in the batch script and had run ``jsrun -n2 -r1 singularity exec ./simple.sif hostname``, Jsrun would've started a Singularity runtime on each node and the output would look something like 
+  Here, Jsrun starts 2 separate Apptainer container runtimes since we pass the -n2 flag to start two processes. Each Apptainer container runtime then loads the container image simple.sif and executes the ``hostname`` command from that container. If we had requested 2 nodes in the batch script and had run ``jsrun -n2 -r1 apptainer exec ./simple.sif hostname``, Jsrun would've started a Apptainer runtime on each node and the output would look something like 
   ::
 
      h41n08
      h41n09
 
+.. note::
+   You may encounter the following in your output ``INFO:    /etc/apptainer/ exists; cleanup by system administrator is not complete (see https://apptainer.org/docs/admin/latest/apptainer_migration.html)``. This is caused by the Apptainer project being renamed to Apptainer. Please ignore the above output. It should not affect any containers you run.
 
 .. _olcf-mpi-base-image:
 
 Running an MPI program with the OLCF MPI base image
 --------------------------------------------------- 
 
-Creating Singularity containers that run MPI programs require a few additional steps. 
+Creating Apptainer containers that run MPI programs require a few additional steps. 
 
 OLCF provides an MPI base image that you can use for MPI programs. You can pull it with Podman with ``podman pull code.ornl.gov:4567/olcfcontainers/olcfbaseimages/mpiimage-centos-cuda``
 
@@ -235,22 +240,22 @@ Let's build an simple MPI example container using the prebuilt MPI base image fr
      COPY mpiexample.c /app
      RUN cd /app && mpicc -o mpiexample mpiexample.c
 
-- The MPI base image only supports gcc/9.1.0 at the moment in order to be able to compile an MPI program during the container build.
-  So run the following commands to build the Podman image and convert it to the Singularity format.
+- The MPI base image was compiled using the system gcc (v8.5.0).
+  So run the following commands to build the Podman image and convert it to the Apptainer format.
   ::
 
      module purge
      module load DefApps
-     module load gcc/9.1.0
+     module unload xl
      module -t list
-     podman build -v $MPI_ROOT:$MPI_ROOT -f mpiexample.dockerfile -t mpiexample:latest .;
+     podman build --net=host -v $MPI_ROOT:$MPI_ROOT -f mpiexample.dockerfile -t mpiexample:latest .;
      podman save -o mpiexampleimage.tar localhost/mpiexample:latest;
-     singularity build --disable-cache mpiexampleimage.sif docker-archive://mpiexampleimage.tar;
+     apptainer build --disable-cache mpiexampleimage.sif docker-archive://mpiexampleimage.tar;
 
-- It's possible the ``singularity build`` step might get killed due to reaching cgroup memory limit. To get around this, you can start an interactive job and build the singularity image with
+- It's possible the ``apptainer build`` step might get killed due to reaching cgroup memory limit. To get around this, you can start an interactive job and build the apptainer image with
   ::
 
-     jsrun -n1 -c42 -brs singularity build --disable-cache mpiexampleimage.sif docker-archive://mpiexampleimage.tar;
+     jsrun -n1 -c42 -brs apptainer build --disable-cache mpiexampleimage.sif docker-archive://mpiexampleimage.tar;
 
   (remember to do the above in ``/gpfs`` or specify the full path for the sif file somewhere in GPFS. If you try to save the sif file in your home directory you will error out because NFS is read-only from the compute nodes).
 
@@ -261,20 +266,20 @@ Let's build an simple MPI example container using the prebuilt MPI base image fr
      #BSUB -P STF007
      #BSUB -W 0:30
      #BSUB -nnodes 2
-     #BSUB -J singularity
-     #BSUB -o singularity.%J
-     #BSUB -e singularity.%J
+     #BSUB -J apptainer
+     #BSUB -o apptainer.%J
+     #BSUB -e apptainer.%J
      
      module purge
      module load DefApps
-     module load  gcc/9.1.0
+     module unload xl
      
-     source /gpfs/alpine/stf007/world-shared/containers/utils/requiredmpilibs.source
+     source /gpfs/alpine2/stf243/world-shared/containers/utils/requiredmpilibs.source
      
-     jsrun -n 8 -r4  singularity exec --bind $MPI_ROOT:$MPI_ROOT,/autofs/nccs-svm1_home1,/autofs/nccs-svm1_home1:/ccs/home mpiexampleimage.sif /app/mpiexample
+     jsrun -n 8 -r4  apptainer exec --bind $MPI_ROOT:$MPI_ROOT,/autofs/nccs-svm1_home1,/autofs/nccs-svm1_home1:/ccs/home mpiexampleimage.sif /app/mpiexample
      
      # uncomment the below to run the preinstalled osubenchmarks from the container.
-     #jsrun -n 8 -r 4 singularity exec --bind $MPI_ROOT:$MPI_ROOT,/autofs/nccs-svm1_home1,/autofs/nccs-svm1_home1:/ccs/home mpiimage.sif /osu-micro-benchmarks-5.7/mpi/collective/osu_allgather
+     #jsrun -n 8 -r 4 apptainer exec --bind $MPI_ROOT:$MPI_ROOT,/autofs/nccs-svm1_home1,/autofs/nccs-svm1_home1:/ccs/home mpiexampleimage.sif /osu-micro-benchmarks-5.7/mpi/collective/osu_allgather
 
 
 You can view the Dockerfiles used to build the MPI base image at the `code.ornl.gov
@@ -290,11 +295,11 @@ try running the build again if that happens when building.
 Running a single node GPU program with the OLCF MPI base image
 --------------------------------------------------------------
 
-Singularity provides the ability to access the GPUs from the containers, allowing you to containerize GPU programs. 
+Apptainer provides the ability to access the GPUs from the containers, allowing you to containerize GPU programs. 
 The OLCF provided MPI base image already has CUDA libraries preinstalled and can be used for CUDA programs as well. You can pull it with Podman with ``podman pull code.ornl.gov:4567/olcfcontainers/olcfbaseimages/mpiimage-centos-cuda``. 
 
 .. note::
-   The OLCF provided MPI base image currently has CUDA 11.0.3 and CuDNN 8.2. If these don't fit your needs, you can build your own base image by modifying the files from the `code.ornl.gov repository <https://code.ornl.gov/olcfcontainers/olcfbaseimages>`_.
+   The OLCF provided MPI base image currently has CUDA 11.7.1 and CuDNN 8.5. If these don't fit your needs, you can build your own base image by modifying the files from the `code.ornl.gov repository <https://code.ornl.gov/olcfcontainers/olcfbaseimages>`_.
 
 Let's build an simple CUDA example container using the MPI base image from the repository.
 
@@ -352,18 +357,18 @@ Let's build an simple CUDA example container using the MPI base image from the r
      RUN cd /app && nvcc -o cudaexample cudaexample.cu
 
 
-- Run the following commands to build the container image with Podman and convert it to Singularity
+- Run the following commands to build the container image with Podman and convert it to Apptainer
   :: 
      
-     podman build -f gpuexample.dockerfile -t gpuexample:latest .;
+     podman build --net=host -f gpuexample.dockerfile -t gpuexample:latest .;
      podman save -o gpuexampleimage.tar localhost/gpuexample:latest;
-     singularity build --disable-cache gpuexampleimage.sif docker-archive://gpuexampleimage.tar;
+     apptainer build --disable-cache gpuexampleimage.sif docker-archive://gpuexampleimage.tar;
 
 
-- It's possible the ``singularity build`` step might get killed due to reaching cgroup memory limit. To get around this, you can start an interactive job and build the singularity image with
+- It's possible the ``apptainer build`` step might get killed due to reaching cgroup memory limit. To get around this, you can start an interactive job and build the apptainer image with
   ::
 
-     jsrun -n1 -c42 -brs singularity build --disable-cache gpuexampleimage.sif docker-archive://gpuexampleimage.tar;
+     jsrun -n1 -c42 -brs apptainer build --disable-cache gpuexampleimage.sif docker-archive://gpuexampleimage.tar;
 
   (remember to do this in /gpfs or specify the full path for the sif file somewhere in
   GPFS. If you try to save the sif file in your home directory you will error out because
@@ -377,13 +382,15 @@ Let's build an simple CUDA example container using the MPI base image from the r
      #BSUB -P STF007
      #BSUB -W 0:30
      #BSUB -nnodes 1
-     #BSUB -J singularity
-     #BSUB -o singularity.%J
-     #BSUB -e singularity.%J
+     #BSUB -J apptainer
+     #BSUB -o apptainer.%J
+     #BSUB -e apptainer.%J
      
-     jsrun -n 1 -c 1 -g 1 singularity exec --nv gpuexampleimage.sif /app/cudaexample
+     module unload spectrum-mpi
 
-  The ``--nv`` flag is needed to tell Singularity to make use of the GPU.
+     jsrun -n 1 -c 1 -g 1 apptainer exec --nv gpuexampleimage.sif /app/cudaexample
+
+  The ``--nv`` flag is needed to tell Apptainer to make use of the GPU.
 
 
 Running a CUDA-Aware MPI program with the OLCF MPI base image
@@ -392,6 +399,10 @@ Running a CUDA-Aware MPI program with the OLCF MPI base image
 You can run containers with CUDA-aware MPI as well. CUDA-aware MPI allows transferring GPU
 data with MPI without needing to copy the data over to CPU memory first. Read more
 :ref:`CUDA-Aware MPI`.
+
+.. note::
+   Due to spectrum-mpi not supporting CUDA >=12 or gcc/12, the provided CUDA-Aware images were built with CUDA 11.7.1 and the system GCC (v8.5.0).
+   Users are welcome to try and use newer versions of CUDA or GCC but they are not supported.
 
 Let's build and run a container that will demonstrate CUDA-aware MPI. 
 
@@ -413,22 +424,23 @@ Let's build and run a container that will demonstrate CUDA-aware MPI.
      COPY ping_pong_cuda_aware.cu Makefile /app
      RUN cd /app && make
 
-- Run the following commands to build the container image with Podman and convert it to Singularity
+- Run the following commands to build the container image with Podman and convert it to Apptainer
   :: 
      
      module purge
      module load DefApps
-     module load gcc/9.1.0
+     module unload xl
+     module load cuda/11.7.1
      module -t list
-     podman build --build-arg mpi_root=$MPI_ROOT -v $MPI_ROOT:$MPI_ROOT -f cudaawarempiexample.dockerfile -t cudaawarempiexample:latest .;
+     podman build --net=host --build-arg mpi_root=$MPI_ROOT -v $MPI_ROOT:$MPI_ROOT -f cudaawarempiexample.dockerfile -t cudaawarempiexample:latest .;
      podman save -o cudaawarempiexampleimage.tar localhost/cudaawarempiexample:latest;
-     singularity build --disable-cache cudaawarempiexampleimage.sif docker-archive://cudaawarempiexampleimage.tar;
+     apptainer build --disable-cache cudaawarempiexampleimage.sif docker-archive://cudaawarempiexampleimage.tar;
 
 
-- It's possible the ``singularity build`` step might get killed due to reaching cgroup memory limit. To get around this, you can start an interactive job and build the singularity image with
+- It's possible the ``apptainer build`` step might get killed due to reaching cgroup memory limit. To get around this, you can start an interactive job and build the apptainer image with
   ::
 
-     jsrun -n1 -c42 -brs singularity build cudaawarempiexampleimage.sif docker-archive://cudaawarempiexampleimage.tar;
+     jsrun -n1 -c42 -brs apptainer build cudaawarempiexampleimage.sif docker-archive://cudaawarempiexampleimage.tar;
 
   (remember to do this in /gpfs or specify the full path for the sif file somewhere in
   GPFS. If you try to save the sif file in your home directory you will error out because
@@ -441,21 +453,22 @@ Let's build and run a container that will demonstrate CUDA-aware MPI.
      #BSUB -P STF007
      #BSUB -W 0:30
      #BSUB -nnodes 2
-     #BSUB -J singularity
-     #BSUB -o singularity.%J
-     #BSUB -e singularity.%J
+     #BSUB -J apptainer
+     #BSUB -o apptainer.%J
+     #BSUB -e apptainer.%J
      
      module purge
      module load DefApps
-     module load  gcc/9.1.0
+     module unload xl
+     module load cuda/11.7.1
      
-     source /gpfs/alpine/stf007/world-shared/containers/utils/requiredmpilibs.source
+     source /gpfs/alpine2/stf243/world-shared/containers/utils/requiredmpilibs.source
      
-     jsrun --smpiargs="-gpu" -n 2 -a 1 -r 1 -c 42 -g 6 singularity exec --nv --bind $MPI_ROOT:$MPI_ROOT,/autofs/nccs-svm1_home1,/autofs/nccs-svm1_home1:/ccs/home cudaawarempiexampleimage.sif /app/pp_cuda_aware
+     jsrun --smpiargs="-gpu" -n 2 -a 1 -r 1 -c 42 -g 6 apptainer exec --nv --bind $MPI_ROOT:$MPI_ROOT,/autofs/nccs-svm1_home1,/autofs/nccs-svm1_home1:/ccs/home cudaawarempiexampleimage.sif /app/pp_cuda_aware
  
  
 
-  The ``--nv`` flag is needed to tell Singularity to make use of the GPU.
+  The ``--nv`` flag is needed to tell Apptainer to make use of the GPU.
 
 Tips, Tricks, and Things to Watch Out For
 =========================================
@@ -473,10 +486,10 @@ Tips, Tricks, and Things to Watch Out For
 - If you already have a "image.tar" file created with ``podman save`` from earlier that
   you are trying to replace, you will need to delete it first before running any other
   ``podman save`` to replace it. ``podman save`` won't overwrite the tar file for you.
-- Not using the ``--disable-cache`` flag in your ``singularity build`` commands could
-  cause your home directory to get quickly filled by singularity caching image data. You
+- Not using the ``--disable-cache`` flag in your ``apptainer build`` commands could
+  cause your home directory to get quickly filled by apptainer caching image data. You
   can set the cache to a location in ``/tmp/containers`` with ``export
-  SINGULARITY_CACHEDIR=/tmp/containers/<username>/singularitycache`` if you want to avoid
+  APPTAINER_CACHEDIR=/tmp/containers/<username>/apptainercache`` if you want to avoid
   using the ``--disable-cache`` flag.
 - If you see an error that looks something like ``ERRO[0000] stat /run/user/16248: no such
   file or directory`` or ``Error: Cannot connect to the Podman socket, make sure there is
@@ -486,7 +499,7 @@ Tips, Tricks, and Things to Watch Out For
   currently logged in to. If all else fails, write to the help@olcf.ornl.gov and we can
   see if the issue can be fixed from there.
 - If you're trying to mount your home directory with ``--bind
-  /ccs/home/<user>:/ccs/home/<user>`` in your ``singularity exec`` command, it might not
+  /ccs/home/<user>:/ccs/home/<user>`` in your ``apptainer exec`` command, it might not
   work correctly. ``/ccs/home/user`` is an alias to ``/autofs/nccs-svm1_home1/user`` or
   ``/autofs/nccs-svm1_home2/user``. You can find out which one is yours with ``stat
   /ccs/home/user`` and then mount your home directory with ``--bind
