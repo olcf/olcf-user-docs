@@ -71,6 +71,7 @@ First, load the gnu compiler module (most Python packages assume GCC), hdf5 modu
 .. tab-set::
 
    .. tab-item:: Summit
+      :sync: summit
 
       .. code-block:: bash
 
@@ -79,6 +80,7 @@ First, load the gnu compiler module (most Python packages assume GCC), hdf5 modu
          $ module load python
 
    .. tab-item:: Andes
+      :sync: andes
 
       .. code-block:: bash
 
@@ -87,6 +89,7 @@ First, load the gnu compiler module (most Python packages assume GCC), hdf5 modu
          $ module load python
 
    .. tab-item:: Frontier
+      :sync: frontier
 
       .. code-block:: bash
 
@@ -101,18 +104,21 @@ Loading a python module puts you in a "base" environment, but you need to create
 .. tab-set::
 
    .. tab-item:: Summit
+      :sync: summit
 
       .. code-block:: bash
 
          $ conda create -p /ccs/proj/<project_id>/<user_id>/envs/summit/h5pympi-summit python=3.8 numpy
 
    .. tab-item:: Andes
+      :sync: andes
 
       .. code-block:: bash
 
          $ conda create -p /ccs/proj/<project_id>/<user_id>/envs/andes/h5pympi-andes python=3.8 numpy
 
    .. tab-item:: Frontier
+      :sync: frontier
 
       .. code-block:: bash
 
@@ -128,18 +134,21 @@ After following the prompts for creating your new environment, you can now activ
 .. tab-set::
 
    .. tab-item:: Summit
+      :sync: summit
 
       .. code-block:: bash
 
          $ source activate /ccs/proj/<project_id>/<user_id>/envs/summit/h5pympi-summit
 
    .. tab-item:: Andes
+      :sync: andes
 
       .. code-block:: bash
 
          $ source activate /ccs/proj/<project_id>/<user_id>/envs/andes/h5pympi-andes
 
    .. tab-item:: Frontier
+      :sync: frontier
 
       .. code-block:: bash
 
@@ -155,18 +164,21 @@ To make sure that you are building from source, and not a pre-compiled binary, u
 .. tab-set::
 
    .. tab-item:: Summit
+      :sync: summit
 
       .. code-block:: bash
 
          $ MPICC="mpicc -shared" pip install --no-cache-dir --no-binary=mpi4py mpi4py
 
    .. tab-item:: Andes
+      :sync: andes
 
       .. code-block:: bash
 
          $ MPICC="mpicc -shared" pip install --no-cache-dir --no-binary=mpi4py mpi4py
 
    .. tab-item:: Frontier
+      :sync: frontier
 
       .. code-block:: bash
 
@@ -184,18 +196,21 @@ Next, install h5py from source.
 .. tab-set::
 
    .. tab-item:: Summit
+      :sync: summit
 
       .. code-block:: bash
 
          $ HDF5_MPI="ON" CC=mpicc pip install --no-cache-dir --no-binary=h5py h5py
 
    .. tab-item:: Andes
+      :sync: andes
 
       .. code-block:: bash
 
          $ HDF5_MPI="ON" CC=mpicc pip install --no-cache-dir --no-binary=h5py h5py
 
    .. tab-item:: Frontier
+      :sync: frontier
 
       .. code-block:: bash
 
@@ -235,18 +250,21 @@ To do so, submit a job to the batch queue:
 .. tab-set::
 
    .. tab-item:: Summit
+      :sync: summit
 
       .. code-block:: bash
 
          $ bsub -L $SHELL submit_hello.lsf
 
    .. tab-item:: Andes
+      :sync: andes
 
       .. code-block:: bash
 
          $ sbatch --export=NONE submit_hello.sl
 
    .. tab-item:: Frontier
+      :sync: frontier
 
       .. code-block:: bash
 
@@ -258,6 +276,7 @@ Example "submit_hello" batch script:
 .. tab-set::
 
    .. tab-item:: Summit
+      :sync: summit
 
       .. code-block:: bash
 
@@ -281,6 +300,7 @@ Example "submit_hello" batch script:
          jsrun -n1 -r1 -a42 -c42 python3 hello_mpi.py
 
    .. tab-item:: Andes
+      :sync: andes
 
       .. code-block:: bash
 
@@ -305,6 +325,7 @@ Example "submit_hello" batch script:
          srun -n42 python3 hello_mpi.py
 
    .. tab-item:: Frontier
+      :sync: frontier
 
       .. code-block:: bash
 
@@ -374,18 +395,21 @@ Time to execute "hdf5_parallel.py" by submitting "submit_h5py" to the batch queu
 .. tab-set::
 
    .. tab-item:: Summit
+      :sync: summit
 
       .. code-block:: bash
 
          $ bsub -L $SHELL submit_h5py.lsf
 
    .. tab-item:: Andes
+      :sync: andes
 
       .. code-block:: bash
 
          $ sbatch --export=NONE submit_h5py.sl
 
    .. tab-item:: Frontier
+      :sync: frontier
 
       .. code-block:: bash
 
@@ -396,6 +420,7 @@ Example "submit_h5py" batch script:
 .. tab-set::
 
    .. tab-item:: Summit
+      :sync: summit
 
       .. code-block:: bash
 
@@ -419,6 +444,7 @@ Example "submit_h5py" batch script:
          jsrun -n1 -r1 -a42 -c42 python3 hdf5_parallel.py
 
    .. tab-item:: Andes
+      :sync: andes
 
       .. code-block:: bash
 
@@ -443,6 +469,7 @@ Example "submit_h5py" batch script:
          srun -n42 python3 hdf5_parallel.py
 
    .. tab-item:: Frontier
+      :sync: frontier
 
       .. code-block:: bash
 
