@@ -94,18 +94,22 @@ To start using Python, all you need to do is load the module:
 .. tab-set::
 
    .. tab-item:: Summit
+      :sync: summit
 
       .. code-block:: bash
 
-         $ module load python
+         $ module load DefApps-2023
+         $ module load python/3.8-anaconda3
 
    .. tab-item:: Andes
+      :sync: andes
 
       .. code-block:: bash
 
          $ module load python
 
    .. tab-item:: Frontier
+      :sync: frontier
 
       .. code-block:: bash
 
@@ -131,10 +135,12 @@ A small preview is provided below:
 .. tab-set::
 
    .. tab-item:: Summit
+      :sync: summit
 
       .. code-block:: bash
 
-         $ module load python
+         $ module load DefApps-2023
+         $ module load python/3.8-anaconda3
          $ conda list
 
          # packages in environment at /sw/summit/python/3.8/anaconda3/2020.07-rhel8:
@@ -154,6 +160,7 @@ A small preview is provided below:
          .  
 
    .. tab-item:: Andes
+      :sync: andes
 
       .. code-block:: bash
 
@@ -177,6 +184,7 @@ A small preview is provided below:
          .
 
    .. tab-item:: Frontier
+      :sync: frontier
 
       .. code-block:: bash
 
@@ -231,11 +239,13 @@ To create and activate an environment:
 .. tab-set::
 
    .. tab-item:: Summit
+      :sync: summit
 
       .. code-block:: bash
 
          #1. Load the module
-         $ module load python
+         $ module load DefApps-2023
+         $ module load python/3.8-anaconda3
 
          #2a. Create "my_env" with Python version X.Y at the desired path
          $ conda create -p /path/to/my_env python=X.Y
@@ -247,6 +257,7 @@ To create and activate an environment:
          $ source activate /path/to/my_env
 
    .. tab-item:: Andes
+      :sync: andes
 
       .. code-block:: bash
 
@@ -263,6 +274,7 @@ To create and activate an environment:
          $ source activate /path/to/my_env
 
    .. tab-item:: Frontier
+      :sync: frontier
 
       .. code-block:: bash
 
@@ -290,6 +302,7 @@ Deactivating an environment can be achieved through:
 .. tab-set::
 
    .. tab-item:: Summit
+      :sync: summit
 
       .. code-block:: bash
 
@@ -297,6 +310,7 @@ Deactivating an environment can be achieved through:
          $ source deactivate
 
    .. tab-item:: Andes
+      :sync: andes
 
       .. code-block:: bash
 
@@ -304,6 +318,7 @@ Deactivating an environment can be achieved through:
          $ source deactivate
 
    .. tab-item:: Frontier
+      :sync: frontier
 
       .. code-block:: bash
 
@@ -366,7 +381,8 @@ inside the batch script. An example batch script for Summit is provided below:
    cd $LSB_OUTDIR
    date
 
-   module load python
+   module load DefApps-2023
+   module load python/3.8-anaconda3
    source activate my_env
 
    jsrun -n1 -r1 -a1 -c1 python3 script.py
@@ -378,7 +394,8 @@ To use Python in an interactive session on Summit:
 
 .. code-block:: bash
 
-   $ module load python
+   $ module load DefApps-2023
+   $ module load python/3.8-anaconda3
    $ bsub -W 0:05 -nnodes 1 -P <PROJECT_ID> -Is $SHELL
    $ source activate my_env
    $ jsrun -n1 -r1 -a1 -c1 python3 script.py
@@ -416,6 +433,7 @@ inside the batch script. An example batch script for is provided below:
 .. tab-set::
 
    .. tab-item:: Frontier
+      :sync: frontier
 
       .. code-block:: bash
 
@@ -438,6 +456,7 @@ inside the batch script. An example batch script for is provided below:
 
 
    .. tab-item:: Andes
+      :sync: andes
 
       .. code-block:: bash
 
@@ -467,6 +486,7 @@ To use Python in an interactive session on Frontier and Andes:
 .. tab-set::
 
    .. tab-item:: Frontier
+      :sync: frontier
 
       .. code-block:: bash
 
@@ -476,6 +496,7 @@ To use Python in an interactive session on Frontier and Andes:
          $ python3 script.py
 
    .. tab-item:: Andes
+      :sync: andes
 
       .. code-block:: bash
 
@@ -526,6 +547,11 @@ Best Practices
     the compute nodes. It is also recommended, for convenience, that you use
     environment names that indicate the hostname, as virtual environments created
     on one system will not necessarily work on others.
+
+    However, for certain packages, having environments stored on NFS instead of a
+    system's parallel filesystem (like Alpine or Orion) may cause performance issues.
+    If you see slow initialization times, it may be worth creating your environment
+    on the parallel filesystem instead (is subject to purge policies).
 
 * **Adding known conda environment locations**:
 

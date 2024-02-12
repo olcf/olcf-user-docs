@@ -31,10 +31,25 @@ Inspecting and setting up an environment
 
 First, load the python module and the gnu compiler module on Summit (most Python packages assume use of GCC)
 
-.. code-block:: bash
+.. tab-set::
 
-   $ module load gcc
-   $ module load python
+   .. tab-item:: Summit
+      :sync: summit
+
+      .. code-block:: bash
+
+         $ module load DefApps-2023
+         $ module load gcc
+         $ module load python/3.8-anaconda3
+
+   .. tab-item:: Andes
+      :sync: andes
+
+      .. code-block:: bash
+
+         $ module load gcc
+         $ module load python
+
 
 .. note::
    The above ``module load python`` does not apply to Frontier (since you will be using a personal Miniconda instead).
