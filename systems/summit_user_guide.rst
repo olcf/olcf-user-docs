@@ -2006,7 +2006,7 @@ SMT modes.
 
 
 .. note::
-    Please note, a known bug is currently preventing execution of most ERF use cases. We are working to resolve the issue. If you experience issues using the ERF feature, please see the work around in `Known Issues <https://docs.olcf.ornl.gov/systems/summit_user_guide.html#open-issues>`__.
+    Please note, a known bug is currently preventing execution of most ERF use cases. We are working to resolve the issue.
 
 .. _CUDA-Aware MPI:
 
@@ -4067,13 +4067,7 @@ Users have reported errors when using ERF on Summit:
     Failed to bind process to ERF smt array, err: Invalid argument
 
 
-This is a known issue with the current version of jsrun. A workaround is to add the following lines in your job script. 
-
-::
-
-    export JSM_ROOT=/gpfs/alpine/stf007/world-shared/vgv/inbox/jsm_erf/jsm-10.4.0.4/opt/ibm/jsm
-    $JSM_ROOT/bin/jsm &
-    $JSM_ROOT/bin/jsrun --erf_input=Your_erf ./Your_app
+This is a known issue with the current version of jsrun.
 
 
 Resolved Issues
