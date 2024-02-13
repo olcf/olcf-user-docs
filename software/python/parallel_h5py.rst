@@ -75,9 +75,10 @@ First, load the gnu compiler module (most Python packages assume GCC), hdf5 modu
 
       .. code-block:: bash
 
-         $ module load gcc
-         $ module load hdf5
-         $ module load python
+         $ module load DefApps-2023
+         $ module load gcc/9.3.0
+         $ module load hdf5/1.14.0
+         $ module load python/3.8-anaconda3
 
    .. tab-item:: Andes
       :sync: andes
@@ -108,21 +109,21 @@ Loading a python module puts you in a "base" environment, but you need to create
 
       .. code-block:: bash
 
-         $ conda create -p /ccs/proj/<project_id>/<user_id>/envs/summit/h5pympi-summit python=3.8 numpy
+         $ conda create -p /ccs/proj/<project_id>/<user_id>/envs/summit/h5pympi-summit python=3.10 numpy
 
    .. tab-item:: Andes
       :sync: andes
 
       .. code-block:: bash
 
-         $ conda create -p /ccs/proj/<project_id>/<user_id>/envs/andes/h5pympi-andes python=3.8 numpy
+         $ conda create -p /ccs/proj/<project_id>/<user_id>/envs/andes/h5pympi-andes python=3.10 numpy
 
    .. tab-item:: Frontier
       :sync: frontier
 
       .. code-block:: bash
 
-         $ conda create -p /ccs/proj/<project_id>/<user_id>/envs/frontier/h5pympi-frontier python=3.8 libssh numpy -c conda-forge
+         $ conda create -p /ccs/proj/<project_id>/<user_id>/envs/frontier/h5pympi-frontier python=3.10 libssh numpy -c conda-forge
 
 .. note::
    As noted in the :doc:`/software/python/index` page, it is highly recommended to create new environments in the "Project Home" directory.
@@ -200,7 +201,7 @@ Next, install h5py from source.
 
       .. code-block:: bash
 
-         $ HDF5_MPI="ON" CC=mpicc pip install --no-cache-dir --no-binary=h5py h5py
+         $ HDF5_MPI="ON" CC=mpicc HDF5_DIR=${OLCF_HDF5_ROOT} pip install --no-cache-dir --no-binary=h5py h5py
 
    .. tab-item:: Andes
       :sync: andes
@@ -291,9 +292,10 @@ Example "submit_hello" batch script:
          cd $LSB_OUTDIR
          date
 
-         module load gcc
-         module load hdf5
-         module load python
+         module load DefApps-2023
+         module load gcc/9.3.0
+         module load hdf5/1.14.0
+         module load python/3.8-anaconda3
 
          source activate /ccs/proj/<project_id>/<user_id>/envs/summit/h5pympi-summit
 
@@ -435,9 +437,10 @@ Example "submit_h5py" batch script:
          cd $LSB_OUTDIR
          date
 
-         module load gcc
-         module load hdf5
-         module load python
+         module load DefApps-2023
+         module load gcc/9.3.0
+         module load hdf5/1.14.0
+         module load python/3.8-anaconda3
 
          source activate /ccs/proj/<project_id>/<user_id>/envs/summit/h5pympi-summit
 

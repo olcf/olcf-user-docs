@@ -71,14 +71,17 @@ First, load the gnu compiler module (most Python packages assume GCC), relevant 
 .. tab-set::
 
    .. tab-item:: Summit
+      :sync: summit
 
       .. code-block:: bash
 
-         $ module load gcc/7.5.0 # might work with other GCC versions
-         $ module load cuda/11.0.2
-         $ module load python
+         $ module load DefApps-2023
+         $ module load gcc/9.3.0 # might work with other GCC versions
+         $ module load cuda/11.7.1
+         $ module load python/3.8-anaconda3
 
    .. tab-item:: Frontier
+      :sync: frontier
 
       .. code-block:: bash
 
@@ -91,6 +94,7 @@ First, load the gnu compiler module (most Python packages assume GCC), relevant 
          If you are using a :doc:`Miniconda distribution on Frontier </software/python/miniconda>`, the above ``module load cray-python`` should not be loaded.
 
    .. tab-item:: Andes
+      :sync: andes
 
       .. code-block:: bash
 
@@ -103,18 +107,21 @@ Loading a python module puts you in a "base" environment, but you need to create
 .. tab-set::
 
    .. tab-item:: Summit
+      :sync: summit
 
       .. code-block:: bash
 
          $ conda create -p /ccs/proj/<project_id>/<user_id>/envs/summit/cupy-summit python=3.10
 
    .. tab-item:: Frontier
+      :sync: frontier
 
       .. code-block:: bash
 
          $ python3 -m venv /ccs/proj/<project_id>/<user_id>/envs/frontier/cupy-frontier
 
    .. tab-item:: Andes
+      :sync: andes
 
       .. code-block:: bash
 
@@ -129,18 +136,21 @@ After following the prompts for creating your new environment, you can now activ
 .. tab-set::
 
    .. tab-item:: Summit
+      :sync: summit
 
       .. code-block:: bash
 
          $ source activate /ccs/proj/<project_id>/<user_id>/envs/summit/cupy-summit
 
    .. tab-item:: Frontier
+      :sync: frontier
 
       .. code-block:: bash
 
          $ source /ccs/proj/<project_id>/<user_id>/envs/frontier/cupy-frontier/bin/activate
 
    .. tab-item:: Andes
+      :sync: andes
 
       .. code-block:: bash
 
@@ -151,12 +161,14 @@ CuPy depends on NumPy, so let's install an optimized version of NumPy into your 
 .. tab-set::
 
    .. tab-item:: Summit
+      :sync: summit
 
       .. code-block:: bash
 
          $ conda install -c defaults --override-channels numpy scipy
 
    .. tab-item:: Frontier
+      :sync: frontier
 
       .. code-block:: bash
 
@@ -164,6 +176,7 @@ CuPy depends on NumPy, so let's install an optimized version of NumPy into your 
          $ pip install numpy scipy --no-cache-dir
 
    .. tab-item:: Andes
+      :sync: andes
 
       .. code-block:: bash
 
@@ -184,12 +197,14 @@ To make sure that you are building from source, and not a pre-compiled binary, u
 .. tab-set::
 
    .. tab-item:: Summit
+      :sync: summit
 
       .. code-block:: bash
 
-         $ CC=gcc NVCC=nvcc pip install --no-cache-dir --no-binary=cupy cupy
+         $ CC=gcc NVCC=nvcc pip install --no-cache-dir --no-binary=cupy cupy==13.0.0
 
    .. tab-item:: Frontier
+      :sync: frontier
 
       .. code-block:: bash
 
@@ -199,6 +214,7 @@ To make sure that you are building from source, and not a pre-compiled binary, u
          $ CC=gcc pip install --no-cache-dir --no-binary=cupy cupy
 
    .. tab-item:: Andes
+      :sync: andes
 
       .. code-block:: bash
 
@@ -239,15 +255,15 @@ The contents of the open-ce module cannot be modified so you need to make your o
    $ module purge
    $ module load DefApps
    $ module unload xl
-   $ module load open-ce/1.5.2-py39-0
-   $ conda create --clone open-ce-1.5.2-py39-0 -p /ccs/proj/<project_id>/<user_id>/envs/summit/opence_cupy_summit
+   $ module load open-ce/1.10.0-py39-ibm
+   $ conda create --clone /sw/summit/ibmsw/minicondas/rocketce-1.10-py3.9-pytorch -p /ccs/proj/<project_id>/<user_id>/envs/summit/opence_cupy_summit
    $ conda activate /ccs/proj/<project_id>/<user_id>/envs/summit/opence_cupy_summit
 
-Next, install CuPy the way you did before. This installation will use the system GCC /usr/bin/gcc which is currently 8.3.1.
+Next, install CuPy the way you did before. This installation will use the system GCC /usr/bin/gcc which is currently 8.5.0.
 
 .. code-block::
 
-   $ CC=gcc NVCC=nvcc pip install --no-binary=cupy cupy
+   $ CC=gcc NVCC=nvcc pip install --no-cache-dir --no-binary=cupy cupy==13.0.0
 
 Now, everytime you want to use this environment with CuPy on a new login or in a job, you will have to do the sequence of the following
 
@@ -256,7 +272,7 @@ Now, everytime you want to use this environment with CuPy on a new login or in a
    module purge
    module load DefApps
    module unload xl
-   module load open-ce/1.5.2-py39-0
+   module load open-ce/1.10.0-py39-ibm
    conda activate /ccs/proj/<project_id>/<user_id>/envs/summit/opence_cupy_summit
 
 
@@ -493,6 +509,7 @@ To do so, you must submit ``submit_timings`` to the queue:
 .. tab-set::
 
    .. tab-item:: Summit
+      :sync: summit
 
       .. code-block:: bash
 
@@ -503,6 +520,7 @@ Example "submit_timings" batch script:
 .. tab-set::
 
    .. tab-item:: Summit
+      :sync: summit
 
       .. code-block:: bash
 
@@ -517,9 +535,10 @@ Example "submit_timings" batch script:
          cd $LSB_OUTDIR
          date
 
-         module load gcc/7.5.0
-         module load cuda/11.0.3
-         module load python
+         module load DefApps-2023
+         module load gcc/9.3.0
+         module load cuda/11.7.1
+         module load python/3.8-anaconda3
 
          source activate /ccs/proj/<project_id>/<user_id>/envs/summit/cupy-summit
          export CUPY_CACHE_DIR="${MEMBERWORK}/<project_id>/.cupy/kernel_cache"
