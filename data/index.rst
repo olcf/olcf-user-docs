@@ -407,6 +407,28 @@ Striping will likely have little or no performance benefit for:
 * Multiple nodes perform I/O simultaneously to different files that are small (each < 100 MB)
 * I/O that uses one file per process
 
+========================
+Lustre File Locking Tips
+========================
+
+File locking is the process of restricting only one process or user to access a file or region of a file. It prevents race conditions when writing data from multiple processes. Lustre uses a distributed lock management (LDLM) system for consistency and access. Concurrent operations on files/directories flow through this LDLM system.  Locks are generally managed on a per-client level and there are limits to the number of concurrent locks each client can have on each storage target (MDT/OST). While locking is good and necessary, certain I/O patterns can become very slow if they generate a large amount of lock contention. 
+
+Here are some things to avoid to minimizing lock impact: 
+
+* Multiple clients opening the same byte range of a file for writing 
+* Multiple clients appending to the same file (subset of previous) 
+* Multiple clients concurrently creating numerous files or directories in the same directory
+
+If your code does any of these, you may want to adjust it to avoid or limit them and then test to see if that improves your write performance. 
+
+=================================
+Darshan-runtime and I/O Profiling
+=================================
+
+The darshan-runtime modulefile is part of DefApps and is loaded by default on Frontier. This module allows users to profile the I/O of their applications with minimal impact. The logs are available to users on the Orion file system in /lustre/orion/darshan/<system>/<yyyy>/<mm>/<dd>. 
+
+Unloading darshan-runtime is recommended for users profiling their applications with other profilers to prevent conflicts.
+
 =====
 Purge
 =====
