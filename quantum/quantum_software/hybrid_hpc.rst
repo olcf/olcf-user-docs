@@ -17,15 +17,6 @@ information on how to use Python modules and conda environments on OLCF
 systems, see our :doc:`Python on OLCF Systems page</software/python/index>`, 
 and our :doc:`Conda Basics guide </software/python/conda_basics>`.
 
-Currently, Frontier does **NOT** have an Anaconda/Conda module.  To use conda,
-you will have to download and install Miniconda on your own (see our
-:doc:`Installing Miniconda Guide </software/python/miniconda>`).
-Alternatively, you can use Python's native virtual environments ``venv``
-feature with the ``cray-python`` module (as we will explore in the guides
-below).  For more details on ``venv``, see `Python's Official Documentation
-<https://docs.python.org/3/tutorial/venv.html>`__.  Contact help@olcf.ornl.gov
-if conda is required for your workflow, or if you have any issues.
-
 .. warning::
 
     Currently, the install steps listed below only work for our x86_64 based
@@ -66,17 +57,18 @@ See these links for more details:
             $ module load python
             $ source activate base
             $ conda create -n ENV_NAME python=3.9 # works for python 3.7, 3.8, 3.9 (minimal support for 3.10)
-            $ conda activate ENV_NAME
+            $ source activate ENV_NAME
             $ pip install qiskit qiskit-ibm-runtime qiskit-aer --no-cache-dir
 
     .. tab-item:: Frontier
 
         .. code-block:: bash
 
-            $ module load cray-python
-            $ python3 -m venv ENV_NAME
-            $ source ENV_NAME/bin/activate
-            $ python3 -m pip install qiskit qiskit-ibm-runtime qiskit-aer --no-cache-dir
+            $ module load python/3.10-miniforge3
+            $ source activate base
+            $ conda create -n ENV_NAME python=3.9 # works for python 3.7, 3.8, 3.9 (minimal support for 3.10)
+            $ conda activate ENV_NAME
+            $ pip install qiskit qiskit-ibm-runtime qiskit-aer --no-cache-dir
 
 
 Qiskit - Code Example
@@ -332,10 +324,11 @@ Finally, you are ready to install pyQuil:
 
         .. code-block:: bash
 
-            $ module load cray-python
-            $ python3 -m venv ENV_NAME
-            $ source ENV_NAME/bin/activate
-            $ python3 -m pip install pyquil --no-cache-dir
+            $ module load python/3.10-miniforge3
+            $ source activate base
+            $ conda create -n ENV_NAME python=3.9 # pyQuil requires Python version 3.7, 3.8, or 3.9
+            $ conda activate ENV_NAME
+            $ pip install pyquil --no-cache-dir
 
 
 PyQuil - Setting up Servers
@@ -439,10 +432,10 @@ On our systems, the install method is relatively simple:
 
         .. code-block:: bash
 
-            $ module load cray-python
-            $ python3 -m venv ENV_NAME
-            $ source ENV_NAME/bin/activate
-            $ python3 -m pip install pennylane --upgrade --no-cache-dir
+            $ module load python/3.10-miniforge3
+            $ source activate base
+            $ conda create -n ENV_NAME python=3.9 pennylane -c conda-forge
+            $ conda activate ENV_NAME
 
 
 PennyLane - Code Example
@@ -583,8 +576,9 @@ Below are example batch scripts for running on Andes and Frontier:
             export no_proxy='localhost,127.0.0.0/8,*.ccs.ornl.gov'
 
             # Load python module and virtual environment
-            module load cray-python
-            source $HOME/ENV_NAME/bin/activate
+            module load python/3.10-miniforge3
+            source activate base
+            conda activate ENV_NAME
 
             # For software like Qiskit and PennyLane
             #python3 script.py
@@ -597,8 +591,5 @@ Below are example batch scripts for running on Andes and Frontier:
             #quilc -P -S > quilc.log 2>&1 & qvm -S > qvm.log 2>&1 & python3 script.py ; kill $(jobs -p)
 
 
-        .. note::
-
-            The above assumes you created your Python ``venv`` ``ENV_NAME`` in your ``$HOME`` directory.
 
 
