@@ -2982,15 +2982,17 @@ HPCToolkit is an integrated suite of tools for measurement and analysis of progr
 
 Programming models supported by HPCToolkit include MPI, OpenMP, OpenACC, CUDA, OpenCL, DPC++, HIP, RAJA, Kokkos, and others.
 
-Below is an example that generates a profile and loads the results in their GUI-based viewer.
-
 .. note::
 
-    A full list of available HPCToolkit versions can be seen with the ``module spider hpctoolkit`` command.
+    On Frontier, currently HPCToolkit is provided as part of the User Managed Software (UMS) program.
+    To see currently available builds, first perform the ``module load ums ums023`` command.
+    A full list of available HPCToolkit versions can also be seen with the ``module spider hpctoolkit`` command.
+
+Below is an example that generates a profile and loads the results in their GUI-based viewer.
 
 .. code:: bash
 
-    module load hpctoolkit/2022.05.15-rocm 
+    module load ums ums023 hpctoolkit
 
     # 1. Profile and trace an application using CPU time and GPU performance counters 
     srun <srun_options> hpcrun -o <measurement_dir> -t -e CPUTIME -e gpu=amd <application> 
@@ -3004,11 +3006,17 @@ Below is an example that generates a profile and loads the results in their GUI-
     # 4. Understand performance issues by analyzing profiles and traces with the GUI 
     hpcviewer <database_dir> 
 
+.. note::
+
+    At the moment, ``hpcviewer`` requires SSH X11 forwarding to work on Frontier login nodes, which might be prohibitive depending on the user's network connection. Alternatively, the user can `download the HPCViewer client from the HPCToolkit website <http://hpctoolkit.org/download.html>`__, install it on their local laptop/workstation system, and then transfer the measurement directory to the local system for local viewing and analysis.
+    A remote client interface to allow streaming the performance database directly from Frontier is in active development.
+
 More detailed information on HPCToolkit can be found in the `HPCToolkit User's Manual <http://hpctoolkit.org/manual/HPCToolkit-users-manual.pdf>`__.
 
 .. note::
 
-    HPCToolkit does not require a recompile to profile the code. It is recommended to use the -g optimization flag for attribution to source lines.
+    HPCToolkit does not require a recompile to profile the code. It is recommended to use the ``-g`` optimization flag for attribution to source lines.
+    There is experimental support for profiling Python applications with HPCToolkit. Please submit an OLCF ticket to get in touch with the HPCToolkit team since this might require a special build of HPCToolkit on a case-by-case basis.
 
 Getting Started with the ROCm Profiler
 --------------------------------------
