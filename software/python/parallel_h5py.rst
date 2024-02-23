@@ -2,21 +2,9 @@
 Installing mpi4py and h5py
 **************************
 
-.. warning::
-   This guide has been adapted for Frontier **only for a** ``conda``
-   **workflow**. Using the default ``cray-python`` module on Frontier does not
-   work with parallel h5py (because Python 3.9 is incompatible). Thus,
-   this guide assumes that you are using a personal
-   :doc:`Miniconda distribution on Frontier </software/python/miniconda>`.
-
 .. note::
    For ``venv`` users only interested in installing ``mpi4py``, the ``pip``
    command in this guide is still accurate.
-
-This guide has been adapted from a challenge in OLCF's `Hands-On with Summit <https://github.com/olcf/hands-on-with-summit>`__ GitHub repository (`Python: Parallel HDF5 <https://github.com/olcf/hands-on-with-summit/tree/master/challenges/Python_Parallel_HDF5>`__).
-
-.. note::
-   The guide is designed to be followed from start to finish, as certain steps must be completed in the correct order before some commands work properly.
 
 Overview
 ========
@@ -29,11 +17,23 @@ In this guide, you will:
 * Learn how to install parallel h5py
 * Test your build with Python scripts
 
-OLCF Systems this guide applies to:
+OLCF Systems this guide applies to: 
 
 * Summit
-* Andes
 * Frontier
+* Andes
+
+**Guide last tested with:**
+
++------------+----------+------------+
+| ``python`` | ``h5py`` | ``mpi4py`` |
++============+==========+============+
+|  3.10.13   |  3.10.0  |   3.1.5    |
++------------+----------+------------+
+
+.. note::
+   Working installations are **not** limited to what is shown above.
+   Versions listed in the above table are what was tested most recently.
 
 Parallel HDF5
 =============
@@ -75,18 +75,17 @@ First, load the gnu compiler module (most Python packages assume GCC), hdf5 modu
 
       .. code-block:: bash
 
-         $ module load DefApps-2023
-         $ module load gcc/9.3.0
-         $ module load hdf5/1.14.0
-         $ module load python/3.8-anaconda3
+         $ module load gcc/12.1.0
+         $ module load hdf5/1.14.3
+         $ module load python/3.10-miniforge3
 
    .. tab-item:: Andes
       :sync: andes
 
       .. code-block:: bash
 
-         $ module load gcc
-         $ module load hdf5
+         $ module load gcc/9.3.0
+         $ module load hdf5/1.10.7
          $ module load python
 
    .. tab-item:: Frontier
@@ -94,11 +93,12 @@ First, load the gnu compiler module (most Python packages assume GCC), hdf5 modu
 
       .. code-block:: bash
 
-         $ module load PrgEnv-gnu
-         $ module load hdf5
+         $ module load PrgEnv-gnu/8.3.3
+         $ module load hdf5/1.14.0
+         $ module load python/3.10-miniforge3
 
-         # Make sure your personal miniconda installation is in your path
-         $ export PATH="/path/to/your/miniconda/bin:$PATH"
+.. note::
+   If you're just interested in ``mpi4py`` and not ``h5py``, then you don't need to load the ``hdf5`` module.
 
 Loading a python module puts you in a "base" environment, but you need to create a new environment using the ``conda create`` command:
 
@@ -109,24 +109,31 @@ Loading a python module puts you in a "base" environment, but you need to create
 
       .. code-block:: bash
 
-         $ conda create -p /ccs/proj/<project_id>/<user_id>/envs/summit/h5pympi-summit python=3.10 numpy
+         $ conda create -n h5pympi-summit python=3.10 numpy
 
    .. tab-item:: Andes
       :sync: andes
 
       .. code-block:: bash
 
-         $ conda create -p /ccs/proj/<project_id>/<user_id>/envs/andes/h5pympi-andes python=3.10 numpy
+         $ conda create -n h5pympi-andes python=3.10 numpy
 
    .. tab-item:: Frontier
       :sync: frontier
 
       .. code-block:: bash
 
-         $ conda create -p /ccs/proj/<project_id>/<user_id>/envs/frontier/h5pympi-frontier python=3.10 libssh numpy -c conda-forge
+         # Option 1 (use a newer libssh with your conda's newer openssl):
+         $ conda create -n h5pympi-frontier python=3.10 libssh numpy -c conda-forge
 
-.. note::
-   As noted in the :doc:`/software/python/index` page, it is highly recommended to create new environments in the "Project Home" directory.
+         # Option 2 (downgrade your conda's openssl to match Frontier's):
+         $ conda create -n h5pympi-frontier python=3.10 openssl=1.1.1 numpy -c conda-forge
+         $ export LD_PRELOAD="/usr/lib64/libcrypto.so /usr/lib64/libssh.so.4 /usr/lib64/libssl.so.1.1"
+         
+      .. note::
+         Due to Frontier's older ``libssh`` and ``openssl`` versions, either installing a newer ``libssh``
+         like above (Option 1), or downgrading Conda's ``openssl`` to version 1.1.1 (Option 2) is required.
+         If following Option 2, then you must export ``LD_PRELOAD`` at both build and runtime like above.
 
 NumPy is installed ahead of time because h5py depends on it.
 
@@ -139,21 +146,21 @@ After following the prompts for creating your new environment, you can now activ
 
       .. code-block:: bash
 
-         $ source activate /ccs/proj/<project_id>/<user_id>/envs/summit/h5pympi-summit
+         $ source activate h5pympi-summit
 
    .. tab-item:: Andes
       :sync: andes
 
       .. code-block:: bash
 
-         $ source activate /ccs/proj/<project_id>/<user_id>/envs/andes/h5pympi-andes
+         $ source activate h5pympi-andes
 
    .. tab-item:: Frontier
       :sync: frontier
 
       .. code-block:: bash
 
-         $ source activate /ccs/proj/<project_id>/<user_id>/envs/frontier/h5pympi-frontier
+         $ source activate h5pympi-frontier
 
 
 Installing mpi4py
@@ -208,7 +215,7 @@ Next, install h5py from source.
 
       .. code-block:: bash
 
-         $ HDF5_MPI="ON" CC=mpicc pip install --no-cache-dir --no-binary=h5py h5py
+         $ HDF5_MPI="ON" CC=mpicc HDF5_DIR=${OLCF_HDF5_ROOT} pip install --no-cache-dir --no-binary=h5py h5py
 
    .. tab-item:: Frontier
       :sync: frontier
@@ -226,7 +233,7 @@ Testing parallel h5py
 
 Test your build by trying to write an HDF5 file in parallel using 42 MPI tasks.
 
-First, change directories to your GPFS scratch area:
+First, change directories to your scratch area:
 
 .. code-block:: bash
 
@@ -292,12 +299,11 @@ Example "submit_hello" batch script:
          cd $LSB_OUTDIR
          date
 
-         module load DefApps-2023
-         module load gcc/9.3.0
-         module load hdf5/1.14.0
-         module load python/3.8-anaconda3
+         module load gcc/12.1.0
+         module load hdf5/1.14.3
+         module load python/3.10-miniforge3
 
-         source activate /ccs/proj/<project_id>/<user_id>/envs/summit/h5pympi-summit
+         source activate h5pympi-summit
 
          jsrun -n1 -r1 -a42 -c42 python3 hello_mpi.py
 
@@ -318,11 +324,11 @@ Example "submit_hello" batch script:
          cd $SLURM_SUBMIT_DIR
          date
 
-         module load gcc
-         module load hdf5
+         module load gcc/9.3.0
+         module load hdf5/1.10.7
          module load python
 
-         source activate /ccs/proj/<project_id>/<user_id>/envs/andes/h5pympi-andes
+         source activate h5pympi-andes
 
          srun -n42 python3 hello_mpi.py
 
@@ -343,11 +349,14 @@ Example "submit_hello" batch script:
          cd $SLURM_SUBMIT_DIR
          date
 
-         module load PrgEnv-gnu
-         module load hdf5
-         export PATH="/path/to/your/miniconda/bin:$PATH"
+         module load PrgEnv-gnu/8.3.3
+         module load hdf5/1.14.0
+         module load python/3.10-miniforge3
 
-         source activate /ccs/proj/<project_id>/<user_id>/envs/frontier/h5pympi-frontier
+         source activate h5pympi-frontier
+
+         #Only if you installed mpi4py via "Option 2"
+         #export LD_PRELOAD="/usr/lib64/libcrypto.so /usr/lib64/libssh.so.4 /usr/lib64/libssl.so.1.1"
 
          srun -n42 python3 hello_mpi.py
 
@@ -437,12 +446,11 @@ Example "submit_h5py" batch script:
          cd $LSB_OUTDIR
          date
 
-         module load DefApps-2023
-         module load gcc/9.3.0
-         module load hdf5/1.14.0
-         module load python/3.8-anaconda3
+         module load gcc/12.1.0
+         module load hdf5/1.14.3
+         module load python/3.10-miniforge3
 
-         source activate /ccs/proj/<project_id>/<user_id>/envs/summit/h5pympi-summit
+         source activate h5pympi-summit
 
          jsrun -n1 -r1 -a42 -c42 python3 hdf5_parallel.py
 
@@ -463,11 +471,11 @@ Example "submit_h5py" batch script:
          cd $SLURM_SUBMIT_DIR
          date
 
-         module load gcc
-         module load hdf5
+         module load gcc/9.3.0
+         module load hdf5/1.10.7
          module load python
 
-         source activate /ccs/proj/<project_id>/<user_id>/envs/andes/h5pympi-andes
+         source activate h5pympi-andes
 
          srun -n42 python3 hdf5_parallel.py
 
@@ -488,11 +496,14 @@ Example "submit_h5py" batch script:
          cd $SLURM_SUBMIT_DIR
          date
 
-         module load PrgEnv-gnu
-         module load hdf5
-         export PATH="/path/to/your/miniconda/bin:$PATH"
+         module load PrgEnv-gnu/8.3.3
+         module load hdf5/1.14.0
+         module load python/3.10-miniforge3
 
-         source activate /ccs/proj/<project_id>/<user_id>/envs/frontier/h5pympi-frontier
+         source activate h5pympi-frontier
+
+         #Only if you installed mpi4py via "Option 2"
+         #export LD_PRELOAD="/usr/lib64/libcrypto.so /usr/lib64/libssh.so.4 /usr/lib64/libssl.so.1.1"
 
          srun -n42 python3 hdf5_parallel.py
 
