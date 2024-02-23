@@ -106,6 +106,7 @@ Below is an example batch script that uses ``sbcast``, unpacks our environment, 
    export LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH # because using a non-default cray-mpich
    module load amd-mixed/5.7.1
    module load python/3.10-miniforge3
+   module load craype-accel-amd-gfx90a
 
    # Move a copy of the env to the NVMe on each node (only need 1 task per node to do this)
    echo "copying torch_env to each node in the job"
