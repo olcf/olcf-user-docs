@@ -3008,7 +3008,7 @@ Below is an example that generates a profile and loads the results in their GUI-
 
 .. note::
 
-    At the moment, ``hpcviewer`` requires SSH X11 forwarding to work on Frontier login nodes, which might be prohibitive depending on the user's network connection. Alternatively, the user can `download the HPCViewer client from the HPCToolkit website <http://hpctoolkit.org/download.html>`__, install it on their local laptop/workstation system, and then transfer the measurement directory to the local system for local viewing and analysis.
+    At the moment, ``hpcviewer`` requires SSH X11 forwarding to work on Frontier login nodes, which might be prohibitive depending on the user's network connection. Alternatively, the user can `download the HPCViewer client from the HPCToolkit website <http://hpctoolkit.org/download.html>`__, install it on their local laptop/workstation system, and then transfer the database directory to the local system for local viewing and analysis.
     A remote client interface to allow streaming the performance database directly from Frontier is in active development.
 
 More detailed information on HPCToolkit can be found in the `HPCToolkit User's Manual <http://hpctoolkit.org/manual/HPCToolkit-users-manual.pdf>`__.
