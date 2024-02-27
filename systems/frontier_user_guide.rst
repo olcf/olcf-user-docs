@@ -2809,6 +2809,11 @@ A job script for the previous example, modified for sending all libraries is sho
 
 Some libraries still resolved to paths outside of ``/mnt/bb``, and the reason for that is that the executable may have several paths in ``RPATH``.
 
+SBCASTing a conda environment
+"""""""""""""""""""""""""""""
+
+Users running Python environments at scale can also take advantage of using ``sbcast``.
+For details on how to use ``sbcast`` to move your conda environments to the NVMe, please see our :doc:`Sbcast Conda Environments Guide </software/python/sbcast_conda>`.
 
 
 ----
