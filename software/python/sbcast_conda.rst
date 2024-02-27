@@ -108,7 +108,7 @@ Below is an example batch script that uses ``sbcast``, unpacks our environment, 
    module load python/3.10-miniforge3
    module load craype-accel-amd-gfx90a
 
-   # Move a copy of the env to the NVMe on each node (only need 1 task per node to do this)
+   # Move a copy of the env to the NVMe on each node
    echo "copying torch_env to each node in the job"
    sbcast -pf ./torch_env.tar.gz /mnt/bb/${USER}/torch_env.tar.gz
    if [ ! "$?" == "0" ]; then
@@ -219,3 +219,5 @@ Here are the timings if the environment was stored on **NFS** and never broadcas
 The big takeaway is the execution time of ``example.py``, showing that NVMe > Orion >> NFS when it comes to where your conda environment is located before running the script.
 Recall, this example was just at 8 nodes and would likely provide more benefit as the node count increases and when using more complex environments (and scripts).
 Although extracting the ``tar.gz`` file introduces some overhead in the ``sbcast`` method, that overhead is small compared to the script initialization overhead in the Orion and NFS method when scaling up to higher node counts.
+
+For more information on using ``sbcast`` on Frontier, please see the :doc:`Frontier User Guide </systems/frontier_user_guide>`.

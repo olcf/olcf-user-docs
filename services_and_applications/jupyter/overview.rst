@@ -23,7 +23,7 @@ Jupyter Hub
 
 JupyterHub is the best way to serve Jupyter Labs for multiple users within a project. It is a multi-user Hub that spawns, manages, and proxies multiple selectable instances of the single-user JupyterLab server.
 
-JupyterHub within OLCF works by first authenticating each user using NCCS LDAP authentication. The Hub will offer each user a selection of Lab images to launch, which will then be spun up automatically. Upon successfull authentication, your UID/GID/Groups are queried and built into the deployment of your personal JupyterLab. In addition, you will have access to your standard OLCF storage space(s) on NFS and GPFS.
+JupyterHub within OLCF works by first authenticating each user using NCCS LDAP authentication. The Hub will offer each user a selection of Lab images to launch, which will then be spun up automatically. Upon successfull authentication, your UID/GID/Groups are queried and built into the deployment of your personal JupyterLab. In addition, you will have access to your standard OLCF storage space(s) on NFS and Lustre.
 
 Access
 ------
@@ -80,7 +80,7 @@ Hardware Resources
 
       - 32 CPUs
       - 32GB Memory
-      - NCCS filesystem access (GPFS and NFS)
+      - NCCS filesystem access (Lustre and NFS)
 
 
       Each GPU Lab gets the following resources:
@@ -88,7 +88,7 @@ Hardware Resources
       - 16 CPUs
       - 32GB Memory
       - Nvidia V100 GPU
-      - NCCS filesystem access (GPFS and NFS)
+      - NCCS filesystem access (Lustre and NFS)
 
       .. note::
         You have the same filesystem access as if you were on Frontier, to both NFS and
@@ -127,15 +127,15 @@ CPU support in the CUDA11 environments. The image below shows the CUDA options i
 
 .. image:: /images/jupyter/jupyter_launcher_cudaenvs.png
 
-Working within GPFS and NFS (Launching a notebook)
---------------------------------------------------
+Working within Lustre and NFS (Launching a notebook)
+----------------------------------------------------
 
 To see the root of your filesystem access, within your JupyterLab interface, click this
 circled folder (you can traverse to your users spaces from there):
 
 .. image:: /images/jupyter/directory_access.png
 
-You should see **gpfs** and **ccs** - the "top" of GPFS amd NFS respectively.
+You should see **lustre** and **ccs** - the "top" of Lustre and NFS respectively.
 
 Then, you can start a notebook in the directory of your choosing (relative to your user access). 
 
@@ -145,7 +145,7 @@ the notebook in your current path.
 
 .. note::
   Any notebooks saved in the root location won't be persisted across
-  sessions. Make sure you are saving your work in a location in /ccs or /gpfs where you
+  sessions. Make sure you are saving your work in a location in /ccs or /lustre where you
   have write access.
 
 In the example image below, I have launched a notebook in my **/ccs/proj/<proj>/<uid>/**
@@ -166,133 +166,72 @@ From the Console of a particular environment, you can install additional librari
 use in that particular environment in the current session. But these installed libraries won't persist across sessions
 if your server is restarted. 
 
-
-
-Creating your own Conda environment and notebook entry
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
 Setting up your own custom Conda environment is useful when the base environment doesn't provide what
 you need and you want your installed libraries to persist across sessions. These custom
-Conda environments need to be saved in a ``/ccs`` or ``/gpfs/alpine`` directory.
+Conda environments need to be saved in a ``/ccs`` or ``/lustre/orion`` directory.
 
-**NOTE**: Please note that **GPFS is purged**. Using /ccs/proj/ is recommended
+.. warning::
 
+   Please note that **GPFS and Lustre are purged**.
 
+Example: Creating a Conda environment on Jupyter
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Example: Creating a Conda environment for RAPIDS
-=================================================
+.. note::
 
-#. Start a GPU Lab from `https://jupyter.olcf.ornl.gov <https://jupyter.olcf.ornl.gov>`__ . 
-#. From the Launcher page in JupyterLab, click on Terminal.
-#. Create a conda environment with ``conda create -p /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_UID>/rapids -c rapidsai -c nvidia -c conda-forge \``
-   ``-c defaults rapids-blazing=0.17 python=3.7 cudatoolkit=10.2``
-   
-     * **NOTE**: The ``conda create`` command above **assumes you are using** ``CUDA 10`` JuptyerLab environment.
-   
-     * You need to use ``-p`` method if you want your environment to persist across Jupyter
-       restarts. The path can be a location in ``/ccs`` or ``/gpfs/alpine`` that is writable
-       by your user.
-     
-#. Activate the environment ``source activate /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_UID>/rapids``.
+   Conda environments created using the below method are only usable in
+   JupyterLab. You can't create an environment within JupyterLab and use these
+   environments on other machines like Frontier or Andes to run jobs. You will
+   need to recreate the environment separately on those machines. Alternatively,
+   See our :doc:`Jupyter Visibility Guide </software/python/jupyter_envs>` for
+   details on how to make your Fronter/Andes environments visible to Jupyter --
+   which we highly recommend doing instead.
 
-     * **NOTE**: It is **recommended to use** ``source activate`` instead of ``conda activate``, even though
-       the ``conda create`` process recommends ``conda activate`` at it's completion. Using ``conda activate`` requires modification
-       of the ``.bashrc`` file, which is not covered here. 
-   
-#. After activating, to make your created environment visible in JupyterLab, run ``python -m
-   ipykernel install --user --name rapids --display-name rapids``. A
-   kernelspec is created in your ``/ccs/home/<YOUR_UID>/.local/share/jupyter`` directory which
-   JupyterLab reads to see which custom environments are available for it to use.
-  
-     * When you refresh the page and look at the Launcher, you will see buttons labelled
-       ``rapids``. Clicking it will start a Notebook or Console running in your
-       ``rapids`` environment.
+In this example, we will create a simple environment that installs NumPy.
+Although this example installs NumPy, the instructions below can still be followed to create a desired environment on Jupyter:
 
-   
-   .. image:: /images/jupyter/rapids_notebook_image.png
-     
+#. Launch a Jupyter Lab from https://jupyter.olcf.ornl.gov
 
-#. Now open a ``rapids`` notebook to check if the installation was successful. In the
-   below image, I created a notebook called *rapids-test* in my NFS project space and did
-   a very basic cuDF operation on some example data (in the red circle, you can see I am
-   using the created "rapids" environment/kernel):
+#. From the JupyterLab Launcher page, click on the Terminal option.
 
-   
-   ..  image:: /images/jupyter/cudf_rapids_test.png
+#. Next, create your conda env:
 
+   .. code-block::
 
-#. If restart the server or lose your session, you will see that the ``rapids`` Notebook and Console
-   buttons are still available after coming back. 
-#. You can always install more libraries into your Conda environment as needed by opening
-   the Terminal in JupyterLab again, activating the environment with ``source activate``
-   and doing ``conda install`` or ``pip install``.
+      conda create -p /path/to/your/test_env python=3.10 numpy
 
+#. Activate your new environment:
+
+   .. code-block::
+
+      source activate /path/to/your/test_env
+
+#. Install ``ipykernel`` (will let Jupyter "see" your environment):
+
+   .. code-block::
+
+      conda install ipykernel
+
+#. Use ``ipykernel`` to expose your new environment to Jupyter:
+
+   .. code-block::
+
+      python -m ipykernel install --user --name test_env --display-name test_env
+
+   If successful, you should see something like ``Installed kernelspec test_env in ~/.local/share/jupyter/kernels/test_env``
+
+After following the above steps, you should now be able to use your environment "kernel" in a Jupyter Notebook.
+When you refresh the page (or open a new Jupyter Launcher tab), you will see new options labeled as your Conda environment name you passed to ``ipykernel``.
+
+To use your custom environment in a Notebook, you can either click on the new options to launch a new Jupyter Notebook with that custom kernel, or you can switch kernels in existing Notebooks by clicking on the "Kernel" menu option and then select "Change Kernel" while in an existing Notebook.
+
+.. note::
+
+   Note that you can always install more libraries into your Conda environment as needed by opening the Terminal in JupyterLab again, activating your environment with ``source activate`` and doing ``conda install`` or ``pip install``.
 
 To delete your environment, you will need to delete it from the path where the environment
 was created, as well as delete the corresponding directory from ``~/.local/share/jupyter/kernels``.
 
-You may follow these general steps to create and install packages within an any
-environment you decide to create. The main componentes to accomplish this, using a
-terminal session, are:
- 
- - *conda create -p /path/to/env*
- - *source activate /path/to/env*
- - *python -m ipykernel install --user --name <env-name> --display-name <env-name>*
- - *install packages with conda or pip in the activated environment*
-
-
-Example: Cloning an existing environment
-========================================
-
-The below steps apply for either the CPU or GPU lab.
-
-.. note::
-   Running ``conda env list`` on the Terminal in the GPU lab will show the 'base'
-   and 'olcf-cuda10' environments. The 'base' environment corresponds to the 'OLCF-CUDA11'
-   notebook and the 'olcf-cuda10' environment corresponds to the 'OLCF-CUDA10' notebook in
-   the Launcher page. In the CPU lab, the 'base' environment corresponds to the
-   'OLCF-base' notebook in the Launcher page.
-
-#. Start a GPU or CPU lab from `https://jupyter.olcf.ornl.gov <https://jupyter.olcf.ornl.gov>`__. 
-#. From the Launcher page in JupyterLab, click on Terminal.
-#. See available environments in the JupyterLab by opening a Terminal and typing ``conda
-   env list``.
-
-     * In the CPU lab, clone the base Conda environment with ``conda create -p
-       /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_UID>/yourenvname --clone base``.
-     * For the GPU lab, use the same command but replace the ``--clone`` flag with
-       ``--clone olcf-cuda10`` for cloning the Cuda 10 environment. Use ``--clone base`` to
-       clone the Cuda 11 environment (internally the OLCF-CUDA11 notebook is actually the
-       'base' notebook relabeled).
-     * **NOTE**: You need to use ``-p`` method if you want your environment to persist across Jupyter
-       Restarts. The path can be a location in ``/ccs`` or ``/gpfs/alpine`` that is writable
-       by your user.
-#. Activate the environment ``source activate
-   /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_UID>/yourenvname``.
-
-     * **NOTE**: It is **recommended to use** ``source activate`` instead of ``conda
-       activate``, even though the ``conda create`` process recommends ``conda activate``
-       at its completion. Using ``conda activate`` requires modification of the
-       ``.bashrc`` file, which is not covered here.
-#. After activating, you can install additional packages with ``conda install`` or ``pip
-   install``.
-
-     * For example ``conda install toml``.
-#. To make your created environment visible in JupyterLab, run ``python -m ipykernel
-   install --user --name yourenvname --display-name yourenvname``. A kernelspec is created
-   in your ``/ccs/home/<YOUR_UID>/.local/share/jupyter`` directory which JupyterLab reads
-   to see which custom environments are available for it to use.
-
-     * When you refresh the page and look at the Launcher, you will see buttons labelled
-       ``yourenvname``. Clicking it will start a Notebook or Console running in your
-       ``yourenvname`` environment.
-
-
-.. note::
-   Conda environments created this way are only usable in JupyterLab. You can't
-   create an environment within JupyterLab and use these environments on other machines
-   like Frontier or Andes to run jobs. You will need to recreate the environment separately
-   on those machines.
 
 Manually stopping your JupyterLab session
 -----------------------------------------
