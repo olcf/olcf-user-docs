@@ -61,6 +61,7 @@ connected to. For example, to see these modules on Summit:
 
 .. code-block:: bash
 
+    [user@login4.summit ~]$ module load DefApps-2023
     [user@login4.summit ~]$ module -t avail paraview
 
     /sw/summit/modulefiles/core:
@@ -71,12 +72,12 @@ connected to. For example, to see these modules on Summit:
     paraview/5.11.0-egl
     paraview/5.11.0-osmesa
 
-    [user@login4.summit ~]$ module load DefApps-2023
     [user@login4.summit ~]$ module load paraview/5.9.1-egl
 
 .. warning::
     It is highly recommended to only use the modules located in
     ``/sw/andes/modulefiles/core`` or ``/sw/summit/modulefiles/core``.
+    On Summit, you **must** also load ``DefApps-2023`` first.
 
 .. note::
     The EGL mode seems to work better with larger datasets and is generally
