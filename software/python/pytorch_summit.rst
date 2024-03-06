@@ -1,11 +1,13 @@
-********
-PyTorch
-********
+*****************
+PyTorch on Summit
+*****************
+
 PyTorch is an optimized tensor library for deep learning using GPUs and CPUs. This page outlines the how to run
 PyTorch on various OLCF systems.
 
 Summit
 ======
+
 There are several ways to use PyTorch on Summit.
 
 .. note::
@@ -44,7 +46,7 @@ will not be able to install extra packages in this environment.
 
 Install PyTorch with Pre-built Wheel
 ------------------------------------
-This option is fairly easy and provides the most flexibility. In `/sw/summit/pytorch/wheel_dist` there are pre-built
+This option is fairly easy and provides the most flexibility. In ``/sw/summit/pytorch/wheel_dist`` there are pre-built
 wheel packages. To install one create a conda environment and use pip to install the correct package based on
 Python version:
 
@@ -56,6 +58,7 @@ Python version:
 
 .. code-block::
 
+    module load miniforge3/23.11.0
     conda create -p <env_path> python=x.yy
     source activate <env_path>
     pip install <wheel package>

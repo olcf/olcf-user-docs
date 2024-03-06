@@ -56,14 +56,14 @@ Below is a list of guides created for using Python on OLCF systems.
    cupy
    sbcast_conda
    jupyter_envs
-   pytorch
+   pytorch_summit
 
 * :doc:`Conda Basics Guide </software/python/conda_basics>`: Goes over the basic workflow and commands of Conda **(Summit/Andes/Frontier)**
 * :doc:`Installing mpi4py and h5py Guide </software/python/parallel_h5py>`: Teaches you how to install parallel-enabled h5py and mpi4py **(Summit/Andes/Frontier)**
 * :doc:`Installing CuPy Guide </software/python/cupy>`: Teaches you how to install CuPy **(Summit/Andes/Frontier)**
 * :doc:`Sbcast Conda Environments Guide </software/python/sbcast_conda>`: Teaches you how to ``sbcast`` your conda environments to speedup initialization **(Frontier)**
 * :doc:`Jupyter Visibility Guide </software/python/jupyter_envs>`: Teaches you how to make your conda environments visible to Jupyter **(Frontier/Andes)**
-* :doc:`PyTorch </software/python/pytorch>`: Shows how to use PyTorch **(Summit)**
+* :doc:`PyTorch on Summit </software/python/pytorch_summit>`: Shows how to access PyTorch on Summit **(Summit)**
 
 
 .. note::
