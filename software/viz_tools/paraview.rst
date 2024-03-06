@@ -71,6 +71,7 @@ connected to. For example, to see these modules on Summit:
     paraview/5.11.0-egl
     paraview/5.11.0-osmesa
 
+    [user@login4.summit ~]$ module load DefApps-2023
     [user@login4.summit ~]$ module load paraview/5.9.1-egl
 
 .. warning::
@@ -429,6 +430,7 @@ batch scripts, along with a working Python example, are provided below.
         cd $LSB_OUTDIR
         date
 
+        module load DefApps-2023
         module load paraview/5.11.0-osmesa
 
         # Set up flags for jsrun
