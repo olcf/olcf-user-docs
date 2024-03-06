@@ -314,7 +314,8 @@ OLCF systems is provided below.
 **For Summit (module):**
 
 .. code::
-   
+
+   $ module load DefApps-2023
    $ module load visit
    $ visit -nowin -cli -v 3.1.4 -l bsub/jsrun -p batch -b XXXYYY -t 00:05 -np 42 -nn 1 -s visit_example.py
 
