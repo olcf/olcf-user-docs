@@ -476,7 +476,7 @@ In the example script, the lines are:
 | 9    | ``srun`` command to launch parallel job (requesting 4 processes - 2 per node) | 
 +------+-------------------------------------------------------------------------------+
 
-.. _interactive-defiant:
+.. _interactive:
 
 Interactive Jobs
 """"""""""""""""
@@ -1125,12 +1125,13 @@ Container Usage
 
 Defiant provides Apptainer v1.2.5 installed for building and running containers. Defiant
 also provides Podman to build container images if you only have the Dockerfile formats and can't convert
-to the Apptainer format. Later in this section we will discuss how to build a container with Podman
-and then convert it to the Apptainer SIF file format so that it can be run on Defiant. 
+to the Apptainer format. Currently the containers that can be built with Podman is very limited, so it is
+recommended that you convert your Dockerfiles to the Apptainer Definition format. See documentation for that
+`here <https://apptainer.org/docs/user/main/definition_files.html>`_ . 
 
 .. note::
    The container docs will continue to evolve and change as we identify better practices and more user friendly
-   methods for using containers on testbed to best suit the needs of the users.
+   methods for using containers on Defiant to best suit the needs of the users.
    If something you're trying no longer works, be sure to come back and check
    the docs to see if anything has changed.
 
@@ -1287,17 +1288,20 @@ MPICH 3.4.2 and ROCm 5.5.1. Let's look at an example where we build a container 
      #SBATCH -o %x_%j.out
      #SBATCH -e %x_%j.out
      
-     
      module  load amd-mixed/5.5.1
      module  load cray-mpich/8.1.27
      module  load cray-mpich-abi/8.1.27
+     module load libfabric/1.12.1.2.2.1
      
      
-     export MPICH_OFI_USE_PROVIDER="tcp;ofi_rxm"
+     export MPICH_GPU_SUPPORT_ENABLED=1
+     #export MPICH_GPU_SUPPORT_ENABLED=0
      export MPICH_SMP_SINGLE_COPY_MODE=NONE
-     export APPTAINERENV_LD_LIBRARY_PATH="/opt/cray/pe/mpich/8.1.27/ofi/crayclang/14.0/lib-abi-mpich:/opt/cray/pe/mpich/8.1.27/gtl/lib:/opt/rocm/lib:/opt/rocm/lib64:$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH:/opt/cray/pe/lib64"
-     export APPTAINER_CONTAINLIBS="/usr/lib64/libjansson.so.4,/usr/lib64/libcxi.so.1,/usr/lib64/libjson-c.so.3,/usr/lib64/libdrm_amdgpu.so.1,/usr/lib64/libdrm.so.2,/lib64/libtinfo.so.6,/usr/lib64/libnl-3.so.200"
-     export APPTAINER_BIND=/usr/share/libdrm,/var/spool/slurm,/opt/cray,${PWD}
+     
+     export APPTAINERENV_LD_LIBRARY_PATH="/opt/cray/pe/mpich/8.1.27/ofi/crayclang/14.0/lib-abi-mpich:/opt/cray/pe/mpich/8.1.27/gtl/lib:/opt/rocm/lib:/opt/rocm/lib64:$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH:/opt/cray/pe/lib64:/usr/lib64/libibverbs"
+     export APPTAINER_CONTAINLIBS="/usr/lib64/libjansson.so.4,/usr/lib64/libcxi.so.1,/usr/lib64/libjson-c.so.3,/usr/lib64/libdrm_amdgpu.so.1,/usr/lib64/libdrm.so.2,/lib64/libtinfo.so.6,/usr/lib64/libnl-3.so.200,/usr/lib64/librdmacm.so.1,/usr/lib64/libibverbs.so.1,/usr/lib64/libibverbs/libmlx5-rdmav34.so"
+     export APPTAINER_BIND=/usr/share/libdrm,/var/spool/slurm,/opt/cray,${PWD},/etc/libibverbs.d,/usr/lib64/libibverbs/    
+
      
      srun  -N2 -n4 --tasks-per-node 2 apptainer exec --env MV2_COMM_WORLD_LOCAL_RANK="$SLURM_LOCALID"  --workdir `pwd` mpiexample.sif /lib64/ld-linux-x86-64.so.2 --preload /opt/cray/pe/mpich/8.1.27/gtl/lib/libmpi_gtl_hsa.so.0:  /app/mpiexample
 
@@ -1318,6 +1322,13 @@ repository <https://code.ornl.gov/olcfcontainers/olcfbaseimages>`_ in the
 it) by cloning the repository and running ``./build`` in the individual
 directories in the repository. You'll need to push the image you build on your with Podman to your
 own registry if you wish to then use th
+
+.. note::
+
+   GPU aware MPI is currently buggy on Defiant due to issues with the MI210 with the Slingshot-10 network.
+   We have a ticket open with HPE to address the issue. This will affect GPU aware MPI in the containers as well.
+   Once that is fixed, we will add documentation on how to use GPU aware MPI with containers on Defiant.
+
 
 ..
   tabling gpu aware MPI till after we get it working on defiant
