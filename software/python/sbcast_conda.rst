@@ -55,6 +55,7 @@ First, let's load our modules and setup the environment:
    $ export LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH # because using a non-default cray-mpich
    $ module load amd-mixed/5.7.1
    $ module load craype-accel-amd-gfx90a
+   $ export MPICH_GPU_SUPPORT_ENABLED=1
 
    # Create your conda environment
    $ module load python/3.10-miniforge3
@@ -107,6 +108,7 @@ Below is an example batch script that uses ``sbcast``, unpacks our environment, 
    module load amd-mixed/5.7.1
    module load python/3.10-miniforge3
    module load craype-accel-amd-gfx90a
+   export MPICH_GPU_SUPPORT_ENABLED=1
 
    # Move a copy of the env to the NVMe on each node
    echo "copying torch_env to each node in the job"
