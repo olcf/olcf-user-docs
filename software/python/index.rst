@@ -5,7 +5,7 @@ Python on OLCF Systems
 ***********************
 
 .. note::
-    Frontier and Summit have new conda modules: ``python/3.10-miniforge3``.
+    Frontier and Summit have new conda modules: ``miniforge3/23.11.0``.
     `Miniforge <https://github.com/conda-forge/miniforge>`__ behaves similarly to
     older Anaconda modules, but target the ``conda-forge`` channel by default.
     Andes remains unchanged.
@@ -87,7 +87,7 @@ To start using Python, all you need to do is load the module:
 
       .. code-block:: bash
 
-         $ module load python/3.10-miniforge3
+         $ module load miniforge3/23.11.0
 
    .. tab-item:: Andes
       :sync: andes
@@ -101,12 +101,19 @@ To start using Python, all you need to do is load the module:
 
       .. code-block:: bash
 
-         $ module load python/3.10-miniforge3
+         $ module load miniforge3/23.11.0
 
       .. note::
          Using the ``cray-python`` module on Frontier is also an option but is
          not a conda installation. Due to the lack of flexibility of ``venv`` and
-         ``cray-python``, we recommend using the ``python/3.10-miniforge3`` module instead.
+         ``cray-python``, we recommend using the ``miniforge3/23.11.0`` module instead.
+
+.. warning::
+   When using the conda modules, do **NOT** run ``conda init``. This will end
+   up hard-coding a conda installation into your shell configuration file (e.g.,
+   ``.bashrc``, ``.bash_profile``, etc.) and could cause problems when switching
+   between HPC systems.  If you have a code-block in your configuration file
+   starting with ``>>> conda initialize >>>``, it is recommended to delete the entire block.
 
 
 Base Environment
@@ -115,7 +122,7 @@ Base Environment
 Loading the Python module on all systems will put you in a "base"
 pre-configured environment. This option is recommended for users who do not
 need custom environments and only require a Python installation. Although
-loading the ``python/3.10-miniforge3`` module on Summit and Frontier does not
+loading the ``miniforge3/23.11.0`` module on Summit and Frontier does not
 come with pre-installed packages, loading the ``python`` module on Andes does
 provide standard packages like NumPy and Scipy.
 
@@ -129,10 +136,10 @@ A small preview is provided below:
 
       .. code-block:: bash
 
-         $ module load python/3.10-miniforge3
+         $ module load miniforge3/23.11.0
          $ conda list
 
-         # packages in environment at /autofs/nccs-svm1_sw/summit/python/3.10/miniforge3/23.11.0:
+         # packages in environment at /autofs/nccs-svm1_sw/summit/miniforge3/23.11.0:
          #
          # Name                    Version                   Build  Channel
          _libgcc_mutex             0.1                 conda_forge    conda-forge
@@ -177,10 +184,10 @@ A small preview is provided below:
 
       .. code-block:: bash
 
-         $ module load python/3.10-miniforge3
+         $ module load miniforge3/23.11.0
          $ conda list
 
-         # packages in environment at /autofs/nccs-svm1_sw/frontier/python/3.10/miniforge3/23.11.0:
+         # packages in environment at /autofs/nccs-svm1_sw/frontier/miniforge3/23.11.0:
          #
          # Name                    Version                   Build  Channel
          _libgcc_mutex             0.1                 conda_forge    conda-forge
@@ -230,7 +237,7 @@ To create and activate an environment:
       .. code-block:: bash
 
          #1. Load the module
-         $ module load python/3.10-miniforge3
+         $ module load miniforge3/23.11.0
 
          #2a. Create "my_env" with Python version X.Y at the desired path
          $ conda create -p /path/to/my_env python=X.Y
@@ -264,7 +271,7 @@ To create and activate an environment:
       .. code-block:: bash
 
          #1. Load the module
-         $ module load python/3.10-miniforge3
+         $ module load miniforge3/23.11.0
 
          #2a. Create "my_env" with Python version X.Y at the desired path
          $ conda create -p /path/to/my_env python=X.Y
@@ -370,7 +377,7 @@ inside the batch script. An example batch script for Summit is provided below:
    cd $LSB_OUTDIR
    date
 
-   module load python/3.10-miniforge3
+   module load miniforge3/23.11.0
    source activate my_env
 
    jsrun -n1 -r1 -a1 -c1 python3 script.py
@@ -382,7 +389,7 @@ To use Python in an interactive session on Summit:
 
 .. code-block:: bash
 
-   $ module load python/3.10-miniforge3
+   $ module load miniforge3/23.11.0
    $ bsub -W 0:05 -nnodes 1 -P <PROJECT_ID> -Is $SHELL
    $ source activate my_env
    $ jsrun -n1 -r1 -a1 -c1 python3 script.py
@@ -436,7 +443,7 @@ inside the batch script. An example batch script for is provided below:
          cd $SLURM_SUBMIT_DIR
          date
 
-         module load python/3.10-miniforge3
+         module load miniforge3/23.11.0
          source activate my_env
 
          python3 script.py
@@ -478,7 +485,7 @@ To use Python in an interactive session on Frontier and Andes:
       .. code-block:: bash
 
          $ salloc -A <PROJECT_ID> -N 1 -t 0:05:00
-         $ module load python/3.10-miniforge3
+         $ module load miniforge3/23.11.0
          $ source activate my_env
          $ python3 script.py
 

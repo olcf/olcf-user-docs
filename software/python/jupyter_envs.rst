@@ -37,7 +37,7 @@ First, let's load the relevant Python module along with the gnu compiler module 
       .. code-block:: bash
 
          $ module load PrgEnv-gnu/8.3.3
-         $ module load python/3.10-miniforge3
+         $ module load miniforge3/23.11.0
 
 Next, create your environment and activate it:
 

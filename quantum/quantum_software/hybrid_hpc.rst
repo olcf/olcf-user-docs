@@ -64,7 +64,7 @@ See these links for more details:
 
         .. code-block:: bash
 
-            $ module load python/3.10-miniforge3
+            $ module load miniforge3/23.11.0
             $ source activate base
             $ conda create -n ENV_NAME python=3.9 # works for python 3.7, 3.8, 3.9 (minimal support for 3.10)
             $ conda activate ENV_NAME
@@ -324,7 +324,7 @@ Finally, you are ready to install pyQuil:
 
         .. code-block:: bash
 
-            $ module load python/3.10-miniforge3
+            $ module load miniforge3/23.11.0
             $ source activate base
             $ conda create -n ENV_NAME python=3.9 # pyQuil requires Python version 3.7, 3.8, or 3.9
             $ conda activate ENV_NAME
@@ -432,7 +432,7 @@ On our systems, the install method is relatively simple:
 
         .. code-block:: bash
 
-            $ module load python/3.10-miniforge3
+            $ module load miniforge3/23.11.0
             $ source activate base
             $ conda create -n ENV_NAME python=3.9 pennylane -c conda-forge
             $ conda activate ENV_NAME
@@ -576,7 +576,7 @@ Below are example batch scripts for running on Andes and Frontier:
             export no_proxy='localhost,127.0.0.0/8,*.ccs.ornl.gov'
 
             # Load python module and virtual environment
-            module load python/3.10-miniforge3
+            module load miniforge3/23.11.0
             source activate base
             conda activate ENV_NAME
 
