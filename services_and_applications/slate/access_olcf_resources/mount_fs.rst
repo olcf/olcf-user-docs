@@ -13,6 +13,7 @@ to get the necessary configuration injected into the container at runtime.
   "Marble", "ccs.ornl.gov/fs", "orion", "/ccs/sw, /ccs/home, /ccs/sys, /ccs/proj, /lustre/orion"
   "Onyx", "ccs.ornl.gov/fs", "ccsopen", "/ccsopen/sw, /ccsopen/home, /ccsopen/proj, /gpfs/wolf"
   "Onyx", "ccs.ornl.gov/fs", "themis", "/ccsopen/sw, /ccsopen/home, /ccsopen/proj, /nl/themis"
+  "Onyx", "ccs.ornl.gov/fs", "wolf2", "/ccsopen/sw, /ccsopen/home, /ccsopen/proj, /gpfs/wolf2"
 
 For each of the following examples, replace "ccs.ornl.gov/fs=olcf" or "ccs.ornl.gov/fs: olcf" with an annotation from the above list.
 
