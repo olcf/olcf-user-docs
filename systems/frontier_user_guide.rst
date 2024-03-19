@@ -175,9 +175,9 @@ Lustre Filesystem
 +=====================+==============================================+========================+=============+========+=========+=========+============+==================+
 | Member Work         | ``/lustre/orion/[projid]/scratch/[userid]``  | Lustre HPE ClusterStor | 700         |  50 TB | No      | 90 days | N/A        | Yes              |
 +---------------------+----------------------------------------------+------------------------+-------------+--------+---------+---------+------------+------------------+
-| Project Work        | ``/lustre/orion/[[projid]/proj-shared``      | Lustre HPE ClusterStor | 770         |  50 TB | No      | 90 days | N/A        | Yes              |
+| Project Work        | ``/lustre/orion/[projid]/proj-shared``       | Lustre HPE ClusterStor | 770         |  50 TB | No      | 90 days | N/A        | Yes              |
 +---------------------+----------------------------------------------+------------------------+-------------+--------+---------+---------+------------+------------------+
-| World Work          | ``/lustre/orion/[[projid]/world-shared``     | Lustre HPE ClusterStor | 775         |  50 TB | No      | 90 days | N/A        | Yes              |
+| World Work          | ``/lustre/orion/[projid]/world-shared``      | Lustre HPE ClusterStor | 775         |  50 TB | No      | 90 days | N/A        | Yes              |
 +---------------------+----------------------------------------------+------------------------+-------------+--------+---------+---------+------------+------------------+
 
 
