@@ -323,8 +323,8 @@ Member Work
 ^^^^^^^^^^^
 
 Project members get an individual Member Work directory for each associated
-project; these reside in the center-wide, high-capacity Spectrum Scale file
-system on large, fast disk areas intended for global (parallel) access to
+project; these reside in the center-wide, high-capacity scratch filesystems
+on large, fast disk areas intended for global (parallel) access to
 temporary/scratch storage. Member Work areas are not shared with other
 users of the system and are intended for project data that the user does
 not want to make available to other users. Member Work directories are
@@ -342,7 +342,7 @@ Project Work
 ^^^^^^^^^^^^
 
 Each project is granted a Project Work directory; these reside in the
-center-wide, high-capacity Spectrum Scale file system on large, fast disk
+center-wide, high-capacity scratch filesystems on large, fast disk
 areas intended for global (parallel) access to temporary/scratch storage.
 Project Work directories can be accessed by all members of a project and
 are intended for sharing data within a project. Project Work directories
@@ -360,7 +360,7 @@ World Work
 ^^^^^^^^^^
 
 Each project has a World Work directory that resides in the center-wide,
-high-capacity Spectrum Scale file system on large, fast disk areas intended
+high-capacity scratch filesystems on large, fast disk areas intended
 for global (parallel) access to temporary/scratch storage. World Work areas
 can be accessed by all users of the system and are intended for sharing of
 data between projects. World Work directories are provided commonly across
