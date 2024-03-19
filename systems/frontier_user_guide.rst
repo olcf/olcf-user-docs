@@ -1055,57 +1055,60 @@ Common Slurm Options
 
 The table below summarizes options for submitted jobs. Unless otherwise noted, they can be used for either batch scripts or interactive batch jobs. For scripts, they can be added on the ``sbatch`` command line or as a ``#BSUB`` directive in the batch script. (If they're specified in both places, the command line takes precedence.) This is only a subset of all available options. Check the `Slurm Man Pages <https://slurm.schedmd.com/man_index.html>`__ for a more complete list.
 
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-| Option                 | Example Usage                              | Description                                                                          |
-+========================+============================================+======================================================================================+
-| ``-A``                 | ``#SBATCH -A ABC123``                      | Specifies the project to which the job should be charged                             |
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-| ``-N``                 | ``#SBATCH -N 1024``                        | Request 1024 nodes for the job                                                       |
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-| ``-t``                 | ``#SBATCH -t 4:00:00``                     | Request a walltime of 4 hours.                                                       |
-|                        |                                            | Walltime requests can be specified as minutes, hours:minutes, hours:minuts:seconds   |
-|                        |                                            | days-hours, days-hours:minutes, or days-hours:minutes:seconds                        |
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-| ``--threads-per-core`` | ``#SBATCH --threads-per-core=2``           | | Number of active hardware threads per core. Can be 1 or 2 (1 is default)           |
-|                        |                                            | | **Must** be used if using ``--threads-per-core=2`` in your ``srun`` command.       |
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-| ``-d``                 | ``#SBATCH -d afterok:12345``               | Specify job dependency (in this example, this job cannot start until job 12345 exits |
-|                        |                                            | with an exit code of 0. See the Job Dependency section for more information          |
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-| ``-C``                 | ``#SBATCH -C nvme``                        | Request the burst buffer/NVMe on each node be made available for your job. See       |
-|                        |                                            | the Burst Buffers section for more information on using them.                        |
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-| ``-J``                 | ``#SBATCH -J MyJob123``                    | Specify the job name (this will show up in queue listings)                           |
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-| ``-o``                 | ``#SBATCH -o jobout.%j``                   | File where job STDOUT will be directed (%j will be replaced with the job ID).        |
-|                        |                                            | If no `-e` option is specified, job STDERR will be placed in this file, too.         |
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-| ``-e``                 | ``#SBATCH -e joberr.%j``                   | File where job STDERR will be directed (%j will be replaced with the job ID).        |
-|                        |                                            | If no `-o` option is specified, job STDOUT will be placed in this file, too.         |
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-| ``--mail-type``        | ``#SBATCH --mail-type=END``                | Send email for certain job actions. Can be a comma-separated list. Actions include   |
-|                        |                                            | BEGIN, END, FAIL, REQUEUE, INVALID_DEPEND, STAGE_OUT, ALL, and more.                 |
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-| ``--mail-user``        | ``#SBATCH --mail-user=user@somewhere.com`` | Email address to be used for notifications.                                          |
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-| ``--reservation``      | ``#SBATCH --reservation=MyReservation.1``  | Instructs Slurm to run a job on nodes that are part of the specified reservation.    |
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-| ``-S``                 | ``#SBATCH -S 8``                           | Instructs Slurm to reserve a specific number of cores per node (default is 8).       |
-|                        |                                            | Reserved cores cannot be used by the application.                                    |
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-| ``--signal``           | ``#SBATCH --signal=USR1@300``              || Send the given signal to a job the specified time (in seconds) seconds before the   |
-|                        |                                            | job reaches its walltime. The signal can be by name or by number (i.e. both 10 and   |
-|                        |                                            | USR1 would send SIGUSR1).                                                            |
-|                        |                                            ||                                                                                     |
-|                        |                                            || Signaling a job can be used, for example, to force a job to write a checkpoint just |
-|                        |                                            | before Slurm kills the job (note that this option only sends the signal; the user    |
-|                        |                                            | must still make sure their job script traps the signal and handles it in the desired |
-|                        |                                            | manner).                                                                             |
-|                        |                                            ||                                                                                     |
-|                        |                                            || When used with ``sbatch``, the signal can be prefixed by "B:"                       |
-|                        |                                            | (e.g. ``--signal=B:USR1@300``) to tell Slurm to signal only the batch shell;         |
-|                        |                                            | otherwise all processes will be signaled.                                            |
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+.. table::
+    :widths: 15 28 57
+
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | Option                 | Example Usage                              | Description                                                                          |
+    +========================+============================================+======================================================================================+
+    | ``-A``                 | ``#SBATCH -A ABC123``                      | Specifies the project to which the job should be charged                             |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | ``-N``                 | ``#SBATCH -N 1024``                        | Request 1024 nodes for the job                                                       |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | ``-t``                 | ``#SBATCH -t 4:00:00``                     | Request a walltime of 4 hours.                                                       |
+    |                        |                                            | Walltime requests can be specified as minutes, hours:minutes, hours:minuts:seconds   |
+    |                        |                                            | days-hours, days-hours:minutes, or days-hours:minutes:seconds                        |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | ``--threads-per-core`` | ``#SBATCH --threads-per-core=2``           | | Number of active hardware threads per core. Can be 1 or 2 (1 is default)           |
+    |                        |                                            | | **Must** be used if using ``--threads-per-core=2`` in your ``srun`` command.       |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | ``-d``                 | ``#SBATCH -d afterok:12345``               | Specify job dependency (in this example, this job cannot start until job 12345 exits |
+    |                        |                                            | with an exit code of 0. See the Job Dependency section for more information          |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | ``-C``                 | ``#SBATCH -C nvme``                        | Request the burst buffer/NVMe on each node be made available for your job. See       |
+    |                        |                                            | the Burst Buffers section for more information on using them.                        |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | ``-J``                 | ``#SBATCH -J MyJob123``                    | Specify the job name (this will show up in queue listings)                           |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | ``-o``                 | ``#SBATCH -o jobout.%j``                   | File where job STDOUT will be directed (%j will be replaced with the job ID).        |
+    |                        |                                            | If no `-e` option is specified, job STDERR will be placed in this file, too.         |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | ``-e``                 | ``#SBATCH -e joberr.%j``                   | File where job STDERR will be directed (%j will be replaced with the job ID).        |
+    |                        |                                            | If no `-o` option is specified, job STDOUT will be placed in this file, too.         |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | ``--mail-type``        | ``#SBATCH --mail-type=END``                | Send email for certain job actions. Can be a comma-separated list. Actions include   |
+    |                        |                                            | BEGIN, END, FAIL, REQUEUE, INVALID_DEPEND, STAGE_OUT, ALL, and more.                 |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | ``--mail-user``        | ``#SBATCH --mail-user=user@somewhere.com`` | Email address to be used for notifications.                                          |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | ``--reservation``      | ``#SBATCH --reservation=MyReservation.1``  | Instructs Slurm to run a job on nodes that are part of the specified reservation.    |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | ``-S``                 | ``#SBATCH -S 8``                           | Instructs Slurm to reserve a specific number of cores per node (default is 8).       |
+    |                        |                                            | Reserved cores cannot be used by the application.                                    |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | ``--signal``           | ``#SBATCH --signal=USR1@300``              || Send the given signal to a job the specified time (in seconds) seconds before the   |
+    |                        |                                            | job reaches its walltime. The signal can be by name or by number (i.e. both 10 and   |
+    |                        |                                            | USR1 would send SIGUSR1).                                                            |
+    |                        |                                            ||                                                                                     |
+    |                        |                                            || Signaling a job can be used, for example, to force a job to write a checkpoint just |
+    |                        |                                            | before Slurm kills the job (note that this option only sends the signal; the user    |
+    |                        |                                            | must still make sure their job script traps the signal and handles it in the desired |
+    |                        |                                            | manner).                                                                             |
+    |                        |                                            ||                                                                                     |
+    |                        |                                            || When used with ``sbatch``, the signal can be prefixed by "B:"                       |
+    |                        |                                            | (e.g. ``--signal=B:USR1@300``) to tell Slurm to signal only the batch shell;         |
+    |                        |                                            | otherwise all processes will be signaled.                                            |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
 
 
 Slurm Environment Variables
@@ -1273,22 +1276,25 @@ Job Dependencies
 
 Oftentimes, a job will need data from some other job in the queue, but it's nonetheless convenient to submit the second job before the first finishes. Slurm allows you to submit a job with constraints that will keep it from running until these dependencies are met. These are specified with the ``-d`` option to Slurm. Common dependency flags are summarized below. In each of these examples, only a single jobid is shown but you can specify multiple job IDs as a colon-delimited list (i.e. ``#SBATCH -d afterok:12345:12346:12346``). For the ``after`` dependency, you can optionally specify a ``+time`` value for each jobid.
 
-+-----------------------------------+---------------------------------------------------------------------------------------------------+
-| Flag                              | Meaning (for the dependent job)                                                                   |
-+===================================+===================================================================================================+
-| ``#SBATCH -d after:jobid[+time]`` | The job can start after the specified jobs start or are canceled. The optional ``+time`` argument |
-|                                   | is a number of minutes. If specified, the job cannot start until that many minutes have passed    |
-|                                   | since the listed jobs start/are canceled. If not specified, there is no delay.                    |
-+-----------------------------------+---------------------------------------------------------------------------------------------------+
-| ``#SBATCH -d afterany:jobid``     | The job can start after the specified jobs have ended (regardless of exit state)                  |
-+-----------------------------------+---------------------------------------------------------------------------------------------------+
-| ``#SBATCH -d afternotok:jobid``   | The job can start after the specified jobs terminate in a failed (non-zero) state                 |
-+-----------------------------------+---------------------------------------------------------------------------------------------------+
-| ``#SBATCH -d afterok:jobid``      | The job can start after the specified jobs complete successfully (i.e. zero exit code)            |
-+-----------------------------------+---------------------------------------------------------------------------------------------------+
-| ``#SBATCH -d singleton``          | Job can begin after any previously-launched job with the same name and from the same user         |
-|                                   | have completed. In other words, serialize the running jobs based on username+jobname pairs.       |
-+-----------------------------------+---------------------------------------------------------------------------------------------------+
+.. table::
+    :widths: 25 75
+
+    +-----------------------------------+---------------------------------------------------------------------------------------------------+
+    | Flag                              | Meaning (for the dependent job)                                                                   |
+    +===================================+===================================================================================================+
+    | ``#SBATCH -d after:jobid[+time]`` | The job can start after the specified jobs start or are canceled. The optional ``+time`` argument |
+    |                                   | is a number of minutes. If specified, the job cannot start until that many minutes have passed    |
+    |                                   | since the listed jobs start/are canceled. If not specified, there is no delay.                    |
+    +-----------------------------------+---------------------------------------------------------------------------------------------------+
+    | ``#SBATCH -d afterany:jobid``     | The job can start after the specified jobs have ended (regardless of exit state)                  |
+    +-----------------------------------+---------------------------------------------------------------------------------------------------+
+    | ``#SBATCH -d afternotok:jobid``   | The job can start after the specified jobs terminate in a failed (non-zero) state                 |
+    +-----------------------------------+---------------------------------------------------------------------------------------------------+
+    | ``#SBATCH -d afterok:jobid``      | The job can start after the specified jobs complete successfully (i.e. zero exit code)            |
+    +-----------------------------------+---------------------------------------------------------------------------------------------------+
+    | ``#SBATCH -d singleton``          | Job can begin after any previously-launched job with the same name and from the same user         |
+    |                                   | have completed. In other words, serialize the running jobs based on username+jobname pairs.       |
+    +-----------------------------------+---------------------------------------------------------------------------------------------------+
 
 
 Monitoring and Modifying Batch Jobs
@@ -1383,45 +1389,48 @@ The job name and output options have been removed since stdout/stderr are typica
 
 ``srun`` accepts the following common options:
 
-+--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
-| ``-N``                                                 | Number of nodes                                                                                                |
-+--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
-| ``-n``                                                 | Total number of MPI tasks (default is 1)                                                                       |
-+--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
-| ``-c, --cpus-per-task=<ncpus>``                        | | Logical cores per MPI task (default is 1)                                                                    |
-|                                                        | | When used with ``--threads-per-core=1``: ``-c`` is equivalent to *physical* cores per task                   |
-|                                                        | | By default, when ``-c > 1``, additional cores per task are distributed within one L3 region                  |
-|                                                        |   first before filling a different L3 region.                                                                  |
-+--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
-| ``--cpu-bind=threads``                                 | | Bind tasks to CPUs.                                                                                          |
-|                                                        | | ``threads`` - (default, recommended) Automatically generate masks binding tasks to threads.                  |
-+--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
-| ``--threads-per-core=<threads>``                       | | In task layout, use the specified maximum number of hardware threads per core                                |
-|                                                        | | (default is 1; there are 2 hardware threads per physical CPU core).                                          |
-|                                                        | | Must also be set in ``salloc`` or ``sbatch`` if using ``--threads-per-core=2`` in your ``srun`` command.     |
-+--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
-| ``-m, --distribution=<value>:<value>:<value>``         | | Specifies the distribution of MPI ranks across compute nodes, sockets (L3 regions), and cores, respectively. |
-|                                                        | | The default values are ``block:cyclic:cyclic``, see ``man srun`` for more information.                       |
-|                                                        | | Currently, the distribution setting for cores (the third "<value>" entry) has no effect on Frontier          |
-+--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
-|  ``--ntasks-per-node=<ntasks>``                        | | If used without ``-n``: requests that a specific number of tasks be invoked on each node.                    |
-|                                                        | | If used with ``-n``: treated as a *maximum* count of tasks per node.                                         |
-+--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
-| ``--gpus``                                             | Specify the number of GPUs required for the job (total GPUs across all nodes).                                 |
-+--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
-| ``--gpus-per-node``                                    | Specify the number of GPUs per node required for the job.                                                      |
-+--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
-| ``--gpu-bind=closest``                                 | Binds each task to the GPU which is on the same NUMA domain as the CPU core the MPI rank is running on.        |
-+--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
-| ``--gpu-bind=map_gpu:<list>``                          | Bind tasks to specific GPUs by setting GPU masks on tasks (or ranks) as specified where                        |
-|                                                        | ``<list>`` is ``<gpu_id_for_task_0>,<gpu_id_for_task_1>,...``. If the number of tasks (or                      |
-|                                                        | ranks) exceeds the number of elements in this list, elements in the list will be reused as                     |
-|                                                        | needed starting from the beginning of the list. To simplify support for large task                             |
-|                                                        | counts, the lists may follow a map with an asterisk and repetition count. (For example                         |
-|                                                        | ``map_gpu:0*4,1*4``)                                                                                           |
-+--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
-| ``--ntasks-per-gpu=<ntasks>``                          | Request that there are ntasks tasks invoked for every GPU.                                                     |
-+--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+.. table::
+    :widths: 30 70
+
+    +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+    | ``-N``                                                 | Number of nodes                                                                                                |
+    +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+    | ``-n``                                                 | Total number of MPI tasks (default is 1)                                                                       |
+    +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+    | ``-c, --cpus-per-task=<ncpus>``                        | | Logical cores per MPI task (default is 1)                                                                    |
+    |                                                        | | When used with ``--threads-per-core=1``: ``-c`` is equivalent to *physical* cores per task                   |
+    |                                                        | | By default, when ``-c > 1``, additional cores per task are distributed within one L3 region                  |
+    |                                                        |   first before filling a different L3 region.                                                                  |
+    +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+    | ``--cpu-bind=threads``                                 | | Bind tasks to CPUs.                                                                                          |
+    |                                                        | | ``threads`` - (default, recommended) Automatically generate masks binding tasks to threads.                  |
+    +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+    | ``--threads-per-core=<threads>``                       | | In task layout, use the specified maximum number of hardware threads per core                                |
+    |                                                        | | (default is 1; there are 2 hardware threads per physical CPU core).                                          |
+    |                                                        | | Must also be set in ``salloc`` or ``sbatch`` if using ``--threads-per-core=2`` in your ``srun`` command.     |
+    +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+    | ``-m, --distribution=<value>:<value>:<value>``         | | Specifies the distribution of MPI ranks across compute nodes, sockets (L3 regions), and cores, respectively. |
+    |                                                        | | The default values are ``block:cyclic:cyclic``, see ``man srun`` for more information.                       |
+    |                                                        | | Currently, the distribution setting for cores (the third "<value>" entry) has no effect on Frontier          |
+    +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+    |  ``--ntasks-per-node=<ntasks>``                        | | If used without ``-n``: requests that a specific number of tasks be invoked on each node.                    |
+    |                                                        | | If used with ``-n``: treated as a *maximum* count of tasks per node.                                         |
+    +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+    | ``--gpus``                                             | Specify the number of GPUs required for the job (total GPUs across all nodes).                                 |
+    +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+    | ``--gpus-per-node``                                    | Specify the number of GPUs per node required for the job.                                                      |
+    +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+    | ``--gpu-bind=closest``                                 | Binds each task to the GPU which is on the same NUMA domain as the CPU core the MPI rank is running on.        |
+    +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+    | ``--gpu-bind=map_gpu:<list>``                          | Bind tasks to specific GPUs by setting GPU masks on tasks (or ranks) as specified where                        |
+    |                                                        | ``<list>`` is ``<gpu_id_for_task_0>,<gpu_id_for_task_1>,...``. If the number of tasks (or                      |
+    |                                                        | ranks) exceeds the number of elements in this list, elements in the list will be reused as                     |
+    |                                                        | needed starting from the beginning of the list. To simplify support for large task                             |
+    |                                                        | counts, the lists may follow a map with an asterisk and repetition count. (For example                         |
+    |                                                        | ``map_gpu:0*4,1*4``)                                                                                           |
+    +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+    | ``--ntasks-per-gpu=<ntasks>``                          | Request that there are ntasks tasks invoked for every GPU.                                                     |
+    +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
 
 
 Below is a comparison table between ``srun`` and ``jsrun``.
@@ -2154,14 +2163,17 @@ node are shared by 2 MPI ranks. Similar to Example 4, ``-ntasks-per-gpu=2``
 will be used, but a new ``srun`` flag will be used to change the default
 round-robin (``cyclic``) distribution of MPI ranks across NUMA domains:
 
-+------------------------------------------------+-----------------------------------------------------------------------------------------------+
-| Slurm Option                                   | Description                                                                                   |
-+================================================+===============================================================================================+
-| ``--distribution=<value>[:<value>][:<value>]`` | Specifies the distribution of MPI ranks across compute nodes, sockets                         |
-|                                                | (L3 cache regions on Frontier), and cores, respectively. The default values are               |
-|                                                | ``block:cyclic:cyclic``, which is where the ``cyclic`` assignment comes from in the previous  |
-|                                                | examples.                                                                                     |
-+------------------------------------------------+-----------------------------------------------------------------------------------------------+
+.. table::
+    :widths: 30 70
+
+    +------------------------------------------------+-----------------------------------------------------------------------------------------------+
+    | Slurm Option                                   | Description                                                                                   |
+    +================================================+===============================================================================================+
+    | ``--distribution=<value>[:<value>][:<value>]`` | Specifies the distribution of MPI ranks across compute nodes, sockets                         |
+    |                                                | (L3 cache regions on Frontier), and cores, respectively. The default values are               |
+    |                                                | ``block:cyclic:cyclic``, which is where the ``cyclic`` assignment comes from in the previous  |
+    |                                                | examples.                                                                                     |
+    +------------------------------------------------+-----------------------------------------------------------------------------------------------+
 
 .. note::
 

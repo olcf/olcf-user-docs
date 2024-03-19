@@ -873,46 +873,49 @@ command line takes precedence. Note that LSF has numerous options; only
 the most common ones are described here. For more in-depth information
 about other LSF options, see the ``bsub`` man page.
 
-+--------------------+----------------------------------------+----------------------------------------------------------------------------------+
-| Option             | Example Usage                          | Description                                                                      |
-+====================+========================================+==================================================================================+
-| ``-W``             | ``#BSUB -W 50``                        | Requested                                                                        |
-|                    |                                        | maximum walltime. NOTE: The format is [hours:]minutes, not                       |
-|                    |                                        | [[hours:]minutes:]seconds like PBS/Torque/Moab                                   |
-+--------------------+----------------------------------------+----------------------------------------------------------------------------------+
-| ``-nnodes``        | ``#BSUB -nnodes 1024``                 | Number of nodes                                                                  |
-|                    |                                        | NOTE: There is specified with only one hyphen (i.e. -nnodes, not --nnodes)       |
-+--------------------+----------------------------------------+----------------------------------------------------------------------------------+
-| ``-P``             | ``#BSUB -P ABC123``                    | Specifies the                                                                    |
-|                    |                                        | project to which the job should be charged                                       |
-+--------------------+----------------------------------------+----------------------------------------------------------------------------------+
-| ``-o``             | ``#BSUB -o jobout.%J``                 | File into which                                                                  |
-|                    |                                        | job STDOUT should be directed (%J will be replaced with the job ID number) If    |
-|                    |                                        | you do not also specify a STDERR file with ``-e`` or ``-eo``, STDERR will also   |
-|                    |                                        | be written to this file.                                                         |
-+--------------------+----------------------------------------+----------------------------------------------------------------------------------+
-| ``-e``             | ``#BSUB -e jobout.%J``                 | File into which                                                                  |
-|                    |                                        | job STDERR should be directed (%J will be replaced with the job ID number)       |
-+--------------------+----------------------------------------+----------------------------------------------------------------------------------+
-| ``-J``             | ``#BSUB -J MyRun123``                  | Specifies the                                                                    |
-|                    |                                        | name of the job (if not present, LSF will use the name of the job script as the  |
-|                    |                                        | job’s name)                                                                      |
-+--------------------+----------------------------------------+----------------------------------------------------------------------------------+
-| ``-w``             | ``#BSUB -w ended()``                   | Place a dependency on the job                                                    |
-+--------------------+----------------------------------------+----------------------------------------------------------------------------------+
-| ``-N``             | ``#BSUB -N``                           | Send a job report via email when the job completes                               |
-+--------------------+----------------------------------------+----------------------------------------------------------------------------------+
-| ``-XF``            | ``#BSUB -XF``                          | Use X11 forwarding                                                               |
-+--------------------+----------------------------------------+----------------------------------------------------------------------------------+
-| ``-alloc_flags``   | ``#BSUB -alloc_flags "gpumps smt1"``   | Used to request                                                                  |
-|                    |                                        | GPU Multi-Process Service (MPS) and to set SMT (Simultaneous Multithreading)     |
-|                    |                                        | levels. Only one "#BSUB alloc\_flags" command is recognized so multiple          |
-|                    |                                        | alloc\_flags options need to be enclosed in quotes and space-separated. Setting  |
-|                    |                                        | gpumps enables NVIDIA’s Multi-Process Service, which allows multiple MPI ranks   |
-|                    |                                        | to simultaneously access a GPU. Setting smt\ *n* (where *n* is 1, 2, or 4) sets  |
-|                    |                                        | different SMT levels. To run with 2 hardware threads per physical core, you’d    |
-|                    |                                        | use smt2. The default level is smt4.                                             |
-+--------------------+----------------------------------------+----------------------------------------------------------------------------------+
+.. table::
+    :widths: 12 25 63
+
+    +--------------------+----------------------------------------+----------------------------------------------------------------------------------+
+    | Option             | Example Usage                          | Description                                                                      |
+    +====================+========================================+==================================================================================+
+    | ``-W``             | ``#BSUB -W 50``                        | Requested                                                                        |
+    |                    |                                        | maximum walltime. NOTE: The format is [hours:]minutes, not                       |
+    |                    |                                        | [[hours:]minutes:]seconds like PBS/Torque/Moab                                   |
+    +--------------------+----------------------------------------+----------------------------------------------------------------------------------+
+    | ``-nnodes``        | ``#BSUB -nnodes 1024``                 | Number of nodes                                                                  |
+    |                    |                                        | NOTE: There is specified with only one hyphen (i.e. -nnodes, not --nnodes)       |
+    +--------------------+----------------------------------------+----------------------------------------------------------------------------------+
+    | ``-P``             | ``#BSUB -P ABC123``                    | Specifies the                                                                    |
+    |                    |                                        | project to which the job should be charged                                       |
+    +--------------------+----------------------------------------+----------------------------------------------------------------------------------+
+    | ``-o``             | ``#BSUB -o jobout.%J``                 | File into which                                                                  |
+    |                    |                                        | job STDOUT should be directed (%J will be replaced with the job ID number) If    |
+    |                    |                                        | you do not also specify a STDERR file with ``-e`` or ``-eo``, STDERR will also   |
+    |                    |                                        | be written to this file.                                                         |
+    +--------------------+----------------------------------------+----------------------------------------------------------------------------------+
+    | ``-e``             | ``#BSUB -e jobout.%J``                 | File into which                                                                  |
+    |                    |                                        | job STDERR should be directed (%J will be replaced with the job ID number)       |
+    +--------------------+----------------------------------------+----------------------------------------------------------------------------------+
+    | ``-J``             | ``#BSUB -J MyRun123``                  | Specifies the                                                                    |
+    |                    |                                        | name of the job (if not present, LSF will use the name of the job script as the  |
+    |                    |                                        | job’s name)                                                                      |
+    +--------------------+----------------------------------------+----------------------------------------------------------------------------------+
+    | ``-w``             | ``#BSUB -w ended()``                   | Place a dependency on the job                                                    |
+    +--------------------+----------------------------------------+----------------------------------------------------------------------------------+
+    | ``-N``             | ``#BSUB -N``                           | Send a job report via email when the job completes                               |
+    +--------------------+----------------------------------------+----------------------------------------------------------------------------------+
+    | ``-XF``            | ``#BSUB -XF``                          | Use X11 forwarding                                                               |
+    +--------------------+----------------------------------------+----------------------------------------------------------------------------------+
+    | ``-alloc_flags``   | ``#BSUB -alloc_flags "gpumps smt1"``   | Used to request                                                                  |
+    |                    |                                        | GPU Multi-Process Service (MPS) and to set SMT (Simultaneous Multithreading)     |
+    |                    |                                        | levels. Only one "#BSUB alloc\_flags" command is recognized so multiple          |
+    |                    |                                        | alloc\_flags options need to be enclosed in quotes and space-separated. Setting  |
+    |                    |                                        | gpumps enables NVIDIA’s Multi-Process Service, which allows multiple MPI ranks   |
+    |                    |                                        | to simultaneously access a GPU. Setting smt\ *n* (where *n* is 1, 2, or 4) sets  |
+    |                    |                                        | different SMT levels. To run with 2 hardware threads per physical core, you’d    |
+    |                    |                                        | use smt2. The default level is smt4.                                             |
+    +--------------------+----------------------------------------+----------------------------------------------------------------------------------+
 
 Allocation-wide Options
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -1274,24 +1277,27 @@ dependencies on jobs to prevent them from running until other jobs have
 started/completed/etc. Several possible dependency settings are
 described in the table below:
 
-+-----------------------------------------------+---------------------------------------------------------------------------------+
-| Expression                                    | Meaning                                                                         |
-+===============================================+=================================================================================+
-| ``#BSUB -w started(12345)``                   | The job will not start until                                                    |
-|                                               | job 12345 starts. Job 12345 is considered to have started if is in any of the   |
-|                                               | following states: USUSP, SSUSP, DONE, EXIT or RUN (with any pre-execution       |
-|                                               | command specified by ``bsub -E`` completed)                                     |
-+-----------------------------------------------+---------------------------------------------------------------------------------+
-| ``#BSUB -w done(12345)`` ``#BSUB -w 12345``   | The job will not start until                                                    |
-|                                               | job 12345 has a state of DONE (i.e. completed normally). If a job ID is given   |
-|                                               | with no condition, ``done()`` is assumed.                                       |
-+-----------------------------------------------+---------------------------------------------------------------------------------+
-| ``#BSUB -w exit(12345)``                      | The job will not start until                                                    |
-|                                               | job 12345 has a state of EXIT (i.e. completed abnormally)                       |
-+-----------------------------------------------+---------------------------------------------------------------------------------+
-| ``#BSUB -w ended(12345)``                     | The job will not start until                                                    |
-|                                               | job 12345 has a state of EXIT or DONE                                           |
-+-----------------------------------------------+---------------------------------------------------------------------------------+
+.. table::
+    :widths: 27 73
+
+    +-----------------------------------------------+---------------------------------------------------------------------------------+
+    | Expression                                    | Meaning                                                                         |
+    +===============================================+=================================================================================+
+    | ``#BSUB -w started(12345)``                   | The job will not start until                                                    |
+    |                                               | job 12345 starts. Job 12345 is considered to have started if is in any of the   |
+    |                                               | following states: USUSP, SSUSP, DONE, EXIT or RUN (with any pre-execution       |
+    |                                               | command specified by ``bsub -E`` completed)                                     |
+    +-----------------------------------------------+---------------------------------------------------------------------------------+
+    | ``#BSUB -w done(12345)`` ``#BSUB -w 12345``   | The job will not start until                                                    |
+    |                                               | job 12345 has a state of DONE (i.e. completed normally). If a job ID is given   |
+    |                                               | with no condition, ``done()`` is assumed.                                       |
+    +-----------------------------------------------+---------------------------------------------------------------------------------+
+    | ``#BSUB -w exit(12345)``                      | The job will not start until                                                    |
+    |                                               | job 12345 has a state of EXIT (i.e. completed abnormally)                       |
+    +-----------------------------------------------+---------------------------------------------------------------------------------+
+    | ``#BSUB -w ended(12345)``                     | The job will not start until                                                    |
+    |                                               | job 12345 has a state of EXIT or DONE                                           |
+    +-----------------------------------------------+---------------------------------------------------------------------------------+
 
 Dependency expressions can be combined with logical operators. For
 example, if you want a job held until job 12345 is DONE and job 12346
@@ -1447,31 +1453,33 @@ Below are common jsrun options. More flags and details can be found in the jsrun
 man page. The defaults listed in the table below are the OLCF defaults and take
 precedence over those mentioned in the man page.
 
+.. table::
+    :widths: 20 5 35 40
 
-+---------------------------+--------+------------------------------------------------------+------------------------------+
-| Flags                              |                                                      |                              |
-+---------------------------+--------+  Description                                         + Default Value                +
-| Long                      | Short  |                                                      |                              |
-+===========================+========+======================================================+==============================+
-| ``--nrs``                 | ``-n`` | Number of resource sets                              | All available physical cores |
-+---------------------------+--------+------------------------------------------------------+------------------------------+
-| ``--tasks_per_rs``        | ``-a`` | Number of MPI tasks (ranks) per resource set         | Not set by default, instead  |
-|                           |        |                                                      | total tasks (-p) set         |
-+---------------------------+--------+------------------------------------------------------+------------------------------+
-| ``--cpu_per_rs``          | ``-c`` | Number of CPUs (cores) per resource set.             | 1                            |
-+---------------------------+--------+------------------------------------------------------+------------------------------+
-| ``--gpu_per_rs``          | ``-g`` | Number of GPUs per resource set                      | 0                            |
-+---------------------------+--------+------------------------------------------------------+------------------------------+
-| ``--bind``                | ``-b`` | Binding of tasks within a resource set. Can be none, | packed:1                     |
-|                           |        | rs, or packed:#                                      |                              |
-+---------------------------+--------+------------------------------------------------------+------------------------------+
-| ``--rs_per_host``         | ``-r`` | Number of resource sets per host                     | No default                   |
-+---------------------------+--------+------------------------------------------------------+------------------------------+
-| ``--latency_priority``    | ``-l`` | Latency Priority. Controls layout                    | gpu-cpu,cpu-mem,cpu-cpu      |
-|                           |        | priorities. Can currently be cpu-cpu or gpu-cpu      |                              |
-+---------------------------+--------+------------------------------------------------------+------------------------------+
-| ``--launch_distribution`` | ``-d`` | How tasks are started on resource sets               | packed                       |
-+---------------------------+--------+------------------------------------------------------+------------------------------+
+    +---------------------------+--------+------------------------------------------------------+------------------------------+
+    | Flags                              |                                                      |                              |
+    +---------------------------+--------+  Description                                         + Default Value                +
+    | Long                      | Short  |                                                      |                              |
+    +===========================+========+======================================================+==============================+
+    | ``--nrs``                 | ``-n`` | Number of resource sets                              | All available physical cores |
+    +---------------------------+--------+------------------------------------------------------+------------------------------+
+    | ``--tasks_per_rs``        | ``-a`` | Number of MPI tasks (ranks) per resource set         | Not set by default, instead  |
+    |                           |        |                                                      | total tasks (-p) set         |
+    +---------------------------+--------+------------------------------------------------------+------------------------------+
+    | ``--cpu_per_rs``          | ``-c`` | Number of CPUs (cores) per resource set.             | 1                            |
+    +---------------------------+--------+------------------------------------------------------+------------------------------+
+    | ``--gpu_per_rs``          | ``-g`` | Number of GPUs per resource set                      | 0                            |
+    +---------------------------+--------+------------------------------------------------------+------------------------------+
+    | ``--bind``                | ``-b`` | Binding of tasks within a resource set. Can be none, | packed:1                     |
+    |                           |        | rs, or packed:#                                      |                              |
+    +---------------------------+--------+------------------------------------------------------+------------------------------+
+    | ``--rs_per_host``         | ``-r`` | Number of resource sets per host                     | No default                   |
+    +---------------------------+--------+------------------------------------------------------+------------------------------+
+    | ``--latency_priority``    | ``-l`` | Latency Priority. Controls layout                    | gpu-cpu,cpu-mem,cpu-cpu      |
+    |                           |        | priorities. Can currently be cpu-cpu or gpu-cpu      |                              |
+    +---------------------------+--------+------------------------------------------------------+------------------------------+
+    | ``--launch_distribution`` | ``-d`` | How tasks are started on resource sets               | packed                       |
+    +---------------------------+--------+------------------------------------------------------+------------------------------+
 
 It's recommended to explicitly specify ``jsrun`` options and not rely on the
 default values. This most often includes ``--nrs``,\ ``--cpu_per_rs``,
@@ -2214,20 +2222,23 @@ systems, this command can be used to send various signals (not just
 numbers and names for signals. For a list of accepted signal names, run
 ``bkill -l``. Common ways to invoke the command include:
 
-+---------------------------+----------------------------------------------------------------------------------+
-| Command                   | Description                                                                      |
-+===========================+==================================================================================+
-| ``bkill 12345``           | Force a job to stop by sending ``SIGINT``,                                       |
-|                           | ``SIGTERM``, and ``SIGKILL``. These signals are sent in that order, so users     |
-|                           | can write applications such that they will trap ``SIGINT`` and/or ``SIGTERM``    |
-|                           | and exit in a controlled manner.                                                 |
-+---------------------------+----------------------------------------------------------------------------------+
-| ``bkill -s USR1 12345``   | Send ``SIGUSR1`` to job 12345 NOTE: When                                         |
-|                           | specifying a signal by name, omit SIG from the name. Thus, you specify ``USR1``  |
-|                           | and not ``SIGUSR1`` on the ``bkill`` command line.                               |
-+---------------------------+----------------------------------------------------------------------------------+
-| ``bkill -s 9 12345``      | Send signal 9 to job 12345                                                       |
-+---------------------------+----------------------------------------------------------------------------------+
+.. table::
+    :widths: 17 83
+
+    +---------------------------+----------------------------------------------------------------------------------+
+    | Command                   | Description                                                                      |
+    +===========================+==================================================================================+
+    | ``bkill 12345``           | Force a job to stop by sending ``SIGINT``,                                       |
+    |                           | ``SIGTERM``, and ``SIGKILL``. These signals are sent in that order, so users     |
+    |                           | can write applications such that they will trap ``SIGINT`` and/or ``SIGTERM``    |
+    |                           | and exit in a controlled manner.                                                 |
+    +---------------------------+----------------------------------------------------------------------------------+
+    | ``bkill -s USR1 12345``   | Send ``SIGUSR1`` to job 12345 NOTE: When                                         |
+    |                           | specifying a signal by name, omit SIG from the name. Thus, you specify ``USR1``  |
+    |                           | and not ``SIGUSR1`` on the ``bkill`` command line.                               |
+    +---------------------------+----------------------------------------------------------------------------------+
+    | ``bkill -s 9 12345``      | Send signal 9 to job 12345                                                       |
+    +---------------------------+----------------------------------------------------------------------------------+
 
 Like ``bstop`` and ``bresume``, ``bkill`` command also supports
 identifying the job(s) to be signaled by criteria other than the job id.
@@ -2256,17 +2267,20 @@ Other LSF Commands
 The table below summarizes some additional LSF commands that might be
 useful.
 
-+------------------+---------------------------------------------------------------------------+
-| Command          | Description                                                               |
-+==================+===========================================================================+
-| ``bparams -a``   | Show current parameters for LSF. The behavior/available                   |
-|                  | options for some LSF commands depend on settings in various configuration |
-|                  | files. This command shows those settings without having to search for the |
-|                  | actual files.                                                             |
-+------------------+---------------------------------------------------------------------------+
-| ``bjdepinfo``    | Show job dependency information (could be useful in                       |
-|                  | determining what job is keeping another job in a pending state)           |
-+------------------+---------------------------------------------------------------------------+
+.. table::
+    :widths: 12 88
+
+    +------------------+---------------------------------------------------------------------------+
+    | Command          | Description                                                               |
+    +==================+===========================================================================+
+    | ``bparams -a``   | Show current parameters for LSF. The behavior/available                   |
+    |                  | options for some LSF commands depend on settings in various configuration |
+    |                  | files. This command shows those settings without having to search for the |
+    |                  | actual files.                                                             |
+    +------------------+---------------------------------------------------------------------------+
+    | ``bjdepinfo``    | Show job dependency information (could be useful in                       |
+    |                  | determining what job is keeping another job in a pending state)           |
+    +------------------+---------------------------------------------------------------------------+
 
 PBS/Torque/MOAB-to-LSF Translation
 ----------------------------------
