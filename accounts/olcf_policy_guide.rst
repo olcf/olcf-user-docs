@@ -94,7 +94,7 @@ Principal investigators, users, or project delegates that use OLCF
 resources, or are responsible for overseeing projects that use OLCF
 resources, are strictly responsible for knowing whether their project
 generates any of these prohibited data types or information that falls
-under Export Control. For questions, contact help@nccs.gov.
+under Export Control. For questions, contact help@olcf.ornl.gov.
 
 Confidentiality, Integrity, and Availability
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -252,27 +252,30 @@ categories: those intended for user data and those intended for project
 data. Within each of the two categories, we provide different sub-areas,
 each with an intended purpose:
 
-+--------------------------------------------------------------------------------------------------+-------------------+--------------------------------------------+
-| Purpose                                                                                          | Storage Area      | Path                                       |
-+==================================================================================================+===================+============================================+
-| Long-term data for routine access that is unrelated to a project                                 | *User Home*       | ``/ccs/home/[userid]``                     |
-+--------------------------------------------------------------------------------------------------+-------------------+--------------------------------------------+
-| Long-term data for archival access that is unrelated to a project                                | *User Archive*    | ``/home/[userid]``                         |
-+--------------------------------------------------------------------------------------------------+-------------------+--------------------------------------------+
-| Long-term project data for routine access that's shared with other project members               | *Project Home*    | ``/ccs/proj/[projid]``                     |
-+--------------------------------------------------------------------------------------------------+-------------------+--------------------------------------------+
-| Short-term project data for fast, batch job access that you don't want to share                  | *Member Work*     | ``/gpfs/alpine/[projid]/scratch/[userid]`` |
-+--------------------------------------------------------------------------------------------------+-------------------+--------------------------------------------+
-| Short-term project data for fast, batch job access that's shared with other project members      | *Project Work*    | ``/gpfs/alpine/[projid]/proj-shared``      |
-+--------------------------------------------------------------------------------------------------+-------------------+--------------------------------------------+
-| Short-term project data for fast, batch job access that's shared with those outside your project | *World Work*      | ``/gpfs/alpine/[projid]/world-shared``     |
-+--------------------------------------------------------------------------------------------------+-------------------+--------------------------------------------+
-| Long-term project data for archival access that you don't want to share                          | *Member Archive*  | ``/hpss/prod/[projid]/users/$USER``        |
-+--------------------------------------------------------------------------------------------------+-------------------+--------------------------------------------+
-| Long-term project data for archival access that's shared with other project members              | *Project Archive* | ``/hpss/prod/[projid]/proj-shared``        |
-+--------------------------------------------------------------------------------------------------+-------------------+--------------------------------------------+
-| Long-term project data for archival access that's shared with those outside your project         | *World Archive*   | ``/hpss/prod/[projid]/world-shared``       |
-+--------------------------------------------------------------------------------------------------+-------------------+--------------------------------------------+
++--------------------------------------------------------------------------------------------------+-------------------+-----------------------------------------------+
+| Purpose                                                                                          | Storage Area      | Path                                          |
++==================================================================================================+===================+===============================================+
+| Long-term data for routine access that is unrelated to a project                                 | *User Home*       | ``/ccs/home/[userid]``                        |
++--------------------------------------------------------------------------------------------------+-------------------+-----------------------------------------------+
+| Long-term data for archival access that is unrelated to a project                                | *User Archive*    | ``/home/[userid]``                            |
++--------------------------------------------------------------------------------------------------+-------------------+-----------------------------------------------+
+| Long-term project data for routine access that's shared with other project members               | *Project Home*    | ``/ccs/proj/[projid]``                        |
++--------------------------------------------------------------------------------------------------+-------------------+-----------------------------------------------+
+| Short-term project data for fast, batch job access that you don't want to share                  | *Member Work*     | | ``/gpfs/alpine2/[projid]/scratch/[userid]`` |
+|                                                                                                  |                   | | ``/lustre/orion/[projid]/scratch/[userid]`` |
++--------------------------------------------------------------------------------------------------+-------------------+-----------------------------------------------+
+| Short-term project data for fast, batch job access that's shared with other project members      | *Project Work*    | | ``/gpfs/alpine2/[projid]/proj-shared``      |
+|                                                                                                  |                   | | ``/lustre/orion/[projid]/proj-shared``      |
++--------------------------------------------------------------------------------------------------+-------------------+-----------------------------------------------+
+| Short-term project data for fast, batch job access that's shared with those outside your project | *World Work*      | | ``/gpfs/alpine2/[projid]/world-shared``     |
+|                                                                                                  |                   | | ``/lustre/orion/[projid]/world-shared``     |
++--------------------------------------------------------------------------------------------------+-------------------+-----------------------------------------------+
+| Long-term project data for archival access that you don't want to share                          | *Member Archive*  | ``/hpss/prod/[projid]/users/$USER``           |
++--------------------------------------------------------------------------------------------------+-------------------+-----------------------------------------------+
+| Long-term project data for archival access that's shared with other project members              | *Project Archive* | ``/hpss/prod/[projid]/proj-shared``           |
++--------------------------------------------------------------------------------------------------+-------------------+-----------------------------------------------+
+| Long-term project data for archival access that's shared with those outside your project         | *World Archive*   | ``/hpss/prod/[projid]/world-shared``          |
++--------------------------------------------------------------------------------------------------+-------------------+-----------------------------------------------+
 
 For more information about using the data storage archiving
 systems, please refer to the pages on :ref:`data-storage-and-transfers`.
@@ -437,23 +440,29 @@ available at the OLCF.
 
 **Project-Centric Storage Areas**
 
-+---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
-| Area                | Path                                        | Type           | Permissions |  Quota | Backups | Purged  | Retention  | On Compute Nodes |
-+=====================+=============================================+================+=============+========+=========+=========+============+==================+
-| Project Home        | ``/ccs/proj/[projid]``                      | NFS            | 770         |  50 GB | Yes     | No      | 90 days    | Read-only        |
-+---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
-| Member Work         | ``/gpfs/alpine/[projid]/scratch/[userid]``  | Spectrum Scale | 700 [#f3]_  |  50 TB | No      | 90 days | N/A [#f4]_ | Yes              |
-+---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
-| Project Work        | ``/gpfs/alpine/[projid]/proj-shared``       | Spectrum Scale | 770         |  50 TB | No      | 90 days | N/A [#f4]_ | Yes              |
-+---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
-| World Work          | ``/gpfs/alpine/[projid]/world-shared``      | Spectrum Scale | 775         |  50 TB | No      | 90 days | N/A [#f4]_ | Yes              |
-+---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
-| Member Archive      | ``/hpss/prod/[projid]/users/$USER``         | HPSS           | 700         | 100 TB | No      | No      | 90 days    | No               |
-+---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
-| Project Archive     | ``/hpss/prod/[projid]/proj-shared``         | HPSS           | 770         | 100 TB | No      | No      | 90 days    | No               |
-+---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
-| World Archive       | ``/hpss/prod/[projid]/world-shared``        | HPSS           | 775         | 100 TB | No      | No      | 90 days    | No               |
-+---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
++---------------------+-----------------------------------------------+------------------------+-------------+--------+---------+---------+------------+------------------+
+| Area                | Path                                          | Type                   | Permissions |  Quota | Backups | Purged  | Retention  | On Compute Nodes |
++=====================+===============================================+========================+=============+========+=========+=========+============+==================+
+| Project Home        | ``/ccs/proj/[projid]``                        | NFS                    | 770         |  50 GB | Yes     | No      | 90 days    | Read-only        |
++---------------------+-----------------------------------------------+------------------------+-------------+--------+---------+---------+------------+------------------+
+| Member Work         | ``/gpfs/alpine2/[projid]/scratch/[userid]``   | Spectrum Scale         | 700 [#f3]_  |  50 TB | No      | 90 days | N/A [#f4]_ | Yes              |
+|                     +-----------------------------------------------+------------------------+-------------+--------+---------+---------+------------+------------------+
+|                     | ``/lustre/orion/[projid]/scratch/[userid]``   | Lustre HPE ClusterStor | 700 [#f3]_  |  50 TB | No      | 90 days | N/A [#f4]_ | Yes              |
++---------------------+-----------------------------------------------+------------------------+-------------+--------+---------+---------+------------+------------------+
+| Project Work        | ``/gpfs/alpine2/[projid]/proj-shared``        | Spectrum Scale         | 770         |  50 TB | No      | 90 days | N/A [#f4]_ | Yes              |
+|                     +-----------------------------------------------+------------------------+-------------+--------+---------+---------+------------+------------------+
+|                     | ``/lustre/orion/[projid]/proj-shared``        | Lustre HPE ClusterStor | 770         |  50 TB | No      | 90 days | N/A [#f4]_ | Yes              |
++---------------------+-----------------------------------------------+------------------------+-------------+--------+---------+---------+------------+------------------+
+| World Work          | ``/gpfs/alpine2/[projid]/world-shared``       | Spectrum Scale         | 775         |  50 TB | No      | 90 days | N/A [#f4]_ | Yes              |
+|                     +-----------------------------------------------+------------------------+-------------+--------+---------+---------+------------+------------------+
+|                     | ``/lustre/orion/[projid]/world-shared``       | Lustre HPE ClusterStor | 775         |  50 TB | No      | 90 days | N/A [#f4]_ | Yes              |
++---------------------+-----------------------------------------------+------------------------+-------------+--------+---------+---------+------------+------------------+
+| Member Archive      | ``/hpss/prod/[projid]/users/$USER``           | HPSS                   | 700         | 100 TB | No      | No      | 90 days    | No               |
++---------------------+-----------------------------------------------+------------------------+-------------+--------+---------+---------+------------+------------------+
+| Project Archive     | ``/hpss/prod/[projid]/proj-shared``           | HPSS                   | 770         | 100 TB | No      | No      | 90 days    | No               |
++---------------------+-----------------------------------------------+------------------------+-------------+--------+---------+---------+------------+------------------+
+| World Archive       | ``/hpss/prod/[projid]/world-shared``          | HPSS                   | 775         | 100 TB | No      | No      | 90 days    | No               |
++---------------------+-----------------------------------------------+------------------------+-------------+--------+---------+---------+------------+------------------+
 
 | *Area -* The general name of storage area.
 | *Path -* The path (symlink) to the storage area's directory.
@@ -481,10 +490,13 @@ available at the OLCF.
 On Summit, Rhea and the DTNs, additional paths to the various project-centric work areas are available
 via the following symbolic links and/or environment variables:
 
-- Member Work Directory:  ``/gpfs/alpine/scratch/[userid]/[projid]`` or ``$MEMBERWORK/[projid]``
-- Project Work Directory: ``/gpfs/alpine/proj-shared/[projid]`` or ``$PROJWORK/[projid]``
-- World Work Directory: ``/gpfs/alpine/world-shared/[projid]`` or ``$WORLDWORK/[projid]``
+- Member Work Alpine2 Directory:  ``/gpfs/alpine2/scratch/[userid]/[projid]`` or ``$MEMBERWORK/[projid]``
+- Project Work Alpine2 Directory: ``/gpfs/alpine2/proj-shared/[projid]`` or ``$PROJWORK/[projid]``
+- World Work Alpine2 Directory: ``/gpfs/alpine2/world-shared/[projid]`` or ``$WORLDWORK/[projid]``
 
+- Member Work Orion Directory:  ``/lustre/orion/scratch/[userid]/[projid]`` or ``$MEMBERWORK/[projid]``
+- Project Work Orion  Directory: ``/lustre/orion/proj-shared/[projid]`` or ``$PROJWORK/[projid]``
+- World Work Orion Directory: ``/lustre/orion/world-shared/[projid]`` or ``$WORLDWORK/[projid]``
 
 Data Retention Overview
 ^^^^^^^^^^^^^^^^^^^^^^^
