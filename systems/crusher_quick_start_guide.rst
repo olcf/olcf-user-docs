@@ -2209,6 +2209,10 @@ Applications using single precision FP atomicAdd() are encouraged to experiment 
 System Updates 
 ============== 
 
+2024-03-19
+----------
+On Tuesday, March 19, 2024, Frontier's system software was upgraded to Slingshot 2.1.1 and Slingshot Host Software 2.1.2. If you encounter any issues or have questions, please contact help@olcf.ornl.gov.
+
 2024-01-23
 ----------
 On Tuesday, January 23, 2024, Crusher's system software was upgraded. The following changes took place:
@@ -2216,6 +2220,7 @@ On Tuesday, January 23, 2024, Crusher's system software was upgraded. The follow
 -  ROCm 6.0.0 is now available via the ``rocm/6.0.0`` modulefile.
 -  HPE/Cray Programming Environment (PE) 23.12 is now available via the ``cpe/23.12`` modulefile.
 -  ROCm 5.3.0 and HPE/Cray PE 22.12 remain as default.
+-  The system was upgraded to AMD GPU 6.3.6 device driver (ROCm 6.0.0 release). 
 
 Please note that target default versions will be updated to PE 23.12 and ROCm 5.7.1 in the near future. Users are encouraged to try both and report any issues to help@olcf.ornl.gov.
 
