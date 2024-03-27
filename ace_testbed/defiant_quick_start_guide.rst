@@ -1180,7 +1180,7 @@ Building a Simple Image
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 - Create a directory called ``simplecontainer`` on home or GPFS and ``cd`` into it.
-- Create a file named ``simple.dockerfile`` with the following contents.
+- Create a file named ``simple.def`` with the following contents.
   ::
 
      Bootstrap: docker
