@@ -64,8 +64,49 @@ Please visit `openhackathons.org/s/events-overview <https://www.openhackathons.o
 
 If you would like more information about how you can volunteer to mentor a team at an upcoming Open/GPU hackathon, please visit our `Become a Mentor <https://www.openhackathons.org/s/mentor>`__ page.
 
+
+===================
+FacultyHack
+===================
+
+The Oak Ridge Leadership Computing Facility (OLCF) works in partnership with `HackHPC <http://hackhpc.org/>`__ and `Science Gateways <https://sciencegateways.org/>`__ in organizing FacultyHack for faculties in colleges and universities across the United States (US).
+
+.. raw:: html
+
+   <p style="font-size:20px"><b>What is FacultyHack?</b></p>
+
+FacultyHack is a multiple week event in which faculty teams from colleges and universities across the US work with HPC experts in revamping their courses (syllabus) such that they include HPC content. The aim of this is to introduce students underrepresented in HPC to the field and provide a pathway to HPC related careers. Each team consists of the faculty teaching the course, a faculty mentor, and an HPC expert. The HPC expert advises on suitable HPC material and hands-on exercises for the course while the faculty mentor assists with pedagogical structure and implementation. HPC mentors are mostly from national laboratories, supercomputing centers and the wider HPC community. 
+
+
+.. raw:: html
+
+   <p style="font-size:20px"><b>Event Format</b></p>
+
+The hackathon is held virtually on zoom with a final in-person poster session at the Science Gateways (SCGI/SGX3) conference usually held in October. Teams work with their mentors during regular weekly zoom check-ins and also as needed. At the end of the event, each team has a completely revamped course with high-performance computing content included. Posters highlighting modifications to the courses are presented at the Gateways conference to climax the FacultyHack.
+
+.. raw:: html
+
+   <p style="font-size:20px"><b>Target audience</b></p>
+
+Computer Science, Data Science, Mathematics and Engineering faculty or closely related discipline area faculties. This is not limited to community colleges, minority serving institutions, historically black colleges and universities, Hispanic-serving institutions, and liberal arts colleges. 
+
+.. note::
+   Priority will be given to colleges and universities underrepresented in HPC.
+
+.. raw:: html
+
+   <p style="font-size:20px"><b>Why participate?</b></p>
+
+At the end of the hackathon, participating faculty will have their courses revamped with content that will help position their students in HPC oriented career paths. Also, faculty are presented with the opportunity of building collaborations with other participating educators as well as HPC experts. Collaborations with HPC experts could lead to future research partnerships as well as experts given guest lectures to students of the revamped or related courses.  
+
+.. raw:: html
+
+   <p style="font-size:20px"><b>How to apply?</b></p>
+
+Applications are accepted yearly with due dates around mid September. For link to the applications and more details, please visit `sciencegateways.org/faculty-focused <https://sciencegateways.org/faculty-focused>`__ . If you would like to volunteer as a mentor, please apply at the link and specify participation as a mentor. 
+
 .. raw:: html
 
    <p style="font-size:20px"><b>Who can I contact with questions?</b></p>
 
-If you have any questions about the OLCF GPU Hackathon Series, please contact OLCF Help at (`help@olcf.ornl.gov  <mailto:help@olcf.ornl.gov>`__).
+If you have any questions about any of the Hackathon Series, please contact OLCF Help at (`help@olcf.ornl.gov  <mailto:help@olcf.ornl.gov>`__).
