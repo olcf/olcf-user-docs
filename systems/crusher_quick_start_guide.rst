@@ -5,7 +5,7 @@ Crusher Quick-Start Guide
 *************************
 
 .. warning::
-    **The Crusher Early Access System will be decommissioned on April 12th, 2024.** The
+    **The Crusher Test and Development System will be decommissioned on April 12th, 2024.** The
     file systems that were available on Crusher are still accessible from the Home
     server and the Data Transfer Nodes (DTNs), so all your data will remain accessible.
     If you do not have access to other OLCF systems, your project will move to data-only
