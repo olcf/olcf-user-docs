@@ -21,7 +21,7 @@ Please pay attention to the following key dates as you migrate workloads from th
    * - :ref:`May 2024<kronos_overview>`
      - Kronos available for production use.
    * - :ref:`June 2024<hpss_read_only>`
-     - HPSS becomes read-only. **To help spread the HPSS migration load, please reach out to help@olcf.ornl.gov to help coordinate your HPSS data migration.**
+     - HPSS becomes read-only. 
    * - :ref:`January 2025<hpss_decom>`
      - HPSS decommissioned.  **ALL REMAINING DATA WILL BE PERMANENTLY DELETED**
 
@@ -113,16 +113,13 @@ June 2024 - HPSS becomes read-only
 
 In preparation for HPSS's decommission in January 2025, the HPSS will become read-only from all OLCF resources in June 2024.
 
-We highly encourage all teams to start migrating needed data from the HPSS now.  If you wait too late in the year to begin the transition, you will run the risk of running out of time to move your data before the system is decommissioned.  It is important to note that any data remaining on the HPSS after December 31, 2024, will be unavailable. We expect HPSS periods of access impacts due to the expected volumes of data migrating off of the HPSS. To help spread the HPSS migration load, please reach out to help@olcf.ornl.gov to help coordinate your HPSS data migration.
+We highly encourage all teams to start migrating needed data from the HPSS now.  If you wait too late in the year to begin the transition, you will run the risk of running out of time to move your data before the system is decommissioned.  It is important to note that any data remaining on the HPSS after December 31, 2024, will be unavailable. We expect HPSS periods of access impacts due to the expected volumes of data migrating off of the HPSS. To help spread the HPSS migration load, please reach out to help@olcf.ornl.gov to help coordinate your larger HPSS data migration.
 
 Data migration
 ^^^^^^^^^^^^^^^
 
-.. note::
-  We expect HPSS periods of access impacts due to the expected volumes of data migrating off of the HPSS. To help spread the HPSS migration load, please reach out to help@olcf.ornl.gov to help coordinate your HPSS data migration.
-
 Copying data directly from HPSS to Kronos
-  The hsi utility will provide the best performance and HPSS tape organization.  To transfer data from the HPSS to Kronos, the preferred method is to utilize the hsi utility from the DTN.  Since the DTN mounts Kronos, hsi transfers can be performed from within a Kronos directory on the DTNs.
+  The hsi utility will provide the best performance and HPSS tape organization.  To transfer data from the HPSS to Kronos, the preferred method is to utilize the hsi utility from the DTN.  Since the DTN will mount Kronos, hsi transfers can be performed from within a Kronos directory on the DTNs.
 
 .. note::
   You may see longer retrieval times for data stored only on tape than data stored on disk.  Please consider physical tape access overhead when planning your data migration.  Please reach out to help@olcf.ornl.gov with extended retrieval delay concerns.
