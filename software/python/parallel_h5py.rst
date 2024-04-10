@@ -28,7 +28,7 @@ OLCF Systems this guide applies to:
 +------------+----------+------------+
 | ``python`` | ``h5py`` | ``mpi4py`` |
 +============+==========+============+
-|  3.10.13   |  3.10.0  |   3.1.5    |
+|  3.10.14   |  3.10.0  |   3.1.5    |
 +------------+----------+------------+
 
 .. note::
@@ -123,17 +123,7 @@ Loading a python module puts you in a "base" environment, but you need to create
 
       .. code-block:: bash
 
-         # Option 1 (use a newer libssh with your conda's newer openssl):
-         $ conda create -n h5pympi-frontier python=3.10 libssh numpy -c conda-forge
-
-         # Option 2 (downgrade your conda's openssl to match Frontier's):
-         $ conda create -n h5pympi-frontier python=3.10 openssl=1.1.1 numpy -c conda-forge
-         $ export LD_PRELOAD="/usr/lib64/libcrypto.so /usr/lib64/libssh.so.4 /usr/lib64/libssl.so.1.1"
-         
-      .. note::
-         Due to Frontier's older ``libssh`` and ``openssl`` versions, either installing a newer ``libssh``
-         like above (Option 1), or downgrading Conda's ``openssl`` to version 1.1.1 (Option 2) is required.
-         If following Option 2, then you must export ``LD_PRELOAD`` at both build and runtime like above.
+         $ conda create -n h5pympi-frontier python=3.10 numpy
 
 NumPy is installed ahead of time because h5py depends on it.
 
@@ -355,9 +345,6 @@ Example "submit_hello" batch script:
 
          source activate h5pympi-frontier
 
-         #Only if you installed mpi4py via "Option 2"
-         #export LD_PRELOAD="/usr/lib64/libcrypto.so /usr/lib64/libssh.so.4 /usr/lib64/libssl.so.1.1"
-
          srun -n42 python3 hello_mpi.py
 
 If mpi4py is working properly, in ``mpi4py.<JOB_ID>.out`` you should see output similar to:
@@ -502,9 +489,6 @@ Example "submit_h5py" batch script:
 
          source activate h5pympi-frontier
 
-         #Only if you installed mpi4py via "Option 2"
-         #export LD_PRELOAD="/usr/lib64/libcrypto.so /usr/lib64/libssh.so.4 /usr/lib64/libssl.so.1.1"
-
          srun -n42 python3 hdf5_parallel.py
 
 
@@ -530,6 +514,34 @@ To see explicitly that the MPI tasks did their job, you can use the ``h5dump`` c
    }
 
 If you see the above output, then the build was a success!
+
+Frontier: Troubleshooting mpi4py
+================================
+
+If you're seeing errors on Frontier that look like this:
+
+.. code-block::
+
+   ImportError: /usr/lib64/libssh.so.4: undefined symbol: EVP_KDF_CTX_new_id, version OPENSSL_1_1_1d
+
+This is due to Frontier's older ``libssh`` and ``openssl`` versions.
+Either installing a newer ``libssh`` like below (Option 1), or downgrading Conda's ``openssl`` to version 1.1.1 (Option 2) is required.
+If following Option 2, then you must export ``LD_PRELOAD`` at both build **and runtime** like below.
+
+.. tab-set::
+
+   .. tab-item:: Frontier
+      :sync: frontier
+
+      .. code-block:: bash
+
+         # Option 1 (use a newer libssh with your conda's newer openssl):
+         $ conda create -n h5pympi-frontier python=3.10 libssh numpy -c conda-forge
+
+         # Option 2 (downgrade your conda's openssl to match Frontier's):
+         $ conda create -n h5pympi-frontier python=3.10 openssl=1.1.1 numpy -c conda-forge
+         $ export LD_PRELOAD="/usr/lib64/libcrypto.so /usr/lib64/libssh.so.4 /usr/lib64/libssl.so.1.1"
+
 
 Additional Resources
 ====================
