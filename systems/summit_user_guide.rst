@@ -764,21 +764,21 @@ As an example, consider the following batch script:
 .. code-block:: bash
    :linenos:
 
-    #!/bin/bash
-    # Begin LSF Directives
-    #BSUB -P ABC123
-    #BSUB -W 3:00
-    #BSUB -nnodes 2048
-    #BSUB -alloc_flags gpumps
-    #BSUB -J RunSim123
-    #BSUB -o RunSim123.%J
-    #BSUB -e RunSim123.%J
+   #!/bin/bash
+   # Begin LSF Directives
+   #BSUB -P ABC123
+   #BSUB -W 3:00
+   #BSUB -nnodes 2048
+   #BSUB -alloc_flags gpumps
+   #BSUB -J RunSim123
+   #BSUB -o RunSim123.%J
+   #BSUB -e RunSim123.%J
 
-    cd $MEMBERWORK/abc123
-    cp $PROJWORK/abc123/RunData/Input.123 ./Input.123
-    date
-    jsrun -n 4092 -r 2 -a 12 -g 3 ./a.out
-    cp my_output_file /ccs/proj/abc123/Output.123
+   cd $MEMBERWORK/abc123
+   cp $PROJWORK/abc123/RunData/Input.123 ./Input.123
+   date
+   jsrun -n 4092 -r 2 -a 12 -g 3 ./a.out
+   cp my_output_file /ccs/proj/abc123/Output.123
 
 .. note:: 
    For Moderate Enhanced Projects, job scripts need to add "-l" ("ell") to the shell specification, similar to interactive usage.
