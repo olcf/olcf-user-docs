@@ -285,7 +285,9 @@ As mentioned on our :doc:`/software/python/index` page, submitting batch scripts
 
    sbatch --export=NONE batch_script.sl
 
-After successfully running PyTorch....
+After running the script, you will have successfully used PyTorch to train on 16 different GPUs for 2000 epochs and save a training snapshot.
+Depending on how long PyTorch takes to initialize, the script should complete in 10-20 seconds.
+If the script is able to utilize any cache (e.g., if you ran the script again in the same compute job), then it should complete in approximately 5 seconds.
 
 Best Practices
 ==============
