@@ -49,17 +49,13 @@ First, let's load our modules and setup the environment:
 .. code-block:: bash
 
    # Loading the relevant modules
-   $ module load cray-mpich/8.1.26 # for better GPU-aware MPI w/ ROCm 5.7.1
-   $ module load cpe/23.05 # recommended cpe version with cray-mpich/8.1.26
-   $ module load PrgEnv-gnu/8.4.0
-   $ export LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH # because using a non-default cray-mpich
+   $ module load PrgEnv-gnu/8.3.3
    $ module load amd-mixed/5.7.1
    $ module load craype-accel-amd-gfx90a
-   $ export MPICH_GPU_SUPPORT_ENABLED=1
 
    # Create your conda environment
    $ module load miniforge3/23.11.0
-   $ conda create -p $MEMBERWORK/<PROJECT_ID>/torch_env python==3.10
+   $ conda create -p $MEMBERWORK/<PROJECT_ID>/torch_env python=3.10
    $ source activate $MEMBERWORK/<PROJECT_ID>/torch_env
 
    # Install PyTorch w/ ROCm 5.7 support from pre-compiled binary
@@ -101,14 +97,10 @@ Below is an example batch script that uses ``sbcast``, unpacks our environment, 
    unset SLURM_EXPORT_ENV
 
    # Setup modules
-   module load cray-mpich/8.1.26 # for better GPU-aware MPI w/ ROCm 5.7.1
-   module load cpe/23.05 # recommended cpe version with cray-mpich/8.1.26
-   module load PrgEnv-gnu/8.4.0
-   export LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH # because using a non-default cray-mpich
+   module load PrgEnv-gnu/8.3.3
    module load amd-mixed/5.7.1
    module load miniforge3/23.11.0
    module load craype-accel-amd-gfx90a
-   export MPICH_GPU_SUPPORT_ENABLED=1
 
    # Move a copy of the env to the NVMe on each node
    echo "copying torch_env to each node in the job"

@@ -3,7 +3,7 @@ PyTorch on Summit
 *****************
 
 PyTorch is an optimized tensor library for deep learning using GPUs and CPUs. This page outlines the how to run
-PyTorch on various OLCF systems.
+PyTorch on Summit.
 
 Summit
 ======
