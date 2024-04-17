@@ -3581,6 +3581,10 @@ If it is necessary to have bit-wise reproducible results from these libraries, i
 System Updates 
 ============== 
 
+2024-04-17
+----------
+On Wednesday, April 17, 2024, the ``lfs-wrapper/0.0.1`` modulefile became default. If you encounter any issues or have questions, please contact help@olcf.ornl.gov.
+
 2024-03-19
 ----------
 On Tuesday, March 19, 2024, Frontier's system software was upgraded to Slingshot 2.1.1 and Slingshot Host Software 2.1.2. If you encounter any issues or have questions, please contact help@olcf.ornl.gov.
