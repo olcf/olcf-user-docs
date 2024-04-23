@@ -643,3 +643,4 @@ Additional Resources
 * `Conda User Guide <https://conda.io/projects/conda/en/latest/user-guide/index.html>`__
 * `Anaconda Package List <https://docs.anaconda.com/anaconda/packages/pkg-docs/>`__
 * `Using Pip In A Conda Environment <https://www.anaconda.com/blog/using-pip-in-a-conda-environment>`__
+
