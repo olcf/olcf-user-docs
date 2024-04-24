@@ -13,7 +13,7 @@ System Overview
     OLCF training events.
 
 Odo is a 32-node stand-alone system with the same architecture as
-Frontier,so most of the Frontier User Guide can be referenced for
+Frontier, so most of the :ref:`Frontier User Guide<frontier-user-guide>` can be referenced for
 Odo as well. However, aside from the number of compute nodes, there
 are other differences between the two systems. Most notably, Odo sits
 in the NCCS Open Security Enclave, which is subject to fewer
