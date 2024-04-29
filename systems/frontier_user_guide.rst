@@ -1013,18 +1013,18 @@ Consider the following batch script:
 .. code-block:: bash
    :linenos:
 
-    #!/bin/bash
-    #SBATCH -A ABC123
-    #SBATCH -J RunSim123
-    #SBATCH -o %x-%j.out
-    #SBATCH -t 1:00:00
-    #SBATCH -p batch
-    #SBATCH -N 1024
+   #!/bin/bash
+   #SBATCH -A ABC123
+   #SBATCH -J RunSim123
+   #SBATCH -o %x-%j.out
+   #SBATCH -t 1:00:00
+   #SBATCH -p batch
+   #SBATCH -N 1024
 
-    cd $MEMBERWORK/abc123/Run.456
-    cp $PROJWORK/abc123/RunData/Input.456 ./Input.456
-    srun ...
-    cp my_output_file $PROJWORK/abc123/RunData/Output.456
+   cd $MEMBERWORK/abc123/Run.456
+   cp $PROJWORK/abc123/RunData/Input.456 ./Input.456
+   srun ...
+   cp my_output_file $PROJWORK/abc123/RunData/Output.456
 
 In the script, Slurm directives are preceded by ``#SBATCH``, making them appear as comments to the shell. Slurm looks for these directives through the first non-comment, non-whitespace line. Options after that will be ignored by Slurm (and the shell).
 
@@ -1064,6 +1064,9 @@ Interactive Jobs
 Most users will find batch jobs an easy way to use the system, as they allow you to "hand off" a job to the scheduler, allowing them to focus on other tasks while their job waits in the queue and eventually runs. Occasionally, it is necessary to run interactively, especially when developing, testing, modifying or debugging a code.
 
 Since all compute resources are managed and scheduled by Slurm, it is not possible to simply log into the system and immediately begin running parallel codes interactively. Rather, you must request the appropriate resources from Slurm and, if necessary, wait for them to become available. This is done through an "interactive batch" job. Interactive batch jobs are submitted with the ``salloc`` command. Resources are requested via the same options that are passed via ``#SBATCH`` in a regular batch script (but without the ``#SBATCH`` prefix). For example, to request an interactive batch job with the same resources that the batch script above requests, you would use ``salloc -A ABC123 -J RunSim123 -t 1:00:00 -p batch -N 1024``. Note there is no option for an output file...you are running interactively, so standard output and standard error will be displayed to the terminal.
+
+.. warning::
+   Indicating your shell in your ``salloc`` command is NOT recommended (e.g., ``salloc ... /bin/bash``). Doing so causes your compute job to start on a login node by default rather than automatically moving you to a compute node. 
 
 .. _common-slurm-options:
 

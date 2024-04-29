@@ -379,7 +379,7 @@ Some variables to try are:
 .. code-block:: bash
 
    NCCL_NET_GDR_LEVEL=3   # Can improve performance, but remove this setting if you encounter a hang/crash.
-   NCCL_ALGO=TREE or RING # May see performance difference with either setting.
+   NCCL_ALGO=TREE or RING # May see performance difference with either setting. (should not need to use this, but can try)
    NCCL_CROSS_NIC=1       # On large systems, this NCCL setting has been found to improve performance
    NCCL_DEBUG=info        # For debugging only (warning: generates a large amount of messages)
 
