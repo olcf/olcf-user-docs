@@ -1492,8 +1492,8 @@ vmd-vgl.sh (GPU rendering)
 Remote Visualization using Nice DCV (GPU nodes only)
 ----------------------------------------------------
 
-.. warning::
-   Nice DCV is currently undergoing maintenance. Instead, please use the VNC options detailed above.
+.. note::
+   Nice DCV is back online and working on Andes again. If you see issues email help@olcf.ornl.gov
 
 Step 1 (terminal 1)
 ^^^^^^^^^^^^^^^^^^^
