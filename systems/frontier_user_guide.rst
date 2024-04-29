@@ -1013,18 +1013,18 @@ Consider the following batch script:
 .. code-block:: bash
    :linenos:
 
-    #!/bin/bash
-    #SBATCH -A ABC123
-    #SBATCH -J RunSim123
-    #SBATCH -o %x-%j.out
-    #SBATCH -t 1:00:00
-    #SBATCH -p batch
-    #SBATCH -N 1024
+   #!/bin/bash
+   #SBATCH -A ABC123
+   #SBATCH -J RunSim123
+   #SBATCH -o %x-%j.out
+   #SBATCH -t 1:00:00
+   #SBATCH -p batch
+   #SBATCH -N 1024
 
-    cd $MEMBERWORK/abc123/Run.456
-    cp $PROJWORK/abc123/RunData/Input.456 ./Input.456
-    srun ...
-    cp my_output_file $PROJWORK/abc123/RunData/Output.456
+   cd $MEMBERWORK/abc123/Run.456
+   cp $PROJWORK/abc123/RunData/Input.456 ./Input.456
+   srun ...
+   cp my_output_file $PROJWORK/abc123/RunData/Output.456
 
 In the script, Slurm directives are preceded by ``#SBATCH``, making them appear as comments to the shell. Slurm looks for these directives through the first non-comment, non-whitespace line. Options after that will be ignored by Slurm (and the shell).
 
