@@ -12,7 +12,7 @@ on Frontier, as well as any useful examples.
 
 
 .. note::
-   This documentation is not currently stable and will grow over time as we add more examples and as the best practices for containers evolve. If you find something
+   This documentation is not currently stable and will change over time as we add more examples and as the best practices for containers evolve. If you find something
    that you were doing on Frontier is no longer working, check back here to see if the documentation has been
    updated with new instructions. And `contributions to the documentation are always welcome <https://docs.olcf.ornl.gov/contributing/index.html>`_!
 
