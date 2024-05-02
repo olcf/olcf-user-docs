@@ -82,7 +82,6 @@ The adapted script ``multinode_olcf.py`` is below:
    import torch
    import torch.nn.functional as F
    from torch.utils.data import Dataset, DataLoader
-   from datautils import MyTrainDataset
 
    import torch.multiprocessing as mp
    from torch.utils.data.distributed import DistributedSampler
@@ -265,10 +264,7 @@ To run the python script, an example batch script is given below:
    source activate /path/to/my_env
 
    # Get address of head node
-   ips=`hostname -I`
-   read -ra arr <<< ${ips}
-   export MASTER_ADDR=${arr[0]}
-   echo "MASTER_ADDR=" $MASTER_ADDR
+   export MASTER_ADDR=$(hostname -i)
 
    # Needed to bypass MIOpen, Disk I/O Errors
    export MIOPEN_USER_DB_PATH="/tmp/my-miopen-cache"
