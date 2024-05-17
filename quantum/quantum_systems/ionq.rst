@@ -116,8 +116,15 @@ Allocations & Credit Usage
 Usage of IonQ’s trapped-ion hardware systems is recorded in 2-qubit gate equivalents. Usage of IonQ’s cloud simulator,
 including with hardware-based noise models, is unlimited and requires no credits to use.
 
-Currently, users will need to request information about their allocation and credit usage by contacting help@olcf.ornl.gov.
-Additional features related to job resource estimation and managing project allocations are in development.
+Running a job on IonQ hardware requires IonQ Credits. In order to request an IonQ Credit allocation, please adhere to the following policy:
+
+* Any request for credits must be submitted by the project Principle Investigator (PI) to help@olcf.ornl.gov
+
+* Requests for machine credits must be justified using results from the appropriate simulator to determine the appropriate amount needed. Requests without simulator-based justifications will be denied.
+
+* Requests will be evaluated based on the provided technical justification, programmatic efficiency, and machine availability. The effective usage of prior allocations by the project will also be considered.
+
+Users can obtain additional information about their allocation and credit usage by contacting help@olcf.ornl.gov.
 
 
 .. _ionq-systems:
