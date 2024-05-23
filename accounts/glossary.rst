@@ -24,15 +24,19 @@ Glossary
 
 .. _glossary-health-data:
 .. glossary::
-  Health Data
-    The term Health Data is interpreted rather broadly; it includes any part of
-    a patient's medical record or payment history. In particular, the US Health
-    Insurance Portability and Accountability Act (HIPAA) defines Protected
-    Health Information (PHI) that must be treated with great care.
+  Human Health Data
+    Human Health Data is intentionally broadly defined to include any information 
+    that relates to the past, present, or future physical or mental health, condition, 
+    or wellbeing of an individual or human population—regardless of the presence of personal 
+    identifiers.
 
-    For more information on HIPAA and PHI see `Health Information Privacy
-    <https://www.hhs.gov/hipaa/for-professionals/index.html>`_ from the U.S.
-    Department of Health & Human Services.
+    Examples include:
+      - Genomic data
+      - Clinical data (e.g. electronic health records)
+      - Data protected by HIPAA (PHI or Limited Data Set)
+      - Health surveillance data
+      - Public health data
+      - Information about an individual intended for use in biomedical, behavioral, clinical, or other human health-related research
 
 .. _glossary-nsdd-189:
 .. glossary::
@@ -100,6 +104,39 @@ Glossary
     | Office of Domestic and International Energy Policy
     | US Department of Energy
     | Washington DC 20585
+
+.. _glossary-classification-categories:
+.. glossary::
+  Project Classification Categories
+    Open (Category 1)
+      Definition: This category is for projects with data sets that are truly non-sensitive 
+      and do not require access controls. It is suitable for data that is rightfully publicly 
+      available or could be exposed to a wider audience without compromising participant’s or 
+      provider’s privacy or security.
+  
+      Example Use: 
+      Data sets that haves been completely anonymized, lacks any possible link 
+      back to an individual, and are not otherwise considered sensitive or protected under HIPAA, 
+      ITAR, or other law or contractual restrictions. 
+     
+    Moderate (Category 2)
+      Definition: This category is for projects with data sets that are moderately sensitive 
+      and requires moderate security measures.
+  
+      Example Use: 
+      Data sets that require access controls due to the data owner’s “terms of use.” 
+      (e.g., you or your institution was required to sign or acknowledge a Data Use Agreement that 
+      requires the data set be access-restricted as a condition of using it for this project).  
+     
+    Enhanced (Category 3, utilizes the CITADEL security framework)
+      Definition: This category is designated for the most sensitive projects, requiring enhanced 
+      security and access controls. 
+  
+      Example Use: 
+      Data that includes identifiable, sensitive, or access-controlled health information, 
+      such as complete electronic health records, or data covered under strict confidentiality agreements 
+      or laws that mandate high levels of protection (e.g, data protected by HIPAA).
+
 
 .. _glossary-strong-scaling:
 .. glossary::
