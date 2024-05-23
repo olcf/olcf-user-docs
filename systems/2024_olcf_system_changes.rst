@@ -18,11 +18,11 @@ Please pay attention to the following key dates as you migrate workloads from th
 
    * - Date
      - Event
-   * - :ref:`May 2024<kronos_overview>`
+   * - :ref:`Late July<kronos_overview>`
      - Kronos available for production use.
-   * - :ref:`June 2024<hpss_read_only>`
+   * - :ref:`August 31<hpss_read_only>`
      - HPSS becomes read-only. **To help spread the HPSS migration load, please reach out to help@olcf.ornl.gov to help coordinate your large HPSS data migrations.**
-   * - :ref:`January 2025<hpss_decom>`
+   * - :ref:`January 31, 2025<hpss_decom>`
      - HPSS decommissioned.  **ALL REMAINING DATA WILL BE PERMANENTLY DELETED**
 
 
@@ -32,7 +32,7 @@ Please pay attention to the following key dates as you migrate workloads from th
 May 2024 - Kronos available for production use
 -----------------------------------------------
 
-Kronos is expected to be available May 2024.  Updates to the availability schedule will be posted to this site and through the OLCF weekly email.
+Kronos is expected to be available late July 2024.  Updates to the availability schedule will be posted to this site and through the OLCF weekly email.
 
 Kronos Overview
 ^^^^^^^^^^^^^^^^
@@ -41,7 +41,7 @@ Overview
   Kronos is the center's new nearline storage resource.  Kronos is multi-tiered containing both disk and tape.  Users will interact with the system's disk sub-system which leverages IBM Storage Scale (GPFS).  Data stored on the disk sub-system will automatically be stored on they system's tape sub-system.  The disk sub-system will provide an initial capacity of 134 PB with the ability to expand as need increases.  Kronos is capable of bandwidth of up-to 200 GB/s from the center's Data Transfer Nodes.
 
 Availability Timeline
-  Kronos is expected to be available May 2024.
+  Kronos is expected to be available late July 2024.
 
 Access / Data Transfer
   Kronos will be mounted on the moderate Data Transfer Nodes, Frontier login nodes, and Andes login nodes.  Because the system will be mounted as a filesystem, standard UNIX command and tools can be used to interact with Kronos.  The resource will also be accessible through the OLCF DTN endpoint in Globus.
@@ -108,12 +108,12 @@ HPSS and Kronos Comparison
 
 .. _hpss_read_only:
 
-June 2024 - HPSS becomes read-only
+August 31, 2024 - HPSS becomes read-only
 -----------------------------------
 
-In preparation for HPSS's decommission in January 2025, the HPSS will become read-only from all OLCF resources in June 2024.
+In preparation for HPSS's decommission in January 2025, the HPSS will become read-only from all OLCF resources in August 31, 2024.
 
-We highly encourage all teams to start migrating needed data from the HPSS now.  If you wait too late in the year to begin the transition, you will run the risk of running out of time to move your data before the system is decommissioned.  It is important to note that any data remaining on the HPSS after December 31, 2024, will be unavailable. We expect HPSS periods of access impacts due to the expected volumes of data migrating off of the HPSS. To help spread the HPSS migration load, please reach out to help@olcf.ornl.gov to help coordinate your larger HPSS data migrations.
+We highly encourage all teams to start migrating needed data from the HPSS now.  If you wait too late in the year to begin the transition, you will run the risk of running out of time to move your data before the system is decommissioned.  It is important to note that any data remaining on the HPSS after January 31, 2025, will be unavailable. We expect HPSS periods of access impacts due to the expected volumes of data migrating off of the HPSS. To help spread the HPSS migration load, please reach out to help@olcf.ornl.gov to help coordinate your larger HPSS data migrations.
 
 Data migration
 ^^^^^^^^^^^^^^^
@@ -131,10 +131,10 @@ Data Deletion
   Due to the added overhead of data deletion, we ask that users not delete data from the HPSS.
 
 Globus
-  The Globus utility is not aware of the underlying HPSS tape storage structure.  To help spread the load over the resource's tape retrieval system, we ask that Globus not be used to migrate data off of the HPSS.  Instead, please use the HPSS ``hsi`` utility.
+  The Globus utility is not aware of the underlying HPSS tape storage structure.  To help spread the load over the resource's tape retrieval system, we ask that Globus not be used to migrate data off of the HPSS.  Instead, please use the HPSS ``hsi`` utility.  The DTN Globus endpoint will be disabled on August 31, 2024 to help ensure efficient migration from HPSS tape.
 
 .. warning::
-  The Globus utility is not aware of the underlying HPSS tape storage structure.  To help ensure safe and efficient migration of data from tape, please do not use Globus to migrate data off the HPSS resources.  Instead, please use the HPSS ``hsi`` utility.
+  The Globus utility is not aware of the underlying HPSS tape storage structure.  To help ensure safe and efficient migration of data from tape, the DTN globus endpoint will be disabled on August 31, 2024.  Instead of Globus, please use the HPSS ``hsi`` utility.  
 
 HSI Data Lists
   The HPSS ``hsi`` utility is the preferred tool for HPSS data migration because it is aware of the HPSS tape storage structure.  To ensure the most efficient retrieval of data stored on tape, we recommend passing list files to ``hsi``.
@@ -166,10 +166,10 @@ HSI Data Lists
 
 .. _hpss_decom:
 
-January 2025 - HPSS decommissioned
+January 31, 2025 - HPSS decommissioned
 -----------------------------------
 
-On January 01, data remaining on the HPSS will no longer be accessible and will be permanently deleted. Following this date, the OLCF will no longer be able to retrieve data remaining on HPSS.
+On January 31, 2025, data remaining on the HPSS will no longer be accessible and will be permanently deleted. Following this date, the OLCF will no longer be able to retrieve data remaining on HPSS.
 
 .. warning::
-  Jan 2025, all remaining HPSS data will be **PERMANENTLY DELETED**.  Do not wait to move needed data.
+  January 31, 2025, all remaining HPSS data will be **PERMANENTLY DELETED**.  Do not wait to move needed data.
