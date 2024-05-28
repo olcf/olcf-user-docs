@@ -30,7 +30,7 @@ Please pay attention to the following key dates as you migrate workloads from th
 .. _kronos_overview:
 
 Late July 2024 - Kronos available for production use
------------------------------------------------
+----------------------------------------------------
 
 Kronos is expected to be available late July 2024.  Updates to the availability schedule will be posted to this site and through the OLCF weekly email.
 
@@ -109,7 +109,7 @@ HPSS and Kronos Comparison
 .. _hpss_read_only:
 
 August 30, 2024 - HPSS becomes read-only
------------------------------------
+----------------------------------------
 
 In preparation for HPSS's decommission in January 2025, the HPSS will become read-only from all OLCF resources in August 30, 2024.
 
@@ -167,7 +167,7 @@ HSI Data Lists
 .. _hpss_decom:
 
 January 31, 2025 - HPSS decommissioned
------------------------------------
+--------------------------------------
 
 On January 31, 2025, data remaining on the HPSS will no longer be accessible and will be permanently deleted. Following this date, the OLCF will no longer be able to retrieve data remaining on HPSS.
 
