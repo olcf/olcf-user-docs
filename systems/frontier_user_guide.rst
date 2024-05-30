@@ -892,6 +892,37 @@ This section shows how to compile HIP + OpenMP CPU threading hybrid codes.
    
     hipcc requires the ROCm Toolclain, See :ref:`exposing-the-rocm-toolchain-to-your-programming-environment`
 
+SYCL
+----
+
+This section shows how to compile SYCL codes using the oneAPI DPC++ compiler.
+
+.. note::
+
+    Setup and load the oneAPI and ROCm modules:
+
+    .. code::
+
+      module use /sw/frontier/ums/ums015/modulefiles
+      module load oneapi/tbb oneapi/oclfpga oneapi/compiler-rt oneapi/compiler
+      module load rocm/5.4.3
+
++-------------------+--------------------------------------------------------------------------------------------------------------------------+
+| Compiler          | Compile/Link Flags, Header Files, and Libraries                                                                          |
++===================+==========================================================================================================================+
+| ``icpx``          | ``CFLAGS = -fsycl -fsycl-targets=amdgcn-amd-amdhsa -Xsycl-target-backend --offload-arch=gfx90a``, or                     |
+|                   | ``CFLAGS = -fsycl -fsycl-targets=amd_gpu_gfx90a``                                                                        |
++-------------------+--------------------------------------------------------------------------------------------------------------------------+
+
+Additional documentation on the DPC++ support for AMD can be found on
+`Codeplay's developer website
+<https://developer.codeplay.com/products/oneapi/amd/2024.1.0/guides/>`__, in
+particular the pages covering `common optimizations
+<https://developer.codeplay.com/products/oneapi/amd/2024.1.0/guides/performance/common-optimizations>`__
+or `troubleshooting
+<https://developer.codeplay.com/products/oneapi/amd/2024.1.0/guides/troubleshooting>`__
+can be helpful.
+
 ----
 
 
