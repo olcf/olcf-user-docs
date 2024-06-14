@@ -3225,7 +3225,7 @@ This is found from subtracting the ``rocprof`` metrics ``EndNs`` by ``BeginNs``,
 
 .. note::
 
-    For ROCm/5.2.0 and earlier, there is a known issue with the timings provided by ``--timestamp on``. See :ref:`crusher-known-issues`.
+    For ROCm/5.2.0 and earlier, there is a known issue with the timings provided by ``--timestamp on``.
 
 
 Calculating for all precisions
