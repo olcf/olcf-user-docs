@@ -1059,9 +1059,3 @@ If you have problems or need helping running on Spock, please submit a ticket
 by emailing help@olcf.ornl.gov.
 
 ----
-
-
-Known Issues
-============
-
-.. JIRA_CONTENT_HERE
