@@ -6,49 +6,6 @@ Frontier User Guide
 
 .. _system_overview:
 
-
-.. note::
-
-  Notable differences between Summit and Frontier:
-
-  Orion scratch filesystem
-    Frontier mounts Orion, a parallel filesystem based on Lustre and HPE ClusterStor, with a 679 PB usable namespace. Summit will not mount Orion.
-
-    See the :ref:`frontier-data-storage` section or this `recording <https://vimeo.com/manage/videos/814973734>`_ for more information. 
-   
-  Cray Programming Environment
-    Frontier utilizes the Cray Programming Environment.  Many aspects including LMOD are similar to Summit's environment.  But Cray's compiler wrappers and the Cray and AMD compilers are worth noting.
-
-    See the :ref:`frontier-compilers` section for more information.
-
-  AMD GPUs
-    Each frontier node has 4 AMD MI250X accelerators with two Graphic Compute Dies (GCDs) in each accelerator. The system identifies each GCD as an independent device (so for simplicity we use the term GPU when we talk about a GCD) for a total of 8 GPUs per node (compared to Summit's 6 Nvidia V100 GPUs per node). Each pair of GPUs is associated with a particular NUMA domain (see node diagram in :ref:`frontier-nodes` section) which might affect how your application should lay out data and computation.
-
-    See the :ref:`amd-gpus` section for more information.
-
-  Programming Models
-    Since Frontier uses AMD GPUs, code written in Nvidia's CUDA language will not work as is. They need to be converted to use HIP, which is AMD's GPU programming framework, or should be converted to some other GPU framework that supports AMD GPUs as a backend e.g. `OpenMP Offload <https://enccs.github.io/openmp-gpu/introduction/>`_, `Kokkos <https://kokkos.github.io/>`_, `RAJA <https://github.com/LLNL/RAJA>`_, `OCCA <https://libocca.org>`_, `SYCL <https://www.khronos.org/sycl/>`_/`DPC++ <https://github.com/intel/llvm>`_ etc .
-
-    See the :ref:`amd-hip` section for more information and links about HIP.
-
-  Slurm batch scheduler
-    Frontier uses SchedMD's Slurm Workload Manager for job scheduling instead of IBM's LSF. Slurm provides similar functionality to LSF, albeit with different commands.  Notable are the separation in batch script submission (``sbatch``) and interactive batch submission (``salloc``).
-
-    See the :ref:`frontier-slurm` section for more infomation including a LSF to Slurm command comparison.
-
-  Srun job launcher
-    Frontier uses Slurm's job launcher, ``srun``, instead of Summit's ``jsrun`` to launch parallel jobs within a batch script.  Overall functionality is similar, but commands are notably different. Frontier's :ref:`compute node layout <frontier-simple>` should also be considered when selecting job layout.
-
-    See the :ref:`frontier-srun` section for more ``srun`` information, and see :ref:`frontier-mapping` for ``srun`` examples on Frontier.
-
-  OLCF Support 
-    If you encounter any issues or have questions, please contact the OLCF via the following:
-    
-    * Email us at help@olcf.ornl.gov
-    * Contact your OLCF liaison
-    * Sign-up to attend `OLCF Office Hours <https://www.olcf.ornl.gov/olcf-office-hours/>`_
- 
-
 System Overview
 ===============
 
@@ -134,7 +91,11 @@ The Frontier nodes are connected with [4x] HPE Slingshot 200 Gbps (25 GB/s) NICs
 File Systems
 ------------
 
-Frontier is connected to Orion, a parallel filesystem based on Lustre and HPE ClusterStor, with a 679 PB usable namespace (``/lustre/orion/``). In addition to Frontier, Orion is available on the OLCF's data transfer nodes. It is not available from Summit. Data will not be automatically transferred from Alpine to Orion. Frontier also has access to the center-wide NFS-based filesystem (which provides user and project home areas). Each compute node has two 1.92TB Non-Volatile Memory storage devices. See :ref:`frontier-data-storage` for more information. 
+Frontier is connected to Orion, a parallel filesystem based on Lustre and HPE ClusterStor, with a 679 PB usable 
+namespace (``/lustre/orion/``). In addition to Frontier, Orion is available on the OLCF's data transfer nodes and on the Andes cluster. 
+Orion is not available from Summit and Frontier does not mount Summit's Alpine2 filesystem. 
+Frontier also has access to the center-wide NFS-based filesystem (which provides user and project home areas). 
+Each compute node has two 1.92TB Non-Volatile Memory storage devices. See :ref:`frontier-data-storage` for more information. 
 
 Frontier connects to the center’s High Performance Storage System (HPSS) - for user and project archival storage - users can log in to the :ref:`dtn-user-guide` to move data to/from HPSS.
 
@@ -185,6 +146,23 @@ Transition from Alpine to Orion
 
 For more detailed information about center-wide file systems and data archiving available on Frontier, please refer to the pages on :ref:`data-storage-and-transfers`. The subsections below give a quick overview of NFS, Lustre,and HPSS storage spaces as well as the on node NVMe "Burst Buffers" (SSDs).
 
+LFS setstripe wrapper
+---------------------
+
+The OLCF provides a wrapper for the ``lfs setstripe`` command that simplifies the process of striping files. The wrapper will enforce that certain settings are used to ensure that striping is done correctly. This will help to ensure good performance for users as well as prevent filesystem issues that could arise from incorrect striping practices. The wrapper is accessible via the ``lfs-wrapper`` module and will soon be added to the default environment on Frontier. 
+
+Orion is different than other Lustre filesystems that you may have used previously. To make effective use of Orion and to help ensure that the filesystem performs well for all users, it is important that you do the following:
+
+* Use the `capacity` OST pool tier (e.g. ``lfs setstripe -p capacity``)
+* Stripe across no more than 450 OSTs (e.g. ``lfs setstripe -c`` <= 450)
+
+When the module is active in your environment, the wrapper will enforce the above settings. The wrapper will also do the following:
+
+* If a user provides a stripe count of -1 (e.g. ``lfs setstripe -c -1``) the wrapper will set the stripe count to the maximum allowed by the filesystem (currently 450)
+* If a user provides a stripe count of 0 (e.g. ``lfs setstripe -c 0``) the wrapper will use the OLCF default striping command which has been optimized by the OLCF filesystem managers: ``lfs setstripe -E 256K -L mdt -E 8M -c 1 -S 1M -p performance -z 64M -E 128G -c 1 -S 1M -z 16G -p capacity -E -1 -z 256G -c 8 -S 1M -p capacity``
+
+Please contact the OLCF User Assistance Center if you have any questions about using the wrapper or if you encounter any issues.
+
 NFS Filesystem 
 --------------
 
@@ -214,9 +192,9 @@ Lustre Filesystem
 +=====================+==============================================+========================+=============+========+=========+=========+============+==================+
 | Member Work         | ``/lustre/orion/[projid]/scratch/[userid]``  | Lustre HPE ClusterStor | 700         |  50 TB | No      | 90 days | N/A        | Yes              |
 +---------------------+----------------------------------------------+------------------------+-------------+--------+---------+---------+------------+------------------+
-| Project Work        | ``/lustre/orion/[[projid]/proj-shared``      | Lustre HPE ClusterStor | 770         |  50 TB | No      | 90 days | N/A        | Yes              |
+| Project Work        | ``/lustre/orion/[projid]/proj-shared``       | Lustre HPE ClusterStor | 770         |  50 TB | No      | 90 days | N/A        | Yes              |
 +---------------------+----------------------------------------------+------------------------+-------------+--------+---------+---------+------------+------------------+
-| World Work          | ``/lustre/orion/[[projid]/world-shared``     | Lustre HPE ClusterStor | 775         |  50 TB | No      | 90 days | N/A        | Yes              |
+| World Work          | ``/lustre/orion/[projid]/world-shared``      | Lustre HPE ClusterStor | 775         |  50 TB | No      | 90 days | N/A        | Yes              |
 +---------------------+----------------------------------------------+------------------------+-------------+--------+---------+---------+------------+------------------+
 
 
@@ -677,7 +655,7 @@ The MPI implementation available on Frontier is Cray's MPICH, which is "GPU-awar
 GPU-Aware MPI
 ^^^^^^^^^^^^^
 
-To use GPU-aware Cray MPICH, with Frontier's PrgEnv modules, users must set the following modules and environment variables:
+To use GPU-aware Cray MPICH with Frontier's PrgEnv modules, users must set the following modules and environment variables:
 
 If using ``PrgEnv-amd``:
 
@@ -731,23 +709,48 @@ To use ``hipcc`` with GPU-aware Cray MPICH, use the following environment variab
       ${CRAY_XPMEM_POST_LINK_OPTS} -lxpmem \
       ${PE_MPICH_GTL_DIR_amd_gfx90a} ${PE_MPICH_GTL_LIBS_amd_gfx90a}
 
-    HIPFLAGS = --amdgpu-target=gfx90a
+    HIPFLAGS = --offload-arch=gfx90a
     
 
 Determining the Compatibility of Cray MPICH and ROCm
 """"""""""""""""""""""""""""""""""""""""""""""""""""
 
-Releases of ``cray-mpich`` are each built with a specific version of ROCm, and compatibility across multiple versions is not guaranteed. OLCF will maintain compatible default modules when possible. If using non-default modules, you can determine compatibility by reviewing the *Product and OS Dependencies* section in the ``cray-mpich`` release notes. This can be displayed by running ``module show cray-mpich/<version>``. If the notes indicate compatibility with *AMD ROCM X.Y or later*, only use ``rocm/X.Y.Z`` modules. If using a non-default version of ``cray-mpich``, you must add ``${CRAY_MPICH_ROOTDIR}/gtl/lib`` to either your ``LD_LIBRARY_PATH`` at run time or your executable's rpath at build time.
+Compatibility between Cray MPICH and ROCm is required in order to use GPU-aware MPI.
+Releases of ``cray-mpich`` are each built with a specific version of ROCm, and compatibility across multiple versions is not guaranteed.
+OLCF will maintain compatible default modules when possible.
+If using non-default modules, you can determine compatibility by reviewing the *Product and OS Dependencies* section in the ``cray-mpich`` release notes.
+This can be displayed by running ``module show cray-mpich/<version>``. If the notes indicate compatibility with *AMD ROCM X.Y or later*, only use ``rocm/X.Y.Z`` modules.
 
-The compatibility table below was determined by linker testing with all current combinations of ``cray-mpich`` and ROCm-related modules on Frontier.
+.. note::
 
-+------------+----------------------------+
-| cray-mpich |            ROCm            |
-+============+============================+
-|   8.1.17   | 5.4.0, 5.3.0, 5.2.0, 5.1.0 |
-+------------+----------------------------+
-|   8.1.23   | 5.4.0, 5.3.0, 5.2.0, 5.1.0 |
-+------------+----------------------------+
+    If using a non-default version of ``cray-mpich``, you must *prepend* either ``${CRAY_LD_LIBRARY_PATH}`` or ``${CRAY_MPICH_DIR}/lib`` and ``${CRAY_MPICH_ROOTDIR}/gtl/lib`` (which are a subset of ``${CRAY_LD_LIBRARY_PATH}``) to your ``LD_LIBRARY_PATH`` at run time or your executable's rpath at build time.
+
+The compatibility table below was determined by testing of the linker and basic GPU-aware MPI functions with all current combinations of ``cray-mpich`` and ROCm modules on Frontier.
+Alongside ``cray-mpich``, we load the corresponding ``cpe`` module, which loads other important modules such as ``cray-pmi`` and ``craype``.
+It is strongly encouraged to load a ``cpe`` module when using non-default modules.
+An asterisk indicates the latest officially supported version of ROCm for each ``cray-mpich`` version.
+
++------------+-------+-----------------------------------------------------------------------+
+| cray-mpich |  cpe  |                              ROCm                                     |
++============+=======+=======================================================================+
+|   8.1.17   | 22.06 | 5.4.3, 5.4.0, 5.3.0, 5.2.0, 5.1.0*                                    |
++------------+-------+-----------------------------------------------------------------------+
+|   8.1.23   | 22.12 | 5.4.3, 5.4.0, 5.3.0*, 5.2.0, 5.1.0                                    |
++------------+-------+-----------------------------------------------------------------------+
+|   8.1.25   | 23.03 | 5.4.3, 5.4.0, 5.3.0*, 5.2.0, 5.1.0                                    |
++------------+-------+-----------------------------------------------------------------------+
+|   8.1.26   | 23.05 | 6.0.0, 5.7.1, 5.7.0, 5.6.0, 5.5.1*, 5.4.3, 5.4.0, 5.3.0, 5.2.0, 5.1.0 |
++------------+-------+-----------------------------------------------------------------------+
+|   8.1.27   | 23.09 | 6.0.0, 5.7.1, 5.7.0, 5.6.0, 5.5.1*, 5.4.3, 5.4.0, 5.3.0, 5.2.0, 5.1.0 |
++------------+-------+-----------------------------------------------------------------------+
+|   8.1.28   | 23.12 | 6.0.0, 5.7.1, 5.7.0*, 5.6.0, 5.5.1, 5.4.3, 5.4.0, 5.3.0, 5.2.0, 5.1.0 |
++------------+-------+-----------------------------------------------------------------------+
+
+.. note::
+
+    OLCF recommends using the officially supported ROCm version (with asterisk) for each ``cray-mpich`` version.
+    Newer versions were tested using a sample of MPI operations and there may be undiscovered incompatibility.
+
 
 OpenMP
 ------
@@ -849,7 +852,7 @@ This section shows how to compile HIP codes using the Cray compiler wrappers and
 +-------------------+--------------------------------------------------------------------------------------------------------------------------+
 | ``hipcc``         | | Can be used directly to compile HIP source files.                                                                      |
 |                   | | To see what is being invoked within this compiler driver, issue the command, ``hipcc --verbose``                       |
-|                   | | To explicitly target AMD MI250X, use ``--amdgpu-target=gfx90a``                                                        |
+|                   | | To explicitly target AMD MI250X, use ``--offload-arch=gfx90a``                                                         |
 +-------------------+--------------------------------------------------------------------------------------------------------------------------+
 
 .. note:: 
@@ -877,7 +880,7 @@ This section shows how to compile HIP + OpenMP CPU threading hybrid codes.
 |          |           | | ``-L${ROCM_PATH}/lib -lamdhip64``                                                                                               |
 |          +-----------+-----------------------------------------------------------------------------------------------------------------------------------+
 |          | ``hipcc`` | | Can be used to directly compile HIP source files, add ``-fopenmp`` flag to enable OpenMP threading                              |
-|          |           | | To explicitly target AMD MI250X, use ``--amdgpu-target=gfx90a``                                                                 |
+|          |           | | To explicitly target AMD MI250X, use ``--offload-arch=gfx90a``                                                                  |
 +----------+-----------+-----------------------------------------------------------------------------------------------------------------------------------+
 | GNU      | ``CC``    | | The GNU compilers cannot be used to compile HIP code, so all HIP kernels must be separated from CPU code.                       |
 |          |           | | During compilation, all non-HIP files must be compiled with ``CC`` while HIP kernels must be compiled with ``hipcc``.           |
@@ -888,6 +891,37 @@ This section shows how to compile HIP + OpenMP CPU threading hybrid codes.
 .. note:: 
    
     hipcc requires the ROCm Toolclain, See :ref:`exposing-the-rocm-toolchain-to-your-programming-environment`
+
+SYCL
+----
+
+This section shows how to compile SYCL codes using the oneAPI DPC++ compiler.
+
+.. note::
+
+    Setup and load the oneAPI and ROCm modules:
+
+    .. code::
+
+      module use /sw/frontier/ums/ums015/modulefiles
+      module load oneapi/tbb oneapi/oclfpga oneapi/compiler-rt oneapi/compiler
+      module load rocm/5.4.3
+
++-------------------+--------------------------------------------------------------------------------------------------------------------------+
+| Compiler          | Compile/Link Flags, Header Files, and Libraries                                                                          |
++===================+==========================================================================================================================+
+| ``icpx``          | ``CFLAGS = -fsycl -fsycl-targets=amdgcn-amd-amdhsa -Xsycl-target-backend --offload-arch=gfx90a``, or                     |
+|                   | ``CFLAGS = -fsycl -fsycl-targets=amd_gpu_gfx90a``                                                                        |
++-------------------+--------------------------------------------------------------------------------------------------------------------------+
+
+Additional documentation on the DPC++ support for AMD can be found on
+`Codeplay's developer website
+<https://developer.codeplay.com/products/oneapi/amd/2024.1.0/guides/>`__, in
+particular the pages covering `common optimizations
+<https://developer.codeplay.com/products/oneapi/amd/2024.1.0/guides/performance/common-optimizations>`__
+or `troubleshooting
+<https://developer.codeplay.com/products/oneapi/amd/2024.1.0/guides/troubleshooting>`__
+can be helpful.
 
 ----
 
@@ -1010,18 +1044,18 @@ Consider the following batch script:
 .. code-block:: bash
    :linenos:
 
-    #!/bin/bash
-    #SBATCH -A ABC123
-    #SBATCH -J RunSim123
-    #SBATCH -o %x-%j.out
-    #SBATCH -t 1:00:00
-    #SBATCH -p batch
-    #SBATCH -N 1024
+   #!/bin/bash
+   #SBATCH -A ABC123
+   #SBATCH -J RunSim123
+   #SBATCH -o %x-%j.out
+   #SBATCH -t 1:00:00
+   #SBATCH -p batch
+   #SBATCH -N 1024
 
-    cd $MEMBERWORK/abc123/Run.456
-    cp $PROJWORK/abc123/RunData/Input.456 ./Input.456
-    srun ...
-    cp my_output_file $PROJWORK/abc123/RunData/Output.456
+   cd $MEMBERWORK/abc123/Run.456
+   cp $PROJWORK/abc123/RunData/Input.456 ./Input.456
+   srun ...
+   cp my_output_file $PROJWORK/abc123/RunData/Output.456
 
 In the script, Slurm directives are preceded by ``#SBATCH``, making them appear as comments to the shell. Slurm looks for these directives through the first non-comment, non-whitespace line. Options after that will be ignored by Slurm (and the shell).
 
@@ -1062,6 +1096,9 @@ Most users will find batch jobs an easy way to use the system, as they allow you
 
 Since all compute resources are managed and scheduled by Slurm, it is not possible to simply log into the system and immediately begin running parallel codes interactively. Rather, you must request the appropriate resources from Slurm and, if necessary, wait for them to become available. This is done through an "interactive batch" job. Interactive batch jobs are submitted with the ``salloc`` command. Resources are requested via the same options that are passed via ``#SBATCH`` in a regular batch script (but without the ``#SBATCH`` prefix). For example, to request an interactive batch job with the same resources that the batch script above requests, you would use ``salloc -A ABC123 -J RunSim123 -t 1:00:00 -p batch -N 1024``. Note there is no option for an output file...you are running interactively, so standard output and standard error will be displayed to the terminal.
 
+.. warning::
+   Indicating your shell in your ``salloc`` command is NOT recommended (e.g., ``salloc ... /bin/bash``). Doing so causes your compute job to start on a login node by default rather than automatically moving you to a compute node. 
+
 .. _common-slurm-options:
 
 Common Slurm Options
@@ -1069,57 +1106,60 @@ Common Slurm Options
 
 The table below summarizes options for submitted jobs. Unless otherwise noted, they can be used for either batch scripts or interactive batch jobs. For scripts, they can be added on the ``sbatch`` command line or as a ``#BSUB`` directive in the batch script. (If they're specified in both places, the command line takes precedence.) This is only a subset of all available options. Check the `Slurm Man Pages <https://slurm.schedmd.com/man_index.html>`__ for a more complete list.
 
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-| Option                 | Example Usage                              | Description                                                                          |
-+========================+============================================+======================================================================================+
-| ``-A``                 | ``#SBATCH -A ABC123``                      | Specifies the project to which the job should be charged                             |
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-| ``-N``                 | ``#SBATCH -N 1024``                        | Request 1024 nodes for the job                                                       |
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-| ``-t``                 | ``#SBATCH -t 4:00:00``                     | Request a walltime of 4 hours.                                                       |
-|                        |                                            | Walltime requests can be specified as minutes, hours:minutes, hours:minuts:seconds   |
-|                        |                                            | days-hours, days-hours:minutes, or days-hours:minutes:seconds                        |
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-| ``--threads-per-core`` | ``#SBATCH --threads-per-core=2``           | | Number of active hardware threads per core. Can be 1 or 2 (1 is default)           |
-|                        |                                            | | **Must** be used if using ``--threads-per-core=2`` in your ``srun`` command.       |
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-| ``-d``                 | ``#SBATCH -d afterok:12345``               | Specify job dependency (in this example, this job cannot start until job 12345 exits |
-|                        |                                            | with an exit code of 0. See the Job Dependency section for more information          |
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-| ``-C``                 | ``#SBATCH -C nvme``                        | Request the burst buffer/NVMe on each node be made available for your job. See       |
-|                        |                                            | the Burst Buffers section for more information on using them.                        |
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-| ``-J``                 | ``#SBATCH -J MyJob123``                    | Specify the job name (this will show up in queue listings)                           |
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-| ``-o``                 | ``#SBATCH -o jobout.%j``                   | File where job STDOUT will be directed (%j will be replaced with the job ID).        |
-|                        |                                            | If no `-e` option is specified, job STDERR will be placed in this file, too.         |
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-| ``-e``                 | ``#SBATCH -e joberr.%j``                   | File where job STDERR will be directed (%j will be replaced with the job ID).        |
-|                        |                                            | If no `-o` option is specified, job STDOUT will be placed in this file, too.         |
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-| ``--mail-type``        | ``#SBATCH --mail-type=END``                | Send email for certain job actions. Can be a comma-separated list. Actions include   |
-|                        |                                            | BEGIN, END, FAIL, REQUEUE, INVALID_DEPEND, STAGE_OUT, ALL, and more.                 |
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-| ``--mail-user``        | ``#SBATCH --mail-user=user@somewhere.com`` | Email address to be used for notifications.                                          |
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-| ``--reservation``      | ``#SBATCH --reservation=MyReservation.1``  | Instructs Slurm to run a job on nodes that are part of the specified reservation.    |
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-| ``-S``                 | ``#SBATCH -S 8``                           | Instructs Slurm to reserve a specific number of cores per node (default is 8).       |
-|                        |                                            | Reserved cores cannot be used by the application.                                    |
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-| ``--signal``           | ``#SBATCH --signal=USR1@300``              || Send the given signal to a job the specified time (in seconds) seconds before the   |
-|                        |                                            | job reaches its walltime. The signal can be by name or by number (i.e. both 10 and   |
-|                        |                                            | USR1 would send SIGUSR1).                                                            |
-|                        |                                            ||                                                                                     |
-|                        |                                            || Signaling a job can be used, for example, to force a job to write a checkpoint just |
-|                        |                                            | before Slurm kills the job (note that this option only sends the signal; the user    |
-|                        |                                            | must still make sure their job script traps the signal and handles it in the desired |
-|                        |                                            | manner).                                                                             |
-|                        |                                            ||                                                                                     |
-|                        |                                            || When used with ``sbatch``, the signal can be prefixed by "B:"                       |
-|                        |                                            | (e.g. ``--signal=B:USR1@300``) to tell Slurm to signal only the batch shell;         |
-|                        |                                            | otherwise all processes will be signaled.                                            |
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+.. table::
+    :widths: 15 28 57
+
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | Option                 | Example Usage                              | Description                                                                          |
+    +========================+============================================+======================================================================================+
+    | ``-A``                 | ``#SBATCH -A ABC123``                      | Specifies the project to which the job should be charged                             |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | ``-N``                 | ``#SBATCH -N 1024``                        | Request 1024 nodes for the job                                                       |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | ``-t``                 | ``#SBATCH -t 4:00:00``                     | Request a walltime of 4 hours.                                                       |
+    |                        |                                            | Walltime requests can be specified as minutes, hours:minutes, hours:minuts:seconds   |
+    |                        |                                            | days-hours, days-hours:minutes, or days-hours:minutes:seconds                        |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | ``--threads-per-core`` | ``#SBATCH --threads-per-core=2``           | | Number of active hardware threads per core. Can be 1 or 2 (1 is default)           |
+    |                        |                                            | | **Must** be used if using ``--threads-per-core=2`` in your ``srun`` command.       |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | ``-d``                 | ``#SBATCH -d afterok:12345``               | Specify job dependency (in this example, this job cannot start until job 12345 exits |
+    |                        |                                            | with an exit code of 0. See the Job Dependency section for more information          |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | ``-C``                 | ``#SBATCH -C nvme``                        | Request the burst buffer/NVMe on each node be made available for your job. See       |
+    |                        |                                            | the Burst Buffers section for more information on using them.                        |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | ``-J``                 | ``#SBATCH -J MyJob123``                    | Specify the job name (this will show up in queue listings)                           |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | ``-o``                 | ``#SBATCH -o jobout.%j``                   | File where job STDOUT will be directed (%j will be replaced with the job ID).        |
+    |                        |                                            | If no `-e` option is specified, job STDERR will be placed in this file, too.         |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | ``-e``                 | ``#SBATCH -e joberr.%j``                   | File where job STDERR will be directed (%j will be replaced with the job ID).        |
+    |                        |                                            | If no `-o` option is specified, job STDOUT will be placed in this file, too.         |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | ``--mail-type``        | ``#SBATCH --mail-type=END``                | Send email for certain job actions. Can be a comma-separated list. Actions include   |
+    |                        |                                            | BEGIN, END, FAIL, REQUEUE, INVALID_DEPEND, STAGE_OUT, ALL, and more.                 |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | ``--mail-user``        | ``#SBATCH --mail-user=user@somewhere.com`` | Email address to be used for notifications.                                          |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | ``--reservation``      | ``#SBATCH --reservation=MyReservation.1``  | Instructs Slurm to run a job on nodes that are part of the specified reservation.    |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | ``-S``                 | ``#SBATCH -S 8``                           | Instructs Slurm to reserve a specific number of cores per node (default is 8).       |
+    |                        |                                            | Reserved cores cannot be used by the application.                                    |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | ``--signal``           | ``#SBATCH --signal=USR1@300``              || Send the given signal to a job the specified time (in seconds) seconds before the   |
+    |                        |                                            | job reaches its walltime. The signal can be by name or by number (i.e. both 10 and   |
+    |                        |                                            | USR1 would send SIGUSR1).                                                            |
+    |                        |                                            ||                                                                                     |
+    |                        |                                            || Signaling a job can be used, for example, to force a job to write a checkpoint just |
+    |                        |                                            | before Slurm kills the job (note that this option only sends the signal; the user    |
+    |                        |                                            | must still make sure their job script traps the signal and handles it in the desired |
+    |                        |                                            | manner).                                                                             |
+    |                        |                                            ||                                                                                     |
+    |                        |                                            || When used with ``sbatch``, the signal can be prefixed by "B:"                       |
+    |                        |                                            | (e.g. ``--signal=B:USR1@300``) to tell Slurm to signal only the batch shell;         |
+    |                        |                                            | otherwise all processes will be signaled.                                            |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
 
 
 Slurm Environment Variables
@@ -1287,22 +1327,25 @@ Job Dependencies
 
 Oftentimes, a job will need data from some other job in the queue, but it's nonetheless convenient to submit the second job before the first finishes. Slurm allows you to submit a job with constraints that will keep it from running until these dependencies are met. These are specified with the ``-d`` option to Slurm. Common dependency flags are summarized below. In each of these examples, only a single jobid is shown but you can specify multiple job IDs as a colon-delimited list (i.e. ``#SBATCH -d afterok:12345:12346:12346``). For the ``after`` dependency, you can optionally specify a ``+time`` value for each jobid.
 
-+-----------------------------------+---------------------------------------------------------------------------------------------------+
-| Flag                              | Meaning (for the dependent job)                                                                   |
-+===================================+===================================================================================================+
-| ``#SBATCH -d after:jobid[+time]`` | The job can start after the specified jobs start or are canceled. The optional ``+time`` argument |
-|                                   | is a number of minutes. If specified, the job cannot start until that many minutes have passed    |
-|                                   | since the listed jobs start/are canceled. If not specified, there is no delay.                    |
-+-----------------------------------+---------------------------------------------------------------------------------------------------+
-| ``#SBATCH -d afterany:jobid``     | The job can start after the specified jobs have ended (regardless of exit state)                  |
-+-----------------------------------+---------------------------------------------------------------------------------------------------+
-| ``#SBATCH -d afternotok:jobid``   | The job can start after the specified jobs terminate in a failed (non-zero) state                 |
-+-----------------------------------+---------------------------------------------------------------------------------------------------+
-| ``#SBATCH -d afterok:jobid``      | The job can start after the specified jobs complete successfully (i.e. zero exit code)            |
-+-----------------------------------+---------------------------------------------------------------------------------------------------+
-| ``#SBATCH -d singleton``          | Job can begin after any previously-launched job with the same name and from the same user         |
-|                                   | have completed. In other words, serialize the running jobs based on username+jobname pairs.       |
-+-----------------------------------+---------------------------------------------------------------------------------------------------+
+.. table::
+    :widths: 25 75
+
+    +-----------------------------------+---------------------------------------------------------------------------------------------------+
+    | Flag                              | Meaning (for the dependent job)                                                                   |
+    +===================================+===================================================================================================+
+    | ``#SBATCH -d after:jobid[+time]`` | The job can start after the specified jobs start or are canceled. The optional ``+time`` argument |
+    |                                   | is a number of minutes. If specified, the job cannot start until that many minutes have passed    |
+    |                                   | since the listed jobs start/are canceled. If not specified, there is no delay.                    |
+    +-----------------------------------+---------------------------------------------------------------------------------------------------+
+    | ``#SBATCH -d afterany:jobid``     | The job can start after the specified jobs have ended (regardless of exit state)                  |
+    +-----------------------------------+---------------------------------------------------------------------------------------------------+
+    | ``#SBATCH -d afternotok:jobid``   | The job can start after the specified jobs terminate in a failed (non-zero) state                 |
+    +-----------------------------------+---------------------------------------------------------------------------------------------------+
+    | ``#SBATCH -d afterok:jobid``      | The job can start after the specified jobs complete successfully (i.e. zero exit code)            |
+    +-----------------------------------+---------------------------------------------------------------------------------------------------+
+    | ``#SBATCH -d singleton``          | Job can begin after any previously-launched job with the same name and from the same user         |
+    |                                   | have completed. In other words, serialize the running jobs based on username+jobname pairs.       |
+    +-----------------------------------+---------------------------------------------------------------------------------------------------+
 
 
 Monitoring and Modifying Batch Jobs
@@ -1397,45 +1440,48 @@ The job name and output options have been removed since stdout/stderr are typica
 
 ``srun`` accepts the following common options:
 
-+--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
-| ``-N``                                                 | Number of nodes                                                                                                |
-+--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
-| ``-n``                                                 | Total number of MPI tasks (default is 1)                                                                       |
-+--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
-| ``-c, --cpus-per-task=<ncpus>``                        | | Logical cores per MPI task (default is 1)                                                                    |
-|                                                        | | When used with ``--threads-per-core=1``: ``-c`` is equivalent to *physical* cores per task                   |
-|                                                        | | By default, when ``-c > 1``, additional cores per task are distributed within one L3 region                  |
-|                                                        |   first before filling a different L3 region.                                                                  |
-+--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
-| ``--cpu-bind=threads``                                 | | Bind tasks to CPUs.                                                                                          |
-|                                                        | | ``threads`` - (default, recommended) Automatically generate masks binding tasks to threads.                  |
-+--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
-| ``--threads-per-core=<threads>``                       | | In task layout, use the specified maximum number of hardware threads per core                                |
-|                                                        | | (default is 1; there are 2 hardware threads per physical CPU core).                                          |
-|                                                        | | Must also be set in ``salloc`` or ``sbatch`` if using ``--threads-per-core=2`` in your ``srun`` command.     |
-+--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
-| ``-m, --distribution=<value>:<value>:<value>``         | | Specifies the distribution of MPI ranks across compute nodes, sockets (L3 regions), and cores, respectively. |
-|                                                        | | The default values are ``block:cyclic:cyclic``, see ``man srun`` for more information.                       |
-|                                                        | | Currently, the distribution setting for cores (the third "<value>" entry) has no effect on Frontier          |
-+--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
-|  ``--ntasks-per-node=<ntasks>``                        | | If used without ``-n``: requests that a specific number of tasks be invoked on each node.                    |
-|                                                        | | If used with ``-n``: treated as a *maximum* count of tasks per node.                                         |
-+--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
-| ``--gpus``                                             | Specify the number of GPUs required for the job (total GPUs across all nodes).                                 |
-+--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
-| ``--gpus-per-node``                                    | Specify the number of GPUs per node required for the job.                                                      |
-+--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
-| ``--gpu-bind=closest``                                 | Binds each task to the GPU which is on the same NUMA domain as the CPU core the MPI rank is running on.        |
-+--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
-| ``--gpu-bind=map_gpu:<list>``                          | Bind tasks to specific GPUs by setting GPU masks on tasks (or ranks) as specified where                        |
-|                                                        | ``<list>`` is ``<gpu_id_for_task_0>,<gpu_id_for_task_1>,...``. If the number of tasks (or                      |
-|                                                        | ranks) exceeds the number of elements in this list, elements in the list will be reused as                     |
-|                                                        | needed starting from the beginning of the list. To simplify support for large task                             |
-|                                                        | counts, the lists may follow a map with an asterisk and repetition count. (For example                         |
-|                                                        | ``map_gpu:0*4,1*4``)                                                                                           |
-+--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
-| ``--ntasks-per-gpu=<ntasks>``                          | Request that there are ntasks tasks invoked for every GPU.                                                     |
-+--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+.. table::
+    :widths: 30 70
+
+    +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+    | ``-N``                                                 | Number of nodes                                                                                                |
+    +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+    | ``-n``                                                 | Total number of MPI tasks (default is 1)                                                                       |
+    +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+    | ``-c, --cpus-per-task=<ncpus>``                        | | Logical cores per MPI task (default is 1)                                                                    |
+    |                                                        | | When used with ``--threads-per-core=1``: ``-c`` is equivalent to *physical* cores per task                   |
+    |                                                        | | By default, when ``-c > 1``, additional cores per task are distributed within one L3 region                  |
+    |                                                        |   first before filling a different L3 region.                                                                  |
+    +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+    | ``--cpu-bind=threads``                                 | | Bind tasks to CPUs.                                                                                          |
+    |                                                        | | ``threads`` - (default, recommended) Automatically generate masks binding tasks to threads.                  |
+    +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+    | ``--threads-per-core=<threads>``                       | | In task layout, use the specified maximum number of hardware threads per core                                |
+    |                                                        | | (default is 1; there are 2 hardware threads per physical CPU core).                                          |
+    |                                                        | | Must also be set in ``salloc`` or ``sbatch`` if using ``--threads-per-core=2`` in your ``srun`` command.     |
+    +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+    | ``-m, --distribution=<value>:<value>:<value>``         | | Specifies the distribution of MPI ranks across compute nodes, sockets (L3 regions), and cores, respectively. |
+    |                                                        | | The default values are ``block:cyclic:cyclic``, see ``man srun`` for more information.                       |
+    |                                                        | | Currently, the distribution setting for cores (the third "<value>" entry) has no effect on Frontier          |
+    +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+    |  ``--ntasks-per-node=<ntasks>``                        | | If used without ``-n``: requests that a specific number of tasks be invoked on each node.                    |
+    |                                                        | | If used with ``-n``: treated as a *maximum* count of tasks per node.                                         |
+    +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+    | ``--gpus``                                             | Specify the number of GPUs required for the job (total GPUs across all nodes).                                 |
+    +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+    | ``--gpus-per-node``                                    | Specify the number of GPUs per node required for the job.                                                      |
+    +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+    | ``--gpu-bind=closest``                                 | Binds each task to the GPU which is on the same NUMA domain as the CPU core the MPI rank is running on.        |
+    +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+    | ``--gpu-bind=map_gpu:<list>``                          | Bind tasks to specific GPUs by setting GPU masks on tasks (or ranks) as specified where                        |
+    |                                                        | ``<list>`` is ``<gpu_id_for_task_0>,<gpu_id_for_task_1>,...``. If the number of tasks (or                      |
+    |                                                        | ranks) exceeds the number of elements in this list, elements in the list will be reused as                     |
+    |                                                        | needed starting from the beginning of the list. To simplify support for large task                             |
+    |                                                        | counts, the lists may follow a map with an asterisk and repetition count. (For example                         |
+    |                                                        | ``map_gpu:0*4,1*4``)                                                                                           |
+    +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+    | ``--ntasks-per-gpu=<ntasks>``                          | Request that there are ntasks tasks invoked for every GPU.                                                     |
+    +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
 
 
 Below is a comparison table between ``srun`` and ``jsrun``.
@@ -2168,14 +2214,17 @@ node are shared by 2 MPI ranks. Similar to Example 4, ``-ntasks-per-gpu=2``
 will be used, but a new ``srun`` flag will be used to change the default
 round-robin (``cyclic``) distribution of MPI ranks across NUMA domains:
 
-+------------------------------------------------+-----------------------------------------------------------------------------------------------+
-| Slurm Option                                   | Description                                                                                   |
-+================================================+===============================================================================================+
-| ``--distribution=<value>[:<value>][:<value>]`` | Specifies the distribution of MPI ranks across compute nodes, sockets                         |
-|                                                | (L3 cache regions on Frontier), and cores, respectively. The default values are               |
-|                                                | ``block:cyclic:cyclic``, which is where the ``cyclic`` assignment comes from in the previous  |
-|                                                | examples.                                                                                     |
-+------------------------------------------------+-----------------------------------------------------------------------------------------------+
+.. table::
+    :widths: 30 70
+
+    +------------------------------------------------+-----------------------------------------------------------------------------------------------+
+    | Slurm Option                                   | Description                                                                                   |
+    +================================================+===============================================================================================+
+    | ``--distribution=<value>[:<value>][:<value>]`` | Specifies the distribution of MPI ranks across compute nodes, sockets                         |
+    |                                                | (L3 cache regions on Frontier), and cores, respectively. The default values are               |
+    |                                                | ``block:cyclic:cyclic``, which is where the ``cyclic`` assignment comes from in the previous  |
+    |                                                | examples.                                                                                     |
+    +------------------------------------------------+-----------------------------------------------------------------------------------------------+
 
 .. note::
 
@@ -2823,6 +2872,11 @@ A job script for the previous example, modified for sending all libraries is sho
 
 Some libraries still resolved to paths outside of ``/mnt/bb``, and the reason for that is that the executable may have several paths in ``RPATH``.
 
+SBCASTing a conda environment
+"""""""""""""""""""""""""""""
+
+Users running Python environments at scale can also take advantage of using ``sbcast``.
+For details on how to use ``sbcast`` to move your conda environments to the NVMe, please see our :doc:`Sbcast Conda Environments Guide </software/python/sbcast_conda>`.
 
 
 ----
@@ -2996,15 +3050,17 @@ HPCToolkit is an integrated suite of tools for measurement and analysis of progr
 
 Programming models supported by HPCToolkit include MPI, OpenMP, OpenACC, CUDA, OpenCL, DPC++, HIP, RAJA, Kokkos, and others.
 
-Below is an example that generates a profile and loads the results in their GUI-based viewer.
-
 .. note::
 
-    A full list of available HPCToolkit versions can be seen with the ``module spider hpctoolkit`` command.
+    On Frontier, currently HPCToolkit is provided as part of the User Managed Software (UMS) program.
+    To see currently available builds, first perform the ``module load ums ums023`` command.
+    A full list of available HPCToolkit versions can also be seen with the ``module spider hpctoolkit`` command.
+
+Below is an example that generates a profile and loads the results in their GUI-based viewer.
 
 .. code:: bash
 
-    module load hpctoolkit/2022.05.15-rocm 
+    module load ums ums023 hpctoolkit
 
     # 1. Profile and trace an application using CPU time and GPU performance counters 
     srun <srun_options> hpcrun -o <measurement_dir> -t -e CPUTIME -e gpu=amd <application> 
@@ -3018,11 +3074,17 @@ Below is an example that generates a profile and loads the results in their GUI-
     # 4. Understand performance issues by analyzing profiles and traces with the GUI 
     hpcviewer <database_dir> 
 
+.. note::
+
+    At the moment, ``hpcviewer`` requires SSH X11 forwarding to work on Frontier login nodes, which might be prohibitive depending on the user's network connection. Alternatively, the user can `download the HPCViewer client from the HPCToolkit website <http://hpctoolkit.org/download.html>`__, install it on their local laptop/workstation system, and then transfer the database directory to the local system for local viewing and analysis.
+    A remote client interface to allow streaming the performance database directly from Frontier is in active development.
+
 More detailed information on HPCToolkit can be found in the `HPCToolkit User's Manual <http://hpctoolkit.org/manual/HPCToolkit-users-manual.pdf>`__.
 
 .. note::
 
-    HPCToolkit does not require a recompile to profile the code. It is recommended to use the -g optimization flag for attribution to source lines.
+    HPCToolkit does not require a recompile to profile the code. It is recommended to use the ``-g`` optimization flag for attribution to source lines.
+    There is experimental support for profiling Python applications with HPCToolkit. Please submit an OLCF ticket to get in touch with the HPCToolkit team since this might require a special build of HPCToolkit on a case-by-case basis.
 
 Getting Started with the ROCm Profiler
 --------------------------------------
@@ -3382,16 +3444,16 @@ Compiling HIP kernels for specific XNACK modes
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Although XNACK is a capability of the MI250X GPU, it does require that kernels be able to recover from page faults. Both the ROCm and CCE HIP compilers will default to generating code that runs correctly with both XNACK enabled and disabled. Some applications may benefit from using the following compilation options to target specific XNACK modes.
 
-| ``hipcc --amdgpu-target=gfx90a`` or ``CC --offload-arch=gfx90a -x hip``
+| ``hipcc --offload-arch=gfx90a`` or ``CC --offload-arch=gfx90a -x hip``
 |   Kernels are compiled to a single "xnack any" binary, which will run correctly with both XNACK enabled and XNACK disabled.
 
-| ``hipcc --amdgpu-target=gfx90a:xnack+`` or ``CC --offload-arch=gfx90a:xnack+ -x hip``
+| ``hipcc --offload-arch=gfx90a:xnack+`` or ``CC --offload-arch=gfx90a:xnack+ -x hip``
 |   Kernels are compiled in "xnack plus" mode and will *only* be able to run on GPUs with ``HSA_XNACK=1`` to enable XNACK. Performance may be better than "xnack any", but attempts to run with XNACK disabled will fail.
 
-| ``hipcc --amdgpu-target=gfx90a:xnack-`` or ``CC --offload-arch=gfx90a:xnack- -x hip``
+| ``hipcc --offload-arch=gfx90a:xnack-`` or ``CC --offload-arch=gfx90a:xnack- -x hip``
 |   Kernels are compiled in "xnack minus" mode and will *only* be able to run on GPUs with ``HSA_XNACK=0`` and XNACK disabled. Performance may be better than "xnack any", but attempts to run with XNACK enabled will fail.
 
-| ``hipcc --amdgpu-target=gfx90a:xnack- --amdgpu-target=gfx90a:xnack+ -x hip`` or ``CC --offload-arch=gfx90a:xnack- --offload-arch=gfx90a:xnack+ -x hip``
+| ``hipcc --offload-arch=gfx90a:xnack- --offload-arch=gfx90a:xnack+ -x hip`` or ``CC --offload-arch=gfx90a:xnack- --offload-arch=gfx90a:xnack+ -x hip``
 |   Two versions of each kernel will be generated, one that runs with XNACK disabled and one that runs if XNACK is enabled. This is different from "xnack any" in that two versions of each kernel are compiled and HIP picks the appropriate one at runtime, rather than there being a single version compatible with both. A "fat binary" compiled in this way will have the same performance of "xnack+" with ``HSA_XNACK=1`` and as "xnack-" with ``HSA_XNACK=0``, but the final executable will be larger since it contains two copies of every kernel.
 
 If the HIP runtime cannot find a kernel image that matches the XNACK mode of the device, it will fail with ``hipErrorNoBinaryForGpu``.
@@ -3411,7 +3473,7 @@ If the HIP runtime cannot find a kernel image that matches the XNACK mode of the
     The AMD tool `roc-obj-ls` will let you see what code objects are in a binary.
 
     .. code::
-        $ hipcc --amdgpu-target=gfx90a:xnack+ square.hipref.cpp -o xnack_plus.exe
+        $ hipcc --offload-arch=gfx90a:xnack+ square.hipref.cpp -o xnack_plus.exe
         $ roc-obj-ls -v xnack_plus.exe
         Bundle# Entry ID:                                                              URI:
         1       host-x86_64-unknown-linux                                           file://xnack_plus.exe#offset=8192&size=0
@@ -3420,7 +3482,7 @@ If the HIP runtime cannot find a kernel image that matches the XNACK mode of the
     If no XNACK flag is specificed at compilation the default is "xnack any", and objects in `roc-obj-ls` with not have an XNACK mode specified.
 
     .. code::
-        $ hipcc --amdgpu-target=gfx90a square.hipref.cpp -o xnack_any.exe
+        $ hipcc --offload-arch=gfx90a square.hipref.cpp -o xnack_any.exe
         $ roc-obj-ls -v xnack_any.exe
         Bundle# Entry ID:                                                              URI:
         1       host-x86_64-unknown-linux                                           file://xnack_any.exe#offset=8192&size=0
@@ -3553,6 +3615,21 @@ If it is necessary to have bit-wise reproducible results from these libraries, i
 System Updates 
 ============== 
 
+2024-03-19
+----------
+On Tuesday, March 19, 2024, Frontier's system software was upgraded to Slingshot 2.1.1 and Slingshot Host Software 2.1.2. If you encounter any issues or have questions, please contact help@olcf.ornl.gov.
+
+2024-01-23
+----------
+On Tuesday, January 23, 2024, Frontier's system software was upgraded. The following changes took place:
+
+-  ROCm 6.0.0 is now available via the ``rocm/6.0.0`` modulefile.
+-  HPE/Cray Programming Environment (PE) 23.12 is now available via the ``cpe/23.12`` modulefile.
+-  ROCm 5.3.0 and HPE/Cray PE 22.12 remain as default.
+-  The system was upgraded to AMD GPU 6.3.6 device driver (ROCm 6.0.0 release). 
+
+Please note that target default versions will be updated to PE 23.12 and ROCm 5.7.1 in the near future. Users are encouraged to try both and report any issues to help@olcf.ornl.gov.
+
 2023-12-05
 ----------
 On Tuesday, December 5, 2023, Frontier's system software was upgraded. The following changes took place:
@@ -3573,7 +3650,7 @@ On Tuesday, September 19, 2023, Frontier's system software was upgraded. The fol
 
 -  The system was upgraded to Slingshot Host Software 2.1.0. 
 -  ROCm 5.6.0 and 5.7.0 are now available via the ``rocm/5.6.0`` and ``rocm/5.7.0`` modulefiles, respectively.
--  HPE/Cray Programming Environments (PE) 23.09 is now available via the ``cpe/23.09`` modulefile.
+-  HPE/Cray Programming Environment (PE) 23.09 is now available via the ``cpe/23.09`` modulefile.
 -  ROCm 5.3.0 and HPE/Cray PE 22.12 remain as default.
 
 2023-07-18

@@ -154,9 +154,11 @@ handles setting up your access to each one once your Quantum User Application
 is approved. You will receive individual email invitations from Quantinuum and
 Rigetti with further instructions, whereas for IBM you can proceed directly to
 their website to create an account. More details for gaining access to each
-vendor are listed below. For details on how to use a vendor's system once
-access is gained, see our :doc:`Quantum Systems Guides </quantum/quantum_systems/index>`
-instead.
+vendor are listed below.
+
+For details on how to use a vendor's system once access is gained, see our :doc:`Quantum Systems Guides </quantum/quantum_systems/index>` instead.
+
+Example Python scripts for each QCUP vendor are located at our new :doc:`/quantum/hello_qcup` page.
 
 IBM Quantum Computing
 ---------------------

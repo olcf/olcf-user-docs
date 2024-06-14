@@ -82,10 +82,27 @@ For more information on connecting to OLCF resources, see :ref:`connecting-to-ol
 File systems
 ------------
 
-The OLCF's center-wide :ref:`data-orion-lustre-hpe-clusterstor-filesystem` name Orion
-is available on Andes for computational work.  An NFS-based file system provides
+The OLCF's center-wide :ref:`data-orion-lustre-hpe-clusterstor-filesystem` and Summit's 
+Alpine2 are available on Andes for computational work.  An NFS-based file system provides
 :ref:`data-user-home-directories-nfs` and :ref:`data-project-home-directories-nfs`.
 Additionally, the OLCF's :ref:`data-hpss` provides archival spaces.
+
+LFS setstripe wrapper
+---------------------
+
+The OLCF provides a wrapper for the ``lfs setstripe`` command that simplifies the process of striping files. The wrapper will enforce that certain settings are used to ensure that striping is done correctly. This will help to ensure good performance for users as well as prevent filesystem issues that could arise from incorrect striping practices. The wrapper is accessible via the ``lfs-wrapper`` module and will soon be added to the default environment on Frontier. 
+
+Orion is different than other Lustre filesystems that you may have used previously. To make effective use of Orion and to help ensure that the filesystem performs well for all users, it is important that you do the following:
+
+* Use the `capacity` OST pool tier (e.g. ``lfs setstripe -p capacity``)
+* Stripe across no more than 450 OSTs (e.g. ``lfs setstripe -c`` <= 450)
+
+When the module is active in your environment, the wrapper will enforce the above settings. The wrapper will also do the following:
+
+* If a user provides a stripe count of -1 (e.g. ``lfs setstripe -c -1``) the wrapper will set the stripe count to the maximum allowed by the filesystem (currently 450)
+* If a user provides a stripe count of 0 (e.g. ``lfs setstripe -c 0``) the wrapper will use the OLCF default striping command which has been optimized by the OLCF filesystem managers: ``lfs setstripe -E 256K -L mdt -E 8M -c 1 -S 1M -p performance -z 64M -E 128G -c 1 -S 1M -z 16G -p capacity -E -1 -z 256G -c 8 -S 1M -p capacity``
+
+Please contact the OLCF User Assistance Center if you have any questions about using the wrapper or if you encounter any issues.
 
 Shell and programming environments
 ==================================
@@ -625,53 +642,56 @@ Common Batch Options to Slurm
 
 The following table summarizes frequently-used options to Slurm:
 
-+------------------+-----------------------------------+-----------------------------------------------------------+
-| Option           | Use                               | Description                                               |
-+==================+===================================+===========================================================+
-| ``-A``           | ``#SBATCH -A <account>``          | Causes the job time to be charged to ``<account>``.       |
-|                  |                                   | The account string, e.g. ``pjt000`` is typically composed |
-|                  |                                   | of three letters followed by three digits and optionally  |
-|                  |                                   | followed by a subproject identifier. The utility          |
-|                  |                                   | ``showproj`` can be used to list your valid assigned      |
-|                  |                                   | project ID(s). This option is required by all jobs.       |
-+------------------+-----------------------------------+-----------------------------------------------------------+
-| ``-N``           | ``#SBATCH -N <value>``            | Number of compute nodes to allocate.                      |
-|                  |                                   | Jobs cannot request partial nodes.                        |
-+------------------+-----------------------------------+-----------------------------------------------------------+
-| ``-t``           | ``#SBATCH -t <time>``             | Maximum wall-clock time. ``<time>`` is in the             |
-|                  |                                   | format HH:MM:SS.                                          |
-+------------------+-----------------------------------+-----------------------------------------------------------+
-| ``-p``           | ``#SBATCH -p <partition_name>``   | Allocates resources on specified partition.               |
-+------------------+-----------------------------------+-----------------------------------------------------------+
-| ``-o``           | ``#SBATCH -o <filename>``         | Writes standard output to ``<name>`` instead of           |
-|                  |                                   | ``<job_script>.o$SLURM_JOB_UID``. ``$SLURM_JOB_UID``      |
-|                  |                                   | is an environment variable created by Slurm that          |
-|                  |                                   | contains the batch job identifier.                        |
-+------------------+-----------------------------------+-----------------------------------------------------------+
-| ``-e``           | ``#SBATCH -e <filename>``         | Writes standard error to ``<name>`` instead               |
-|                  |                                   | of ``<job_script>.e$SLURM_JOB_UID``.                      |
-+------------------+-----------------------------------+-----------------------------------------------------------+
-| ``--mail-type``  | ``#SBATCH --mail-type=FAIL``      | Sends email to the submitter when the job fails.          |
-+------------------+-----------------------------------+-----------------------------------------------------------+
-|                  | ``#SBATCH --mail-type=BEGIN``     | Sends email to the submitter when the job begins.         |
-+------------------+-----------------------------------+-----------------------------------------------------------+
-|                  | ``#SBATCH --mail-type=END``       | Sends email to the submitter when the job ends.           |
-+------------------+-----------------------------------+-----------------------------------------------------------+
-| ``--mail-user``  | ``#SBATCH --mail-user=<address>`` | Specifies email address to use for                        |
-|                  |                                   | ``--mail-type`` options.                                  |
-+------------------+-----------------------------------+-----------------------------------------------------------+
-| ``-J``           | ``#SBATCH -J <name>``             | Sets the job name to ``<name>`` instead of the            |
-|                  |                                   | name of the job script.                                   |
-+------------------+-----------------------------------+-----------------------------------------------------------+
-|``--get-user-env``| ``#SBATCH --get-user-env``        | Exports all environment variables from the                |
-|                  |                                   | submitting shell into the batch job shell.                |
-|                  |                                   | Since the login nodes differ from the service             |
-|                  |                                   | nodes, using the ``–get-user-env`` option is              |
-|                  |                                   | **not recommended**. Users should create the              |
-|                  |                                   | needed environment within the batch job.                  |
-+------------------+-----------------------------------+-----------------------------------------------------------+
-| ``--mem=0``      | ``#SBATCH --mem=0``               | Declare to use all the available memory of the node       |
-+------------------+-----------------------------------+-----------------------------------------------------------+
+.. table::
+    :widths: 15 25 60
+
+    +------------------+-----------------------------------+-----------------------------------------------------------+
+    | Option           | Use                               | Description                                               |
+    +==================+===================================+===========================================================+
+    | ``-A``           | ``#SBATCH -A <account>``          | Causes the job time to be charged to ``<account>``.       |
+    |                  |                                   | The account string, e.g. ``pjt000`` is typically composed |
+    |                  |                                   | of three letters followed by three digits and optionally  |
+    |                  |                                   | followed by a subproject identifier. The utility          |
+    |                  |                                   | ``showproj`` can be used to list your valid assigned      |
+    |                  |                                   | project ID(s). This option is required by all jobs.       |
+    +------------------+-----------------------------------+-----------------------------------------------------------+
+    | ``-N``           | ``#SBATCH -N <value>``            | Number of compute nodes to allocate.                      |
+    |                  |                                   | Jobs cannot request partial nodes.                        |
+    +------------------+-----------------------------------+-----------------------------------------------------------+
+    | ``-t``           | ``#SBATCH -t <time>``             | Maximum wall-clock time. ``<time>`` is in the             |
+    |                  |                                   | format HH:MM:SS.                                          |
+    +------------------+-----------------------------------+-----------------------------------------------------------+
+    | ``-p``           | ``#SBATCH -p <partition_name>``   | Allocates resources on specified partition.               |
+    +------------------+-----------------------------------+-----------------------------------------------------------+
+    | ``-o``           | ``#SBATCH -o <filename>``         | Writes standard output to ``<name>`` instead of           |
+    |                  |                                   | ``<job_script>.o$SLURM_JOB_UID``. ``$SLURM_JOB_UID``      |
+    |                  |                                   | is an environment variable created by Slurm that          |
+    |                  |                                   | contains the batch job identifier.                        |
+    +------------------+-----------------------------------+-----------------------------------------------------------+
+    | ``-e``           | ``#SBATCH -e <filename>``         | Writes standard error to ``<name>`` instead               |
+    |                  |                                   | of ``<job_script>.e$SLURM_JOB_UID``.                      |
+    +------------------+-----------------------------------+-----------------------------------------------------------+
+    | ``--mail-type``  | ``#SBATCH --mail-type=FAIL``      | Sends email to the submitter when the job fails.          |
+    +------------------+-----------------------------------+-----------------------------------------------------------+
+    |                  | ``#SBATCH --mail-type=BEGIN``     | Sends email to the submitter when the job begins.         |
+    +------------------+-----------------------------------+-----------------------------------------------------------+
+    |                  | ``#SBATCH --mail-type=END``       | Sends email to the submitter when the job ends.           |
+    +------------------+-----------------------------------+-----------------------------------------------------------+
+    | ``--mail-user``  | ``#SBATCH --mail-user=<address>`` | Specifies email address to use for                        |
+    |                  |                                   | ``--mail-type`` options.                                  |
+    +------------------+-----------------------------------+-----------------------------------------------------------+
+    | ``-J``           | ``#SBATCH -J <name>``             | Sets the job name to ``<name>`` instead of the            |
+    |                  |                                   | name of the job script.                                   |
+    +------------------+-----------------------------------+-----------------------------------------------------------+
+    |``--get-user-env``| ``#SBATCH --get-user-env``        | Exports all environment variables from the                |
+    |                  |                                   | submitting shell into the batch job shell.                |
+    |                  |                                   | Since the login nodes differ from the service             |
+    |                  |                                   | nodes, using the ``–get-user-env`` option is              |
+    |                  |                                   | **not recommended**. Users should create the              |
+    |                  |                                   | needed environment within the batch job.                  |
+    +------------------+-----------------------------------+-----------------------------------------------------------+
+    | ``--mem=0``      | ``#SBATCH --mem=0``               | Declare to use all the available memory of the node       |
+    +------------------+-----------------------------------+-----------------------------------------------------------+
 
 .. note::
     Because the login nodes differ from the service nodes, using
@@ -991,11 +1011,13 @@ GPU Partition Policy
 To access the 9 node GPU Partition batch job submissions should request ``-p
 gpu``
 
-+------------+-------------+-------------------------------------------+
-| Node Count |  Duration   |  Policy                                   |
-+============+=============+===========================================+
-| 1-2 Nodes  |  0 - 48 hrs |     max 1 job running **per user**        |
-+------------+-------------+-------------------------------------------+
++-----+---------------+------------+--------------------------------+
+| Bin | Node Count    | Duration   | Policy                         |    
++=====+===============+============+================================+
+| A   | 1 - 2 Nodes   | 0 - 48 hrs |                                |
++-----+---------------+------------+ max 1 job running **per user** |
+| B   | 3 - 8 Nodes   | 0 - 6 hrs  |                                |
++-----+---------------+------------+--------------------------------+
 
 .. note::
     The queue structure was designed based on user feedback and
@@ -1470,8 +1492,8 @@ vmd-vgl.sh (GPU rendering)
 Remote Visualization using Nice DCV (GPU nodes only)
 ----------------------------------------------------
 
-.. warning::
-   Nice DCV is currently undergoing maintenance. Instead, please use the VNC options detailed above.
+.. note::
+   Nice DCV is back online and working on Andes again. If you see issues email help@olcf.ornl.gov
 
 Step 1 (terminal 1)
 ^^^^^^^^^^^^^^^^^^^

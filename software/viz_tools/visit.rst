@@ -1,11 +1,8 @@
-
 *****
 VisIt
 *****
 
-.. note:: VisIt is now available on Frontier through the UMS022 module.
-
-.. note:: VisIt 3.3.3 is now available on Andes.
+.. note:: VisIt 3.4.1 is now available on Andes.
 
 Overview
 ========
@@ -30,8 +27,8 @@ OLCF resources. VisIt for your local computer can be obtained here:
 Recommended VisIt versions on our systems:
 
 * Summit: VisIt 3.1.4
-* Andes: VisIt 3.3.3
-* Frontier: VisIt 3.3.3
+* Andes: VisIt 3.3.3, 3.4.1
+* Frontier: VisIt 3.3.3 (via the UMS022 module)
 
 .. warning::
     Using a different version than what is listed above is not guaranteed to work properly.
@@ -60,155 +57,157 @@ remote host preference. Unfortunately, ORNL does not maintain that list
 often, so the ORNL entry may be outdated. Click the “None” option instead.
 Restart VisIt, and go to Options→Host Profiles. Select “New Host”
 
-.. tabbed:: Andes
+.. tab-set::
 
-    **For Andes:**
+  .. tab-item:: Andes
 
-    - **Host nickname**: ``Andes`` (this is arbitrary)
-    - **Remote hostname**: ``andes.olcf.ornl.gov`` (required)
-    - **Host name aliases**: ``andes-login#g`` (required)
-    - **Maximum Nodes**: Unchecked
-    - **Maximum processors**: Unchecked (arbitrary)
-    - **Path to VisIt Installation**: ``/sw/andes/visit`` (required)
-    - **Username**: Your OLCF Username (required)
-    - **Tunnel data connections through SSH**: Checked (required)
+      **For Andes:**
 
-    Under the “Launch Profiles” tab create a launch profile. Most of these values
-    are arbitrary
+      - **Host nickname**: ``Andes`` (this is arbitrary)
+      - **Remote hostname**: ``andes.olcf.ornl.gov`` (required)
+      - **Host name aliases**: ``andes-login#g`` (required)
+      - **Maximum Nodes**: Unchecked
+      - **Maximum processors**: Unchecked (arbitrary)
+      - **Path to VisIt Installation**: ``/sw/andes/visit`` (required)
+      - **Username**: Your OLCF Username (required)
+      - **Tunnel data connections through SSH**: Checked (required)
 
-    - **Profile Name**: ``batch`` (arbitrary)
-    - **Timeout**: 480 (arbitrary)
-    - **Number of threads per task**: 0 (arbitrary, but not tested
-      with OMP/pthread support)
-    - **Additional arguments**: blank (arbitrary)
+      Under the “Launch Profiles” tab create a launch profile. Most of these values
+      are arbitrary
 
-    Under the “Parallel” Tab:
+      - **Profile Name**: ``batch`` (arbitrary)
+      - **Timeout**: 480 (arbitrary)
+      - **Number of threads per task**: 0 (arbitrary, but not tested
+        with OMP/pthread support)
+      - **Additional arguments**: blank (arbitrary)
 
-    - **Launch parallel engine**: Checked (required)
-    - Launch Tab:
+      Under the “Parallel” Tab:
 
-        - **Parallel launch method**:
-          ``sbatch/srun`` (required)
-        - **Partition/Pool/Queue**: ``batch`` (required)
-        - **Number of processors**: 1 (arbitrary, but
-          high number may lead to OOM errors) (max for ``batch`` queue is 32)
-        - **Number of nodes**: 1 (arbitrary)
-        - **Bank/Account**: Your OLCF project to use (required)
-        - **Time Limit**: 1:00:00 (arbitrary, ``HH:MM:SS``)
-        - **Machine file**: Unchecked (required – Lets VisIt get
-          the nodelist from the scheduler)
-        - **Constraints**: Unchecked
-    - Advanced tab – All boxes unchecked
-    - GPU Acceleration
+      - **Launch parallel engine**: Checked (required)
+      - Launch Tab:
 
-        - **Use cluster’s graphics cards**: Unchecked (even if using the ``gpu`` partition)
+          - **Parallel launch method**:
+            ``sbatch/srun`` (required)
+          - **Partition/Pool/Queue**: ``batch`` (required)
+          - **Number of processors**: 1 (arbitrary, but
+            high number may lead to OOM errors) (max for ``batch`` queue is 32)
+          - **Number of nodes**: 1 (arbitrary)
+          - **Bank/Account**: Your OLCF project to use (required)
+          - **Time Limit**: 1:00:00 (arbitrary, ``HH:MM:SS``)
+          - **Machine file**: Unchecked (required – Lets VisIt get
+            the nodelist from the scheduler)
+          - **Constraints**: Unchecked
+      - Advanced tab – All boxes unchecked
+      - GPU Acceleration
 
-    Click “Apply” and make sure to save the settings (Options/Save Settings).
-    Exit and re-launch VisIt.
+          - **Use cluster’s graphics cards**: Unchecked (even if using the ``gpu`` partition)
 
-    .. note::
-        Users with large datasets may see a slight performance boost by
-        using the high-memory ``gpu`` partition or by increasing
-	the number of processors if memory is not an issue. See the
-        :ref:`visit-modify-host` section below for how to add a ``gpu`` partition
-        launch profile on Andes.
+      Click “Apply” and make sure to save the settings (Options/Save Settings).
+      Exit and re-launch VisIt.
 
-.. tabbed:: Frontier
+      .. note::
+          Users with large datasets may see a slight performance boost by
+          using the high-memory ``gpu`` partition or by increasing
+          the number of processors if memory is not an issue. See the
+          :ref:`visit-modify-host` section below for how to add a ``gpu`` partition
+          launch profile on Andes.
 
-    **For Frontier:**
+  .. tab-item:: Frontier
 
-    - **Host nickname**: ``Frontier`` (this is arbitrary)
-    - **Remote hostname**: ``frontier.olcf.ornl.gov`` (required)
-    - **Host name aliases**: ``login#`` (required)
-    - **Maximum Nodes**: Unchecked
-    - **Maximum processors**: Unchecked (arbitrary)
-    - **Path to VisIt Installation**: ``/sw/frontier/ums/ums022/linux-sles15-zen3/gcc-11.2.0/visit-3.3.3-zfoh2caq5tbshlvtujditymjizstvewe/`` (required)
-    - **Username**: Your OLCF Username (required)
-    - **Tunnel data connections through SSH**: Checked (required)
+      **For Frontier:**
 
-    Under the “Launch Profiles” tab create a launch profile. Most of these values
-    are arbitrary
+      - **Host nickname**: ``Frontier`` (this is arbitrary)
+      - **Remote hostname**: ``frontier.olcf.ornl.gov`` (required)
+      - **Host name aliases**: ``login#`` (required)
+      - **Maximum Nodes**: Unchecked
+      - **Maximum processors**: Unchecked (arbitrary)
+      - **Path to VisIt Installation**: ``/sw/frontier/ums/ums022/linux-sles15-zen3/gcc-11.2.0/visit-3.3.3-zfoh2caq5tbshlvtujditymjizstvewe/`` (required)
+      - **Username**: Your OLCF Username (required)
+      - **Tunnel data connections through SSH**: Checked (required)
 
-    - **Profile Name**: ``batch`` (arbitrary)
-    - **Timeout**: 480 (arbitrary)
-    - **Number of threads per task**: 0 (arbitrary, but not tested
-      with OMP/pthread support)
-    - **Additional arguments**: blank (arbitrary)
+      Under the “Launch Profiles” tab create a launch profile. Most of these values
+      are arbitrary
 
-    Under the “Parallel” Tab:
+      - **Profile Name**: ``batch`` (arbitrary)
+      - **Timeout**: 480 (arbitrary)
+      - **Number of threads per task**: 0 (arbitrary, but not tested
+        with OMP/pthread support)
+      - **Additional arguments**: blank (arbitrary)
 
-    - **Launch parallel engine**: Checked (required)
-    - Launch Tab:
+      Under the “Parallel” Tab:
 
-        - **Parallel launch method**:
-          ``sbatch/srun`` (required)
-        - **Partition/Pool/Queue**: ``batch`` (required)
-        - **Number of processors**: 1 (arbitrary, but
-          high number may lead to OOM errors) (max is 56)
-        - **Number of nodes**: 1 (arbitrary)
-        - **Bank/Account**: Your OLCF project to use (required)
-        - **Time Limit**: 01:00:00 (arbitrary, ``HH:MM:SS``)
-        - **Machine file**: Unchecked (required – Lets VisIt get
-          the nodelist from the scheduler)
-        - **Constraints**: Unchecked
-    - Advanced tab – All boxes unchecked
-    - GPU Acceleration
+      - **Launch parallel engine**: Checked (required)
+      - Launch Tab:
 
-        - **Use cluster’s graphics cards**: Unchecked
+          - **Parallel launch method**:
+            ``sbatch/srun`` (required)
+          - **Partition/Pool/Queue**: ``batch`` (required)
+          - **Number of processors**: 1 (arbitrary, but
+            high number may lead to OOM errors) (max is 56)
+          - **Number of nodes**: 1 (arbitrary)
+          - **Bank/Account**: Your OLCF project to use (required)
+          - **Time Limit**: 01:00:00 (arbitrary, ``HH:MM:SS``)
+          - **Machine file**: Unchecked (required – Lets VisIt get
+            the nodelist from the scheduler)
+          - **Constraints**: Unchecked
+      - Advanced tab – All boxes unchecked
+      - GPU Acceleration
 
-    Click “Apply” and make sure to save the settings (Options/Save Settings).
-    Exit and re-launch VisIt.
+          - **Use cluster’s graphics cards**: Unchecked
 
-    .. note::
-        If you want to use the ``debug`` QOS on Frontier, you can add ``-q debug``
-        to the "Launcher arguments" section under the "Advanced" tab (make sure
-        to also check the "Launcher arguments" box).
+      Click “Apply” and make sure to save the settings (Options/Save Settings).
+      Exit and re-launch VisIt.
 
-.. tabbed:: Summit
+      .. note::
+          If you want to use the ``debug`` QOS on Frontier, you can add ``-q debug``
+          to the "Launcher arguments" section under the "Advanced" tab (make sure
+          to also check the "Launcher arguments" box).
 
-    **For Summit:**
+  .. tab-item:: Summit
 
-    - **Host nickname**: ``Summit`` (this is arbitrary)
-    - **Remote hostname**: ``summit.olcf.ornl.gov`` (required)
-    - **Host name aliases**: ``login#`` (required)
-    - **Maximum Nodes**: Unchecked
-    - **Maximum processors**: Unchecked (arbitrary)
-    - **Path to VisIt Installation**: ``/sw/summit/visit`` (required)
-    - **Username**: Your OLCF Username (required)
-    - **Tunnel data connections through SSH**: Checked (required)
+      **For Summit:**
 
-    Under the “Launch Profiles” tab create a launch profile. Most of these values
-    are arbitrary
+      - **Host nickname**: ``Summit`` (this is arbitrary)
+      - **Remote hostname**: ``summit.olcf.ornl.gov`` (required)
+      - **Host name aliases**: ``login#`` (required)
+      - **Maximum Nodes**: Unchecked
+      - **Maximum processors**: Unchecked (arbitrary)
+      - **Path to VisIt Installation**: ``/sw/summit/visit`` (required)
+      - **Username**: Your OLCF Username (required)
+      - **Tunnel data connections through SSH**: Checked (required)
 
-    - **Profile Name**: ``batch`` (arbitrary)
-    - **Timeout**: 480 (arbitrary)
-    - **Number of threads per task**: 0 (arbitrary, but not tested
-      with OMP/pthread support)
-    - **Additional arguments**: blank (arbitrary)
+      Under the “Launch Profiles” tab create a launch profile. Most of these values
+      are arbitrary
 
-    Under the “Parallel” Tab:
+      - **Profile Name**: ``batch`` (arbitrary)
+      - **Timeout**: 480 (arbitrary)
+      - **Number of threads per task**: 0 (arbitrary, but not tested
+        with OMP/pthread support)
+      - **Additional arguments**: blank (arbitrary)
 
-    - **Launch parallel engine**: Checked (required)
-    - Launch Tab:
+      Under the “Parallel” Tab:
 
-        - **Parallel launch method**:
-          ``bsub`` (required)
-        - **Partition/Pool/Queue**: ``batch`` (required)
-        - **Number of processors**: 1 (arbitrary, but 
-          high number may lead to OOM errors) (max is 42)
-        - **Number of nodes**: 1 (arbitrary)
-        - **Bank/Account**: Your OLCF project to use (required)
-        - **Time Limit**: 01:00 (arbitrary, ``HH:MM``)
-        - **Machine file**: Unchecked (required – Lets VisIt get 
-          the nodelist from the scheduler)
-        - **Constraints**: Unchecked
-    - Advanced tab – All boxes unchecked
-    - GPU Acceleration
+      - **Launch parallel engine**: Checked (required)
+      - Launch Tab:
 
-        - **Use cluster’s graphics cards**: Unchecked
+          - **Parallel launch method**:
+            ``bsub`` (required)
+          - **Partition/Pool/Queue**: ``batch`` (required)
+          - **Number of processors**: 1 (arbitrary, but 
+            high number may lead to OOM errors) (max is 42)
+          - **Number of nodes**: 1 (arbitrary)
+          - **Bank/Account**: Your OLCF project to use (required)
+          - **Time Limit**: 01:00 (arbitrary, ``HH:MM``)
+          - **Machine file**: Unchecked (required – Lets VisIt get 
+            the nodelist from the scheduler)
+          - **Constraints**: Unchecked
+      - Advanced tab – All boxes unchecked
+      - GPU Acceleration
 
-    Click “Apply” and make sure to save the settings (Options/Save Settings).
-    Exit and re-launch VisIt.
+          - **Use cluster’s graphics cards**: Unchecked
+
+      Click “Apply” and make sure to save the settings (Options/Save Settings).
+      Exit and re-launch VisIt.
 
 .. _visit-modify-host:
 
@@ -313,7 +312,8 @@ OLCF systems is provided below.
 **For Summit (module):**
 
 .. code::
-   
+
+   $ module load DefApps-2023
    $ module load visit
    $ visit -nowin -cli -v 3.1.4 -l bsub/jsrun -p batch -b XXXYYY -t 00:05 -np 42 -nn 1 -s visit_example.py
 
@@ -332,44 +332,46 @@ job will submit to.
 
 **For Andes/Frontier (Slurm Script):**
 
-.. tabbed:: Andes
+.. tab-set::
 
-    .. code-block:: bash
-       :linenos:
+  .. tab-item:: Andes
 
-       #!/bin/bash
-       #SBATCH -A XXXYYY
-       #SBATCH -J visit_test
-       #SBATCH -N 1
-       #SBATCH -p gpu
-       #SBATCH -t 0:05:00
+      .. code-block:: bash
+        :linenos:
 
-       cd $SLURM_SUBMIT_DIR
-       date
+        #!/bin/bash
+        #SBATCH -A XXXYYY
+        #SBATCH -J visit_test
+        #SBATCH -N 1
+        #SBATCH -p gpu
+        #SBATCH -t 0:05:00
 
-       module load visit
+        cd $SLURM_SUBMIT_DIR
+        date
 
-       visit -nowin -cli -v 3.3.3 -l srun -np 28 -nn 1 -s visit_example.py
+        module load visit
 
-.. tabbed:: Frontier
+        visit -nowin -cli -v 3.4.1 -l srun -np 28 -nn 1 -s visit_example.py
 
-    .. code-block:: bash
-       :linenos:
+  .. tab-item:: Frontier
 
-       #!/bin/bash
-       #SBATCH -A XXXYYY
-       #SBATCH -J visit_test
-       #SBATCH -N 1
-       #SBATCH -p batch
-       #SBATCH -t 0:05:00
+      .. code-block:: bash
+        :linenos:
 
-       cd $SLURM_SUBMIT_DIR
-       date
+        #!/bin/bash
+        #SBATCH -A XXXYYY
+        #SBATCH -J visit_test
+        #SBATCH -N 1
+        #SBATCH -p batch
+        #SBATCH -t 0:05:00
 
-       module load ums
-       module load ums022
+        cd $SLURM_SUBMIT_DIR
+        date
 
-       visit -nowin -cli -v 3.3.3 -l srun -np 28 -nn 1 -s visit_example.py
+        module load ums
+        module load ums022
+
+        visit -nowin -cli -v 3.3.3 -l srun -np 28 -nn 1 -s visit_example.py
 
 Following one of the methods above will submit a batch job for five minutes to
 either Summit, Andes, or Frontier.  Once the batch job makes its way through

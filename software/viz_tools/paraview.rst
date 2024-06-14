@@ -1,4 +1,3 @@
-
 ********
 ParaView
 ********
@@ -62,6 +61,7 @@ connected to. For example, to see these modules on Summit:
 
 .. code-block:: bash
 
+    [user@login4.summit ~]$ module load DefApps-2023
     [user@login4.summit ~]$ module -t avail paraview
 
     /sw/summit/modulefiles/core:
@@ -77,6 +77,7 @@ connected to. For example, to see these modules on Summit:
 .. warning::
     It is highly recommended to only use the modules located in
     ``/sw/andes/modulefiles/core`` or ``/sw/summit/modulefiles/core``.
+    On Summit, you **must** also load ``DefApps-2023`` first.
 
 .. note::
     The EGL mode seems to work better with larger datasets and is generally
@@ -393,54 +394,57 @@ PvBatch (one of the Python interfaces available in ParaView). PvBatch accepts
 commands from Python scripts and will run in parallel using MPI. Example
 batch scripts, along with a working Python example, are provided below.
 
-.. tabbed:: Andes
+.. tab-set::
 
-    .. code-block:: bash
-       :linenos:
+  .. tab-item:: Andes
 
-       #!/bin/bash
-       #SBATCH -A XXXYYY
-       #SBATCH -J para_test
-       #SBATCH -N 1
-       #SBATCH -p batch
-       #SBATCH -t 0:05:00
+      .. code-block:: bash
+        :linenos:
 
-       cd $SLURM_SUBMIT_DIR
-       date
+        #!/bin/bash
+        #SBATCH -A XXXYYY
+        #SBATCH -J para_test
+        #SBATCH -N 1
+        #SBATCH -p batch
+        #SBATCH -t 0:05:00
 
-       module load paraview/5.11.0-osmesa
+        cd $SLURM_SUBMIT_DIR
+        date
 
-       srun -n 28 pvbatch para_example.py
+        module load paraview/5.11.0-osmesa
 
-.. tabbed:: Summit
+        srun -n 28 pvbatch para_example.py
 
-    .. code-block:: bash
-       :linenos:
+  .. tab-item:: Summit
 
-       #!/bin/bash
-       #BSUB -P XXXYYY
-       #BSUB -W 00:05
-       #BSUB -nnodes 1
-       #BSUB -J para_test
-       #BSUB -o para_test.%J.out
-       #BSUB -e para_test.%J.err
+      .. code-block:: bash
+        :linenos:
 
-       cd $LSB_OUTDIR
-       date
+        #!/bin/bash
+        #BSUB -P XXXYYY
+        #BSUB -W 00:05
+        #BSUB -nnodes 1
+        #BSUB -J para_test
+        #BSUB -o para_test.%J.out
+        #BSUB -e para_test.%J.err
 
-       module load paraview/5.11.0-osmesa
+        cd $LSB_OUTDIR
+        date
 
-       # Set up flags for jsrun
-       export NNODES=$(($(cat $LSB_DJOB_HOSTFILE | uniq | wc -l)-1))
-       export NCORES_PER_NODE=28
-       export NGPU_PER_NODE=0
-       export NRS_PER_NODE=1
-       export NMPI_PER_RS=28
-       export NCORES_PER_RS=$(($NCORES_PER_NODE/$NRS_PER_NODE))
-       export NGPU_PER_RS=$(($NGPU_PER_NODE/$NRS_PER_NODE))
-       export NRS=$(($NNODES*$NRS_PER_NODE))
+        module load DefApps-2023
+        module load paraview/5.11.0-osmesa
 
-       jsrun -n ${NRS} -r ${NRS_PER_NODE} -a ${NMPI_PER_RS} -g ${NGPU_PER_RS} -c ${NCORES_PER_RS} pvbatch para_example.py
+        # Set up flags for jsrun
+        export NNODES=$(($(cat $LSB_DJOB_HOSTFILE | uniq | wc -l)-1))
+        export NCORES_PER_NODE=28
+        export NGPU_PER_NODE=0
+        export NRS_PER_NODE=1
+        export NMPI_PER_RS=28
+        export NCORES_PER_RS=$(($NCORES_PER_NODE/$NRS_PER_NODE))
+        export NGPU_PER_RS=$(($NGPU_PER_NODE/$NRS_PER_NODE))
+        export NRS=$(($NNODES*$NRS_PER_NODE))
+
+        jsrun -n ${NRS} -r ${NRS_PER_NODE} -a ${NMPI_PER_RS} -g ${NGPU_PER_RS} -c ${NCORES_PER_RS} pvbatch para_example.py
 
 .. warning::
     If you plan on using the EGL version of the ParaView module (e.g.,

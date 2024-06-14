@@ -72,9 +72,9 @@ local machine:
 
 .. code-block:: bash
 
-   $ oc login https://api.marble.ccs.ornl.gov
+   $ oc login https://api.marble.ccs.ornl.gov --username=loginName
 
-You should see output confirming your login. It will also name your available
+where the loginName is your username for the cluster. You should see output confirming your login. It will also name your available
 project spaces on Marble.
 
 To list your available project spaces run this command:

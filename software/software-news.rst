@@ -10,6 +10,86 @@ most recent changes are listed first.
 
 .. raw:: html
 
+   <p style="font-size:20px"><b>Summit: System Software Upgrade (January 24, 2024)</b></p>
+
+The Summit system was upgraded to a new version of the system software stack.  
+
+.. warning:: **Codes should be rebuilt** prior to running following the upgrade due to the OS and software changes.
+
+As a result of the upgrade, the following new packages are now default:
+
+.. csv-table::
+    :header: "Package", "Previous Default", "New Default"
+
+    "CUDA Toolkit", "11.0.3", "11.7.1"
+    "IBM Spectrum MPI", "10.4.0.3-20210112", "10.4.0.6-20230210"
+    "IBM XL", "16.1.1-10", "16.1.1-13"
+    "GCC", "9.1.0", "12.1.0"
+
+Please note the previous software stack remains available and can be accessed by loading the ``DefApps-2023`` modulefile. For convenience, a ``DefApps-2024`` is also provide to restore the most recent version of packages. From the ``DefApps-2023`` environment, users can load the ``DefApps-2024`` modulefile or start a fresh login to reset the environment to the latest versions.
+
+In addition, OpenCE 1.10 is now available for Python 3.9 and 3.11. OpenCE 1.10 is available by loading the ``open-ce/1.10.0-py39-ibm`` or ``open-ce/1.10.0-py311-ibm`` modulefiles. Please note that each environment includes a differesent set of Python packages as outlined below.
+
+.. csv-table::
+    :header: "Python 3.9 Package", "Version"
+
+    "pytorch", "2.0.1"
+    "pytorch-lightning", "2.0.1"
+    "pytorch-lightning-bolts", "0.6.0"
+    "torchdata", "0.4.1"
+    "torchmetrics", "0.11.4"
+    "torchvision", "0.15.2"
+    "torchvision-base", "0.15.2"
+    "sentencepiece", "0.1.97"
+    "horovod", "0.28.0"
+
+.. csv-table::
+    :header: "Python 3.11 Package", "Version"
+
+    "tensorboard", "2.13.0"
+    "tensorflow", "2.13.0"
+    "tensorflow-datasets", "4.9.2"
+    "tensorflow-estimator", "2.13.0"
+    "tensorflow-hub", "0.14.0"
+    "tensorflow-metadata", "1.13.1"
+    "tensorflow-model-optimization", "0.7.5"
+    "tensorflow-probability", "0.20.0"
+    "tensorflow-text", "2.13.0"
+    "pytorch", "2.0.1"
+    "pytorch-base", "2.0.1"
+    "pytorch-lightning", "2.0.9"
+    "pytorch-lightning-bolts", "0.7.0"
+    "torchtext", "0.15.2"
+    "torchvision", "0.15.2"
+    "onnx", "1.14.0"
+    "keras", "2.13.1"
+    "xgboost", "1.7.6"
+    "tokenizers", "0.15.0"
+    "transformers", "4.37.0"
+    "sentencepiece", "0.1.97"
+    "horovod", "0.28.0"
+    "dali", "1.28.0"
+    "opencv", "4.8.0"
+
+Please contact help@olcf.ornl.gov if you encounter any issues or have questions.
+
+----
+
+.. raw:: html
+
+   <p style="font-size:20px"><b>Frontier and Crusher: System Software Upgrade (January 23, 2024)</b></p>
+
+The Crusher TDS and Frontier systems were upgraded to a new version of the system software stack. This stack introduces ROCm 6.0.0 and HPE/Cray Programming Environment 23.12. For more information, please see:
+
+-  `Crusher System Updates <https://docs.olcf.ornl.gov/systems/crusher_quick_start_guide.html#system-updates>`_.
+-  `Frontier System Updates <https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#system-updates>`_.
+
+Please contact help@olcf.ornl.gov with any issues or questions.
+
+----
+
+.. raw:: html
+
    <p style="font-size:20px"><b>Frontier and Crusher: System Software Upgrade (July 18, 2023)</b></p>
 
 The Crusher TDS and Frontier systems were upgraded to a new version of the system software stack. This stack introduces ROCm 5.5.1 and HPE/Cray Programming Environment 23.05. For more information, please see:

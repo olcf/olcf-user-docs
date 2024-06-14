@@ -38,11 +38,17 @@ Each project has a Project Home area on NFS, multiple Work areas on Spectrum Sca
 +--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
 | Project Home                   | ``/ccs/proj/[projid]``                      | M1, M2  | NFS                    | 770         |  50 GB | Yes     | No      | 90 days    | Summit: Read-only, Frontier: Read/Write |
 +--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
-| Orion Member Work              | ``/lustre/orion/[projid]/scratch/[userid]`` | M1,M2   | Lustre HPE ClusterStor | 700         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
+| Orion Member Work              | ``/lustre/orion/[projid]/scratch/[userid]`` | M1, M2  | Lustre HPE ClusterStor | 700         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
 +--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
-| Orion Project Work             | ``/lustre/orion/[projid]/proj-shared``      | M1,M2   | Lustre HPE ClusterStor | 770         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
+| Orion Project Work             | ``/lustre/orion/[projid]/proj-shared``      | M1, M2  | Lustre HPE ClusterStor | 770         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
 +--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
-| Orion World Work               | ``/lustre/orion/[projid]/world-shared``     | M1,M2   | Lustre HPE ClusterStor | 775         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
+| Orion World Work               | ``/lustre/orion/[projid]/world-shared``     | M1      | Lustre HPE ClusterStor | 775         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
+| Alpine2 Member Work            | ``/gpfs/alpine2/[projid]/scratch/[userid]`` | M1, M2  | Spectrum Scale         | 700 [#f3]_  |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
+| Alpine2 Project Work           | ``/gpfs/alpine2/[projid]/proj-shared``      | M1, M2  | Spectrum Scale         | 770         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
+| Alpine2 World Work             | ``/gpfs/alpine2/[projid]/world-shared``     | M1      | Spectrum Scale         | 775         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
 +--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
 | Member Archive                 | ``/hpss/prod/[projid]/users/$USER``         | M1      | HPSS                   | 700         | 100 TB | No      | No      | 90 days    | No                                      |
 +--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
@@ -290,7 +296,7 @@ Moderate projects without export control restrictions are also allocated project
 Three Project Archive Areas Facilitae Collaboration on Archival Data
 --------------------------------------------------------------------
 
-To facilitate collaboration among researchers, the OLCF provides (3) distinct types of project-centric archival storage areas: *Member Archive* directories, *Project Archive* directories, and *World Archive* directories.  These directories should be used for storage of data not immediately needed in either the Project Home (NFS) areas or Project Work (Alpine) areas and to serve as a location to store backup copies of project-related files.
+To facilitate collaboration among researchers, the OLCF provides (3) distinct types of project-centric archival storage areas: *Member Archive* directories, *Project Archive* directories, and *World Archive* directories.  These directories should be used for storage of data not immediately needed in either the Project Home (NFS) areas or Project Work (Alpine2) areas and to serve as a location to store backup copies of project-related files.
 
 As with the three project work areas, the difference between these three areas lies in the accessibility of data to project members and to researchers outside of the project. Member Archive directories are accessible only by an individual project member by default, Project Archive directories are accessible by all project members, and World Archive directories are readable by any user on the system.
 
@@ -401,6 +407,46 @@ Striping will likely have little or no performance benefit for:
 * Multiple nodes perform I/O simultaneously to different files that are small (each < 100 MB)
 * I/O that uses one file per process
 
+=====================
+LFS setstripe wrapper
+=====================
+
+The OLCF provides a wrapper for the ``lfs setstripe`` command that simplifies the process of striping files. The wrapper will enforce that certain settings are used to ensure that striping is done correctly. This will help to ensure good performance for users as well as prevent filesystem issues that could arise from incorrect striping practices. The wrapper is accessible via the ``lfs-wrapper`` module and will soon be added to the default environment on Frontier. 
+
+Orion is different than other Lustre filesystems that you may have used previously. To make effective use of Orion and to help ensure that the filesystem performs well for all users, it is important that you do the following:
+
+* Use the `capacity` OST pool tier (e.g. ``lfs setstripe -p capacity``)
+* Stripe across no more than 450 OSTs (e.g. ``lfs setstripe -c`` <= 450)
+
+When the module is active in your environment, the wrapper will enforce the above settings. The wrapper will also do the following:
+
+* If a user provides a stripe count of -1 (e.g. ``lfs setstripe -c -1``) the wrapper will set the stripe count to the maximum allowed by the filesystem (currently 450)
+* If a user provides a stripe count of 0 (e.g. ``lfs setstripe -c 0``) the wrapper will use the OLCF default striping command which has been optimized by the OLCF filesystem managers: ``lfs setstripe -E 256K -L mdt -E 8M -c 1 -S 1M -p performance -z 64M -E 128G -c 1 -S 1M -z 16G -p capacity -E -1 -z 256G -c 8 -S 1M -p capacity``
+
+Please contact the OLCF User Assistance Center if you have any questions about using the wrapper or if you encounter any issues.
+
+========================
+Lustre File Locking Tips
+========================
+
+File locking is the process of restricting only one process or user to access a file or region of a file. It prevents race conditions when writing data from multiple processes. Lustre uses a distributed lock management (LDLM) system for consistency and access. Concurrent operations on files/directories flow through this LDLM system.  Locks are generally managed on a per-client level and there are limits to the number of concurrent locks each client can have on each storage target (MDT/OST). While locking is good and necessary, certain I/O patterns can become very slow if they generate a large amount of lock contention. 
+
+Here are some things to avoid to minimizing lock impact: 
+
+* Multiple clients opening the same byte range of a file for writing 
+* Multiple clients appending to the same file (subset of previous) 
+* Multiple clients concurrently creating numerous files or directories in the same directory
+
+If your code does any of these, you may want to adjust it to avoid or limit them and then test to see if that improves your write performance. 
+
+=================================
+Darshan-runtime and I/O Profiling
+=================================
+
+The darshan-runtime modulefile is part of DefApps and is loaded by default on Frontier. This module allows users to profile the I/O of their applications with minimal impact. The logs are available to users on the Orion file system in /lustre/orion/darshan/<system>/<yyyy>/<mm>/<dd>. 
+
+Unloading darshan-runtime is recommended for users profiling their applications with other profilers to prevent conflicts.
+
 =====
 Purge
 =====
@@ -410,33 +456,42 @@ To keep the Lustre file system exceptionally performant, files that have not bee
 
 .. _data-alpine-ibm-spectrum-scale-filesystem:
 
-.. ************************************
-.. Alpine IBM Spectrum Scale Filesystem
-.. ************************************
+*************************************
+Alpine2 IBM Spectrum Scale Filesystem
+*************************************
 
-.. Summit mounts a POSIX-based IBM Spectrum Scale parallel filesystem called Alpine. Alpine's maximum capacity is 250 PB. It is consisted of 77  IBM Elastic Storage Server (ESS) GL4 nodes running IBM Spectrum Scale 5.x which are called Network Shared Disk (NSD) servers. Each IBM ESS GL4 node, is a scalable storage unit (SSU), constituted by two dual-socket IBM POWER9 storage servers, and a 4X EDR InfiniBand network for up to 100Gbit/sec of networking bandwidth.  The maximum performance of the final production system will be about 2.5 TB/s for sequential I/O and 2.2 TB/s for random I/O under FPP mode, which means each process, writes its own file. Metada operations are improved with around to minimum 50,000 file access per sec and aggregated up to 2.6 million accesses of 32KB small files.  
+Summit mounts a POSIX-based IBM Spectrum Scale parallel filesystem called Alpine2. Alpine2's maximum capacity is 50 PB. It consists of 16 IBM Elastic Storage Server (ESS) 3500 nodes, running GPFS 5.1, which are called Network Shared Disk (NSD) servers. Each IBM ESS 3500 node, is a scalable storage unit (SSU), constituted by two single socket AMD x86_64 IBM storage servers, and a 4X EDR InfiniBand network for up to 100Gbit/sec of networking bandwidth.
+
+.. Alpine2's maximum capacity is 250 PB. It is consisted of 77  IBM Elastic Storage Server (ESS) GL4 nodes running IBM Spectrum Scale 5.x which are called Network Shared Disk (NSD) servers. Each IBM ESS GL4 node, is a scalable storage unit (SSU), constituted by two dual-socket IBM POWER9 storage servers, and a 4X EDR InfiniBand network for up to 100Gbit/sec of networking bandwidth.  The maximum performance of the final production system will be about 2.5 TB/s for sequential I/O and 2.2 TB/s for random I/O under FPP mode, which means each process, writes its own file. Metada operations are improved with around to minimum 50,000 file access per sec and aggregated up to 2.6 million accesses of 32KB small files.  
 
 
-.. .. figure:: /images/summit_nds_final.png
-..    :align: center
+.. figure:: /images/summit_nds_final.png
+   :align: center
 
-..    Figure 1. An example of the NDS servers on Summit
+   Figure 1. An example of the NDS servers on Summit
 
-.. ============================================
-.. Alpine Performance under non-ideal workloads
-.. ============================================
+=============================================
+Alpine2 Performance under non-ideal workloads
+=============================================
 
-.. The I/O performance can be lower than the optimal one when you save one single shared file with non-optimal I/O pattern. Moreover, the previous performance results are achieved under an ideal system, the system is dedicated, and a specific number of compute nodes are used. The file system is shared across many users; the I/O performance can vary because other users that perform heavy I/O as also executing large scale jobs and stress the interconnection network.  Finally, if the I/O pattern is not aligned, then the I/O performance can be significantly lower than the ideal one.  Similar, related to the number of the concurrent users, is applied for the metadata operations, they can be lower than the expected performance.
+The I/O performance can be lower than the optimal one when you save one single shared file 
+with non-optimal I/O pattern. Moreover, the previous performance results are achieved under 
+an ideal system, the system is dedicated, and a specific number of compute nodes are used. 
+The file system is shared across many users; the I/O performance can vary because other users 
+that perform heavy I/O as also executing large scale jobs and stress the interconnection network.  
+Finally, if the I/O pattern is not aligned, then the I/O performance can be significantly lower 
+than the ideal one.  Similar, related to the number of the concurrent users, is applied for the 
+metadata operations, they can be lower than the expected performance.
 
-.. ====
-.. Tips
-.. ====
+====
+Tips
+====
 
-.. - For best performance on the IBM Spectrum Scale filesystem, use large page aligned I/O and asynchronous reads and writes. The filesystem blocksize is 16MB, the minimum fragment size is 16K so when a file under 16K is stored, it will still use 16K of the disk. Writing files of 16 MB or larger, will achieve better performance. All files are striped across LUNs which are distributed across all IO servers.
+- For best performance on the IBM Spectrum Scale filesystem, use large page aligned I/O and asynchronous reads and writes. The filesystem blocksize is 16MB, the minimum fragment size is 16K so when a file under 16K is stored, it will still use 16K of the disk. Writing files of 16 MB or larger, will achieve better performance. All files are striped across LUNs which are distributed across all IO servers.
 
-.. - If your application occupies up to two compute nodes and it requires a significant number of I/O operations, you could try to add the following flag in your job script  file and investigate if the total execution time is decreased. This flag could cause worse results, it depends on the application.
-.. 
-..                    ``#BSUB -alloc_flags maximizegpfs``
+- If your application occupies up to two compute nodes and it requires a significant number of I/O operations, you could try to add the following flag in your job script  file and investigate if the total execution time is decreased. This flag could cause worse results, it depends on the application.
+
+                   ``#BSUB -alloc_flags maximizegpfs``
 
 ======================================================================
 Major difference between Lustre HPE ClusterStor and IBM Spectrum Scale

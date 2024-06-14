@@ -25,7 +25,7 @@ by emailing **help@olcf.ornl.gov**.
 | - Existing OLCF Project ID
 | - Project PI
 | - Enclave (i.e. Open or Moderate Enclave - Onyx or Marble respectively)
-|   **NOTE:** Summit is in Moderate
+|   **NOTE:** Frontier is in Moderate
 | - Description (i.e. How you will use Slate)
 | - Resource Request (i.e. CPU/Memory/Storage requirements - Default is
 |   8CPU/16GB/50GB respectively)
@@ -39,7 +39,7 @@ able to reach it from your laptop on ORNL WiFi as well as the VPN).
 +-----------------------------------------------------------------------------+-------------------------------------------------------------------------------------+
 | Cluster                                                                     | URL                                                                                 |
 +=============================================================================+=====================================================================================+
-|  Marble (Moderate Production cluster with access to Summit/Alpine)          | `Marble Web Console - https://marble.ccs.ornl.gov <https://marble.ccs.ornl.gov/>`_  |
+|  Marble (Moderate Production cluster with access to Frontier/Orion)         | `Marble Web Console - https://marble.ccs.ornl.gov <https://marble.ccs.ornl.gov/>`_  |
 +-----------------------------------------------------------------------------+-------------------------------------------------------------------------------------+
 |  Onyx   (Open Production Cluster with access to Wolf)                       | `Onyx Web Console - https://onyx.ccs.ornl.gov <https://onyx.ccs.ornl.gov/>`_        |
 +-----------------------------------------------------------------------------+-------------------------------------------------------------------------------------+
@@ -102,7 +102,7 @@ Test login with OC Tool
 +-----------------------------------------------------------------------------+--------------------------------------+
 | Cluster                                                                     | URL                                  |
 +=============================================================================+======================================+
-|  Marble (Moderate Production cluster with access to Summit/Alpine)          | `<https://api.marble.ccs.ornl.gov>`_ |
+|  Marble (Moderate Production cluster with access to Frontier/Orion)         | `<https://api.marble.ccs.ornl.gov>`_ |
 +-----------------------------------------------------------------------------+--------------------------------------+
 |  Onyx   (Open Production Cluster with access to Wolf)                       | `<https://api.onyx.ccs.ornl.gov>`_   |
 +-----------------------------------------------------------------------------+--------------------------------------+
@@ -111,9 +111,9 @@ Test login with OC Tool
 
 .. code-block:: bash
 
-   $ oc login <URL>
+   $ oc login <URL> --username=loginName
 
-After entering the login command above, oc will ask you to obtain an API token and will provide a URL like the following: ``https://oauth-openshift.apps.<CLUSTER>.ccs.ornl.gov/oauth/token/request``.
+where the loginName is your username for the cluster. After entering the login command above, oc will ask you to obtain an API token and will provide a URL like the following: ``https://oauth-openshift.apps.<CLUSTER>.ccs.ornl.gov/oauth/token/request``.
 
 You will need to go to the given URL in your browser, log in with NCCS, click the ``Display Token`` link, copy the command under ``Log in with this token`` and enter it into your terminal.
 

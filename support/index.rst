@@ -44,10 +44,10 @@ If you prefer to submit a ticket for assistance, User Assistance staff will resp
 OLCF Office Hours
 ---------------------
 
-Would your project team like direct access to OLCF, AMD, and HPE staff for current issues or questions you might have about
-running your application/software on Frontier? If so, we are offering office hours every Monday from 2-3 PM EDT and Wednesday
+Would your project team like direct access to OLCF staff for current issues or questions you might have about
+running your application/software on OLCF resources? If so, we are offering office hours every Monday from 2-3 PM EDT and Wednesday
 from 1-2 PM EDT. During each session, (up to) 5 teams will move into their own Zoom breakout room to discuss their question/issue
-directly with the appropriate OLCF, AMD, and HPE staff. Topics can be anything from issues building your code, non-ideal
+directly with the appropriate OLCF staff. Topics can be anything from issues building your code, non-ideal
 performance, node failures, etc.
 
 To help ensure proper expertise available to discuss your issue, please follow the below steps to let us know about your
