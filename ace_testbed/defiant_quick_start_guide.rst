@@ -62,11 +62,14 @@ File Systems
 Defiant is connected to the Lustre Polis filesystem providing ~1.6 PB of usable
 namespace (``/lustre/polis/``). 
 
-NEEDS UPDATE: Defiant also has access to
+Defiant also has access to
 the center-wide NFS-based filesystem (which provides user and project home
-areas). While Defiant does not have *direct* access to the center’s High
-Performance Storage System (HPSS) - for user and project archival storage -
-users can log in to the :ref:`dtn-user-guide` to move data to/from HPSS.
+areas) in ``/ccsopen/home/<username>``
+
+..
+  While Defiant does not have *direct* access to the center’s High
+  Performance Storage System (HPSS) - for user and project archival storage -
+  users can log in to the :ref:`dtn-user-guide` to move data to/from HPSS.
 
 GPUs
 ----
@@ -101,16 +104,80 @@ available on Defiant, please refer to the pages on
 :ref:`data-storage-and-transfers`, but the two subsections below give a quick
 overview of NFS and GPFS storage spaces.
 
-Polis
------
+NFS Filesystem
+--------------
 
-+---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
-| Area                | Path                                        | Type           | Permissions |  Quota | Backups | Purged  | Retention  | On Compute Nodes |
-+=====================+=============================================+================+=============+========+=========+=========+============+==================+
-| User Home           | ``/ccsopen/home/[userid]``                  | Lustre         | User set    |  50 GB | Yes     | No      | 90 days    | Read-only        |
-+---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
+.. list-table:: NFS Filesystem
+   :header-rows: 1
 
-----
+   * - Area
+     - Path
+     - Type
+     - Permissions
+     - Quota
+     - Backups
+     - Purge
+     - Retention
+     - On Compute Nodes
+   * - User Home
+     - ``/ccsopen/home/[userid]``
+     - NFS
+     - User set
+     - 50 GB
+     - Yes
+     - No
+     - 90 days
+     - yes
+
+
+.. note::
+   Please not that this ``/ccsopen`` location is not the same NFS filesystem as
+   found in other Open enclave systems like Odo. So files created on Defiant will not be available on
+   on Odo.
+
+Lustre Filesystem (Polis)
+-------------------------
+
+.. list-table:: Polis
+   :header-rows: 1
+
+   * - Area
+     - Path
+     - Type
+     - Permissions
+     - Quota
+     - Backups
+     - Purge
+     - Retention
+     - On Compute Nodes
+   * - Member Work
+     - ``/lustre/polis/[projid]/scratch/[userid]``
+     - Lustre HPE ClusterStor
+     - 700
+     - 50 TB
+     - No
+     - 90 days
+     - N/A
+     - yes
+   * - Project Work
+     - ``/lustre/polis/[projid]/proj-shared``
+     - Lustre HPE ClusterStor
+     - 770
+     - 50 TB
+     - No
+     - 90 days
+     - N/A
+     - yes
+   * - World Work
+     - ``/lustre/polis/[projid]/world-shared``
+     - Lustre HPE ClusterStor
+     - 770
+     - 50 TB
+     - No
+     - 90 days
+     - N/A
+     - yes
+
 
 Programming Environment
 =======================
@@ -263,6 +330,10 @@ MPI
 
 GPU-Aware MPI
 ^^^^^^^^^^^^^
+
+.. warning::
+  GPU Aware MPI is currently not working on Defiant. Your code should stage data on main
+  memory before sending/receiving data via MPI. We are working on a fix.
 
 To use GPU-aware Cray MPICH, there are currently some extra steps needed in
 addition to the table above, which depend on the compiler that is used.
@@ -1129,5 +1200,7 @@ by emailing help@olcf.ornl.gov.
 
 Known Issues
 ============
+
+- GPU aware MPI is currently not working on MPI. Your code should stage GPU data through main memory for MPI operations.
 
 .. JIRA_CONTENT_HERE

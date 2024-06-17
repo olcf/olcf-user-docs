@@ -46,7 +46,6 @@ Systems
    :maxdepth: 2
 
    systems/index
-   ace_testbed/index
 
 Services and Applications
 -------------------------
