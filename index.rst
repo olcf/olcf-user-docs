@@ -96,6 +96,14 @@ Scalable Protected Infrastructure (SPI)
 
    spi/index
 
+ACE Testbed
+---------------
+
+.. toctree::
+   :maxdepth: 2
+
+   ace_testbed/index
+
 How to contribute to this documentation
 -----------------------------------------
 
