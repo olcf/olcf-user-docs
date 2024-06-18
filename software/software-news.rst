@@ -10,6 +10,76 @@ most recent changes are listed first.
 
 .. raw:: html
 
+   <p style="font-size:20px"><b>Frontier: System Software Update (July 16, 2024)</b></p>
+
+The Frontier system will be upgraded to a new version of the system software stack.  
+
+.. warning:: **Codes should be rebuilt** prior to running following the upgrade due to the OS and software changes.
+
+As a result of the upgrade, the following packages are now default:
+
+.. csv-table::
+    :header: "Package", "Previous Default", "New Default"
+
+    "ROCm", "5.3.0", "5.7.1"
+    "HPE/Cray Programming Environment (CPE)", "22.12", "23.12"
+    "Cray Compiler Environment (CCE)", "15.0.0", "17.0.0"
+    "GNU Compiler Collection (GCC)", "12.2.0", "12.3.0"
+    "AMD Compiler (AMD)", "5.3.0", "5.7.1"
+
+Please contact help@olcf.ornl.gov if you encounter any issues or have questions.
+
+----
+
+.. raw:: html
+
+   <p style="font-size:20px"><b>Frontier: User Environment Changes (July 9, 2024)</b></p>
+
+The following packages will be retired from the system on Tuesday July 9, 2024:
+
+.. csv-table::
+    :header: "Package", "Version"
+
+    "ROCm", "4.5.2, 5.1.0, 5.2.0"
+    "CCE", "22.06"
+    "CPE", "14.0.1"
+    "Cray MPICH", "8.1.17"
+    "Cray LibSci", "21.08.1.2"
+    "aml", "0.2.0"
+    "argobots", "1.1"
+    "bolt", "2.0"
+    "butterflypack", "2.0.0, 2.1.0, 2.1.1"
+    "caliper", "2.7.0"
+    "conduit", "0.7.2, 0.8.2, 0.8.3"
+    "datatransferkit", "3.1-rc3, 3.1rc3-gpu"
+    "faodel", "1.2108.1"
+    "flit", "2.1.0"
+    "gmp", "6.2.1"
+    "gotcha", "1.0.3"
+    "legion", "21.03.0"
+    "libquo", "1.3.1"
+    "loki", "0.1.7"
+    "mercury", "2.0.1, 2.1.0"
+    "metall", "0.17, 0.20"
+    "mpark-variant", "1.4.0"
+    "mpifileutils", "0.11, 0.11.1"
+    "nccmp", "1.9.0.1"
+    "papyrus", "1.0.1, 1.0.2"
+    "pdt", "3.25.1"
+    "precice", "2.3.0-cpu, 2.4.0-cpu, 2.3.0, 2.4.0-cpu"
+    "pumi", "2.2.6, 2.2.7"
+    "qthreads", "1.16"
+    "turbine", "1.3.0"
+    "umap", "2.1.0"
+    "veloc", "1.5"
+    "zfp", "0.5.5"
+
+If your workloads require a package listed above, please contact the OLCF User Assistance team at help@olcf.ornl.gov as soon as possible. 
+
+----
+
+.. raw:: html
+
    <p style="font-size:20px"><b>Summit: System Software Upgrade (January 24, 2024)</b></p>
 
 The Summit system was upgraded to a new version of the system software stack.  
