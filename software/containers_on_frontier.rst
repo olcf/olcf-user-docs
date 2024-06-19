@@ -28,7 +28,7 @@ containers on Frontier. Some of the examples will refer to files in the
 Building and running a container image from a base Linux distribution for MPI
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-This example will walk through building up a container image with OpenSUSE 15.4, MPICH 3.4.2, and ROCm 5.5.1
+This example will walk through building up a container image with OpenSUSE 15.4, MPICH 3.4.2, and ROCm 5.7.1
 for a GPU aware MPI code.
 
 * Clone the ``olcf_containers_examples`` repository
@@ -38,7 +38,7 @@ for a GPU aware MPI code.
      git clone https://github.com/olcf/olcf_containers_examples/
 
 * Navigate to ``frontier/containers_on_frontier_docs/gpu_aware_mpi_example``
-* In that directory, the ``opensusempich342rocm551.def`` is an Apptainer definition file that will build a container image with MPICH 3.4.2 and ROCm 5.5.1, along with copying the ``ping_pong_gpu_aware.cpp`` file from the directory into the container image, and then compiling it.
+* In that directory, the ``opensusempich342rocm571.def`` is an Apptainer definition file that will build a container image with MPICH 3.4.2 and ROCm 5.7.1, along with copying the ``ping_pong_gpu_aware.cpp`` file from the directory into the container image, and then compiling it.
 
   * If you would like to inspect and make changes to the definition file to modify what the container has, feel free to do so. Inspect the definition file to understand how we build MPICH and ROCm inside the container.
   * MPICH 3.4.2 is required to be installed in your container image and build your MPI application with it if you want to run MPI on Frontier with containers. This is because cray-mpich is based on MPICH 3.4.2 and is ABI compatible. Later in the job script we will be mounting the Cray MPICH libraries into the container so that the application in the container will link and use those libraries. This is necessary for native performance.
@@ -46,7 +46,7 @@ for a GPU aware MPI code.
 * To build the container image (the SIF file), run
   ::
 
-     apptainer build opensusempich342rocm551.sif opensusempich342rocm551.def
+     apptainer build opensusempich342rocm571.sif opensusempich342rocm571.def
 
 
   * Apptainer builds the container image in the SIF file format. Unlike Podman, Apptainer gives you a single file for your image that you can later run as your container.
@@ -67,7 +67,7 @@ Apptainer image (a SIF file) is not an OCI image so it cannot be pushed to Docke
 another OCI registry as an OCI image. It can be pushed to an OCI registry that supports
 `ORAS <https://oras.land/docs/>`_ as an OCI artifact instead. In this section, we
 highlight and provide an example of pushing the container image we built to DockerHub as
-an OCI artifact. We will use our opensusempich342rocm551.sif image from the section above
+an OCI artifact. We will use our opensusempich342rocm571.sif image from the section above
 in this example.
 
 * First, create an account and then a repository on DockerHub to hold your image.
@@ -81,7 +81,7 @@ in this example.
 
   ::
 
-    apptainer push <path to your sif file>/opensusempich342rocm551.sif  oras://registry-1.docker.io/<your docker username>/<your repo name:tag>
+    apptainer push <path to your sif file>/opensusempich342rocm571.sif  oras://registry-1.docker.io/<your docker username>/<your repo name:tag>
 
 * Using ``oras://`` tells Apptainer to push the image to given registry as an OCI
   artifact. Not all OCI registries support ORAS. See `ORAS Adopters page <https://oras.land/adopters/>`_ for list.
@@ -96,15 +96,15 @@ This example will look at building a container image for testing collective comm
 
 
 * Navigate to ``frontier/containers_on_frontier_docs/rccltests`` of the previously cloned github repo.
-* The Apptainer definition file for building the RCCL container image is rcclmpich342rocm551.def.
+* The Apptainer definition file for building the RCCL container image is rcclmpich342rocm571.def.
 
-  * This builds on the existing opensusempich342rocm551.sif image from a previous example. Hence, MPICH 3.4.2 and ROCm 5.5.1 are used in this image.
-  * To specify that we are building this container image off the existing opensusempich342rocm551.sif image, we indicate next to the Bootstrap Keyword (under the definition file Header), localimage, for image in your workdir.
+  * This builds on the existing opensusempich342rocm571.sif image from a previous example. Hence, MPICH 3.4.2 and ROCm 5.7.1 are used in this image.
+  * To specify that we are building this container image off the existing opensusempich342rocm571.sif image, we indicate next to the Bootstrap Keyword (under the definition file Header), localimage, for image in your workdir.
 
     ::
 
       Bootstrap: localimage
-      From: ../gpu_aware_mpi_example/opensusempich342rocm551.sif
+      From: ../gpu_aware_mpi_example/opensusempich342rocm571.sif
 
 * At this stage, follow the steps in the Building a container image section above for building and running the RCCL container. 
 
@@ -120,7 +120,7 @@ This example will look at building a container image for testing collective comm
    ::
 
       Bootstrap: oras
-      From: docker.io/subilabrahamornl/opensusempich342rocm551:latest
+      From: docker.io/subilabrahamornl/opensusempich342rocm571:latest
 
 
 
