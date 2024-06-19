@@ -3615,6 +3615,15 @@ If it is necessary to have bit-wise reproducible results from these libraries, i
 System Updates 
 ============== 
 
+2024-07-16
+----------
+On Tuesday, July 16, 2024, Frontier's system software will be upgraded. The following changes will take place:
+
+-  ROCm 5.7.1 and HPE/Cray PE 23.12 will become default.
+-  The system will be upgraded to the AMD GPU 6.7.0 device driver (ROCm 6.1.0 release).
+
+Users are encouraged to try the versions that will become default and report any issues to help@olcf.ornl.gov.
+
 2024-03-19
 ----------
 On Tuesday, March 19, 2024, Frontier's system software was upgraded to Slingshot 2.1.1 and Slingshot Host Software 2.1.2. If you encounter any issues or have questions, please contact help@olcf.ornl.gov.
