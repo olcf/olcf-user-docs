@@ -10,8 +10,8 @@ to get the necessary configuration injected into the container at runtime.
   :header: "Cluster", "Annotation", "Value", "Mounts"
   :widths: 5, 8, 5, 25
 
+  "Marble", "ccs.ornl.gov/fs", "alpine2", "/ccs/sw, /ccs/home, /ccs/sys, /ccs/proj, /gpfs/alpine2"
   "Marble", "ccs.ornl.gov/fs", "orion", "/ccs/sw, /ccs/home, /ccs/sys, /ccs/proj, /lustre/orion"
-  "Onyx", "ccs.ornl.gov/fs", "ccsopen", "/ccsopen/sw, /ccsopen/home, /ccsopen/proj, /gpfs/wolf"
   "Onyx", "ccs.ornl.gov/fs", "themis", "/ccsopen/sw, /ccsopen/home, /ccsopen/proj, /nl/themis"
   "Onyx", "ccs.ornl.gov/fs", "wolf2", "/ccsopen/sw, /ccsopen/home, /ccsopen/proj, /gpfs/wolf2"
 
@@ -89,3 +89,5 @@ The following annotations have been retired and should no longer be used in work
   :widths: 5, 8, 5, 25
 
   "Marble", "ccs.ornl.gov/fs", "olcf", "/ccs/sw, /ccs/home, /ccs/sys, /ccs/proj, /gpfs/alpine"
+  "Onyx", "ccs.ornl.gov/fs", "ccsopen", "/ccsopen/sw, /ccsopen/home, /ccsopen/proj, /gpfs/wolf"
+
