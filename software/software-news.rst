@@ -41,8 +41,8 @@ The following packages will be retired from the system on Tuesday July 9, 2024:
     :header: "Package", "Version"
 
     "ROCm", "4.5.2, 5.1.0, 5.2.0"
-    "CCE", "22.06"
-    "CPE", "14.0.1"
+    "CPE", "22.06"
+    "CCE", "14.0.1"
     "Cray MPICH", "8.1.17"
     "Cray LibSci", "21.08.1.2"
     "aml", "0.2.0"
