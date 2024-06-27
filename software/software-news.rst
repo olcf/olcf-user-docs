@@ -8,9 +8,8 @@ most recent changes are listed first.
 
 ----
 
-.. raw:: html
-
-   <p style="font-size:20px"><b>Frontier: System Software Update (July 16, 2024)</b></p>
+Frontier: System Software Update (July 16, 2024)
+------------------------------------------------
 
 The Frontier system will be upgraded to a new version of the system software stack.  
 
@@ -31,9 +30,8 @@ Please contact help@olcf.ornl.gov if you encounter any issues or have questions.
 
 ----
 
-.. raw:: html
-
-   <p style="font-size:20px"><b>Frontier: User Environment Changes (July 9, 2024)</b></p>
+Frontier: User Environment Changes (July 9, 2024)
+-------------------------------------------------
 
 The following packages will be retired from the system on Tuesday July 9, 2024:
 
