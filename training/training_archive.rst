@@ -13,6 +13,7 @@ The table below lists presentations given at previous OLCF training events. For 
    :header: "Date", "Title", "Speaker", "Event", "Presentation"
    :widths: 12 22 22 22 22
 
+    "2024-06-26", "Linaro Forge", "Beau Paisley (Linaro)", `June 2024 OLCF User Conference Call <https://www.olcf.ornl.gov/calendar/userconcall-jun2024/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/LinaroForgeBrief_BP_2.pdf>`__ | `recording <https://vimeo.com/970879852>`__)
     "2024-05-29", "Omnitrace by Example", "Gina Sitaraman (AMD)", `May 2024 OLCF User Conference Call <https://www.olcf.ornl.gov/calendar/userconcall-may2024/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/Omnitrace_by_Example.pdf>`__ | `recording <https://vimeo.com/951998260>`__)
     "2024-04-24", "An Overview of The Fortran Standard: Fortran 2023 and Beyond", "Reuben Budiardja (OLCF)", `April 2024 OLCF User Conference Call <https://www.olcf.ornl.gov/calendar/userconcall-apr2024/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2024-04_OLCFUserCall_FortranStandard.pdf>`__ | `recording <https://vimeo.com/940870279>`__)
     "2024-04-17", "AI Training Series: Enhancing PyTorch Performance on Frontier with the RCCL/OFI-plugin", "Mengshiou Wu (HPE), Mark Stock (HPE)", `Enhancing PyTorch Performance on Frontier with the RCCL/OFI-plugin <https://www.olcf.ornl.gov/calendar/pytorch-on-frontier/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/OLCF_AI_Training_0417_2024.pdf>`__ | `recording <https://vimeo.com/938233665>`__)
