@@ -44,7 +44,7 @@ from `Kitware <https://www.paraview.org/download/>`__.
 Recommended ParaView versions on our systems:
 
 * Summit: ParaView 5.9.1, 5.10.0, 5.11.0
-* Andes: ParaView 5.9.1, 5.10.0, 5.11.0
+* Andes: ParaView 5.9.1, 5.10.0, 5.11.0, 5.12.1
 
 .. warning::
     Using a different version than what is listed above is not guaranteed to work properly.
@@ -61,7 +61,7 @@ connected to. For example, to see these modules on Summit:
 
 .. code-block:: bash
 
-    [user@login4.summit ~]$ module load DefApps-2023
+    [user@login4.summit ~]$ module load DefApps-2023 #only necessary on Summit
     [user@login4.summit ~]$ module -t avail paraview
 
     /sw/summit/modulefiles/core:
