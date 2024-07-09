@@ -26,7 +26,7 @@ First, load your modules:
 .. code-block:: bash
 
    module load PrgEnv-gnu/8.3.3
-   module load miniforge3/23.11.0
+   module load miniforge3/23.11.0-0
    module load amd-mixed/5.7.1
    module load craype-accel-amd-gfx90a
  
@@ -258,7 +258,7 @@ To run the python script, an example batch script is given below:
    module load PrgEnv-gnu/8.3.3
    module load amd-mixed/5.7.1
    module load craype-accel-amd-gfx90a
-   module load miniforge3/23.11.0
+   module load miniforge3/23.11.0-0
 
    # Activate your environment
    source activate /path/to/my_env
@@ -287,6 +287,25 @@ If the script is able to utilize any cache (e.g., if you ran the script again in
 
 Best Practices
 ==============
+
+Master Address and Sockets
+--------------------------
+
+We highly recommend setting ``MASTER_ADDR`` and ``NCCL_SOCKET_IFNAME`` when assigning host addresses:
+
+.. code-block:: bash
+
+   export MASTER_ADDR=$(hostname -i)
+   export NCCL_SOCKET_IFNAME=hsn0
+
+There are different Master Ports you can use, but we typically recommend using port 3442 for ``MASTER_PORT``:
+
+.. code-block:: bash
+
+   export MASTER_PORT=3442
+
+Setting the variables above are of utmost importance when using multiple nodes.
+
 
 Torchrun
 --------

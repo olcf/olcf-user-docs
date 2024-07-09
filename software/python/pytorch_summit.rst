@@ -58,7 +58,7 @@ Python version:
 
 .. code-block::
 
-    module load miniforge3/23.11.0
+    module load miniforge3/24.3.0-0
     conda create -p <env_path> python=x.yy
     source activate <env_path>
     pip install <wheel package>
@@ -94,7 +94,7 @@ First load the necessary modules (you can play around with these as needed):
 
 ..  code-block::
 
-    module load miniforge3/23.11.0
+    module load miniforge3/24.3.0-0
     module load DefApps-2023
     module load gcc/11.2.0
     module load cuda/11.7.1

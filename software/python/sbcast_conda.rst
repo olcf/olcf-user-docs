@@ -54,7 +54,7 @@ First, let's load our modules and setup the environment:
    $ module load craype-accel-amd-gfx90a
 
    # Create your conda environment
-   $ module load miniforge3/23.11.0
+   $ module load miniforge3/23.11.0-0
    $ conda create -p $MEMBERWORK/<PROJECT_ID>/torch_env python=3.10
    $ source activate $MEMBERWORK/<PROJECT_ID>/torch_env
 
@@ -99,7 +99,7 @@ Below is an example batch script that uses ``sbcast``, unpacks our environment, 
    # Setup modules
    module load PrgEnv-gnu/8.3.3
    module load amd-mixed/5.7.1
-   module load miniforge3/23.11.0
+   module load miniforge3/23.11.0-0
    module load craype-accel-amd-gfx90a
 
    # Move a copy of the env to the NVMe on each node
