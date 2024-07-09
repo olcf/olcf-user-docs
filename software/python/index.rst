@@ -5,10 +5,10 @@ Python on OLCF Systems
 ***********************
 
 .. note::
-    Frontier and Summit have new conda modules: ``miniforge3/23.11.0``.
+    Frontier, Summit, and Andes have new conda modules: ``miniforge3``.
     `Miniforge <https://github.com/conda-forge/miniforge>`__ behaves similarly to
     older Anaconda modules, but target the ``conda-forge`` channel by default.
-    Andes remains unchanged.
+    Old modules remain available.
 
 Overview
 ========
@@ -89,26 +89,30 @@ To start using Python, all you need to do is load the module:
 
       .. code-block:: bash
 
-         $ module load miniforge3/23.11.0
+         $ module load miniforge3/24.3.0-0
 
    .. tab-item:: Andes
       :sync: andes
 
       .. code-block:: bash
 
-         $ module load python
+         $ module load miniforge3/23.11.0-0
+
+      .. note::
+         Loading the older ``python`` module on Andes is still possible.
+         However, that Anaconda installation is quite old.
 
    .. tab-item:: Frontier
       :sync: frontier
 
       .. code-block:: bash
 
-         $ module load miniforge3/23.11.0
+         $ module load miniforge3/23.11.0-0
 
       .. note::
          Using the ``cray-python`` module on Frontier is also an option but is
          not a conda installation. Due to the lack of flexibility of ``venv`` and
-         ``cray-python``, we recommend using the ``miniforge3/23.11.0`` module instead.
+         ``cray-python``, we recommend using ``miniforge3`` instead.
 
 .. warning::
    When using the conda modules, do **NOT** run ``conda init``. This will end
@@ -123,10 +127,11 @@ Base Environment
 
 Loading the Python module on all systems will put you in a "base"
 pre-configured environment. This option is recommended for users who do not
-need custom environments and only require a Python installation. Although
-loading the ``miniforge3/23.11.0`` module on Summit and Frontier does not
-come with pre-installed packages, loading the ``python`` module on Andes does
-provide standard packages like NumPy and Scipy.
+need custom environments and only require a Python installation. Loading
+the relevant ``miniforge3`` module on Summit, Frontier, and Andes provides
+some basic analysis packages like NumPy, Scipy, and Matplotlib. However, the
+pre-installed package list is inherently minimal and users are encouraged to
+install additional packages for themselves.
 
 To see a full list of the packages installed in the base environment, use ``conda list``.
 A small preview is provided below:
@@ -138,21 +143,21 @@ A small preview is provided below:
 
       .. code-block:: bash
 
-         $ module load miniforge3/23.11.0
+         $ module load miniforge3/24.3.0-0
          $ conda list
 
-         # packages in environment at /autofs/nccs-svm1_sw/summit/miniforge3/23.11.0:
+         # packages in environment at /autofs/nccs-svm1_sw/summit/miniforge3/24.3.0-0:
          #
          # Name                    Version                   Build  Channel
          _libgcc_mutex             0.1                 conda_forge    conda-forge
          _openmp_mutex             4.5                       2_gnu    conda-forge
-         archspec                  0.2.2              pyhd8ed1ab_0    conda-forge
-         boltons                   23.1.1             pyhd8ed1ab_0    conda-forge
+         ansible                   10.0.0             pyh707e725_0    conda-forge
+         ansible-core              2.17.0             pyh707e725_0    conda-forge
+         archspec                  0.2.3              pyhd8ed1ab_0    conda-forge
+         boltons                   24.0.0             pyhd8ed1ab_0    conda-forge
+         brotli                    1.1.0                ha17a0cc_1    conda-forge
+         brotli-bin                1.1.0                ha17a0cc_1    conda-forge
          brotli-python             1.1.0           py310h9de49d8_1    conda-forge
-         bzip2                     1.0.8                ha17a0cc_5    conda-forge
-         c-ares                    1.24.0               ha17a0cc_0    conda-forge
-         ca-certificates           2023.11.17           h0f6029e_0    conda-forge
-         certifi                   2023.11.17         pyhd8ed1ab_0    conda-forge
          .
          .
          .
@@ -162,21 +167,21 @@ A small preview is provided below:
 
       .. code-block:: bash
 
-         $ module load python
+         $ module load miniforge3/23.11.0-0
          $ conda list
 
-         # packages in environment at /sw/andes/python/3.7/anaconda-base:
+         # packages in environment at /autofs/nccs-svm1_sw/andes/miniforge3/23.11.0-0:
          #
          # Name                    Version                   Build  Channel
-         _ipyw_jlab_nb_ext_conf    0.1.0                    py37_0  
-         _libgcc_mutex             0.1                        main  
-         absl-py                   0.11.0                   pypi_0    pypi
-         alabaster                 0.7.12                   py37_0  
-         anaconda                  2020.02                  py37_0  
-         anaconda-client           1.7.2                    py37_0  
-         anaconda-navigator        1.9.12                   py37_0  
-         anaconda-project          0.8.4                      py_0  
-         argh                      0.26.2                   py37_0  
+         _libgcc_mutex             0.1                 conda_forge    conda-forge
+         _openmp_mutex             4.5                       2_gnu    conda-forge
+         alsa-lib                  1.2.11               hd590300_1    conda-forge
+         archspec                  0.2.2              pyhd8ed1ab_0    conda-forge
+         attr                      2.5.1                h166bdaf_1    conda-forge
+         boltons                   23.1.1             pyhd8ed1ab_0    conda-forge
+         brotli                    1.1.0                hd590300_1    conda-forge
+         brotli-bin                1.1.0                hd590300_1    conda-forge
+         brotli-python             1.1.0           py310hc6cd4ac_1    conda-forge
          .
          .
          .
@@ -186,21 +191,21 @@ A small preview is provided below:
 
       .. code-block:: bash
 
-         $ module load miniforge3/23.11.0
+         $ module load miniforge3/23.11.0-0
          $ conda list
 
-         # packages in environment at /autofs/nccs-svm1_sw/frontier/miniforge3/23.11.0:
+         # packages in environment at /autofs/nccs-svm1_sw/frontier/miniforge3/23.11.0-0:
          #
          # Name                    Version                   Build  Channel
          _libgcc_mutex             0.1                 conda_forge    conda-forge
          _openmp_mutex             4.5                       2_gnu    conda-forge
+         alsa-lib                  1.2.11               hd590300_1    conda-forge
+         ansible                   10.1.0             pyh707e725_0    conda-forge
+         ansible-core              2.17.1             pyh707e725_0    conda-forge
          archspec                  0.2.2              pyhd8ed1ab_0    conda-forge
+         attr                      2.5.1                h166bdaf_1    conda-forge
          boltons                   23.1.1             pyhd8ed1ab_0    conda-forge
-         brotli-python             1.1.0           py310hc6cd4ac_1    conda-forge
-         bzip2                     1.0.8                hd590300_5    conda-forge
-         c-ares                    1.24.0               hd590300_0    conda-forge
-         ca-certificates           2023.11.17           hbcca054_0    conda-forge
-         certifi                   2023.11.17         pyhd8ed1ab_0    conda-forge
+         brotli                    1.1.0                hd590300_1    conda-forge
          .
          .
          .
@@ -239,7 +244,7 @@ To create and activate an environment:
       .. code-block:: bash
 
          #1. Load the module
-         $ module load miniforge3/23.11.0
+         $ module load miniforge3/24.3.0-0
 
          #2a. Create "my_env" with Python version X.Y at the desired path
          $ conda create -p /path/to/my_env python=X.Y
@@ -256,7 +261,7 @@ To create and activate an environment:
       .. code-block:: bash
 
          #1. Load the module
-         $ module load python
+         $ module load miniforge3/23.11.0-0
 
          #2a. Create "my_env" with Python version X.Y at the desired path
          $ conda create -p /path/to/my_env python=X.Y
@@ -273,7 +278,7 @@ To create and activate an environment:
       .. code-block:: bash
 
          #1. Load the module
-         $ module load miniforge3/23.11.0
+         $ module load miniforge3/23.11.0-0
 
          #2a. Create "my_env" with Python version X.Y at the desired path
          $ conda create -p /path/to/my_env python=X.Y
@@ -379,7 +384,7 @@ inside the batch script. An example batch script for Summit is provided below:
    cd $LSB_OUTDIR
    date
 
-   module load miniforge3/23.11.0
+   module load miniforge3/24.3.0-0
    source activate my_env
 
    jsrun -n1 -r1 -a1 -c1 python3 script.py
@@ -391,7 +396,7 @@ To use Python in an interactive session on Summit:
 
 .. code-block:: bash
 
-   $ module load miniforge3/23.11.0
+   $ module load miniforge3/24.3.0-0
    $ bsub -W 0:05 -nnodes 1 -P <PROJECT_ID> -Is $SHELL
    $ source activate my_env
    $ jsrun -n1 -r1 -a1 -c1 python3 script.py
@@ -445,7 +450,7 @@ inside the batch script. An example batch script for is provided below:
          cd $SLURM_SUBMIT_DIR
          date
 
-         module load miniforge3/23.11.0
+         module load miniforge3/23.11.0-0
          source activate my_env
 
          python3 script.py
@@ -468,7 +473,7 @@ inside the batch script. An example batch script for is provided below:
          cd $SLURM_SUBMIT_DIR
          date
 
-         module load python
+         module load miniforge3/23.11.0-0
          source activate my_env
 
          python3 script.py
@@ -487,7 +492,7 @@ To use Python in an interactive session on Frontier and Andes:
       .. code-block:: bash
 
          $ salloc -A <PROJECT_ID> -N 1 -t 0:05:00
-         $ module load miniforge3/23.11.0
+         $ module load miniforge3/23.11.0-0
          $ source activate my_env
          $ python3 script.py
 
@@ -497,7 +502,7 @@ To use Python in an interactive session on Frontier and Andes:
       .. code-block:: bash
 
          $ salloc -A <PROJECT_ID> -N 1 -t 0:05:00
-         $ module load python
+         $ module load miniforge3/23.11.0-0
          $ source activate my_env
          $ python3 script.py
 
@@ -514,6 +519,24 @@ When in an interactive job, if you want to use an interactive Python prompt and
 
 Best Practices
 ==============
+
+* **Do not run conda activate or conda init**:
+
+    When using the conda modules, do **NOT** run ``conda init``. This will end
+    up hard-coding a conda installation into your shell configuration file (e.g.,
+    ``.bashrc``, ``.bash_profile``, etc.) and could cause problems when switching
+    between HPC systems.  If you have a code-block in your configuration file
+    starting with ``>>> conda initialize >>>``, it is recommended to delete the entire block.
+    Running ``conda activate`` may also cause this issue. Ignore any "deprecation" or "deprecated"
+    messages and still use ``source activate``.
+
+* **Avoid loading conda modules twice**:
+
+    Loading a given ``miniforge3`` or ``python`` module twice in a single
+    session is known to cause problems with detecting conda environments after activation.
+    This can lead to environments not being detected even after using ``source activate``.
+    Unloading, deactivating, or reloading the module will not solve the issue, so you'll
+    have to re-login or otherwise enter a fresh shell session to fix things.
 
 * **Specify or check your Python path**:
 

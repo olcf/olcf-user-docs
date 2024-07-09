@@ -78,7 +78,7 @@ First, load the gnu compiler module (most Python packages assume GCC), relevant 
 
          $ module load gcc/9.3.0-compiler_only # might work with other GCC versions
          $ module load cuda/11.7.1
-         $ module load miniforge3/23.11.0
+         $ module load miniforge3/24.3.0-0
 
    .. tab-item:: Frontier
       :sync: frontier
@@ -88,7 +88,7 @@ First, load the gnu compiler module (most Python packages assume GCC), relevant 
          $ module load PrgEnv-gnu/8.3.3
          $ module load amd-mixed/5.3.0 # may work with other ROCm versions
          $ module load craype-accel-amd-gfx90a
-         $ module load miniforge3/23.11.0
+         $ module load miniforge3/23.11.0-0
 
    .. tab-item:: Andes
       :sync: andes
@@ -97,7 +97,7 @@ First, load the gnu compiler module (most Python packages assume GCC), relevant 
 
          $ module load gcc/9.3.0 # works with older GCC versions if using cuda/10.2.89
          $ module load cuda/11.2.2
-         $ module load python
+         $ module load miniforge3/23.11.0-0
 
 Loading a python module puts you in a "base" environment, but you need to create a new environment using the ``conda create`` command:
 
@@ -501,7 +501,7 @@ Example "submit_timings" batch script:
 
          module load gcc/9.3.0-compiler_only
          module load cuda/11.7.1
-         module load miniforge3/23.11.0
+         module load miniforge3/24.3.0-0
 
          source activate cupy-summit
          export CUPY_CACHE_DIR="${MEMBERWORK}/<project_id>/.cupy/kernel_cache"

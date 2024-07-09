@@ -77,7 +77,7 @@ First, load the gnu compiler module (most Python packages assume GCC), hdf5 modu
 
          $ module load gcc/12.1.0
          $ module load hdf5/1.14.3
-         $ module load miniforge3/23.11.0
+         $ module load miniforge3/24.3.0-0
 
    .. tab-item:: Andes
       :sync: andes
@@ -86,7 +86,7 @@ First, load the gnu compiler module (most Python packages assume GCC), hdf5 modu
 
          $ module load gcc/9.3.0
          $ module load hdf5/1.10.7
-         $ module load python
+         $ module load miniforge3/23.11.0-0
 
    .. tab-item:: Frontier
       :sync: frontier
@@ -95,7 +95,7 @@ First, load the gnu compiler module (most Python packages assume GCC), hdf5 modu
 
          $ module load PrgEnv-gnu/8.3.3
          $ module load hdf5/1.14.0
-         $ module load miniforge3/23.11.0
+         $ module load miniforge3/23.11.0-0
 
 .. note::
    If you're just interested in ``mpi4py`` and not ``h5py``, then you don't need to load the ``hdf5`` module.
@@ -291,7 +291,7 @@ Example "submit_hello" batch script:
 
          module load gcc/12.1.0
          module load hdf5/1.14.3
-         module load miniforge3/23.11.0
+         module load miniforge3/24.3.0-0
 
          source activate h5pympi-summit
 
@@ -316,7 +316,7 @@ Example "submit_hello" batch script:
 
          module load gcc/9.3.0
          module load hdf5/1.10.7
-         module load python
+         module load miniforge3/23.11.0-0
 
          source activate h5pympi-andes
 
@@ -341,7 +341,7 @@ Example "submit_hello" batch script:
 
          module load PrgEnv-gnu/8.3.3
          module load hdf5/1.14.0
-         module load miniforge3/23.11.0
+         module load miniforge3/23.11.0-0
 
          source activate h5pympi-frontier
 
@@ -435,7 +435,7 @@ Example "submit_h5py" batch script:
 
          module load gcc/12.1.0
          module load hdf5/1.14.3
-         module load miniforge3/23.11.0
+         module load miniforge3/24.3.0-0
 
          source activate h5pympi-summit
 
@@ -460,7 +460,7 @@ Example "submit_h5py" batch script:
 
          module load gcc/9.3.0
          module load hdf5/1.10.7
-         module load python
+         module load miniforge3/23.11.0-0
 
          source activate h5pympi-andes
 
@@ -485,7 +485,7 @@ Example "submit_h5py" batch script:
 
          module load PrgEnv-gnu/8.3.3
          module load hdf5/1.14.0
-         module load miniforge3/23.11.0
+         module load miniforge3/23.11.0-0
 
          source activate h5pympi-frontier
 
