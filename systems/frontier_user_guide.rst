@@ -701,7 +701,7 @@ To use ``hipcc`` with GPU-aware Cray MPICH, the following is needed to setup the
       ${PE_MPICH_GTL_DIR_amd_gfx90a} ${PE_MPICH_GTL_LIBS_amd_gfx90a}
 
     HIPFLAGS = --offload-arch=gfx90a
-    
+
 
 .. _understanding-the-compatibility-of-compilers-rocm-and-cray-mpich:
 
