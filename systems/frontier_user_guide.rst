@@ -726,6 +726,27 @@ However, the AMD and CCE compilers are both LLVM/Clang-based, and it is recommen
 CCE's module version indicates the base LLVM version, but for AMD, you must run ``amdclang --version``.
 For example, ROCm/5.3.0 is based on LLVM 15.0.0.
 It is strongly discouraged to use ROCm/5.3.0 with CCE/16.0.1, which is based on LLVM 16.
+The following table shows the recommended ROCm version for each CCE version, along with the CPE version:
+
++-------------+-------+---------------------------+
+|    CCE      |  CPE  | Recommended ROCm Version  |
++=============+=======+===========================+
+|   15.0.0    | 22.12 | 5.3.0                     |
++-------------+-------+---------------------------+
+|   15.0.1    | 23.03 | 5.3.0                     |
++-------------+-------+---------------------------+
+|   16.0.0    | 23.05 | 5.5.1                     |
++-------------+-------+---------------------------+
+|   16.0.1    | 23.09 | 5.5.1                     |
++-------------+-------+---------------------------+
+|   17.0.0    | 23.12 | 5.7.0 or 5.7.1            |
++-------------+-------+---------------------------+
+
+.. note::
+
+    Recall that the CPE module is a meta-module that simple loads the correct version for each Cray-provided module (e.g. CCE, Cray MPICH, Cray Libsci).
+    This is the best way to load the versions of modules from a specific CrayPE release.
+
 
 Compatible ROCm & Cray MPICH versions
 """""""""""""""""""""""""""""""""""""
