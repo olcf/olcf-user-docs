@@ -710,7 +710,7 @@ To use ``hipcc`` with GPU-aware Cray MPICH, use the following environment variab
       ${PE_MPICH_GTL_DIR_amd_gfx90a} ${PE_MPICH_GTL_LIBS_amd_gfx90a}
 
     HIPFLAGS = --offload-arch=gfx90a
-    
+
 
 Determining the Compatibility of Cray MPICH and ROCm
 """"""""""""""""""""""""""""""""""""""""""""""""""""
@@ -729,6 +729,8 @@ The compatibility table below was determined by testing of the linker and basic 
 Alongside ``cray-mpich``, we load the corresponding ``cpe`` module, which loads other important modules such as ``cray-pmi`` and ``craype``.
 It is strongly encouraged to load a ``cpe`` module when using non-default modules.
 An asterisk indicates the latest officially supported version of ROCm for each ``cray-mpich`` version.
+
+.. _supported combinations of compiler, mpi and rocm:
 
 +------------+-------+-----------------------------------------------------------------------+
 | cray-mpich |  cpe  |                              ROCm                                     |
