@@ -28,8 +28,8 @@ As a result of the upgrade, the following packages are now default:
 
 In addition to the default modules changing, the layout of the modules for the OLCF provided software stack will change.
 Going forward our core software (i.e software independent of compiler type/version) will be in a default module
-called `Core` with the version being in the format `year/month`. Additionally the suffixes to modules have
-been reworked. All modules that depend on ROCm are suffixed with `-gpu`. The same is true for packages with mpi `-mpi` and
+called `Core` with the version being in the format `year/month`. Additionally explicit suffixes have been added to modules to indicate MPI, OpenMP, and GPU support. 
+All modules that depend on ROCm are suffixed with `-gpu`. The same is true for packages with mpi `-mpi` and
 openmp `-omp`. Software is built to target CPE releases based on compiler (e.g. cce, amd or gcc), cray-mpich, and ROCm versions.
 If you have an :ref:`unsupported combination <supported combinations of compiler, mpi and rocm>` of those modules you may not see certain parts of the normal software stack.
 
