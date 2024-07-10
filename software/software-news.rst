@@ -26,6 +26,13 @@ As a result of the upgrade, the following packages are now default:
     "GNU Compiler Collection (GCC)", "12.2.0", "12.3.0"
     "AMD Compiler (AMD)", "5.3.0", "5.7.1"
 
+In addition to the default modules changing, the layout of the modules for the OLCF provided software stack will change.
+Going forward our core software (i.e software independent of compiler type/version) will be in a default module
+called `Core` with the version being in the format `year/month`. Additionally the suffixes to modules have
+been reworked. All modules that depend on ROCm are suffixed with `-gpu`. The same is true for packages with mpi `-mpi` and
+openmp `-omp`. Software is built to target CPE releases based on compiler (e.g. cce, amd or gcc), cray-mpich, and ROCm versions.
+If you have an unsupported combination of those modules you may not see certain parts of the normal software stack.
+
 Please contact help@olcf.ornl.gov if you encounter any issues or have questions.
 
 ----
