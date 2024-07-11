@@ -3657,6 +3657,7 @@ On Tuesday, July 16, 2024, Frontier's system software will be upgraded. The foll
 
 -  ROCm 5.7.1 and HPE/Cray PE 23.12 will become default.
 -  The system will be upgraded to the AMD GPU 6.7.0 device driver (ROCm 6.1.0 release).
+-  Please note major changes in the AMD and GNU programming environments detailed in Known Issues `OLCFDEV-1799 <https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#olcfdev-1799-new-rocm-module-layout-for-prgenv-amd>`_ and `OLCFDEV_1801 <https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#olcfdev-1801-new-prgenv-gnu-module-implementation>`_.
 
 Users are encouraged to try the versions that will become default and report any issues to help@olcf.ornl.gov.
 
