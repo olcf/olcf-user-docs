@@ -62,11 +62,14 @@ File Systems
 Defiant is connected to the Lustre Polis filesystem providing ~1.6 PB of usable
 namespace (``/lustre/polis/``). 
 
-NEEDS UPDATE: Defiant also has access to
+Defiant also has access to
 the center-wide NFS-based filesystem (which provides user and project home
-areas). While Defiant does not have *direct* access to the center’s High
-Performance Storage System (HPSS) - for user and project archival storage -
-users can log in to the :ref:`dtn-user-guide` to move data to/from HPSS.
+areas) in ``/ccsopen/home/<username>``
+
+..
+  While Defiant does not have *direct* access to the center’s High
+  Performance Storage System (HPSS) - for user and project archival storage -
+  users can log in to the :ref:`dtn-user-guide` to move data to/from HPSS.
 
 GPUs
 ----
@@ -101,16 +104,80 @@ available on Defiant, please refer to the pages on
 :ref:`data-storage-and-transfers`, but the two subsections below give a quick
 overview of NFS and GPFS storage spaces.
 
-Polis
------
+NFS Filesystem
+--------------
 
-+---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
-| Area                | Path                                        | Type           | Permissions |  Quota | Backups | Purged  | Retention  | On Compute Nodes |
-+=====================+=============================================+================+=============+========+=========+=========+============+==================+
-| User Home           | ``/ccsopen/home/[userid]``                  | Lustre         | User set    |  50 GB | Yes     | No      | 90 days    | Read-only        |
-+---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
+.. list-table:: NFS Filesystem
+   :header-rows: 1
 
-----
+   * - Area
+     - Path
+     - Type
+     - Permissions
+     - Quota
+     - Backups
+     - Purge
+     - Retention
+     - On Compute Nodes
+   * - User Home
+     - ``/ccsopen/home/[userid]``
+     - NFS
+     - User set
+     - 50 GB
+     - Yes
+     - No
+     - 90 days
+     - yes
+
+
+.. note::
+   Please not that this ``/ccsopen`` location is not the same NFS filesystem as
+   found in other Open enclave systems like Odo. So files created on Defiant will not be available on
+   on Odo.
+
+Lustre Filesystem (Polis)
+-------------------------
+
+.. list-table:: Polis
+   :header-rows: 1
+
+   * - Area
+     - Path
+     - Type
+     - Permissions
+     - Quota
+     - Backups
+     - Purge
+     - Retention
+     - On Compute Nodes
+   * - Member Work
+     - ``/lustre/polis/[projid]/scratch/[userid]``
+     - Lustre HPE ClusterStor
+     - 700
+     - 50 TB
+     - No
+     - 90 days
+     - N/A
+     - yes
+   * - Project Work
+     - ``/lustre/polis/[projid]/proj-shared``
+     - Lustre HPE ClusterStor
+     - 770
+     - 50 TB
+     - No
+     - 90 days
+     - N/A
+     - yes
+   * - World Work
+     - ``/lustre/polis/[projid]/world-shared``
+     - Lustre HPE ClusterStor
+     - 770
+     - 50 TB
+     - No
+     - 90 days
+     - N/A
+     - yes
+
 
 Programming Environment
 =======================
@@ -263,6 +330,10 @@ MPI
 
 GPU-Aware MPI
 ^^^^^^^^^^^^^
+
+.. warning::
+  GPU Aware MPI is currently not working on Defiant. Your code should stage data on main
+  memory before sending/receiving data via MPI. We are working on a fix.
 
 To use GPU-aware Cray MPICH, there are currently some extra steps needed in
 addition to the table above, which depend on the compiler that is used.
@@ -1266,8 +1337,8 @@ MPICH 3.4.2 and ROCm 5.5.1. Let's look at an example where we build a container 
  - Create a file named ``mpiexample.def`` with the following contents
    ::
 
-      Bootstrap: docker
-      From: code.ornl.gov:4567/olcfcontainers/olcfbaseimages/defiant/opensusempich342rocm551:latest
+      Bootstrap: localimage
+      From: /lustre/polis/stf007/world-shared/containers/opensusempich342rocm533.sif
       
       %files
       mpiexample.c /app/mpiexample.c
@@ -1287,22 +1358,20 @@ MPICH 3.4.2 and ROCm 5.5.1. Let's look at an example where we build a container 
      #SBATCH -J mpiexample
      #SBATCH -o %x_%j.out
      #SBATCH -e %x_%j.out
+
+     module  load amd-mixed
+     module load craype-accel-amd-gfx908
+     module load cray-mpich-abi
      
-     module  load amd-mixed/5.5.1
-     module  load cray-mpich/8.1.27
-     module  load cray-mpich-abi/8.1.27
-     module load libfabric/1.12.1.2.2.1
-     
-     
-     export MPICH_GPU_SUPPORT_ENABLED=1
-     #export MPICH_GPU_SUPPORT_ENABLED=0
      export MPICH_SMP_SINGLE_COPY_MODE=NONE
      
-     export APPTAINERENV_LD_LIBRARY_PATH="/opt/cray/pe/mpich/8.1.27/ofi/crayclang/14.0/lib-abi-mpich:/opt/cray/pe/mpich/8.1.27/gtl/lib:/opt/rocm/lib:/opt/rocm/lib64:$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH:/opt/cray/pe/lib64:/usr/lib64/libibverbs"
-     export APPTAINER_CONTAINLIBS="/usr/lib64/libjansson.so.4,/usr/lib64/libcxi.so.1,/usr/lib64/libjson-c.so.3,/usr/lib64/libdrm_amdgpu.so.1,/usr/lib64/libdrm.so.2,/lib64/libtinfo.so.6,/usr/lib64/libnl-3.so.200,/usr/lib64/librdmacm.so.1,/usr/lib64/libibverbs.so.1,/usr/lib64/libibverbs/libmlx5-rdmav34.so"
-     export APPTAINER_BIND=/usr/share/libdrm,/var/spool/slurm,/opt/cray,${PWD},/etc/libibverbs.d,/usr/lib64/libibverbs/    
+     export APPTAINERENV_LD_LIBRARY_PATH="$CRAY_MPICH_DIR/lib-abi-mpich:$CRAY_MPICH_ROOTDIR/gtl/lib:/opt/rocm/lib:/opt/rocm/lib64:$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH:/opt/cray/pe/lib64:/usr/lib64/libibverbs"
+     export APPTAINER_CONTAINLIBS="/usr/lib64/libjansson.so.4,/usr/lib64/libcxi.so.1,/usr/lib64/libjson-c.so.3,/usr/lib64/libdrm_amdgpu.so.1,/usr/lib64/libdrm.so.2,/lib64/libtinfo.so.6,/usr/lib64/libnl-3.so.200,/usr/lib64/librdmacm.so.1,/usr/lib64/libibverbs.so.1,/usr/lib64/libibverbs/libmlx5-rdmav34.so,/usr/lib64/libnl-route-3.so.200"
+     export APPTAINERENV_LD_PRELOAD=$CRAY_MPICH_ROOTDIR/gtl/lib/libmpi_gtl_hsa.so.0:
+     export APPTAINER_BIND=/usr/share/libdrm,/var/spool/slurm,/opt/cray,${PWD},/etc/libibverbs.d,/usr/lib64/libibverbs/
 
-     
+
+
      srun  -N2 -n4 --tasks-per-node 2 apptainer exec --env MV2_COMM_WORLD_LOCAL_RANK="$SLURM_LOCALID"  --workdir `pwd` mpiexample.sif /lib64/ld-linux-x86-64.so.2 --preload /opt/cray/pe/mpich/8.1.27/gtl/lib/libmpi_gtl_hsa.so.0:  /app/mpiexample
 
 - You should get output that looks like
@@ -1320,14 +1389,15 @@ You can view the definition files used to build the base image at the `code.ornl
 repository <https://code.ornl.gov/olcfcontainers/olcfbaseimages>`_ in the
 ``defiant`` directory. You can build these yourself (if you want slightly modify
 it) by cloning the repository and running ``./build`` in the individual
-directories in the repository. You'll need to push the image you build on your with Podman to your
-own registry if you wish to then use th
+directories in the repository.
+
 
 .. note::
 
    GPU aware MPI is currently buggy on Defiant due to issues with the MI210 with the Slingshot-10 network.
    We have a ticket open with HPE to address the issue. This will affect GPU aware MPI in the containers as well.
    Once that is fixed, we will add documentation on how to use GPU aware MPI with containers on Defiant.
+
 
 
 ..
@@ -1348,5 +1418,7 @@ by emailing help@olcf.ornl.gov.
 
 Known Issues
 ============
+
+- GPU aware MPI is currently not working on MPI. Your code should stage GPU data through main memory for MPI operations.
 
 .. JIRA_CONTENT_HERE
