@@ -3660,8 +3660,9 @@ On Tuesday, July 16, 2024, Frontier's system software will be upgraded. The foll
 
 Please note major changes in the AMD and GNU programming environments detailed in Known Issues `OLCFDEV-1799 <https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#olcfdev-1799-new-rocm-module-layout-for-prgenv-amd>`_ and `OLCFDEV_1801 <https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#olcfdev-1801-new-prgenv-gnu-module-implementation>`_:
 
--  If using ``PrgEnv-amd``, you must load a ``rocm`` module in addition to the ``amd`` module. ``amd`` no longer provides the full ROCm toolkit. The versions of these modules must match.
 -  If using ``PrgEnv-gnu``, the ``gcc`` module has been renamed to ``gcc-native`` beginning in HPE/Cray PE 23.12. ``gcc`` modules still exist in older HPE/Cray PE versions.
+-  If using ``PrgEnv-amd``, you must load a ``rocm`` module in addition to the ``amd`` module. ``amd`` no longer provides the full ROCm toolkit, only the host compiler. The versions of these modules must match.
+-  If using ``amd-mixed``, please use a ``rocm`` module instead. ``amd-mixed`` no longer provides the full ROCm toolkit, only the host compiler.
 
 Users are encouraged to try the versions that will become default and report any issues to help@olcf.ornl.gov.
 
