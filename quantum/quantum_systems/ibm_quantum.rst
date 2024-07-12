@@ -107,8 +107,11 @@ Job throughput is only limited via the dynamic queue.
 
 There is a time limit on program-wide usage of reservable systems (see below).  
 
-Reservations
-------------
+Reservations & Sessions
+-----------------------
+
+.. warning::
+   IBM Quantum will be retiring reservations on Apr. 1st. Reservations will be replaced by sessions.
 
 In addition to the fair-share queue, users may request a backend reservation
 for a certain period of time by contacting help@olcf.ornl.gov. If the
@@ -122,8 +125,6 @@ allocations:
 
   * ibmq_kolkata, 2400 minutes per month
 
-  * ibmq_jakarta, 480 minutes per month
-
 In order to make the most efficient use of reservation allocations:
 
 * Reservations requests must be submitted to the project Principle Investigator
@@ -133,6 +134,17 @@ In order to make the most efficient use of reservation allocations:
 
 * Once submitted, requests will be sent to the Quantum Resource Utilization 
   Council (QRUC) for consideration.
+
+A session in Qiskit Runtime is a tool designed for running multiple jobs in sequence more effectively.
+It streamlines the process by grouping jobs together, reducing the wait times often associated with individually queued jobs. 
+For more information on sessions can be found here:
+`<https://docs.quantum.ibm.com/run/sessions>`__
+
+.. warning::
+     Please note, starting a session by using the /jobs endpoint will no longer be supported after March 31, 2024.
+     After this date, qiskit-ibm-runtime version 0.20.0 or later, or qiskit-ibm-provider version 0.10.0 or later must be used to start a session. 
+     If you are calling the API directly, use the /sessions endpoint instead. Refer to this documentation for information about using the Qiskit IBM Runtime API:
+     `<https://docs.quantum.ibm.com/api/runtime>`__ 
 
 Checking System Availability & Capability
 =========================================

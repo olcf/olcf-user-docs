@@ -2,9 +2,7 @@
 VisIt
 *****
 
-.. note:: VisIt is now available on Frontier through the UMS022 module.
-
-.. note:: VisIt 3.3.3 is now available on Andes.
+.. note:: VisIt 3.4.1 is now available on Andes.
 
 Overview
 ========
@@ -29,8 +27,8 @@ OLCF resources. VisIt for your local computer can be obtained here:
 Recommended VisIt versions on our systems:
 
 * Summit: VisIt 3.1.4
-* Andes: VisIt 3.3.3
-* Frontier: VisIt 3.3.3
+* Andes: VisIt 3.3.3, 3.4.1
+* Frontier: VisIt 3.3.3 (via the UMS022 module)
 
 .. warning::
     Using a different version than what is listed above is not guaranteed to work properly.
@@ -314,7 +312,8 @@ OLCF systems is provided below.
 **For Summit (module):**
 
 .. code::
-   
+
+   $ module load DefApps-2023
    $ module load visit
    $ visit -nowin -cli -v 3.1.4 -l bsub/jsrun -p batch -b XXXYYY -t 00:05 -np 42 -nn 1 -s visit_example.py
 
@@ -352,7 +351,7 @@ job will submit to.
 
         module load visit
 
-        visit -nowin -cli -v 3.3.3 -l srun -np 28 -nn 1 -s visit_example.py
+        visit -nowin -cli -v 3.4.1 -l srun -np 28 -nn 1 -s visit_example.py
 
   .. tab-item:: Frontier
 

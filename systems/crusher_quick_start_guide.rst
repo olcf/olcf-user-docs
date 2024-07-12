@@ -4,6 +4,13 @@
 Crusher Quick-Start Guide
 *************************
 
+.. warning::
+    **The Crusher Test and Development System will be decommissioned on April 12th, 2024.** The
+    file systems that were available on Crusher are still accessible from the Home
+    server and the Data Transfer Nodes (DTNs), so all your data will remain accessible.
+    If you do not have access to other OLCF systems, your project will move to data-only
+    for 30-days. If you have any questions, please contact help@olcf.ornl.gov.
+
 .. _crusher-system-overview:
 
 System Overview
@@ -1117,7 +1124,7 @@ Output:
 
 .. note::
 
-   The ``--exact`` parameter is important to avoid the error message ``srun: Job <job id> step creation temporarily disabled, retrying (Requested nodes are busy)``. The ``wait`` command is also critical, or your job script and allocation will immediately end after launching your jobs in the background. The ``sleep`` command is currently required to work around a known issue that causes MPICH ERROR. See :ref:`crusher-known-issues` for more information and alternative workarounds. ``sleep`` will no longer be needed in a future update.
+   The ``--exact`` parameter is important to avoid the error message ``srun: Job <job id> step creation temporarily disabled, retrying (Requested nodes are busy)``. The ``wait`` command is also critical, or your job script and allocation will immediately end after launching your jobs in the background. The ``sleep`` command is currently required to work around a known issue that causes MPICH ERROR. ``sleep`` will no longer be needed in a future update.
 
 .. note::
 
@@ -1829,9 +1836,6 @@ If only ``SQ_INSTS_VALU_<ADD,MUL,TRANS>`` are found, then 23.9 TF/s is the theor
 Then, we divide the number of FLOPS by the elapsed time of the kernel to find FLOPS per second.
 This is found from subtracting the ``rocprof`` metrics ``EndNs`` by ``BeginNs``, provided by ``--timestamp on``, then converting from nanoseconds to seconds by dividing by 1,000,000,000 (power(10,9)).
 
-.. note::
-
-    For ROCm/5.2.0 and earlier, there is a known issue with the timings provided by ``--timestamp on``. See :ref:`crusher-known-issues`.
 
 
 Calculating for all precisions
@@ -2209,6 +2213,10 @@ Applications using single precision FP atomicAdd() are encouraged to experiment 
 System Updates 
 ============== 
 
+2024-03-19
+----------
+On Tuesday, March 19, 2024, Frontier's system software was upgraded to Slingshot 2.1.1 and Slingshot Host Software 2.1.2. If you encounter any issues or have questions, please contact help@olcf.ornl.gov.
+
 2024-01-23
 ----------
 On Tuesday, January 23, 2024, Crusher's system software was upgraded. The following changes took place:
@@ -2216,6 +2224,7 @@ On Tuesday, January 23, 2024, Crusher's system software was upgraded. The follow
 -  ROCm 6.0.0 is now available via the ``rocm/6.0.0`` modulefile.
 -  HPE/Cray Programming Environment (PE) 23.12 is now available via the ``cpe/23.12`` modulefile.
 -  ROCm 5.3.0 and HPE/Cray PE 22.12 remain as default.
+-  The system was upgraded to AMD GPU 6.3.6 device driver (ROCm 6.0.0 release). 
 
 Please note that target default versions will be updated to PE 23.12 and ROCm 5.7.1 in the near future. Users are encouraged to try both and report any issues to help@olcf.ornl.gov.
 
@@ -2291,13 +2300,5 @@ Getting Help
 
 If you have problems or need helping running on Crusher, please submit a ticket
 by emailing help@olcf.ornl.gov.
-
-.. _crusher-known-issues:
-
-Known Issues
-============
-
-.. JIRA_CONTENT_HERE
-
 
 

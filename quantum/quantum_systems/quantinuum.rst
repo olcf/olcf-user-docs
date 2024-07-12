@@ -23,8 +23,6 @@ The complete set of Quantinuum System Model H1 and Model H2 hardware specificati
 operations, can be found in the *Quantinuum System Model H1 Product Data Sheet* and the 
 *Quantinuum System Model H2 Product Data Sheet* on the `Quantinuum User Portal <https://um.qapi.quantinuum.com/>`__. Features include, but are not limited to:
 
-* N ≤ 32 qubit trapped-ion based quantum computers
-
 * All-to-all connectivity
 
 * Laser based quantum gates
@@ -100,11 +98,11 @@ Due to increased demand and to make the most efficient use of credits, the follo
 
 * Allocations will be granted on a monthly basis to maximize the availability of the H1 family and H2 machines. Please note that allocations do not carry over to the next month and must be consumed in the month granted.
  
-* Allocation requests requiring 20 qubits and under will be considered for H1 family machines, and allocation requests requiring 21-32 qubits will be considered for H2.
+* Allocation requests requiring 20 qubits and fewer will be considered for H1 family machines, and allocation requests requiring 21 or more qubits will be considered for H2.
 
 Allocation requests for the following month must be submitted no later than the 25th of the preceding month.  The uptime schedule is available on the *Calendar* tab of the `Quantinuum User Portal <https://um.qapi.quantinuum.com/>`__. 
 
-Due to hardware emulation complexity, jobs using 29-32 qubits are likely to experience significantly slowed execution times. 
+Due to hardware emulation complexity, jobs using greater than 29 qubits for statevector emulation are likely to experience significantly slowed execution times. 
 
 Software
 ========

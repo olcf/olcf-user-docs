@@ -2,21 +2,9 @@
 Installing mpi4py and h5py
 **************************
 
-.. warning::
-   This guide has been adapted for Frontier **only for a** ``conda``
-   **workflow**. Using the default ``cray-python`` module on Frontier does not
-   work with parallel h5py (because Python 3.9 is incompatible). Thus,
-   this guide assumes that you are using a personal
-   :doc:`Miniconda distribution on Frontier </software/python/miniconda>`.
-
 .. note::
    For ``venv`` users only interested in installing ``mpi4py``, the ``pip``
    command in this guide is still accurate.
-
-This guide has been adapted from a challenge in OLCF's `Hands-On with Summit <https://github.com/olcf/hands-on-with-summit>`__ GitHub repository (`Python: Parallel HDF5 <https://github.com/olcf/hands-on-with-summit/tree/master/challenges/Python_Parallel_HDF5>`__).
-
-.. note::
-   The guide is designed to be followed from start to finish, as certain steps must be completed in the correct order before some commands work properly.
 
 Overview
 ========
@@ -29,11 +17,23 @@ In this guide, you will:
 * Learn how to install parallel h5py
 * Test your build with Python scripts
 
-OLCF Systems this guide applies to:
+OLCF Systems this guide applies to: 
 
 * Summit
-* Andes
 * Frontier
+* Andes
+
+**Guide last tested with:**
+
++------------+----------+------------+
+| ``python`` | ``h5py`` | ``mpi4py`` |
++============+==========+============+
+|  3.10.14   |  3.10.0  |   3.1.5    |
++------------+----------+------------+
+
+.. note::
+   Working installations are **not** limited to what is shown above.
+   Versions listed in the above table are what was tested most recently.
 
 Parallel HDF5
 =============
@@ -71,55 +71,59 @@ First, load the gnu compiler module (most Python packages assume GCC), hdf5 modu
 .. tab-set::
 
    .. tab-item:: Summit
+      :sync: summit
 
       .. code-block:: bash
 
-         $ module load gcc
-         $ module load hdf5
-         $ module load python
+         $ module load gcc/12.1.0
+         $ module load hdf5/1.14.3
+         $ module load miniforge3/24.3.0-0
 
    .. tab-item:: Andes
+      :sync: andes
 
       .. code-block:: bash
 
-         $ module load gcc
-         $ module load hdf5
-         $ module load python
+         $ module load gcc/9.3.0
+         $ module load hdf5/1.10.7
+         $ module load miniforge3/23.11.0-0
 
    .. tab-item:: Frontier
+      :sync: frontier
 
       .. code-block:: bash
 
-         $ module load PrgEnv-gnu
-         $ module load hdf5
+         $ module load PrgEnv-gnu/8.3.3
+         $ module load hdf5/1.14.0
+         $ module load miniforge3/23.11.0-0
 
-         # Make sure your personal miniconda installation is in your path
-         $ export PATH="/path/to/your/miniconda/bin:$PATH"
+.. note::
+   If you're just interested in ``mpi4py`` and not ``h5py``, then you don't need to load the ``hdf5`` module.
 
 Loading a python module puts you in a "base" environment, but you need to create a new environment using the ``conda create`` command:
 
 .. tab-set::
 
    .. tab-item:: Summit
+      :sync: summit
 
       .. code-block:: bash
 
-         $ conda create -p /ccs/proj/<project_id>/<user_id>/envs/summit/h5pympi-summit python=3.8 numpy
+         $ conda create -n h5pympi-summit python=3.10 numpy
 
    .. tab-item:: Andes
+      :sync: andes
 
       .. code-block:: bash
 
-         $ conda create -p /ccs/proj/<project_id>/<user_id>/envs/andes/h5pympi-andes python=3.8 numpy
+         $ conda create -n h5pympi-andes python=3.10 numpy
 
    .. tab-item:: Frontier
+      :sync: frontier
 
       .. code-block:: bash
 
-         $ conda create -p /ccs/proj/<project_id>/<user_id>/envs/frontier/h5pympi-frontier python=3.8 libssh numpy -c conda-forge
-
-.. note::
-   As noted in the :doc:`/software/python/index` page, it is highly recommended to create new environments in the "Project Home" directory.
+         $ conda create -n h5pympi-frontier python=3.10 numpy
 
 NumPy is installed ahead of time because h5py depends on it.
 
@@ -128,22 +132,25 @@ After following the prompts for creating your new environment, you can now activ
 .. tab-set::
 
    .. tab-item:: Summit
+      :sync: summit
 
       .. code-block:: bash
 
-         $ source activate /ccs/proj/<project_id>/<user_id>/envs/summit/h5pympi-summit
+         $ source activate h5pympi-summit
 
    .. tab-item:: Andes
+      :sync: andes
 
       .. code-block:: bash
 
-         $ source activate /ccs/proj/<project_id>/<user_id>/envs/andes/h5pympi-andes
+         $ source activate h5pympi-andes
 
    .. tab-item:: Frontier
+      :sync: frontier
 
       .. code-block:: bash
 
-         $ source activate /ccs/proj/<project_id>/<user_id>/envs/frontier/h5pympi-frontier
+         $ source activate h5pympi-frontier
 
 
 Installing mpi4py
@@ -155,18 +162,21 @@ To make sure that you are building from source, and not a pre-compiled binary, u
 .. tab-set::
 
    .. tab-item:: Summit
+      :sync: summit
 
       .. code-block:: bash
 
          $ MPICC="mpicc -shared" pip install --no-cache-dir --no-binary=mpi4py mpi4py
 
    .. tab-item:: Andes
+      :sync: andes
 
       .. code-block:: bash
 
          $ MPICC="mpicc -shared" pip install --no-cache-dir --no-binary=mpi4py mpi4py
 
    .. tab-item:: Frontier
+      :sync: frontier
 
       .. code-block:: bash
 
@@ -184,18 +194,21 @@ Next, install h5py from source.
 .. tab-set::
 
    .. tab-item:: Summit
+      :sync: summit
 
       .. code-block:: bash
 
-         $ HDF5_MPI="ON" CC=mpicc pip install --no-cache-dir --no-binary=h5py h5py
+         $ HDF5_MPI="ON" CC=mpicc HDF5_DIR=${OLCF_HDF5_ROOT} pip install --no-cache-dir --no-binary=h5py h5py
 
    .. tab-item:: Andes
+      :sync: andes
 
       .. code-block:: bash
 
-         $ HDF5_MPI="ON" CC=mpicc pip install --no-cache-dir --no-binary=h5py h5py
+         $ HDF5_MPI="ON" CC=mpicc HDF5_DIR=${OLCF_HDF5_ROOT} pip install --no-cache-dir --no-binary=h5py h5py
 
    .. tab-item:: Frontier
+      :sync: frontier
 
       .. code-block:: bash
 
@@ -210,7 +223,7 @@ Testing parallel h5py
 
 Test your build by trying to write an HDF5 file in parallel using 42 MPI tasks.
 
-First, change directories to your GPFS scratch area:
+First, change directories to your scratch area:
 
 .. code-block:: bash
 
@@ -235,18 +248,21 @@ To do so, submit a job to the batch queue:
 .. tab-set::
 
    .. tab-item:: Summit
+      :sync: summit
 
       .. code-block:: bash
 
          $ bsub -L $SHELL submit_hello.lsf
 
    .. tab-item:: Andes
+      :sync: andes
 
       .. code-block:: bash
 
          $ sbatch --export=NONE submit_hello.sl
 
    .. tab-item:: Frontier
+      :sync: frontier
 
       .. code-block:: bash
 
@@ -258,6 +274,7 @@ Example "submit_hello" batch script:
 .. tab-set::
 
    .. tab-item:: Summit
+      :sync: summit
 
       .. code-block:: bash
 
@@ -272,15 +289,16 @@ Example "submit_hello" batch script:
          cd $LSB_OUTDIR
          date
 
-         module load gcc
-         module load hdf5
-         module load python
+         module load gcc/12.1.0
+         module load hdf5/1.14.3
+         module load miniforge3/24.3.0-0
 
-         source activate /ccs/proj/<project_id>/<user_id>/envs/summit/h5pympi-summit
+         source activate h5pympi-summit
 
          jsrun -n1 -r1 -a42 -c42 python3 hello_mpi.py
 
    .. tab-item:: Andes
+      :sync: andes
 
       .. code-block:: bash
 
@@ -296,15 +314,16 @@ Example "submit_hello" batch script:
          cd $SLURM_SUBMIT_DIR
          date
 
-         module load gcc
-         module load hdf5
-         module load python
+         module load gcc/9.3.0
+         module load hdf5/1.10.7
+         module load miniforge3/23.11.0-0
 
-         source activate /ccs/proj/<project_id>/<user_id>/envs/andes/h5pympi-andes
+         source activate h5pympi-andes
 
          srun -n42 python3 hello_mpi.py
 
    .. tab-item:: Frontier
+      :sync: frontier
 
       .. code-block:: bash
 
@@ -320,11 +339,11 @@ Example "submit_hello" batch script:
          cd $SLURM_SUBMIT_DIR
          date
 
-         module load PrgEnv-gnu
-         module load hdf5
-         export PATH="/path/to/your/miniconda/bin:$PATH"
+         module load PrgEnv-gnu/8.3.3
+         module load hdf5/1.14.0
+         module load miniforge3/23.11.0-0
 
-         source activate /ccs/proj/<project_id>/<user_id>/envs/frontier/h5pympi-frontier
+         source activate h5pympi-frontier
 
          srun -n42 python3 hello_mpi.py
 
@@ -374,18 +393,21 @@ Time to execute "hdf5_parallel.py" by submitting "submit_h5py" to the batch queu
 .. tab-set::
 
    .. tab-item:: Summit
+      :sync: summit
 
       .. code-block:: bash
 
          $ bsub -L $SHELL submit_h5py.lsf
 
    .. tab-item:: Andes
+      :sync: andes
 
       .. code-block:: bash
 
          $ sbatch --export=NONE submit_h5py.sl
 
    .. tab-item:: Frontier
+      :sync: frontier
 
       .. code-block:: bash
 
@@ -396,6 +418,7 @@ Example "submit_h5py" batch script:
 .. tab-set::
 
    .. tab-item:: Summit
+      :sync: summit
 
       .. code-block:: bash
 
@@ -410,15 +433,16 @@ Example "submit_h5py" batch script:
          cd $LSB_OUTDIR
          date
 
-         module load gcc
-         module load hdf5
-         module load python
+         module load gcc/12.1.0
+         module load hdf5/1.14.3
+         module load miniforge3/24.3.0-0
 
-         source activate /ccs/proj/<project_id>/<user_id>/envs/summit/h5pympi-summit
+         source activate h5pympi-summit
 
          jsrun -n1 -r1 -a42 -c42 python3 hdf5_parallel.py
 
    .. tab-item:: Andes
+      :sync: andes
 
       .. code-block:: bash
 
@@ -434,15 +458,16 @@ Example "submit_h5py" batch script:
          cd $SLURM_SUBMIT_DIR
          date
 
-         module load gcc
-         module load hdf5
-         module load python
+         module load gcc/9.3.0
+         module load hdf5/1.10.7
+         module load miniforge3/23.11.0-0
 
-         source activate /ccs/proj/<project_id>/<user_id>/envs/andes/h5pympi-andes
+         source activate h5pympi-andes
 
          srun -n42 python3 hdf5_parallel.py
 
    .. tab-item:: Frontier
+      :sync: frontier
 
       .. code-block:: bash
 
@@ -458,11 +483,11 @@ Example "submit_h5py" batch script:
          cd $SLURM_SUBMIT_DIR
          date
 
-         module load PrgEnv-gnu
-         module load hdf5
-         export PATH="/path/to/your/miniconda/bin:$PATH"
+         module load PrgEnv-gnu/8.3.3
+         module load hdf5/1.14.0
+         module load miniforge3/23.11.0-0
 
-         source activate /ccs/proj/<project_id>/<user_id>/envs/frontier/h5pympi-frontier
+         source activate h5pympi-frontier
 
          srun -n42 python3 hdf5_parallel.py
 
@@ -489,6 +514,34 @@ To see explicitly that the MPI tasks did their job, you can use the ``h5dump`` c
    }
 
 If you see the above output, then the build was a success!
+
+Frontier: Troubleshooting mpi4py
+================================
+
+If you're seeing errors on Frontier that look like this:
+
+.. code-block::
+
+   ImportError: /usr/lib64/libssh.so.4: undefined symbol: EVP_KDF_CTX_new_id, version OPENSSL_1_1_1d
+
+This is due to Frontier's older ``libssh`` and ``openssl`` versions.
+Either installing a newer ``libssh`` like below (Option 1), or downgrading Conda's ``openssl`` to version 1.1.1 (Option 2) is required.
+If following Option 2, then you must export ``LD_PRELOAD`` at both build **and runtime** like below.
+
+.. tab-set::
+
+   .. tab-item:: Frontier
+      :sync: frontier
+
+      .. code-block:: bash
+
+         # Option 1 (use a newer libssh with your conda's newer openssl):
+         $ conda create -n h5pympi-frontier python=3.10 libssh numpy -c conda-forge
+
+         # Option 2 (downgrade your conda's openssl to match Frontier's):
+         $ conda create -n h5pympi-frontier python=3.10 openssl=1.1.1 numpy -c conda-forge
+         $ export LD_PRELOAD="/usr/lib64/libcrypto.so /usr/lib64/libssh.so.4 /usr/lib64/libssl.so.1.1"
+
 
 Additional Resources
 ====================

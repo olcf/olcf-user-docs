@@ -56,3 +56,31 @@ Queue Policy
 +============+=============+===========================================+
 | 1-4 Nodes  |  0 - 24 hrs |     max 1 job running **per user**        |
 +------------+-------------+-------------------------------------------+
+
+Submitting jobs to Frontier
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Submitting to the Frontier batch queue is supported from the moderate DTNs using the ``-M`` flag; however, we will need to ensure that the programming environment is not inheritied from the DTNs. The ``--export=NONE`` sbatch submission flag in combination with the ``SLURM_EXPORT_ENV`` environment variable should prevent the DTN environment from copying to the job, but does not wipe the environment on the compute nodes.  
+
++--------------------------------------+
+| Submission Line                      |
++======================================+
+| sbatch -M frontier --export=NONE ... |
++--------------------------------------+
+
++-----------------------------+
+| Inside of the slurm script: |
++=============================+
+| export SLURM_EXPORT_ENV=ALL |
++-----------------------------+
+
+We will also need to use the SBATCH directive ``threads-per-core`` to alter the DTNs default setting to match Frontier's default setting.
+::
+
+	#SBATCH --threads-per-core=1
+
+
+
+
+
+
+

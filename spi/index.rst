@@ -160,19 +160,21 @@ Login Nodes
 ------------
 To help separate data and processes, the Citadel framework provides separate login nodes to reach Summit and Frontier's compute resources: 
 
-+----------------+---------------------------------------+-------------------------------------------------------------------------------------+
-| Resource       |  Citadel Login Node Name              |  Example                                                                            |
-+================+=======================================+=====================================================================================+
-| Summit         | citadel.ccs.ornl.gov                  |  ``ssh username_projID_mde@citadel.ccs.ornl.gov``                                   |
-+----------------+---------------------------------------+-------------------------------------------------------------------------------------+
-| Frontier       | spilogin[1,2].frontier.olcf.ornl.gov  |  ``ssh username_projID_mde@spilogin1.frontier.olcf.ornl.gov``                       |
-+----------------+---------------------------------------+-------------------------------------------------------------------------------------+
++----------------+-------------+------------------------------------+-------------------------------------------------------------------------------------+
+| Resource       | Access Type |  Citadel Login Node Address        |  Example                                                                            |
++================+=============+====================================+=====================================================================================+
+| Summit         | KDI/SPI     |  citadel.ccs.ornl.gov              |  ``ssh username_projID_mde@citadel.ccs.ornl.gov``                                   |
++----------------+-------------+------------------------------------+-------------------------------------------------------------------------------------+
+| Frontier       | SPI         |  frontierspi.olcf.ornl.gov         |   ``ssh username_projID_mde@frontierspi.olcf.ornl.gov``                             |
+|                +-------------+------------------------------------+-------------------------------------------------------------------------------------+
+|                | KDI         |  spilogin1.frontier.olcf.ornl.gov  |   ``ssh username_projID_mde@spilogin1.frontier.olcf.ornl.gov``                      |
++----------------+-------------+------------------------------------+-------------------------------------------------------------------------------------+
 
 .. note:: The Citadel login nodes must be used to submit SPI jobs to Summit and Frontier's compute resources and access the SPI specific filesystem.
 
 The login nodes listed above mirrors the Summit and Frontier login nodes in hardware and software.  The login node also provides access to the same compute resources as are accessible from Summit and Frontier's non-SPI workflows.  
 
-The Citadel login nodes cannot access the external network and are only accessible from whitelisted IP addresses.
+The Citadel login nodes cannot access the external network and are only accessible from whitelisted IP addresses. KDI users will need to login to the Frontier SPI login nodes directly from KDI instead of going through the frontierspi load balancer. See the table above for the correct address for your use-case. 
 
 
 Connecting 
@@ -186,7 +188,7 @@ ORNL's KDI users are an exception and cannot, by policy, log directly into SPI r
 
 #.  Login to https://kdivdi.ornl.gov with your KDI issued credentials
 #.  Launch the Putty Application
-#.  Enter the hostname "citadel.ccs.ornl.gov" and click Open
+#.  Enter the host address from the table above and click Open. 
 #.  You will then be in an ssh terminal to authenticate with your OLCF credentials as detailed above. 
 
 .. note::  Projects using ORNL's KDI must following KDI access procedures and cannot access SPI resources directly.  If your project uses both KDI and SPI, you will not access the SPI resources directly.

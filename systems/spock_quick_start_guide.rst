@@ -489,7 +489,7 @@ In the example script, the lines are:
 | 9    | ``srun`` command to launch parallel job (requesting 4 processes - 2 per node) | 
 +------+-------------------------------------------------------------------------------+
 
-.. _interactive:
+.. _interactive-spock:
 
 Interactive Jobs
 """"""""""""""""
@@ -630,7 +630,7 @@ This section describes how to map processes (e.g., MPI ranks) and process thread
 CPU Mapping
 ^^^^^^^^^^^
 
-In this sub-section, a simple MPI+OpenMP "Hello, World" program (`hello_mpi_omp <https://code.ornl.gov/olcf/hello_mpi_omp>`__) will be used to clarify the mappings. Slurm's :ref:`interactive` method was used to request an allocation of 1 compute node for these examples: ``salloc -A <project_id> -t 30 -p <parition> -N 1``
+In this sub-section, a simple MPI+OpenMP "Hello, World" program (`hello_mpi_omp <https://code.ornl.gov/olcf/hello_mpi_omp>`__) will be used to clarify the mappings. Slurm's :ref:`interactive-spock` method was used to request an allocation of 1 compute node for these examples: ``salloc -A <project_id> -t 30 -p <parition> -N 1``
 
 The ``srun`` options used in this section are (see ``man srun`` for more information):
 
@@ -704,7 +704,7 @@ Now the output shows that each OpenMP thread ran on (one of the hardware threads
 GPU Mapping
 ^^^^^^^^^^^
 
-In this sub-section, an MPI+OpenMP+HIP "Hello, World" program (`hello_jobstep <https://code.ornl.gov/olcf/hello_jobstep>`__) will be used to clarify the GPU mappings. Again, Slurm's :ref:`interactive` method was used to request an allocation of 2 compute node for these examples: ``salloc -A <project_id> -t 30 -p <parition> -N 2``. The CPU mapping part of this example is very similar to the example used above in the CPU Mapping sub-section, so the focus here will be on the GPU mapping part.
+In this sub-section, an MPI+OpenMP+HIP "Hello, World" program (`hello_jobstep <https://code.ornl.gov/olcf/hello_jobstep>`__) will be used to clarify the GPU mappings. Again, Slurm's :ref:`interactive-spock` method was used to request an allocation of 2 compute node for these examples: ``salloc -A <project_id> -t 30 -p <parition> -N 2``. The CPU mapping part of this example is very similar to the example used above in the CPU Mapping sub-section, so the focus here will be on the GPU mapping part.
 
 The following ``srun`` options will be used in the examples below. See ``man srun`` for a complete list of options and more information.
 
@@ -1058,10 +1058,3 @@ Getting Help
 If you have problems or need helping running on Spock, please submit a ticket
 by emailing help@olcf.ornl.gov.
 
-----
-
-
-Known Issues
-============
-
-.. JIRA_CONTENT_HERE

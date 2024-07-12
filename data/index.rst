@@ -38,11 +38,11 @@ Each project has a Project Home area on NFS, multiple Work areas on Spectrum Sca
 +--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
 | Project Home                   | ``/ccs/proj/[projid]``                      | M1, M2  | NFS                    | 770         |  50 GB | Yes     | No      | 90 days    | Summit: Read-only, Frontier: Read/Write |
 +--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
-| Orion Member Work              | ``/lustre/orion/[projid]/scratch/[userid]`` | M1,M2   | Lustre HPE ClusterStor | 700         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
+| Orion Member Work              | ``/lustre/orion/[projid]/scratch/[userid]`` | M1, M2  | Lustre HPE ClusterStor | 700         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
 +--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
-| Orion Project Work             | ``/lustre/orion/[projid]/proj-shared``      | M1,M2   | Lustre HPE ClusterStor | 770         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
+| Orion Project Work             | ``/lustre/orion/[projid]/proj-shared``      | M1, M2  | Lustre HPE ClusterStor | 770         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
 +--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
-| Orion World Work               | ``/lustre/orion/[projid]/world-shared``     | M1,M2   | Lustre HPE ClusterStor | 775         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
+| Orion World Work               | ``/lustre/orion/[projid]/world-shared``     | M1      | Lustre HPE ClusterStor | 775         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
 +--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
 | Alpine2 Member Work            | ``/gpfs/alpine2/[projid]/scratch/[userid]`` | M1, M2  | Spectrum Scale         | 700 [#f3]_  |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
 +--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
@@ -406,6 +406,46 @@ Striping will likely have little or no performance benefit for:
 * Multiple nodes perform I/O but access files at different times.
 * Multiple nodes perform I/O simultaneously to different files that are small (each < 100 MB)
 * I/O that uses one file per process
+
+=====================
+LFS setstripe wrapper
+=====================
+
+The OLCF provides a wrapper for the ``lfs setstripe`` command that simplifies the process of striping files. The wrapper will enforce that certain settings are used to ensure that striping is done correctly. This will help to ensure good performance for users as well as prevent filesystem issues that could arise from incorrect striping practices. The wrapper is accessible via the ``lfs-wrapper`` module and will soon be added to the default environment on Frontier. 
+
+Orion is different than other Lustre filesystems that you may have used previously. To make effective use of Orion and to help ensure that the filesystem performs well for all users, it is important that you do the following:
+
+* Use the `capacity` OST pool tier (e.g. ``lfs setstripe -p capacity``)
+* Stripe across no more than 450 OSTs (e.g. ``lfs setstripe -c`` <= 450)
+
+When the module is active in your environment, the wrapper will enforce the above settings. The wrapper will also do the following:
+
+* If a user provides a stripe count of -1 (e.g. ``lfs setstripe -c -1``) the wrapper will set the stripe count to the maximum allowed by the filesystem (currently 450)
+* If a user provides a stripe count of 0 (e.g. ``lfs setstripe -c 0``) the wrapper will use the OLCF default striping command which has been optimized by the OLCF filesystem managers: ``lfs setstripe -E 256K -L mdt -E 8M -c 1 -S 1M -p performance -z 64M -E 128G -c 1 -S 1M -z 16G -p capacity -E -1 -z 256G -c 8 -S 1M -p capacity``
+
+Please contact the OLCF User Assistance Center if you have any questions about using the wrapper or if you encounter any issues.
+
+========================
+Lustre File Locking Tips
+========================
+
+File locking is the process of restricting only one process or user to access a file or region of a file. It prevents race conditions when writing data from multiple processes. Lustre uses a distributed lock management (LDLM) system for consistency and access. Concurrent operations on files/directories flow through this LDLM system.  Locks are generally managed on a per-client level and there are limits to the number of concurrent locks each client can have on each storage target (MDT/OST). While locking is good and necessary, certain I/O patterns can become very slow if they generate a large amount of lock contention. 
+
+Here are some things to avoid to minimizing lock impact: 
+
+* Multiple clients opening the same byte range of a file for writing 
+* Multiple clients appending to the same file (subset of previous) 
+* Multiple clients concurrently creating numerous files or directories in the same directory
+
+If your code does any of these, you may want to adjust it to avoid or limit them and then test to see if that improves your write performance. 
+
+=================================
+Darshan-runtime and I/O Profiling
+=================================
+
+The darshan-runtime modulefile is part of DefApps and is loaded by default on Frontier. This module allows users to profile the I/O of their applications with minimal impact. The logs are available to users on the Orion file system in /lustre/orion/darshan/<system>/<yyyy>/<mm>/<dd>. 
+
+Unloading darshan-runtime is recommended for users profiling their applications with other profilers to prevent conflicts.
 
 =====
 Purge

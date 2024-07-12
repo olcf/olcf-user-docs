@@ -44,7 +44,7 @@ from `Kitware <https://www.paraview.org/download/>`__.
 Recommended ParaView versions on our systems:
 
 * Summit: ParaView 5.9.1, 5.10.0, 5.11.0
-* Andes: ParaView 5.9.1, 5.10.0, 5.11.0
+* Andes: ParaView 5.9.1, 5.10.0, 5.11.0, 5.12.1
 
 .. warning::
     Using a different version than what is listed above is not guaranteed to work properly.
@@ -61,6 +61,7 @@ connected to. For example, to see these modules on Summit:
 
 .. code-block:: bash
 
+    [user@login4.summit ~]$ module load DefApps-2023 #only necessary on Summit
     [user@login4.summit ~]$ module -t avail paraview
 
     /sw/summit/modulefiles/core:
@@ -76,6 +77,7 @@ connected to. For example, to see these modules on Summit:
 .. warning::
     It is highly recommended to only use the modules located in
     ``/sw/andes/modulefiles/core`` or ``/sw/summit/modulefiles/core``.
+    On Summit, you **must** also load ``DefApps-2023`` first.
 
 .. note::
     The EGL mode seems to work better with larger datasets and is generally
@@ -429,6 +431,7 @@ batch scripts, along with a working Python example, are provided below.
         cd $LSB_OUTDIR
         date
 
+        module load DefApps-2023
         module load paraview/5.11.0-osmesa
 
         # Set up flags for jsrun

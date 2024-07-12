@@ -3,41 +3,49 @@
 Conda Basics
 ************
 
-.. warning::
-   Because there is no conda module on Frontier, this guide only applies if you installed a personal Miniconda first.
-   See our :doc:`Installing Miniconda Guide </software/python/miniconda>` for more details.
-
-This guide has been shortened and adapted from a challenge in OLCF's `Hands-On with Summit <https://github.com/olcf/hands-on-with-summit>`__ GitHub repository (`Python: Conda Basics <https://github.com/olcf/hands-on-with-summit/tree/master/challenges/Python_Conda_Basics>`__).
-
-.. note::
-   The guide is designed to be followed from start to finish, as certain steps must be completed in the correct order before some commands work properly.
-   For those that just want a quick-reference list of common conda commands, see the :ref:`conda-quick` section.
-
 Overview
 ========
 
 This guide introduces a user to the basic workflow of using conda environments, as well as providing an example of how to create a conda environment that uses a different version of Python than the base environment uses on Summit.
 Although Summit is being used in this guide, all of the concepts still apply to other OLCF systems.
-If using Frontier, this assumes you already have installed your own version of conda (e.g., by :doc:`installing Miniconda </software/python/miniconda>`).
 
 OLCF Systems this guide applies to: 
 
 * Summit
 * Andes
-* Frontier (if using ``conda``)
+* Frontier
 
 Inspecting and setting up an environment
 ========================================
 
-First, load the python module and the gnu compiler module on Summit (most Python packages assume use of GCC)
+First, load the python module and the gnu compiler module (most Python packages assume use of GCC)
 
-.. code-block:: bash
+.. tab-set::
 
-   $ module load gcc
-   $ module load python
+   .. tab-item:: Summit
+      :sync: summit
 
-.. note::
-   The above ``module load python`` does not apply to Frontier (since you will be using a personal Miniconda instead).
+      .. code-block:: bash
+
+         $ module load gcc/12.1.0
+         $ module load miniforge3/24.3.0-0
+
+   .. tab-item:: Andes
+      :sync: andes
+
+      .. code-block:: bash
+
+         $ module load gcc/9.3.0
+         $ module load miniforge3/23.11.0-0
+
+   .. tab-item:: Frontier
+      :sync: frontier
+
+      .. code-block:: bash
+
+         $ module load PrgEnv-gnu/8.3.3
+         $ module load miniforge3/23.11.0-0
+
 
 This puts you in the "base" conda environment, which is the default Python environment after loading the module.
 To see a list of environments, use the command ``conda env list``:
@@ -48,7 +56,7 @@ To see a list of environments, use the command ``conda env list``:
 
    # conda environments:
    #
-   base                  *  /sw/summit/python/3.8/anaconda3/2020.07-rhel8
+   base                  *  /sw/summit/miniforge3/24.3.0-0
 
 This also is a great way to keep track of the locations and names of all other environments that have been created.
 The current environment is indicated by ``*``.
@@ -59,18 +67,18 @@ To see what packages are installed in the active environment, use ``conda list``
 
    $ conda list
 
-   # packages in environment at /sw/summit/python/3.8/anaconda3/2020.07-rhel8:
+   # packages in environment at /sw/summit/miniforge3/24.3.0-0:
    #
    # Name                    Version                   Build  Channel
-   _ipyw_jlab_nb_ext_conf    0.1.0                    py38_0  
-   _libgcc_mutex             0.1                        main  
-   alabaster                 0.7.12                     py_0  
-   anaconda                  2020.07                  py38_0  
-   anaconda-client           1.7.2                    py38_0  
-   anaconda-project          0.8.4                      py_0  
-   asn1crypto                1.3.0                    py38_0  
-   astroid                   2.4.2                    py38_0  
-   astropy                   4.0.1.post1      py38h7b6447c_1  
+   _libgcc_mutex             0.1                 conda_forge    conda-forge
+   _openmp_mutex             4.5                       2_gnu    conda-forge
+   archspec                  0.2.2              pyhd8ed1ab_0    conda-forge
+   boltons                   23.1.1             pyhd8ed1ab_0    conda-forge
+   brotli-python             1.1.0           py310hc6cd4ac_1    conda-forge
+   bzip2                     1.0.8                hd590300_5    conda-forge
+   c-ares                    1.24.0               hd590300_0    conda-forge
+   ca-certificates           2023.11.17           hbcca054_0    conda-forge
+   certifi                   2023.11.17         pyhd8ed1ab_0    conda-forge
    .
    .
    .
@@ -79,30 +87,29 @@ You can find the version of Python that exists in this base environment by execu
 
 .. code-block:: bash
 
-   $ python --version
+   $ python3 --version
 
-   Python 3.8.3
+   Python 3.10.13
+
+.. note::
+   Although the base environment is ``3.10.13``, you are **NOT** limited to this version in any subsequent conda environments. I.e., you can install other Python versions in new conda environments.
 
 Creating a new environment
 ==========================
 
 For this guide, you are going to install a different version of Python.
 
-To do so, create a new environment using the ``conda create`` command:
+To do so, create a new environment using the ``conda create`` command.
+As an example, let's create an environment in the NFS "project home" space:
 
 .. code-block:: bash
 
-   $ conda create -p /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/envs/summit/py3711-summit python=3.7.11
+   $ conda create -p /ccs/proj/<project_id>/<username>/envs/summit/py311-summit python=3.11.0
 
 The ``-p`` flag specifies the desired path and name of your new virtual environment.
-The directory structure is case sensitive, so be sure to insert ``<YOUR_PROJECT_ID>`` as lowercase.
+The directory structure is case sensitive, so be sure to insert ``<project_id>`` as lowercase.
 Directories will be created if they do not exist already (provided you have write-access in that location).
 Instead, one can solely use the ``--name <your_env_name>`` flag which will automatically use your ``$HOME`` directory.
-
-.. note::
-   It is highly recommended to create new environments in the "Project Home" directory (on Summit, this is ``/ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>``).
-   This space avoids purges, allows for potential collaboration within your project, and works better with the compute nodes.
-   It is also recommended, for convenience, that you use environment names that indicate the hostname, as virtual environments created on one system will not necessarily work on others.
 
 After executing the ``conda create`` command, you will be prompted to install "the following NEW packages" -- type "y" then hit Enter/Return.
 Downloads of the fresh packages will start and eventually you should see something similar to:
@@ -115,7 +122,7 @@ Downloads of the fresh packages will start and eventually you should see somethi
    #
    # To activate this environment, use
    #
-   #     $ conda activate /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/envs/summit/py3711-summit
+   #     $ conda activate /ccs/proj/<project_id>/<username>/envs/summit/py311-summit
    #
    # To deactivate an active environment, use
    #
@@ -126,7 +133,7 @@ Let's activate the new environment:
 
 .. code-block:: bash
 
-   $ source activate /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/envs/summit/py3711-summit
+   $ source activate /ccs/proj/<project_id>/<username>/envs/summit/py311-summit
 
 The path to the environment should now be displayed in "( )" at the beginning of your terminal lines, which indicate that you are currently using that specific conda environment.
 And if you check with ``conda env list`` again, you should see that the ``*`` marker has moved to your newly activated environment:
@@ -137,7 +144,7 @@ And if you check with ``conda env list`` again, you should see that the ``*`` ma
 
    # conda environments:
    #
-                         *  /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/envs/summit/py3711-summit
+                         *  /ccs/proj/<project_id>/<username>/envs/summit/py311-summit
    base                     /sw/summit/python/3.8/anaconda3/2020.07-rhel8
 
 Installing packages
@@ -178,7 +185,6 @@ Installing with conda commands
 ------------------------------
 
 The traditional, and more basic, approach to installing/uninstalling packages into a conda environment is to use the commands ``conda install`` and ``conda remove``.
-Installing packages with this method checks the `Anaconda Distribution Repository <https://docs.anaconda.com/anaconda/packages/pkg-docs/>`__ for pre-built binary packages to install.
 Let's do this to install NumPy:
 
 .. code-block:: bash
@@ -211,9 +217,9 @@ Make sure you're in a Python shell first, then print out the versions of Python 
    >>> py_vers = platform.python_version()
    >>> np_vers = numpy.__version__
    >>> print("Hello from Python", py_vers)
-   Hello from Python 3.7.11
+   Hello from Python 3.11.0
    >>> print("You are using NumPy", np_vers)
-   You are using NumPy 1.20.3
+   You are using NumPy 1.26.4
 
 Additional Tips
 ===============

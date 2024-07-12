@@ -146,6 +146,23 @@ Transition from Alpine to Orion
 
 For more detailed information about center-wide file systems and data archiving available on Frontier, please refer to the pages on :ref:`data-storage-and-transfers`. The subsections below give a quick overview of NFS, Lustre,and HPSS storage spaces as well as the on node NVMe "Burst Buffers" (SSDs).
 
+LFS setstripe wrapper
+---------------------
+
+The OLCF provides a wrapper for the ``lfs setstripe`` command that simplifies the process of striping files. The wrapper will enforce that certain settings are used to ensure that striping is done correctly. This will help to ensure good performance for users as well as prevent filesystem issues that could arise from incorrect striping practices. The wrapper is accessible via the ``lfs-wrapper`` module and will soon be added to the default environment on Frontier. 
+
+Orion is different than other Lustre filesystems that you may have used previously. To make effective use of Orion and to help ensure that the filesystem performs well for all users, it is important that you do the following:
+
+* Use the `capacity` OST pool tier (e.g. ``lfs setstripe -p capacity``)
+* Stripe across no more than 450 OSTs (e.g. ``lfs setstripe -c`` <= 450)
+
+When the module is active in your environment, the wrapper will enforce the above settings. The wrapper will also do the following:
+
+* If a user provides a stripe count of -1 (e.g. ``lfs setstripe -c -1``) the wrapper will set the stripe count to the maximum allowed by the filesystem (currently 450)
+* If a user provides a stripe count of 0 (e.g. ``lfs setstripe -c 0``) the wrapper will use the OLCF default striping command which has been optimized by the OLCF filesystem managers: ``lfs setstripe -E 256K -L mdt -E 8M -c 1 -S 1M -p performance -z 64M -E 128G -c 1 -S 1M -z 16G -p capacity -E -1 -z 256G -c 8 -S 1M -p capacity``
+
+Please contact the OLCF User Assistance Center if you have any questions about using the wrapper or if you encounter any issues.
+
 NFS Filesystem 
 --------------
 
@@ -175,9 +192,9 @@ Lustre Filesystem
 +=====================+==============================================+========================+=============+========+=========+=========+============+==================+
 | Member Work         | ``/lustre/orion/[projid]/scratch/[userid]``  | Lustre HPE ClusterStor | 700         |  50 TB | No      | 90 days | N/A        | Yes              |
 +---------------------+----------------------------------------------+------------------------+-------------+--------+---------+---------+------------+------------------+
-| Project Work        | ``/lustre/orion/[[projid]/proj-shared``      | Lustre HPE ClusterStor | 770         |  50 TB | No      | 90 days | N/A        | Yes              |
+| Project Work        | ``/lustre/orion/[projid]/proj-shared``       | Lustre HPE ClusterStor | 770         |  50 TB | No      | 90 days | N/A        | Yes              |
 +---------------------+----------------------------------------------+------------------------+-------------+--------+---------+---------+------------+------------------+
-| World Work          | ``/lustre/orion/[[projid]/world-shared``     | Lustre HPE ClusterStor | 775         |  50 TB | No      | 90 days | N/A        | Yes              |
+| World Work          | ``/lustre/orion/[projid]/world-shared``      | Lustre HPE ClusterStor | 775         |  50 TB | No      | 90 days | N/A        | Yes              |
 +---------------------+----------------------------------------------+------------------------+-------------+--------+---------+---------+------------+------------------+
 
 
@@ -512,6 +529,10 @@ Modules with dependencies are only available when the underlying dependencies, s
 | ``module spider <string>``               | Searches for modulefiles containing ``<string>``                                     |
 +------------------------------------------+--------------------------------------------------------------------------------------+
 
+.. note::
+
+    Due to the implementation of the module heirarchy on Frontier, ``spider`` does not currently locate OLCF-provided Spack-built modulefiles in ``/sw/frontier``.
+
 
 Compilers
 ---------
@@ -551,27 +572,32 @@ Cray, AMD, and GCC compilers are provided through modules on Frontier. The Cray 
     It is highly recommended to use the Cray compiler wrappers (``cc``, ``CC``, and ``ftn``) whenever possible. See the next section for more details.
 
 
-+--------+-------------------------+-----------------+----------+-------------------+---------------------------------+
-| Vendor | Programming Environment | Compiler Module | Language | Compiler Wrapper  | Compiler                        |
-+========+=========================+=================+==========+===================+=================================+
-| Cray   | ``PrgEnv-cray``         | ``cce``         | C        | ``cc``            | ``craycc``                      |
-|        |                         |                 +----------+-------------------+---------------------------------+
-|        |                         |                 | C++      | ``CC``            | ``craycxx`` or ``crayCC``       |
-|        |                         |                 +----------+-------------------+---------------------------------+
-|        |                         |                 | Fortran  | ``ftn``           | ``crayftn``                     |
-+--------+-------------------------+-----------------+----------+-------------------+---------------------------------+
-| AMD    | ``PrgEnv-amd``          | ``amd``         | C        | ``cc``            | ``amdclang``                    |
-|        |                         |                 +----------+-------------------+---------------------------------+
-|        |                         |                 | C++      | ``CC``            | ``amdclang++``                  |
-|        |                         |                 +----------+-------------------+---------------------------------+
-|        |                         |                 | Fortran  | ``ftn``           | ``amdflang``                    |
-+--------+-------------------------+-----------------+----------+-------------------+---------------------------------+
-| GCC    | ``PrgEnv-gnu``          | ``gcc``         | C        | ``cc``            | ``${GCC_PATH}/bin/gcc``         |
-|        |                         |                 +----------+-------------------+---------------------------------+
-|        |                         |                 | C++      | ``CC``            | ``${GCC_PATH}/bin/g++``         |
-|        |                         |                 +----------+-------------------+---------------------------------+
-|        |                         |                 | Fortran  | ``ftn``           | ``${GCC_PATH}/bin/gfortran``    |
-+--------+-------------------------+-----------------+----------+-------------------+---------------------------------+
++--------+-------------------------+-----------------+----------+-------------------+----------------------------+
+| Vendor | Programming Environment | Compiler Module | Language | Compiler Wrapper  | Compiler                   |
++========+=========================+=================+==========+===================+============================+
+| Cray   | ``PrgEnv-cray``         | ``cce``         | C        | ``cc``            | ``craycc``                 |
+|        |                         |                 +----------+-------------------+----------------------------+
+|        |                         |                 | C++      | ``CC``            | ``craycxx`` or ``crayCC``  |
+|        |                         |                 +----------+-------------------+----------------------------+
+|        |                         |                 | Fortran  | ``ftn``           | ``crayftn``                |
++--------+-------------------------+-----------------+----------+-------------------+----------------------------+
+| AMD    | ``PrgEnv-amd``          | ``amd``         | C        | ``cc``            | ``amdclang``               |
+|        |                         |                 +----------+-------------------+----------------------------+
+|        |                         |                 | C++      | ``CC``            | ``amdclang++``             |
+|        |                         |                 +----------+-------------------+----------------------------+
+|        |                         |                 | Fortran  | ``ftn``           | ``amdflang``               |
++--------+-------------------------+-----------------+----------+-------------------+----------------------------+
+| GCC    | ``PrgEnv-gnu``          | ``gcc-native``  | C        | ``cc``            | ``gcc``                    |
+|        |                         | or              +----------+-------------------+----------------------------+
+|        |                         | ``gcc`` (<12.3) | C++      | ``CC``            | ``g++``                    |
+|        |                         |                 +----------+-------------------+----------------------------+
+|        |                         |                 | Fortran  | ``ftn``           | ``gfortran``               |
++--------+-------------------------+-----------------+----------+-------------------+----------------------------+
+
+.. note::
+
+    The ``gcc-native`` compiler module was introduced in the December 2023 release of the HPE/Cray Programming Environment (CrayPE) and replaces ``gcc``.
+    ``gcc`` provides GCC installations that were packaged within CrayPE, while ``gcc-native`` provides GCC installations outside of CrayPE.
 
 
 Cray Programming Environment and Compiler Wrappers
@@ -585,7 +611,9 @@ For example, to load the AMD programming environment, do: 
     
     module load PrgEnv-amd
 
-This module will setup your programming environment with paths to software and libraries that are compatible with AMD compilers.
+This module will setup your programming environment with paths to software and libraries that are compatible with AMD host compilers.
+
+When loading non-default versions of Cray-provided components, please see :ref:`understanding-the-compatibility-of-compilers-rocm-and-cray-mpich` for information about loading a set of compatible Cray modules.
 
 .. note::
    Use the ``-craype-verbose`` flag to display the full include and link information used by the Cray compiler wrappers. This must be called on a file to see the full output (e.g., ``CC -craype-verbose test.cpp``).
@@ -597,21 +625,12 @@ Exposing The ROCm Toolchain to your Programming Environment
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If you need to add the tools and libraries related to ROCm, the framework for targeting AMD GPUs, to your path, you will need to use a version of ROCm that is compatible with your programming environment.
+ROCm can be loaded with: ``module load rocm/X.Y.Z``, or to load the default ROCm version, ``module load rocm``.
 
-The following modules help you expose the ROCm Toolchain to your programming Environment: 
-
-
-+-----------------------------------+------------------------------------------+--------------------------------------------------------------+
-| Programming Environment Module    | Module that gets you ROCm Toolchain      | How you load it:                                             |
-|                                   |                                          |                                                              |
-+===================================+==========================================+==============================================================+
-| ``PrgEnv-amd``                    |  ``amd``                                 | amd  is loaded automatically with ``module load PrgEnv-amd`` |
-+-----------------------------------+------------------------------------------+--------------------------------------------------------------+
-| ``PrgEnv-cray`` or ``PrgEnv-gnu`` |  ``amd-mixed``                           | ``module load amd-mixed``                                    |
-+-----------------------------------+------------------------------------------+--------------------------------------------------------------+
 
 .. note::
-    Both the CCE and ROCm compilers are Clang-based, so please be sure to use consistent (major) Clang versions when using them together. You can check which version of Clang is being used with CCE and ROCm by giving the ``--version`` flag to ``CC`` and ``hipcc``, respectively.
+    Both the CCE and ROCm compilers are Clang-based, so please be sure to use consistent (major) Clang versions when using them together. You can check which version of Clang is being used with CCE and ROCm by giving the ``--version`` flag to ``CC`` and ``amdclang``, respectively.
+    Please see :ref:`understanding-the-compatibility-of-compilers-rocm-and-cray-mpich` for information about loading a compatible set of modules.
 
 MPI
 ---
@@ -640,24 +659,13 @@ GPU-Aware MPI
 
 To use GPU-aware Cray MPICH with Frontier's PrgEnv modules, users must set the following modules and environment variables:
 
-If using ``PrgEnv-amd``:
-
 .. code:: bash
     
     module load craype-accel-amd-gfx90a
-    
-    export MPICH_GPU_SUPPORT_ENABLED=1
-    
-    
-If using ``PrgEnv-cray``:   
-
-.. code:: bash
-    
-    module load craype-accel-amd-gfx90a
-    module load amd-mixed
+    module load rocm
     
     export MPICH_GPU_SUPPORT_ENABLED=1    
-    
+
 
 .. note::
 
@@ -679,10 +687,10 @@ where the include path implies that ``#include <hip/hip_runtime.h>`` is included
 
 
 
-2. Compiling with ``hipcc``
-"""""""""""""""""""""""""""
+2. Compiling without the Cray compiler wrappers, e.g. ``hipcc``
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-To use ``hipcc`` with GPU-aware Cray MPICH, use the following environment variables to setup the needed header files and libraries. 
+To use ``hipcc`` with GPU-aware Cray MPICH, the following is needed to setup the needed header files and libraries. 
 
 .. code:: bash
 
@@ -693,46 +701,110 @@ To use ``hipcc`` with GPU-aware Cray MPICH, use the following environment variab
       ${PE_MPICH_GTL_DIR_amd_gfx90a} ${PE_MPICH_GTL_LIBS_amd_gfx90a}
 
     HIPFLAGS = --offload-arch=gfx90a
-    
 
-Determining the Compatibility of Cray MPICH and ROCm
-""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-Compatibility between Cray MPICH and ROCm is required in order to use GPU-aware MPI.
-Releases of ``cray-mpich`` are each built with a specific version of ROCm, and compatibility across multiple versions is not guaranteed.
-OLCF will maintain compatible default modules when possible.
-If using non-default modules, you can determine compatibility by reviewing the *Product and OS Dependencies* section in the ``cray-mpich`` release notes.
-This can be displayed by running ``module show cray-mpich/<version>``. If the notes indicate compatibility with *AMD ROCM X.Y or later*, only use ``rocm/X.Y.Z`` modules.
+.. _understanding-the-compatibility-of-compilers-rocm-and-cray-mpich:
+
+Understanding the Compatibility of Compilers, ROCm, and Cray MPICH
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+There are three primary sources of compatibility required to successfully build and run on Frontier:
+
+ 1. Compatible Compiler & ROCm toolchain versions
+ 2. Compatible ROCm & Cray MPICH versions
+ 3. Compatibility with other CrayPE-provided software
 
 .. note::
 
-    If using a non-default version of ``cray-mpich``, you must *prepend* either ``${CRAY_LD_LIBRARY_PATH}`` or ``${CRAY_MPICH_DIR}/lib`` and ``${CRAY_MPICH_ROOTDIR}/gtl/lib`` (which are a subset of ``${CRAY_LD_LIBRARY_PATH}``) to your ``LD_LIBRARY_PATH`` at run time or your executable's rpath at build time.
+    If using non-default versions of any ``cray-*`` module, you must *prepend* ``${CRAY_LD_LIBRARY_PATH}`` (or the path to ``lib64`` for your specific ``cray-*`` component) to your ``LD_LIBRARY_PATH`` at run time or your executable's rpath at build time.
 
-The compatibility table below was determined by testing of the linker and basic GPU-aware MPI functions with all current combinations of ``cray-mpich`` and ROCm modules on Frontier.
-Alongside ``cray-mpich``, we load the corresponding ``cpe`` module, which loads other important modules such as ``cray-pmi`` and ``craype``.
+Compatible Compiler & ROCm toolchain versions
+"""""""""""""""""""""""""""""""""""""""""""""
+
+All compilers in the same HPE/Cray Programming Environment (CrayPE) release are generally ABI-compatible (e.g. code generated by CCE can be linked against code compiled by GCC).
+However, the AMD and CCE compilers are both LLVM/Clang-based, and it is recommended to use the same major LLVM version when cross-compiling.
+CCE's module version indicates the base LLVM version, but for AMD, you must run ``amdclang --version``.
+For example, ROCm/5.3.0 is based on LLVM 15.0.0.
+It is strongly discouraged to use ROCm/5.3.0 with CCE/16.0.1, which is based on LLVM 16.
+The following table shows the recommended ROCm version for each CCE version, along with the CPE version:
+
++-------------+-------+---------------------------+
+|    CCE      |  CPE  | Recommended ROCm Version  |
++=============+=======+===========================+
+|   15.0.0    | 22.12 | 5.3.0                     |
++-------------+-------+---------------------------+
+|   15.0.1    | 23.03 | 5.3.0                     |
++-------------+-------+---------------------------+
+|   16.0.0    | 23.05 | 5.5.1                     |
++-------------+-------+---------------------------+
+|   16.0.1    | 23.09 | 5.5.1                     |
++-------------+-------+---------------------------+
+|   17.0.0    | 23.12 | 5.7.0 or 5.7.1            |
++-------------+-------+---------------------------+
+
+.. note::
+
+    Recall that the CPE module is a meta-module that simple loads the correct version for each Cray-provided module (e.g. CCE, Cray MPICH, Cray Libsci).
+    This is the best way to load the versions of modules from a specific CrayPE release.
+
+
+Compatible ROCm & Cray MPICH versions
+"""""""""""""""""""""""""""""""""""""
+
+Compatibility between Cray MPICH and ROCm is required in order to use GPU-aware MPI.
+Releases of ``cray-mpich`` are each compiled using a specific version of ROCm, and compatibility across multiple versions is not guaranteed.
+OLCF will maintain compatible default modules when possible.
+If using non-default modules, you can determine compatibility by reviewing the *Product and OS Dependencies* section in the ``cray-mpich`` release notes.
+This can be displayed by running ``module show cray-mpich/<version>``. If the notes indicate compatibility with *AMD ROCM X.Y or later*, only use ``rocm/X.Y.Z`` modules.
+If you are loading compatible ROCm and Cray MPICH versions but still getting errors, try setting ``MPICH_VERSION_DISPLAY=1`` to verify the correct Cray MPICH version is being used at run-time.
+If it is not, verify you are prepending ``LD_LIBRARY_PATH`` with ``CRAY_LD_LIBRARY_PATH`` or ``${MPICH_DIR}/lib``.
+The following compatibility table below was determined by testing of the linker and basic GPU-aware MPI functions with all current combinations of ``cray-mpich`` and ROCm modules on Frontier.
+Alongside ``cray-mpich``, we load the corresponding ``cpe`` module, which loads other important modules for MPI such as ``cray-pmi`` and ``craype``.
 It is strongly encouraged to load a ``cpe`` module when using non-default modules.
+This ensures that all CrayPE-provided modules are compatible.
 An asterisk indicates the latest officially supported version of ROCm for each ``cray-mpich`` version.
 
-+------------+-------+-----------------------------------------------------------------------+
-| cray-mpich |  cpe  |                              ROCm                                     |
-+============+=======+=======================================================================+
-|   8.1.17   | 22.06 | 5.4.3, 5.4.0, 5.3.0, 5.2.0, 5.1.0*                                    |
-+------------+-------+-----------------------------------------------------------------------+
-|   8.1.23   | 22.12 | 5.4.3, 5.4.0, 5.3.0*, 5.2.0, 5.1.0                                    |
-+------------+-------+-----------------------------------------------------------------------+
-|   8.1.25   | 23.03 | 5.4.3, 5.4.0, 5.3.0*, 5.2.0, 5.1.0                                    |
-+------------+-------+-----------------------------------------------------------------------+
-|   8.1.26   | 23.05 | 6.0.0, 5.7.1, 5.7.0, 5.6.0, 5.5.1*, 5.4.3, 5.4.0, 5.3.0, 5.2.0, 5.1.0 |
-+------------+-------+-----------------------------------------------------------------------+
-|   8.1.27   | 23.09 | 6.0.0, 5.7.1, 5.7.0, 5.6.0, 5.5.1*, 5.4.3, 5.4.0, 5.3.0, 5.2.0, 5.1.0 |
-+------------+-------+-----------------------------------------------------------------------+
-|   8.1.30   | 23.12 | 6.0.0, 5.7.1, 5.7.0*, 5.6.0, 5.5.1, 5.4.3, 5.4.0, 5.3.0, 5.2.0, 5.1.0 |
-+------------+-------+-----------------------------------------------------------------------+
++------------+-------+----------------------------------------------------------------+
+| cray-mpich |  cpe  |                              ROCm                              |
++============+=======+================================================================+
+|   8.1.23   | 22.12 | 5.4.3, 5.4.0, 5.3.0*, 5.2.0, 5.1.0                             |
++------------+-------+----------------------------------------------------------------+
+|   8.1.25   | 23.03 | 5.4.3, 5.4.0*, 5.3.0, 5.2.0, 5.1.0                             |
++------------+-------+----------------------------------------------------------------+
+|   8.1.26   | 23.05 | 5.7.1, 5.7.0, 5.6.0, 5.5.1*, 5.4.3, 5.4.0, 5.3.0, 5.2.0, 5.1.0 |
++------------+-------+----------------------------------------------------------------+
+|   8.1.27   | 23.09 | 5.7.1, 5.7.0, 5.6.0, 5.5.1*, 5.4.3, 5.4.0, 5.3.0, 5.2.0, 5.1.0 |
++------------+-------+----------------------------------------------------------------+
+|   8.1.28   | 23.12 | 5.7.1, 5.7.0*, 5.6.0, 5.5.1, 5.4.3, 5.4.0, 5.3.0, 5.2.0, 5.1.0 |
++------------+-------+----------------------------------------------------------------+
 
 .. note::
 
     OLCF recommends using the officially supported ROCm version (with asterisk) for each ``cray-mpich`` version.
     Newer versions were tested using a sample of MPI operations and there may be undiscovered incompatibility.
+
+Compatibility with other CrayPE-provided Software
+"""""""""""""""""""""""""""""""""""""""""""""""""
+
+The HPE/Cray Programming Environment (CrayPE) provides many libraries for use on Frontier, including the well-known libraries like Cray MPICH, Cray Libsci, and Cray FFTW.
+CrayPE also has many modules that operate in the background and can easily be overlooked.
+For example, the ``craype`` module provides the ``cc``, ``CC``, and ``ftn`` Cray compiler drivers.
+These drivers are written to link to specific libraries (e.g. the ``ftn`` wrapper in September 2023 PE links to ``libtcmalloc_minimal.so``),
+which may not be needed by compiler versions other than the one they were released with.
+
+For the full compatibility of your loaded CrayPE environment, we strongly recommended loading the ``cpe`` module of your desired CrayPE release (version is the last two digits of the year and the two-digit month, e.g. September 2023 is version 23.09).
+For example, to load the September 2023 PE (CCE 16.0.1, Cray MPICH 8.1.27, ROCm 5.5.1 compatibility), 
+you would run the following commands:
+
+.. code:: bash
+
+    module load PrgEnv-cray
+    # Load the cpe module after your desired PE, but before rocm -- sometimes cpe attempts to set a rocm version
+    module load cpe/23.09
+    module load rocm/5.5.1
+
+    # Since these modules are not default, make sure to prepend CRAY_LD_LIBRARY_PATH to LD_LIBRARY_PATH
+    export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
 
 
 OpenMP
@@ -801,19 +873,18 @@ compiler with added support for OpenACC. It can be obtained by loading the UMS m
 +--------+-------------------+-----------+----------------------------------+-------------------+-------------------------------------+
 | Vendor | Module            | Language  | Compiler                         | Flags             | Support                             |
 +========+===================+===========+==================================+===================+=====================================+
-| Cray   | ``cce``           | C, C\+\+  | No support                       |                   |		                      |
-|        |                   |           |                                  |                   |	                              |
+| Cray   | ``cce``           | C, C\+\+  | No support                       |                   |                                     |
+|        |                   |           |                                  |                   |                                     |
 |        |                   +-----------+----------------------------------+-------------------+-------------------------------------+
 |        |                   | Fortran   | ``ftn`` (wraps ``crayftn``)      | | ``-h acc``      | Full support for OpenACC 2.0        |
 |        |                   |           |                                  |                   | Partial support for OpenACC 2.x/3.x |
 +--------+-------------------+-----------+----------------------------------+-------------------+-------------------------------------+
-| UMS    | ``PrgEnv-cray``   | C, C\+\+  | ``clang``                        | | ``-fopenacc``   | Experimental. Contact	              |
-| module | ``ums``           |           |                                  |                   |	Joel Denny dennyje@ornl.gov   |
+| UMS    | ``PrgEnv-cray``   | C, C\+\+  | ``clang``                        | | ``-fopenacc``   | Experimental. Contact               |
+| module | ``ums``           |           |                                  |                   |    Joel Denny dennyje@ornl.gov      |
 |        | ``um025``         +-----------+----------------------------------+-------------------+-------------------------------------+
 |        | ``clacc``         | Fortran   | No support                       |                   |                                     |
 |        |                   |           |                                  |                   |                                     |
 +--------+-------------------+-----------+----------------------------------+-------------------+-------------------------------------+
-
 
 
 HIP
@@ -874,6 +945,37 @@ This section shows how to compile HIP + OpenMP CPU threading hybrid codes.
 .. note:: 
    
     hipcc requires the ROCm Toolclain, See :ref:`exposing-the-rocm-toolchain-to-your-programming-environment`
+
+SYCL
+----
+
+This section shows how to compile SYCL codes using the oneAPI DPC++ compiler.
+
+.. note::
+
+    Setup and load the oneAPI and ROCm modules:
+
+    .. code::
+
+      module use /sw/frontier/ums/ums015/modulefiles
+      module load oneapi/tbb oneapi/oclfpga oneapi/compiler-rt oneapi/compiler
+      module load rocm/5.4.3
+
++-------------------+--------------------------------------------------------------------------------------------------------------------------+
+| Compiler          | Compile/Link Flags, Header Files, and Libraries                                                                          |
++===================+==========================================================================================================================+
+| ``icpx``          | ``CFLAGS = -fsycl -fsycl-targets=amdgcn-amd-amdhsa -Xsycl-target-backend --offload-arch=gfx90a``, or                     |
+|                   | ``CFLAGS = -fsycl -fsycl-targets=amd_gpu_gfx90a``                                                                        |
++-------------------+--------------------------------------------------------------------------------------------------------------------------+
+
+Additional documentation on the DPC++ support for AMD can be found on
+`Codeplay's developer website
+<https://developer.codeplay.com/products/oneapi/amd/2024.1.0/guides/>`__, in
+particular the pages covering `common optimizations
+<https://developer.codeplay.com/products/oneapi/amd/2024.1.0/guides/performance/common-optimizations>`__
+or `troubleshooting
+<https://developer.codeplay.com/products/oneapi/amd/2024.1.0/guides/troubleshooting>`__
+can be helpful.
 
 ----
 
@@ -996,18 +1098,18 @@ Consider the following batch script:
 .. code-block:: bash
    :linenos:
 
-    #!/bin/bash
-    #SBATCH -A ABC123
-    #SBATCH -J RunSim123
-    #SBATCH -o %x-%j.out
-    #SBATCH -t 1:00:00
-    #SBATCH -p batch
-    #SBATCH -N 1024
+   #!/bin/bash
+   #SBATCH -A ABC123
+   #SBATCH -J RunSim123
+   #SBATCH -o %x-%j.out
+   #SBATCH -t 1:00:00
+   #SBATCH -p batch
+   #SBATCH -N 1024
 
-    cd $MEMBERWORK/abc123/Run.456
-    cp $PROJWORK/abc123/RunData/Input.456 ./Input.456
-    srun ...
-    cp my_output_file $PROJWORK/abc123/RunData/Output.456
+   cd $MEMBERWORK/abc123/Run.456
+   cp $PROJWORK/abc123/RunData/Input.456 ./Input.456
+   srun ...
+   cp my_output_file $PROJWORK/abc123/RunData/Output.456
 
 In the script, Slurm directives are preceded by ``#SBATCH``, making them appear as comments to the shell. Slurm looks for these directives through the first non-comment, non-whitespace line. Options after that will be ignored by Slurm (and the shell).
 
@@ -1048,6 +1150,9 @@ Most users will find batch jobs an easy way to use the system, as they allow you
 
 Since all compute resources are managed and scheduled by Slurm, it is not possible to simply log into the system and immediately begin running parallel codes interactively. Rather, you must request the appropriate resources from Slurm and, if necessary, wait for them to become available. This is done through an "interactive batch" job. Interactive batch jobs are submitted with the ``salloc`` command. Resources are requested via the same options that are passed via ``#SBATCH`` in a regular batch script (but without the ``#SBATCH`` prefix). For example, to request an interactive batch job with the same resources that the batch script above requests, you would use ``salloc -A ABC123 -J RunSim123 -t 1:00:00 -p batch -N 1024``. Note there is no option for an output file...you are running interactively, so standard output and standard error will be displayed to the terminal.
 
+.. warning::
+   Indicating your shell in your ``salloc`` command is NOT recommended (e.g., ``salloc ... /bin/bash``). Doing so causes your compute job to start on a login node by default rather than automatically moving you to a compute node. 
+
 .. _common-slurm-options:
 
 Common Slurm Options
@@ -1055,57 +1160,60 @@ Common Slurm Options
 
 The table below summarizes options for submitted jobs. Unless otherwise noted, they can be used for either batch scripts or interactive batch jobs. For scripts, they can be added on the ``sbatch`` command line or as a ``#BSUB`` directive in the batch script. (If they're specified in both places, the command line takes precedence.) This is only a subset of all available options. Check the `Slurm Man Pages <https://slurm.schedmd.com/man_index.html>`__ for a more complete list.
 
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-| Option                 | Example Usage                              | Description                                                                          |
-+========================+============================================+======================================================================================+
-| ``-A``                 | ``#SBATCH -A ABC123``                      | Specifies the project to which the job should be charged                             |
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-| ``-N``                 | ``#SBATCH -N 1024``                        | Request 1024 nodes for the job                                                       |
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-| ``-t``                 | ``#SBATCH -t 4:00:00``                     | Request a walltime of 4 hours.                                                       |
-|                        |                                            | Walltime requests can be specified as minutes, hours:minutes, hours:minuts:seconds   |
-|                        |                                            | days-hours, days-hours:minutes, or days-hours:minutes:seconds                        |
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-| ``--threads-per-core`` | ``#SBATCH --threads-per-core=2``           | | Number of active hardware threads per core. Can be 1 or 2 (1 is default)           |
-|                        |                                            | | **Must** be used if using ``--threads-per-core=2`` in your ``srun`` command.       |
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-| ``-d``                 | ``#SBATCH -d afterok:12345``               | Specify job dependency (in this example, this job cannot start until job 12345 exits |
-|                        |                                            | with an exit code of 0. See the Job Dependency section for more information          |
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-| ``-C``                 | ``#SBATCH -C nvme``                        | Request the burst buffer/NVMe on each node be made available for your job. See       |
-|                        |                                            | the Burst Buffers section for more information on using them.                        |
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-| ``-J``                 | ``#SBATCH -J MyJob123``                    | Specify the job name (this will show up in queue listings)                           |
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-| ``-o``                 | ``#SBATCH -o jobout.%j``                   | File where job STDOUT will be directed (%j will be replaced with the job ID).        |
-|                        |                                            | If no `-e` option is specified, job STDERR will be placed in this file, too.         |
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-| ``-e``                 | ``#SBATCH -e joberr.%j``                   | File where job STDERR will be directed (%j will be replaced with the job ID).        |
-|                        |                                            | If no `-o` option is specified, job STDOUT will be placed in this file, too.         |
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-| ``--mail-type``        | ``#SBATCH --mail-type=END``                | Send email for certain job actions. Can be a comma-separated list. Actions include   |
-|                        |                                            | BEGIN, END, FAIL, REQUEUE, INVALID_DEPEND, STAGE_OUT, ALL, and more.                 |
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-| ``--mail-user``        | ``#SBATCH --mail-user=user@somewhere.com`` | Email address to be used for notifications.                                          |
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-| ``--reservation``      | ``#SBATCH --reservation=MyReservation.1``  | Instructs Slurm to run a job on nodes that are part of the specified reservation.    |
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-| ``-S``                 | ``#SBATCH -S 8``                           | Instructs Slurm to reserve a specific number of cores per node (default is 8).       |
-|                        |                                            | Reserved cores cannot be used by the application.                                    |
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-| ``--signal``           | ``#SBATCH --signal=USR1@300``              || Send the given signal to a job the specified time (in seconds) seconds before the   |
-|                        |                                            | job reaches its walltime. The signal can be by name or by number (i.e. both 10 and   |
-|                        |                                            | USR1 would send SIGUSR1).                                                            |
-|                        |                                            ||                                                                                     |
-|                        |                                            || Signaling a job can be used, for example, to force a job to write a checkpoint just |
-|                        |                                            | before Slurm kills the job (note that this option only sends the signal; the user    |
-|                        |                                            | must still make sure their job script traps the signal and handles it in the desired |
-|                        |                                            | manner).                                                                             |
-|                        |                                            ||                                                                                     |
-|                        |                                            || When used with ``sbatch``, the signal can be prefixed by "B:"                       |
-|                        |                                            | (e.g. ``--signal=B:USR1@300``) to tell Slurm to signal only the batch shell;         |
-|                        |                                            | otherwise all processes will be signaled.                                            |
-+------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+.. table::
+    :widths: 15 28 57
+
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | Option                 | Example Usage                              | Description                                                                          |
+    +========================+============================================+======================================================================================+
+    | ``-A``                 | ``#SBATCH -A ABC123``                      | Specifies the project to which the job should be charged                             |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | ``-N``                 | ``#SBATCH -N 1024``                        | Request 1024 nodes for the job                                                       |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | ``-t``                 | ``#SBATCH -t 4:00:00``                     | Request a walltime of 4 hours.                                                       |
+    |                        |                                            | Walltime requests can be specified as minutes, hours:minutes, hours:minuts:seconds   |
+    |                        |                                            | days-hours, days-hours:minutes, or days-hours:minutes:seconds                        |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | ``--threads-per-core`` | ``#SBATCH --threads-per-core=2``           | | Number of active hardware threads per core. Can be 1 or 2 (1 is default)           |
+    |                        |                                            | | **Must** be used if using ``--threads-per-core=2`` in your ``srun`` command.       |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | ``-d``                 | ``#SBATCH -d afterok:12345``               | Specify job dependency (in this example, this job cannot start until job 12345 exits |
+    |                        |                                            | with an exit code of 0. See the Job Dependency section for more information          |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | ``-C``                 | ``#SBATCH -C nvme``                        | Request the burst buffer/NVMe on each node be made available for your job. See       |
+    |                        |                                            | the Burst Buffers section for more information on using them.                        |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | ``-J``                 | ``#SBATCH -J MyJob123``                    | Specify the job name (this will show up in queue listings)                           |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | ``-o``                 | ``#SBATCH -o jobout.%j``                   | File where job STDOUT will be directed (%j will be replaced with the job ID).        |
+    |                        |                                            | If no `-e` option is specified, job STDERR will be placed in this file, too.         |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | ``-e``                 | ``#SBATCH -e joberr.%j``                   | File where job STDERR will be directed (%j will be replaced with the job ID).        |
+    |                        |                                            | If no `-o` option is specified, job STDOUT will be placed in this file, too.         |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | ``--mail-type``        | ``#SBATCH --mail-type=END``                | Send email for certain job actions. Can be a comma-separated list. Actions include   |
+    |                        |                                            | BEGIN, END, FAIL, REQUEUE, INVALID_DEPEND, STAGE_OUT, ALL, and more.                 |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | ``--mail-user``        | ``#SBATCH --mail-user=user@somewhere.com`` | Email address to be used for notifications.                                          |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | ``--reservation``      | ``#SBATCH --reservation=MyReservation.1``  | Instructs Slurm to run a job on nodes that are part of the specified reservation.    |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | ``-S``                 | ``#SBATCH -S 8``                           | Instructs Slurm to reserve a specific number of cores per node (default is 8).       |
+    |                        |                                            | Reserved cores cannot be used by the application.                                    |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | ``--signal``           | ``#SBATCH --signal=USR1@300``              || Send the given signal to a job the specified time (in seconds) seconds before the   |
+    |                        |                                            | job reaches its walltime. The signal can be by name or by number (i.e. both 10 and   |
+    |                        |                                            | USR1 would send SIGUSR1).                                                            |
+    |                        |                                            ||                                                                                     |
+    |                        |                                            || Signaling a job can be used, for example, to force a job to write a checkpoint just |
+    |                        |                                            | before Slurm kills the job (note that this option only sends the signal; the user    |
+    |                        |                                            | must still make sure their job script traps the signal and handles it in the desired |
+    |                        |                                            | manner).                                                                             |
+    |                        |                                            ||                                                                                     |
+    |                        |                                            || When used with ``sbatch``, the signal can be prefixed by "B:"                       |
+    |                        |                                            | (e.g. ``--signal=B:USR1@300``) to tell Slurm to signal only the batch shell;         |
+    |                        |                                            | otherwise all processes will be signaled.                                            |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
 
 
 Slurm Environment Variables
@@ -1273,22 +1381,25 @@ Job Dependencies
 
 Oftentimes, a job will need data from some other job in the queue, but it's nonetheless convenient to submit the second job before the first finishes. Slurm allows you to submit a job with constraints that will keep it from running until these dependencies are met. These are specified with the ``-d`` option to Slurm. Common dependency flags are summarized below. In each of these examples, only a single jobid is shown but you can specify multiple job IDs as a colon-delimited list (i.e. ``#SBATCH -d afterok:12345:12346:12346``). For the ``after`` dependency, you can optionally specify a ``+time`` value for each jobid.
 
-+-----------------------------------+---------------------------------------------------------------------------------------------------+
-| Flag                              | Meaning (for the dependent job)                                                                   |
-+===================================+===================================================================================================+
-| ``#SBATCH -d after:jobid[+time]`` | The job can start after the specified jobs start or are canceled. The optional ``+time`` argument |
-|                                   | is a number of minutes. If specified, the job cannot start until that many minutes have passed    |
-|                                   | since the listed jobs start/are canceled. If not specified, there is no delay.                    |
-+-----------------------------------+---------------------------------------------------------------------------------------------------+
-| ``#SBATCH -d afterany:jobid``     | The job can start after the specified jobs have ended (regardless of exit state)                  |
-+-----------------------------------+---------------------------------------------------------------------------------------------------+
-| ``#SBATCH -d afternotok:jobid``   | The job can start after the specified jobs terminate in a failed (non-zero) state                 |
-+-----------------------------------+---------------------------------------------------------------------------------------------------+
-| ``#SBATCH -d afterok:jobid``      | The job can start after the specified jobs complete successfully (i.e. zero exit code)            |
-+-----------------------------------+---------------------------------------------------------------------------------------------------+
-| ``#SBATCH -d singleton``          | Job can begin after any previously-launched job with the same name and from the same user         |
-|                                   | have completed. In other words, serialize the running jobs based on username+jobname pairs.       |
-+-----------------------------------+---------------------------------------------------------------------------------------------------+
+.. table::
+    :widths: 25 75
+
+    +-----------------------------------+---------------------------------------------------------------------------------------------------+
+    | Flag                              | Meaning (for the dependent job)                                                                   |
+    +===================================+===================================================================================================+
+    | ``#SBATCH -d after:jobid[+time]`` | The job can start after the specified jobs start or are canceled. The optional ``+time`` argument |
+    |                                   | is a number of minutes. If specified, the job cannot start until that many minutes have passed    |
+    |                                   | since the listed jobs start/are canceled. If not specified, there is no delay.                    |
+    +-----------------------------------+---------------------------------------------------------------------------------------------------+
+    | ``#SBATCH -d afterany:jobid``     | The job can start after the specified jobs have ended (regardless of exit state)                  |
+    +-----------------------------------+---------------------------------------------------------------------------------------------------+
+    | ``#SBATCH -d afternotok:jobid``   | The job can start after the specified jobs terminate in a failed (non-zero) state                 |
+    +-----------------------------------+---------------------------------------------------------------------------------------------------+
+    | ``#SBATCH -d afterok:jobid``      | The job can start after the specified jobs complete successfully (i.e. zero exit code)            |
+    +-----------------------------------+---------------------------------------------------------------------------------------------------+
+    | ``#SBATCH -d singleton``          | Job can begin after any previously-launched job with the same name and from the same user         |
+    |                                   | have completed. In other words, serialize the running jobs based on username+jobname pairs.       |
+    +-----------------------------------+---------------------------------------------------------------------------------------------------+
 
 
 Monitoring and Modifying Batch Jobs
@@ -1383,45 +1494,48 @@ The job name and output options have been removed since stdout/stderr are typica
 
 ``srun`` accepts the following common options:
 
-+--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
-| ``-N``                                                 | Number of nodes                                                                                                |
-+--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
-| ``-n``                                                 | Total number of MPI tasks (default is 1)                                                                       |
-+--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
-| ``-c, --cpus-per-task=<ncpus>``                        | | Logical cores per MPI task (default is 1)                                                                    |
-|                                                        | | When used with ``--threads-per-core=1``: ``-c`` is equivalent to *physical* cores per task                   |
-|                                                        | | By default, when ``-c > 1``, additional cores per task are distributed within one L3 region                  |
-|                                                        |   first before filling a different L3 region.                                                                  |
-+--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
-| ``--cpu-bind=threads``                                 | | Bind tasks to CPUs.                                                                                          |
-|                                                        | | ``threads`` - (default, recommended) Automatically generate masks binding tasks to threads.                  |
-+--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
-| ``--threads-per-core=<threads>``                       | | In task layout, use the specified maximum number of hardware threads per core                                |
-|                                                        | | (default is 1; there are 2 hardware threads per physical CPU core).                                          |
-|                                                        | | Must also be set in ``salloc`` or ``sbatch`` if using ``--threads-per-core=2`` in your ``srun`` command.     |
-+--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
-| ``-m, --distribution=<value>:<value>:<value>``         | | Specifies the distribution of MPI ranks across compute nodes, sockets (L3 regions), and cores, respectively. |
-|                                                        | | The default values are ``block:cyclic:cyclic``, see ``man srun`` for more information.                       |
-|                                                        | | Currently, the distribution setting for cores (the third "<value>" entry) has no effect on Frontier          |
-+--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
-|  ``--ntasks-per-node=<ntasks>``                        | | If used without ``-n``: requests that a specific number of tasks be invoked on each node.                    |
-|                                                        | | If used with ``-n``: treated as a *maximum* count of tasks per node.                                         |
-+--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
-| ``--gpus``                                             | Specify the number of GPUs required for the job (total GPUs across all nodes).                                 |
-+--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
-| ``--gpus-per-node``                                    | Specify the number of GPUs per node required for the job.                                                      |
-+--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
-| ``--gpu-bind=closest``                                 | Binds each task to the GPU which is on the same NUMA domain as the CPU core the MPI rank is running on.        |
-+--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
-| ``--gpu-bind=map_gpu:<list>``                          | Bind tasks to specific GPUs by setting GPU masks on tasks (or ranks) as specified where                        |
-|                                                        | ``<list>`` is ``<gpu_id_for_task_0>,<gpu_id_for_task_1>,...``. If the number of tasks (or                      |
-|                                                        | ranks) exceeds the number of elements in this list, elements in the list will be reused as                     |
-|                                                        | needed starting from the beginning of the list. To simplify support for large task                             |
-|                                                        | counts, the lists may follow a map with an asterisk and repetition count. (For example                         |
-|                                                        | ``map_gpu:0*4,1*4``)                                                                                           |
-+--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
-| ``--ntasks-per-gpu=<ntasks>``                          | Request that there are ntasks tasks invoked for every GPU.                                                     |
-+--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+.. table::
+    :widths: 30 70
+
+    +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+    | ``-N``                                                 | Number of nodes                                                                                                |
+    +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+    | ``-n``                                                 | Total number of MPI tasks (default is 1)                                                                       |
+    +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+    | ``-c, --cpus-per-task=<ncpus>``                        | | Logical cores per MPI task (default is 1)                                                                    |
+    |                                                        | | When used with ``--threads-per-core=1``: ``-c`` is equivalent to *physical* cores per task                   |
+    |                                                        | | By default, when ``-c > 1``, additional cores per task are distributed within one L3 region                  |
+    |                                                        |   first before filling a different L3 region.                                                                  |
+    +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+    | ``--cpu-bind=threads``                                 | | Bind tasks to CPUs.                                                                                          |
+    |                                                        | | ``threads`` - (default, recommended) Automatically generate masks binding tasks to threads.                  |
+    +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+    | ``--threads-per-core=<threads>``                       | | In task layout, use the specified maximum number of hardware threads per core                                |
+    |                                                        | | (default is 1; there are 2 hardware threads per physical CPU core).                                          |
+    |                                                        | | Must also be set in ``salloc`` or ``sbatch`` if using ``--threads-per-core=2`` in your ``srun`` command.     |
+    +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+    | ``-m, --distribution=<value>:<value>:<value>``         | | Specifies the distribution of MPI ranks across compute nodes, sockets (L3 regions), and cores, respectively. |
+    |                                                        | | The default values are ``block:cyclic:cyclic``, see ``man srun`` for more information.                       |
+    |                                                        | | Currently, the distribution setting for cores (the third "<value>" entry) has no effect on Frontier          |
+    +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+    |  ``--ntasks-per-node=<ntasks>``                        | | If used without ``-n``: requests that a specific number of tasks be invoked on each node.                    |
+    |                                                        | | If used with ``-n``: treated as a *maximum* count of tasks per node.                                         |
+    +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+    | ``--gpus``                                             | Specify the number of GPUs required for the job (total GPUs across all nodes).                                 |
+    +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+    | ``--gpus-per-node``                                    | Specify the number of GPUs per node required for the job.                                                      |
+    +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+    | ``--gpu-bind=closest``                                 | Binds each task to the GPU which is on the same NUMA domain as the CPU core the MPI rank is running on.        |
+    +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+    | ``--gpu-bind=map_gpu:<list>``                          | Bind tasks to specific GPUs by setting GPU masks on tasks (or ranks) as specified where                        |
+    |                                                        | ``<list>`` is ``<gpu_id_for_task_0>,<gpu_id_for_task_1>,...``. If the number of tasks (or                      |
+    |                                                        | ranks) exceeds the number of elements in this list, elements in the list will be reused as                     |
+    |                                                        | needed starting from the beginning of the list. To simplify support for large task                             |
+    |                                                        | counts, the lists may follow a map with an asterisk and repetition count. (For example                         |
+    |                                                        | ``map_gpu:0*4,1*4``)                                                                                           |
+    +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
+    | ``--ntasks-per-gpu=<ntasks>``                          | Request that there are ntasks tasks invoked for every GPU.                                                     |
+    +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
 
 
 Below is a comparison table between ``srun`` and ``jsrun``.
@@ -2154,14 +2268,17 @@ node are shared by 2 MPI ranks. Similar to Example 4, ``-ntasks-per-gpu=2``
 will be used, but a new ``srun`` flag will be used to change the default
 round-robin (``cyclic``) distribution of MPI ranks across NUMA domains:
 
-+------------------------------------------------+-----------------------------------------------------------------------------------------------+
-| Slurm Option                                   | Description                                                                                   |
-+================================================+===============================================================================================+
-| ``--distribution=<value>[:<value>][:<value>]`` | Specifies the distribution of MPI ranks across compute nodes, sockets                         |
-|                                                | (L3 cache regions on Frontier), and cores, respectively. The default values are               |
-|                                                | ``block:cyclic:cyclic``, which is where the ``cyclic`` assignment comes from in the previous  |
-|                                                | examples.                                                                                     |
-+------------------------------------------------+-----------------------------------------------------------------------------------------------+
+.. table::
+    :widths: 30 70
+
+    +------------------------------------------------+-----------------------------------------------------------------------------------------------+
+    | Slurm Option                                   | Description                                                                                   |
+    +================================================+===============================================================================================+
+    | ``--distribution=<value>[:<value>][:<value>]`` | Specifies the distribution of MPI ranks across compute nodes, sockets                         |
+    |                                                | (L3 cache regions on Frontier), and cores, respectively. The default values are               |
+    |                                                | ``block:cyclic:cyclic``, which is where the ``cyclic`` assignment comes from in the previous  |
+    |                                                | examples.                                                                                     |
+    +------------------------------------------------+-----------------------------------------------------------------------------------------------+
 
 .. note::
 
@@ -2575,77 +2692,77 @@ and here is the output from that script:
 
     Tue 28 Mar 2023 05:01:41 PM EDT
     *****ldd ./lmp*****
-    	linux-vdso.so.1 (0x00007fffeda02000)
-    	libgcc_s.so.1 => /lib64/libgcc_s.so.1 (0x00007fffed5bb000)
-    	libpthread.so.0 => /lib64/libpthread.so.0 (0x00007fffed398000)
-    	libm.so.6 => /lib64/libm.so.6 (0x00007fffed04d000)
-    	librt.so.1 => /lib64/librt.so.1 (0x00007fffece44000)
-    	libamdhip64.so.4 => /opt/rocm-4.5.2/lib/libamdhip64.so.4 (0x00007fffec052000)
-    	libmpi_cray.so.12 => /opt/cray/pe/lib64/libmpi_cray.so.12 (0x00007fffe96cc000)
-    	libmpi_gtl_hsa.so.0 => /opt/cray/pe/lib64/libmpi_gtl_hsa.so.0 (0x00007fffe9469000)
-    	libhsa-runtime64.so.1 => /opt/rocm-5.3.0/lib/libhsa-runtime64.so.1 (0x00007fffe8fdc000)
-    	libhwloc.so.15 => /sw/frontier/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/hwloc-2.5.0-4p6jkgf5ez6wr27pytkzyptppzpugu3e/lib/libhwloc.so.15 (0x00007fffe8d82000)
-    	libdl.so.2 => /lib64/libdl.so.2 (0x00007fffe8b7e000)
-    	libhipfft.so => /opt/rocm-5.3.0/lib/libhipfft.so (0x00007fffed9d2000)
-    	libstdc++.so.6 => /usr/lib64/libstdc++.so.6 (0x00007fffe875b000)
-    	libc.so.6 => /lib64/libc.so.6 (0x00007fffe8366000)
-    	/lib64/ld-linux-x86-64.so.2 (0x00007fffed7da000)
-    	libamd_comgr.so.2 => /opt/rocm-5.3.0/lib/libamd_comgr.so.2 (0x00007fffe06e0000)
-    	libnuma.so.1 => /usr/lib64/libnuma.so.1 (0x00007fffe04d4000)
-    	libfabric.so.1 => /opt/cray/libfabric/1.15.2.0/lib64/libfabric.so.1 (0x00007fffe01e2000)
-    	libatomic.so.1 => /usr/lib64/libatomic.so.1 (0x00007fffdffd9000)
-    	libpmi.so.0 => /opt/cray/pe/lib64/libpmi.so.0 (0x00007fffdfdd7000)
-    	libpmi2.so.0 => /opt/cray/pe/lib64/libpmi2.so.0 (0x00007fffdfb9e000)
-    	libquadmath.so.0 => /usr/lib64/libquadmath.so.0 (0x00007fffdf959000)
-    	libmodules.so.1 => /opt/cray/pe/lib64/cce/libmodules.so.1 (0x00007fffed9b5000)
-    	libfi.so.1 => /opt/cray/pe/lib64/cce/libfi.so.1 (0x00007fffdf3b4000)
-    	libcraymath.so.1 => /opt/cray/pe/lib64/cce/libcraymath.so.1 (0x00007fffed8ce000)
-    	libf.so.1 => /opt/cray/pe/lib64/cce/libf.so.1 (0x00007fffed83b000)
-    	libu.so.1 => /opt/cray/pe/lib64/cce/libu.so.1 (0x00007fffdf2ab000)
-    	libcsup.so.1 => /opt/cray/pe/lib64/cce/libcsup.so.1 (0x00007fffed832000)
-    	libamdhip64.so.5 => /opt/rocm-5.3.0/lib/libamdhip64.so.5 (0x00007fffdda8a000)
-    	libelf.so.1 => /usr/lib64/libelf.so.1 (0x00007fffdd871000)
-    	libdrm.so.2 => /usr/lib64/libdrm.so.2 (0x00007fffdd65d000)
-    	libdrm_amdgpu.so.1 => /usr/lib64/libdrm_amdgpu.so.1 (0x00007fffdd453000)
-    	libpciaccess.so.0 => /sw/frontier/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/libpciaccess-0.16-6evcvl74myxfxdrddmnsvbc7sgfx6s5j/lib/libpciaccess.so.0 (0x00007fffdd24a000)
-    	libxml2.so.2 => /sw/frontier/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/libxml2-2.9.12-h7fe2yauotu3xit7rsaixaowd3noknur/lib/libxml2.so.2 (0x00007fffdcee6000)
-    	librocfft.so.0 => /opt/rocm-5.3.0/lib/librocfft.so.0 (0x00007fffdca1a000)
-    	libz.so.1 => /lib64/libz.so.1 (0x00007fffdc803000)
-    	libtinfo.so.6 => /lib64/libtinfo.so.6 (0x00007fffdc5d5000)
-    	libcxi.so.1 => /usr/lib64/libcxi.so.1 (0x00007fffdc3b0000)
-    	libcurl.so.4 => /usr/lib64/libcurl.so.4 (0x00007fffdc311000)
-    	libjson-c.so.3 => /usr/lib64/libjson-c.so.3 (0x00007fffdc101000)
-    	libpals.so.0 => /opt/cray/pe/lib64/libpals.so.0 (0x00007fffdbefc000)
-    	libgfortran.so.5 => /opt/cray/pe/gcc-libs/libgfortran.so.5 (0x00007fffdba50000)
-    	liblzma.so.5 => /sw/frontier/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/xz-5.2.5-zwra4gpckelt5umczowf3jtmeiz3yd7u/lib/liblzma.so.5 (0x00007fffdb82a000)
-    	libiconv.so.2 => /sw/frontier/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/libiconv-1.16-coz5dzhtoeq5unhjirayfn2xftnxk43l/lib/libiconv.so.2 (0x00007fffdb52e000)
-    	librocfft-device-0.so.0 => /opt/rocm-5.3.0/lib/librocfft-device-0.so.0 (0x00007fffa11a0000)
-    	librocfft-device-1.so.0 => /opt/rocm-5.3.0/lib/librocfft-device-1.so.0 (0x00007fff6491b000)
-    	librocfft-device-2.so.0 => /opt/rocm-5.3.0/lib/librocfft-device-2.so.0 (0x00007fff2a828000)
-    	librocfft-device-3.so.0 => /opt/rocm-5.3.0/lib/librocfft-device-3.so.0 (0x00007ffef7eee000)
-    	libnghttp2.so.14 => /usr/lib64/libnghttp2.so.14 (0x00007ffef7cc6000)
-    	libidn2.so.0 => /usr/lib64/libidn2.so.0 (0x00007ffef7aa9000)
-    	libssh.so.4 => /usr/lib64/libssh.so.4 (0x00007ffef783b000)
-    	libpsl.so.5 => /usr/lib64/libpsl.so.5 (0x00007ffef7629000)
-    	libssl.so.1.1 => /usr/lib64/libssl.so.1.1 (0x00007ffef758a000)
-    	libcrypto.so.1.1 => /usr/lib64/libcrypto.so.1.1 (0x00007ffef724a000)
-    	libgssapi_krb5.so.2 => /usr/lib64/libgssapi_krb5.so.2 (0x00007ffef6ff8000)
-    	libldap_r-2.4.so.2 => /usr/lib64/libldap_r-2.4.so.2 (0x00007ffef6da4000)
-    	liblber-2.4.so.2 => /usr/lib64/liblber-2.4.so.2 (0x00007ffef6b95000)
-    	libzstd.so.1 => /usr/lib64/libzstd.so.1 (0x00007ffef6865000)
-    	libbrotlidec.so.1 => /usr/lib64/libbrotlidec.so.1 (0x00007ffef6659000)
-    	libunistring.so.2 => /usr/lib64/libunistring.so.2 (0x00007ffef62d6000)
-    	libjitterentropy.so.3 => /usr/lib64/libjitterentropy.so.3 (0x00007ffef60cf000)
-    	libkrb5.so.3 => /usr/lib64/libkrb5.so.3 (0x00007ffef5df6000)
-    	libk5crypto.so.3 => /usr/lib64/libk5crypto.so.3 (0x00007ffef5bde000)
-    	libcom_err.so.2 => /lib64/libcom_err.so.2 (0x00007ffef59da000)
-    	libkrb5support.so.0 => /usr/lib64/libkrb5support.so.0 (0x00007ffef57cb000)
-    	libresolv.so.2 => /lib64/libresolv.so.2 (0x00007ffef55b3000)
-    	libsasl2.so.3 => /usr/lib64/libsasl2.so.3 (0x00007ffef5396000)
-    	libbrotlicommon.so.1 => /usr/lib64/libbrotlicommon.so.1 (0x00007ffef5175000)
-    	libkeyutils.so.1 => /usr/lib64/libkeyutils.so.1 (0x00007ffef4f70000)
-    	libselinux.so.1 => /lib64/libselinux.so.1 (0x00007ffef4d47000)
-    	libpcre.so.1 => /usr/lib64/libpcre.so.1 (0x00007ffef4abe000)
+        linux-vdso.so.1 (0x00007fffeda02000)
+        libgcc_s.so.1 => /lib64/libgcc_s.so.1 (0x00007fffed5bb000)
+        libpthread.so.0 => /lib64/libpthread.so.0 (0x00007fffed398000)
+        libm.so.6 => /lib64/libm.so.6 (0x00007fffed04d000)
+        librt.so.1 => /lib64/librt.so.1 (0x00007fffece44000)
+        libamdhip64.so.4 => /opt/rocm-4.5.2/lib/libamdhip64.so.4 (0x00007fffec052000)
+        libmpi_cray.so.12 => /opt/cray/pe/lib64/libmpi_cray.so.12 (0x00007fffe96cc000)
+        libmpi_gtl_hsa.so.0 => /opt/cray/pe/lib64/libmpi_gtl_hsa.so.0 (0x00007fffe9469000)
+        libhsa-runtime64.so.1 => /opt/rocm-5.3.0/lib/libhsa-runtime64.so.1 (0x00007fffe8fdc000)
+        libhwloc.so.15 => /sw/frontier/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/hwloc-2.5.0-4p6jkgf5ez6wr27pytkzyptppzpugu3e/lib/libhwloc.so.15 (0x00007fffe8d82000)
+        libdl.so.2 => /lib64/libdl.so.2 (0x00007fffe8b7e000)
+        libhipfft.so => /opt/rocm-5.3.0/lib/libhipfft.so (0x00007fffed9d2000)
+        libstdc++.so.6 => /usr/lib64/libstdc++.so.6 (0x00007fffe875b000)
+        libc.so.6 => /lib64/libc.so.6 (0x00007fffe8366000)
+        /lib64/ld-linux-x86-64.so.2 (0x00007fffed7da000)
+        libamd_comgr.so.2 => /opt/rocm-5.3.0/lib/libamd_comgr.so.2 (0x00007fffe06e0000)
+        libnuma.so.1 => /usr/lib64/libnuma.so.1 (0x00007fffe04d4000)
+        libfabric.so.1 => /opt/cray/libfabric/1.15.2.0/lib64/libfabric.so.1 (0x00007fffe01e2000)
+        libatomic.so.1 => /usr/lib64/libatomic.so.1 (0x00007fffdffd9000)
+        libpmi.so.0 => /opt/cray/pe/lib64/libpmi.so.0 (0x00007fffdfdd7000)
+        libpmi2.so.0 => /opt/cray/pe/lib64/libpmi2.so.0 (0x00007fffdfb9e000)
+        libquadmath.so.0 => /usr/lib64/libquadmath.so.0 (0x00007fffdf959000)
+        libmodules.so.1 => /opt/cray/pe/lib64/cce/libmodules.so.1 (0x00007fffed9b5000)
+        libfi.so.1 => /opt/cray/pe/lib64/cce/libfi.so.1 (0x00007fffdf3b4000)
+        libcraymath.so.1 => /opt/cray/pe/lib64/cce/libcraymath.so.1 (0x00007fffed8ce000)
+        libf.so.1 => /opt/cray/pe/lib64/cce/libf.so.1 (0x00007fffed83b000)
+        libu.so.1 => /opt/cray/pe/lib64/cce/libu.so.1 (0x00007fffdf2ab000)
+        libcsup.so.1 => /opt/cray/pe/lib64/cce/libcsup.so.1 (0x00007fffed832000)
+        libamdhip64.so.5 => /opt/rocm-5.3.0/lib/libamdhip64.so.5 (0x00007fffdda8a000)
+        libelf.so.1 => /usr/lib64/libelf.so.1 (0x00007fffdd871000)
+        libdrm.so.2 => /usr/lib64/libdrm.so.2 (0x00007fffdd65d000)
+        libdrm_amdgpu.so.1 => /usr/lib64/libdrm_amdgpu.so.1 (0x00007fffdd453000)
+        libpciaccess.so.0 => /sw/frontier/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/libpciaccess-0.16-6evcvl74myxfxdrddmnsvbc7sgfx6s5j/lib/libpciaccess.so.0 (0x00007fffdd24a000)
+        libxml2.so.2 => /sw/frontier/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/libxml2-2.9.12-h7fe2yauotu3xit7rsaixaowd3noknur/lib/libxml2.so.2 (0x00007fffdcee6000)
+        librocfft.so.0 => /opt/rocm-5.3.0/lib/librocfft.so.0 (0x00007fffdca1a000)
+        libz.so.1 => /lib64/libz.so.1 (0x00007fffdc803000)
+        libtinfo.so.6 => /lib64/libtinfo.so.6 (0x00007fffdc5d5000)
+        libcxi.so.1 => /usr/lib64/libcxi.so.1 (0x00007fffdc3b0000)
+        libcurl.so.4 => /usr/lib64/libcurl.so.4 (0x00007fffdc311000)
+        libjson-c.so.3 => /usr/lib64/libjson-c.so.3 (0x00007fffdc101000)
+        libpals.so.0 => /opt/cray/pe/lib64/libpals.so.0 (0x00007fffdbefc000)
+        libgfortran.so.5 => /opt/cray/pe/gcc-libs/libgfortran.so.5 (0x00007fffdba50000)
+        liblzma.so.5 => /sw/frontier/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/xz-5.2.5-zwra4gpckelt5umczowf3jtmeiz3yd7u/lib/liblzma.so.5 (0x00007fffdb82a000)
+        libiconv.so.2 => /sw/frontier/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/libiconv-1.16-coz5dzhtoeq5unhjirayfn2xftnxk43l/lib/libiconv.so.2 (0x00007fffdb52e000)
+        librocfft-device-0.so.0 => /opt/rocm-5.3.0/lib/librocfft-device-0.so.0 (0x00007fffa11a0000)
+        librocfft-device-1.so.0 => /opt/rocm-5.3.0/lib/librocfft-device-1.so.0 (0x00007fff6491b000)
+        librocfft-device-2.so.0 => /opt/rocm-5.3.0/lib/librocfft-device-2.so.0 (0x00007fff2a828000)
+        librocfft-device-3.so.0 => /opt/rocm-5.3.0/lib/librocfft-device-3.so.0 (0x00007ffef7eee000)
+        libnghttp2.so.14 => /usr/lib64/libnghttp2.so.14 (0x00007ffef7cc6000)
+        libidn2.so.0 => /usr/lib64/libidn2.so.0 (0x00007ffef7aa9000)
+        libssh.so.4 => /usr/lib64/libssh.so.4 (0x00007ffef783b000)
+        libpsl.so.5 => /usr/lib64/libpsl.so.5 (0x00007ffef7629000)
+        libssl.so.1.1 => /usr/lib64/libssl.so.1.1 (0x00007ffef758a000)
+        libcrypto.so.1.1 => /usr/lib64/libcrypto.so.1.1 (0x00007ffef724a000)
+        libgssapi_krb5.so.2 => /usr/lib64/libgssapi_krb5.so.2 (0x00007ffef6ff8000)
+        libldap_r-2.4.so.2 => /usr/lib64/libldap_r-2.4.so.2 (0x00007ffef6da4000)
+        liblber-2.4.so.2 => /usr/lib64/liblber-2.4.so.2 (0x00007ffef6b95000)
+        libzstd.so.1 => /usr/lib64/libzstd.so.1 (0x00007ffef6865000)
+        libbrotlidec.so.1 => /usr/lib64/libbrotlidec.so.1 (0x00007ffef6659000)
+        libunistring.so.2 => /usr/lib64/libunistring.so.2 (0x00007ffef62d6000)
+        libjitterentropy.so.3 => /usr/lib64/libjitterentropy.so.3 (0x00007ffef60cf000)
+        libkrb5.so.3 => /usr/lib64/libkrb5.so.3 (0x00007ffef5df6000)
+        libk5crypto.so.3 => /usr/lib64/libk5crypto.so.3 (0x00007ffef5bde000)
+        libcom_err.so.2 => /lib64/libcom_err.so.2 (0x00007ffef59da000)
+        libkrb5support.so.0 => /usr/lib64/libkrb5support.so.0 (0x00007ffef57cb000)
+        libresolv.so.2 => /lib64/libresolv.so.2 (0x00007ffef55b3000)
+        libsasl2.so.3 => /usr/lib64/libsasl2.so.3 (0x00007ffef5396000)
+        libbrotlicommon.so.1 => /usr/lib64/libbrotlicommon.so.1 (0x00007ffef5175000)
+        libkeyutils.so.1 => /usr/lib64/libkeyutils.so.1 (0x00007ffef4f70000)
+        libselinux.so.1 => /lib64/libselinux.so.1 (0x00007ffef4d47000)
+        libpcre.so.1 => /usr/lib64/libpcre.so.1 (0x00007ffef4abe000)
     *************************
     *****ls -lh /mnt/bb/hagertnl*****
     total 236M
@@ -2659,77 +2776,77 @@ and here is the output from that script:
     -rwxr-xr-x 1 hagertnl hagertnl 149K Oct  6  2021 libpciaccess.so.0
     -rwxr-xr-x 1 hagertnl hagertnl 5.2M Oct  6  2021 libxml2.so.2
     *****ldd /mnt/bb/hagertnl/lmp*****
-    	linux-vdso.so.1 (0x00007fffeda02000)
-    	libgcc_s.so.1 => /lib64/libgcc_s.so.1 (0x00007fffed5bb000)
-    	libpthread.so.0 => /lib64/libpthread.so.0 (0x00007fffed398000)
-    	libm.so.6 => /lib64/libm.so.6 (0x00007fffed04d000)
-    	librt.so.1 => /lib64/librt.so.1 (0x00007fffece44000)
-    	libamdhip64.so.4 => /opt/rocm-4.5.2/lib/libamdhip64.so.4 (0x00007fffec052000)
-    	libmpi_cray.so.12 => /opt/cray/pe/lib64/libmpi_cray.so.12 (0x00007fffe96cc000)
-    	libmpi_gtl_hsa.so.0 => /opt/cray/pe/lib64/libmpi_gtl_hsa.so.0 (0x00007fffe9469000)
-    	libhsa-runtime64.so.1 => /opt/rocm-5.3.0/lib/libhsa-runtime64.so.1 (0x00007fffe8fdc000)
-    	libhwloc.so.15 => /mnt/bb/hagertnl/lmp_libs/libhwloc.so.15 (0x00007fffe8d82000)
-    	libdl.so.2 => /lib64/libdl.so.2 (0x00007fffe8b7e000)
-    	libhipfft.so => /opt/rocm-5.3.0/lib/libhipfft.so (0x00007fffed9d2000)
-    	libstdc++.so.6 => /usr/lib64/libstdc++.so.6 (0x00007fffe875b000)
-    	libc.so.6 => /lib64/libc.so.6 (0x00007fffe8366000)
-    	/lib64/ld-linux-x86-64.so.2 (0x00007fffed7da000)
-    	libamd_comgr.so.2 => /opt/rocm-5.3.0/lib/libamd_comgr.so.2 (0x00007fffe06e0000)
-    	libnuma.so.1 => /usr/lib64/libnuma.so.1 (0x00007fffe04d4000)
-    	libfabric.so.1 => /opt/cray/libfabric/1.15.2.0/lib64/libfabric.so.1 (0x00007fffe01e2000)
-    	libatomic.so.1 => /usr/lib64/libatomic.so.1 (0x00007fffdffd9000)
-    	libpmi.so.0 => /opt/cray/pe/lib64/libpmi.so.0 (0x00007fffdfdd7000)
-    	libpmi2.so.0 => /opt/cray/pe/lib64/libpmi2.so.0 (0x00007fffdfb9e000)
-    	libquadmath.so.0 => /usr/lib64/libquadmath.so.0 (0x00007fffdf959000)
-    	libmodules.so.1 => /opt/cray/pe/lib64/cce/libmodules.so.1 (0x00007fffed9b5000)
-    	libfi.so.1 => /opt/cray/pe/lib64/cce/libfi.so.1 (0x00007fffdf3b4000)
-    	libcraymath.so.1 => /opt/cray/pe/lib64/cce/libcraymath.so.1 (0x00007fffed8ce000)
-    	libf.so.1 => /opt/cray/pe/lib64/cce/libf.so.1 (0x00007fffed83b000)
-    	libu.so.1 => /opt/cray/pe/lib64/cce/libu.so.1 (0x00007fffdf2ab000)
-    	libcsup.so.1 => /opt/cray/pe/lib64/cce/libcsup.so.1 (0x00007fffed832000)
-    	libamdhip64.so.5 => /opt/rocm-5.3.0/lib/libamdhip64.so.5 (0x00007fffdda8a000)
-    	libelf.so.1 => /usr/lib64/libelf.so.1 (0x00007fffdd871000)
-    	libdrm.so.2 => /usr/lib64/libdrm.so.2 (0x00007fffdd65d000)
-    	libdrm_amdgpu.so.1 => /usr/lib64/libdrm_amdgpu.so.1 (0x00007fffdd453000)
-    	libpciaccess.so.0 => /sw/frontier/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/libpciaccess-0.16-6evcvl74myxfxdrddmnsvbc7sgfx6s5j/lib/libpciaccess.so.0 (0x00007fffdd24a000)
-    	libxml2.so.2 => /sw/frontier/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/libxml2-2.9.12-h7fe2yauotu3xit7rsaixaowd3noknur/lib/libxml2.so.2 (0x00007fffdcee6000)
-    	librocfft.so.0 => /opt/rocm-5.3.0/lib/librocfft.so.0 (0x00007fffdca1a000)
-    	libz.so.1 => /lib64/libz.so.1 (0x00007fffdc803000)
-    	libtinfo.so.6 => /lib64/libtinfo.so.6 (0x00007fffdc5d5000)
-    	libcxi.so.1 => /usr/lib64/libcxi.so.1 (0x00007fffdc3b0000)
-    	libcurl.so.4 => /usr/lib64/libcurl.so.4 (0x00007fffdc311000)
-    	libjson-c.so.3 => /usr/lib64/libjson-c.so.3 (0x00007fffdc101000)
-    	libpals.so.0 => /opt/cray/pe/lib64/libpals.so.0 (0x00007fffdbefc000)
-    	libgfortran.so.5 => /opt/cray/pe/gcc-libs/libgfortran.so.5 (0x00007fffdba50000)
-    	liblzma.so.5 => /sw/frontier/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/xz-5.2.5-zwra4gpckelt5umczowf3jtmeiz3yd7u/lib/liblzma.so.5 (0x00007fffdb82a000)
-    	libiconv.so.2 => /sw/frontier/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/libiconv-1.16-coz5dzhtoeq5unhjirayfn2xftnxk43l/lib/libiconv.so.2 (0x00007fffdb52e000)
-    	librocfft-device-0.so.0 => /opt/rocm-5.3.0/lib/librocfft-device-0.so.0 (0x00007fffa11a0000)
-    	librocfft-device-1.so.0 => /opt/rocm-5.3.0/lib/librocfft-device-1.so.0 (0x00007fff6491b000)
-    	librocfft-device-2.so.0 => /opt/rocm-5.3.0/lib/librocfft-device-2.so.0 (0x00007fff2a828000)
-    	librocfft-device-3.so.0 => /opt/rocm-5.3.0/lib/librocfft-device-3.so.0 (0x00007ffef7eee000)
-    	libnghttp2.so.14 => /usr/lib64/libnghttp2.so.14 (0x00007ffef7cc6000)
-    	libidn2.so.0 => /usr/lib64/libidn2.so.0 (0x00007ffef7aa9000)
-    	libssh.so.4 => /usr/lib64/libssh.so.4 (0x00007ffef783b000)
-    	libpsl.so.5 => /usr/lib64/libpsl.so.5 (0x00007ffef7629000)
-    	libssl.so.1.1 => /usr/lib64/libssl.so.1.1 (0x00007ffef758a000)
-    	libcrypto.so.1.1 => /usr/lib64/libcrypto.so.1.1 (0x00007ffef724a000)
-    	libgssapi_krb5.so.2 => /usr/lib64/libgssapi_krb5.so.2 (0x00007ffef6ff8000)
-    	libldap_r-2.4.so.2 => /usr/lib64/libldap_r-2.4.so.2 (0x00007ffef6da4000)
-    	liblber-2.4.so.2 => /usr/lib64/liblber-2.4.so.2 (0x00007ffef6b95000)
-    	libzstd.so.1 => /usr/lib64/libzstd.so.1 (0x00007ffef6865000)
-    	libbrotlidec.so.1 => /usr/lib64/libbrotlidec.so.1 (0x00007ffef6659000)
-    	libunistring.so.2 => /usr/lib64/libunistring.so.2 (0x00007ffef62d6000)
-    	libjitterentropy.so.3 => /usr/lib64/libjitterentropy.so.3 (0x00007ffef60cf000)
-    	libkrb5.so.3 => /usr/lib64/libkrb5.so.3 (0x00007ffef5df6000)
-    	libk5crypto.so.3 => /usr/lib64/libk5crypto.so.3 (0x00007ffef5bde000)
-    	libcom_err.so.2 => /lib64/libcom_err.so.2 (0x00007ffef59da000)
-    	libkrb5support.so.0 => /usr/lib64/libkrb5support.so.0 (0x00007ffef57cb000)
-    	libresolv.so.2 => /lib64/libresolv.so.2 (0x00007ffef55b3000)
-    	libsasl2.so.3 => /usr/lib64/libsasl2.so.3 (0x00007ffef5396000)
-    	libbrotlicommon.so.1 => /usr/lib64/libbrotlicommon.so.1 (0x00007ffef5175000)
-    	libkeyutils.so.1 => /usr/lib64/libkeyutils.so.1 (0x00007ffef4f70000)
-    	libselinux.so.1 => /lib64/libselinux.so.1 (0x00007ffef4d47000)
-    	libpcre.so.1 => /usr/lib64/libpcre.so.1 (0x00007ffef4abe000)
+        linux-vdso.so.1 (0x00007fffeda02000)
+        libgcc_s.so.1 => /lib64/libgcc_s.so.1 (0x00007fffed5bb000)
+        libpthread.so.0 => /lib64/libpthread.so.0 (0x00007fffed398000)
+        libm.so.6 => /lib64/libm.so.6 (0x00007fffed04d000)
+        librt.so.1 => /lib64/librt.so.1 (0x00007fffece44000)
+        libamdhip64.so.4 => /opt/rocm-4.5.2/lib/libamdhip64.so.4 (0x00007fffec052000)
+        libmpi_cray.so.12 => /opt/cray/pe/lib64/libmpi_cray.so.12 (0x00007fffe96cc000)
+        libmpi_gtl_hsa.so.0 => /opt/cray/pe/lib64/libmpi_gtl_hsa.so.0 (0x00007fffe9469000)
+        libhsa-runtime64.so.1 => /opt/rocm-5.3.0/lib/libhsa-runtime64.so.1 (0x00007fffe8fdc000)
+        libhwloc.so.15 => /mnt/bb/hagertnl/lmp_libs/libhwloc.so.15 (0x00007fffe8d82000)
+        libdl.so.2 => /lib64/libdl.so.2 (0x00007fffe8b7e000)
+        libhipfft.so => /opt/rocm-5.3.0/lib/libhipfft.so (0x00007fffed9d2000)
+        libstdc++.so.6 => /usr/lib64/libstdc++.so.6 (0x00007fffe875b000)
+        libc.so.6 => /lib64/libc.so.6 (0x00007fffe8366000)
+        /lib64/ld-linux-x86-64.so.2 (0x00007fffed7da000)
+        libamd_comgr.so.2 => /opt/rocm-5.3.0/lib/libamd_comgr.so.2 (0x00007fffe06e0000)
+        libnuma.so.1 => /usr/lib64/libnuma.so.1 (0x00007fffe04d4000)
+        libfabric.so.1 => /opt/cray/libfabric/1.15.2.0/lib64/libfabric.so.1 (0x00007fffe01e2000)
+        libatomic.so.1 => /usr/lib64/libatomic.so.1 (0x00007fffdffd9000)
+        libpmi.so.0 => /opt/cray/pe/lib64/libpmi.so.0 (0x00007fffdfdd7000)
+        libpmi2.so.0 => /opt/cray/pe/lib64/libpmi2.so.0 (0x00007fffdfb9e000)
+        libquadmath.so.0 => /usr/lib64/libquadmath.so.0 (0x00007fffdf959000)
+        libmodules.so.1 => /opt/cray/pe/lib64/cce/libmodules.so.1 (0x00007fffed9b5000)
+        libfi.so.1 => /opt/cray/pe/lib64/cce/libfi.so.1 (0x00007fffdf3b4000)
+        libcraymath.so.1 => /opt/cray/pe/lib64/cce/libcraymath.so.1 (0x00007fffed8ce000)
+        libf.so.1 => /opt/cray/pe/lib64/cce/libf.so.1 (0x00007fffed83b000)
+        libu.so.1 => /opt/cray/pe/lib64/cce/libu.so.1 (0x00007fffdf2ab000)
+        libcsup.so.1 => /opt/cray/pe/lib64/cce/libcsup.so.1 (0x00007fffed832000)
+        libamdhip64.so.5 => /opt/rocm-5.3.0/lib/libamdhip64.so.5 (0x00007fffdda8a000)
+        libelf.so.1 => /usr/lib64/libelf.so.1 (0x00007fffdd871000)
+        libdrm.so.2 => /usr/lib64/libdrm.so.2 (0x00007fffdd65d000)
+        libdrm_amdgpu.so.1 => /usr/lib64/libdrm_amdgpu.so.1 (0x00007fffdd453000)
+        libpciaccess.so.0 => /sw/frontier/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/libpciaccess-0.16-6evcvl74myxfxdrddmnsvbc7sgfx6s5j/lib/libpciaccess.so.0 (0x00007fffdd24a000)
+        libxml2.so.2 => /sw/frontier/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/libxml2-2.9.12-h7fe2yauotu3xit7rsaixaowd3noknur/lib/libxml2.so.2 (0x00007fffdcee6000)
+        librocfft.so.0 => /opt/rocm-5.3.0/lib/librocfft.so.0 (0x00007fffdca1a000)
+        libz.so.1 => /lib64/libz.so.1 (0x00007fffdc803000)
+        libtinfo.so.6 => /lib64/libtinfo.so.6 (0x00007fffdc5d5000)
+        libcxi.so.1 => /usr/lib64/libcxi.so.1 (0x00007fffdc3b0000)
+        libcurl.so.4 => /usr/lib64/libcurl.so.4 (0x00007fffdc311000)
+        libjson-c.so.3 => /usr/lib64/libjson-c.so.3 (0x00007fffdc101000)
+        libpals.so.0 => /opt/cray/pe/lib64/libpals.so.0 (0x00007fffdbefc000)
+        libgfortran.so.5 => /opt/cray/pe/gcc-libs/libgfortran.so.5 (0x00007fffdba50000)
+        liblzma.so.5 => /sw/frontier/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/xz-5.2.5-zwra4gpckelt5umczowf3jtmeiz3yd7u/lib/liblzma.so.5 (0x00007fffdb82a000)
+        libiconv.so.2 => /sw/frontier/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/libiconv-1.16-coz5dzhtoeq5unhjirayfn2xftnxk43l/lib/libiconv.so.2 (0x00007fffdb52e000)
+        librocfft-device-0.so.0 => /opt/rocm-5.3.0/lib/librocfft-device-0.so.0 (0x00007fffa11a0000)
+        librocfft-device-1.so.0 => /opt/rocm-5.3.0/lib/librocfft-device-1.so.0 (0x00007fff6491b000)
+        librocfft-device-2.so.0 => /opt/rocm-5.3.0/lib/librocfft-device-2.so.0 (0x00007fff2a828000)
+        librocfft-device-3.so.0 => /opt/rocm-5.3.0/lib/librocfft-device-3.so.0 (0x00007ffef7eee000)
+        libnghttp2.so.14 => /usr/lib64/libnghttp2.so.14 (0x00007ffef7cc6000)
+        libidn2.so.0 => /usr/lib64/libidn2.so.0 (0x00007ffef7aa9000)
+        libssh.so.4 => /usr/lib64/libssh.so.4 (0x00007ffef783b000)
+        libpsl.so.5 => /usr/lib64/libpsl.so.5 (0x00007ffef7629000)
+        libssl.so.1.1 => /usr/lib64/libssl.so.1.1 (0x00007ffef758a000)
+        libcrypto.so.1.1 => /usr/lib64/libcrypto.so.1.1 (0x00007ffef724a000)
+        libgssapi_krb5.so.2 => /usr/lib64/libgssapi_krb5.so.2 (0x00007ffef6ff8000)
+        libldap_r-2.4.so.2 => /usr/lib64/libldap_r-2.4.so.2 (0x00007ffef6da4000)
+        liblber-2.4.so.2 => /usr/lib64/liblber-2.4.so.2 (0x00007ffef6b95000)
+        libzstd.so.1 => /usr/lib64/libzstd.so.1 (0x00007ffef6865000)
+        libbrotlidec.so.1 => /usr/lib64/libbrotlidec.so.1 (0x00007ffef6659000)
+        libunistring.so.2 => /usr/lib64/libunistring.so.2 (0x00007ffef62d6000)
+        libjitterentropy.so.3 => /usr/lib64/libjitterentropy.so.3 (0x00007ffef60cf000)
+        libkrb5.so.3 => /usr/lib64/libkrb5.so.3 (0x00007ffef5df6000)
+        libk5crypto.so.3 => /usr/lib64/libk5crypto.so.3 (0x00007ffef5bde000)
+        libcom_err.so.2 => /lib64/libcom_err.so.2 (0x00007ffef59da000)
+        libkrb5support.so.0 => /usr/lib64/libkrb5support.so.0 (0x00007ffef57cb000)
+        libresolv.so.2 => /lib64/libresolv.so.2 (0x00007ffef55b3000)
+        libsasl2.so.3 => /usr/lib64/libsasl2.so.3 (0x00007ffef5396000)
+        libbrotlicommon.so.1 => /usr/lib64/libbrotlicommon.so.1 (0x00007ffef5175000)
+        libkeyutils.so.1 => /usr/lib64/libkeyutils.so.1 (0x00007ffef4f70000)
+        libselinux.so.1 => /lib64/libselinux.so.1 (0x00007ffef4d47000)
+        libpcre.so.1 => /usr/lib64/libpcre.so.1 (0x00007ffef4abe000)
     *************************************
 
 Notice that the libraries are sent to the ``${exe}_libs`` directory in the same prefix as the executable.
@@ -2809,6 +2926,11 @@ A job script for the previous example, modified for sending all libraries is sho
 
 Some libraries still resolved to paths outside of ``/mnt/bb``, and the reason for that is that the executable may have several paths in ``RPATH``.
 
+SBCASTing a conda environment
+"""""""""""""""""""""""""""""
+
+Users running Python environments at scale can also take advantage of using ``sbcast``.
+For details on how to use ``sbcast`` to move your conda environments to the NVMe, please see our :doc:`Sbcast Conda Environments Guide </software/python/sbcast_conda>`.
 
 
 ----
@@ -2887,16 +3009,16 @@ OLCF provides installations of AMD's `Omnitrace <https://github.com/AMDResearch/
 AMD provides documentation on the usage of Omnitrace at `<https://amdresearch.github.io/omnitrace/>`_.
 This section details the installation and common pitfalls of the ``omnitrace`` module on Frontier.
 
-Unlike ``omniperf``, the ``omnitrace`` module only relies on a ROCm module (``amd``, ``amd-mixed``, or ``rocm``).
+Unlike ``omniperf``, the ``omnitrace`` module only relies on a ROCm module.
 A ROCm module must be loaded before being able to do view or load the ``omnitrace`` module.
-As a rule of thumb, always load the ``omnitrace`` module last (especially after you load a ROCm module like ``amd``, ``rocm``, ``amd-mixed``).
+As a rule of thumb, always load the ``omnitrace`` module last (especially after you load a ROCm module).
 If you load a new version of ROCm, you will need to re-load ``omnitrace``.
 
 To use ``omnitrace``, you may use the following commands
 
 .. code::
  
-    module load amd-mixed
+    module load rocm
     module load omnitrace
 
 
@@ -2982,15 +3104,17 @@ HPCToolkit is an integrated suite of tools for measurement and analysis of progr
 
 Programming models supported by HPCToolkit include MPI, OpenMP, OpenACC, CUDA, OpenCL, DPC++, HIP, RAJA, Kokkos, and others.
 
-Below is an example that generates a profile and loads the results in their GUI-based viewer.
-
 .. note::
 
-    A full list of available HPCToolkit versions can be seen with the ``module spider hpctoolkit`` command.
+    On Frontier, currently HPCToolkit is provided as part of the User Managed Software (UMS) program.
+    To see currently available builds, first perform the ``module load ums ums023`` command.
+    A full list of available HPCToolkit versions can also be seen with the ``module spider hpctoolkit`` command.
+
+Below is an example that generates a profile and loads the results in their GUI-based viewer.
 
 .. code:: bash
 
-    module load hpctoolkit/2022.05.15-rocm 
+    module load ums ums023 hpctoolkit
 
     # 1. Profile and trace an application using CPU time and GPU performance counters 
     srun <srun_options> hpcrun -o <measurement_dir> -t -e CPUTIME -e gpu=amd <application> 
@@ -3004,11 +3128,17 @@ Below is an example that generates a profile and loads the results in their GUI-
     # 4. Understand performance issues by analyzing profiles and traces with the GUI 
     hpcviewer <database_dir> 
 
+.. note::
+
+    At the moment, ``hpcviewer`` requires SSH X11 forwarding to work on Frontier login nodes, which might be prohibitive depending on the user's network connection. Alternatively, the user can `download the HPCViewer client from the HPCToolkit website <http://hpctoolkit.org/download.html>`__, install it on their local laptop/workstation system, and then transfer the database directory to the local system for local viewing and analysis.
+    A remote client interface to allow streaming the performance database directly from Frontier is in active development.
+
 More detailed information on HPCToolkit can be found in the `HPCToolkit User's Manual <http://hpctoolkit.org/manual/HPCToolkit-users-manual.pdf>`__.
 
 .. note::
 
-    HPCToolkit does not require a recompile to profile the code. It is recommended to use the -g optimization flag for attribution to source lines.
+    HPCToolkit does not require a recompile to profile the code. It is recommended to use the ``-g`` optimization flag for attribution to source lines.
+    There is experimental support for profiling Python applications with HPCToolkit. Please submit an OLCF ticket to get in touch with the HPCToolkit team since this might require a special build of HPCToolkit on a case-by-case basis.
 
 Getting Started with the ROCm Profiler
 --------------------------------------
@@ -3099,25 +3229,7 @@ However, when using MFMA instructions, the theoretical peak floating-point FLOPS
 
 .. math::
 
-    TheoreticalFLOPS = flop\_per\_cycle(precision) FLOP/cycle/CU * 110 CU * 1700000000 cycles/second
-
-
-where ``flop_per_cycle(precision)`` is the published floating-point operations per clock cycle, per compute unit.
-Those values are:
-
-+------------+-----------------+
-| Data Type  | Flops/Clock/CU  |
-+============+=================+
-| FP64       | 256             |
-+------------+-----------------+
-| FP32       | 256             |
-+------------+-----------------+
-| FP16       | 1024            |
-+------------+-----------------+
-| BF16       | 1024            |
-+------------+-----------------+
-| INT8       | 1024            |
-+------------+-----------------+
+    TheoreticalFLOPS = 512 FLOP/cycle/CU * 110 CU * 1700000000 cycles/second
 
 
 .. note::
@@ -3129,8 +3241,8 @@ Achieved FLOPS/s
 ^^^^^^^^^^^^^^^^
 
 We calculate the achieved performance at the desired level (here, double-precision floating point, FP64), by summing each metric count and weighting the FMA metric by 2, since a fused multiply-add is considered 2 floating point operations.
-Also note that these ``SQ_INSTS_VALU_<ADD,MUL,TRANS>`` metrics are reported as per-simd, so we mutliply by the wavefront size as well.
-The ``SQ_INSTS_VALU_MFMA_MOPS_*`` instructions should be multiplied by the ``Flops/Cycle/CU`` value listed above.
+Also note that these ``SQ_INSTS_VALU_<ADD,MUL,TRANS>_F64`` metrics are reported as per-simd, so we mutliply by the wavefront size as well.
+The ``SQ_INSTS_VALU_MFMA_MOPS_*_F64`` instructions should be multiplied by 512 FLOPS/cycle/CU.
 We use this equation to calculate the number of double-precision FLOPS:
 
 .. math::
@@ -3139,17 +3251,17 @@ We use this equation to calculate the number of double-precision FLOPS:
                          &+ SQ\_INSTS\_VALU\_MUL\_F64       \\\\
                          &+ SQ\_INSTS\_VALU\_TRANS\_F64     \\\\
                          &+ 2 * SQ\_INSTS\_VALU\_FMA\_F64)  \\\\
-                  + 256 *&(SQ\_INSTS\_VALU\_MFMA\_MOPS\_F64)
+                  + 512 *&(SQ\_INSTS\_VALU\_MFMA\_MOPS\_F64)
 
 
 When ``SQ_INSTS_VALU_MFMA_MOPS_*_F64`` instructions are used, then 47.8 TF/s is considered the theoretical maximum FLOPS/s.
-If only ``SQ_INSTS_VALU_<ADD,MUL,TRANS>`` are found, then 23.9 TF/s is the theoretical maximum FLOPS/s.
+If only ``SQ_INSTS_VALU_<ADD,MUL,TRANS>_F64`` are found, then 23.9 TF/s is the theoretical maximum FLOPS/s.
 Then, we divide the number of FLOPS by the elapsed time of the kernel to find FLOPS per second.
 This is found from subtracting the ``rocprof`` metrics ``EndNs`` by ``BeginNs``, provided by ``--timestamp on``, then converting from nanoseconds to seconds by dividing by 1,000,000,000 (power(10,9)).
 
 .. note::
 
-    For ROCm/5.2.0 and earlier, there is a known issue with the timings provided by ``--timestamp on``. See :ref:`crusher-known-issues`.
+    For ROCm/5.2.0 and earlier, there is a known issue causing the timings provided by ``--timestamp on`` to be inaccurate.
 
 
 Calculating for all precisions
@@ -3171,17 +3283,17 @@ The above formula can be adapted to compute the total FLOPS across all floating-
                          &+ SQ\_INSTS\_VALU\_MUL\_F64       \\\\
                          &+ SQ\_INSTS\_VALU\_TRANS\_F64     \\\\
                          &+ 2 * SQ\_INSTS\_VALU\_FMA\_F64)  \\\\
-                  + 1024 &*(SQ\_INSTS\_VALU\_MFMA\_MOPS\_F16) \\\\
-                  + 1024 &*(SQ\_INSTS\_VALU\_MFMA\_MOPS\_BF16) \\\\
-                  + 256 *&(SQ\_INSTS\_VALU\_MFMA\_MOPS\_F32) \\\\
-                  + 256 *&(SQ\_INSTS\_VALU\_MFMA\_MOPS\_F64) \\\\
+                  + 512 &*(SQ\_INSTS\_VALU\_MFMA\_MOPS\_F16) \\\\
+                  + 512 &*(SQ\_INSTS\_VALU\_MFMA\_MOPS\_BF16) \\\\
+                  + 512 *&(SQ\_INSTS\_VALU\_MFMA\_MOPS\_F32) \\\\
+                  + 512 *&(SQ\_INSTS\_VALU\_MFMA\_MOPS\_F64) \\\\
 
 
 Arithmetic Intensity
 ^^^^^^^^^^^^^^^^^^^^
 
 Arithmetic intensity calculates the ratio of FLOPS to bytes moved between HBM and L2 cache.
-We calculated FLOPS above (FP64_FLOPS).
+We calculated FLOPS above (``FP64_FLOPS``).
 We can calculate the number of bytes moved using the ``rocprof`` metrics ``TCC_EA_WRREQ_64B``, ``TCC_EA_WRREQ_sum``, ``TCC_EA_RDREQ_32B``, and ``TCC_EA_RDREQ_sum``.
 ``TCC`` refers to the L2 cache, and ``EA`` is the interface between L2 and HBM.
 ``WRREQ`` and ``RDREQ`` are write-requests and read-requests, respectively.
@@ -3210,12 +3322,12 @@ OLCF provides installations of AMD's `Omniperf <https://github.com/AMDResearch/o
 AMD provides documentation on the usage of Omniperf at `<https://amdresearch.github.io/omniperf/>`_.
 This section details the installation and common pitfalls of the ``omniperf`` module on Frontier.
 
-The ``omniperf`` module relies on two other modules -- a ROCm module (``amd``, ``amd-mixed``, or ``rocm``) and optionally a ``cray-python`` module.
+The ``omniperf`` module relies on two other modules -- a ``rocm`` module and optionally a ``cray-python`` module.
 A ROCm module must be loaded before being able to do view or load the ``omniperf`` module.
 As for ``cray-python``, ``omniperf`` is a Python script and has several dependencies that cannot be met by the system's default Python, and are not met by the default ``cray-python`` installation.
 As such, you must either (1) load the ``cray-python`` module or (2) satisfy the Python dependencies in your own Python environment (ie, in a Conda environment).
 
-As a rule of thumb, always load the ``omniperf`` module last (especially after you load a ROCm module like ``amd``, ``rocm``, ``amd-mixed``).
+As a rule of thumb, always load the ``omniperf`` module last (especially after you load a ROCm module).
 If you load a new version of ROCm, you will need to re-load ``omniperf``.
 
 Using ``cray-python``
@@ -3225,7 +3337,7 @@ To use ``omniperf`` with ``cray-python``, you may use the following commands:
 
 .. code::
  
-    module load amd-mixed
+    module load rocm
     module load cray-python
     module load omniperf
 
@@ -3255,7 +3367,7 @@ Once you have installed the dependencies, you may load ``omniperf`` using comman
 .. code::
  
     # Your Python environment should be active by this point
-    module load amd-mixed
+    module load rocm
     module load omniperf
 
 Again, it is **critically** important that if you load a different version of ROCm that you re-load ``omniperf``.
@@ -3539,6 +3651,20 @@ If it is necessary to have bit-wise reproducible results from these libraries, i
 System Updates 
 ============== 
 
+2024-07-16
+----------
+On Tuesday, July 16, 2024, Frontier's system software will be upgraded. The following changes will take place:
+
+-  ROCm 5.7.1 and HPE/Cray PE 23.12 will become default.
+-  The system will be upgraded to the AMD GPU 6.7.0 device driver (ROCm 6.1.0 release).
+-  Please note major changes in the AMD and GNU programming environments detailed in Known Issues `OLCFDEV-1799 <https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#olcfdev-1799-new-rocm-module-layout-for-prgenv-amd>`_ and `OLCFDEV_1801 <https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#olcfdev-1801-new-prgenv-gnu-module-implementation>`_.
+
+Users are encouraged to try the versions that will become default and report any issues to help@olcf.ornl.gov.
+
+2024-03-19
+----------
+On Tuesday, March 19, 2024, Frontier's system software was upgraded to Slingshot 2.1.1 and Slingshot Host Software 2.1.2. If you encounter any issues or have questions, please contact help@olcf.ornl.gov.
+
 2024-01-23
 ----------
 On Tuesday, January 23, 2024, Frontier's system software was upgraded. The following changes took place:
@@ -3546,6 +3672,7 @@ On Tuesday, January 23, 2024, Frontier's system software was upgraded. The follo
 -  ROCm 6.0.0 is now available via the ``rocm/6.0.0`` modulefile.
 -  HPE/Cray Programming Environment (PE) 23.12 is now available via the ``cpe/23.12`` modulefile.
 -  ROCm 5.3.0 and HPE/Cray PE 22.12 remain as default.
+-  The system was upgraded to AMD GPU 6.3.6 device driver (ROCm 6.0.0 release). 
 
 Please note that target default versions will be updated to PE 23.12 and ROCm 5.7.1 in the near future. Users are encouraged to try both and report any issues to help@olcf.ornl.gov.
 
