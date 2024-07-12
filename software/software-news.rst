@@ -31,7 +31,7 @@ Going forward our core software (i.e software independent of compiler type/versi
 called `Core` with the version being in the format `year/month`. Additionally explicit suffixes have been added to modules to indicate MPI, OpenMP, and GPU support. 
 All modules that depend on ROCm are suffixed with `-gpu`. The same is true for packages with mpi `-mpi` and
 openmp `-omp`. Software is built to target CPE releases based on compiler (e.g. cce, amd or gcc), cray-mpich, and ROCm versions.
-If you have an :ref:`unsupported combination <supported combinations of compiler, mpi and rocm>` of those modules you may not see certain parts of the normal software stack.
+If you have an :ref:`unsupported combination <understanding-the-compatibility-of-compilers-rocm-and-cray-mpich>` of those modules you may not see certain parts of the normal software stack.
 
 Please contact help@olcf.ornl.gov if you encounter any issues or have questions.
 
