@@ -1372,7 +1372,7 @@ MPICH 3.4.2 and ROCm 5.5.1. Let's look at an example where we build a container 
 
 
 
-     srun  -N2 -n4 --tasks-per-node 2 apptainer exec --env MV2_COMM_WORLD_LOCAL_RANK="$SLURM_LOCALID"  --workdir `pwd` mpiexample.sif /lib64/ld-linux-x86-64.so.2 --preload /opt/cray/pe/mpich/8.1.27/gtl/lib/libmpi_gtl_hsa.so.0:  /app/mpiexample
+     srun  -N2 -n4 --tasks-per-node 2 apptainer exec  --workdir `pwd` mpiexample.sif /app/mpiexample
 
 - You should get output that looks like
   ::
