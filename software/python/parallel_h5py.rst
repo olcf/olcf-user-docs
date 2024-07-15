@@ -109,21 +109,21 @@ Loading a python module puts you in a "base" environment, but you need to create
 
       .. code-block:: bash
 
-         $ conda create -n h5pympi-summit python=3.10 numpy
+         $ conda create -n h5pympi-summit python=3.10 numpy=1.26.4
 
    .. tab-item:: Andes
       :sync: andes
 
       .. code-block:: bash
 
-         $ conda create -n h5pympi-andes python=3.10 numpy
+         $ conda create -n h5pympi-andes python=3.10 numpy=1.26.4
 
    .. tab-item:: Frontier
       :sync: frontier
 
       .. code-block:: bash
 
-         $ conda create -n h5pympi-frontier python=3.10 numpy
+         $ conda create -n h5pympi-frontier python=3.10 numpy=1.26.4
 
 NumPy is installed ahead of time because h5py depends on it.
 
@@ -536,7 +536,7 @@ If following Option 2, then you must export ``LD_PRELOAD`` at both build **and r
       .. code-block:: bash
 
          # Option 1 (use a newer libssh with your conda's newer openssl):
-         $ conda create -n h5pympi-frontier python=3.10 libssh numpy -c conda-forge
+         $ conda create -n h5pympi-frontier python=3.10 libssh numpy=1.26.4 -c conda-forge
 
          # Option 2 (downgrade your conda's openssl to match Frontier's):
          $ conda create -n h5pympi-frontier python=3.10 openssl=1.1.1 numpy -c conda-forge

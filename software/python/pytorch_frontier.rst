@@ -27,7 +27,7 @@ First, load your modules:
 
    module load PrgEnv-gnu/8.3.3
    module load miniforge3/23.11.0-0
-   module load amd-mixed/5.7.1
+   module load rocm/5.7.1
    module load craype-accel-amd-gfx90a
  
 Next, create and activate a conda environment that we will install ``torch`` into:
@@ -256,7 +256,7 @@ To run the python script, an example batch script is given below:
 
    # Load modules
    module load PrgEnv-gnu/8.3.3
-   module load amd-mixed/5.7.1
+   module load rocm/5.7.1
    module load craype-accel-amd-gfx90a
    module load miniforge3/23.11.0-0
 
@@ -340,7 +340,7 @@ To build the plugin on Frontier (using rocm 5.7.1 as an example):
 
    # Load modules
    module load libtool
-   module swap PrgEnv-cray PrgEnv-gnu
+   module load PrgEnv-gnu/8.3.3
    module load rocm/$rocm_version
    module load craype-accel-amd-gfx90a
    module load gcc/12.2.0

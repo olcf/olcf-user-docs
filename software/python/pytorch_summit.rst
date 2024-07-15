@@ -107,7 +107,7 @@ Create a conda environment and install dependencies:
 
     conda create -p <env_path> python=x.yy
     source activate <env_path>
-    conda install cmake ninja pyyaml typing_extensions numpy
+    conda install cmake ninja pyyaml typing_extensions numpy=1.26.4
 
 Finally clone and build pytorch:
 

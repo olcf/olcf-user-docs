@@ -86,7 +86,7 @@ First, load the gnu compiler module (most Python packages assume GCC), relevant 
       .. code-block:: bash
 
          $ module load PrgEnv-gnu/8.3.3
-         $ module load amd-mixed/5.3.0 # may work with other ROCm versions
+         $ module load rocm/5.3.0 # may work with other ROCm versions
          $ module load craype-accel-amd-gfx90a
          $ module load miniforge3/23.11.0-0
 
@@ -108,21 +108,21 @@ Loading a python module puts you in a "base" environment, but you need to create
 
       .. code-block:: bash
 
-         $ conda create -n cupy-summit python=3.10 numpy scipy
+         $ conda create -n cupy-summit python=3.10 numpy=1.26.4 scipy
 
    .. tab-item:: Frontier
       :sync: frontier
 
       .. code-block:: bash
 
-         $ conda create -n cupy-frontier python=3.10 numpy scipy
+         $ conda create -n cupy-frontier python=3.10 numpy=1.26.4 scipy
 
    .. tab-item:: Andes
       :sync: andes
 
       .. code-block:: bash
 
-         $ conda create -n cupy-andes python=3.10 numpy scipy
+         $ conda create -n cupy-andes python=3.10 numpy=1.26.4 scipy
 
 After following the prompts for creating your new environment, you can now activate it:
 

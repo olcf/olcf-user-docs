@@ -95,7 +95,7 @@ See these links for more information:
 
             module load gcc/9.3.0
             module load python
-            conda create -n ENV_NAME python=3.10 numpy scipy -c conda-forge
+            conda create -n ENV_NAME python=3.10 numpy=1.26.4 scipy -c conda-forge
             source activate ENV_NAME
             pip install qiskit==1.0.2 qiskit-ionq==0.5.0 --no-cache-dir
 
@@ -105,7 +105,7 @@ See these links for more information:
 
             module load PrgEnv-gnu/8.3.3
             module load miniforge3/23.11.0
-            conda create -n ENV_NAME python=3.10 numpy scipy -c conda-forge
+            conda create -n ENV_NAME python=3.10 numpy=1.26.4 scipy -c conda-forge
             source activate ENV_NAME
             pip install qiskit==1.0.2 qiskit-ionq==0.5.0 --no-cache-dir
 
@@ -301,7 +301,7 @@ Finally, you are ready to install pyQuil:
 
             module load gcc/9.3.0
             module load python
-            conda create -n ENV_NAME python=3.10 numpy scipy -c conda-forge
+            conda create -n ENV_NAME python=3.10 numpy=1.26.4 scipy -c conda-forge
             source activate ENV_NAME
             pip install pyquil==4.8.0 typing_extensions --no-cache-dir
 
@@ -311,7 +311,7 @@ Finally, you are ready to install pyQuil:
 
             module load PrgEnv-gnu/8.3.3
             module load miniforge3/23.11.0
-            conda create -n ENV_NAME python=3.10 numpy scipy -c conda-forge
+            conda create -n ENV_NAME python=3.10 numpy=1.26.4 scipy -c conda-forge
             source activate ENV_NAME
             pip install pyquil==4.8.0 typing_extensions --no-cache-dir
 
@@ -393,7 +393,7 @@ For more information please see:
 
             module load gcc/9.3.0
             module load python
-            conda create -n ENV_NAME_qtm python=3.10 numpy -c conda-forge
+            conda create -n ENV_NAME_qtm python=3.10 numpy=1.26.4 -c conda-forge
             source activate ENV_NAME_qtm
             pip install pytket==1.26.0 pytket-quantinuum==0.31.0 scipy --no-cache-dir
 
@@ -403,7 +403,7 @@ For more information please see:
 
             module load PrgEnv-gnu/8.3.3
             module load miniforge3/23.11.0
-            conda create -n ENV_NAME_qtm python=3.10 numpy scipy -c conda-forge
+            conda create -n ENV_NAME_qtm python=3.10 numpy=1.26.4 scipy -c conda-forge
             source activate ENV_NAME_qtm
             pip install pytket==1.26.0 pytket-quantinuum==0.32.0 --no-cache-dir
 

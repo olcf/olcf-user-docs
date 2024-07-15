@@ -50,7 +50,7 @@ First, let's load our modules and setup the environment:
 
    # Loading the relevant modules
    $ module load PrgEnv-gnu/8.3.3
-   $ module load amd-mixed/5.7.1
+   $ module load rocm/5.7.1
    $ module load craype-accel-amd-gfx90a
 
    # Create your conda environment
@@ -98,7 +98,7 @@ Below is an example batch script that uses ``sbcast``, unpacks our environment, 
 
    # Setup modules
    module load PrgEnv-gnu/8.3.3
-   module load amd-mixed/5.7.1
+   module load rocm/5.7.1
    module load miniforge3/23.11.0-0
    module load craype-accel-amd-gfx90a
 
