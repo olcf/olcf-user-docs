@@ -1307,9 +1307,11 @@ Running an MPI program with an MPI image
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 For running a program that uses MPI, you will need to build your container image
-with MPICH 3.4.2 installed (and also install ROCm if you need GPU functionality). We have a
-`prebuilt image on the code.ornl.gov repository <https://code.ornl.gov/olcfcontainers/olcfbaseimages/container_registry/5647>`_ with
-MPICH 3.4.2 and ROCm 5.5.1. Let's look at an example where we build a container that runs an MPI example based on this image.
+with MPICH 3.4.2 installed (and also install ROCm if you need GPU
+functionality). We have a prebuilt image with with MPICH 3.4.2 and ROCm 5.3.3 in /lustre/polis/stf007/world-shared/containers/opensusempich342rocm533.sif.
+The definition files that are used to build this image can be found on `this code.ornl.gov repo <https://code.ornl.gov/olcfcontainers/olcfbaseimages/-/tree/master/defiant>`_ .
+Let's look at an example where we build a container that runs an MPI example
+based on this image.
 
 - Create a new directory ``mpiexample``.
 - Create a file ``mpiexample.c`` with the following contents.
@@ -1317,19 +1319,19 @@ MPICH 3.4.2 and ROCm 5.5.1. Let's look at an example where we build a container 
 
      #include <stdio.h>
      #include <mpi.h>
-     
+
      int main (int argc, char *argv[])
      {
      int rank, size;
      MPI_Comm comm;
-     
+
      comm = MPI_COMM_WORLD;
      MPI_Init (&argc, &argv);
      MPI_Comm_rank (comm, &rank);
      MPI_Comm_size (comm, &size);
-     
+
      printf("Hello from rank %d\n", rank);
-     
+
      MPI_Barrier(comm);
      MPI_Finalize();
      }
@@ -1339,11 +1341,11 @@ MPICH 3.4.2 and ROCm 5.5.1. Let's look at an example where we build a container 
 
       Bootstrap: localimage
       From: /lustre/polis/stf007/world-shared/containers/opensusempich342rocm533.sif
-      
+
       %files
       mpiexample.c /app/mpiexample.c
-      
-      
+
+
       %post
       cd /app && mpicc -o mpiexample mpiexample.c
 
