@@ -25,7 +25,7 @@ First, load your modules:
 
 .. code-block:: bash
 
-   module load PrgEnv-gnu/8.3.3
+   module load PrgEnv-gnu/8.5.0
    module load miniforge3/23.11.0-0
    module load rocm/5.7.1
    module load craype-accel-amd-gfx90a
@@ -255,7 +255,7 @@ To run the python script, an example batch script is given below:
    unset SLURM_EXPORT_ENV
 
    # Load modules
-   module load PrgEnv-gnu/8.3.3
+   module load PrgEnv-gnu/8.5.0
    module load rocm/5.7.1
    module load craype-accel-amd-gfx90a
    module load miniforge3/23.11.0-0
@@ -338,17 +338,18 @@ To build the plugin on Frontier (using rocm 5.7.1 as an example):
 
 .. code-block:: bash
 
+   rocm_version=5.7.1
+
    # Load modules
-   module load libtool
-   module load PrgEnv-gnu/8.3.3
+   module load PrgEnv-gnu/8.5.0
    module load rocm/$rocm_version
    module load craype-accel-amd-gfx90a
-   module load gcc/12.2.0
-   module load cray-mpich/8.1.27
+   module load gcc-native/12.3
+   module load cray-mpich/8.1.28
+   module load libtool
    libfabric_path=/opt/cray/libfabric/1.15.2.0
 
    # Download the plugin repo
-   rocm_version=5.7.1
    git clone --recursive https://github.com/ROCmSoftwarePlatform/aws-ofi-rccl
    cd aws-ofi-rccl
 

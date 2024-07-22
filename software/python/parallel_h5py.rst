@@ -28,7 +28,7 @@ OLCF Systems this guide applies to:
 +------------+----------+------------+
 | ``python`` | ``h5py`` | ``mpi4py`` |
 +============+==========+============+
-|  3.10.14   |  3.10.0  |   3.1.5    |
+|  3.10.14   |  3.11.0  |   3.1.6    |
 +------------+----------+------------+
 
 .. note::
@@ -93,8 +93,8 @@ First, load the gnu compiler module (most Python packages assume GCC), hdf5 modu
 
       .. code-block:: bash
 
-         $ module load PrgEnv-gnu/8.3.3
-         $ module load hdf5/1.14.0
+         $ module load PrgEnv-gnu/8.5.0
+         $ module load cray-hdf5-parallel/1.12.2.9
          $ module load miniforge3/23.11.0-0
 
 .. note::
@@ -212,7 +212,7 @@ Next, install h5py from source.
 
       .. code-block:: bash
 
-         $ HDF5_MPI="ON" CC=cc HDF5_DIR=${OLCF_HDF5_ROOT} pip install --no-cache-dir --no-binary=h5py h5py
+         $ HDF5_MPI="ON" CC=cc HDF5_DIR=${HDF5_ROOT} pip install --no-cache-dir --no-binary=h5py h5py
 
 The ``HDF5_MPI`` flag is the key to telling pip to build h5py with parallel support, while the ``CC`` flag makes sure that you are using the correct C wrapper for MPI.
 This installation will take much longer than both the mpi4py and NumPy installations (5+ minutes if the system is slow).
@@ -309,6 +309,8 @@ Example "submit_hello" batch script:
          #SBATCH -p gpu
          #SBATCH -t 0:05:00
 
+         # Only necessary if submitting like: sbatch --export=NONE ... (recommended)
+         # Do NOT include this line when submitting without --export=NONE
          unset SLURM_EXPORT_ENV
 
          cd $SLURM_SUBMIT_DIR
@@ -334,13 +336,15 @@ Example "submit_hello" batch script:
          #SBATCH -p batch
          #SBATCH -t 0:05:00
 
+         # Only necessary if submitting like: sbatch --export=NONE ... (recommended)
+         # Do NOT include this line when submitting without --export=NONE
          unset SLURM_EXPORT_ENV
 
          cd $SLURM_SUBMIT_DIR
          date
 
-         module load PrgEnv-gnu/8.3.3
-         module load hdf5/1.14.0
+         module load PrgEnv-gnu/8.5.0
+         module load cray-hdf5-parallel/1.12.2.9
          module load miniforge3/23.11.0-0
 
          source activate h5pympi-frontier
@@ -453,6 +457,8 @@ Example "submit_h5py" batch script:
          #SBATCH -p gpu
          #SBATCH -t 0:05:00
 
+         # Only necessary if submitting like: sbatch --export=NONE ... (recommended)
+         # Do NOT include this line when submitting without --export=NONE
          unset SLURM_EXPORT_ENV
 
          cd $SLURM_SUBMIT_DIR
@@ -478,13 +484,15 @@ Example "submit_h5py" batch script:
          #SBATCH -p batch
          #SBATCH -t 0:05:00
 
+         # Only necessary if submitting like: sbatch --export=NONE ... (recommended)
+         # Do NOT include this line when submitting without --export=NONE
          unset SLURM_EXPORT_ENV
 
          cd $SLURM_SUBMIT_DIR
          date
 
-         module load PrgEnv-gnu/8.3.3
-         module load hdf5/1.14.0
+         module load PrgEnv-gnu/8.5.0
+         module load cray-hdf5-parallel/1.12.2.9
          module load miniforge3/23.11.0-0
 
          source activate h5pympi-frontier

@@ -85,8 +85,8 @@ First, load the gnu compiler module (most Python packages assume GCC), relevant 
 
       .. code-block:: bash
 
-         $ module load PrgEnv-gnu/8.3.3
-         $ module load rocm/5.3.0 # may work with other ROCm versions
+         $ module load PrgEnv-gnu/8.5.0
+         $ module load rocm/5.7.1 # may work with other ROCm versions
          $ module load craype-accel-amd-gfx90a
          $ module load miniforge3/23.11.0-0
 
@@ -175,7 +175,7 @@ To make sure that you are building from source, and not a pre-compiled binary, u
          $ export CUPY_INSTALL_USE_HIP=1
          $ export ROCM_HOME=/opt/rocm-5.3.0
          $ export HCC_AMDGPU_TARGET=gfx90a
-         $ CC=gcc pip install --no-cache-dir --no-binary=cupy cupy==12.3.0
+         $ CC=gcc CXX=g++ pip install --no-cache-dir --no-binary=cupy cupy==12.3.0
 
    .. tab-item:: Andes
       :sync: andes

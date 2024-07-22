@@ -49,7 +49,7 @@ First, let's load our modules and setup the environment:
 .. code-block:: bash
 
    # Loading the relevant modules
-   $ module load PrgEnv-gnu/8.3.3
+   $ module load PrgEnv-gnu/8.5.0
    $ module load rocm/5.7.1
    $ module load craype-accel-amd-gfx90a
 
@@ -93,14 +93,17 @@ Below is an example batch script that uses ``sbcast``, unpacks our environment, 
    date
    cd $SLURM_SUBMIT_DIR
 
-   # Because submitting job with --export=NONE
+   # Only necessary if submitting like: sbatch --export=NONE ... (recommended)
+   # Do NOT include this line when submitting without --export=NONE
    unset SLURM_EXPORT_ENV
 
    # Setup modules
-   module load PrgEnv-gnu/8.3.3
+   module load PrgEnv-gnu/8.5.0
    module load rocm/5.7.1
    module load miniforge3/23.11.0-0
    module load craype-accel-amd-gfx90a
+
+   ##### START OF SBCAST AND CONDA-UNPACK #####
 
    # Move a copy of the env to the NVMe on each node
    echo "copying torch_env to each node in the job"
@@ -120,6 +123,8 @@ Below is an example batch script that uses ``sbcast``, unpacks our environment, 
    # Unpack the env
    source activate /mnt/bb/${USER}/torch_env
    srun -N8 --ntasks-per-node 1 conda-unpack
+
+   ##### END OF SBCAST AND CONDA-UNPACK #####
 
    # Run the Python script
    srun --unbuffered -l -N 8 -n 64 -c7 --ntasks-per-node=8 --gpus-per-node=8 --gpus-per-task=1 --gpu-bind=closest python3 example.py
