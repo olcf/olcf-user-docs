@@ -445,6 +445,8 @@ inside the batch script. An example batch script for is provided below:
          #SBATCH -p batch
          #SBATCH -t 0:05:00
 
+         # Only necessary if submitting like: sbatch --export=NONE ... (recommended)
+         # Do NOT include this line when submitting without --export=NONE
          unset SLURM_EXPORT_ENV
 
          cd $SLURM_SUBMIT_DIR
@@ -468,6 +470,8 @@ inside the batch script. An example batch script for is provided below:
          #SBATCH -p batch
          #SBATCH -t 0:05:00
 
+         # Only necessary if submitting like: sbatch --export=NONE ... (recommended)
+         # Do NOT include this line when submitting without --export=NONE
          unset SLURM_EXPORT_ENV
 
          cd $SLURM_SUBMIT_DIR
