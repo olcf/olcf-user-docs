@@ -86,11 +86,11 @@ TB/s.
 Connecting
 ==========
 
-To connect to Defiant, ``ssh`` to ``defiant-login[1-2].olcf.ornl.gov``. For example:
+To connect to Defiant, ``ssh`` to ``defiant-login.ccs.ornl.gov``. For example:
 
 .. code-block:: bash
 
-    $ ssh username@defiant-login1.olcf.ornl.gov
+    $ ssh username@defiant-login.ccs.ornl.gov
 
 For more information on connecting to OLCF resources, see :ref:`connecting-to-olcf`.
 
