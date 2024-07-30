@@ -12,7 +12,7 @@ After decades in service and having served hundreds of users that have archived 
 Please pay attention to the following key dates as you migrate workloads from the center's HPSS resource to the new nearline resource, Kronos.
 
 
-.. list-table:: 2024 OLCF System Decommissions and Notable Changes
+.. list-table:: 2024 OLCF HPSS Decommission and Kronos Availability
    :widths: 20 150
    :header-rows: 1
 
@@ -24,6 +24,20 @@ Please pay attention to the following key dates as you migrate workloads from th
      - HPSS becomes read-only. **To help spread the HPSS migration load, please reach out to help@olcf.ornl.gov to help coordinate your large HPSS data migrations.**
    * - :ref:`January 31, 2025<hpss_decom>`
      - HPSS decommissioned.  **ALL REMAINING DATA WILL BE PERMANENTLY DELETED**
+
+
+.. list-table:: 2024 OLCF Summit and Alpine2 Decommissions
+   :widths: 20 150
+   :header-rows: 1
+
+   * - Date
+     - Event
+   * - :ref:`November 15<summit_decom>`
+     - Summit decommissioned; last day to run batch jobs.
+   * - :ref:`November 19<alpine2_read_only>`
+     - Alpine2 unmounted from Andes and becomes read-only on DTNs. 
+   * - :ref:`January 31, 2025<alpine2_decom>`
+     - Alpine2 decommissioned.  **ALL REMAINING DATA WILL BE PERMANENTLY DELETED**
 
 
 
@@ -173,3 +187,39 @@ On January 31, 2025, data remaining on the HPSS will no longer be accessible and
 
 .. warning::
   January 31, 2025, all remaining HPSS data will be **PERMANENTLY DELETED**.  Do not wait to move needed data.
+
+
+
+
+.. _summit_decom:
+
+November 15, 2024 - Summit decommissioned
+-----------------------------------------
+
+On November 15, 2024, Summit will be decommissioned. Batch jobs will be allowed to execute until 08:00 November 15.  Jobs remaining in the queue after this time will be deleted.  
+
+.. warning::
+  Please note the decommission date is firm; we must decommission Summit on November 15.  Please plan your remaining research accordingly.
+
+
+.. _alpine2_read_only:
+
+November 19, 2024 - Alpine2 read-only
+--------------------------------------
+
+On November 19, 2024, Alpine2 will be unmounted from Andes and will be mounted read-only from the DTNs.
+
+
+.. _alpine2_decom:
+
+January 31, 2025 - Alpine2 decommissioned
+--------------------------------------
+
+On January 31, 2025, data remaining on Alpine2 will no longer be accessible and will be permanently deleted. Following this date, the OLCF will no longer be able to retrieve data remaining on Alpine2.
+
+.. warning::
+  January 31, 2025, all remaining Alpine2 data will be **PERMANENTLY DELETED**.  Do not wait to move needed data.
+
+
+
+
