@@ -1340,6 +1340,16 @@ The ``batch`` queue is the default queue for production work on Frontier. Most w
 * Users may have only 100 jobs queued in the ``batch`` queue at any time (this includes jobs in all states). Additional jobs will be rejected at submit time.
 
 
+``extended`` Queue Policy
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The ``extended`` queue is a queue designated for smaller long-running jobs on Frontier. The following policies are enforced for the ``extended`` queue:
+
+* 24-Hour maximum wall time for each queued job.
+* 64-Node maximum job size for each queued job. 
+* Each user will be allowed 1 running job and 1 *eligible-to-run* job at a given time. Any additional queued jobs will be held in an ineligible state until the previous job runs. 
+
+
 ``debug`` Quality of Service Class
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
