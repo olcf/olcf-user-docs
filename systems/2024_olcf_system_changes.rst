@@ -213,7 +213,7 @@ On November 19, 2024, Alpine2 will be unmounted from Andes and will be mounted r
 .. _alpine2_decom:
 
 January 31, 2025 - Alpine2 decommissioned
---------------------------------------
+-----------------------------------------
 
 On January 31, 2025, data remaining on Alpine2 will no longer be accessible and will be permanently deleted. Following this date, the OLCF will no longer be able to retrieve data remaining on Alpine2.
 
