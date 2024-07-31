@@ -31,7 +31,7 @@ After decades in service and having served hundreds of users that have archived 
 Summit and Alpine2 Decommissions
 ------------------------------------------
 
-After almost 6 years of production service providing over 200 million node hours to researchers around the world, Summit will be decommissioned on November 15, 2024.  Please pay close attention to the Summit and Andes2 decommission dates below and plan your research and data migration accordingly.
+After almost 6 years of production service providing over 200 million node hours to researchers around the world, Summit will be decommissioned on November 15, 2024.  Please pay close attention to the Summit and Alpine2 decommission dates below and plan your research and data migration accordingly.
 
 .. list-table:: 2024 OLCF Summit and Alpine2 Decommissions
    :widths: 20 150
