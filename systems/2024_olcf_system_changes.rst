@@ -19,7 +19,7 @@ Please pay attention to the following key dates as you migrate workloads from th
    * - Date
      - Event
    * - :ref:`Late July<kronos_overview>`
-     - Kronos available for production use.
+     - Kronos available.
    * - :ref:`August 30<hpss_read_only>`
      - HPSS becomes read-only. **To help spread the HPSS migration load, please reach out to help@olcf.ornl.gov to help coordinate your large HPSS data migrations.**
    * - :ref:`January 31, 2025<hpss_decom>`
@@ -43,10 +43,10 @@ Please pay attention to the following key dates as you migrate workloads from th
 
 .. _kronos_overview:
 
-Late July 2024 - Kronos available for production use
+Late July 2024 - Kronos available
 ----------------------------------------------------
 
-Kronos is expected to be available late July 2024.  Updates to the availability schedule will be posted to this site and through the OLCF weekly email.
+On July 31, Kronos was made available to early users.  Following a period of testing, the resource will be available to all HPSS users.   If you would like to participate in Kronos early testing, please reach out to help@olcf.ornl.gov. 
 
 Kronos Overview
 ^^^^^^^^^^^^^^^^
@@ -58,7 +58,7 @@ Availability Timeline
   Kronos is expected to be available late July 2024.
 
 Access / Data Transfer
-  Kronos will be mounted on the moderate Data Transfer Nodes, Frontier login nodes, and Andes login nodes.  Because the system will be mounted as a filesystem, standard UNIX command and tools can be used to interact with Kronos.  The resource will also be accessible through the OLCF DTN endpoint in Globus.
+  Kronos will be mounted on the moderate Data Transfer Nodes.  Because the system will be mounted as a filesystem, standard UNIX command and tools can be used to interact with Kronos.  The resource will also be accessible through the OLCF DTN endpoint in Globus.
 
   Please note that Kronos will not be mounted on the compute nodes of Frontier or Andes.
 
@@ -108,7 +108,7 @@ HPSS and Kronos Comparison
      - Kronos
    * - Accessibility
      - DTNs and login nodes
-     - DTNs and login nodes
+     - DTNs
    * - Transfer tools
      - hsi, htar, globus
      - globus and standard UNIX transfer utilities
