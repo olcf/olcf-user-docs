@@ -46,7 +46,7 @@ Please pay attention to the following key dates as you migrate workloads from th
 Late July 2024 - Kronos available
 ----------------------------------------------------
 
-On July 31, Kronos was made available to early users.  Following a period of testing, the resource we be available to all HPSS users.   If you would like to participate in Kronos early testing, please reach out to help@olcf.ornl.gov. 
+On July 31, Kronos was made available to early users.  Following a period of testing, the resource will be available to all HPSS users.   If you would like to participate in Kronos early testing, please reach out to help@olcf.ornl.gov. 
 
 Kronos Overview
 ^^^^^^^^^^^^^^^^
