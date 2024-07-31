@@ -6,11 +6,13 @@
 
 .. _system_change_overview:
 
+This page lists multiple notable changes to OLCF resources.
 
-After decades in service and having served hundreds of users that have archived over 160 petabytes, HPSS is reaching end of its life and will be decommissioned early in 2025.
 
-Please pay attention to the following key dates as you migrate workloads from the center's HPSS resource to the new nearline resource, Kronos.
+HPSS Decommission and Kronos Availability
+------------------------------------------
 
+After decades in service and having served hundreds of users that have archived over 160 petabytes, HPSS is reaching end of its life and will be decommissioned early in 2025.  Please pay attention to the following key dates as you migrate workloads from the center's HPSS resource to the new nearline resource, Kronos.
 
 .. list-table:: 2024 OLCF HPSS Decommission and Kronos Availability
    :widths: 20 150
@@ -25,6 +27,11 @@ Please pay attention to the following key dates as you migrate workloads from th
    * - :ref:`January 31, 2025<hpss_decom>`
      - HPSS decommissioned.  **ALL REMAINING DATA WILL BE PERMANENTLY DELETED**
 
+
+Summit and Alpine2 Decommissions
+------------------------------------------
+
+After almost 6 years of production service providing over 200 million node hours to researchers around the world, Summit will be decommissioned on November 15, 2024.  Please pay close attention to the Summit and Andes2 decommission dates below and plan your research and data migration accordingly.
 
 .. list-table:: 2024 OLCF Summit and Alpine2 Decommissions
    :widths: 20 150
@@ -81,7 +88,7 @@ Directory Structure
      - root
      - <projectID> UNIX group
      - Data shared between project members.
-   * - /nl/kronos/olcf/<projectID>/users/<userID>
+   * - /nl/kronos/olcf/<projectID>/<userID>
      - 700
      - <userID>
      - <projectID> UNIX group
@@ -125,7 +132,7 @@ HPSS and Kronos Comparison
 August 30, 2024 - HPSS becomes read-only
 ----------------------------------------
 
-In preparation for HPSS's decommission in January 2025, the HPSS will become read-only from all OLCF resources in August 30, 2024.
+In preparation for HPSS's decommission in January 2025, the HPSS will become read-only from all OLCF resources on August 30, 2024.
 
 We highly encourage all teams to start migrating needed data from the HPSS now.  If you wait too late in the year to begin the transition, you will run the risk of running out of time to move your data before the system is decommissioned.  It is important to note that any data remaining on the HPSS after January 31, 2025, will be unavailable. We expect HPSS periods of access impacts due to the expected volumes of data migrating off of the HPSS. To help spread the HPSS migration load, please reach out to help@olcf.ornl.gov to help coordinate your larger HPSS data migrations.
 
@@ -151,7 +158,7 @@ Globus
   The Globus utility is not aware of the underlying HPSS tape storage structure.  To help ensure safe and efficient migration of data from tape, the HPSS Globus endpoint will be disabled on August 30, 2024.  Instead of Globus, please use the HPSS ``hsi`` utility.  
 
 HSI Data Lists
-  The HPSS ``hsi`` utility is the preferred tool for HPSS data migration because it is aware of the HPSS tape storage structure.  To ensure the most efficient retrieval of data stored on tape, we recommend passing list files to ``hsi``.
+  The HPSS ``hsi`` utility is the preferred tool for HPSS data migration because it is aware of the HPSS tape storage structure.  To ensure the most efficient retrieval of data stored on tape, we recommend passing list files to ``hsi``.  Please also see the ``hsi_xfer`` utility below for an easy way to utilize the hsi data list feature.
 
   * **Bad practice** Successive ``hsi get`` calls
 
@@ -175,6 +182,26 @@ HSI Data Lists
       EOF
 
       $ hsi "in getfiles.lst"
+
+
+hsi_xfer Utility
+  The ``hsi_xfer`` utility provides an easy way to utilize the hsi data list feature.  The utility will recursively copy a directory on the HPSS to a directory on Kronos.  The utility will create the needed data lists and call hsi behind the scenes.  Please note that you must specify full paths for both the source and destination diretories.  The utility can be executed on the DTN after loading the ``hsi_xfer`` module.
+
+  * **Syntax** ``hsi_xfer hpss_source_dir kronos_destination_dir`` 
+
+  * **Example** The following will recursively copy data from hpss_dir to kronos_dir
+
+    .. code-block:: bash
+
+      dtn101 413> module load hsi_xfer
+      dtn101 414> hsi_xfer /home/<userID>/hpss_dir /nl/kronos/olcf/<projID>/<userID>/kronos_dir
+
+
+.. note::
+  The ``hsi_xfer`` utility is available on the DTN.
+
+.. warning::
+  The ``hsi_xfer`` utility requires full paths.  Please specify the full path to the source and destination directories.
 
 
 
