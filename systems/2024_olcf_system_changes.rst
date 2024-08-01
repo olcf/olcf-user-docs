@@ -9,17 +9,16 @@
 This page lists multiple notable changes to OLCF resources.
 
 
-HPSS Decommission and Kronos Availability
-------------------------------------------
+1. **HPSS Decommission and Kronos Availability**
 
 After decades in service and having served hundreds of users that have archived over 160 petabytes, HPSS is reaching end of its life and will be decommissioned early in 2025.  Please pay attention to the following key dates as you migrate workloads from the center's HPSS resource to the new nearline resource, Kronos.
 
-.. list-table:: 2024 OLCF HPSS Decommission and Kronos Availability
+.. list-table:: 
    :widths: 20 150
    :header-rows: 1
 
    * - Date
-     - Event
+     - HPSS Decommission and Kronos Availability Timeline
    * - :ref:`Late July<kronos_overview>`
      - Kronos available.
    * - :ref:`August 30<hpss_read_only>`
@@ -28,17 +27,16 @@ After decades in service and having served hundreds of users that have archived 
      - HPSS decommissioned.  **ALL REMAINING DATA WILL BE PERMANENTLY DELETED**
 
 
-Summit and Alpine2 Decommissions
-------------------------------------------
+2. **Summit and Alpine2 Decommissions**
 
 After almost 6 years of production service providing over 200 million node hours to researchers around the world, Summit will be decommissioned on November 15, 2024.  Please pay close attention to the Summit and Alpine2 decommission dates below and plan your research and data migration accordingly.
 
-.. list-table:: 2024 OLCF Summit and Alpine2 Decommissions
+.. list-table:: 
    :widths: 20 150
    :header-rows: 1
 
    * - Date
-     - Event
+     - Summit and Alpine2 Decommission Timeline
    * - :ref:`November 15<summit_decom>`
      - Summit decommissioned; last day to run batch jobs.
    * - :ref:`November 19<alpine2_read_only>`
@@ -46,7 +44,16 @@ After almost 6 years of production service providing over 200 million node hours
    * - :ref:`January 31, 2025<alpine2_decom>`
      - Alpine2 decommissioned.  **ALL REMAINING DATA WILL BE PERMANENTLY DELETED**
 
+|
+|
+|
+|
+|
+|
 
+===========================================
+HPSS Decommission and Kronos Availability 
+===========================================
 
 .. _kronos_overview:
 
@@ -217,16 +224,32 @@ On January 31, 2025, data remaining on the HPSS will no longer be accessible and
 
 
 
+|
+|
+|
+|
+|
+|
+|
+|
+|
+|
+
+=================================
+Summit and Alpine2 Decommissions
+=================================
 
 .. _summit_decom:
 
 November 15, 2024 - Summit decommissioned
 -----------------------------------------
 
-On November 15, 2024, Summit will be decommissioned. Batch jobs will be allowed to execute until 08:00 November 15.  Jobs remaining in the queue after this time will be deleted.  
+**On November 15, 2024, Summit will be decommissioned.** Batch jobs will be allowed to execute until 08:00 AM (EST) November 15.  Jobs remaining in the queue after this time will be deleted.  
 
-.. warning::
-  Please note the decommission date is firm; we must decommission Summit on November 15.  Please plan your remaining research accordingly.
+Please pay close attention to the Summit and Alpine2 decommission dates and plan your research and data migration accordingly.  Please also note that the Summit decommission date is firm: The machine will very quickly be physically disassembled starting November 15.
+
+.. note::
+  Summit decommission date is firm: The machine will very quickly be physically disassembled starting November 15.  **It will not be physically possible to run batch jobs after November 15.**
 
 
 .. _alpine2_read_only:
@@ -235,6 +258,17 @@ November 19, 2024 - Alpine2 read-only
 --------------------------------------
 
 On November 19, 2024, Alpine2 will be unmounted from Andes and will be mounted read-only from the DTNs.
+
+* **Alpine2 unmounted from Andes**
+
+  * On November 19, Alpine2 will be unmounted from Andes
+  * Please manage your workflows such that Andes batch jobs requiring Alpine2 will complete prior to November 19.
+  * Andes batch jobs requiring Alpine2 after this date will fail
+
+* **Alpine2 mounted read-only on DTNs**
+
+  * To allow time to migrate needed data off of Alpine2, the OLCF DTN resources will mount Alpine2 as read-only on November 19
+  * Alpine2 will remain available read-only on the DTNs through Alpine2's decommission date.
 
 
 .. _alpine2_decom:
