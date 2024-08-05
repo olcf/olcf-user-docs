@@ -1332,7 +1332,7 @@ parameter, which all jobs in the bin receive.
 
 
 ``batch`` Partition (queue) Policy
-^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The ``batch`` partition (queue) is the default partition for production work on Frontier. Most work on Frontier is handled through this partition. The following policies are enforced for the ``batch`` partition:
 
@@ -1341,7 +1341,7 @@ The ``batch`` partition (queue) is the default partition for production work on 
 
 
 ``extended`` Partition (queue) Policy
-^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The ``extended`` partition (queue) is designated for smaller long-running jobs on Frontier. The following policies are enforced for the ``extended`` partition:
 
