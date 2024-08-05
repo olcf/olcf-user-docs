@@ -1331,19 +1331,19 @@ parameter, which all jobs in the bin receive.
 +-----+-----------+-----------+----------------------+--------------------+
 
 
-``batch`` Queue Policy
+``batch`` Partition (queue) Policy
 ^^^^^^^^^^^^^^^^^^^^^^
 
-The ``batch`` queue is the default queue for production work on Frontier. Most work on Frontier is handled through this queue. The following policies are enforced for the ``batch`` queue:
+The ``batch`` partition (queue) is the default partition for production work on Frontier. Most work on Frontier is handled through this partition. The following policies are enforced for the ``batch`` partition:
 
 * Limit of four *eligible-to-run* jobs per user. (Jobs in excess of this number will be held, but will move to the eligible-to-run state at the appropriate time.)
-* Users may have only 100 jobs queued in the ``batch`` queue at any time (this includes jobs in all states). Additional jobs will be rejected at submit time.
+* Users may have only 100 jobs queued in the ``batch`` partition at any time (this includes jobs in all states). Additional jobs will be rejected at submit time.
 
 
-``extended`` Queue Policy
+``extended`` Partition (queue) Policy
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The ``extended`` queue is a queue designated for smaller long-running jobs on Frontier. The following policies are enforced for the ``extended`` queue:
+The ``extended`` partition (queue) is designated for smaller long-running jobs on Frontier. The following policies are enforced for the ``extended`` partition:
 
 * 24-Hour maximum wall time for each queued job.
 * 64-Node maximum job size for each queued job. 
@@ -1353,7 +1353,7 @@ The ``extended`` queue is a queue designated for smaller long-running jobs on Fr
 ``debug`` Quality of Service Class
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The ``debug`` quality of service (QOS) class can be used to access Frontier's compute resources for short non-production debug tasks. The QOS provides a higher priority compare to jobs of the same job size bin in production queues. Production work and job chaining using the ``debug`` QOS is prohibited. Each user is limited to one job in any state at any one point. Attempts to submit multiple jobs to this QOS will be rejected upon job submission.
+The ``debug`` quality of service (QOS) class can be used to access Frontier's compute resources for short non-production debug tasks. The QOS provides a higher priority compare to jobs of the same job size bin in production partitions. Production work and job chaining using the ``debug`` QOS is prohibited. Each user is limited to one job in any state at any one point. Attempts to submit multiple jobs to this QOS will be rejected upon job submission.
 
 To submit a job to the ``debug`` QOS, add the `-q debug` option to your ``sbatch`` or ``salloc`` command or ``#SBATCH -q debug`` to your job script.
 
