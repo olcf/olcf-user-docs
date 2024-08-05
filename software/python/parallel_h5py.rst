@@ -156,8 +156,7 @@ After following the prompts for creating your new environment, you can now activ
 Installing mpi4py
 =================
 
-Now that you have a fresh environment, you will next install mpi4py from source into your new environment.
-To make sure that you are building from source, and not a pre-compiled binary, use ``pip``:
+Now that you have a fresh environment, you will next install mpi4py into your new environment using ``pip``:
 
 .. tab-set::
 
@@ -166,7 +165,7 @@ To make sure that you are building from source, and not a pre-compiled binary, u
 
       .. code-block:: bash
 
-         $ MPICC="mpicc -shared" pip install --no-cache-dir --no-binary=mpi4py mpi4py
+         $ MPICC="mpicc -shared" pip install --no-cache-dir --no-binary=mpi4py mpi4py==3.1.6
 
    .. tab-item:: Andes
       :sync: andes
@@ -183,13 +182,12 @@ To make sure that you are building from source, and not a pre-compiled binary, u
          $ MPICC="cc -shared" pip install --no-cache-dir --no-binary=mpi4py mpi4py
 
 The ``MPICC`` flag ensures that you are using the correct C wrapper for MPI on the system.
-Building from source typically takes longer than a simple ``conda install``, so the download and installation may take a couple minutes.
 If everything goes well, you should see a "Successfully installed mpi4py" message.
 
 Installing h5py
 ===============
 
-Next, install h5py from source.
+Next, install h5py:
 
 .. tab-set::
 
@@ -215,7 +213,6 @@ Next, install h5py from source.
          $ HDF5_MPI="ON" CC=cc HDF5_DIR=${HDF5_ROOT} pip install --no-cache-dir --no-binary=h5py h5py
 
 The ``HDF5_MPI`` flag is the key to telling pip to build h5py with parallel support, while the ``CC`` flag makes sure that you are using the correct C wrapper for MPI.
-This installation will take much longer than both the mpi4py and NumPy installations (5+ minutes if the system is slow).
 When the installation finishes, you will see a "Successfully installed h5py" message.
 
 Testing parallel h5py
