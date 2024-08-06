@@ -95,7 +95,7 @@ Directory Structure
      - root
      - <projectID> UNIX group
      - Data shared between project members.
-   * - /nl/kronos/olcf/<projectID>/<userID>
+   * - /nl/kronos/olcf/<projectID>/users/<userID>
      - 700
      - <userID>
      - <projectID> UNIX group
