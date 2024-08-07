@@ -13,6 +13,7 @@ The table below lists presentations given at previous OLCF training events. For 
    :header: "Date", "Title", "Speaker", "Event", "Presentation"
    :widths: 12 22 22 22 22
 
+    "2024-07-31", "The ADIOS IO Framework", "Norbert Podhorszki (ORNL)", `July 2024 OLCF User Conference Call <https://www.olcf.ornl.gov/calendar/userconcall-jul2024/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/ADIOS_OLCF_July2024.pdf>`__ | `recording <https://vimeo.com/995955538>`__)
     "2024-07-11", "AI Training Series: AI for Science at Scale - Part 3", "Sajal Dash (OLCF)", `AI for Science at Scale - Part 3 <https://www.olcf.ornl.gov/calendar/ai-for-science-at-scale-part-3/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/AI4S-Tutorial-Part-III.pdf>`__ | `recording <https://vimeo.com/983121540>`__)
     "2024-06-26", "Linaro Forge", "Beau Paisley (Linaro)", `June 2024 OLCF User Conference Call <https://www.olcf.ornl.gov/calendar/userconcall-jun2024/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/LinaroForgeBrief_BP_2.pdf>`__ | `recording <https://vimeo.com/970879852>`__)
     "2024-05-29", "Omnitrace by Example", "Gina Sitaraman (AMD)", `May 2024 OLCF User Conference Call <https://www.olcf.ornl.gov/calendar/userconcall-may2024/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/Omnitrace_by_Example.pdf>`__ | `recording <https://vimeo.com/951998260>`__)
