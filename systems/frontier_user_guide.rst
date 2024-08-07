@@ -3217,7 +3217,7 @@ The theoretical (not attainable) peak roofline constructs a theoretical maximum 
 
 .. note::
 
-    ``theoretical`` peak is determined by the hardware specifications and is not attainable in practice. ``attaiable`` peak is the performance as measured by
+    ``theoretical`` peak is determined by the hardware specifications and is not attainable in practice. ``attainable`` peak is the performance as measured by
     in-situ microbenchmarks designed to best utilize the hardware. ``achieved`` performance is what the profiled application actually achieves.
 
 
@@ -3239,7 +3239,7 @@ However, when using MFMA instructions, the theoretical peak floating-point FLOPS
 
 .. math::
 
-    TheoreticalFLOPS = 512 FLOP/cycle/CU * 110 CU * 1700000000 cycles/second
+    TheoreticalFLOPS = 256 FLOP/cycle/CU * 110 CU * 1700000000 cycles/second = 47.9 TFLOP/s
 
 
 .. note::
@@ -3252,7 +3252,7 @@ Achieved FLOPS/s
 
 We calculate the achieved performance at the desired level (here, double-precision floating point, FP64), by summing each metric count and weighting the FMA metric by 2, since a fused multiply-add is considered 2 floating point operations.
 Also note that these ``SQ_INSTS_VALU_<ADD,MUL,TRANS>_F64`` metrics are reported as per-simd, so we mutliply by the wavefront size as well.
-The ``SQ_INSTS_VALU_MFMA_MOPS_*_F64`` instructions should be multiplied by 512 FLOPS/cycle/CU.
+Similarly, the ``SQ_INSTS_VALU_MFMA_MOPS_*_F64`` instructions should be multiplied by 512.
 We use this equation to calculate the number of double-precision FLOPS:
 
 .. math::
@@ -3265,7 +3265,7 @@ We use this equation to calculate the number of double-precision FLOPS:
 
 
 When ``SQ_INSTS_VALU_MFMA_MOPS_*_F64`` instructions are used, then 47.8 TF/s is considered the theoretical maximum FLOPS/s.
-If only ``SQ_INSTS_VALU_<ADD,MUL,TRANS>_F64`` are found, then 23.9 TF/s is the theoretical maximum FLOPS/s.
+If only ``SQ_INSTS_VALU_<ADD,MUL,TRANS>_F64`` are used, then 23.9 TF/s is the theoretical maximum FLOPS/s.
 Then, we divide the number of FLOPS by the elapsed time of the kernel to find FLOPS per second.
 This is found from subtracting the ``rocprof`` metrics ``EndNs`` by ``BeginNs``, provided by ``--timestamp on``, then converting from nanoseconds to seconds by dividing by 1,000,000,000 (power(10,9)).
 
