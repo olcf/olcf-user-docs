@@ -78,6 +78,13 @@ Access / Data Transfer
 
   Because Kronos is in the moderate security enclave, all projects with allocations to Summit, Frontier, or Andes will receive an allocation on Kronos.
 
+Project Quotas
+  To help ensure available space for all Kronos projects, each project has a 100TB quota.  All data stored in /nl/kronos/olcf/<projectID> will count toward the project's quota.  Please reach out to help@olcf.ornl.gov to request exemptions to the default quota.
+
+.. note::
+  To help ensure available space for all Kronos projects, each project has a 100TB quota.
+
+
 Directory Structure
   Kronos will use a directory structure similar to other center-wide storage resources:
 
