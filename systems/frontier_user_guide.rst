@@ -108,7 +108,7 @@ Frontier is running Cray OS 2.4 based on SUSE Linux Enterprise Server (SLES) ver
 GPUs
 ----
 
-Each Frontier compute node contains 4 AMD MI250X. The AMD MI250X has a peak performance of 53 TFLOPS in double-precision for modeling and simulation. Each MI250X contains 2 GPUs, where each GPU has a peak performance of 26.5 TFLOPS (double-precision), 110 compute units, and 64 GB of high-bandwidth memory (HBM2) which can be accessed at a peak of 1.6 TB/s. The 2 GPUs on an MI250X are connected with Infinity Fabric with a bandwidth of 200 GB/s (in each direction simultaneously).
+Each Frontier compute node contains 4 AMD MI250X. The AMD MI250X has a peak performance of 47.8 TFLOPS in vector-based double-precision for modeling and simulation. Each MI250X contains 2 GPUs, where each GPU has a peak performance of 23.9 TFLOPS (vector-based double-precision), 110 compute units, and 64 GB of high-bandwidth memory (HBM2) which can be accessed at a peak of 1.6 TB/s. The 2 GPUs on an MI250X are connected with Infinity Fabric with a bandwidth of 200 GB/s (in each direction simultaneously).
 
 
 Connecting
@@ -354,7 +354,7 @@ The terms are often used interchangeably.
    :align: center
    :alt: Block diagram of the AMD Instinct MI200 multi-chip module
 
-The 110 CUs in each GPU deliver peak performance of 26.5 TFLOPS in double precision.
+The 110 CUs in each GPU deliver peak performance of 23.9 TFLOPS in double precision, or 47.9 TFLOPS if using the specialized Matrix cores.
 Also, each GPU contains 64 GB of high-bandwidth memory (HBM2) accessible at a peak
 bandwidth of 1.6 TB/s.
 The 2 GPUs in an MI250X are connected with [4x] GPU-to-GPU Infinity Fabric links
