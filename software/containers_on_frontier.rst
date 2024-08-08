@@ -129,5 +129,6 @@ Some Restrictions and Tips
 
 * Some packages (like ``openssh`` on an OpenSUSE container) cannot currently be installed during your container build. This is because containers are restricted to a single user id and group id. Some package installs might try to create a new user inside the container with the ``useradd`` command, which will fail. So you will need to find workarounds or alternatives for any packages that try to do this.
 * The ``cray-mpich-abi`` module does not provide ``libmpicxx.so``, only ``libmpi.so`` and ``libmpifort.so``. As a hacky solution in case your application in the container needs ``libmpicxx.so`` from the host, you can create a symlink named ``libmpicxx.so`` somewhere that links to ``${CRAY_MPICH_DIR}/lib/libmpi_cray.so`` and then mount that symlink into the container (while making sure the ``${CRAY_MPICH_DIR}/lib`` location is already mounted in the container).
+* If you are pulling down a SIF file from an OCI registry where its uploaded as an OCI artifact, use the ``apptainer build`` command like  ``apptainer build --disable-cache yoursiffile.sif oras://urltoociregistry/ociartifact:tag`` to pull the SIF file down instead of using the ``apptainer pull`` command. ``apptainer pull`` runs into errors when it is verifying the checksum of the SIF file.
 
 
