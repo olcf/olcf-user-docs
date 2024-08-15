@@ -3662,6 +3662,24 @@ If it is necessary to have bit-wise reproducible results from these libraries, i
 System Updates 
 ============== 
 
+2024-08-20
+----------
+On Tuesday, August 20, 2024, Frontier's system software will be upgraded.
+
+The following system changes will take place:
+
+-  Upgrade to AMD GPU 6.8.5 device driver (ROCm 6.2.0 release).
+-  Upgrade to Slingshot Host Software 2.2.0. This changes the libfabric version from 1.15.2.0 to 1.20.1.0 and changes the location of the shared libraries from `/opt/cray/pe/libfabric/1.15.2.0` to `/usr/lib64`.
+-  Upgrade to Cray OS 3.0 (SLES-15 SP5).
+-  Upgrade Slurm to version 24.05.
+-  HPE/Cray Programming Environment (CPE) 24.03 AND 24.07 are now available via the ``cpe/24.03`` and ``cpe/24.07`` modulefiles.
+-  ROCm 6.1.3 and 6.2.0 are now available via the ``rocm`` modulefiles.
+-  CPE 23.12 and ROCm 5.7.1 remain as default.
+
+Please report any issues to help@olcf.ornl.gov.
+The `Frontier Known Issues <https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#known-issues>`_ have been updated with the latest available information.
+
+
 2024-07-16
 ----------
 On Tuesday, July 16, 2024, Frontier's system software will be upgraded. The following changes will take place:
