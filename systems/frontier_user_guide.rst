@@ -2651,6 +2651,11 @@ The following code is an example of how to launch an ensemble where each job ste
 This approach is slightly slower than using background ``srun``'s, but is much more reliable and flexible.
 For example, if you have 100 nodes and 500 single-node jobs to run, you can submit all 500 job steps to the Flux scheduler and it will run them as soon as a node is available.
 
+.. note::
+
+    The Flux ``--gpus-per-task=1`` flag does not currently work as expected. With this flag, all 8 GPUs on a node will be seen by each rank.
+    Users should either explicitly set ``ROCR_VISIBLE_DEVICES`` for each rank to a different GPU, or provide information to the application about how to bind to a single GPU.
+
 
 Tips for Launching at Scale
 ---------------------------
