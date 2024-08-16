@@ -531,7 +531,7 @@ Modules with dependencies are only available when the underlying dependencies, s
 
 .. note::
 
-    Due to the implementation of the module heirarchy on Frontier, ``spider`` does not currently locate OLCF-provided Spack-built modulefiles in ``/sw/frontier``.
+    Due to the implementation of the module heirarchy on Frontier, ``module spider`` does not currently locate OLCF-provided Spack-built modulefiles in ``/sw/frontier``.
 
 
 Compilers
@@ -741,6 +741,10 @@ The following table shows the recommended ROCm version for each CCE version, alo
 +-------------+-------+---------------------------+
 |   17.0.0    | 23.12 | 5.7.0 or 5.7.1            |
 +-------------+-------+---------------------------+
+|   17.0.1    | 24.03 | 6.0.0                     |
++-------------+-------+---------------------------+
+|   18.0.0    | 24.07 | 6.1.3                     |
++-------------+-------+---------------------------+
 
 .. note::
 
@@ -776,6 +780,10 @@ An asterisk indicates the latest officially supported version of ROCm for each `
 |   8.1.27   | 23.09 | 5.7.1, 5.7.0, 5.6.0, 5.5.1*, 5.4.3, 5.4.0, 5.3.0 |
 +------------+-------+--------------------------------------------------+
 |   8.1.28   | 23.12 | 5.7.1, 5.7.0*, 5.6.0, 5.5.1, 5.4.3, 5.4.0, 5.3.0 |
++------------+-------+--------------------------------------------------+
+|   8.1.29   | 24.03 | 6.1.3, 6.0.0*                                    |
++------------+-------+--------------------------------------------------+
+|   8.1.30   | 24.07 | 6.1.3*, 6.0.0                                    |
 +------------+-------+--------------------------------------------------+
 
 .. note::
@@ -858,7 +866,7 @@ This section shows how to compile with OpenMP Offload using the different compil
 
     If invoking ``amdclang``, ``amdclang++``, or ``amdflang`` directly for ``openmp offload``, or using ``hipcc`` you will need to add: 
     
-    ``-fopenmp -target x86_64-pc-linux-gnu -fopenmp-targets=amdgcn-amd-amdhsa -Xopenmp-target=amdgcn-amd-amdhsa -march=gfx90a``.
+    ``-fopenmp -fopenmp-targets=amdgcn-amd-amdhsa -Xopenmp-target=amdgcn-amd-amdhsa -march=gfx90a``.
 
 
 OpenACC
@@ -2864,7 +2872,7 @@ Notice that the libraries are sent to the ``${exe}_libs`` directory in the same 
 Once libraries are here, you cannot tell where they came from, so consider doing an ``ldd`` of your executable prior to ``sbcast``.
 
 
-Alternative: SBCASTing a binary with all libraries
+Best: SBCASTing a binary with ALL libraries
 """"""""""""""""""""""""""""""""""""""""""""""""""
 
 As mentioned above, you can alternatively use ``--exclude=NONE`` on ``sbcast`` to send all libraries along with the binary.
@@ -3669,7 +3677,7 @@ On Tuesday, August 20, 2024, Frontier's system software will be upgraded.
 The following system changes will take place:
 
 -  Upgrade to AMD GPU 6.8.5 device driver (ROCm 6.2.0 release).
--  Upgrade to Slingshot Host Software 2.2.0. This changes the libfabric version from 1.15.2.0 to 1.20.1.0 and changes the location of the shared libraries from `/opt/cray/pe/libfabric/1.15.2.0` to `/usr/lib64`.
+-  Upgrade to Slingshot Host Software 2.2.0. This changes the libfabric version from 1.15.2.0 to 1.20.1.0 and changes the location of the shared libraries from `/opt/cray/libfabric/1.15.2.0` to `/usr/lib64`.
 -  Upgrade to Cray OS 3.0 (SLES-15 SP5).
 -  Upgrade Slurm to version 24.05.
 -  HPE/Cray Programming Environment (CPE) 24.03 AND 24.07 are now available via the ``cpe/24.03`` and ``cpe/24.07`` modulefiles.
