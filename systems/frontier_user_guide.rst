@@ -2557,6 +2557,106 @@ The default behavior can be changed by using the ``MPICH_OFI_NIC_POLICY``
 environment variable (see ``man mpi`` for available options).
 
 
+Ensemble Jobs
+-------------
+
+For many applications and use cases, the ability to launch many copies of the same binary in an independent context is needed.
+This section highlights a few recommended solutions to launching ensemble runs on Frontier.
+
+Before covering the tools that can be useful for this, be advised that the most reliable solution to this problem will be the use of MPI sub-communicators by your application.
+For example, the LAMMPS Molecular Dynamics software supports a ``partition`` command, which can create many independent simulations from a single ``srun`` launch.
+
+Single-process ensemble members
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If you are able to fit each ensemble member onto a single MPI rank and single AMD Instinct MI250X GCD (8 GCD's per node), the most reliable solution is to use a single ``srun`` as follows:
+
+.. code:: bash
+
+    srun -N $SLURM_NNODES -n $((SLURM_NNODES*8)) -c 7 --gpus-per-task=1 --gpu-bind=closest ./wrapper.sh
+
+Where ``wrapper.sh`` is a shell script that launches your application.
+This shell script is simply for convenience, in case you wish to vary the parameters to your application based on MPI rank.
+This approach is fastest, most reliable, and easily scales to the entirety of Frontier.
+
+Using multiple simultanoues srun's
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If you are not able to fit each ensemble member onto a single MPI rank and GCD, a common approach is to launch multiple ``srun`` processes in the background simultaneously.
+For example:
+
+.. code:: bash
+
+    for node in $(scontrol show hostnames); do
+        srun -N 1 -n 8 -c 7 --gpus-per-task=1 --gpu-bind=closest <executable> &
+    done
+    # Wait for srun's to all finish
+    wait
+
+Each ``srun`` communicates to the Slurm controller node (which is shared among all users) when it is launched.
+Large amounts of ``srun`` processes can temporarily overwhelm the Slurm controller, making commands like ``sbatch`` and ``squeue`` hang.
+This approach can be fast, but is unreliable and does not scale to a significant portion of Frontier, and potentially overloads the Slurm controller.
+We do not yet recommend this approach beyond 100 simultaneous ``srun``'s.
+
+Slurm version 24.05 (installed on Frontier August 20, 2024) introduces the ``--stepmgr`` flag for ``sbatch``, which uses the first node in the allocation to manage job steps instead of the Slurm controller.
+This feature should substantially improve the ability to run many simultaneous ``srun``'s.
+However, this flag does not currently work reliably on Frontier, and it is not recommended at this time.
+This functionality can be re-created by using the Flux scheduler within Slurm, described in the next section.
+
+Flux in a Slurm allocation
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+`Flux <https://hpc-tutorials.llnl.gov/flux/>`_ is a light-weight batch scheduler that can be run inside of a Slurm allocation.
+This effectively creates a local queue of jobs that you alone can submit to and manage.
+Functionally, this achieves the same objective as launching multiple ``srun``'s in the background,
+but has the added benefit that Flux can automatically start the next job on a node as each job finishes.
+Using ``srun``, you are forced to use ``wait`` to wait for all processes to finish, before launching another flight of processes.
+Flux can more readily load-balance workloads across nodes inside a Slurm job allocation.
+
+The following code is an example of how to launch an ensemble where each job step is run on one node using Flux:
+
+.. code:: bash
+
+    #SBATCH -A <proj>
+    #SBATCH -t <timelimit>
+    #SBATCH -N 8
+
+    module load rocm
+    module load hwloc/2.9.1-gpu # Flux requires a GPU-enabled hwloc to see the GPUs
+    module load flux
+
+    # A few Flux commands to note:
+    #   flux start -- starts the Flux server daemons
+    #   flux resource list -- lists the resources available to Flux
+    #   flux submit -- submits & detaches from a Flux job. Returns a hash string identifying the submitted job
+    #   flux jobs -- synonymous to `squeue`, displays the Flux queue
+    #   flux run -- submits & runs a Flux job (does not return prompt until command is complete)
+    #   flux queue drain -- similar to `wait`, blocks until Flux queue is empty
+
+    # Flux flags:
+    #   -N 1 -- 1 node
+    #   -n 8 -- 8 tasks
+    #   -c 7 -- 7 cores per task
+    #   --gpus-per-task=1 -- binds 1 GPU per task (DOES NOT WORK currently)
+    # We launch one Flux process per node, with all available CPUs and GPUs allocated to it
+    # Flux understands that it was launched in a Slurm allocation, and only the Flux daemon on the first node is listening to commands
+    srun -N $SLURM_NNODES -n $SLURM_NNODES -c 56 --gpus-per-node=8 flux start \
+        "flux resource list;
+        for i in \$(seq 1 $SLURM_NNODES); do
+            flux submit -N 1 -n 8 -c 7 -x --gpus-per-task=1 --output=output.\$i.txt bash -c 'hostname; env | grep VISIBLE; /usr/bin/time ./vadd';
+        done;
+        flux queue drain;"
+
+
+This approach is slightly slower than using background ``srun``'s, but is much more reliable and flexible.
+For example, if you have 100 nodes and 500 single-node jobs to run, you can submit all 500 job steps to the Flux scheduler and it will run them as soon as a node is available.
+
+.. note::
+
+    The Flux ``--gpus-per-task=1`` flag does not currently work as expected. With this flag, all 8 GPUs on a node will be seen by each rank.
+    Users should either explicitly set ``ROCR_VISIBLE_DEVICES`` for each rank to a different GPU, or provide information to the application about how to bind to a single GPU.
+
+
 Tips for Launching at Scale
 ---------------------------
 
