@@ -199,7 +199,7 @@ Cray, AMD, and GCC compilers are provided through modules on Crusher. The Cray a
 |        |                         |                 +----------+-------------------+---------------------------------+
 |        |                         |                 | Fortran  | ``ftn``           | ``crayftn``                     |
 +--------+-------------------------+-----------------+----------+-------------------+---------------------------------+
-| AMD    | ``PrgEnv-amd``          | ``rocm``        | C        | ``cc``            | ``amdclang``                    |
+| AMD    | ``PrgEnv-amd``          | ``amd``         | C        | ``cc``            | ``amdclang``                    |
 |        |                         |                 +----------+-------------------+---------------------------------+
 |        |                         |                 | C++      | ``CC``            | ``amdclang++``                  |
 |        |                         |                 +----------+-------------------+---------------------------------+
@@ -211,6 +211,14 @@ Cray, AMD, and GCC compilers are provided through modules on Crusher. The Cray a
 |        |                         |                 +----------+-------------------+---------------------------------+
 |        |                         |                 | Fortran  | ``ftn``           | ``${GCC_PATH}/bin/gfortran``    |
 +--------+-------------------------+-----------------+----------+-------------------+---------------------------------+
+
+The AMD compiler toolchain automatically exposes the ROCm runtime and device libraries, which enable execution on the GPU.
+To expose the ROCm libraries when using Cray or GCC compiler toolchains, use the ``amd-mixed`` module.
+
+.. note::
+
+    The ``amd-mixed`` and ``rocm`` module are generally identical, but using the ``amd-mixed`` module guarantees that the ROCm libraries loaded are supported by the Cray Programming Environment.
+    ``amd-mixed`` only provides supported ROCm versions.
 
 
 Cray Programming Environment and Compiler Wrappers
@@ -255,7 +263,7 @@ To use GPU-aware Cray MPICH, users must set the following modules and environmen
 .. code:: bash
     
     module load craype-accel-amd-gfx90a
-    module load rocm
+    module load amd-mixed
 
     export MPICH_GPU_SUPPORT_ENABLED=1
 
@@ -301,9 +309,9 @@ To use GPU-aware Cray MPICH with ``hipcc``, users must include appropriate heade
 Determining the Compatibility of Cray MPICH and ROCm
 """"""""""""""""""""""""""""""""""""""""""""""""""""
 
-Releases of ``cray-mpich`` are each built with a specific version of ROCm, and compatibility across multiple versions is not guaranteed. OLCF will maintain compatible default modules when possible. If using non-default modules, you can determine compatibility by reviewing the *Product and OS Dependencies* section in the ``cray-mpich`` release notes. This can be displayed by running ``module show cray-mpich/<version>``. If the notes indicate compatibility with *AMD ROCM X.Y or later*, only use ``rocm/X.Y.Z`` modules. If using a non-default version of ``cray-mpich``, you must add ``${CRAY_MPICH_ROOTDIR}/gtl/lib`` to either your ``LD_LIBRARY_PATH`` at run time or your executable's rpath at build time.
+Releases of ``cray-mpich`` are each built with a specific version of ROCm, and compatibility across multiple versions is not guaranteed. OLCF will maintain compatible default modules when possible. If using non-default modules, you can determine compatibility by reviewing the *Product and OS Dependencies* section in the ``cray-mpich`` release notes. This can be displayed by running ``module show cray-mpich/<version>``. If the notes indicate compatibility with *AMD ROCM X.Y or later*, only use ``amd-mixed/X.Y.Z`` modules. If using a non-default version of ``cray-mpich``, you must add ``${CRAY_MPICH_ROOTDIR}/gtl/lib`` to either your ``LD_LIBRARY_PATH`` at run time or your executable's rpath at build time.
 
-The compatibility table below was determined by linker testing with all current combinations of ``cray-mpich`` and ``rocm`` modules on Crusher.
+The compatibility table below was determined by linker testing with all current combinations of ``cray-mpich`` and ``amd-mixed`` modules on Crusher.
 
 +------------+------------------------------------------+
 | cray-mpich |                   ROCm                   |
@@ -327,6 +335,13 @@ The compatibility table below was determined by linker testing with all current 
 |   8.1.23   | 5.4.0, 5.3.0, 5.2.0, 5.1.0, 5.0.2, 5.0.0 |
 +------------+------------------------------------------+
 
+.. note::
+
+    ``amd-mixed`` modules expose the ROCm toolchain and runtime, when using any programming environment other than ``PrgEnv-amd``.
+    ``rocm`` modules serve the same purpose, but may expose versions of ROCm that are not yet supported by the Cray programming environment.
+    It is strongly recommended to use ``amd-mixed`` modules.
+
+
 OpenMP
 ------
 
@@ -341,7 +356,7 @@ This section shows how to compile with OpenMP using the different compilers cove
 |        |          | Fortran   | ``ftn`` (wraps ``crayftn``)                  | | ``-homp``                         |
 |        |          |           |                                              | | ``-fopenmp`` (alias)              |
 +--------+----------+-----------+----------------------------------------------+-------------------------------------+
-| AMD    | ``rocm`` | | C       | | ``cc`` (wraps ``amdclang``)                | ``-fopenmp``                        |
+| AMD    | ``amd``  | | C       | | ``cc`` (wraps ``amdclang``)                | ``-fopenmp``                        |
 |        |          | | C++     | | ``CC`` (wraps ``amdclang++``)              |                                     |
 |        |          | | Fortran | | ``ftn`` (wraps ``amdflang``)               |                                     |
 +--------+----------+-----------+----------------------------------------------+-------------------------------------+
@@ -357,7 +372,7 @@ This section shows how to compile with OpenMP Offload using the different compil
 
 .. note::
 
-    Make sure the ``craype-accel-amd-gfx90a`` module is loaded when using OpenMP offload.
+    Make sure the ``craype-accel-amd-gfx90a`` module is loaded when using OpenMP offload. If using the Cray compiler, also load an ``amd-mixed`` module.
 
 +--------+----------+-----------+----------------------------------------------+----------------------------------------------+
 | Vendor | Module   | Language  | Compiler                                     | OpenMP flag (GPU)                            |
@@ -368,7 +383,7 @@ This section shows how to compile with OpenMP Offload using the different compil
 |        |          | Fortran   | ``ftn`` (wraps ``crayftn``)                  | | ``-homp``                                  |
 |        |          |           |                                              | | ``-fopenmp`` (alias)                       |
 +--------+----------+-----------+----------------------------------------------+----------------------------------------------+
-| AMD    | ``rocm`` | | C       | | ``cc`` (wraps ``amdclang``)                | ``-fopenmp``                                 |
+| AMD    | ``amd``  | | C       | | ``cc`` (wraps ``amdclang``)                | ``-fopenmp``                                 |
 |        |          | | C\+\+   | | ``CC`` (wraps ``amdclang++``)              |                                              |
 |        |          | | Fortran | | ``ftn`` (wraps ``amdflang``)               |                                              |
 |        |          |           | | ``hipcc`` (requires flags below)           |                                              |
@@ -386,7 +401,7 @@ This section shows how to compile HIP codes using the Cray compiler wrappers and
 
 .. note::
 
-    Make sure the ``craype-accel-amd-gfx90a`` module is loaded when compiling HIP with the Cray compiler wrappers.
+    Make sure the ``craype-accel-amd-gfx90a`` and ``amd-mixed`` modules are loaded when compiling HIP with the Cray compiler wrappers.
 
 +-------------------+--------------------------------------------------------------------------------------------------------------------------+
 | Compiler          | Compile/Link Flags, Header Files, and Libraries                                                                          |
@@ -1610,7 +1625,6 @@ The first example generates an instrumented executable using a ``PrgEnv-amd`` bu
 
     module load PrgEnv-amd
     module load craype-accel-amd-gfx90a
-    module load rocm
     module load perftools
 
     export PATH="${PATH}:${ROCM_PATH}/llvm/bin"
@@ -1629,9 +1643,10 @@ The second example generates an instrumened executable using a ``hipcc`` build:
 
 .. code:: bash
 
+    module load PrgEnv-cray
+    module load amd-mixed
     module load perftools
     module load craype-accel-amd-gfx90a
-    module load rocm
     
     export CXX='hipcc'
     export CXXFLAGS="$(pat_opts include hipcc) \
