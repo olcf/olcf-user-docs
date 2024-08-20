@@ -15,9 +15,9 @@ information regarding ParaView can be found at the links provided in the
 :ref:`paraview-resources` section.
 
 ParaView was developed to analyze extremely large datasets using distributed
-memory computing resources. The OLCF provides ParaView server installs on Andes
-and Summit to facilitate large scale distributed visualizations. The ParaView
-server running on Andes and Summit may be used in a headless batch processing
+memory computing resources. The OLCF provides ParaView server installs on Andes,
+Summit, and Frontier to facilitate large scale distributed visualizations.
+The ParaView server may be used in a headless batch processing
 mode or be used to drive a ParaView GUI client running on your local machine.
 
 For a tutorial of how to get started with ParaView on Andes, see our 
@@ -31,8 +31,7 @@ Installing and Setting Up ParaView
 Although in a single machine setup both the ParaView client and server run on
 the same host, this need not be the case. It is possible to run a local
 ParaView client to display and interact with your data while the ParaView
-server runs in an Andes or Summit batch job, allowing interactive analysis of
-very large data sets.
+server runs in an Andes, Summit, or Frontier batch job, allowing interactive analysis of very large data sets.
 
 You will obtain the best performance by running the ParaView client on your
 local computer and running the server on OLCF resources with the same version
@@ -43,8 +42,9 @@ from `Kitware <https://www.paraview.org/download/>`__.
 
 Recommended ParaView versions on our systems:
 
-* Summit: ParaView 5.9.1, 5.10.0, 5.11.0
-* Andes: ParaView 5.9.1, 5.10.0, 5.11.0, 5.12.1
+* **Summit**: ParaView 5.9.1, 5.10.0, 5.11.0 (via the ``DefApps-2023`` module)
+* **Andes**: ParaView 5.9.1, 5.10.0, 5.11.0, 5.12.1
+* **Frontier**: ParaView 5.12.1 (via the UMS032 module)
 
 .. warning::
     Using a different version than what is listed above is not guaranteed to work properly.
@@ -57,27 +57,60 @@ as you'll be able to choose between those options when connecting to the system
 (see :ref:`paraview-gui` below). If instead you're running in batch mode on the
 command line (see :ref:`paraview-command-line` below), you can choose between
 the rendering options by loading its corresponding module on the system you're
-connected to. For example, to see these modules on Summit:
+connected to. For example, to see these modules on specific OLCF systems:
 
-.. code-block:: bash
+.. tab-set::
 
-    [user@login4.summit ~]$ module load DefApps-2023 #only necessary on Summit
-    [user@login4.summit ~]$ module -t avail paraview
+   .. tab-item:: Andes
+      :sync: andes
 
-    /sw/summit/modulefiles/core:
-    paraview/5.9.1-egl
-    paraview/5.9.1-osmesa
-    paraview/5.10.0-egl
-    paraview/5.10.0-osmesa
-    paraview/5.11.0-egl
-    paraview/5.11.0-osmesa
+      .. code-block:: bash
 
-    [user@login4.summit ~]$ module load paraview/5.9.1-egl
+         $ module -t avail paraview
 
-.. warning::
-    It is highly recommended to only use the modules located in
-    ``/sw/andes/modulefiles/core`` or ``/sw/summit/modulefiles/core``.
-    On Summit, you **must** also load ``DefApps-2023`` first.
+         /sw/andes/modulefiles/core:
+         paraview/5.9.1-egl
+         paraview/5.9.1-osmesa
+         paraview/5.10.0-egl
+         paraview/5.10.0-osmesa
+         paraview/5.11.0-egl
+         paraview/5.11.0-osmesa
+         paraview/5.12.1-egl
+         paraview/5.12.1-osmesa
+
+   .. tab-item:: Frontier
+      :sync: frontier
+
+      .. code-block:: bash
+
+         $ module load ums
+         $ module load ums032
+         $ module load dav-sdk
+         $ module -t avail paraview
+
+         /sw/frontier/ums/ums032/modules:
+         paraview/5.12.1-rocm
+         paraview/5.12.1
+
+   .. tab-item:: Summit
+      :sync: summit
+
+      .. code-block:: bash
+
+         $ module load DefApps-2023 #only necessary on Summit
+         $ module -t avail paraview
+
+         /sw/summit/modulefiles/core:
+         paraview/5.9.1-egl
+         paraview/5.9.1-osmesa
+         paraview/5.10.0-egl
+         paraview/5.10.0-osmesa
+         paraview/5.11.0-egl
+         paraview/5.11.0-osmesa
+
+      .. warning::
+          On Summit, you **must** load ``DefApps-2023`` first.
+
 
 .. note::
     The EGL mode seems to work better with larger datasets and is generally
@@ -100,206 +133,272 @@ methods may be used, the one described should work in most cases.
 
 **Step 1: Save the following servers.pvsc file to your local computer**
 
-For Andes:
+.. tab-set::
 
-.. code::
+   .. tab-item:: Andes
+      :sync: andes
 
-   <Servers>
-     <Server name="ORNL andes" resource="csrc://localhost">
-       <CommandStartup>
-         <Options>
-           <Option name="HOST" label="Server host" save="true">
-             <String default="andes.olcf.ornl.gov"/>
-           </Option>
-           <Option name="HEADLESS_API" label="Server headless API" save="true">
-             <Enumeration default="osmesa">
-               <Entry value="osmesa" label= "OSMesa" />
-               <Entry value="egl" label= "EGL" />
-             </Enumeration>
-           </Option>
-           <Option name="USER" label="Server username" save="true">
-             <String default="YOURUSERNAME"/>
-           </Option>
-           <Switch name="PV_CLIENT_PLATFORM">
-             <Case value="Apple">
-               <Set name="TERM_PATH" value="/opt/X11/bin/xterm" />
-               <Set name="TERM_ARG1" value="-T" />
-               <Set name="TERM_ARG2" value="ParaView" />
-               <Set name="TERM_ARG3" value="-e" />
-               <Set name="SSH_PATH" value="ssh" />
-             </Case>
-             <Case value="Linux">
-               <Set name="TERM_PATH" value="xterm" />
-               <Set name="TERM_ARG1" value="-T" />
-               <Set name="TERM_ARG2" value="ParaView" />
-               <Set name="TERM_ARG3" value="-e" />
-               <Set name="SSH_PATH" value="ssh" />
-             </Case>
-             <Case value="Windows">
-               <Set name="TERM_PATH" value="cmd" />
-               <Set name="TERM_ARG1" value="/C" />
-               <Set name="TERM_ARG2" value="start" />
-               <Set name="TERM_ARG3" value="" />
-               <Set name="SSH_PATH" value="plink.exe" />
-             </Case>
-             <Case value="Unix">
-               <Set name="TERM_PATH" value="xterm" />
-               <Set name="TERM_ARG1" value="-T" />
-               <Set name="TERM_ARG2" value="ParaView" />
-               <Set name="TERM_ARG3" value="-e" />
-               <Set name="SSH_PATH" value="ssh" />
-             </Case>
-           </Switch>
-           <Option name="PV_SERVER_PORT" label="Server port ">
-             <Range type="int" min="1025" max="65535" step="1" default="random"/>
-           </Option>
-           <Option name="NUM_NODES" label="Number of compute nodes" save="true">
-             <Range type="int" min="1" max="512" step="1" default="2"/>
-           </Option>
-           <Option name="NUM_MPI_TASKS" label="Total number of MPI tasks" save="true">
-             <Range type="int" min="1" max="16384" step="1" default="2"/>
-           </Option>
-           <Option name="NUM_CORES_PER_MPI_TASK" label="Number of cores per MPI task" save="true">
-             <Range type="int" min="1" max="28" step="1" default="1"/>
-           </Option>
-           <Option name="PROJECT" label="Project to charge" save="true">
-             <String default="cscXXX"/>
-           </Option>
-           <Option name="MINUTES" label="Number of minutes to reserve" save="true">
-             <Range type="int" min="1" max="240" step="1" default="30"/>
-           </Option>
-         </Options>
-         <Command exec="$TERM_PATH$" delay="5">
-           <Arguments>
-             <Argument value="$TERM_ARG1$"/>
-             <Argument value="$TERM_ARG2$"/>
-             <Argument value="$TERM_ARG3$"/>
-             <Argument value="$SSH_PATH$"/>
-             <Argument value="-t"/>
-             <Argument value="-R"/>
-             <Argument value="$PV_SERVER_PORT$:localhost:$PV_SERVER_PORT$"/>
-             <Argument value="$USER$@$HOST$"/>
-             <Argument value="/sw/andes/paraview/pvsc/ORNL/login_node.sh"/>
-             <Argument value="$NUM_NODES$"/>
-             <Argument value="$MINUTES$"/>
-             <Argument value="$PV_SERVER_PORT$"/>
-             <Argument value="$PV_VERSION_FULL$"/>
-             <Argument value="$HEADLESS_API$"/>
-             <Argument value="/sw/andes/paraview/pvsc/ORNL/andes.cfg"/>
-             <Argument value="PROJECT=$PROJECT$"/>
-             <Argument value="NUM_MPI_TASKS=$NUM_MPI_TASKS$"/>
-             <Argument value="NUM_CORES_PER_MPI_TASK=$NUM_CORES_PER_MPI_TASK$"/>
-           </Arguments>
-         </Command>
-       </CommandStartup>
-     </Server>
-   </Servers>
+      .. code-block::
 
-For Summit:
+            <Servers>
+              <Server name="ORNL andes" resource="csrc://localhost">
+                <CommandStartup>
+                  <Options>
+                    <Option name="HOST" label="Server host" save="true">
+                      <String default="andes.olcf.ornl.gov"/>
+                    </Option>
+                    <Option name="HEADLESS_API" label="Server headless API" save="true">
+                      <Enumeration default="osmesa">
+                        <Entry value="osmesa" label= "OSMesa" />
+                        <Entry value="egl" label= "EGL" />
+                      </Enumeration>
+                    </Option>
+                    <Option name="USER" label="Server username" save="true">
+                      <String default="YOURUSERNAME"/>
+                    </Option>
+                    <Switch name="PV_CLIENT_PLATFORM">
+                      <Case value="Apple">
+                        <Set name="TERM_PATH" value="/opt/X11/bin/xterm" />
+                        <Set name="TERM_ARG1" value="-T" />
+                        <Set name="TERM_ARG2" value="ParaView" />
+                        <Set name="TERM_ARG3" value="-e" />
+                        <Set name="SSH_PATH" value="ssh" />
+                      </Case>
+                      <Case value="Linux">
+                        <Set name="TERM_PATH" value="xterm" />
+                        <Set name="TERM_ARG1" value="-T" />
+                        <Set name="TERM_ARG2" value="ParaView" />
+                        <Set name="TERM_ARG3" value="-e" />
+                        <Set name="SSH_PATH" value="ssh" />
+                      </Case>
+                      <Case value="Windows">
+                        <Set name="TERM_PATH" value="cmd" />
+                        <Set name="TERM_ARG1" value="/C" />
+                        <Set name="TERM_ARG2" value="start" />
+                        <Set name="TERM_ARG3" value="" />
+                        <Set name="SSH_PATH" value="plink.exe" />
+                      </Case>
+                      <Case value="Unix">
+                        <Set name="TERM_PATH" value="xterm" />
+                        <Set name="TERM_ARG1" value="-T" />
+                        <Set name="TERM_ARG2" value="ParaView" />
+                        <Set name="TERM_ARG3" value="-e" />
+                        <Set name="SSH_PATH" value="ssh" />
+                      </Case>
+                    </Switch>
+                    <Option name="PV_SERVER_PORT" label="Server port ">
+                      <Range type="int" min="1025" max="65535" step="1" default="random"/>
+                    </Option>
+                    <Option name="NUM_NODES" label="Number of compute nodes" save="true">
+                      <Range type="int" min="1" max="512" step="1" default="2"/>
+                    </Option>
+                    <Option name="NUM_MPI_TASKS" label="Total number of MPI tasks" save="true">
+                      <Range type="int" min="1" max="16384" step="1" default="2"/>
+                    </Option>
+                    <Option name="NUM_CORES_PER_MPI_TASK" label="Number of cores per MPI task" save="true">
+                      <Range type="int" min="1" max="28" step="1" default="1"/>
+                    </Option>
+                    <Option name="PROJECT" label="Project to charge" save="true">
+                      <String default="cscXXX"/>
+                    </Option>
+                    <Option name="MINUTES" label="Number of minutes to reserve" save="true">
+                      <Range type="int" min="1" max="240" step="1" default="30"/>
+                    </Option>
+                  </Options>
+                  <Command exec="$TERM_PATH$" delay="5">
+                    <Arguments>
+                      <Argument value="$TERM_ARG1$"/>
+                      <Argument value="$TERM_ARG2$"/>
+                      <Argument value="$TERM_ARG3$"/>
+                      <Argument value="$SSH_PATH$"/>
+                      <Argument value="-t"/>
+                      <Argument value="-R"/>
+                      <Argument value="$PV_SERVER_PORT$:localhost:$PV_SERVER_PORT$"/>
+                      <Argument value="$USER$@$HOST$"/>
+                      <Argument value="/sw/andes/paraview/pvsc/ORNL/login_node.sh"/>
+                      <Argument value="$NUM_NODES$"/>
+                      <Argument value="$MINUTES$"/>
+                      <Argument value="$PV_SERVER_PORT$"/>
+                      <Argument value="$PV_VERSION_FULL$"/>
+                      <Argument value="$HEADLESS_API$"/>
+                      <Argument value="/sw/andes/paraview/pvsc/ORNL/andes.cfg"/>
+                      <Argument value="PROJECT=$PROJECT$"/>
+                      <Argument value="NUM_MPI_TASKS=$NUM_MPI_TASKS$"/>
+                      <Argument value="NUM_CORES_PER_MPI_TASK=$NUM_CORES_PER_MPI_TASK$"/>
+                    </Arguments>
+                  </Command>
+                </CommandStartup>
+              </Server>
+            </Servers>
 
-.. code::
+   .. tab-item:: Frontier
+      :sync: frontier
 
-   <Servers>
-     <Server name="ORNL summit" resource="csrc://localhost">
-       <CommandStartup>
-         <Options>
-           <Option name="HOST" label="Server host" save="true">
-             <String default="summit.olcf.ornl.gov"/>
-           </Option>
-           <Option name="HEADLESS_API" label="Server headless API" save="true">
-             <Enumeration default="osmesa">
-               <Entry value="osmesa" label= "OSMesa" />
-               <Entry value="egl" label= "EGL" />
-             </Enumeration>
-           </Option>
-           <Option name="USER" label="Server username" save="true">
-             <String default="YOURUSERNAME"/>
-           </Option>
-           <Switch name="PV_CLIENT_PLATFORM">
-             <Case value="Apple">
-               <Set name="TERM_PATH" value="/opt/X11/bin/xterm" />
-               <Set name="TERM_ARG1" value="-T" />
-               <Set name="TERM_ARG2" value="ParaView" />
-               <Set name="TERM_ARG3" value="-e" />
-               <Set name="SSH_PATH" value="ssh" />
-             </Case>
-             <Case value="Linux">
-               <Set name="TERM_PATH" value="xterm" />
-               <Set name="TERM_ARG1" value="-T" />
-               <Set name="TERM_ARG2" value="ParaView" />
-               <Set name="TERM_ARG3" value="-e" />
-               <Set name="SSH_PATH" value="ssh" />
-             </Case>
-             <Case value="Windows">
-               <Set name="TERM_PATH" value="cmd" />
-               <Set name="TERM_ARG1" value="/C" />
-               <Set name="TERM_ARG2" value="start" />
-               <Set name="TERM_ARG3" value="" />
-               <Set name="SSH_PATH" value="plink.exe" />
-             </Case>
-             <Case value="Unix">
-               <Set name="TERM_PATH" value="xterm" />
-               <Set name="TERM_ARG1" value="-T" />
-               <Set name="TERM_ARG2" value="ParaView" />
-               <Set name="TERM_ARG3" value="-e" />
-               <Set name="SSH_PATH" value="ssh" />
-             </Case>
-           </Switch>
-           <Option name="PV_SERVER_PORT" label="Server port ">
-             <Range type="int" min="1025" max="65535" step="1" default="random"/>
-           </Option>
-           <Option name="NUM_NODES" label="Number of compute nodes" save="true">
-             <Range type="int" min="1" max="100" step="1" default="1"/>
-           </Option>
-           <Option name="NRS" label="Number of resource sets (RS)" save="true">
-             <Range type="int" min="1" max="202400" step="1" default="1"/>
-           </Option>
-           <Option name="TASKS_PER_RS" label="Number of MPI tasks (ranks) per RS" save="true">
-             <Range type="int" min="1" max="42" step="1" default="1"/>
-           </Option>
-           <Option name="CPU_PER_RS" label="Number of CPUs (cores) per RS" save="true">
-             <Range type="int" min="1" max="42" step="1" default="1"/>
-           </Option>
-           <Option name="GPU_PER_RS" label="Number of GPUs per RS" save="true">
-             <Range type="int" min="0" max="6" step="1" default="0"/>
-           </Option>
-           <Option name="PROJECT" label="Project to charge" save="true">
-             <String default="cscXXX"/>
-           </Option>
-           <Option name="MINUTES" label="Number of minutes to reserve" save="true">
-             <Range type="int" min="1" max="240" step="1" default="30"/>
-           </Option>
-         </Options>
-         <Command exec="$TERM_PATH$" delay="5">
-           <Arguments>
-             <Argument value="$TERM_ARG1$"/>
-             <Argument value="$TERM_ARG2$"/>
-             <Argument value="$TERM_ARG3$"/>
-             <Argument value="$SSH_PATH$"/>
-             <Argument value="-t"/>
-             <Argument value="-R"/>
-             <Argument value="$PV_SERVER_PORT$:localhost:$PV_SERVER_PORT$"/>
-             <Argument value="$USER$@$HOST$"/>
-             <Argument value="/sw/summit/paraview/pvsc/ORNL/login_node.sh"/>
-             <Argument value="$NUM_NODES$"/>
-             <Argument value="$MINUTES$"/>
-             <Argument value="$PV_SERVER_PORT$"/>
-             <Argument value="$PV_VERSION_FULL$"/>
-             <Argument value="$HEADLESS_API$"/>
-             <Argument value="/sw/summit/paraview/pvsc/ORNL/summit.cfg"/>
-             <Argument value="PROJECT=$PROJECT$"/>
-             <Argument value="NRS=$NRS$"/>
-             <Argument value="TASKS_PER_RS=$TASKS_PER_RS$"/>
-             <Argument value="CPU_PER_RS=$CPU_PER_RS$"/>
-             <Argument value="GPU_PER_RS=$GPU_PER_RS$"/>
-           </Arguments>
-         </Command>
-       </CommandStartup>
-     </Server>
-   </Servers>
+      .. code-block::
+
+            <Servers>
+              <Server name="ORNL frontier (UMS)" resource="csrc://frontier.olcf.ornl.gov">
+                <CommandStartup>
+                  <Options>
+                    <Option name="HEADLESS_API" label="Accelerated Compute" save="true">
+                      <Enumeration default="rocm">
+                        <Entry value="rocm" label= "ROCm" />
+                        <Entry value="none" label= "None" />
+                      </Enumeration>
+                    </Option>
+                    <Option name="USER" label="Server username" save="true">
+                      <String default="YOURUSERNAME"/>
+                    </Option>
+                    <Option name="PV_SERVER_PORT" label="Server port ">
+                      <Range type="int" min="1025" max="65535" step="1" default="random"/>
+                    </Option>
+                    <Option name="NUM_NODES" label="Number of compute nodes" save="true">
+                      <Range type="int" min="1" max="512" step="1" default="2"/>
+                    </Option>
+                    <Option name="NUM_MPI_TASKS" label="Total number of MPI tasks" save="true">
+                      <Range type="int" min="1" max="16384" step="1" default="2"/>
+                    </Option>
+                    <Option name="NUM_CORES_PER_MPI_TASK" label="Number of cores per MPI task" save="true">
+                      <Range type="int" min="1" max="28" step="1" default="1"/>
+                    </Option>
+                    <Option name="PROJECT" label="Project to charge" save="true">
+                      <String default="cscXXX"/>
+                    </Option>
+                    <Option name="PARTITION" label="Partition (queue)" save="true">
+                      <String default="batch"/>
+                    </Option>
+                    <Option name="MINUTES" label="Number of minutes to reserve" save="true">
+                      <Range type="int" min="1" max="240" step="1" default="30"/>
+                    </Option>
+                  </Options>
+                  <SSHCommand exec="/sw/frontier/ums/ums032/pvsc/ORNL/login_node.sh" timeout="0" delay="5">
+                    <SSHConfig user="$USER$">
+                      <Terminal/>
+                      <PortForwarding local="$PV_SERVER_PORT$"/>
+                    </SSHConfig>
+                    <Arguments>
+                      <Argument value="$NUM_NODES$"/>
+                      <Argument value="$MINUTES$"/>
+                      <Argument value="$PV_SERVER_PORT$"/>
+                      <Argument value="$PV_VERSION_FULL$"/>
+                      <Argument value="$HEADLESS_API$"/>
+                      <Argument value="/sw/frontier/ums/ums032/pvsc/ORNL/frontier.cfg"/>
+                      <Argument value="PROJECT=$PROJECT$"/>
+                      <Argument value="PARTITION=$PARTITION$"/>
+                      <Argument value="NUM_MPI_TASKS=$NUM_MPI_TASKS$"/>
+                      <Argument value="NUM_CORES_PER_MPI_TASK=$NUM_CORES_PER_MPI_TASK$"/>
+                    </Arguments>
+                  </SSHCommand>
+                </CommandStartup>
+              </Server>
+            </Servers>
+
+   .. tab-item:: Summit
+      :sync: summit
+
+      .. code-block::
+
+            <Servers>
+              <Server name="ORNL summit" resource="csrc://localhost">
+                <CommandStartup>
+                  <Options>
+                    <Option name="HOST" label="Server host" save="true">
+                      <String default="summit.olcf.ornl.gov"/>
+                    </Option>
+                    <Option name="HEADLESS_API" label="Server headless API" save="true">
+                      <Enumeration default="osmesa">
+                        <Entry value="osmesa" label= "OSMesa" />
+                        <Entry value="egl" label= "EGL" />
+                      </Enumeration>
+                    </Option>
+                    <Option name="USER" label="Server username" save="true">
+                      <String default="YOURUSERNAME"/>
+                    </Option>
+                    <Switch name="PV_CLIENT_PLATFORM">
+                      <Case value="Apple">
+                        <Set name="TERM_PATH" value="/opt/X11/bin/xterm" />
+                        <Set name="TERM_ARG1" value="-T" />
+                        <Set name="TERM_ARG2" value="ParaView" />
+                        <Set name="TERM_ARG3" value="-e" />
+                        <Set name="SSH_PATH" value="ssh" />
+                      </Case>
+                      <Case value="Linux">
+                        <Set name="TERM_PATH" value="xterm" />
+                        <Set name="TERM_ARG1" value="-T" />
+                        <Set name="TERM_ARG2" value="ParaView" />
+                        <Set name="TERM_ARG3" value="-e" />
+                        <Set name="SSH_PATH" value="ssh" />
+                      </Case>
+                      <Case value="Windows">
+                        <Set name="TERM_PATH" value="cmd" />
+                        <Set name="TERM_ARG1" value="/C" />
+                        <Set name="TERM_ARG2" value="start" />
+                        <Set name="TERM_ARG3" value="" />
+                        <Set name="SSH_PATH" value="plink.exe" />
+                      </Case>
+                      <Case value="Unix">
+                        <Set name="TERM_PATH" value="xterm" />
+                        <Set name="TERM_ARG1" value="-T" />
+                        <Set name="TERM_ARG2" value="ParaView" />
+                        <Set name="TERM_ARG3" value="-e" />
+                        <Set name="SSH_PATH" value="ssh" />
+                      </Case>
+                    </Switch>
+                    <Option name="PV_SERVER_PORT" label="Server port ">
+                      <Range type="int" min="1025" max="65535" step="1" default="random"/>
+                    </Option>
+                    <Option name="NUM_NODES" label="Number of compute nodes" save="true">
+                      <Range type="int" min="1" max="100" step="1" default="1"/>
+                    </Option>
+                    <Option name="NRS" label="Number of resource sets (RS)" save="true">
+                      <Range type="int" min="1" max="202400" step="1" default="1"/>
+                    </Option>
+                    <Option name="TASKS_PER_RS" label="Number of MPI tasks (ranks) per RS" save="true">
+                      <Range type="int" min="1" max="42" step="1" default="1"/>
+                    </Option>
+                    <Option name="CPU_PER_RS" label="Number of CPUs (cores) per RS" save="true">
+                      <Range type="int" min="1" max="42" step="1" default="1"/>
+                    </Option>
+                    <Option name="GPU_PER_RS" label="Number of GPUs per RS" save="true">
+                      <Range type="int" min="0" max="6" step="1" default="0"/>
+                    </Option>
+                    <Option name="PROJECT" label="Project to charge" save="true">
+                      <String default="cscXXX"/>
+                    </Option>
+                    <Option name="MINUTES" label="Number of minutes to reserve" save="true">
+                      <Range type="int" min="1" max="240" step="1" default="30"/>
+                    </Option>
+                  </Options>
+                  <Command exec="$TERM_PATH$" delay="5">
+                    <Arguments>
+                      <Argument value="$TERM_ARG1$"/>
+                      <Argument value="$TERM_ARG2$"/>
+                      <Argument value="$TERM_ARG3$"/>
+                      <Argument value="$SSH_PATH$"/>
+                      <Argument value="-t"/>
+                      <Argument value="-R"/>
+                      <Argument value="$PV_SERVER_PORT$:localhost:$PV_SERVER_PORT$"/>
+                      <Argument value="$USER$@$HOST$"/>
+                      <Argument value="/sw/summit/paraview/pvsc/ORNL/login_node.sh"/>
+                      <Argument value="$NUM_NODES$"/>
+                      <Argument value="$MINUTES$"/>
+                      <Argument value="$PV_SERVER_PORT$"/>
+                      <Argument value="$PV_VERSION_FULL$"/>
+                      <Argument value="$HEADLESS_API$"/>
+                      <Argument value="/sw/summit/paraview/pvsc/ORNL/summit.cfg"/>
+                      <Argument value="PROJECT=$PROJECT$"/>
+                      <Argument value="NRS=$NRS$"/>
+                      <Argument value="TASKS_PER_RS=$TASKS_PER_RS$"/>
+                      <Argument value="CPU_PER_RS=$CPU_PER_RS$"/>
+                      <Argument value="GPU_PER_RS=$GPU_PER_RS$"/>
+                    </Arguments>
+                  </Command>
+                </CommandStartup>
+              </Server>
+            </Servers>
 
 .. note::  
-    Although they can be separate files, both Andes and Summit server 
+    Although they can be separate files, all OLCF server 
     configurations can be combined and saved into one file following the hierarchy 
     ``<Servers><Server name= >...<\Server><Server name= >...<\Server><\Servers>``.
 
@@ -320,12 +419,11 @@ Click Load Servers button and find the servers.pvsc file
 .. note::  
     The ``Fetch Servers`` button fetches
     `Official Kitware Server Configurations <https://www.paraview.org/files/pvsc>`__.
-    Summit and Andes configurations can be imported through this method, but are
-    not guaranteed to be supported in future updates. Users may use these
-    at their own risk.
+    Summit, Andes, and Frontier configurations can be imported through this method, but are
+    not guaranteed to be supported in future updates. Users may use these at their own risk.
 
 After successfully completing the above steps, you should now be able to
-connect to either Andes or Summit.
+connect to either Andes, Summit, or Frontier.
 
 .. _paraview-gui:
 
@@ -334,8 +432,8 @@ Remote GUI Usage
 
 After setting up and installing ParaView, you can connect to OLCF systems
 remotely to visualize your data interactively through ParaView's GUI. To do so,
-go to File→Connect and select either ORNL Andes or ORNL Summit (provided they
-were successfully imported -- as outlined in :ref:`paraview-install-setup`).
+go to File→Connect and select either ORNL Andes, ORNL Summit, or ORNL Frontier
+(provided they were successfully imported -- as outlined in :ref:`paraview-install-setup`).
 Next, click on Connect and change the values in the Connection Options box.
 
 .. image:: /images/paraview_step2a_Andes_2.png
@@ -343,8 +441,8 @@ Next, click on Connect and change the values in the Connection Options box.
 
 A dialog box follows, in which you must enter in your username and project
 allocation, the number of nodes to reserve and a duration to reserve them for.
-This is also where you can choose between the OSMesa and EGL rendering options
-(via the "Server headless API" box).
+This is also where you can choose between the OSMesa and EGL (ROCm for Frontier)
+rendering options via the "Server headless API" box.
 
 .. image:: /images/paraview_step2b_Andes.png
    :align: center
@@ -397,6 +495,7 @@ batch scripts, along with a working Python example, are provided below.
 .. tab-set::
 
   .. tab-item:: Andes
+     :sync: andes
 
       .. code-block:: bash
         :linenos:
@@ -411,11 +510,35 @@ batch scripts, along with a working Python example, are provided below.
         cd $SLURM_SUBMIT_DIR
         date
 
-        module load paraview/5.11.0-osmesa
+        module load paraview/5.12.1-osmesa
+
+        srun -n 28 pvbatch para_example.py
+
+  .. tab-item:: Frontier
+     :sync: frontier
+
+      .. code-block:: bash
+        :linenos:
+
+        #!/bin/bash
+        #SBATCH -A XXXYYY
+        #SBATCH -J para_test
+        #SBATCH -N 1
+        #SBATCH -p batch
+        #SBATCH -t 0:05:00
+
+        cd $SLURM_SUBMIT_DIR
+        date
+
+        module load ums
+        module load ums032
+        module load dav-sdk
+        module load paraview/5.12.1
 
         srun -n 28 pvbatch para_example.py
 
   .. tab-item:: Summit
+     :sync: summit
 
       .. code-block:: bash
         :linenos:
@@ -448,7 +571,7 @@ batch scripts, along with a working Python example, are provided below.
 
 .. warning::
     If you plan on using the EGL version of the ParaView module (e.g.,
-    paraview/5.11.0-egl), then you must be connected to the GPUs. On Andes,
+    paraview/5.12.1-egl), then you must be connected to the GPUs. On Andes,
     this is done by using the gpu partition via ``#SBATCH -p gpu``, while 
     on Summit the ``-g`` flag in the ``jsrun`` command must be greater 
     than zero.
@@ -513,9 +636,8 @@ If everything is working properly, the above image should be generated after
 the batch job is complete.
 
 All of the above can also be achieved in an interactive batch job through the
-use of the ``salloc`` command on Andes or the ``bsub -Is`` command on Summit.
-Recall that login nodes should *not* be used for memory- or compute-intensive
-tasks, including ParaView.
+use of the ``salloc`` command on Andes and Frontier, or the ``bsub -Is`` command on Summit.
+Recall that login nodes should *not* be used for memory- or compute-intensive tasks, including ParaView.
 
 Troubleshooting
 ===============
@@ -571,9 +693,9 @@ Additional Resources
 * The `ParaView at OLCF Tutorial <https://kmorel.gitlab.io/pv-tutorial-olcf-2022/>`__ highlights
   how to get started on Andes with example datasets.
 * The `Official ParaView User's Guide <https://docs.paraview.org/en/latest/>`__
-  and the `Python API Documentation <https://kitware.github.io/paraview-docs/latest/python/>`__
+  and the `Python API Documentation <https://www.paraview.org/paraview-docs/latest/python/>`__
   contain all information regarding the GUI and Python interfaces.
-* A full list of `ParaView Documentation <https://www.paraview.org/documentation/>`__
+* A full list of `ParaView Documentation <https://www.paraview.org/resources/>`__
   can be found on ParaView's website.
 * The `ParaView Wiki <https://www.paraview.org/Wiki/ParaView>`__
   contains extensive information about all things ParaView.
