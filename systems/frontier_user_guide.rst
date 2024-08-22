@@ -2651,6 +2651,9 @@ The following code is an example of how to launch an ensemble where each job ste
 This approach is slightly slower than using background ``srun``'s, but is much more reliable and flexible.
 For example, if you have 100 nodes and 500 single-node jobs to run, you can submit all 500 job steps to the Flux scheduler and it will run them as soon as a node is available.
 
+A simple performance test was perfomed using 500 nodes, assigning 1 job to each node using ``flux submit``, as in the above example.
+It took 2 minutes to submit the 500 jobs to Flux.
+
 .. note::
 
     The Flux ``--gpus-per-task=1`` flag does not currently work as expected. With this flag, all 8 GPUs on a node will be seen by each rank.
