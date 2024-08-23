@@ -130,10 +130,10 @@ simplify the process. The following sections document them and provide an `Examp
 Base Images
 ^^^^^^^^^^^
 
-Due to copyright issues, OLCF is not able to provide containers with the Cray Programming Environment (CPE) installed
-in them; However, we do provide a set of base container images that seek to be ABI (Application Binary Interface) compatible.
-Users can download these images and build their software off-site. When users are ready to run their containers on Frontier
-they can bind in CPE and run their software.
+Due to licensing, OLCF is currently not able to provide containers with the Cray Programming Environment (CPE)
+installed in them; However, we do provide a set of base container images that seek to be ABI
+(Application Binary Interface) compatible. Users can download these images and build their software off-site.
+When users are ready to run their containers on Frontier they can bind in CPE and run their software.
 
 .. important::
 
@@ -174,13 +174,14 @@ Example Workflow
 ^^^^^^^^^^^^^^^^
 To see how one might use these containers and modules we have an example of building and running lammps. You can
 find examples for cpu and gpu lammps runs `here <https://github.com/olcf/olcf_containers_examples/tree/main/frontier/containers_on_frontier_docs/apptainer_wrappers_lammps>`_.
-Clone the git repo on any ``x86_64`` machine, navigate to the correct folder and run:
+Clone the git repo onto Frontier (or any ``x86_64`` machine), navigate to the correct folder and run:
 
 .. code-block::
 
     apptainer build lammps.sif lammps.def
 
-After the image is built transfer it to Frontier and run it by submitting the ``submit.slurm`` batch script that accompanies it.
+After the image is built, transfer it to Frontier if it's on another machine, and run it by submitting the
+``submit.slurm`` batch script that accompanies it.
 
 Some Restrictions and Tips
 --------------------------
