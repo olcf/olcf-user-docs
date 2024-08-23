@@ -122,42 +122,65 @@ This example will look at building a container image for testing collective comm
       Bootstrap: oras
       From: docker.io/subilabrahamornl/opensusempich342rocm571:latest
 
+OLCF Base Images & Apptainer Modules
+-------------------------------------
+To assist the container workflow on Frontier, OLCF provides some base container images and apptainer modules to
+simplify the process. The following sections document them and provide an `Example Workflow`_.
 
-OLCF Provided Images
---------------------
-Due to copyright issues OLCF is not able to provide base containers with the Cray Programming Environment (CPE) installed
+Base Images
+^^^^^^^^^^^
+
+Due to copyright issues, OLCF is not able to provide containers with the Cray Programming Environment (CPE) installed
 in them; However, we do provide a set of base container images that seek to be ABI (Application Binary Interface) compatible.
 Users can download these images and build their software off-site. When users are ready to run their containers on Frontier
-they can bind in CPE and run their software for best performance.
+they can bind in CPE and run their software.
 
 .. important::
 
     While OLCF seeks to make these containers compatible with CPE the compatibility is NOT guaranteed.
 
-Base Images
-^^^^^^^^^^^
-
 .. table::
 
-+-------+----------------------------------------------------------------+------------+----------------------------------------------------------------------------+
-| CPE   | PrgEnv - Components [ Compiler,  MPI,  ROCm ]                  | Distro     | URL                                                                        |
-+-------+--------+-------------------------------------------------------+------------+----------------------------------------------------------------------------+
-| 23.12 | gnu - [ ``GCC@12.3.0``,  ``MPICH@3.4.3``,  ``ROCM@5.7.1`` ]    | Ubuntu     | savannah.ornl.gov/olcf-container-images/frontier/ubuntu/gnu/cpe:23.12      |
-|       |                                                                +------------+----------------------------------------------------------------------------+
-|       |                                                                | OpenSUSE   | savannah.ornl.gov/olcf-container-images/frontier/opensuse/gnu/cpe:23.12    |
-|       |                                                                +------------+----------------------------------------------------------------------------+
-|       |                                                                | RockyLinux | savannah.ornl.gov/olcf-container-images/frontier/rockylinux/gnu/cpe:23.12  |
-|       +----------------------------------------------------------------+------------+----------------------------------------------------------------------------+
-|       | cray - [ ``LLVM@17.0.6``,  ``MPICH@3.4.3``,  ``ROCM@5.7.1`` ]  | Ubuntu     | savannah.ornl.gov/olcf-container-images/frontier/ubuntu/cray/cpe:23.12     |
-|       |                                                                +------------+----------------------------------------------------------------------------+
-|       |                                                                | OpenSUSE   | savannah.ornl.gov/olcf-container-images/frontier/opensuse/cray/cpe:23.12   |
-|       |                                                                +------------+----------------------------------------------------------------------------+
-|       |                                                                | RockyLinux | savannah.ornl.gov/olcf-container-images/frontier/rockylinux/cray/cpe:23.12 |
-+-------+----------------------------------------------------------------+------------+----------------------------------------------------------------------------+
+    +-------+----------------------------------------------------------------+------------+----------------------------------------------------------------------------+
+    | CPE   | PrgEnv - Components [ Compiler,  MPI,  ROCm ]                  | Distro     | URL                                                                        |
+    +-------+--------+-------------------------------------------------------+------------+----------------------------------------------------------------------------+
+    | 23.12 | gnu - [ ``GCC@12.3.0``,  ``MPICH@3.4.3``,  ``ROCM@5.7.1`` ]    | Ubuntu     | savannah.ornl.gov/olcf-container-images/frontier/ubuntu/gnu/cpe:23.12      |
+    |       |                                                                +------------+----------------------------------------------------------------------------+
+    |       |                                                                | OpenSUSE   | savannah.ornl.gov/olcf-container-images/frontier/opensuse/gnu/cpe:23.12    |
+    |       |                                                                +------------+----------------------------------------------------------------------------+
+    |       |                                                                | RockyLinux | savannah.ornl.gov/olcf-container-images/frontier/rockylinux/gnu/cpe:23.12  |
+    +-------+----------------------------------------------------------------+------------+----------------------------------------------------------------------------+
 
-Example Work Flow
+..
+    For later use.
+    |       | cray - [ ``LLVM@17.0.6``,  ``MPICH@3.4.3``,  ``ROCM@5.7.1`` ]  | Ubuntu     | savannah.ornl.gov/olcf-container-images/frontier/ubuntu/cray/cpe:23.12     |
+    |       |                                                                +------------+----------------------------------------------------------------------------+
+    |       |                                                                | OpenSUSE   | savannah.ornl.gov/olcf-container-images/frontier/opensuse/cray/cpe:23.12   |
+    |       |                                                                +------------+----------------------------------------------------------------------------+
+    |       |                                                                | RockyLinux | savannah.ornl.gov/olcf-container-images/frontier/rockylinux/cray/cpe:23.12 |
+    +-------+----------------------------------------------------------------+------------+----------------------------------------------------------------------------+
+
+Apptainer Modules
 ^^^^^^^^^^^^^^^^^
-To see how one might use these containers let's look at an example of building and running lammps.
+.. warning::
+
+    The modules described in this section are experimental!
+
+To make the use of apptainer easier, OLCF provides some modules that automatically bind in the needed libraries to run
+apptainer with the host mpi and rocm. To accsess these modules load ``olcf-container-tools``. You should then see two
+modules ``apptainer-enable-mpi`` and ``apptainer-enable-gpu``.
+
+Example Workflow
+^^^^^^^^^^^^^^^^
+To see how one might use these containers and modules we have an example of building and running lammps. You can
+find examples for cpu and gpu lammps runs `here <https://github.com/olcf/olcf_containers_examples/tree/main/frontier/containers_on_frontier_docs/apptainer_wrappers_lammps>`_.
+Clone the git repo on any ``x86_64`` machine, navigate to the correct folder and run:
+
+.. code-block::
+
+    apptainer build lammps.sif lammps.def
+
+After the image is built transfer it to Frontier and run it by submitting the ``submit.slurm`` batch script that accompanies it.
 
 Some Restrictions and Tips
 --------------------------
