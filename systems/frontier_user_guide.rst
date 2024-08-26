@@ -531,7 +531,7 @@ Modules with dependencies are only available when the underlying dependencies, s
 
 .. note::
 
-    Due to the implementation of the module heirarchy on Frontier, ``spider`` does not currently locate OLCF-provided Spack-built modulefiles in ``/sw/frontier``.
+    Due to the implementation of the module heirarchy on Frontier, ``module spider`` does not currently locate OLCF-provided Spack-built modulefiles in ``/sw/frontier``.
 
 
 Compilers
@@ -741,6 +741,10 @@ The following table shows the recommended ROCm version for each CCE version, alo
 +-------------+-------+---------------------------+
 |   17.0.0    | 23.12 | 5.7.0 or 5.7.1            |
 +-------------+-------+---------------------------+
+|   17.0.1    | 24.03 | 6.0.0                     |
++-------------+-------+---------------------------+
+|   18.0.0    | 24.07 | 6.1.3                     |
++-------------+-------+---------------------------+
 
 .. note::
 
@@ -776,6 +780,10 @@ An asterisk indicates the latest officially supported version of ROCm for each `
 |   8.1.27   | 23.09 | 5.7.1, 5.7.0, 5.6.0, 5.5.1*, 5.4.3, 5.4.0, 5.3.0 |
 +------------+-------+--------------------------------------------------+
 |   8.1.28   | 23.12 | 5.7.1, 5.7.0*, 5.6.0, 5.5.1, 5.4.3, 5.4.0, 5.3.0 |
++------------+-------+--------------------------------------------------+
+|   8.1.29   | 24.03 | 6.1.3, 6.0.0*                                    |
++------------+-------+--------------------------------------------------+
+|   8.1.30   | 24.07 | 6.1.3*, 6.0.0                                    |
 +------------+-------+--------------------------------------------------+
 
 .. note::
@@ -858,7 +866,7 @@ This section shows how to compile with OpenMP Offload using the different compil
 
     If invoking ``amdclang``, ``amdclang++``, or ``amdflang`` directly for ``openmp offload``, or using ``hipcc`` you will need to add: 
     
-    ``-fopenmp -target x86_64-pc-linux-gnu -fopenmp-targets=amdgcn-amd-amdhsa -Xopenmp-target=amdgcn-amd-amdhsa -march=gfx90a``.
+    ``-fopenmp -fopenmp-targets=amdgcn-amd-amdhsa -Xopenmp-target=amdgcn-amd-amdhsa -march=gfx90a``.
 
 
 OpenACC
@@ -2549,6 +2557,109 @@ The default behavior can be changed by using the ``MPICH_OFI_NIC_POLICY``
 environment variable (see ``man mpi`` for available options).
 
 
+Ensemble Jobs
+-------------
+
+For many applications and use cases, the ability to launch many copies of the same binary in an independent context is needed.
+This section highlights a few recommended solutions to launching ensemble runs on Frontier.
+
+Before covering the tools that can be useful for this, be advised that the most reliable solution to this problem will be the use of MPI sub-communicators by your application.
+For example, the LAMMPS Molecular Dynamics software supports a ``partition`` command, which can create many independent simulations from a single ``srun`` launch.
+
+Single-process ensemble members
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If you are able to fit each ensemble member onto a single MPI rank and single AMD Instinct MI250X GCD (8 GCD's per node), the most reliable solution is to use a single ``srun`` as follows:
+
+.. code:: bash
+
+    srun -N $SLURM_NNODES -n $((SLURM_NNODES*8)) -c 7 --gpus-per-task=1 --gpu-bind=closest ./wrapper.sh
+
+Where ``wrapper.sh`` is a shell script that launches your application.
+This shell script is simply for convenience, in case you wish to vary the parameters to your application based on MPI rank.
+This approach is fastest, most reliable, and easily scales to the entirety of Frontier.
+
+Using multiple simultanoues srun's
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If you are not able to fit each ensemble member onto a single MPI rank and GCD, a common approach is to launch multiple ``srun`` processes in the background simultaneously.
+For example:
+
+.. code:: bash
+
+    for node in $(scontrol show hostnames); do
+        srun -N 1 -n 8 -c 7 --gpus-per-task=1 --gpu-bind=closest <executable> &
+    done
+    # Wait for srun's to all finish
+    wait
+
+Each ``srun`` communicates to the Slurm controller node (which is shared among all users) when it is launched.
+Large amounts of ``srun`` processes can temporarily overwhelm the Slurm controller, making commands like ``sbatch`` and ``squeue`` hang.
+This approach can be fast, but is unreliable and does not scale to a significant portion of Frontier, and potentially overloads the Slurm controller.
+We do not yet recommend this approach beyond 100 simultaneous ``srun``'s.
+
+Slurm version 24.05 (installed on Frontier August 20, 2024) introduces the ``--stepmgr`` flag for ``sbatch``, which uses the first node in the allocation to manage job steps instead of the Slurm controller.
+This feature should substantially improve the ability to run many simultaneous ``srun``'s.
+However, this flag does not currently work reliably on Frontier, and it is not recommended at this time.
+This functionality can be re-created by using the Flux scheduler within Slurm, described in the next section.
+
+Flux in a Slurm allocation
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+`Flux <https://hpc-tutorials.llnl.gov/flux/>`_ is a light-weight batch scheduler that can be run inside of a Slurm allocation.
+This effectively creates a local queue of jobs that you alone can submit to and manage.
+Functionally, this achieves the same objective as launching multiple ``srun``'s in the background,
+but has the added benefit that Flux can automatically start the next job on a node as each job finishes.
+Using ``srun``, you are forced to use ``wait`` to wait for all processes to finish, before launching another flight of processes.
+Flux can more readily load-balance workloads across nodes inside a Slurm job allocation.
+
+The following code is an example of how to launch an ensemble where each job step is run on one node using Flux:
+
+.. code:: bash
+
+    #SBATCH -A <proj>
+    #SBATCH -t <timelimit>
+    #SBATCH -N 8
+
+    module load rocm
+    module load hwloc/2.9.1-gpu # Flux requires a GPU-enabled hwloc to see the GPUs
+    module load flux
+
+    # A few Flux commands to note:
+    #   flux start -- starts the Flux server daemons
+    #   flux resource list -- lists the resources available to Flux
+    #   flux submit -- submits & detaches from a Flux job. Returns a hash string identifying the submitted job
+    #   flux jobs -- synonymous to `squeue`, displays the Flux queue
+    #   flux run -- submits & runs a Flux job (does not return prompt until command is complete)
+    #   flux queue drain -- similar to `wait`, blocks until Flux queue is empty
+
+    # Flux flags:
+    #   -N 1 -- 1 node
+    #   -n 8 -- 8 tasks
+    #   -c 7 -- 7 cores per task
+    #   --gpus-per-task=1 -- binds 1 GPU per task (DOES NOT WORK currently)
+    # We launch one Flux process per node, with all available CPUs and GPUs allocated to it
+    # Flux understands that it was launched in a Slurm allocation, and only the Flux daemon on the first node is listening to commands
+    srun -N $SLURM_NNODES -n $SLURM_NNODES -c 56 --gpus-per-node=8 flux start \
+        "flux resource list;
+        for i in \$(seq 1 $SLURM_NNODES); do
+            flux submit -N 1 -n 8 -c 7 -x --gpus-per-task=1 --output=output.\$i.txt bash -c 'hostname; env | grep VISIBLE; /usr/bin/time ./vadd';
+        done;
+        flux queue drain;"
+
+
+This approach is slightly slower than using background ``srun``'s, but is much more reliable and flexible.
+For example, if you have 100 nodes and 500 single-node jobs to run, you can submit all 500 job steps to the Flux scheduler and it will run them as soon as a node is available.
+
+A simple performance test was perfomed using 500 nodes, assigning 1 job to each node using ``flux submit``, as in the above example.
+It took 2 minutes to submit the 500 jobs to Flux.
+
+.. note::
+
+    The Flux ``--gpus-per-task=1`` flag does not currently work as expected. With this flag, all 8 GPUs on a node will be seen by each rank.
+    Users should either explicitly set ``ROCR_VISIBLE_DEVICES`` for each rank to a different GPU, or provide information to the application about how to bind to a single GPU.
+
+
 Tips for Launching at Scale
 ---------------------------
 
@@ -2864,7 +2975,7 @@ Notice that the libraries are sent to the ``${exe}_libs`` directory in the same 
 Once libraries are here, you cannot tell where they came from, so consider doing an ``ldd`` of your executable prior to ``sbcast``.
 
 
-Alternative: SBCASTing a binary with all libraries
+Best: SBCASTing a binary with ALL libraries
 """"""""""""""""""""""""""""""""""""""""""""""""""
 
 As mentioned above, you can alternatively use ``--exclude=NONE`` on ``sbcast`` to send all libraries along with the binary.
@@ -3661,6 +3772,24 @@ If it is necessary to have bit-wise reproducible results from these libraries, i
 
 System Updates 
 ============== 
+
+2024-08-20
+----------
+On Tuesday, August 20, 2024, Frontier's system software will be upgraded.
+
+The following system changes will take place:
+
+-  Upgrade to AMD GPU 6.8.5 device driver (ROCm 6.2.0 release).
+-  Upgrade to Slingshot Host Software 2.2.0. This changes the libfabric version from 1.15.2.0 to 1.20.1.0 and changes the location of the shared libraries from `/opt/cray/libfabric/1.15.2.0` to `/usr/lib64`.
+-  Upgrade to Cray OS 3.0 (SLES-15 SP5).
+-  Upgrade Slurm to version 24.05.
+-  HPE/Cray Programming Environment (CPE) 24.03 AND 24.07 are now available via the ``cpe/24.03`` and ``cpe/24.07`` modulefiles.
+-  ROCm 6.1.3 and 6.2.0 are now available via the ``rocm`` modulefiles.
+-  CPE 23.12 and ROCm 5.7.1 remain as default.
+
+Please report any issues to help@olcf.ornl.gov.
+The `Frontier Known Issues <https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#known-issues>`_ have been updated with the latest available information.
+
 
 2024-07-16
 ----------
