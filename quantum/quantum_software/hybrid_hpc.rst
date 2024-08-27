@@ -48,8 +48,8 @@ See these links for more information:
 
 * `<https://docs.quantum.ibm.com/start/install>`__
 * `<https://docs.quantum.ibm.com/start/hello-world>`__
-* `<https://docs.quantum.ibm.com/lab>`__
 * `<https://docs.quantum.ibm.com/verify/local-testing-mode>`__
+* `<https://docs.quantum.ibm.com/guides/execution-modes>`__
 
 .. tab-set::
 
@@ -59,19 +59,19 @@ See these links for more information:
 
             module load gcc/9.3.0
             module load python
-            conda create -n ENV_NAME python=3.10 -c conda-forge
+            conda create -n ENV_NAME python=3.11 -c conda-forge
             source activate ENV_NAME
-            conda install qiskit=1.0.2 qiskit-ibm-runtime=0.22.0 qiskit-aer=0.13.3 psutil -c conda-forge
+            conda install qiskit=1.2.0 qiskit-ibm-runtime=0.28.0 qiskit-aer=0.14.2 psutil -c conda-forge
 
     .. tab-item:: Frontier
 
         .. code-block:: bash
 
-            module load PrgEnv-gnu/8.3.3
-            module load miniforge3/23.11.0
-            conda create -n ENV_NAME python=3.10 -c conda-forge
+            module load PrgEnv-gnu/8.5.0
+            module load miniforge3/23.11.0-0
+            conda create -n ENV_NAME python=3.11 -c conda-forge
             source activate ENV_NAME
-            conda install qiskit=1.0.2 qiskit-ibm-runtime=0.22.0 qiskit-aer=0.13.3 psutil -c conda-forge
+            conda install qiskit=1.2.0 qiskit-ibm-runtime=0.28.0 qiskit-aer=0.14.2 psutil -c conda-forge
 
 
 Qiskit IonQ Provider
@@ -81,7 +81,7 @@ The ``qiskit-ionq`` extension can be installed to access IonQ QPUs through Qiski
 
 See these links for more information:
 
-* `<https://docs.ionq.com/introduction>`__
+* `<https://docs.ionq.com/>`__
 * `<https://ionq.com/resources>`__
 * `<https://ionq.com/resources/anthology/developers/hello-many-worlds-in-7-quantum-languages>`__
 * `<https://docs.ionq.com/guides/managing-api-keys>`__
@@ -95,19 +95,19 @@ See these links for more information:
 
             module load gcc/9.3.0
             module load python
-            conda create -n ENV_NAME python=3.10 numpy=1.26.4 scipy -c conda-forge
+            conda create -n ENV_NAME python=3.11 numpy=1.26.4 scipy -c conda-forge
             source activate ENV_NAME
-            pip install qiskit==1.0.2 qiskit-ionq==0.5.0 --no-cache-dir
+            pip install qiskit==1.2.0 qiskit-ionq==0.5.4 --no-cache-dir
 
     .. tab-item:: Frontier
 
         .. code-block:: bash
 
-            module load PrgEnv-gnu/8.3.3
-            module load miniforge3/23.11.0
-            conda create -n ENV_NAME python=3.10 numpy=1.26.4 scipy -c conda-forge
+            module load PrgEnv-gnu/8.5.0
+            module load miniforge3/23.11.0-0
+            conda create -n ENV_NAME python=3.11 numpy=1.26.4 scipy -c conda-forge
             source activate ENV_NAME
-            pip install qiskit==1.0.2 qiskit-ionq==0.5.0 --no-cache-dir
+            pip install qiskit==1.2.0 qiskit-ionq==0.5.4 --no-cache-dir
 
 
 PyQuil/Forest SDK (Rigetti)
@@ -162,7 +162,7 @@ Below is an example script that will download, build, and install all dependenci
 
         .. code-block:: bash
 
-            module load PrgEnv-gnu/8.3.3 cmake
+            module load PrgEnv-gnu/8.5.0 cmake
 
 .. warning::
    By default this will install the libraries into your ``$HOME`` directory.
@@ -286,9 +286,9 @@ To verify your installation, try calling ``quilc`` and ``qvm`` (after exporting 
 
 .. code-block:: bash
 
-    $ quilc —-version
+    $ quilc --version
     1.23.0 [e6c0939]
-    $ qvm —-version
+    $ qvm --version
     1.17.1 [cf3f91f]
 
 Finally, you are ready to install pyQuil:
@@ -301,19 +301,19 @@ Finally, you are ready to install pyQuil:
 
             module load gcc/9.3.0
             module load python
-            conda create -n ENV_NAME python=3.10 numpy=1.26.4 scipy -c conda-forge
+            conda create -n ENV_NAME python=3.11 numpy=1.26.4 scipy -c conda-forge
             source activate ENV_NAME
-            pip install pyquil==4.8.0 typing_extensions --no-cache-dir
+            pip install pyquil==4.14.2 pyquil-grpc-web==4.14.2 typing_extensions --no-cache-dir
 
     .. tab-item:: Frontier
 
         .. code-block:: bash
 
-            module load PrgEnv-gnu/8.3.3
-            module load miniforge3/23.11.0
-            conda create -n ENV_NAME python=3.10 numpy=1.26.4 scipy -c conda-forge
+            module load PrgEnv-gnu/8.5.0
+            module load miniforge3/23.11.0-0
+            conda create -n ENV_NAME python=3.11 numpy=1.26.4 scipy -c conda-forge
             source activate ENV_NAME
-            pip install pyquil==4.8.0 typing_extensions --no-cache-dir
+            pip install pyquil==4.14.2 pyquil-grpc-web==4.14.2 typing_extensions --no-cache-dir
 
 
 PyQuil - Setting up Servers
@@ -360,16 +360,16 @@ On our systems, the install method is relatively simple:
 
             module load gcc/9.3.0
             module load python
-            conda create -n ENV_NAME python=3.10 pennylane -c conda-forge
+            conda create -n ENV_NAME python=3.11 pennylane -c conda-forge
             source activate ENV_NAME
 
     .. tab-item:: Frontier
 
         .. code-block:: bash
 
-            module load PrgEnv-gnu/8.3.3
-            module load miniforge3/23.11.0
-            conda create -n ENV_NAME python=3.10 pennylane -c conda-forge
+            module load PrgEnv-gnu/8.5.0
+            module load miniforge3/23.11.0-0
+            conda create -n ENV_NAME python=3.11 pennylane -c conda-forge
             source activate ENV_NAME
 
 Pytket
@@ -382,7 +382,7 @@ For more information please see:
 
 * `<https://tket.quantinuum.com/api-docs/>`__
 * `<https://cqcl.github.io/pytket-quantinuum/api/>`__
-* `<https://tket.quantinuum.com/examples/Getting_started.html>`__
+* `<https://tket.quantinuum.com/api-docs/getting_started.html>`__
 * `<https://github.com/CQCL/pytket-quantinuum/tree/main/examples>`__
 
 .. tab-set::
@@ -393,19 +393,62 @@ For more information please see:
 
             module load gcc/9.3.0
             module load python
-            conda create -n ENV_NAME_qtm python=3.10 numpy=1.26.4 -c conda-forge
-            source activate ENV_NAME_qtm
-            pip install pytket==1.26.0 pytket-quantinuum==0.31.0 scipy --no-cache-dir
+            conda create -n ENV_NAME python=3.11 numpy=1.26.4 -c conda-forge
+            source activate ENV_NAME
+            pip install pytket==1.31.1 pytket-quantinuum==0.37.0 scipy --no-cache-dir
 
     .. tab-item:: Frontier
 
         .. code-block:: bash
 
-            module load PrgEnv-gnu/8.3.3
-            module load miniforge3/23.11.0
-            conda create -n ENV_NAME_qtm python=3.10 numpy=1.26.4 scipy -c conda-forge
-            source activate ENV_NAME_qtm
-            pip install pytket==1.26.0 pytket-quantinuum==0.32.0 --no-cache-dir
+            module load PrgEnv-gnu/8.5.0
+            module load miniforge3/23.11.0-0
+            conda create -n ENV_NAME python=3.11 numpy=1.26.4 scipy -c conda-forge
+            source activate ENV_NAME
+            pip install pytket==1.31.1 pytket-quantinuum==0.37.0 --no-cache-dir
+
+CUDA-Q
+======
+
+`CUDA-Q <https://github.com/NVIDIA/cuda-quantum>`__ is a software development
+kit for quantum and integrated quantum-classical programming. It consists of
+the CUDA-Q intermediate representation and compiler toolchain, language
+expressions in Python and C++, and the ability to execute jobs either on GPUs
+accelerated via cuQuantum or QPUs spanning superconducting, ion traps,
+photonics, and other qubit modalities. As high-performance computing (HPC)
+trends towards heterogeneous architectures, CUDA-Q enables a dynamic workflow
+with a kernel-based programming model allowing users to offload onto various
+backends leading to scalable hybrid applications.
+
+Additionally, CUDA-Q is interoperable with modern parallel programming models
+such as MPI, OpenMP, etc., allowing it to leverage parallelization within and
+across classical compute nodes. CUDA Quantum also has a user-friendly Python
+API. We will present results from simulations that leverage the multi-node
+multi-gpu simulations in quantum chemistry, quantum condensed matter physics,
+high energy physics, quantum machine learning, computational fluid dynamics at
+scale.
+
+For more information please see:
+
+- Documentation: `<https://nvidia.github.io/cuda-quantum/latest/index.html>`__
+- GitHub Repository: `<https://github.com/NVIDIA/cuda-quantum>`__
+- General Workshops Repository: `<https://github.com/cudaq-libraries/workshops/tree/202408-cudaq>`__
+- ORNL (Ascent) Workshop: `<https://github.com/justinlietz/ornl-cudaq-workshop>`__
+
+    - `Recording <https://vimeo.com/1002774302>`__
+    - `Slides <https://www.olcf.ornl.gov/wp-content/uploads/OLCF-CUDA-Q-Training.pdf>`__
+
+CUDA-Q is available on Summit via the ``cudaq`` module.
+
+.. tab-set::
+
+    .. tab-item:: Summit
+
+        .. code-block:: bash
+
+            module use /gpfs/alpine2/world-shared/stf007/msandov1/modulefiles
+            module load cudaq/0.8.0
+
 
 Batch Jobs
 ==========
@@ -426,13 +469,6 @@ script:
     export http_proxy=http://proxy.ccs.ornl.gov:3128/
     export https_proxy=http://proxy.ccs.ornl.gov:3128/
     export no_proxy='localhost,127.0.0.0/8,*.ccs.ornl.gov'
-
-.. warning::
-
-    These settings currently do not work for pyQuil; thus, when running pyQuil
-    on the compute nodes, you are unable to connect to Rigetti's machines and can
-    only run local simulators. To be able to connect to Rigetti's machines, you'll
-    have to run on the login nodes instead.
 
 
 When using Python environments with SLURM, it is always recommended to submit a
@@ -469,7 +505,6 @@ Below are example batch scripts for running on Andes and Frontier:
             date
 
             # Set proxy settings so compute nodes can reach internet (required when not using a simulator)
-            # Currently, does not work properly with pyQuil
             export all_proxy=socks://proxy.ccs.ornl.gov:3128/
             export ftp_proxy=ftp://proxy.ccs.ornl.gov:3128/
             export http_proxy=http://proxy.ccs.ornl.gov:3128/
@@ -507,7 +542,6 @@ Below are example batch scripts for running on Andes and Frontier:
             date
 
             # Set proxy settings so compute nodes can reach internet (required when not using a simulator)
-            # Currently, does not work properly with pyQuil
             export all_proxy=socks://proxy.ccs.ornl.gov:3128/
             export ftp_proxy=ftp://proxy.ccs.ornl.gov:3128/
             export http_proxy=http://proxy.ccs.ornl.gov:3128/
@@ -515,7 +549,7 @@ Below are example batch scripts for running on Andes and Frontier:
             export no_proxy='localhost,127.0.0.0/8,*.ccs.ornl.gov'
 
             # Load python module and virtual environment
-            module load miniforge3/23.11.0
+            module load miniforge3/23.11.0-0
             source activate ENV_NAME
 
             # For software like Qiskit,PennyLane,Pytket
