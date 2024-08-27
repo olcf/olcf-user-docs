@@ -24,8 +24,8 @@ For more information please see:
 
 * `<https://docs.quantum.ibm.com/start/install>`__
 * `<https://docs.quantum.ibm.com/start/hello-world>`__
-* `<https://docs.quantum.ibm.com/lab>`__
 * `<https://docs.quantum.ibm.com/verify/local-testing-mode>`__
+* `<https://docs.quantum.ibm.com/guides/execution-modes>`__
 
 .. list-table:: Latest script tests
    :widths: 25 25 25 25
@@ -35,10 +35,10 @@ For more information please see:
      - ``qiskit``
      - ``qiskit-ibm-runtime``
      - ``qiskit-aer``
-   * - 3.10.14
-     - 1.0.2
-     - 0.22.0
-     - 0.13.3
+   * - 3.11.9
+     - 1.2.0
+     - 0.28.0
+     - 0.14.2
 
 .. note::
 
@@ -51,11 +51,11 @@ For more information please see:
       .. code-block:: python
 
          from qiskit import QuantumCircuit, transpile
-         from qiskit_ibm_runtime import QiskitRuntimeService, Session, Sampler
+         from qiskit_ibm_runtime import QiskitRuntimeService, Session, SamplerV2 as Sampler
          import time
 
          # Save / Load Credentials (csc431 used as example project)
-         #QiskitRuntimeService.save_account(channel="ibm_quantum", token="API TOKEN GOES HERE", overwrite=True)
+         QiskitRuntimeService.save_account(channel="ibm_quantum", token="API TOKEN GOES HERE", overwrite=True)
          service = QiskitRuntimeService(channel="ibm_quantum", instance="ibm-q-ornl/ornl/csc431")
 
          # Get backend (csc431 used as example project)
@@ -70,18 +70,20 @@ For more information please see:
          compiled_circuit = transpile(circuit, backend)
 
          # Submit job
-         sampl = Sampler(backend)
-         job = sampl.run(compiled_circuit,shots=1000)
+         sampl = Sampler(mode=backend)
+         job = sampl.run([compiled_circuit],shots=1000)
 
          # Wait for job to complete
-         while str(job.status()) != "JobStatus.DONE":
+         while str(job.status()) != "DONE":
              print("Job status is", job.status() )
              time.sleep(30)
          print("Job status is", job.status() )
 
          # Gather results
          result = job.result()
-         probs = result.quasi_dists
+         probs = result[0].data.c.get_counts()
+
+         print('PubResult: ',result[0])
          print("\nProbabilities for 00 and 11 are:",probs)
 
          # Draw the circuit
@@ -92,7 +94,7 @@ For more information please see:
       .. code-block:: python
 
          from qiskit import QuantumCircuit, transpile
-         from qiskit_ibm_runtime import Session, Sampler
+         from qiskit_ibm_runtime import Session, SamplerV2 as Sampler
          from qiskit_ibm_runtime.fake_provider import FakeManilaV2
          from qiskit_aer import AerSimulator
 
@@ -106,14 +108,16 @@ For more information please see:
          circuit.cx(0, 1)
          circuit.measure([0,1], [0,1])
          compiled_circuit = transpile(circuit, backend)
-         
+
          # Run the sampler job locally using AerSimulator or "Fake" Backend.
          # Session syntax is supported but ignored because local mode doesn't support sessions.
          with Session(backend=backend) as session:
-             sampler = Sampler(session=session)
+             sampler = Sampler(mode=session)
              result = sampler.run([compiled_circuit],shots=1000).result()
 
-         probs = result.quasi_dists
+         probs = result[0].data.c.get_counts()
+
+         print('PubResult: ',result[0])
          print("\nProbabilities for 00 and 11 are:",probs)
 
          # Draw the circuit
@@ -143,7 +147,7 @@ For more information please see:
 
 * `<https://tket.quantinuum.com/api-docs/>`__
 * `<https://cqcl.github.io/pytket-quantinuum/api/>`__
-* `<https://tket.quantinuum.com/examples/Getting_started.html>`__
+* `<https://tket.quantinuum.com/api-docs/getting_started.html>`__
 * `<https://github.com/CQCL/pytket-quantinuum/tree/main/examples>`__
 
 .. list-table:: Latest script tests
@@ -153,9 +157,9 @@ For more information please see:
    * - ``python``
      - ``pytket``
      - ``pytket-quantinuum``
-   * - 3.10.14
-     - 1.26.0
-     - 0.32.0
+   * - 3.11.9
+     - 1.31.1
+     - 0.37.0
 
 .. code-block:: python
 
@@ -242,7 +246,7 @@ One useful resource that showcases multiple access pathways is their `Hello Many
 
 For more information please see:
 
-* `<https://docs.ionq.com/introduction>`__
+* `<https://docs.ionq.com/>`__
 * `<https://ionq.com/resources>`__
 * `<https://ionq.com/resources/anthology/developers/hello-many-worlds-in-7-quantum-languages>`__
 * `<https://docs.ionq.com/guides/managing-api-keys>`__
@@ -255,9 +259,9 @@ For more information please see:
    * - ``python``
      - ``qiskit``
      - ``qiskit-ionq``
-   * - 3.10.14
-     - 1.0.2
-     - 0.5.0
+   * - 3.11.9
+     - 1.2.0
+     - 0.5.4
 
 .. code-block:: python
 
@@ -272,7 +276,7 @@ For more information please see:
     provider = IonQProvider()
     print(provider.backends())
 
-    # Run on "ionq_simulator", "ionq_qpu", "simulator", "qpu.harmony", "qpu.aria-1"
+    # Run on "ionq_simulator", "ionq_qpu", "simulator", "qpu.harmony", "qpu.aria-1", "qpu.aria-2"
     backend = provider.get_backend("simulator")
 
     # Create a basic Bell State circuit:
@@ -319,8 +323,8 @@ For more information please see:
 
    * - ``python``
      - ``pyquil``
-   * - 3.10.14
-     - 4.8.0
+   * - 3.11.9
+     - 4.14.2
 
 .. code-block:: python
 
