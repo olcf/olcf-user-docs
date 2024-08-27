@@ -405,12 +405,13 @@ threads within each block (block size) can be specified in one, two, or three di
 during the kernel launch. Each thread can be identified with a unique id within the
 kernel, indexed along the X, Y, and Z dimensions.
 
-- Number of blocks that can be specified along each dimension in a grid: (2147483647, 2147483647, 2147483647)
+- Number of blocks that can be specified along each dimension in a grid: (2147483647, 65536, 65536)
 - Max number of threads that can be specified along each dimension in a block: (1024, 1024, 1024)
 
   - However, the total of number of threads in a block has an upper limit of 1024
     [i.e. (size of x dimension * size of y dimension * size of z dimension) cannot exceed
     1024].
+  - And the total number of threads in a kernel launch has an upper limit of 2147483647.
 
 Each block (or workgroup) of threads is assigned to a single Compute Unit i.e. a single
 block won’t be split across multiple CUs. The threads in a block are scheduled in units of
@@ -435,7 +436,7 @@ Each CU has 4 Matrix Core Units (the equivalent of NVIDIA's Tensor core units) a
 (which has 64 threads) is assigned to a single 16-wide SIMD unit such that the wavefront
 as a whole executes the instruction over 4 cycles, 16 threads per cycle. Since other
 wavefronts occupy the other three SIMD units at the same time, the total throughput still
-remains 1 instruction per cycle. Each CU maintains an instructions buffer for 10
+remains 1 instruction per cycle. Each CU maintains an instructions buffer for 8
 wavefronts and also maintains 256 registers where each register is 64 4-byte wide
 entries. 
 
