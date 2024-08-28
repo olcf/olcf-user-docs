@@ -13,6 +13,7 @@ The table below lists presentations given at previous OLCF training events. For 
    :header: "Date", "Title", "Speaker", "Event", "Presentation"
    :widths: 12 22 22 22 22
 
+    "2024-08-28", "Containers on Frontier", "Subil Abraham (OLCF)", `August 2024 OLCF User Conference Call <https://www.olcf.ornl.gov/calendar/userconcall-aug2024/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/containers_on_frontier.pdf>`__ | `recording <https://vimeo.com/1003732108>`__)
     "2024-08-22", "CUDA-Q 2024", "Justin Lietz (NVIDIA)", `CUDA-Q 2024 <https://www.olcf.ornl.gov/calendar/cuda-q-2024/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/OLCF-CUDA-Q-Training.pdf>`__ | `recording <https://vimeo.com/1002774302>`__)
     "2024-07-31", "The ADIOS IO Framework", "Norbert Podhorszki (ORNL)", `July 2024 OLCF User Conference Call <https://www.olcf.ornl.gov/calendar/userconcall-jul2024/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/ADIOS_OLCF_July2024.pdf>`__ | `recording <https://vimeo.com/995955538>`__)
     "2024-07-11", "AI Training Series: AI for Science at Scale - Part 3", "Sajal Dash (OLCF)", `AI for Science at Scale - Part 3 <https://www.olcf.ornl.gov/calendar/ai-for-science-at-scale-part-3/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/AI4S-Tutorial-Part-III.pdf>`__ | `recording <https://vimeo.com/983121540>`__)
