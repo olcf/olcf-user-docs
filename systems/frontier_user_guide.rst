@@ -3774,6 +3774,10 @@ If it is necessary to have bit-wise reproducible results from these libraries, i
 System Updates 
 ============== 
 
+2024-09-03
+----------
+On Tuesday, September 3, 2024, Frontier's system software was upgraded to Slingshot 2.2.0. Please report any issues to help@olcf.ornl.gov.
+
 2024-08-20
 ----------
 On Tuesday, August 20, 2024, Frontier's system software will be upgraded.
