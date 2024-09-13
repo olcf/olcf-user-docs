@@ -185,7 +185,7 @@ After the image is built, transfer it to Frontier if it's on another machine, an
 
 .. warning::
 
-   The modules should be loaded only for running. They should not be loaded during container build due to environment variables
+   The modules should be loaded only for running, such as in an interactive or batch job. They should not be loaded before ``apptainer build`` due to environment variables
    it sets that interfere with the build process. If you load the modules and try to do an ``apptainer build``, you might encounter
    an error like
    ::
