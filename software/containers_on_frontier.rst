@@ -183,6 +183,14 @@ Clone the git repo onto Frontier (or any ``x86_64`` machine), navigate to the co
 After the image is built, transfer it to Frontier if it's on another machine, and run it by submitting the
 ``submit.slurm`` batch script that accompanies it.
 
+.. warning::
+
+   The modules should be loaded only for running, such as in an interactive or batch job. They should not be loaded before ``apptainer build`` due to environment variables
+   it sets that interfere with the build process. If you load the modules and try to do an ``apptainer build``, you might encounter
+   an error like
+   ::
+        FATAL:   container creation failed: mount hook function failure: mount /opt/cray->/opt/cray error: while mounting /opt/cray: destination /opt/cray doesn't exist in container
+
 Some Restrictions and Tips
 --------------------------
 
