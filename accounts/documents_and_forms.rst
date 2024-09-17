@@ -13,13 +13,13 @@ Use this form to request a Director's Discretionary (DD) Project. Select
 "OLCF Director's Discretionary Program" from the drop down menu.
 
 `Principal Investigator
-Agreement <https://www.olcf.ornl.gov/wp-content/accounts/PI_Agreement.pdf>`_ The Oak Ridge
+Agreement <https://www.olcf.ornl.gov/wp-content/uploads/PI_Agreement2024.pdf>`_ The Oak Ridge
 Leadership Computing Facility must have a signed copy of this form on
 file from the project's principal investigator(s) before any accounts
 for the project will be processed.
 
 `Industry Principal Investigator's
-Agreement <https://www.olcf.ornl.gov/wp-content/accounts/Industry_PI_Agreement.pdf>`_ The Oak
+Agreement <https://www.olcf.ornl.gov/wp-content/uploads/Industry_PI_Agreement2024.pdf>`_ The Oak
 Ridge Leadership Computing Facility must have a signed copy of this form
 on file from the project's principal investigator(s) before any accounts
 for the project will be processed.
@@ -39,15 +39,8 @@ Existing users without RSA SecurID tokens should fill out the `Account Applicati
 myOLCF login page without needing to sign in.
 See the section :ref:`applying-for-a-user-account` for complete details.
 
-`Notary Token Verification Form <https://www.olcf.ornl.gov/wp-content/accounts/Notary_Token_Verification_Form.pdf>`_
-(See `Notary Instructions <https://www.olcf.ornl.gov/wp-content/accounts/Notary_Instructions.pdf>`__)
-For certain resources, ORNL requires identity proofing to authenticate a
-user’s identity and possession of the token prior to activation. The
-Notary Token Verification Form verifies the identity of the applicant
-and maintains records of the identity proofing credentials that may be
-disclosed in the future to an authorized individual or investigative
-agency. Alternatively, you may schedule this verification with a member
-of our staff virtually my filling out the 
+`Notary Token Verification <https://my.olcf.ornl.gov/video-conference/>`_
+For certain resources, ORNL requires identity proofing to authenticate a user’s identity and possession of the token prior to activation. You may schedule this verification with a member of our staff virtually my filling out the 
 `Conference Scheduler Form <https://my.olcf.ornl.gov/video-conference/>`__.
 You will need your Application Confirmation Number that was emailed to you
 by our accounts team to schedule in this manner. If you do not possess
