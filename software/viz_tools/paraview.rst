@@ -20,8 +20,11 @@ Summit, and Frontier to facilitate large scale distributed visualizations.
 The ParaView server may be used in a headless batch processing
 mode or be used to drive a ParaView GUI client running on your local machine.
 
-For a tutorial of how to get started with ParaView on Andes, see our 
-`ParaView at OLCF Tutorial <https://kmorel.gitlab.io/pv-tutorial-olcf-2022/>`__.
+For a tutorial of how to get started with ParaView on OLCF systems, see our 
+`ParaView on Frontier tutorial <https://github.com/olcf/dva-training-series/tree/main/paraview_2024>`__.
+The tutorial walks through visualizing examples on Frontier, but applies to other OLCF systems as well.
+
+An older tutorial using Andes can be found here: `ParaView at OLCF 2022 <https://github.com/olcf/dva-training-series/tree/main/paraview>`__
 
 .. _paraview-install-setup:
 
@@ -690,8 +693,8 @@ avoid this issue.
 Additional Resources
 ====================
 
-* The `ParaView at OLCF Tutorial <https://kmorel.gitlab.io/pv-tutorial-olcf-2022/>`__ highlights
-  how to get started on Andes with example datasets.
+* The `ParaView on Frontier tutorial <https://github.com/olcf/dva-training-series/tree/main/paraview_2024>`__ highlights
+  how to get started on OLCF systems with example datasets.
 * The `Official ParaView User's Guide <https://docs.paraview.org/en/latest/>`__
   and the `Python API Documentation <https://www.paraview.org/paraview-docs/latest/python/>`__
   contain all information regarding the GUI and Python interfaces.
