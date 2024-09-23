@@ -156,13 +156,13 @@ When users are ready to run their containers on Frontier they can bind in CPE an
     |       |                                                                    +------------+--------------------------------------------------------------------------------+
     |       |                                                                    | RockyLinux | savannah.ornl.gov/olcf-container-images/frontier/rockylinux/clang/cpe:23.12    |
     +-------+--------------------------------------------------------------------+------------+--------------------------------------------------------------------------------+
-    | 24.03 | gnu - [ ``GCC@13.2.0``,  ``MPICH@3.4.3``,  ``ROCM@6.0.0`` ]        | Ubuntu     | savannah.ornl.gov/olcf-container-images/frontier/ubuntu/gnu/cpe:24.03          |
+    | 24.03 | gnu - [ ``GCC@13.2.0``,  ``MPICH@3.4.3``,  ``ROCM@6.0.1`` ]        | Ubuntu     | savannah.ornl.gov/olcf-container-images/frontier/ubuntu/gnu/cpe:24.03          |
     |       |                                                                    +------------+--------------------------------------------------------------------------------+
     |       |                                                                    | OpenSUSE   | savannah.ornl.gov/olcf-container-images/frontier/opensuse/gnu/cpe:24.03        |
     |       |                                                                    +------------+--------------------------------------------------------------------------------+
     |       |                                                                    | RockyLinux | savannah.ornl.gov/olcf-container-images/frontier/rockylinux/gnu/cpe:24.03      |
     |       +--------------------------------------------------------------------+------------+--------------------------------------------------------------------------------+
-    |       | cray/amd - [ ``LLVM@17.0.6``,  ``MPICH@3.4.3``,  ``ROCM@6.0.0`` ]  | Ubuntu     | savannah.ornl.gov/olcf-container-images/frontier/ubuntu/clang/cpe:24.03        |
+    |       | cray/amd - [ ``LLVM@17.0.6``,  ``MPICH@3.4.3``,  ``ROCM@6.0.1`` ]  | Ubuntu     | savannah.ornl.gov/olcf-container-images/frontier/ubuntu/clang/cpe:24.03        |
     |       |                                                                    +------------+--------------------------------------------------------------------------------+
     |       |                                                                    | OpenSUSE   | savannah.ornl.gov/olcf-container-images/frontier/opensuse/clang/cpe:24.03      |
     |       |                                                                    +------------+--------------------------------------------------------------------------------+
