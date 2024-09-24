@@ -86,12 +86,14 @@ TB/s.
 Connecting
 ==========
 
-To connect to Defiant, ``ssh`` to ``defiant-login.ccs.ornl.gov``. For example:
+To connect to Defiant, first ``ssh`` to the jump server: ``flux.op.ccs.ornl.gov`` and then to the load balancer: ``defiant-login.ccs.ornl.gov``. For example:
 
 .. code-block:: bash
 
+    $ ssh username@flux.op.ccs.ornl.gov
     $ ssh username@defiant-login.ccs.ornl.gov
 
+If the load balancer is unavailable, explicity define a login node with ``defiant-login[1-2].ccs.ornl.gov``. 
 For more information on connecting to OLCF resources, see :ref:`connecting-to-olcf`.
 
 ----
