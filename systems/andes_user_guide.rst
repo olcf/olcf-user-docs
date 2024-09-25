@@ -1235,6 +1235,112 @@ ParaView
 Information regarding ParaView, and how to run it on both Andes and Summit, has moved
 to the Software Section. Click :doc:`HERE </software/viz_tools/paraview>` to go to the new page.
 
+Batch Mode
+^^^^^^^^^^
+
+Batch execution mode is the most straight forward way to run ParaView data analysis jobs
+on Andes. Batch mode allows the user to run ParaView pipeline scripts written in Python
+through the Andes batch queue that leverage ParaView’s built in distributed computing
+capabilities. Extensive knowledge of Python is not necessary in most cases as the ParaView
+GUI provides the ability to trace client GUI usage to generate python scripts. Once a
+ParaView python script has been generated it can be launched across Andes compute nodes
+using the pvbatch command in conjunction with srun.
+
+Batch Example
+"""""""""""""
+
+The following provides an example of using a ParaView installation on your local machine
+to generate a ParaView pipeline script which is then launched in parallel on Titan.
+
+Step 1: Representative Data
+
+The easiest way to create a ParaView pipeline script for batch processing is to let
+ParaView do the work for you with a pipeline trace. This method works best if you have
+access to a representative dataset that can be manipulated on a local ParaView client. An
+ideal representative dataset will have the same attributes as the production dataset but
+at a much lower resolution. The dataset to be processed on Titan may be much larger than
+the representative dataset but the ParaView pipeline will remain largely the same. The
+number of changes to the captured pipeline will depend on how closely your representative
+dataset matches your larger production dataset.
+
+Step 2: Start Trace
+
+ParaView provides the ability to record user interaction with the GUI to generate a Python
+ParaView script. To start a trace open ParaView on your local machine and select
+Tools -> Start Trace
+
+.. image:: /images/paraview_batch_step1.png
+   :align: center
+
+Step 3: Create Pipeline
+
+Once the trace has been started import your representative data (you can find some
+examples here: https://people.sc.fsu.edu/~jburkardt/data/vtk/vtk.html), apply ParaView
+filters, and position the view as you normally would. All actions will be recorded by the
+trace.
+
+.. image:: /images/paraview_batch_step2.png
+   :align: center
+
+Step 4: Stop Trace
+
+Once the representative data is in the form you are interested in selecting Tools/Stop
+Trace will stop the recording and produce a python script of all actions recorded since
+the trace began. With a few modifications this script can be used in batch nodes on
+production datasets.
+
+.. image:: /images/paraview_batch_step3.png
+   :align: center
+
+.. image:: /images/paraview_batch_step4.png
+   :align: center
+
+Step 5: Modify Trace
+
+Once the trace script has been saved it can be modified as needed for production
+datasets. This will typically include changing the reader file path to your production
+dataset and adding a write command like SaveScreenshot after the dataset has been rendered. In this example an
+image will be saved in the working directory.
+
+.. image:: /images/paraview_batch_step5.png
+   :align: center
+
+.. image:: /images/paraview_batch_step5b.png
+   :align: center
+
+Step 6: Run on Andes
+
+With the trace modifications completed a Slurm batch script can be created to launch the
+ParaView pipeline in parallel on Titan’s compute nodes. In this example production.py is
+our modified trace script. 
+
+.. code::
+
+   #!/bin/bash
+   
+   #SBATCH -A stf007
+   #SBATCH -J pvbatchtest
+   #SBATCH -N 1
+   #SBATCH -t 00:00:10
+   
+   module load paraview/5.8.1-py3-pyapi
+   
+   srun -n 2 pvbatch production.py
+
+
+The above does not have, nor allow for additional libraries like numpy to be installed. You can setup a virtual environment like so:
+
+$ module purge && module reset
+$ module load python
+$ conda create -p /gpfs/alpine/stf007/scratch/subil/inbox/olcf544/py38env python=3.8
+$ source activate /gpfs/alpine/stf007/scratch/subil/inbox/olcf544/py38env
+$ conda install matplotlib numpy mpi4py
+$ export PYTHONPATH="/gpfs/alpine/stf007/scratch/subil/inbox/olcf544/py38env/lib/python3.8/site-packages:${PYTHONPATH}"
+$ module load paraview/5.8.1-py3-pyapi
+
+You need to setup an env with python3.8 because that is what paraview is built with.
+
+
 VisIt
 -----
 
