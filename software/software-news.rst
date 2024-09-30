@@ -8,6 +8,14 @@ most recent changes are listed first.
 
 ----
 
+Frontier: Core module (October 15, 2024)
+------------------------------------------------
+
+On October 15, 2024 the Core module on Frontier will be updated from Core/24.00 to Core/24.07 .  
+Please test the new module and report issues to help@olcf.ornl.gov 
+
+----
+
 Frontier: System Software Update (July 16, 2024)
 ------------------------------------------------
 
