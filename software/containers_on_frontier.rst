@@ -6,7 +6,7 @@ Containers on Frontier
 
 Apptainer v1.3.0 is installed on Frontier. Apptainer can be used for both building
 and running containers on Frontier. The main user documentation on how to use Apptainer
-can be found `here <https://apptainer.org/docs/user/main/index.html>`_. This section of our documentation
+can be found `here <https://apptainer.org/docs/user/main/index.html>`__. This section of our documentation
 will only cover any additional info that you might need to build and run containers correctly
 on Frontier, as well as any useful examples.
 
@@ -210,6 +210,7 @@ After the image is built, transfer it to Frontier if it's on another machine, an
    it sets that interfere with the build process. If you load the modules and try to do an ``apptainer build``, you might encounter
    an error like
    ::
+
         FATAL:   container creation failed: mount hook function failure: mount /opt/cray->/opt/cray error: while mounting /opt/cray: destination /opt/cray doesn't exist in container
 
 Some Restrictions and Tips
