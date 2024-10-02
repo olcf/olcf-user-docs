@@ -14,6 +14,41 @@ Frontier: Core module (October 15, 2024)
 On October 15, 2024 the Core module on Frontier will be updated from Core/24.00 to Core/24.07 .  
 Please test the new module and report issues to help@olcf.ornl.gov 
 
+The table below summarizes the main version changes.
+
+.. csv-table::
+    :header: "Component", "Old Version", "New Version"
+
+    "autoconf", "2.69", "2.72"
+    "bazel", "4.0.0", "7.0.2"
+    "ccache", "4.5.1", "4.6.3"
+    "cmake", "3.23.2", "3.27.9"
+    "darshan-util", "3.4.0", "3.4.4"
+    "emacs", "28.1", "29.3"
+    "gdb", "10.2", "14.1"
+    "git-lfs", "2.11.0", "3.3.0"
+    "gnupg", "2.3.4", "2.4.5"
+    "gnuplot", "5.4.3", "6.0.0"
+    "googletest", "1.10.0", "1.14.0"
+    "hpctoolkit", "N/A", "2024.01.1-gpu-mpi"
+    "htop", "3.0.2", "3.2.2"
+    "hwloc", "2.5.0", "2.9.1"
+    "imagemagick", "7.0.8-7", "7.1.1-29"
+    "julia", "1.8.2", "1.10.2"
+    "libzmq", "4.3.4", "4.3.5"
+    "mercurial", "5.8", "6.6.3"
+    "nano", "6.3", "7.2"
+    "ninja", "1.10.2", "1.11.1"
+    "openblas", "0.3.17", "0.3.26"
+    "r", "1.7.0", "4.4.0"
+    "screen", "4.8.0", "4.9.1"
+    "subversion", "1.14.1", "1.14.2"
+    "tmux", "3.2a", "3.4"
+    "vim", "8.2.2541", "9.0.0045"
+
+Other packages provided by ``Core/24.07`` are ``exuberant-ctags``, ``go``, ``hpctoolkit``, ``papi``, ``parallel``, and ``wget``. 
+If you use a package not listed here, and was provided by ``Core/24.00``, please contact help@olcf.gov.
+
 ----
 
 Frontier: System Software Update (July 16, 2024)
