@@ -46,6 +46,9 @@ The table below summarizes the main version changes.
     "tmux", "3.2a", "3.4"
     "vim", "8.2.2541", "9.0.0045"
 
+Other packages provided by ``Core/24.07`` are ``exuberant-ctags``, ``go``, ``hpctoolkit``, ``papi``, ``parallel``, and ``wget``. 
+If you use a package not listed here, and was provided by ``Core/24.00``, please contact help@olcf.gov.
+
 ----
 
 Frontier: System Software Update (July 16, 2024)
