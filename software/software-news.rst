@@ -11,7 +11,7 @@ most recent changes are listed first.
 Frontier: Core module (October 15, 2024)
 ------------------------------------------------
 
-On October 15, 2024 the Core module on Frontier will be updated from Core/24.00 to Core/24.07 .  
+On October 15, 2024 the ``Core`` module on Frontier will be updated from ``Core/24.00`` to ``Core/24.07`` .  
 Please test the new module and report issues to help@olcf.ornl.gov 
 
 The table below summarizes the main version changes.
@@ -47,7 +47,7 @@ The table below summarizes the main version changes.
     "vim", "8.2.2541", "9.0.0045"
 
 Other packages provided by ``Core/24.07`` are ``exuberant-ctags``, ``go``, ``hpctoolkit``, ``papi``, ``parallel``, and ``wget``. 
-If you use a package not listed here, and was provided by ``Core/24.00``, please contact help@olcf.gov.
+If you use a package not listed here, and was provided by ``Core/24.00``, please contact help@olcf.ornl.gov.
 
 ----
 
