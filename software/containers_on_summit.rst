@@ -92,7 +92,7 @@ Building a Simple Image
 - Create a file named ``simple.dockerfile`` with the following contents.
   ::
 
-     FROM quay.io/centos/centos:stream8
+     FROM quay.io/rockylinux/rockylinux:9-ubi
      RUN dnf -y install epel-release && dnf -y install fakeroot
      RUN fakeroot dnf upgrade -y && fakeroot dnf update -y
      RUN fakeroot dnf install -y wget hostname libevent
@@ -114,16 +114,15 @@ Building a Simple Image
 - Run ``podman image ls`` to see the list of images. ``localhost/simple`` should be among them. Any container created without an explicit url to a container registry in its name will automatically have the ``localhost`` prefix.
   ::
 
-     $ podman image ls
-     REPOSITORY             TAG      IMAGE ID      CREATED      SIZE
-     localhost/simple       latest   e47dbfde3e99  3 hours ago  687 MB
-     quay.io/centos/centos  stream8  ad6f8b5e7f64  8 days ago   497 MB
+     REPOSITORY                     TAG          IMAGE ID      CREATED       SIZE
+     localhost/simple               latest       2b636262ca8f  7 days ago    559 MB
+     quay.io/rockylinux/rockylinux  9-ubi        03e38f9b275b  8 days ago    300 MB
 
 - Convert this Podman container image into a tar file with ``podman save -o simple.tar localhost/simple``.
 - Convert the tar file into a Apptainer sif file with  ``apptainer build --disable-cache simple.sif docker-archive://simple.tar``
 
 .. note::
-   You will also notice that we use centos:stream8 as our base image in the example. If you're planning on building a container image from scratch instead of using the OLCF MPI base image , use a centos:stream8 image with fakeroot installed as demonstrated above as your starting point (we talk about the OLCF MPI base image later in the :ref:`olcf-mpi-base-image` section). Ubuntu would be difficult to use as a starting point since ``apt-get`` requires root from the get-go, and you can't even do a ``apt-get -y fakeroot`` to get you started. Other distributions haven't been tested. Using centos for this case for now is the most user friendly option).
+   You will also notice that we use rockylinux 9-ubi as our base image in the example. If you're planning on building a container image from scratch instead of using the OLCF MPI base image , use a rockylinux 9-ubi image with fakeroot installed as demonstrated above as your starting point (we talk about the OLCF MPI base image later in the :ref:`olcf-mpi-base-image` section). Ubuntu would be difficult to use as a starting point since ``apt-get`` requires root from the get-go, and you can't even do a ``apt-get -y fakeroot`` to get you started. Other distributions haven't been tested. Using rockylinux for this case for now is the most user friendly option).
 
 
 Using a Container Registry to Build and Save your Images
@@ -144,7 +143,7 @@ other container registries that you can use.
      REPOSITORY                         TAG      IMAGE ID      CREATED      SIZE
      docker.io/subilabrahamornl/simple  latest   e47dbfde3e99  3 hours ago  687 MB
      localhost/simple                   latest   e47dbfde3e99  3 hours ago  687 MB
-     quay.io/centos/centos              stream8  ad6f8b5e7f64  8 days ago   497 MB
+     quay.io/rockylinux/rockylinux      9-ubi    03e38f9b275b  8 days ago   300 MB
      
 - Run ``podman login docker.io`` and enter your account's username and password so that Podman is logged in to the container registry before pushing.
 
