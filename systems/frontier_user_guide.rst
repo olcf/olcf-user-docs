@@ -204,15 +204,15 @@ Kronos Archival Storage
 
 Please note that the Kronos is not mounted directly onto Frontier nodes. There are two main methods for accessing and moving data to/from Kronos, either with standard cli utilities (scp, rsync, etc.) and via Globus using the "OLCF Kronos" collection. For more information on using Kronos, see the :ref:`kronos` section.
 
-+---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
-| Area                | Path                                        | Type           | Permissions |  Quota | Backups | Purged  | Retention  | On Compute Nodes |
-+=====================+=============================================+================+=============+========+=========+=========+============+==================+
-| Member Archive      | ``/nl/kronos/olcf/[projid]/users/$USER``    | Nearline       | 700         | 200 TB | No      | No      | 90 days    | No               |
-+---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
-| Project Archive     | ``/nl/kronos/olcf/[projid]/proj-shared``    | Nearline       | 770         | 200 TB | No      | No      | 90 days    | No               |
-+---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
-| World Archive       | ``/nl/kronos/olcf/[projid]/world-shared``   | Nearline       | 775         | 200 TB | No      | No      | 90 days    | No               |
-+---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
++---------------------+---------------------------------------------+----------------+-------------+----------+---------+---------+------------+------------------+
+| Area                | Path                                        | Type           | Permissions |  Quota   | Backups | Purged  | Retention  | On Compute Nodes |
++=====================+=============================================+================+=============+==========+=========+=========+============+==================+
+| Member Archive      | ``/nl/kronos/olcf/[projid]/users/$USER``    | Nearline       | 700         | 200 TB*  | No      | No      | 90 days    | No               |
++---------------------+---------------------------------------------+----------------+-------------+----------+---------+---------+------------+------------------+
+| Project Archive     | ``/nl/kronos/olcf/[projid]/proj-shared``    | Nearline       | 770         | 200 TB*  | No      | No      | 90 days    | No               |
++---------------------+---------------------------------------------+----------------+-------------+----------+---------+---------+------------+------------------+
+| World Archive       | ``/nl/kronos/olcf/[projid]/world-shared``   | Nearline       | 775         | 200 TB*  | No      | No      | 90 days    | No               |
++---------------------+---------------------------------------------+----------------+-------------+----------+---------+---------+------------+------------------+
 
 .. note::
     The three archival storage areas above share a single 200TB per project quota.
@@ -297,21 +297,21 @@ Below is a summary of the steps for data transfer using Globus:
   1. Login to `globus.org <https://www.globus.org>`_ using your globus ID and password. If you do not have a globusID, set one up here:
   `Generate a globusID <https://www.globusid.org/create?viewlocale=en_US>`_.
 
-  2. Once you are logged in, Globus will open the “File Manager” page. Click the left side “Collection” text field in the File Manager and         type “OLCF DTN (Globus 5)”.
+  1. Once you are logged in, Globus will open the “File Manager” page. Click the left side “Collection” text field in the File Manager and         type “OLCF DTN (Globus 5)”.
 
-  3. When prompted, authenticate into the OLCF DTN (Globus 5) collection using your OLCF username and PIN followed by your RSA passcode.
+  2. When prompted, authenticate into the OLCF DTN (Globus 5) collection using your OLCF username and PIN followed by your RSA passcode.
 
-  4. Click in the left side “Path” box in the File Manager and enter the path to your data on Orion. For example,`/lustre/orion/stf007/proj-       shared/my_orion_data`. You should see a list of your files and folders under the left “Path” Box.
+  3. Click in the left side “Path” box in the File Manager and enter the path to your data on Orion. For example,`/lustre/orion/stf007/proj-       shared/my_orion_data`. You should see a list of your files and folders under the left “Path” Box.
 
-  5. Click on all files or folders that you want to transfer in the list. This will highlight them.
+  4. Click on all files or folders that you want to transfer in the list. This will highlight them.
 
-  6. Click on the right side “Collection” box in the File Manager and type the name of a second collection at OLCF or at another institution.        You can transfer data between different paths on the Orion filesystem with this method too; Just use the OLCF DTN (Globus 5) collection again      in the right side “Collection” box.
+  5. Click on the right side “Collection” box in the File Manager and type the name of a second collection at OLCF or at another institution.        You can transfer data between different paths on the Orion filesystem with this method too; Just use the OLCF DTN (Globus 5) collection again      in the right side “Collection” box.
 
-  7. Click in the right side “Path” box and enter the path where you want to put your data on the second collection's filesystem.
+  6. Click in the right side “Path” box and enter the path where you want to put your data on the second collection's filesystem.
 
-  8.  Click the left "Start" button.
+  7.  Click the left "Start" button.
 
-  9.  Click on “Activity“ in the left blue menu bar to monitor your transfer. Globus will send you an email when the transfer is complete.
+  8.  Click on “Activity“ in the left blue menu bar to monitor your transfer. Globus will send you an email when the transfer is complete.
 
 **Globus Warnings:**
 
