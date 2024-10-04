@@ -72,7 +72,7 @@ Availability Timeline
   Kronos is expected to be available late July 2024.
 
 Access / Data Transfer
-  Kronos will be mounted on the moderate Data Transfer Nodes.  Because the system will be mounted as a filesystem, standard UNIX command and tools can be used to interact with Kronos.  The resource will also be accessible through the OLCF DTN endpoint in Globus.
+  Kronos will be mounted on the moderate Data Transfer Nodes.  Because the system will be mounted as a filesystem, standard UNIX command and tools can be used to interact with Kronos.  The resource will also be accessible through the OLCF Kronos endpoint in Globus.
 
   Please note that Kronos will not be mounted on the compute nodes of Frontier or Andes.
 
