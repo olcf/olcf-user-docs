@@ -579,7 +579,7 @@ Transferring Data
 Globus
 ============
 
-Four Globus Collections have been established for OLCF resources. 
+Three Globus Collections have been established for OLCF resources. 
 
 .. list-table::
    :header-rows: 1
