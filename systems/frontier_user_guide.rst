@@ -97,7 +97,7 @@ Orion is not available from Summit and Frontier does not mount Summit's Alpine2 
 Frontier also has access to the center-wide NFS-based filesystem (which provides user and project home areas). 
 Each compute node has two 1.92TB Non-Volatile Memory storage devices. See :ref:`frontier-data-storage` for more information. 
 
-Frontier connects to the center’s High Performance Storage System (HPSS) - for user and project archival storage - users can log in to the :ref:`dtn-user-guide` to move data to/from HPSS.
+Project's with a Frontier allocation also receive an archival storage area on Kronos. For more information on using Kronos, see the :ref:`kronos` seciton.
 
 Operating System
 ----------------
@@ -144,7 +144,7 @@ Transition from Alpine to Orion
 * On Alpine, there was no user-exposed concept of file striping, the process of dividing a file between the storage elements of the filesystem. Orion uses a feature called Progressive File Layout (PFL) that changes the striping of files as they grow. Because of this, we ask users not to manually adjust the file striping. If you feel the default striping behavior of Orion is not meeting your needs, please contact help@olcf.ornl.gov. 
 * As with Alpine, files older than 90 days are purged from Orion.  Please plan your data management and lifecycle at OLCF before generating the data. 
 
-For more detailed information about center-wide file systems and data archiving available on Frontier, please refer to the pages on :ref:`data-storage-and-transfers`. The subsections below give a quick overview of NFS, Lustre,and HPSS storage spaces as well as the on node NVMe "Burst Buffers" (SSDs).
+For more detailed information about center-wide file systems and data archiving available on Frontier, please refer to the pages on :ref:`data-storage-and-transfers`. The subsections below give a quick overview of NFS, Lustre, abd archival storage spaces as well as the on node NVMe "Burst Buffers" (SSDs).
 
 LFS setstripe wrapper
 ---------------------
@@ -199,21 +199,23 @@ Lustre Filesystem
 
 
 
-HPSS Archival Storage
----------------------
+Kronos Archival Storage
+-----------------------
 
-Please note that the HPSS is not mounted directly onto Frontier nodes. There are two main methods for accessing and moving data to/from the HPSS. The first is to use the command line utilities ``hsi`` and ``htar``. The second is to use the Globus data transfer service. See :ref:`data-hpss` for more information on both of these methods.
+Please note that the Kronos is not mounted directly onto Frontier nodes. There are two main methods for accessing and moving data to/from Kronos, either with standard cli utilities (scp, rsync, etc.) and via Globus using the "OLCF Kronos" collection. For more information on using Kronos, see the :ref:`kronos` section.
 
-+---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
-| Area                | Path                                        | Type           | Permissions |  Quota | Backups | Purged  | Retention  | On Compute Nodes |
-+=====================+=============================================+================+=============+========+=========+=========+============+==================+
-| Member Archive      | ``/hpss/prod/[projid]/users/$USER``         | HPSS           | 700         | 100 TB | No      | No      | 90 days    | No               |
-+---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
-| Project Archive     | ``/hpss/prod/[projid]/proj-shared``         | HPSS           | 770         | 100 TB | No      | No      | 90 days    | No               |
-+---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
-| World Archive       | ``/hpss/prod/[projid]/world-shared``        | HPSS           | 775         | 100 TB | No      | No      | 90 days    | No               |
-+---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
++---------------------+---------------------------------------------+----------------+-------------+----------+---------+---------+------------+------------------+
+| Area                | Path                                        | Type           | Permissions |  Quota   | Backups | Purged  | Retention  | On Compute Nodes |
++=====================+=============================================+================+=============+==========+=========+=========+============+==================+
+| Member Archive      | ``/nl/kronos/olcf/[projid]/users/$USER``    | Nearline       | 700         | 200 TB*  | No      | No      | 90 days    | No               |
++---------------------+---------------------------------------------+----------------+-------------+----------+---------+---------+------------+------------------+
+| Project Archive     | ``/nl/kronos/olcf/[projid]/proj-shared``    | Nearline       | 770         | 200 TB*  | No      | No      | 90 days    | No               |
++---------------------+---------------------------------------------+----------------+-------------+----------+---------+---------+------------+------------------+
+| World Archive       | ``/nl/kronos/olcf/[projid]/world-shared``   | Nearline       | 775         | 200 TB*  | No      | No      | 90 days    | No               |
++---------------------+---------------------------------------------+----------------+-------------+----------+---------+---------+------------+------------------+
 
+.. note::
+    The three archival storage areas above share a single 200TB per project quota.
 
 NVMe
 ----
@@ -286,7 +288,7 @@ Using Globus to Move Data to and from Orion
 ===========================================
 
 .. note::
-   After January 8, the Globus v4 endpoints will no longer be supported. Please use the OLCF HPSS (Globus 5) and OLCF DTN (Globus 5) endpoints.
+   After January 8, the Globus v4 collections will no longer be supported. Please use the OLCF Kronos and OLCF DTN (Globus 5) collections.
 
 The following example is intended to help users move data to and from the Orion filesystem.
 
@@ -295,21 +297,21 @@ Below is a summary of the steps for data transfer using Globus:
   1. Login to `globus.org <https://www.globus.org>`_ using your globus ID and password. If you do not have a globusID, set one up here:
   `Generate a globusID <https://www.globusid.org/create?viewlocale=en_US>`_.
 
-  2. Once you are logged in, Globus will open the “File Manager” page. Click the left side “Collection” text field in the File Manager and         type “OLCF DTN (Globus 5)”.
+  1. Once you are logged in, Globus will open the “File Manager” page. Click the left side “Collection” text field in the File Manager and         type “OLCF DTN (Globus 5)”.
 
-  3. When prompted, authenticate into the OLCF DTN (Globus 5) endpoint using your OLCF username and PIN followed by your RSA passcode.
+  2. When prompted, authenticate into the OLCF DTN (Globus 5) collection using your OLCF username and PIN followed by your RSA passcode.
 
-  4. Click in the left side “Path” box in the File Manager and enter the path to your data on Orion. For example,`/lustre/orion/stf007/proj-       shared/my_orion_data`. You should see a list of your files and folders under the left “Path” Box.
+  3. Click in the left side “Path” box in the File Manager and enter the path to your data on Orion. For example,`/lustre/orion/stf007/proj-       shared/my_orion_data`. You should see a list of your files and folders under the left “Path” Box.
 
-  5. Click on all files or folders that you want to transfer in the list. This will highlight them.
+  4. Click on all files or folders that you want to transfer in the list. This will highlight them.
 
-  6. Click on the right side “Collection” box in the File Manager and type the name of a second endpoint at OLCF or at another institution.        You can transfer data between different paths on the Orion filesystem with this method too; Just use the OLCF DTN (Globus 5) endpoint again      in the right side “Collection” box.
+  5. Click on the right side “Collection” box in the File Manager and type the name of a second collection at OLCF or at another institution.        You can transfer data between different paths on the Orion filesystem with this method too; Just use the OLCF DTN (Globus 5) collection again      in the right side “Collection” box.
 
-  7. Click in the right side “Path” box and enter the path where you want to put your data on the second endpoint's filesystem.
+  6. Click in the right side “Path” box and enter the path where you want to put your data on the second collection's filesystem.
 
-  8.  Click the left "Start" button.
+  7.  Click the left "Start" button.
 
-  9.  Click on “Activity“ in the left blue menu bar to monitor your transfer. Globus will send you an email when the transfer is complete.
+  8.  Click on “Activity“ in the left blue menu bar to monitor your transfer. Globus will send you an email when the transfer is complete.
 
 **Globus Warnings:**
 

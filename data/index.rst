@@ -10,13 +10,11 @@ OLCF users have many options for data storage. Each user has multiple user-affil
 Summary of Storage Areas
 ************************
 
-The storage area to use in any given situation depends upon the activity you wish to carry out. Storage areas are either user-centric or project-centric, and are further divided by the underlying storage type (e.g., Network File System (NFS), High Performance Storage System (HPSS), IBM Spectrum Scale). Each storage type has a different intended use as described below.
+The storage area to use in any given situation depends upon the activity you wish to carry out. Storage areas are either user-centric or project-centric, and are further divided by the underlying storage type (e.g., Network File System (NFS), IBM Spectrum Scale, Nearline). Each storage type has a different intended use as described below.
 
-Each user has a User Home area on NFS, and a User Archive area on HPSS. For newer users, the User Archive area is not writable and is only a "link farm" to a user's project areas on HPSS. For legacy users, the directory remains writable until files have been migrated to an appropriate project area.
-Each project has a Project Home area on NFS, multiple Work areas on Spectrum Scale, and multiple Archive areas on HPSS. The different storage areas are summarized in the list and table below.
+Each user has a User Home area on NFS. Each project has a Project Home area on NFS, and multiple Work areas on Spectrum Scale/Lustre. Moderate projects each have an archival storage area on Kronos with project-shared, world-shared, and users directories (each of these 3 areas share a 200TB total Archival quota). The different storage areas are summarized in the list and table below.
 
 - **User Home:** Long-term data for routine access that is unrelated to a project. It is mounted on compute nodes of Summit as read only. It is mounted as read/write on the Frontier compute nodes, but we strongly recommend that users launch and run jobs from the Orion parallel filesystem due to its larger storage capacity and superior performance.
-- **User Archive:** A "link farm" with symbolic links to a user's project directories on HPSS. (Previously this was for non-project data on HPSS; such use is now deprecated)
 - **Project Home:** Long-term project data for routine access that's shared with other project members. It is mounted on compute nodes of Summit as read only. It is mounted as read/write on the Frontier compute nodes, but we strongly recommend that users launch and run jobs from the Orion parallel filesystem due to its larger storage capacity and superior performance.
 - **Member Work:** Short-term user data for fast, batch-job access that is not shared with other project members.
 - **Project Work:** Short-term project data for fast, batch-job access that's shared with other project members.
@@ -27,52 +25,50 @@ Each project has a Project Home area on NFS, multiple Work areas on Spectrum Sca
 
 .. _data-filesystem-summary:
 
-+--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
-| Area                           | Path                                        | Enclave | Type                   | Permissions |  Quota | Backups | Purged  | Retention  | On Compute Nodes                        |
-+================================+=============================================+=========+========================+=============+========+=========+=========+============+=========================================+
-| User Home                      | ``/ccs/home/[userid]``                      | M1, M2  | NFS                    | User set    |  50 GB | Yes     | No      | 90 days    | Summit: Read-only, Frontier: Read/Write |
-+--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
-| User Archive [#f1]_            | ``/home/[userid]``                          | M1      | HPSS                   | User set    |  2TB   | No      | No      | 90 days    | No                                      |
-+--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
-| User Archive [#f2]_            | ``/home/[userid]``                          | M1      | HPSS                   | 700         |  N/A   | N/A     | N/A     | N/A        | No                                      |
-+--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
-| Project Home                   | ``/ccs/proj/[projid]``                      | M1, M2  | NFS                    | 770         |  50 GB | Yes     | No      | 90 days    | Summit: Read-only, Frontier: Read/Write |
-+--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
-| Orion Member Work              | ``/lustre/orion/[projid]/scratch/[userid]`` | M1, M2  | Lustre HPE ClusterStor | 700         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
-+--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
-| Orion Project Work             | ``/lustre/orion/[projid]/proj-shared``      | M1, M2  | Lustre HPE ClusterStor | 770         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
-+--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
-| Orion World Work               | ``/lustre/orion/[projid]/world-shared``     | M1      | Lustre HPE ClusterStor | 775         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
-+--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
-| Alpine2 Member Work            | ``/gpfs/alpine2/[projid]/scratch/[userid]`` | M1, M2  | Spectrum Scale         | 700 [#f3]_  |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
-+--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
-| Alpine2 Project Work           | ``/gpfs/alpine2/[projid]/proj-shared``      | M1, M2  | Spectrum Scale         | 770         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
-+--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
-| Alpine2 World Work             | ``/gpfs/alpine2/[projid]/world-shared``     | M1      | Spectrum Scale         | 775         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
-+--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
-| Member Archive                 | ``/hpss/prod/[projid]/users/$USER``         | M1      | HPSS                   | 700         | 100 TB | No      | No      | 90 days    | No                                      |
-+--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
-| Project Archive                | ``/hpss/prod/[projid]/proj-shared``         | M1      | HPSS                   | 770         | 100 TB | No      | No      | 90 days    | No                                      |
-+--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
-| World Archive                  | ``/hpss/prod/[projid]/world-shared``        | M1      | HPSS                   | 775         | 100 TB | No      | No      | 90 days    | No                                      |
-+--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
-| Moderate Enhanced User Home    | ``/gpfs/arx/[projid]/home/[userid]``        | ME      | Spectrum Scale         | 700         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
-+--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
-| Moderate Enhanced Member Work  | ``/gpfs/arx/[projid]/scratch/[userid]``     | ME      | Spectrum Scale         | 700         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
-+--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
-| Moderate Enhanced Project Work | ``/gpfs/arx/[projid]/proj-shared/[userid]`` | ME      | Spectrum Scale.        | 770         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
-+--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
-| Open User Home                 | ``/ccsopen/home/[userid]``                  | O       | NFS                    | User set    |  50 GB | Yes     | No      | 90 days    | Read-only                               |
-+--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
-| Open Project Home              | ``/ccsopen/proj/[projid]``                  | O       | NFS                    | 770         |  50 GB | Yes     | No      | 90 days    | Read-only                               |
-+--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
-| Open Member Work               | ``/gpfs/wolf/[projid]/scratch/[userid]``    | O       | Spectrum Scale         | 700 [#f3]_  |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
-+--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
-| Open Project Work              | ``/gpfs/wolf/[projid]/proj-shared``         | O       | Spectrum Scale         | 770         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
-+--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
-| Open World Work                | ``/gpfs/wolf/[projid]/world-shared``        | O       | Spectrum Scale         | 775         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
-+--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+-----------+---------+---------+------------+-----------------------------------------+
+| Area                           | Path                                        | Enclave | Type                   | Permissions |   Quota   | Backups | Purged  | Retention  | On Compute Nodes                        |
++================================+=============================================+=========+========================+=============+===========+=========+=========+============+=========================================+
+| User Home                      | ``/ccs/home/[userid]``                      | M1, M2  | NFS                    | User set    |   50 GB   | Yes     | No      | 90 days    | Summit: Read-only, Frontier: Read/Write |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+-----------+---------+---------+------------+-----------------------------------------+
+| User Archive                   | ``/nl/kronos/olcf/[projid]/users/[userid]`` | M1      | Nearline               | User set    |  200 TB*  | Yes     | No      | 90 days    | No                                      |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+-----------+---------+---------+------------+-----------------------------------------+
+| Project Home                   | ``/ccs/proj/[projid]``                      | M1, M2  | NFS                    | 770         |   50 GB   | Yes     | No      | 90 days    | Summit: Read-only, Frontier: Read/Write |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+-----------+---------+---------+------------+-----------------------------------------+
+| Orion Member Work              | ``/lustre/orion/[projid]/scratch/[userid]`` | M1, M2  | Lustre HPE ClusterStor | 700         |   50 TB   | No      | 90 days | N/A [#f4]_ | Read/Write                              |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+-----------+---------+---------+------------+-----------------------------------------+
+| Orion Project Work             | ``/lustre/orion/[projid]/proj-shared``      | M1, M2  | Lustre HPE ClusterStor | 770         |   50 TB   | No      | 90 days | N/A [#f4]_ | Read/Write                              |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+-----------+---------+---------+------------+-----------------------------------------+
+| Orion World Work               | ``/lustre/orion/[projid]/world-shared``     | M1      | Lustre HPE ClusterStor | 775         |   50 TB   | No      | 90 days | N/A [#f4]_ | Read/Write                              |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+-----------+---------+---------+------------+-----------------------------------------+
+| Alpine2 Member Work            | ``/gpfs/alpine2/[projid]/scratch/[userid]`` | M1, M2  | Spectrum Scale         | 700 [#f3]_  |   50 TB   | No      | 90 days | N/A [#f4]_ | Read/Write                              |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+-----------+---------+---------+------------+-----------------------------------------+
+| Alpine2 Project Work           | ``/gpfs/alpine2/[projid]/proj-shared``      | M1, M2  | Spectrum Scale         | 770         |   50 TB   | No      | 90 days | N/A [#f4]_ | Read/Write                              |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+-----------+---------+---------+------------+-----------------------------------------+
+| Alpine2 World Work             | ``/gpfs/alpine2/[projid]/world-shared``     | M1      | Spectrum Scale         | 775         |   50 TB   | No      | 90 days | N/A [#f4]_ | Read/Write                              |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+-----------+---------+---------+------------+-----------------------------------------+
+| Project Archive                | ``/nl/kronos/olcf/[projid]/proj-shared``    | M1      | Nearline               | 770         |  200 TB*  | No      | No      | 90 days    | No                                      |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+-----------+---------+---------+------------+-----------------------------------------+
+| World Archive                  | ``/nl/kronos/olcf/[projid]/world-shared``   | M1      | Nearline               | 775         |  200 TB*  | No      | No      | 90 days    | No                                      |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+-----------+---------+---------+------------+-----------------------------------------+
+| Moderate Enhanced User Home    | ``/gpfs/arx/[projid]/home/[userid]``        | ME      | Spectrum Scale         | 700         |   50 TB   | No      | 90 days | N/A [#f4]_ | Read/Write                              |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+-----------+---------+---------+------------+-----------------------------------------+
+| Moderate Enhanced Member Work  | ``/gpfs/arx/[projid]/scratch/[userid]``     | ME      | Spectrum Scale         | 700         |   50 TB   | No      | 90 days | N/A [#f4]_ | Read/Write                              |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+-----------+---------+---------+------------+-----------------------------------------+
+| Moderate Enhanced Project Work | ``/gpfs/arx/[projid]/proj-shared/[userid]`` | ME      | Spectrum Scale.        | 770         |   50 TB   | No      | 90 days | N/A [#f4]_ | Read/Write                              |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+-----------+---------+---------+------------+-----------------------------------------+
+| Open User Home                 | ``/ccsopen/home/[userid]``                  | O       | NFS                    | User set    |   50 GB   | Yes     | No      | 90 days    | Read-only                               |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+-----------+---------+---------+------------+-----------------------------------------+
+| Open Project Home              | ``/ccsopen/proj/[projid]``                  | O       | NFS                    | 770         |   50 GB   | Yes     | No      | 90 days    | Read-only                               |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+-----------+---------+---------+------------+-----------------------------------------+
+| Open Member Work               | ``/gpfs/wolf/[projid]/scratch/[userid]``    | O       | Spectrum Scale         | 700 [#f3]_  |   50 TB   | No      | 90 days | N/A [#f4]_ | Read/Write                              |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+-----------+---------+---------+------------+-----------------------------------------+
+| Open Project Work              | ``/gpfs/wolf/[projid]/proj-shared``         | O       | Spectrum Scale         | 770         |   50 TB   | No      | 90 days | N/A [#f4]_ | Read/Write                              |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+-----------+---------+---------+------------+-----------------------------------------+
+| Open World Work                | ``/gpfs/wolf/[projid]/world-shared``        | O       | Spectrum Scale         | 775         |   50 TB   | No      | 90 days | N/A [#f4]_ | Read/Write                              |
++--------------------------------+---------------------------------------------+---------+------------------------+-------------+-----------+---------+---------+------------+-----------------------------------------+
 
+.. note::
+   The three archival storage areas share a single project-centric 200TB quota.
 
 | **Area -** The general name of the storage area.
 | **Path -** The path (symlink) to the storage area's directory.
@@ -92,19 +88,12 @@ Each project has a Project Home area on NFS, multiple Work areas on Spectrum Sca
 .. important::
     Files within "Work" directories (i.e., Member Work, Project Work, World Work) are *not* backed up and are *purged* on a regular basis according to the timeframes listed above.
 
-.. note::
-    Moderate Enhanced projects do not have access to HPSS.
-
 .. tip::
     If your home directory reaches its quota, your batch jobs might fail with the error ``cat: write error: Disk quota exceeded``. This error may not be intuitive, especially if your job exclusively uses work areas that are well under quota. The error is actually related to your home directory quota. Sometimes, batch systems write temporary files to the home directory (for example, on Summit LSF writes temporary data in ``~/.lsbatch``), so if the home directory is over quota and that file creation fails, the job will fail with the quota error.
 
     You can check your home directory quota with the ``quota`` command. If it is over quota, you need to bring usage under the quota and then your jobs should run without encountering the ``Disk quota exceeded`` error.
 
 .. rubric:: Footnotes
-
-.. [#f1] This entry is for legacy User Archive directories which contained user data on January 14, 2020.
-
-.. [#f2] User Archive directories that were created (or had no user data) after January 14, 2020. Settings other than permissions are not applicable because directories are root-owned and contain no user files.
 
 .. [#f3] Permissions on Member Work directories can be controlled to an extent by project members. By default, only the project member has any accesses, but accesses can be granted to other project members by setting group permissions accordingly on the Member Work directory. The parent directory of the Member Work directory prevents accesses by "UNIX-others" and cannot be changed.
 
@@ -182,39 +171,6 @@ User Website Directory
 
 Users interested in sharing files publicly via the World Wide Web can request a user website directory be created for their account. User website directories (``~/www``) have a 5GB storage quota and allow access to files at ``http://users.nccs.gov/~user`` (where ``user`` is your userid). If you are interested in having a user website directory created, please contact the User Assistance Center at help@olcf.ornl.gov.
 
-User Archive Directories (HPSS)
-===============================
-
-.. note::
-    Use of User Archive areas for data storage is deprecated as of January 14, 2020.
-    The user archive area for any user account created after that date (or for any
-    user archive directory that is empty of user files after that date) will contain
-    only symlinks to the top-level directories for each of the user's projects on
-    HPSS. Users with existing data in a User Archive directory are encouraged to
-    move that data to an appropriate project-based directory as soon as possible.
-    
-    The information below is simply for reference for those users with existing 
-    data in User Archive directories.
-
-
-The High Performance Storage System (HPSS) at the OLCF provides longer-term storage for the large amounts of data created on the OLCF compute systems. The mass storage facility consists of tape and disk storage components, servers, and the HPSS software. After data is uploaded, it persists on disk for some period of time. The length of its life on disk is determined by how full the disk caches become. When data is migrated to tape, it is done so in a first-in, first-out fashion.
-
-User archive areas on HPSS are intended for storage of data not immediately needed in either User Home directories (NFS) or User Work directories (GPFS).  User Archive directories should not be used to store project-related data.  Rather, Project Archive directories should be used for project data. 
-
-User Archive Access
--------------------
-
-Users are granted HPSS access if they are members of projects with Project Archive areas.  Users can transfer data to HPSS from any OLCF system using the HSI or HTAR utilities. For more information on using HSI or HTAR, see the :ref:`data-hpss` section.
-
-
-User Archive Accounting
------------------------
-
-Each file and directory on HPSS is associated with an HPSS storage allocation. Storage allocations are normally associated with one of the user's projects; however, legacy usage (from files stored to User Archive areas prior to January 14, 2020) may instead be associated with the user or a 'legacy' project. To check storage allocation usage, use the comand ``showusage -s hpss`` from an OLCF resource such as Frontier or Andes. 
-
-For information on usage and best practices for HPSS, please see the :ref:`data-hpss` section.
-
-
 .. _data-project-centric-areas:
 
 =====================================
@@ -283,22 +239,24 @@ For example, if you have data that must be restricted only to yourself, keep the
 Backups
 -------
 
-Member Work, Project Work, and World Work directories **are not backed up**. Project members are responsible for backing up these files, either to Project Archive areas (HPSS) or to an off-site location.
+Member Work, Project Work, and World Work directories **are not backed up**. Project members are responsible for backing up these files, either to Project Archive areas (:ref:`kronos`) or to an off-site location.
 
 Project Archive Directories
 ===========================
 
-Moderate projects without export control restrictions are also allocated project-specific archival space on the High Performance Storage System (HPSS). The default quota is shown on the table at the top of this page. If a higher quota is needed, contact the User Assistance Center.
+Moderate projects without export control restrictions are also allocated project-specific archival space on :ref:`kronos`. The default quota is shown on the table at the top of this page (200TB). If a higher quota is needed, contact the User Assistance Center.
 
 .. note::
-    There is no HPSS storage for Moderate Enhanced Projects, Moderate Projects subject to export control, or Open projects.
+    There is no archival storage for Moderate Enhanced Projects, Moderate Projects subject to export control, or Open projects.
 
 Three Project Archive Areas Facilitae Collaboration on Archival Data
 --------------------------------------------------------------------
 
-To facilitate collaboration among researchers, the OLCF provides (3) distinct types of project-centric archival storage areas: *Member Archive* directories, *Project Archive* directories, and *World Archive* directories.  These directories should be used for storage of data not immediately needed in either the Project Home (NFS) areas or Project Work (Alpine2) areas and to serve as a location to store backup copies of project-related files.
+To facilitate collaboration among researchers, the OLCF provides (3) distinct types of project-centric archival storage areas: *Member Archive* directories, *Project Archive* directories, and *World Archive* directories.  These directories should be used for storage of data not immediately needed in either the Project Home (NFS) areas or Project Work (Orion/Alpine2) areas and to serve as a location to store backup copies of project-related files.
 
 As with the three project work areas, the difference between these three areas lies in the accessibility of data to project members and to researchers outside of the project. Member Archive directories are accessible only by an individual project member by default, Project Archive directories are accessible by all project members, and World Archive directories are readable by any user on the system.
+
+All three  archival storage areas above share a single 200TB project-centric quota on Kronos.
 
 Permissions
 -----------
@@ -311,12 +269,21 @@ UNIX Permissions on each project-centric archive storage area differ according t
 
 For example, if you have data that must be restricted only to yourself, keep them in your Member Archive directory for that project (and leave the default permissions unchanged). If you have data that you intend to share with researchers within your project, keep them in the project’s Project Archive directory. If you have data that you intend to share with researchers outside of a project, keep them in the project’s World Archive directory.
 
-Project Archive Access
-----------------------
+HPSS Project Archive Access
+---------------------------
+
+.. warning::
+   On January 31, 2025, data remaining on the HPSS will no longer be accessible and will be **PERMANENTLY DELETED**. Following this date, the OLCF will no longer be able to retrieve data remaining on HPSS. Please do not wait to move needed data. For more information on migrating data from HPSS to Kronos (the center's new archival storage system) see the :ref:`hpss-migration` section.
 
 Project Archive directories may only be accessed via utilities called HSI and HTAR. For more information on using HSI or HTAR, see the :ref:`data-hpss` section.
 
+.. note::
+   HPSS is now read-only. Users cannot transfer data into HPSS and should instead use :ref:`kronos`. For more information on migrating your files from HPSS to Kronos or another storage location, see the :ref:`hpss-migration` section.
 
+Kronos Project Archive Access
+-----------------------------
+
+For information on accessing archival storage areas on Kronos, see the :ref:`kronos` section.
 
 .. _data-policy:
 
@@ -509,10 +476,96 @@ The file systems have many technical differences, but we will mention only what 
 HPSS Data Archival System
 **************************
 
-There are two methods of moving data to/from HPSS. The more traditional method is via the command-line utilities ``hsi`` and ``htar``. These commands are available from most OLCF systems. Recently, we added the capability of using Globus to move data to/from HPSS. HPSS is available via the "OLCF HPSS (Globus 5)" Globus endpoint. By connecting to that endpoint and the "OLCF DTN (Globus 5)" endpoint, you can transfer files between HPSS and other OLCF filesystems. By connecting to "OLCF HPSS (Globus 5)" and some other endpoint, you can transfer files to/from an offsite location to HPSS. More details on various transfer methods are available in the :ref:`data-transferring-data` section.
+.. warning::
+   On January 31, 2025, data remaining on the HPSS will no longer be accessible and will be **PERMANENTLY DELETED**. Following this date, the OLCF will no longer be able to retrieve data remaining on HPSS. Please do not wait to move needed data. For more information on migrating data from HPSS to Kronos (the center's new archival storage system) see the :ref:`hpss-migration` section.
 
-HPSS is optimized for large files. Ideally, we recommend sending files 768GB or larger to HPSS. HPSS will handle small files, but write and read performance will be negatively affected with files smaller than 512 MB. We recommend combining small files prior to tranfer. Alternatively you can use ``htar`` to combine them and create the ``.tar`` file directly on HPSS.
 
+HPSS is now read-only. Users cannot transfer data into HPSS and should instead use :ref:`kronos`. For more information on migrating your files from HPSS to Kronos or another storage location, see the :ref:`hpss-migration` section.
+
+On January 31, 2025, data remaining on the HPSS will no longer be accessible and will be *permanently deleted*. Following this date, the OLCF will no longer be able to retrieve data remaining on HPSS.
+
+
+.. _kronos:
+
+***************************************
+Kronos Nearline Archival Storage System
+***************************************
+
+Kronos is the center’s new nearline storage resource. Kronos is multi-tiered containing both disk and tape. Users will interact with the system’s disk sub-system which leverages IBM Storage Scale (GPFS). Data stored on the disk sub-system will automatically be stored on they system’s tape sub-system. The disk sub-system will provide an initial capacity of 134 PB with the ability to expand as need increases. Kronos is capable of bandwidth of up-to 200 GB/s from the center’s Data Transfer Nodes.
+
+======================
+Access / Data Transfer
+======================
+
+Kronos is mounted on the moderate security enclave Data Transfer Nodes (``dtn.ccs.ornl.gov``) and is accessible via `Globus <https://www.globus.org>`_ at the "**OLCF Kronos**" collection. Standard UNIX commands and tools can also be used to interact with Kronos (scp, rsync, etc.).
+
+For more information on using `scp` and `rsync` to transfer data to and from OLCF resources, see the :ref:`clitools` section.
+
+For more information on using Globus to transfer data to and from OLCF resources, see the :ref:`data-transferring-data-globus` section.
+
+.. note::
+   Kronos is only available through the "**OLCF Kronos**" Globus collection and is *NOT* accessible from the "OLCF DTN (Globus 5)" collection.
+
+===================
+Directory Structure
+===================
+Kronos uses a directory structure similar to other center-wide storage resources:
+
+.. list-table::
+   :widths: 20 12 12 12 80
+   :header-rows: 1
+
+   * - Path
+     - Permissions
+     - Owner
+     - Group
+     - Description
+   * - ``/nl/kronos/olcf/<projectID>/proj-shared``
+     - 755
+     - root
+     - <projectID> UNIX group
+     - Data shared between project members.
+   * - ``/nl/kronos/olcf/<projectID>/users/<userID>``
+     - 700
+     - <userID>
+     - <projectID> UNIX group
+     - User data, access is limited to user by default, but each user can modify their directory permissions to share with other project members.
+   * - ``/nl/kronos/olcf/<projectID>/world-shared``
+     - 2775
+     - root
+     - <projectID> UNIX group
+     - Data accessible to others in the OLCF user community
+
+==============
+Project Quotas
+==============
+
+To help ensure available space for all Kronos projects, each project has a 200TB quota. All data stored in ``/nl/kronos/olcf/<projectID>`` will count toward the project’s quota. Please reach out to help@olcf.ornl.gov to request exemptions to the default quota.
+
+
+==========================
+Kronos and HPSS Comparison
+==========================
+
+.. list-table::
+   :widths: 30 30 30
+   :header-rows: 1
+
+   * - Process
+     - HPSS
+     - Kronos
+   * - Accessibility
+     - DTNs and login nodes
+     - DTNs
+   * - Transfer tools
+     - hsi, htar, globus
+     - globus and standard UNIX transfer utilities
+   * - File and directory management
+     - hsi
+     - standard UNIX utilities
+   * - Data retrieval speeds
+     - Fluctuates based on data location, can see delay if only stored on tape
+     - All data stored on disk providing consistent access experience
 
 .. _data-transferring-data:
 
@@ -526,12 +579,27 @@ Transferring Data
 Globus
 ============
 
-Three Globus Endpoints have been established for OLCF resources. These are "OLCF DTN (Globus 5)", "OLCF HPSS (Globus 5)", and "NCCS Open DTN (Globus 5)". The "OLCF DTN (Globus 5)" endpoint provides access to User/Project Home areas as well as the Orion filesystem, the "OLCF HPSS (Globus 5)" endpoint provides access to HPSS, and the "NCCS Open DTN (Globus 5)" endpoint provides access to the Open User/Project Home areas and the Wolf filesystem. By selecting one of these endpoints and some offsite endpoint, you can use Globus to transfer data to/from that storage area at OLCF. By selecting the "OLCF DTN (Globus 5)" and "OLCF HPSS (Globus 5)" endpoints, you can transfer data between HPSS and one of our other filesystems. 
+Three Globus Collections have been established for OLCF resources. 
 
+.. list-table::
+   :header-rows: 1
+
+   * - Globus Collection
+     - Storage Areas
+
+   * - OLCF DTN (Globus 5)
+     - Moderate User/Project Home (NFS), Orion (Lustre), and Alpine2 (GPFS) filesystems
+
+   * - OLCF Kronos
+     - Kronos (Archival)
+
+   * - NCCS Open DTN (Globus 5)
+     - Open User/Project Home (NFS), Wolf2 (GPFS) filesystem
+
+By selecting one of these collections and some offsite collection, you can use Globus to transfer data to/from that storage area at OLCF. By selecting the "OLCF DTN (Globus 5)" and "OLCF Kronos" collections, you can transfer data between Kronos and one of our other filesystems mounted on the DTNs. 
 
 .. note::
-   After January 8, the Globus v4 endpoints will no longer be supported. Please use the OLCF HPSS (Globus 5) and OLCF DTN (Globus 5) endpoints.
-
+   Globus v4 collections are no longer be supported. Please use the "OLCF DTN (Globus 5)", "OLCF Open DTN (Globus 5), and "OLCF Kronos" collections.
 
 **Globus Warnings:** 
 
@@ -545,8 +613,8 @@ Three Globus Endpoints have been established for OLCF resources. These are "OLCF
 * If a folder is constituted with mixed files including thousands of small files (less than 1MB each one), it would be better to tar the smallfiles.  Otherwise, if the files are larger, Globus will handle them. 
 
 
-Using Globus to Move Data Between Endpoints 
-===========================================
+Using Globus to Move Data Between Collections 
+=============================================
 
 The following example is intended to help users move data to and from the Orion filesystem.
  
@@ -562,15 +630,15 @@ Below is a summary of the steps for data transfer using Globus:
 
 2.	Once you are logged in, Globus will open the “File Manager” page. Click the left side “Collection” text field in the File Manager and type “OLCF DTN (Globus 5)”.
 
-3.	When prompted, authenticate into the OLCF DTN (Globus 5) endpoint using your OLCF username and PIN followed by your RSA passcode.
+3.	When prompted, authenticate into the OLCF DTN (Globus 5) collection using your OLCF username and PIN followed by your RSA passcode.
 
 4.	Click in the left side “Path” box in the File Manager and enter the path to your data on Orion. For example, `/lustre/orion/stf007/proj-shared/my_orion_data`. You should see a list of your files and folders under the left “Path” Box.
 
 5.	Click on all files or folders that you want to transfer in the list. This will highlight them.
 
-6.	Click on the right side “Collection” box in the File Manager and type the name of a second endpoint at OLCF or at another institution. You can transfer data between different paths on the Orion filesystem with this method too; Just use the OLCF DTN (Globus 5) endpoint again in the right side “Collection” box. 
+6.	Click on the right side “Collection” box in the File Manager and type the name of a second collection at OLCF or at another institution. You can transfer data between different paths on the Orion filesystem with this method too; Just use the OLCF DTN (Globus 5) collection again in the right side “Collection” box. 
 
-7.	Click in the right side “Path” box and enter the path where you want to put your data on the second endpoint's filesystem. 
+7.	Click in the right side “Path” box and enter the path where you want to put your data on the second collection's filesystem. 
 
 8.	Click the left "Start" button.
 
@@ -580,18 +648,21 @@ Below is a summary of the steps for data transfer using Globus:
 Using Globus From Your Local Workstation
 ========================================
 
-Globus is most frequently used to facilitate data transfer between two institutional filesystems. However, it can also be used to facilitate data transfer involving an individual workstation or laptop. The following instructions demonstrate creating a local Globus endpoint on your computer. 
+Globus is most frequently used to facilitate data transfer between two institutional filesystems. However, it can also be used to facilitate data transfer involving an individual workstation or laptop. The following instructions demonstrate creating a local Globus collection on your computer. 
 
 - Visit https://app.globus.org/collections/gcp, login into globus, and Install Globus Connect Personal, it is available for Windows, Mac, and Linux.
 
-- Follow the given instructions for setting up an endpoint on your computer, noting the name of the endpoint that you setup. 
+- Follow the given instructions for setting up an collection on your computer, noting the name of the collection that you setup. 
 
-- Once the endpoint is setup and globus is installed on your computer, you can search for and access the endpoint from the globus web interface just like any other endpoint, however your computer must be connected to the internet and globus must be actively running on it for the transfer to happen.
+- Once the collection is setup and globus is installed on your computer, you can search for and access the collection from the globus web interface just like any other collection, however your computer must be connected to the internet and globus must be actively running on it for the transfer to happen.
 
 
 ==========
 HSI
 ==========
+
+.. note::
+   HPSS is now read-only. Users cannot transfer data into HPSS and should instead use :ref:`kronos`. For more information on migrating your files from HPSS to Kronos or another storage location, see the :ref:`hpss-migration` section.
 
 HSI (Hierarchial Storage Interface) is used to transfer data to/from OLCF systems and HPSS. When retrieving data from a tar archive larger than 1 TB, we recommend that you pull only the files that you need rather than the full archive.  Examples of this will be given in the htar section below. Issuing the command ``hsi`` will start HSI in interactive mode. Alternatively, you can use:
 
@@ -642,6 +713,9 @@ Additional documentation can be found on the `HPSS Collaboration website <http:/
 ===========
 HTAR
 ===========
+
+.. note::
+   HPSS is now read-only. Users cannot transfer data into HPSS and should instead use :ref:`kronos`. For more information on migrating your files from HPSS to Kronos or another storage location, see the :ref:`hpss-migration` section.
 
 HTAR is another utility to transfer data between OLCF systems and HPSS.  The ``htar`` command provides an interface very similar to the traditional ``tar`` command found on UNIX systems. The primary difference is instead of creating a .tar file on the local filesystem, it creates that file directly on HPSS. It is used as a command-line interface.  The basic syntax of ``htar`` is:
 
@@ -709,6 +783,7 @@ Additional HTAR Documentation
 For more information about ``htar``, execute ``man htar``. 
 
 
+.. _clitools:
 
 ========================================
 Command-Line/Terminal Tools
