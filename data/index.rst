@@ -509,9 +509,96 @@ The file systems have many technical differences, but we will mention only what 
 HPSS Data Archival System
 **************************
 
-There are two methods of moving data to/from HPSS. The more traditional method is via the command-line utilities ``hsi`` and ``htar``. These commands are available from most OLCF systems. Recently, we added the capability of using Globus to move data to/from HPSS. HPSS is available via the "OLCF HPSS (Globus 5)" Globus endpoint. By connecting to that endpoint and the "OLCF DTN (Globus 5)" endpoint, you can transfer files between HPSS and other OLCF filesystems. By connecting to "OLCF HPSS (Globus 5)" and some other endpoint, you can transfer files to/from an offsite location to HPSS. More details on various transfer methods are available in the :ref:`data-transferring-data` section.
+.. warning::
+   On January 31, 2025, data remaining on the HPSS will no longer be accessible and will be **PERMANENTLY DELETED**. Following this date, the OLCF will no longer be able to retrieve data remaining on HPSS. Please do not wait to move needed data. For more information on migrating data from HPSS to Kronos (the center's new archival storage system) see the :ref:`hpss-migration` section.
+
+There are two methods of moving data to/from HPSS. The more traditional method is via the command-line utilities ``hsi`` and ``htar``. These commands are available from most OLCF systems. Recently, we added the capability of using Globus to move data to/from HPSS. HPSS is available via the "OLCF HPSS (Globus 5)" Globus collection. By connecting to that collection and the "OLCF DTN (Globus 5)" collection, you can transfer files between HPSS and other OLCF filesystems. By connecting to "OLCF HPSS (Globus 5)" and some other collection, you can transfer files to/from an offsite location to HPSS. More details on various transfer methods are available in the :ref:`data-transferring-data` section.
 
 HPSS is optimized for large files. Ideally, we recommend sending files 768GB or larger to HPSS. HPSS will handle small files, but write and read performance will be negatively affected with files smaller than 512 MB. We recommend combining small files prior to tranfer. Alternatively you can use ``htar`` to combine them and create the ``.tar`` file directly on HPSS.
+
+
+.. _kronos:
+
+***************************************
+Kronos Nearline Archival Storage System
+***************************************
+
+Kronos is the center’s new nearline storage resource. Kronos is multi-tiered containing both disk and tape. Users will interact with the system’s disk sub-system which leverages IBM Storage Scale (GPFS). Data stored on the disk sub-system will automatically be stored on they system’s tape sub-system. The disk sub-system will provide an initial capacity of 134 PB with the ability to expand as need increases. Kronos is capable of bandwidth of up-to 200 GB/s from the center’s Data Transfer Nodes.
+
+======================
+Access / Data Transfer
+======================
+
+Kronos is mounted on the moderate security enclave Data Transfer Nodes (``dtn.ccs.ornl.gov``) and is accessible via `Globus <https://www.globus.org>`_ at the "**OLCF Kronos**" collection. Standard UNIX commands and tools can also be used to interact with Kronos (scp, rsync, etc.).
+
+For more information on using `scp` and `rsync` to transfer data to and from OLCF resources, see the :ref:`clitools` section.
+
+For more information on using Globus to transfer data to and from OLCF resources, see the :ref:`data-transferring-data-globus` section.
+
+.. note::
+   Kronos is only available through the "**OLCF Kronos**" Globus collection and is *NOT* accessible from the "OLCF DTN (Globus 5)" collection.
+
+===================
+Directory Structure
+===================
+Kronos uses a directory structure similar to other center-wide storage resources:
+
+.. list-table::
+   :widths: 20 12 12 12 80
+   :header-rows: 1
+
+   * - Path
+     - Permissions
+     - Owner
+     - Group
+     - Description
+   * - ``/nl/kronos/olcf/<projectID>/proj-shared``
+     - 755
+     - root
+     - <projectID> UNIX group
+     - Data shared between project members.
+   * - ``/nl/kronos/olcf/<projectID>/users/<userID>``
+     - 700
+     - <userID>
+     - <projectID> UNIX group
+     - User data, access is limited to user by default, but each user can modify their directory permissions to share with other project members.
+   * - ``/nl/kronos/olcf/<projectID>/world-shared``
+     - 2775
+     - root
+     - <projectID> UNIX group
+     - Data accessible to others in the OLCF user community
+
+==============
+Project Quotas
+==============
+
+To help ensure available space for all Kronos projects, each project has a 200TB quota. All data stored in ``/nl/kronos/olcf/<projectID>`` will count toward the project’s quota. Please reach out to help@olcf.ornl.gov to request exemptions to the default quota.
+
+
+==========================
+Kronos and HPSS Comparison
+==========================
+
+.. list-table::
+   :widths: 30 30 30
+   :header-rows: 1
+
+   * - Process
+     - HPSS
+     - Kronos
+   * - Accessibility
+     - DTNs and login nodes
+     - DTNs
+   * - Transfer tools
+     - hsi, htar, globus
+     - globus and standard UNIX transfer utilities
+   * - File and directory management
+     - hsi
+     - standard UNIX utilities
+   * - Data retrieval speeds
+     - Fluctuates based on data location, can see delay if only stored on tape
+     - All data stored on disk providing consistent access experience
+
 
 
 .. _data-transferring-data:
@@ -526,11 +613,32 @@ Transferring Data
 Globus
 ============
 
-Three Globus Endpoints have been established for OLCF resources. These are "OLCF DTN (Globus 5)", "OLCF HPSS (Globus 5)", and "NCCS Open DTN (Globus 5)". The "OLCF DTN (Globus 5)" endpoint provides access to User/Project Home areas as well as the Orion filesystem, the "OLCF HPSS (Globus 5)" endpoint provides access to HPSS, and the "NCCS Open DTN (Globus 5)" endpoint provides access to the Open User/Project Home areas and the Wolf filesystem. By selecting one of these endpoints and some offsite endpoint, you can use Globus to transfer data to/from that storage area at OLCF. By selecting the "OLCF DTN (Globus 5)" and "OLCF HPSS (Globus 5)" endpoints, you can transfer data between HPSS and one of our other filesystems. 
+Four Globus Collections have been established for OLCF resources. 
+
+.. list-table::
+   :header-rows: 1
+
+   * - Globus Collection
+     - Storage Areas
+
+   * - OLCF DTN (Globus 5)
+     - Moderate User/Project Home (NFS), Orion (Lustre), and Alpine2 (GPFS) filesystems
+
+   * - OLCF HPSS (Globus 5)
+     - HPSS (Archival, read-only)
+
+   * - OLCF Kronos
+     - Kronos (Archival)
+
+   * - NCCS Open DTN (Globus 5)
+     - Open User/Project Home (NFS), Wolf2 (GPFS) filesystem
+
+By selecting one of these collections and some offsite collection, you can use Globus to transfer data to/from that storage area at OLCF. By selecting the "OLCF DTN (Globus 5)" and "OLCF Kronos" collections, you can transfer data between Kronos and one of our other filesystems mounted on the DTNs. 
+
 
 
 .. note::
-   After January 8, the Globus v4 endpoints will no longer be supported. Please use the OLCF HPSS (Globus 5) and OLCF DTN (Globus 5) endpoints.
+   Globus v4 collections are no longer be supported. Please use the "OLCF HPSS (Globus 5)", "OLCF DTN (Globus 5)", and "OLCF Kronos" collections.
 
 
 **Globus Warnings:** 
@@ -545,7 +653,7 @@ Three Globus Endpoints have been established for OLCF resources. These are "OLCF
 * If a folder is constituted with mixed files including thousands of small files (less than 1MB each one), it would be better to tar the smallfiles.  Otherwise, if the files are larger, Globus will handle them. 
 
 
-Using Globus to Move Data Between Endpoints 
+Using Globus to Move Data Between Collections 
 ===========================================
 
 The following example is intended to help users move data to and from the Orion filesystem.
@@ -562,15 +670,15 @@ Below is a summary of the steps for data transfer using Globus:
 
 2.	Once you are logged in, Globus will open the “File Manager” page. Click the left side “Collection” text field in the File Manager and type “OLCF DTN (Globus 5)”.
 
-3.	When prompted, authenticate into the OLCF DTN (Globus 5) endpoint using your OLCF username and PIN followed by your RSA passcode.
+3.	When prompted, authenticate into the OLCF DTN (Globus 5) collection using your OLCF username and PIN followed by your RSA passcode.
 
 4.	Click in the left side “Path” box in the File Manager and enter the path to your data on Orion. For example, `/lustre/orion/stf007/proj-shared/my_orion_data`. You should see a list of your files and folders under the left “Path” Box.
 
 5.	Click on all files or folders that you want to transfer in the list. This will highlight them.
 
-6.	Click on the right side “Collection” box in the File Manager and type the name of a second endpoint at OLCF or at another institution. You can transfer data between different paths on the Orion filesystem with this method too; Just use the OLCF DTN (Globus 5) endpoint again in the right side “Collection” box. 
+6.	Click on the right side “Collection” box in the File Manager and type the name of a second collection at OLCF or at another institution. You can transfer data between different paths on the Orion filesystem with this method too; Just use the OLCF DTN (Globus 5) collection again in the right side “Collection” box. 
 
-7.	Click in the right side “Path” box and enter the path where you want to put your data on the second endpoint's filesystem. 
+7.	Click in the right side “Path” box and enter the path where you want to put your data on the second collection's filesystem. 
 
 8.	Click the left "Start" button.
 
@@ -580,13 +688,13 @@ Below is a summary of the steps for data transfer using Globus:
 Using Globus From Your Local Workstation
 ========================================
 
-Globus is most frequently used to facilitate data transfer between two institutional filesystems. However, it can also be used to facilitate data transfer involving an individual workstation or laptop. The following instructions demonstrate creating a local Globus endpoint on your computer. 
+Globus is most frequently used to facilitate data transfer between two institutional filesystems. However, it can also be used to facilitate data transfer involving an individual workstation or laptop. The following instructions demonstrate creating a local Globus collection on your computer. 
 
 - Visit https://app.globus.org/collections/gcp, login into globus, and Install Globus Connect Personal, it is available for Windows, Mac, and Linux.
 
-- Follow the given instructions for setting up an endpoint on your computer, noting the name of the endpoint that you setup. 
+- Follow the given instructions for setting up an collection on your computer, noting the name of the collection that you setup. 
 
-- Once the endpoint is setup and globus is installed on your computer, you can search for and access the endpoint from the globus web interface just like any other endpoint, however your computer must be connected to the internet and globus must be actively running on it for the transfer to happen.
+- Once the collection is setup and globus is installed on your computer, you can search for and access the collection from the globus web interface just like any other collection, however your computer must be connected to the internet and globus must be actively running on it for the transfer to happen.
 
 
 ==========
@@ -709,6 +817,7 @@ Additional HTAR Documentation
 For more information about ``htar``, execute ``man htar``. 
 
 
+.. _clitools:
 
 ========================================
 Command-Line/Terminal Tools

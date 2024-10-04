@@ -44,13 +44,6 @@ After almost 6 years of production service providing over 200 million node hours
    * - :ref:`January 31, 2025<alpine2_decom>`
      - Alpine2 decommissioned.  **ALL REMAINING DATA WILL BE PERMANENTLY DELETED**
 
-|
-|
-|
-|
-|
-|
-
 ===========================================
 HPSS Decommission and Kronos Availability 
 ===========================================
@@ -72,7 +65,7 @@ Availability Timeline
   Kronos is expected to be available late July 2024.
 
 Access / Data Transfer
-  Kronos will be mounted on the moderate Data Transfer Nodes.  Because the system will be mounted as a filesystem, standard UNIX command and tools can be used to interact with Kronos.  The resource will also be accessible through the OLCF Kronos endpoint in Globus.
+  Kronos will be mounted on the moderate Data Transfer Nodes.  Because the system will be mounted as a filesystem, standard UNIX command and tools can be used to interact with Kronos.  The resource will also be accessible through the OLCF Kronos collection in Globus.
 
   Please note that Kronos will not be mounted on the compute nodes of Frontier or Andes.
 
@@ -150,6 +143,8 @@ In preparation for HPSS's decommission in January 2025, the HPSS will become rea
 
 We highly encourage all teams to start migrating needed data from the HPSS now.  If you wait too late in the year to begin the transition, you will run the risk of running out of time to move your data before the system is decommissioned.  It is important to note that any data remaining on the HPSS after January 31, 2025, will be unavailable. We expect HPSS periods of access impacts due to the expected volumes of data migrating off of the HPSS. To help spread the HPSS migration load, please reach out to help@olcf.ornl.gov to help coordinate your larger HPSS data migrations.
 
+.. _hpss-migration:
+
 Data migration
 ^^^^^^^^^^^^^^^
 
@@ -166,10 +161,10 @@ Data Deletion
   Due to the added overhead of data deletion, we ask that users not delete data from the HPSS.
 
 Globus
-  The Globus utility is not aware of the underlying HPSS tape storage structure.  To help spread the load over the resource's tape retrieval system, we ask that Globus not be used to migrate data off of the HPSS.  Instead, please use the HPSS ``hsi`` utility.  The HPSS Globus endpoint will be disabled on August 30, 2024 to help ensure efficient migration from HPSS tape.
+  The Globus utility is not aware of the underlying HPSS tape storage structure.  To help spread the load over the resource's tape retrieval system, we ask that Globus not be used to migrate data off of the HPSS.  Instead, please use the HPSS ``hsi`` utility.  The HPSS Globus collection will be disabled on August 30, 2024 to help ensure efficient migration from HPSS tape.
 
 .. warning::
-  The Globus utility is not aware of the underlying HPSS tape storage structure.  To help ensure safe and efficient migration of data from tape, the HPSS Globus endpoint will be disabled on August 30, 2024.  Instead of Globus, please use the HPSS ``hsi`` utility.  
+  The Globus utility is not aware of the underlying HPSS tape storage structure.  To help ensure safe and efficient migration of data from tape, the HPSS Globus collection will be disabled on August 30, 2024.  Instead of Globus, please use the HPSS ``hsi`` utility.  
 
 HSI Data Lists
   The HPSS ``hsi`` utility is the preferred tool for HPSS data migration because it is aware of the HPSS tape storage structure.  To ensure the most efficient retrieval of data stored on tape, we recommend passing list files to ``hsi``.  Please also see the ``hsi_xfer`` utility below for an easy way to utilize the hsi data list feature.
