@@ -30,8 +30,8 @@ Each user has a User Home area on NFS. Each project has a Project Home area on N
 +================================+=============================================+=========+========================+=============+========+=========+=========+============+=========================================+
 | User Home                      | ``/ccs/home/[userid]``                      | M1, M2  | NFS                    | User set    |  50 GB | Yes     | No      | 90 days    | Summit: Read-only, Frontier: Read/Write |
 +--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
-| User Archive                   | ``/nl/kronos/olcf/[projid]/users/[userid]``| M1       | Nearline               | User set    | 200 TB | Yes     | No      | 90 days    | No                                      |
-+--------------------------------+---------------------------------------------+---------+------------------------
+| User Archive                   | ``/nl/kronos/olcf/[projid]/users/[userid]`` | M1       | Nearline              | User set    | 200 TB | Yes     | No      | 90 days    | No                                      |
++--------------------------------+---------------------------------------------+---------+--------------------------------------------------------------------------------------------------------------------------+
 | Project Home                   | ``/ccs/proj/[projid]``                      | M1, M2  | NFS                    | 770         |  50 GB | Yes     | No      | 90 days    | Summit: Read-only, Frontier: Read/Write |
 +--------------------------------+---------------------------------------------+---------+------------------------+-------------+--------+---------+---------+------------+-----------------------------------------+
 | Orion Member Work              | ``/lustre/orion/[projid]/scratch/[userid]`` | M1, M2  | Lustre HPE ClusterStor | 700         |  50 TB | No      | 90 days | N/A [#f4]_ | Read/Write                              |
@@ -94,10 +94,6 @@ Each user has a User Home area on NFS. Each project has a Project Home area on N
     You can check your home directory quota with the ``quota`` command. If it is over quota, you need to bring usage under the quota and then your jobs should run without encountering the ``Disk quota exceeded`` error.
 
 .. rubric:: Footnotes
-
-.. [#f1] This entry is for legacy User Archive directories which contained user data on January 14, 2020.
-
-.. [#f2] User Archive directories that were created (or had no user data) after January 14, 2020. Settings other than permissions are not applicable because directories are root-owned and contain no user files.
 
 .. [#f3] Permissions on Member Work directories can be controlled to an extent by project members. By default, only the project member has any accesses, but accesses can be granted to other project members by setting group permissions accordingly on the Member Work directory. The parent directory of the Member Work directory prevents accesses by "UNIX-others" and cannot be changed.
 
@@ -243,7 +239,7 @@ For example, if you have data that must be restricted only to yourself, keep the
 Backups
 -------
 
-Member Work, Project Work, and World Work directories **are not backed up**. Project members are responsible for backing up these files, either to Project Archive areas (:ref:`_kronos`) or to an off-site location.
+Member Work, Project Work, and World Work directories **are not backed up**. Project members are responsible for backing up these files, either to Project Archive areas (:ref:`kronos`) or to an off-site location.
 
 Project Archive Directories
 ===========================
@@ -279,7 +275,7 @@ HPSS Project Archive Access
 .. warning::
    On January 31, 2025, data remaining on the HPSS will no longer be accessible and will be **PERMANENTLY DELETED**. Following this date, the OLCF will no longer be able to retrieve data remaining on HPSS. Please do not wait to move needed data. For more information on migrating data from HPSS to Kronos (the center's new archival storage system) see the :ref:`hpss-migration` section.
 
-Project Archive directories may only be accessed via utilities called HSI and HTAR. For more information on using HSI or HTAR, see the :ref:`data-hpss` section. For more information on migrating your data form HPSS to the new archival storage system (Kronos), see :ref:`hpss_migration`.
+Project Archive directories may only be accessed via utilities called HSI and HTAR. For more information on using HSI or HTAR, see the :ref:`data-hpss` section.
 
 .. note::
    HPSS is now read-only. Users cannot transfer data into HPSS and should instead use :ref:`kronos`. For more information on migrating your files from HPSS to Kronos or another storage location, see the :ref:`hpss-migration` section.
@@ -618,7 +614,7 @@ By selecting one of these collections and some offsite collection, you can use G
 
 
 Using Globus to Move Data Between Collections 
-===========================================
+=============================================
 
 The following example is intended to help users move data to and from the Orion filesystem.
  

@@ -200,9 +200,9 @@ Lustre Filesystem
 
 
 Kronos Archival Storage
----------------------
+-----------------------
 
-Please note that the HPSS is not mounted directly onto Frontier nodes. There are two main methods for accessing and moving data to/from the HPSS. The first is to use the command line utilities ``hsi`` and ``htar``. The second is to use the Globus data transfer service. See :ref:`data-hpss` for more information on both of these methods.
+Please note that the Kronos is not mounted directly onto Frontier nodes. There are two main methods for accessing and moving data to/from Kronos, either with standard cli utilities (scp, rsync, etc.) and via Globus using the "OLCF Kronos" collection. For more information on using Kronos, see the :ref:`kronos` section.
 
 +---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
 | Area                | Path                                        | Type           | Permissions |  Quota | Backups | Purged  | Retention  | On Compute Nodes |
