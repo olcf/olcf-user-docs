@@ -68,7 +68,7 @@ The Crusher nodes are connected with [4x] HPE Slingshot 200 Gbps (25 GB/s) NICs 
 File Systems
 ------------
 
-Crusher is connected to the center-wide IBM Spectrum Scale™ filesystem providing 250 PB of storage capacity with a peak write speed of 2.5 TB/s. Crusher also has access to the center-wide NFS-based filesystem (which provides user and project home areas). While Crusher does not have *direct* access to the center’s High Performance Storage System (HPSS) - for user and project archival storage - users can log in to the :ref:`dtn-user-guide` to move data to/from HPSS. 
+Crusher is connected to the center-wide IBM Spectrum Scale™ filesystem providing 250 PB of storage capacity with a peak write speed of 2.5 TB/s. Crusher also has access to the center-wide NFS-based filesystem (which provides user and project home areas). While Crusher does not have *direct* access to the center’s Nearline archival storage system (Kronos) - for user and project archival storage - users can log in to the moderate DTNs to move data to/from Kronos or use the "OLCF Kronos" Globus collection. For more information on using Kronos, see the :ref:`kronos` section. 
 
 GPUs
 ----

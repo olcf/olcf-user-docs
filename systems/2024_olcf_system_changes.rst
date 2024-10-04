@@ -224,19 +224,6 @@ On January 31, 2025, data remaining on the HPSS will no longer be accessible and
 .. warning::
   January 31, 2025, all remaining HPSS data will be **PERMANENTLY DELETED**.  Do not wait to move needed data.
 
-
-
-|
-|
-|
-|
-|
-|
-|
-|
-|
-|
-
 =================================
 Summit and Alpine2 Decommissions
 =================================
