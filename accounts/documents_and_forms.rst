@@ -48,10 +48,10 @@ a confirmation number (you are verifying a replacement token, for example),
 please email us at help@olcf.ornl.gov to schedule. 
 
 `Nondisclosure Agreement
-Form <https://www.olcf.ornl.gov/wp-content/accounts/OLCF_NDA.pdf>`_ Required from
+Form <https://www.olcf.ornl.gov/wp-content/uploads/OLCF_NDA.pdf>`_ Required from
 subcontractors only.
 
-`Sensitive Data Rules <https://www.olcf.ornl.gov/wp-content/accounts/Sensitive_Data_Rules.pdf>`_
+`Sensitive Data Rules <https://www.olcf.ornl.gov/wp-content/uploads/Sensitive_Data_Rules.pdf>`_
 All users
 must agree to abide by all security measures described in this document
 when performing any work on OLCF resources that is not fundamental
@@ -76,11 +76,11 @@ need to request any of the following, please do so via email to help@olcf.ornl.g
 Report Templates
 ================
 
-`Closeout Report Template <https://www.olcf.ornl.gov/wp-content/accounts/Closeout_Template.doc>`_
+`Closeout Report Template <https://www.olcf.ornl.gov/wp-content/uploads/Closeout_Template.doc>`_
 Use this template if you have been asked to submit a closeout report for your
 project.  Note this form does not apply to INCITE projects.  If you have been provided a template via email, only that template applies.
 
-`Industry Quarterly Report Template <https://www.olcf.ornl.gov/wp-content/accounts/industry_quarterly_report.doc>`_
+`Industry Quarterly Report Template <https://www.olcf.ornl.gov/wp-content/uploads/industry_quarterly_report.doc>`_
 Use this template if you have an industry project to submit a quarterly
 report.
 
@@ -89,5 +89,5 @@ report.
 Miscellaneous Forms
 ===================
 
-`Director's Discretion Review Form <https://www.olcf.ornl.gov/wp-content/accounts/dd_review.pdf>`_
+`Director's Discretion Review Form <https://www.olcf.ornl.gov/wp-content/uploads/dd_review.pdf>`_
 For internal use only.
