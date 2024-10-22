@@ -8,6 +8,79 @@ most recent changes are listed first.
 
 ----
 
+Frontier: Updated modules for cpe/23.12 (October 16 2024)
+---------------------------------------------------------
+
+For the HPE/Cray Programming Environment 23.12 (cpe/23.12) on Frontier,
+the table below lists packages that are updated or added.  New CPU packages
+are netcdf, paraview, stat, tau, unifyfs, and visit.  New GPU packages
+are ascent, blaspp, hwloc, lapackpp and paraview.
+Please report any issues to help@olcf.ornl.gov.
+
+.. csv-table::
+    :header: "Package", "Version"
+
+    "adios2", "2.10.0"
+    "amrex", "24.5"
+    "arborx", "1.6"
+    "ascent", "0.9.2"
+    "blaspp", "2023.11.5"
+    "boost", "1.85.0"
+    "cabana", "0.6.0"
+    "chai", "2024.2.0"
+    "darshan-runtime", "3.4.4"
+    "dyninst", "13.0.0"
+    "flecsi", "2.2.1"
+    "flux-core", "0.61.2"
+    "fortrilinos", "2.3.0"
+    "gasnet", "2023.9.0"
+    "ginkgo", "1.7.0"
+    "globalarrays", "5.8.2"
+    "hdf5", "1.14.3"
+    "heffte", "2.4.0"
+    "hpx", "1.9.1"
+    "hwloc", "2.9.1"
+    "hypre", "2.31.0"
+    "kokkos", "4.3.00"
+    "kokkos-kernels", "4.3.00"
+    "lammps", "20230802.3"
+    "lapackpp", "2023.11.05"
+    "libunwind", "1.6.2"
+    "magma", "2.8.0"
+    "mfem", "4.6.0"
+    "nco", "5.1.9"
+    "netcdf-c", "4.9.2"
+    "openpmd-api", "0.15.2"
+    "papi", "7.1.0"
+    "parallel-netcdf", "1.12.3"
+    "paraview", "5.12.0"
+    "parsec", "3.0.2209"
+    "petsc", "3.21.1"
+    "phist", "1.12.0"
+    "plasma", "23.8.2"
+    "plumed", "2.9.0"
+    "raja", "2024.2.0"
+    "slate", "2023.11.5"
+    "slepc", "3.21.0"
+    "stat", "4.2.1"
+    "strumpack", "7.2.0"
+    "suite-sparse", "7.3.1"
+    "sundials", "7.0.0"
+    "superlu-dist", "8.2.1"
+    "swig", "4.1.1"
+    "swig", "4.1.1-fortran"
+    "sz", "2.1.12.5"
+    "tasmanian", "8.0"
+    "tau", "2.33.2"
+    "trilinos", "15.1.1"
+    "umpire", "2024.2.0"
+    "unifyfs", "2.0"
+    "upcxx", "2023.9.0"
+    "visit", "3.3.3"
+    "vtk-m", "2.1.0"
+
+----
+
 Frontier: Core module (October 15, 2024)
 ------------------------------------------------
 
@@ -30,7 +103,7 @@ The table below summarizes the main version changes.
     "gnupg", "2.3.4", "2.4.5"
     "gnuplot", "5.4.3", "6.0.0"
     "googletest", "1.10.0", "1.14.0"
-    "hpctoolkit", "N/A", "2024.01.1-gpu-mpi"
+    "hpctoolkit", "N/A", "2024.01.1"
     "htop", "3.0.2", "3.2.2"
     "hwloc", "2.5.0", "2.9.1"
     "imagemagick", "7.0.8-7", "7.1.1-29"
