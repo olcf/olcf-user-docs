@@ -43,6 +43,14 @@ Currently Available User-Managed Software
     |            |                |                                            |                                                                                |
     |            |                |                                            | Support Forum:     https://groups.google.com/g/upcxx                           |
     +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
+    | ums015     | Intel oneAPI   | Codeplay Software (sycl@codeplay.com)      | Intel oneAPI compiler and runtime libraries                                    |
+    |            |                |                                            |                                                                                |
+    |            |                |                                            | Website:           https://oneapi.io/ and https://developer.codeplay.com/      |
+    |            |                |                                            |                                                                                |
+    |            |                |                                            | Issue Tracker:     https://github.com/intel/llvm/issues                        |
+    |            |                |                                            |                                                                                |
+    |            |                |                                            | Support Forum:     https://support.codeplay.com/                               |
+    +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
     | ums022     | VisIt          | Eric Brugger (brugger1@llnl.gov)           | VisIt Visualization and Analysis Tool                                          |
     +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
     | ums023     | HPCToolkit     | Wileam Phan (wil.phan@rice.edu)            | HPCToolkit Performance measurement and analysis tools                          |
