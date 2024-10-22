@@ -8,6 +8,124 @@ most recent changes are listed first.
 
 ----
 
+Frontier: Core module (October 15, 2024)
+------------------------------------------------
+
+On October 15, 2024 the ``Core`` module on Frontier will be updated from ``Core/24.00`` to ``Core/24.07`` .  
+Please test the new module and report issues to help@olcf.ornl.gov 
+
+The table below summarizes the main version changes.
+
+.. csv-table::
+    :header: "Component", "Old Version", "New Version"
+
+    "autoconf", "2.69", "2.72"
+    "bazel", "4.0.0", "7.0.2"
+    "ccache", "4.5.1", "4.6.3"
+    "cmake", "3.23.2", "3.27.9"
+    "darshan-util", "3.4.0", "3.4.4"
+    "emacs", "28.1", "29.3"
+    "gdb", "10.2", "14.1"
+    "git-lfs", "2.11.0", "3.3.0"
+    "gnupg", "2.3.4", "2.4.5"
+    "gnuplot", "5.4.3", "6.0.0"
+    "googletest", "1.10.0", "1.14.0"
+    "hpctoolkit", "N/A", "2024.01.1-gpu-mpi"
+    "htop", "3.0.2", "3.2.2"
+    "hwloc", "2.5.0", "2.9.1"
+    "imagemagick", "7.0.8-7", "7.1.1-29"
+    "julia", "1.8.2", "1.10.2"
+    "libzmq", "4.3.4", "4.3.5"
+    "mercurial", "5.8", "6.6.3"
+    "nano", "6.3", "7.2"
+    "ninja", "1.10.2", "1.11.1"
+    "openblas", "0.3.17", "0.3.26"
+    "r", "1.7.0", "4.4.0"
+    "screen", "4.8.0", "4.9.1"
+    "subversion", "1.14.1", "1.14.2"
+    "tmux", "3.2a", "3.4"
+    "vim", "8.2.2541", "9.0.0045"
+
+Other packages provided by ``Core/24.07`` are ``exuberant-ctags``, ``go``, ``hpctoolkit``, ``papi``, ``parallel``, and ``wget``. 
+If you use a package not listed here, and was provided by ``Core/24.00``, please contact help@olcf.ornl.gov.
+
+----
+
+Frontier: System Software Update (July 16, 2024)
+------------------------------------------------
+
+The Frontier system will be upgraded to a new version of the system software stack.  
+
+.. warning:: **Codes should be rebuilt** prior to running following the upgrade due to the OS and software changes.
+
+As a result of the upgrade, the following packages are now default:
+
+.. csv-table::
+    :header: "Package", "Previous Default", "New Default"
+
+    "ROCm", "5.3.0", "5.7.1"
+    "HPE/Cray Programming Environment (CPE)", "22.12", "23.12"
+    "Cray Compiler Environment (CCE)", "15.0.0", "17.0.0"
+    "GNU Compiler Collection (GCC)", "12.2.0", "12.3.0"
+    "AMD Compiler (AMD)", "5.3.0", "5.7.1"
+
+In addition to the default modules changing, the layout of the modules for the OLCF provided software stack will change.
+Going forward our core software (i.e software independent of compiler type/version) will be in a default module
+called `Core` with the version being in the format `year/month`. Additionally explicit suffixes have been added to modules to indicate MPI, OpenMP, and GPU support. 
+All modules that depend on ROCm are suffixed with `-gpu`. The same is true for packages with mpi `-mpi` and
+openmp `-omp`. Software is built to target CPE releases based on compiler (e.g. cce, amd or gcc), cray-mpich, and ROCm versions.
+If you have an :ref:`unsupported combination <understanding-the-compatibility-of-compilers-rocm-and-cray-mpich>` of those modules you may not see certain parts of the normal software stack.
+
+Please contact help@olcf.ornl.gov if you encounter any issues or have questions.
+
+----
+
+Frontier: User Environment Changes (July 9, 2024)
+-------------------------------------------------
+
+The following packages will be retired from the system on Tuesday July 9, 2024:
+
+.. csv-table::
+    :header: "Package", "Version"
+
+    "ROCm", "4.5.2, 5.1.0, 5.2.0"
+    "CPE", "22.06"
+    "CCE", "14.0.1"
+    "Cray MPICH", "8.1.17"
+    "Cray LibSci", "21.08.1.2"
+    "aml", "0.2.0"
+    "argobots", "1.1"
+    "bolt", "2.0"
+    "butterflypack", "2.0.0, 2.1.0, 2.1.1"
+    "caliper", "2.7.0"
+    "conduit", "0.7.2, 0.8.2, 0.8.3"
+    "datatransferkit", "3.1-rc3, 3.1rc3-gpu"
+    "faodel", "1.2108.1"
+    "flit", "2.1.0"
+    "gmp", "6.2.1"
+    "gotcha", "1.0.3"
+    "legion", "21.03.0"
+    "libquo", "1.3.1"
+    "loki", "0.1.7"
+    "mercury", "2.0.1, 2.1.0"
+    "metall", "0.17, 0.20"
+    "mpark-variant", "1.4.0"
+    "mpifileutils", "0.11, 0.11.1"
+    "nccmp", "1.9.0.1"
+    "papyrus", "1.0.1, 1.0.2"
+    "pdt", "3.25.1"
+    "precice", "2.3.0-cpu, 2.4.0-cpu, 2.3.0, 2.4.0-cpu"
+    "pumi", "2.2.6, 2.2.7"
+    "qthreads", "1.16"
+    "turbine", "1.3.0"
+    "umap", "2.1.0"
+    "veloc", "1.5"
+    "zfp", "0.5.5"
+
+If your workloads require a package listed above, please contact the OLCF User Assistance team at help@olcf.ornl.gov as soon as possible. 
+
+----
+
 .. raw:: html
 
    <p style="font-size:20px"><b>Summit: System Software Upgrade (January 24, 2024)</b></p>

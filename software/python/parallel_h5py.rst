@@ -28,7 +28,7 @@ OLCF Systems this guide applies to:
 +------------+----------+------------+
 | ``python`` | ``h5py`` | ``mpi4py`` |
 +============+==========+============+
-|  3.10.14   |  3.10.0  |   3.1.5    |
+|  3.10.14   |  3.11.0  |   3.1.6    |
 +------------+----------+------------+
 
 .. note::
@@ -77,7 +77,7 @@ First, load the gnu compiler module (most Python packages assume GCC), hdf5 modu
 
          $ module load gcc/12.1.0
          $ module load hdf5/1.14.3
-         $ module load miniforge3/23.11.0
+         $ module load miniforge3/24.3.0-0
 
    .. tab-item:: Andes
       :sync: andes
@@ -86,16 +86,16 @@ First, load the gnu compiler module (most Python packages assume GCC), hdf5 modu
 
          $ module load gcc/9.3.0
          $ module load hdf5/1.10.7
-         $ module load python
+         $ module load miniforge3/23.11.0-0
 
    .. tab-item:: Frontier
       :sync: frontier
 
       .. code-block:: bash
 
-         $ module load PrgEnv-gnu/8.3.3
-         $ module load hdf5/1.14.0
-         $ module load miniforge3/23.11.0
+         $ module load PrgEnv-gnu/8.5.0
+         $ module load cray-hdf5-parallel/1.12.2.9
+         $ module load miniforge3/23.11.0-0
 
 .. note::
    If you're just interested in ``mpi4py`` and not ``h5py``, then you don't need to load the ``hdf5`` module.
@@ -109,21 +109,21 @@ Loading a python module puts you in a "base" environment, but you need to create
 
       .. code-block:: bash
 
-         $ conda create -n h5pympi-summit python=3.10 numpy
+         $ conda create -n h5pympi-summit python=3.10 numpy=1.26.4
 
    .. tab-item:: Andes
       :sync: andes
 
       .. code-block:: bash
 
-         $ conda create -n h5pympi-andes python=3.10 numpy
+         $ conda create -n h5pympi-andes python=3.10 numpy=1.26.4
 
    .. tab-item:: Frontier
       :sync: frontier
 
       .. code-block:: bash
 
-         $ conda create -n h5pympi-frontier python=3.10 numpy
+         $ conda create -n h5pympi-frontier python=3.10 numpy=1.26.4
 
 NumPy is installed ahead of time because h5py depends on it.
 
@@ -156,8 +156,7 @@ After following the prompts for creating your new environment, you can now activ
 Installing mpi4py
 =================
 
-Now that you have a fresh environment, you will next install mpi4py from source into your new environment.
-To make sure that you are building from source, and not a pre-compiled binary, use ``pip``:
+Now that you have a fresh environment, you will next install mpi4py into your new environment using ``pip``:
 
 .. tab-set::
 
@@ -166,7 +165,7 @@ To make sure that you are building from source, and not a pre-compiled binary, u
 
       .. code-block:: bash
 
-         $ MPICC="mpicc -shared" pip install --no-cache-dir --no-binary=mpi4py mpi4py
+         $ MPICC="mpicc -shared" pip install --no-cache-dir --no-binary=mpi4py mpi4py==3.1.6
 
    .. tab-item:: Andes
       :sync: andes
@@ -183,13 +182,12 @@ To make sure that you are building from source, and not a pre-compiled binary, u
          $ MPICC="cc -shared" pip install --no-cache-dir --no-binary=mpi4py mpi4py
 
 The ``MPICC`` flag ensures that you are using the correct C wrapper for MPI on the system.
-Building from source typically takes longer than a simple ``conda install``, so the download and installation may take a couple minutes.
 If everything goes well, you should see a "Successfully installed mpi4py" message.
 
 Installing h5py
 ===============
 
-Next, install h5py from source.
+Next, install h5py:
 
 .. tab-set::
 
@@ -212,10 +210,9 @@ Next, install h5py from source.
 
       .. code-block:: bash
 
-         $ HDF5_MPI="ON" CC=cc HDF5_DIR=${OLCF_HDF5_ROOT} pip install --no-cache-dir --no-binary=h5py h5py
+         $ HDF5_MPI="ON" CC=cc HDF5_DIR=${HDF5_ROOT} pip install --no-cache-dir --no-binary=h5py h5py
 
 The ``HDF5_MPI`` flag is the key to telling pip to build h5py with parallel support, while the ``CC`` flag makes sure that you are using the correct C wrapper for MPI.
-This installation will take much longer than both the mpi4py and NumPy installations (5+ minutes if the system is slow).
 When the installation finishes, you will see a "Successfully installed h5py" message.
 
 Testing parallel h5py
@@ -291,7 +288,7 @@ Example "submit_hello" batch script:
 
          module load gcc/12.1.0
          module load hdf5/1.14.3
-         module load miniforge3/23.11.0
+         module load miniforge3/24.3.0-0
 
          source activate h5pympi-summit
 
@@ -309,6 +306,8 @@ Example "submit_hello" batch script:
          #SBATCH -p gpu
          #SBATCH -t 0:05:00
 
+         # Only necessary if submitting like: sbatch --export=NONE ... (recommended)
+         # Do NOT include this line when submitting without --export=NONE
          unset SLURM_EXPORT_ENV
 
          cd $SLURM_SUBMIT_DIR
@@ -316,7 +315,7 @@ Example "submit_hello" batch script:
 
          module load gcc/9.3.0
          module load hdf5/1.10.7
-         module load python
+         module load miniforge3/23.11.0-0
 
          source activate h5pympi-andes
 
@@ -334,14 +333,16 @@ Example "submit_hello" batch script:
          #SBATCH -p batch
          #SBATCH -t 0:05:00
 
+         # Only necessary if submitting like: sbatch --export=NONE ... (recommended)
+         # Do NOT include this line when submitting without --export=NONE
          unset SLURM_EXPORT_ENV
 
          cd $SLURM_SUBMIT_DIR
          date
 
-         module load PrgEnv-gnu/8.3.3
-         module load hdf5/1.14.0
-         module load miniforge3/23.11.0
+         module load PrgEnv-gnu/8.5.0
+         module load cray-hdf5-parallel/1.12.2.9
+         module load miniforge3/23.11.0-0
 
          source activate h5pympi-frontier
 
@@ -435,7 +436,7 @@ Example "submit_h5py" batch script:
 
          module load gcc/12.1.0
          module load hdf5/1.14.3
-         module load miniforge3/23.11.0
+         module load miniforge3/24.3.0-0
 
          source activate h5pympi-summit
 
@@ -453,6 +454,8 @@ Example "submit_h5py" batch script:
          #SBATCH -p gpu
          #SBATCH -t 0:05:00
 
+         # Only necessary if submitting like: sbatch --export=NONE ... (recommended)
+         # Do NOT include this line when submitting without --export=NONE
          unset SLURM_EXPORT_ENV
 
          cd $SLURM_SUBMIT_DIR
@@ -460,7 +463,7 @@ Example "submit_h5py" batch script:
 
          module load gcc/9.3.0
          module load hdf5/1.10.7
-         module load python
+         module load miniforge3/23.11.0-0
 
          source activate h5pympi-andes
 
@@ -478,14 +481,16 @@ Example "submit_h5py" batch script:
          #SBATCH -p batch
          #SBATCH -t 0:05:00
 
+         # Only necessary if submitting like: sbatch --export=NONE ... (recommended)
+         # Do NOT include this line when submitting without --export=NONE
          unset SLURM_EXPORT_ENV
 
          cd $SLURM_SUBMIT_DIR
          date
 
-         module load PrgEnv-gnu/8.3.3
-         module load hdf5/1.14.0
-         module load miniforge3/23.11.0
+         module load PrgEnv-gnu/8.5.0
+         module load cray-hdf5-parallel/1.12.2.9
+         module load miniforge3/23.11.0-0
 
          source activate h5pympi-frontier
 
@@ -536,7 +541,7 @@ If following Option 2, then you must export ``LD_PRELOAD`` at both build **and r
       .. code-block:: bash
 
          # Option 1 (use a newer libssh with your conda's newer openssl):
-         $ conda create -n h5pympi-frontier python=3.10 libssh numpy -c conda-forge
+         $ conda create -n h5pympi-frontier python=3.10 libssh numpy=1.26.4 -c conda-forge
 
          # Option 2 (downgrade your conda's openssl to match Frontier's):
          $ conda create -n h5pympi-frontier python=3.10 openssl=1.1.1 numpy -c conda-forge

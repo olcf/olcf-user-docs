@@ -97,7 +97,7 @@ Orion is not available from Summit and Frontier does not mount Summit's Alpine2 
 Frontier also has access to the center-wide NFS-based filesystem (which provides user and project home areas). 
 Each compute node has two 1.92TB Non-Volatile Memory storage devices. See :ref:`frontier-data-storage` for more information. 
 
-Frontier connects to the center’s High Performance Storage System (HPSS) - for user and project archival storage - users can log in to the :ref:`dtn-user-guide` to move data to/from HPSS.
+Project's with a Frontier allocation also receive an archival storage area on Kronos. For more information on using Kronos, see the :ref:`kronos` seciton.
 
 Operating System
 ----------------
@@ -108,7 +108,7 @@ Frontier is running Cray OS 2.4 based on SUSE Linux Enterprise Server (SLES) ver
 GPUs
 ----
 
-Each Frontier compute node contains 4 AMD MI250X. The AMD MI250X has a peak performance of 53 TFLOPS in double-precision for modeling and simulation. Each MI250X contains 2 GPUs, where each GPU has a peak performance of 26.5 TFLOPS (double-precision), 110 compute units, and 64 GB of high-bandwidth memory (HBM2) which can be accessed at a peak of 1.6 TB/s. The 2 GPUs on an MI250X are connected with Infinity Fabric with a bandwidth of 200 GB/s (in each direction simultaneously).
+Each Frontier compute node contains 4 AMD MI250X. The AMD MI250X has a peak performance of 47.8 TFLOPS in vector-based double-precision for modeling and simulation. Each MI250X contains 2 GPUs, where each GPU has a peak performance of 23.9 TFLOPS (vector-based double-precision), 110 compute units, and 64 GB of high-bandwidth memory (HBM2) which can be accessed at a peak of 1.6 TB/s. The 2 GPUs on an MI250X are connected with Infinity Fabric with a bandwidth of 200 GB/s (in each direction simultaneously).
 
 
 Connecting
@@ -144,7 +144,7 @@ Transition from Alpine to Orion
 * On Alpine, there was no user-exposed concept of file striping, the process of dividing a file between the storage elements of the filesystem. Orion uses a feature called Progressive File Layout (PFL) that changes the striping of files as they grow. Because of this, we ask users not to manually adjust the file striping. If you feel the default striping behavior of Orion is not meeting your needs, please contact help@olcf.ornl.gov. 
 * As with Alpine, files older than 90 days are purged from Orion.  Please plan your data management and lifecycle at OLCF before generating the data. 
 
-For more detailed information about center-wide file systems and data archiving available on Frontier, please refer to the pages on :ref:`data-storage-and-transfers`. The subsections below give a quick overview of NFS, Lustre,and HPSS storage spaces as well as the on node NVMe "Burst Buffers" (SSDs).
+For more detailed information about center-wide file systems and data archiving available on Frontier, please refer to the pages on :ref:`data-storage-and-transfers`. The subsections below give a quick overview of NFS, Lustre, abd archival storage spaces as well as the on node NVMe "Burst Buffers" (SSDs).
 
 LFS setstripe wrapper
 ---------------------
@@ -199,21 +199,23 @@ Lustre Filesystem
 
 
 
-HPSS Archival Storage
----------------------
+Kronos Archival Storage
+-----------------------
 
-Please note that the HPSS is not mounted directly onto Frontier nodes. There are two main methods for accessing and moving data to/from the HPSS. The first is to use the command line utilities ``hsi`` and ``htar``. The second is to use the Globus data transfer service. See :ref:`data-hpss` for more information on both of these methods.
+Please note that the Kronos is not mounted directly onto Frontier nodes. There are two main methods for accessing and moving data to/from Kronos, either with standard cli utilities (scp, rsync, etc.) and via Globus using the "OLCF Kronos" collection. For more information on using Kronos, see the :ref:`kronos` section.
 
-+---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
-| Area                | Path                                        | Type           | Permissions |  Quota | Backups | Purged  | Retention  | On Compute Nodes |
-+=====================+=============================================+================+=============+========+=========+=========+============+==================+
-| Member Archive      | ``/hpss/prod/[projid]/users/$USER``         | HPSS           | 700         | 100 TB | No      | No      | 90 days    | No               |
-+---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
-| Project Archive     | ``/hpss/prod/[projid]/proj-shared``         | HPSS           | 770         | 100 TB | No      | No      | 90 days    | No               |
-+---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
-| World Archive       | ``/hpss/prod/[projid]/world-shared``        | HPSS           | 775         | 100 TB | No      | No      | 90 days    | No               |
-+---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
++---------------------+---------------------------------------------+----------------+-------------+----------+---------+---------+------------+------------------+
+| Area                | Path                                        | Type           | Permissions |  Quota   | Backups | Purged  | Retention  | On Compute Nodes |
++=====================+=============================================+================+=============+==========+=========+=========+============+==================+
+| Member Archive      | ``/nl/kronos/olcf/[projid]/users/$USER``    | Nearline       | 700         | 200 TB*  | No      | No      | 90 days    | No               |
++---------------------+---------------------------------------------+----------------+-------------+----------+---------+---------+------------+------------------+
+| Project Archive     | ``/nl/kronos/olcf/[projid]/proj-shared``    | Nearline       | 770         | 200 TB*  | No      | No      | 90 days    | No               |
++---------------------+---------------------------------------------+----------------+-------------+----------+---------+---------+------------+------------------+
+| World Archive       | ``/nl/kronos/olcf/[projid]/world-shared``   | Nearline       | 775         | 200 TB*  | No      | No      | 90 days    | No               |
++---------------------+---------------------------------------------+----------------+-------------+----------+---------+---------+------------+------------------+
 
+.. note::
+    The three archival storage areas above share a single 200TB per project quota.
 
 NVMe
 ----
@@ -286,7 +288,7 @@ Using Globus to Move Data to and from Orion
 ===========================================
 
 .. note::
-   After January 8, the Globus v4 endpoints will no longer be supported. Please use the OLCF HPSS (Globus 5) and OLCF DTN (Globus 5) endpoints.
+   After January 8, the Globus v4 collections will no longer be supported. Please use the OLCF Kronos and OLCF DTN (Globus 5) collections.
 
 The following example is intended to help users move data to and from the Orion filesystem.
 
@@ -295,21 +297,21 @@ Below is a summary of the steps for data transfer using Globus:
   1. Login to `globus.org <https://www.globus.org>`_ using your globus ID and password. If you do not have a globusID, set one up here:
   `Generate a globusID <https://www.globusid.org/create?viewlocale=en_US>`_.
 
-  2. Once you are logged in, Globus will open the “File Manager” page. Click the left side “Collection” text field in the File Manager and         type “OLCF DTN (Globus 5)”.
+  1. Once you are logged in, Globus will open the “File Manager” page. Click the left side “Collection” text field in the File Manager and         type “OLCF DTN (Globus 5)”.
 
-  3. When prompted, authenticate into the OLCF DTN (Globus 5) endpoint using your OLCF username and PIN followed by your RSA passcode.
+  2. When prompted, authenticate into the OLCF DTN (Globus 5) collection using your OLCF username and PIN followed by your RSA passcode.
 
-  4. Click in the left side “Path” box in the File Manager and enter the path to your data on Orion. For example,`/lustre/orion/stf007/proj-       shared/my_orion_data`. You should see a list of your files and folders under the left “Path” Box.
+  3. Click in the left side “Path” box in the File Manager and enter the path to your data on Orion. For example,`/lustre/orion/stf007/proj-       shared/my_orion_data`. You should see a list of your files and folders under the left “Path” Box.
 
-  5. Click on all files or folders that you want to transfer in the list. This will highlight them.
+  4. Click on all files or folders that you want to transfer in the list. This will highlight them.
 
-  6. Click on the right side “Collection” box in the File Manager and type the name of a second endpoint at OLCF or at another institution.        You can transfer data between different paths on the Orion filesystem with this method too; Just use the OLCF DTN (Globus 5) endpoint again      in the right side “Collection” box.
+  5. Click on the right side “Collection” box in the File Manager and type the name of a second collection at OLCF or at another institution.        You can transfer data between different paths on the Orion filesystem with this method too; Just use the OLCF DTN (Globus 5) collection again      in the right side “Collection” box.
 
-  7. Click in the right side “Path” box and enter the path where you want to put your data on the second endpoint's filesystem.
+  6. Click in the right side “Path” box and enter the path where you want to put your data on the second collection's filesystem.
 
-  8.  Click the left "Start" button.
+  7.  Click the left "Start" button.
 
-  9.  Click on “Activity“ in the left blue menu bar to monitor your transfer. Globus will send you an email when the transfer is complete.
+  8.  Click on “Activity“ in the left blue menu bar to monitor your transfer. Globus will send you an email when the transfer is complete.
 
 **Globus Warnings:**
 
@@ -354,7 +356,7 @@ The terms are often used interchangeably.
    :align: center
    :alt: Block diagram of the AMD Instinct MI200 multi-chip module
 
-The 110 CUs in each GPU deliver peak performance of 26.5 TFLOPS in double precision.
+The 110 CUs in each GPU deliver peak performance of 23.9 TFLOPS in double precision, or 47.9 TFLOPS if using the specialized Matrix cores.
 Also, each GPU contains 64 GB of high-bandwidth memory (HBM2) accessible at a peak
 bandwidth of 1.6 TB/s.
 The 2 GPUs in an MI250X are connected with [4x] GPU-to-GPU Infinity Fabric links
@@ -405,12 +407,13 @@ threads within each block (block size) can be specified in one, two, or three di
 during the kernel launch. Each thread can be identified with a unique id within the
 kernel, indexed along the X, Y, and Z dimensions.
 
-- Number of blocks that can be specified along each dimension in a grid: (2147483647, 2147483647, 2147483647)
+- Number of blocks that can be specified along each dimension in a grid: (2147483647, 65536, 65536)
 - Max number of threads that can be specified along each dimension in a block: (1024, 1024, 1024)
 
   - However, the total of number of threads in a block has an upper limit of 1024
     [i.e. (size of x dimension * size of y dimension * size of z dimension) cannot exceed
     1024].
+  - And the total number of threads in a kernel launch has an upper limit of 2147483647.
 
 Each block (or workgroup) of threads is assigned to a single Compute Unit i.e. a single
 block won’t be split across multiple CUs. The threads in a block are scheduled in units of
@@ -435,7 +438,7 @@ Each CU has 4 Matrix Core Units (the equivalent of NVIDIA's Tensor core units) a
 (which has 64 threads) is assigned to a single 16-wide SIMD unit such that the wavefront
 as a whole executes the instruction over 4 cycles, 16 threads per cycle. Since other
 wavefronts occupy the other three SIMD units at the same time, the total throughput still
-remains 1 instruction per cycle. Each CU maintains an instructions buffer for 10
+remains 1 instruction per cycle. Each CU maintains an instructions buffer for 8
 wavefronts and also maintains 256 registers where each register is 64 4-byte wide
 entries. 
 
@@ -529,6 +532,10 @@ Modules with dependencies are only available when the underlying dependencies, s
 | ``module spider <string>``               | Searches for modulefiles containing ``<string>``                                     |
 +------------------------------------------+--------------------------------------------------------------------------------------+
 
+.. note::
+
+    Due to the implementation of the module heirarchy on Frontier, ``module spider`` does not currently locate OLCF-provided Spack-built modulefiles in ``/sw/frontier``.
+
 
 Compilers
 ---------
@@ -568,27 +575,32 @@ Cray, AMD, and GCC compilers are provided through modules on Frontier. The Cray 
     It is highly recommended to use the Cray compiler wrappers (``cc``, ``CC``, and ``ftn``) whenever possible. See the next section for more details.
 
 
-+--------+-------------------------+-----------------+----------+-------------------+---------------------------------+
-| Vendor | Programming Environment | Compiler Module | Language | Compiler Wrapper  | Compiler                        |
-+========+=========================+=================+==========+===================+=================================+
-| Cray   | ``PrgEnv-cray``         | ``cce``         | C        | ``cc``            | ``craycc``                      |
-|        |                         |                 +----------+-------------------+---------------------------------+
-|        |                         |                 | C++      | ``CC``            | ``craycxx`` or ``crayCC``       |
-|        |                         |                 +----------+-------------------+---------------------------------+
-|        |                         |                 | Fortran  | ``ftn``           | ``crayftn``                     |
-+--------+-------------------------+-----------------+----------+-------------------+---------------------------------+
-| AMD    | ``PrgEnv-amd``          | ``amd``         | C        | ``cc``            | ``amdclang``                    |
-|        |                         |                 +----------+-------------------+---------------------------------+
-|        |                         |                 | C++      | ``CC``            | ``amdclang++``                  |
-|        |                         |                 +----------+-------------------+---------------------------------+
-|        |                         |                 | Fortran  | ``ftn``           | ``amdflang``                    |
-+--------+-------------------------+-----------------+----------+-------------------+---------------------------------+
-| GCC    | ``PrgEnv-gnu``          | ``gcc``         | C        | ``cc``            | ``${GCC_PATH}/bin/gcc``         |
-|        |                         |                 +----------+-------------------+---------------------------------+
-|        |                         |                 | C++      | ``CC``            | ``${GCC_PATH}/bin/g++``         |
-|        |                         |                 +----------+-------------------+---------------------------------+
-|        |                         |                 | Fortran  | ``ftn``           | ``${GCC_PATH}/bin/gfortran``    |
-+--------+-------------------------+-----------------+----------+-------------------+---------------------------------+
++--------+-------------------------+-----------------+----------+-------------------+----------------------------+
+| Vendor | Programming Environment | Compiler Module | Language | Compiler Wrapper  | Compiler                   |
++========+=========================+=================+==========+===================+============================+
+| Cray   | ``PrgEnv-cray``         | ``cce``         | C        | ``cc``            | ``craycc``                 |
+|        |                         |                 +----------+-------------------+----------------------------+
+|        |                         |                 | C++      | ``CC``            | ``craycxx`` or ``crayCC``  |
+|        |                         |                 +----------+-------------------+----------------------------+
+|        |                         |                 | Fortran  | ``ftn``           | ``crayftn``                |
++--------+-------------------------+-----------------+----------+-------------------+----------------------------+
+| AMD    | ``PrgEnv-amd``          | ``amd``         | C        | ``cc``            | ``amdclang``               |
+|        |                         |                 +----------+-------------------+----------------------------+
+|        |                         |                 | C++      | ``CC``            | ``amdclang++``             |
+|        |                         |                 +----------+-------------------+----------------------------+
+|        |                         |                 | Fortran  | ``ftn``           | ``amdflang``               |
++--------+-------------------------+-----------------+----------+-------------------+----------------------------+
+| GCC    | ``PrgEnv-gnu``          | ``gcc-native``  | C        | ``cc``            | ``gcc``                    |
+|        |                         | or              +----------+-------------------+----------------------------+
+|        |                         | ``gcc`` (<12.3) | C++      | ``CC``            | ``g++``                    |
+|        |                         |                 +----------+-------------------+----------------------------+
+|        |                         |                 | Fortran  | ``ftn``           | ``gfortran``               |
++--------+-------------------------+-----------------+----------+-------------------+----------------------------+
+
+.. note::
+
+    The ``gcc-native`` compiler module was introduced in the December 2023 release of the HPE/Cray Programming Environment (CrayPE) and replaces ``gcc``.
+    ``gcc`` provides GCC installations that were packaged within CrayPE, while ``gcc-native`` provides GCC installations outside of CrayPE.
 
 
 Cray Programming Environment and Compiler Wrappers
@@ -602,7 +614,9 @@ For example, to load the AMD programming environment, do: 
     
     module load PrgEnv-amd
 
-This module will setup your programming environment with paths to software and libraries that are compatible with AMD compilers.
+This module will setup your programming environment with paths to software and libraries that are compatible with AMD host compilers.
+
+When loading non-default versions of Cray-provided components, please see :ref:`understanding-the-compatibility-of-compilers-rocm-and-cray-mpich` for information about loading a set of compatible Cray modules.
 
 .. note::
    Use the ``-craype-verbose`` flag to display the full include and link information used by the Cray compiler wrappers. This must be called on a file to see the full output (e.g., ``CC -craype-verbose test.cpp``).
@@ -614,21 +628,12 @@ Exposing The ROCm Toolchain to your Programming Environment
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If you need to add the tools and libraries related to ROCm, the framework for targeting AMD GPUs, to your path, you will need to use a version of ROCm that is compatible with your programming environment.
+ROCm can be loaded with: ``module load rocm/X.Y.Z``, or to load the default ROCm version, ``module load rocm``.
 
-The following modules help you expose the ROCm Toolchain to your programming Environment: 
-
-
-+-----------------------------------+------------------------------------------+--------------------------------------------------------------+
-| Programming Environment Module    | Module that gets you ROCm Toolchain      | How you load it:                                             |
-|                                   |                                          |                                                              |
-+===================================+==========================================+==============================================================+
-| ``PrgEnv-amd``                    |  ``amd``                                 | amd  is loaded automatically with ``module load PrgEnv-amd`` |
-+-----------------------------------+------------------------------------------+--------------------------------------------------------------+
-| ``PrgEnv-cray`` or ``PrgEnv-gnu`` |  ``amd-mixed``                           | ``module load amd-mixed``                                    |
-+-----------------------------------+------------------------------------------+--------------------------------------------------------------+
 
 .. note::
-    Both the CCE and ROCm compilers are Clang-based, so please be sure to use consistent (major) Clang versions when using them together. You can check which version of Clang is being used with CCE and ROCm by giving the ``--version`` flag to ``CC`` and ``hipcc``, respectively.
+    Both the CCE and ROCm compilers are Clang-based, so please be sure to use consistent (major) Clang versions when using them together. You can check which version of Clang is being used with CCE and ROCm by giving the ``--version`` flag to ``CC`` and ``amdclang``, respectively.
+    Please see :ref:`understanding-the-compatibility-of-compilers-rocm-and-cray-mpich` for information about loading a compatible set of modules.
 
 MPI
 ---
@@ -657,24 +662,13 @@ GPU-Aware MPI
 
 To use GPU-aware Cray MPICH with Frontier's PrgEnv modules, users must set the following modules and environment variables:
 
-If using ``PrgEnv-amd``:
-
 .. code:: bash
     
     module load craype-accel-amd-gfx90a
-    
-    export MPICH_GPU_SUPPORT_ENABLED=1
-    
-    
-If using ``PrgEnv-cray``:   
-
-.. code:: bash
-    
-    module load craype-accel-amd-gfx90a
-    module load amd-mixed
+    module load rocm
     
     export MPICH_GPU_SUPPORT_ENABLED=1    
-    
+
 
 .. note::
 
@@ -696,10 +690,10 @@ where the include path implies that ``#include <hip/hip_runtime.h>`` is included
 
 
 
-2. Compiling with ``hipcc``
-"""""""""""""""""""""""""""
+2. Compiling without the Cray compiler wrappers, e.g. ``hipcc``
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-To use ``hipcc`` with GPU-aware Cray MPICH, use the following environment variables to setup the needed header files and libraries. 
+To use ``hipcc`` with GPU-aware Cray MPICH, the following is needed to setup the needed header files and libraries. 
 
 .. code:: bash
 
@@ -710,46 +704,118 @@ To use ``hipcc`` with GPU-aware Cray MPICH, use the following environment variab
       ${PE_MPICH_GTL_DIR_amd_gfx90a} ${PE_MPICH_GTL_LIBS_amd_gfx90a}
 
     HIPFLAGS = --offload-arch=gfx90a
-    
 
-Determining the Compatibility of Cray MPICH and ROCm
-""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-Compatibility between Cray MPICH and ROCm is required in order to use GPU-aware MPI.
-Releases of ``cray-mpich`` are each built with a specific version of ROCm, and compatibility across multiple versions is not guaranteed.
-OLCF will maintain compatible default modules when possible.
-If using non-default modules, you can determine compatibility by reviewing the *Product and OS Dependencies* section in the ``cray-mpich`` release notes.
-This can be displayed by running ``module show cray-mpich/<version>``. If the notes indicate compatibility with *AMD ROCM X.Y or later*, only use ``rocm/X.Y.Z`` modules.
+.. _understanding-the-compatibility-of-compilers-rocm-and-cray-mpich:
+
+Understanding the Compatibility of Compilers, ROCm, and Cray MPICH
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+There are three primary sources of compatibility required to successfully build and run on Frontier:
+
+ 1. Compatible Compiler & ROCm toolchain versions
+ 2. Compatible ROCm & Cray MPICH versions
+ 3. Compatibility with other CrayPE-provided software
 
 .. note::
 
-    If using a non-default version of ``cray-mpich``, you must *prepend* either ``${CRAY_LD_LIBRARY_PATH}`` or ``${CRAY_MPICH_DIR}/lib`` and ``${CRAY_MPICH_ROOTDIR}/gtl/lib`` (which are a subset of ``${CRAY_LD_LIBRARY_PATH}``) to your ``LD_LIBRARY_PATH`` at run time or your executable's rpath at build time.
+    If using non-default versions of any ``cray-*`` module, you must *prepend* ``${CRAY_LD_LIBRARY_PATH}`` (or the path to ``lib64`` for your specific ``cray-*`` component) to your ``LD_LIBRARY_PATH`` at run time or your executable's rpath at build time.
 
-The compatibility table below was determined by testing of the linker and basic GPU-aware MPI functions with all current combinations of ``cray-mpich`` and ROCm modules on Frontier.
-Alongside ``cray-mpich``, we load the corresponding ``cpe`` module, which loads other important modules such as ``cray-pmi`` and ``craype``.
+Compatible Compiler & ROCm toolchain versions
+"""""""""""""""""""""""""""""""""""""""""""""
+
+All compilers in the same HPE/Cray Programming Environment (CrayPE) release are generally ABI-compatible (e.g. code generated by CCE can be linked against code compiled by GCC).
+However, the AMD and CCE compilers are both LLVM/Clang-based, and it is recommended to use the same major LLVM version when cross-compiling.
+CCE's module version indicates the base LLVM version, but for AMD, you must run ``amdclang --version``.
+For example, ROCm/5.3.0 is based on LLVM 15.0.0.
+It is strongly discouraged to use ROCm/5.3.0 with CCE/16.0.1, which is based on LLVM 16.
+The following table shows the recommended ROCm version for each CCE version, along with the CPE version:
+
++-------------+-------+---------------------------+
+|    CCE      |  CPE  | Recommended ROCm Version  |
++=============+=======+===========================+
+|   15.0.0    | 22.12 | 5.3.0                     |
++-------------+-------+---------------------------+
+|   15.0.1    | 23.03 | 5.3.0                     |
++-------------+-------+---------------------------+
+|   16.0.0    | 23.05 | 5.5.1                     |
++-------------+-------+---------------------------+
+|   16.0.1    | 23.09 | 5.5.1                     |
++-------------+-------+---------------------------+
+|   17.0.0    | 23.12 | 5.7.0 or 5.7.1            |
++-------------+-------+---------------------------+
+|   17.0.1    | 24.03 | 6.0.0                     |
++-------------+-------+---------------------------+
+|   18.0.0    | 24.07 | 6.1.3                     |
++-------------+-------+---------------------------+
+
+.. note::
+
+    Recall that the CPE module is a meta-module that simple loads the correct version for each Cray-provided module (e.g. CCE, Cray MPICH, Cray Libsci).
+    This is the best way to load the versions of modules from a specific CrayPE release.
+
+
+Compatible ROCm & Cray MPICH versions
+"""""""""""""""""""""""""""""""""""""
+
+Compatibility between Cray MPICH and ROCm is required in order to use GPU-aware MPI.
+Releases of ``cray-mpich`` are each compiled using a specific version of ROCm, and compatibility across multiple versions is not guaranteed.
+OLCF will maintain compatible default modules when possible.
+If using non-default modules, you can determine compatibility by reviewing the *Product and OS Dependencies* section in the ``cray-mpich`` release notes.
+This can be displayed by running ``module show cray-mpich/<version>``. If the notes indicate compatibility with *AMD ROCM X.Y or later*, only use ``rocm/X.Y.Z`` modules.
+If you are loading compatible ROCm and Cray MPICH versions but still getting errors, try setting ``MPICH_VERSION_DISPLAY=1`` to verify the correct Cray MPICH version is being used at run-time.
+If it is not, verify you are prepending ``LD_LIBRARY_PATH`` with ``CRAY_LD_LIBRARY_PATH`` or ``${MPICH_DIR}/lib``.
+The following compatibility table below was determined by testing of the linker and basic GPU-aware MPI functions with all current combinations of ``cray-mpich`` and ROCm modules on Frontier.
+Alongside ``cray-mpich``, we load the corresponding ``cpe`` module, which loads other important modules for MPI such as ``cray-pmi`` and ``craype``.
 It is strongly encouraged to load a ``cpe`` module when using non-default modules.
+This ensures that all CrayPE-provided modules are compatible.
 An asterisk indicates the latest officially supported version of ROCm for each ``cray-mpich`` version.
 
-+------------+-------+-----------------------------------------------------------------------+
-| cray-mpich |  cpe  |                              ROCm                                     |
-+============+=======+=======================================================================+
-|   8.1.17   | 22.06 | 5.4.3, 5.4.0, 5.3.0, 5.2.0, 5.1.0*                                    |
-+------------+-------+-----------------------------------------------------------------------+
-|   8.1.23   | 22.12 | 5.4.3, 5.4.0, 5.3.0*, 5.2.0, 5.1.0                                    |
-+------------+-------+-----------------------------------------------------------------------+
-|   8.1.25   | 23.03 | 5.4.3, 5.4.0, 5.3.0*, 5.2.0, 5.1.0                                    |
-+------------+-------+-----------------------------------------------------------------------+
-|   8.1.26   | 23.05 | 6.0.0, 5.7.1, 5.7.0, 5.6.0, 5.5.1*, 5.4.3, 5.4.0, 5.3.0, 5.2.0, 5.1.0 |
-+------------+-------+-----------------------------------------------------------------------+
-|   8.1.27   | 23.09 | 6.0.0, 5.7.1, 5.7.0, 5.6.0, 5.5.1*, 5.4.3, 5.4.0, 5.3.0, 5.2.0, 5.1.0 |
-+------------+-------+-----------------------------------------------------------------------+
-|   8.1.28   | 23.12 | 6.0.0, 5.7.1, 5.7.0*, 5.6.0, 5.5.1, 5.4.3, 5.4.0, 5.3.0, 5.2.0, 5.1.0 |
-+------------+-------+-----------------------------------------------------------------------+
++------------+-------+--------------------------------------------------+
+| cray-mpich |  cpe  |                              ROCm                |
++============+=======+==================================================+
+|   8.1.23   | 22.12 | 5.4.3, 5.4.0, 5.3.0*                             |
++------------+-------+--------------------------------------------------+
+|   8.1.25   | 23.03 | 5.4.3, 5.4.0*, 5.3.0                             |
++------------+-------+--------------------------------------------------+
+|   8.1.26   | 23.05 | 5.7.1, 5.7.0, 5.6.0, 5.5.1*, 5.4.3, 5.4.0, 5.3.0 |
++------------+-------+--------------------------------------------------+
+|   8.1.27   | 23.09 | 5.7.1, 5.7.0, 5.6.0, 5.5.1*, 5.4.3, 5.4.0, 5.3.0 |
++------------+-------+--------------------------------------------------+
+|   8.1.28   | 23.12 | 5.7.1, 5.7.0*, 5.6.0, 5.5.1, 5.4.3, 5.4.0, 5.3.0 |
++------------+-------+--------------------------------------------------+
+|   8.1.29   | 24.03 | 6.1.3, 6.0.0*                                    |
++------------+-------+--------------------------------------------------+
+|   8.1.30   | 24.07 | 6.1.3*, 6.0.0                                    |
++------------+-------+--------------------------------------------------+
 
 .. note::
 
     OLCF recommends using the officially supported ROCm version (with asterisk) for each ``cray-mpich`` version.
     Newer versions were tested using a sample of MPI operations and there may be undiscovered incompatibility.
+
+Compatibility with other CrayPE-provided Software
+"""""""""""""""""""""""""""""""""""""""""""""""""
+
+The HPE/Cray Programming Environment (CrayPE) provides many libraries for use on Frontier, including the well-known libraries like Cray MPICH, Cray Libsci, and Cray FFTW.
+CrayPE also has many modules that operate in the background and can easily be overlooked.
+For example, the ``craype`` module provides the ``cc``, ``CC``, and ``ftn`` Cray compiler drivers.
+These drivers are written to link to specific libraries (e.g. the ``ftn`` wrapper in September 2023 PE links to ``libtcmalloc_minimal.so``),
+which may not be needed by compiler versions other than the one they were released with.
+
+For the full compatibility of your loaded CrayPE environment, we strongly recommended loading the ``cpe`` module of your desired CrayPE release (version is the last two digits of the year and the two-digit month, e.g. September 2023 is version 23.09).
+For example, to load the September 2023 PE (CCE 16.0.1, Cray MPICH 8.1.27, ROCm 5.5.1 compatibility), 
+you would run the following commands:
+
+.. code:: bash
+
+    module load PrgEnv-cray
+    # Load the cpe module after your desired PE, but before rocm -- sometimes cpe attempts to set a rocm version
+    module load cpe/23.09
+    module load rocm/5.5.1
+
+    # Since these modules are not default, make sure to prepend CRAY_LD_LIBRARY_PATH to LD_LIBRARY_PATH
+    export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
 
 
 OpenMP
@@ -803,7 +869,7 @@ This section shows how to compile with OpenMP Offload using the different compil
 
     If invoking ``amdclang``, ``amdclang++``, or ``amdflang`` directly for ``openmp offload``, or using ``hipcc`` you will need to add: 
     
-    ``-fopenmp -target x86_64-pc-linux-gnu -fopenmp-targets=amdgcn-amd-amdhsa -Xopenmp-target=amdgcn-amd-amdhsa -march=gfx90a``.
+    ``-fopenmp -fopenmp-targets=amdgcn-amd-amdhsa -Xopenmp-target=amdgcn-amd-amdhsa -march=gfx90a``.
 
 
 OpenACC
@@ -818,19 +884,18 @@ compiler with added support for OpenACC. It can be obtained by loading the UMS m
 +--------+-------------------+-----------+----------------------------------+-------------------+-------------------------------------+
 | Vendor | Module            | Language  | Compiler                         | Flags             | Support                             |
 +========+===================+===========+==================================+===================+=====================================+
-| Cray   | ``cce``           | C, C\+\+  | No support                       |                   |		                      |
-|        |                   |           |                                  |                   |	                              |
+| Cray   | ``cce``           | C, C\+\+  | No support                       |                   |                                     |
+|        |                   |           |                                  |                   |                                     |
 |        |                   +-----------+----------------------------------+-------------------+-------------------------------------+
 |        |                   | Fortran   | ``ftn`` (wraps ``crayftn``)      | | ``-h acc``      | Full support for OpenACC 2.0        |
 |        |                   |           |                                  |                   | Partial support for OpenACC 2.x/3.x |
 +--------+-------------------+-----------+----------------------------------+-------------------+-------------------------------------+
-| UMS    | ``PrgEnv-cray``   | C, C\+\+  | ``clang``                        | | ``-fopenacc``   | Experimental. Contact	              |
-| module | ``ums``           |           |                                  |                   |	Joel Denny dennyje@ornl.gov   |
+| UMS    | ``PrgEnv-cray``   | C, C\+\+  | ``clang``                        | | ``-fopenacc``   | Experimental. Contact               |
+| module | ``ums``           |           |                                  |                   |    Joel Denny dennyje@ornl.gov      |
 |        | ``um025``         +-----------+----------------------------------+-------------------+-------------------------------------+
 |        | ``clacc``         | Fortran   | No support                       |                   |                                     |
 |        |                   |           |                                  |                   |                                     |
 +--------+-------------------+-----------+----------------------------------+-------------------+-------------------------------------+
-
 
 
 HIP
@@ -891,6 +956,37 @@ This section shows how to compile HIP + OpenMP CPU threading hybrid codes.
 .. note:: 
    
     hipcc requires the ROCm Toolclain, See :ref:`exposing-the-rocm-toolchain-to-your-programming-environment`
+
+SYCL
+----
+
+This section shows how to compile SYCL codes using the oneAPI DPC++ compiler.
+
+.. note::
+
+    Setup and load the oneAPI and ROCm modules:
+
+    .. code::
+
+      module use /sw/frontier/ums/ums015/modulefiles
+      module load oneapi/tbb oneapi/oclfpga oneapi/compiler-rt oneapi/compiler
+      module load rocm/5.4.3
+
++-------------------+--------------------------------------------------------------------------------------------------------------------------+
+| Compiler          | Compile/Link Flags, Header Files, and Libraries                                                                          |
++===================+==========================================================================================================================+
+| ``icpx``          | ``CFLAGS = -fsycl -fsycl-targets=amdgcn-amd-amdhsa -Xsycl-target-backend --offload-arch=gfx90a``, or                     |
+|                   | ``CFLAGS = -fsycl -fsycl-targets=amd_gpu_gfx90a``                                                                        |
++-------------------+--------------------------------------------------------------------------------------------------------------------------+
+
+Additional documentation on the DPC++ support for AMD can be found on
+`Codeplay's developer website
+<https://developer.codeplay.com/products/oneapi/amd/2024.1.0/guides/>`__, in
+particular the pages covering `common optimizations
+<https://developer.codeplay.com/products/oneapi/amd/2024.1.0/guides/performance/common-optimizations>`__
+or `troubleshooting
+<https://developer.codeplay.com/products/oneapi/amd/2024.1.0/guides/troubleshooting>`__
+can be helpful.
 
 ----
 
@@ -1013,18 +1109,18 @@ Consider the following batch script:
 .. code-block:: bash
    :linenos:
 
-    #!/bin/bash
-    #SBATCH -A ABC123
-    #SBATCH -J RunSim123
-    #SBATCH -o %x-%j.out
-    #SBATCH -t 1:00:00
-    #SBATCH -p batch
-    #SBATCH -N 1024
+   #!/bin/bash
+   #SBATCH -A ABC123
+   #SBATCH -J RunSim123
+   #SBATCH -o %x-%j.out
+   #SBATCH -t 1:00:00
+   #SBATCH -p batch
+   #SBATCH -N 1024
 
-    cd $MEMBERWORK/abc123/Run.456
-    cp $PROJWORK/abc123/RunData/Input.456 ./Input.456
-    srun ...
-    cp my_output_file $PROJWORK/abc123/RunData/Output.456
+   cd $MEMBERWORK/abc123/Run.456
+   cp $PROJWORK/abc123/RunData/Input.456 ./Input.456
+   srun ...
+   cp my_output_file $PROJWORK/abc123/RunData/Output.456
 
 In the script, Slurm directives are preceded by ``#SBATCH``, making them appear as comments to the shell. Slurm looks for these directives through the first non-comment, non-whitespace line. Options after that will be ignored by Slurm (and the shell).
 
@@ -1064,6 +1160,9 @@ Interactive Jobs
 Most users will find batch jobs an easy way to use the system, as they allow you to "hand off" a job to the scheduler, allowing them to focus on other tasks while their job waits in the queue and eventually runs. Occasionally, it is necessary to run interactively, especially when developing, testing, modifying or debugging a code.
 
 Since all compute resources are managed and scheduled by Slurm, it is not possible to simply log into the system and immediately begin running parallel codes interactively. Rather, you must request the appropriate resources from Slurm and, if necessary, wait for them to become available. This is done through an "interactive batch" job. Interactive batch jobs are submitted with the ``salloc`` command. Resources are requested via the same options that are passed via ``#SBATCH`` in a regular batch script (but without the ``#SBATCH`` prefix). For example, to request an interactive batch job with the same resources that the batch script above requests, you would use ``salloc -A ABC123 -J RunSim123 -t 1:00:00 -p batch -N 1024``. Note there is no option for an output file...you are running interactively, so standard output and standard error will be displayed to the terminal.
+
+.. warning::
+   Indicating your shell in your ``salloc`` command is NOT recommended (e.g., ``salloc ... /bin/bash``). Doing so causes your compute job to start on a login node by default rather than automatically moving you to a compute node. 
 
 .. _common-slurm-options:
 
@@ -1243,19 +1342,30 @@ parameter, which all jobs in the bin receive.
 +-----+-----------+-----------+----------------------+--------------------+
 
 
-``batch`` Queue Policy
-^^^^^^^^^^^^^^^^^^^^^^
+``batch`` Partition (queue) Policy
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The ``batch`` queue is the default queue for production work on Frontier. Most work on Frontier is handled through this queue. The following policies are enforced for the ``batch`` queue:
+The ``batch`` partition (queue) is the default partition for production work on Frontier. Most work on Frontier is handled through this partition. The following policies are enforced for the ``batch`` partition:
 
 * Limit of four *eligible-to-run* jobs per user. (Jobs in excess of this number will be held, but will move to the eligible-to-run state at the appropriate time.)
-* Users may have only 100 jobs queued in the ``batch`` queue at any time (this includes jobs in all states). Additional jobs will be rejected at submit time.
+* Users may have only 100 jobs queued across all partitions at any time (this includes jobs in all states) i.e. jobs submitted in different partitions on Frontier are added up together to check if its within the 100 queued jobs limit. Additional jobs will be rejected at submit time.
+
+
+``extended`` Partition (queue) Policy
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The ``extended`` partition (queue) is designated for smaller long-running jobs on Frontier. The following policies are enforced for the ``extended`` partition:
+
+* 24-Hour maximum wall time for each queued job.
+* 64-Node maximum job size for each queued job. 
+* Each user will be allowed 1 running job and 1 *eligible-to-run* job at a given time. Any additional queued jobs will be held in an ineligible state until the previous job runs. 
+* Users may have only 100 jobs queued across all partitions at any time (this includes jobs in all states) i.e. jobs submitted in different partitions on Frontier are added up together to check if its within the 100 queued jobs limit. Additional jobs will be rejected at submit time.
 
 
 ``debug`` Quality of Service Class
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The ``debug`` quality of service (QOS) class can be used to access Frontier's compute resources for short non-production debug tasks. The QOS provides a higher priority compare to jobs of the same job size bin in production queues. Production work and job chaining using the ``debug`` QOS is prohibited. Each user is limited to one job in any state at any one point. Attempts to submit multiple jobs to this QOS will be rejected upon job submission.
+The ``debug`` quality of service (QOS) class can be used to access Frontier's compute resources for short non-production debug tasks. The QOS provides a higher priority compare to jobs of the same job size bin in production partitions. Production work and job chaining using the ``debug`` QOS is prohibited. Each user is limited to one job in any state at any one point. Attempts to submit multiple jobs to this QOS will be rejected upon job submission.
 
 To submit a job to the ``debug`` QOS, add the `-q debug` option to your ``sbatch`` or ``salloc`` command or ``#SBATCH -q debug`` to your job script.
 
@@ -2450,6 +2560,109 @@ The default behavior can be changed by using the ``MPICH_OFI_NIC_POLICY``
 environment variable (see ``man mpi`` for available options).
 
 
+Ensemble Jobs
+-------------
+
+For many applications and use cases, the ability to launch many copies of the same binary in an independent context is needed.
+This section highlights a few recommended solutions to launching ensemble runs on Frontier.
+
+Before covering the tools that can be useful for this, be advised that the most reliable solution to this problem will be the use of MPI sub-communicators by your application.
+For example, the LAMMPS Molecular Dynamics software supports a ``partition`` command, which can create many independent simulations from a single ``srun`` launch.
+
+Single-process ensemble members
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If you are able to fit each ensemble member onto a single MPI rank and single AMD Instinct MI250X GCD (8 GCD's per node), the most reliable solution is to use a single ``srun`` as follows:
+
+.. code:: bash
+
+    srun -N $SLURM_NNODES -n $((SLURM_NNODES*8)) -c 7 --gpus-per-task=1 --gpu-bind=closest ./wrapper.sh
+
+Where ``wrapper.sh`` is a shell script that launches your application.
+This shell script is simply for convenience, in case you wish to vary the parameters to your application based on MPI rank.
+This approach is fastest, most reliable, and easily scales to the entirety of Frontier.
+
+Using multiple simultanoues srun's
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If you are not able to fit each ensemble member onto a single MPI rank and GCD, a common approach is to launch multiple ``srun`` processes in the background simultaneously.
+For example:
+
+.. code:: bash
+
+    for node in $(scontrol show hostnames); do
+        srun -N 1 -n 8 -c 7 --gpus-per-task=1 --gpu-bind=closest <executable> &
+    done
+    # Wait for srun's to all finish
+    wait
+
+Each ``srun`` communicates to the Slurm controller node (which is shared among all users) when it is launched.
+Large amounts of ``srun`` processes can temporarily overwhelm the Slurm controller, making commands like ``sbatch`` and ``squeue`` hang.
+This approach can be fast, but is unreliable and does not scale to a significant portion of Frontier, and potentially overloads the Slurm controller.
+We do not yet recommend this approach beyond 100 simultaneous ``srun``'s.
+
+Slurm version 24.05 (installed on Frontier August 20, 2024) introduces the ``--stepmgr`` flag for ``sbatch``, which uses the first node in the allocation to manage job steps instead of the Slurm controller.
+This feature should substantially improve the ability to run many simultaneous ``srun``'s.
+However, this flag does not currently work reliably on Frontier, and it is not recommended at this time.
+This functionality can be re-created by using the Flux scheduler within Slurm, described in the next section.
+
+Flux in a Slurm allocation
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+`Flux <https://hpc-tutorials.llnl.gov/flux/>`_ is a light-weight batch scheduler that can be run inside of a Slurm allocation.
+This effectively creates a local queue of jobs that you alone can submit to and manage.
+Functionally, this achieves the same objective as launching multiple ``srun``'s in the background,
+but has the added benefit that Flux can automatically start the next job on a node as each job finishes.
+Using ``srun``, you are forced to use ``wait`` to wait for all processes to finish, before launching another flight of processes.
+Flux can more readily load-balance workloads across nodes inside a Slurm job allocation.
+
+The following code is an example of how to launch an ensemble where each job step is run on one node using Flux:
+
+.. code:: bash
+
+    #SBATCH -A <proj>
+    #SBATCH -t <timelimit>
+    #SBATCH -N 8
+
+    module load rocm
+    module load hwloc/2.9.1-gpu # Flux requires a GPU-enabled hwloc to see the GPUs
+    module load flux
+
+    # A few Flux commands to note:
+    #   flux start -- starts the Flux server daemons
+    #   flux resource list -- lists the resources available to Flux
+    #   flux submit -- submits & detaches from a Flux job. Returns a hash string identifying the submitted job
+    #   flux jobs -- synonymous to `squeue`, displays the Flux queue
+    #   flux run -- submits & runs a Flux job (does not return prompt until command is complete)
+    #   flux queue drain -- similar to `wait`, blocks until Flux queue is empty
+
+    # Flux flags:
+    #   -N 1 -- 1 node
+    #   -n 8 -- 8 tasks
+    #   -c 7 -- 7 cores per task
+    #   --gpus-per-task=1 -- binds 1 GPU per task (DOES NOT WORK currently)
+    # We launch one Flux process per node, with all available CPUs and GPUs allocated to it
+    # Flux understands that it was launched in a Slurm allocation, and only the Flux daemon on the first node is listening to commands
+    srun -N $SLURM_NNODES -n $SLURM_NNODES -c 56 --gpus-per-node=8 flux start \
+        "flux resource list;
+        for i in \$(seq 1 $SLURM_NNODES); do
+            flux submit -N 1 -n 8 -c 7 -x --gpus-per-task=1 --output=output.\$i.txt bash -c 'hostname; env | grep VISIBLE; /usr/bin/time ./vadd';
+        done;
+        flux queue drain;"
+
+
+This approach is slightly slower than using background ``srun``'s, but is much more reliable and flexible.
+For example, if you have 100 nodes and 500 single-node jobs to run, you can submit all 500 job steps to the Flux scheduler and it will run them as soon as a node is available.
+
+A simple performance test was perfomed using 500 nodes, assigning 1 job to each node using ``flux submit``, as in the above example.
+It took 2 minutes to submit the 500 jobs to Flux.
+
+.. note::
+
+    The Flux ``--gpus-per-task=1`` flag does not currently work as expected. With this flag, all 8 GPUs on a node will be seen by each rank.
+    Users should either explicitly set ``ROCR_VISIBLE_DEVICES`` for each rank to a different GPU, or provide information to the application about how to bind to a single GPU.
+
+
 Tips for Launching at Scale
 ---------------------------
 
@@ -2604,77 +2817,77 @@ and here is the output from that script:
 
     Tue 28 Mar 2023 05:01:41 PM EDT
     *****ldd ./lmp*****
-    	linux-vdso.so.1 (0x00007fffeda02000)
-    	libgcc_s.so.1 => /lib64/libgcc_s.so.1 (0x00007fffed5bb000)
-    	libpthread.so.0 => /lib64/libpthread.so.0 (0x00007fffed398000)
-    	libm.so.6 => /lib64/libm.so.6 (0x00007fffed04d000)
-    	librt.so.1 => /lib64/librt.so.1 (0x00007fffece44000)
-    	libamdhip64.so.4 => /opt/rocm-4.5.2/lib/libamdhip64.so.4 (0x00007fffec052000)
-    	libmpi_cray.so.12 => /opt/cray/pe/lib64/libmpi_cray.so.12 (0x00007fffe96cc000)
-    	libmpi_gtl_hsa.so.0 => /opt/cray/pe/lib64/libmpi_gtl_hsa.so.0 (0x00007fffe9469000)
-    	libhsa-runtime64.so.1 => /opt/rocm-5.3.0/lib/libhsa-runtime64.so.1 (0x00007fffe8fdc000)
-    	libhwloc.so.15 => /sw/frontier/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/hwloc-2.5.0-4p6jkgf5ez6wr27pytkzyptppzpugu3e/lib/libhwloc.so.15 (0x00007fffe8d82000)
-    	libdl.so.2 => /lib64/libdl.so.2 (0x00007fffe8b7e000)
-    	libhipfft.so => /opt/rocm-5.3.0/lib/libhipfft.so (0x00007fffed9d2000)
-    	libstdc++.so.6 => /usr/lib64/libstdc++.so.6 (0x00007fffe875b000)
-    	libc.so.6 => /lib64/libc.so.6 (0x00007fffe8366000)
-    	/lib64/ld-linux-x86-64.so.2 (0x00007fffed7da000)
-    	libamd_comgr.so.2 => /opt/rocm-5.3.0/lib/libamd_comgr.so.2 (0x00007fffe06e0000)
-    	libnuma.so.1 => /usr/lib64/libnuma.so.1 (0x00007fffe04d4000)
-    	libfabric.so.1 => /opt/cray/libfabric/1.15.2.0/lib64/libfabric.so.1 (0x00007fffe01e2000)
-    	libatomic.so.1 => /usr/lib64/libatomic.so.1 (0x00007fffdffd9000)
-    	libpmi.so.0 => /opt/cray/pe/lib64/libpmi.so.0 (0x00007fffdfdd7000)
-    	libpmi2.so.0 => /opt/cray/pe/lib64/libpmi2.so.0 (0x00007fffdfb9e000)
-    	libquadmath.so.0 => /usr/lib64/libquadmath.so.0 (0x00007fffdf959000)
-    	libmodules.so.1 => /opt/cray/pe/lib64/cce/libmodules.so.1 (0x00007fffed9b5000)
-    	libfi.so.1 => /opt/cray/pe/lib64/cce/libfi.so.1 (0x00007fffdf3b4000)
-    	libcraymath.so.1 => /opt/cray/pe/lib64/cce/libcraymath.so.1 (0x00007fffed8ce000)
-    	libf.so.1 => /opt/cray/pe/lib64/cce/libf.so.1 (0x00007fffed83b000)
-    	libu.so.1 => /opt/cray/pe/lib64/cce/libu.so.1 (0x00007fffdf2ab000)
-    	libcsup.so.1 => /opt/cray/pe/lib64/cce/libcsup.so.1 (0x00007fffed832000)
-    	libamdhip64.so.5 => /opt/rocm-5.3.0/lib/libamdhip64.so.5 (0x00007fffdda8a000)
-    	libelf.so.1 => /usr/lib64/libelf.so.1 (0x00007fffdd871000)
-    	libdrm.so.2 => /usr/lib64/libdrm.so.2 (0x00007fffdd65d000)
-    	libdrm_amdgpu.so.1 => /usr/lib64/libdrm_amdgpu.so.1 (0x00007fffdd453000)
-    	libpciaccess.so.0 => /sw/frontier/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/libpciaccess-0.16-6evcvl74myxfxdrddmnsvbc7sgfx6s5j/lib/libpciaccess.so.0 (0x00007fffdd24a000)
-    	libxml2.so.2 => /sw/frontier/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/libxml2-2.9.12-h7fe2yauotu3xit7rsaixaowd3noknur/lib/libxml2.so.2 (0x00007fffdcee6000)
-    	librocfft.so.0 => /opt/rocm-5.3.0/lib/librocfft.so.0 (0x00007fffdca1a000)
-    	libz.so.1 => /lib64/libz.so.1 (0x00007fffdc803000)
-    	libtinfo.so.6 => /lib64/libtinfo.so.6 (0x00007fffdc5d5000)
-    	libcxi.so.1 => /usr/lib64/libcxi.so.1 (0x00007fffdc3b0000)
-    	libcurl.so.4 => /usr/lib64/libcurl.so.4 (0x00007fffdc311000)
-    	libjson-c.so.3 => /usr/lib64/libjson-c.so.3 (0x00007fffdc101000)
-    	libpals.so.0 => /opt/cray/pe/lib64/libpals.so.0 (0x00007fffdbefc000)
-    	libgfortran.so.5 => /opt/cray/pe/gcc-libs/libgfortran.so.5 (0x00007fffdba50000)
-    	liblzma.so.5 => /sw/frontier/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/xz-5.2.5-zwra4gpckelt5umczowf3jtmeiz3yd7u/lib/liblzma.so.5 (0x00007fffdb82a000)
-    	libiconv.so.2 => /sw/frontier/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/libiconv-1.16-coz5dzhtoeq5unhjirayfn2xftnxk43l/lib/libiconv.so.2 (0x00007fffdb52e000)
-    	librocfft-device-0.so.0 => /opt/rocm-5.3.0/lib/librocfft-device-0.so.0 (0x00007fffa11a0000)
-    	librocfft-device-1.so.0 => /opt/rocm-5.3.0/lib/librocfft-device-1.so.0 (0x00007fff6491b000)
-    	librocfft-device-2.so.0 => /opt/rocm-5.3.0/lib/librocfft-device-2.so.0 (0x00007fff2a828000)
-    	librocfft-device-3.so.0 => /opt/rocm-5.3.0/lib/librocfft-device-3.so.0 (0x00007ffef7eee000)
-    	libnghttp2.so.14 => /usr/lib64/libnghttp2.so.14 (0x00007ffef7cc6000)
-    	libidn2.so.0 => /usr/lib64/libidn2.so.0 (0x00007ffef7aa9000)
-    	libssh.so.4 => /usr/lib64/libssh.so.4 (0x00007ffef783b000)
-    	libpsl.so.5 => /usr/lib64/libpsl.so.5 (0x00007ffef7629000)
-    	libssl.so.1.1 => /usr/lib64/libssl.so.1.1 (0x00007ffef758a000)
-    	libcrypto.so.1.1 => /usr/lib64/libcrypto.so.1.1 (0x00007ffef724a000)
-    	libgssapi_krb5.so.2 => /usr/lib64/libgssapi_krb5.so.2 (0x00007ffef6ff8000)
-    	libldap_r-2.4.so.2 => /usr/lib64/libldap_r-2.4.so.2 (0x00007ffef6da4000)
-    	liblber-2.4.so.2 => /usr/lib64/liblber-2.4.so.2 (0x00007ffef6b95000)
-    	libzstd.so.1 => /usr/lib64/libzstd.so.1 (0x00007ffef6865000)
-    	libbrotlidec.so.1 => /usr/lib64/libbrotlidec.so.1 (0x00007ffef6659000)
-    	libunistring.so.2 => /usr/lib64/libunistring.so.2 (0x00007ffef62d6000)
-    	libjitterentropy.so.3 => /usr/lib64/libjitterentropy.so.3 (0x00007ffef60cf000)
-    	libkrb5.so.3 => /usr/lib64/libkrb5.so.3 (0x00007ffef5df6000)
-    	libk5crypto.so.3 => /usr/lib64/libk5crypto.so.3 (0x00007ffef5bde000)
-    	libcom_err.so.2 => /lib64/libcom_err.so.2 (0x00007ffef59da000)
-    	libkrb5support.so.0 => /usr/lib64/libkrb5support.so.0 (0x00007ffef57cb000)
-    	libresolv.so.2 => /lib64/libresolv.so.2 (0x00007ffef55b3000)
-    	libsasl2.so.3 => /usr/lib64/libsasl2.so.3 (0x00007ffef5396000)
-    	libbrotlicommon.so.1 => /usr/lib64/libbrotlicommon.so.1 (0x00007ffef5175000)
-    	libkeyutils.so.1 => /usr/lib64/libkeyutils.so.1 (0x00007ffef4f70000)
-    	libselinux.so.1 => /lib64/libselinux.so.1 (0x00007ffef4d47000)
-    	libpcre.so.1 => /usr/lib64/libpcre.so.1 (0x00007ffef4abe000)
+        linux-vdso.so.1 (0x00007fffeda02000)
+        libgcc_s.so.1 => /lib64/libgcc_s.so.1 (0x00007fffed5bb000)
+        libpthread.so.0 => /lib64/libpthread.so.0 (0x00007fffed398000)
+        libm.so.6 => /lib64/libm.so.6 (0x00007fffed04d000)
+        librt.so.1 => /lib64/librt.so.1 (0x00007fffece44000)
+        libamdhip64.so.4 => /opt/rocm-4.5.2/lib/libamdhip64.so.4 (0x00007fffec052000)
+        libmpi_cray.so.12 => /opt/cray/pe/lib64/libmpi_cray.so.12 (0x00007fffe96cc000)
+        libmpi_gtl_hsa.so.0 => /opt/cray/pe/lib64/libmpi_gtl_hsa.so.0 (0x00007fffe9469000)
+        libhsa-runtime64.so.1 => /opt/rocm-5.3.0/lib/libhsa-runtime64.so.1 (0x00007fffe8fdc000)
+        libhwloc.so.15 => /sw/frontier/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/hwloc-2.5.0-4p6jkgf5ez6wr27pytkzyptppzpugu3e/lib/libhwloc.so.15 (0x00007fffe8d82000)
+        libdl.so.2 => /lib64/libdl.so.2 (0x00007fffe8b7e000)
+        libhipfft.so => /opt/rocm-5.3.0/lib/libhipfft.so (0x00007fffed9d2000)
+        libstdc++.so.6 => /usr/lib64/libstdc++.so.6 (0x00007fffe875b000)
+        libc.so.6 => /lib64/libc.so.6 (0x00007fffe8366000)
+        /lib64/ld-linux-x86-64.so.2 (0x00007fffed7da000)
+        libamd_comgr.so.2 => /opt/rocm-5.3.0/lib/libamd_comgr.so.2 (0x00007fffe06e0000)
+        libnuma.so.1 => /usr/lib64/libnuma.so.1 (0x00007fffe04d4000)
+        libfabric.so.1 => /opt/cray/libfabric/1.15.2.0/lib64/libfabric.so.1 (0x00007fffe01e2000)
+        libatomic.so.1 => /usr/lib64/libatomic.so.1 (0x00007fffdffd9000)
+        libpmi.so.0 => /opt/cray/pe/lib64/libpmi.so.0 (0x00007fffdfdd7000)
+        libpmi2.so.0 => /opt/cray/pe/lib64/libpmi2.so.0 (0x00007fffdfb9e000)
+        libquadmath.so.0 => /usr/lib64/libquadmath.so.0 (0x00007fffdf959000)
+        libmodules.so.1 => /opt/cray/pe/lib64/cce/libmodules.so.1 (0x00007fffed9b5000)
+        libfi.so.1 => /opt/cray/pe/lib64/cce/libfi.so.1 (0x00007fffdf3b4000)
+        libcraymath.so.1 => /opt/cray/pe/lib64/cce/libcraymath.so.1 (0x00007fffed8ce000)
+        libf.so.1 => /opt/cray/pe/lib64/cce/libf.so.1 (0x00007fffed83b000)
+        libu.so.1 => /opt/cray/pe/lib64/cce/libu.so.1 (0x00007fffdf2ab000)
+        libcsup.so.1 => /opt/cray/pe/lib64/cce/libcsup.so.1 (0x00007fffed832000)
+        libamdhip64.so.5 => /opt/rocm-5.3.0/lib/libamdhip64.so.5 (0x00007fffdda8a000)
+        libelf.so.1 => /usr/lib64/libelf.so.1 (0x00007fffdd871000)
+        libdrm.so.2 => /usr/lib64/libdrm.so.2 (0x00007fffdd65d000)
+        libdrm_amdgpu.so.1 => /usr/lib64/libdrm_amdgpu.so.1 (0x00007fffdd453000)
+        libpciaccess.so.0 => /sw/frontier/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/libpciaccess-0.16-6evcvl74myxfxdrddmnsvbc7sgfx6s5j/lib/libpciaccess.so.0 (0x00007fffdd24a000)
+        libxml2.so.2 => /sw/frontier/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/libxml2-2.9.12-h7fe2yauotu3xit7rsaixaowd3noknur/lib/libxml2.so.2 (0x00007fffdcee6000)
+        librocfft.so.0 => /opt/rocm-5.3.0/lib/librocfft.so.0 (0x00007fffdca1a000)
+        libz.so.1 => /lib64/libz.so.1 (0x00007fffdc803000)
+        libtinfo.so.6 => /lib64/libtinfo.so.6 (0x00007fffdc5d5000)
+        libcxi.so.1 => /usr/lib64/libcxi.so.1 (0x00007fffdc3b0000)
+        libcurl.so.4 => /usr/lib64/libcurl.so.4 (0x00007fffdc311000)
+        libjson-c.so.3 => /usr/lib64/libjson-c.so.3 (0x00007fffdc101000)
+        libpals.so.0 => /opt/cray/pe/lib64/libpals.so.0 (0x00007fffdbefc000)
+        libgfortran.so.5 => /opt/cray/pe/gcc-libs/libgfortran.so.5 (0x00007fffdba50000)
+        liblzma.so.5 => /sw/frontier/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/xz-5.2.5-zwra4gpckelt5umczowf3jtmeiz3yd7u/lib/liblzma.so.5 (0x00007fffdb82a000)
+        libiconv.so.2 => /sw/frontier/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/libiconv-1.16-coz5dzhtoeq5unhjirayfn2xftnxk43l/lib/libiconv.so.2 (0x00007fffdb52e000)
+        librocfft-device-0.so.0 => /opt/rocm-5.3.0/lib/librocfft-device-0.so.0 (0x00007fffa11a0000)
+        librocfft-device-1.so.0 => /opt/rocm-5.3.0/lib/librocfft-device-1.so.0 (0x00007fff6491b000)
+        librocfft-device-2.so.0 => /opt/rocm-5.3.0/lib/librocfft-device-2.so.0 (0x00007fff2a828000)
+        librocfft-device-3.so.0 => /opt/rocm-5.3.0/lib/librocfft-device-3.so.0 (0x00007ffef7eee000)
+        libnghttp2.so.14 => /usr/lib64/libnghttp2.so.14 (0x00007ffef7cc6000)
+        libidn2.so.0 => /usr/lib64/libidn2.so.0 (0x00007ffef7aa9000)
+        libssh.so.4 => /usr/lib64/libssh.so.4 (0x00007ffef783b000)
+        libpsl.so.5 => /usr/lib64/libpsl.so.5 (0x00007ffef7629000)
+        libssl.so.1.1 => /usr/lib64/libssl.so.1.1 (0x00007ffef758a000)
+        libcrypto.so.1.1 => /usr/lib64/libcrypto.so.1.1 (0x00007ffef724a000)
+        libgssapi_krb5.so.2 => /usr/lib64/libgssapi_krb5.so.2 (0x00007ffef6ff8000)
+        libldap_r-2.4.so.2 => /usr/lib64/libldap_r-2.4.so.2 (0x00007ffef6da4000)
+        liblber-2.4.so.2 => /usr/lib64/liblber-2.4.so.2 (0x00007ffef6b95000)
+        libzstd.so.1 => /usr/lib64/libzstd.so.1 (0x00007ffef6865000)
+        libbrotlidec.so.1 => /usr/lib64/libbrotlidec.so.1 (0x00007ffef6659000)
+        libunistring.so.2 => /usr/lib64/libunistring.so.2 (0x00007ffef62d6000)
+        libjitterentropy.so.3 => /usr/lib64/libjitterentropy.so.3 (0x00007ffef60cf000)
+        libkrb5.so.3 => /usr/lib64/libkrb5.so.3 (0x00007ffef5df6000)
+        libk5crypto.so.3 => /usr/lib64/libk5crypto.so.3 (0x00007ffef5bde000)
+        libcom_err.so.2 => /lib64/libcom_err.so.2 (0x00007ffef59da000)
+        libkrb5support.so.0 => /usr/lib64/libkrb5support.so.0 (0x00007ffef57cb000)
+        libresolv.so.2 => /lib64/libresolv.so.2 (0x00007ffef55b3000)
+        libsasl2.so.3 => /usr/lib64/libsasl2.so.3 (0x00007ffef5396000)
+        libbrotlicommon.so.1 => /usr/lib64/libbrotlicommon.so.1 (0x00007ffef5175000)
+        libkeyutils.so.1 => /usr/lib64/libkeyutils.so.1 (0x00007ffef4f70000)
+        libselinux.so.1 => /lib64/libselinux.so.1 (0x00007ffef4d47000)
+        libpcre.so.1 => /usr/lib64/libpcre.so.1 (0x00007ffef4abe000)
     *************************
     *****ls -lh /mnt/bb/hagertnl*****
     total 236M
@@ -2688,84 +2901,84 @@ and here is the output from that script:
     -rwxr-xr-x 1 hagertnl hagertnl 149K Oct  6  2021 libpciaccess.so.0
     -rwxr-xr-x 1 hagertnl hagertnl 5.2M Oct  6  2021 libxml2.so.2
     *****ldd /mnt/bb/hagertnl/lmp*****
-    	linux-vdso.so.1 (0x00007fffeda02000)
-    	libgcc_s.so.1 => /lib64/libgcc_s.so.1 (0x00007fffed5bb000)
-    	libpthread.so.0 => /lib64/libpthread.so.0 (0x00007fffed398000)
-    	libm.so.6 => /lib64/libm.so.6 (0x00007fffed04d000)
-    	librt.so.1 => /lib64/librt.so.1 (0x00007fffece44000)
-    	libamdhip64.so.4 => /opt/rocm-4.5.2/lib/libamdhip64.so.4 (0x00007fffec052000)
-    	libmpi_cray.so.12 => /opt/cray/pe/lib64/libmpi_cray.so.12 (0x00007fffe96cc000)
-    	libmpi_gtl_hsa.so.0 => /opt/cray/pe/lib64/libmpi_gtl_hsa.so.0 (0x00007fffe9469000)
-    	libhsa-runtime64.so.1 => /opt/rocm-5.3.0/lib/libhsa-runtime64.so.1 (0x00007fffe8fdc000)
-    	libhwloc.so.15 => /mnt/bb/hagertnl/lmp_libs/libhwloc.so.15 (0x00007fffe8d82000)
-    	libdl.so.2 => /lib64/libdl.so.2 (0x00007fffe8b7e000)
-    	libhipfft.so => /opt/rocm-5.3.0/lib/libhipfft.so (0x00007fffed9d2000)
-    	libstdc++.so.6 => /usr/lib64/libstdc++.so.6 (0x00007fffe875b000)
-    	libc.so.6 => /lib64/libc.so.6 (0x00007fffe8366000)
-    	/lib64/ld-linux-x86-64.so.2 (0x00007fffed7da000)
-    	libamd_comgr.so.2 => /opt/rocm-5.3.0/lib/libamd_comgr.so.2 (0x00007fffe06e0000)
-    	libnuma.so.1 => /usr/lib64/libnuma.so.1 (0x00007fffe04d4000)
-    	libfabric.so.1 => /opt/cray/libfabric/1.15.2.0/lib64/libfabric.so.1 (0x00007fffe01e2000)
-    	libatomic.so.1 => /usr/lib64/libatomic.so.1 (0x00007fffdffd9000)
-    	libpmi.so.0 => /opt/cray/pe/lib64/libpmi.so.0 (0x00007fffdfdd7000)
-    	libpmi2.so.0 => /opt/cray/pe/lib64/libpmi2.so.0 (0x00007fffdfb9e000)
-    	libquadmath.so.0 => /usr/lib64/libquadmath.so.0 (0x00007fffdf959000)
-    	libmodules.so.1 => /opt/cray/pe/lib64/cce/libmodules.so.1 (0x00007fffed9b5000)
-    	libfi.so.1 => /opt/cray/pe/lib64/cce/libfi.so.1 (0x00007fffdf3b4000)
-    	libcraymath.so.1 => /opt/cray/pe/lib64/cce/libcraymath.so.1 (0x00007fffed8ce000)
-    	libf.so.1 => /opt/cray/pe/lib64/cce/libf.so.1 (0x00007fffed83b000)
-    	libu.so.1 => /opt/cray/pe/lib64/cce/libu.so.1 (0x00007fffdf2ab000)
-    	libcsup.so.1 => /opt/cray/pe/lib64/cce/libcsup.so.1 (0x00007fffed832000)
-    	libamdhip64.so.5 => /opt/rocm-5.3.0/lib/libamdhip64.so.5 (0x00007fffdda8a000)
-    	libelf.so.1 => /usr/lib64/libelf.so.1 (0x00007fffdd871000)
-    	libdrm.so.2 => /usr/lib64/libdrm.so.2 (0x00007fffdd65d000)
-    	libdrm_amdgpu.so.1 => /usr/lib64/libdrm_amdgpu.so.1 (0x00007fffdd453000)
-    	libpciaccess.so.0 => /sw/frontier/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/libpciaccess-0.16-6evcvl74myxfxdrddmnsvbc7sgfx6s5j/lib/libpciaccess.so.0 (0x00007fffdd24a000)
-    	libxml2.so.2 => /sw/frontier/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/libxml2-2.9.12-h7fe2yauotu3xit7rsaixaowd3noknur/lib/libxml2.so.2 (0x00007fffdcee6000)
-    	librocfft.so.0 => /opt/rocm-5.3.0/lib/librocfft.so.0 (0x00007fffdca1a000)
-    	libz.so.1 => /lib64/libz.so.1 (0x00007fffdc803000)
-    	libtinfo.so.6 => /lib64/libtinfo.so.6 (0x00007fffdc5d5000)
-    	libcxi.so.1 => /usr/lib64/libcxi.so.1 (0x00007fffdc3b0000)
-    	libcurl.so.4 => /usr/lib64/libcurl.so.4 (0x00007fffdc311000)
-    	libjson-c.so.3 => /usr/lib64/libjson-c.so.3 (0x00007fffdc101000)
-    	libpals.so.0 => /opt/cray/pe/lib64/libpals.so.0 (0x00007fffdbefc000)
-    	libgfortran.so.5 => /opt/cray/pe/gcc-libs/libgfortran.so.5 (0x00007fffdba50000)
-    	liblzma.so.5 => /sw/frontier/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/xz-5.2.5-zwra4gpckelt5umczowf3jtmeiz3yd7u/lib/liblzma.so.5 (0x00007fffdb82a000)
-    	libiconv.so.2 => /sw/frontier/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/libiconv-1.16-coz5dzhtoeq5unhjirayfn2xftnxk43l/lib/libiconv.so.2 (0x00007fffdb52e000)
-    	librocfft-device-0.so.0 => /opt/rocm-5.3.0/lib/librocfft-device-0.so.0 (0x00007fffa11a0000)
-    	librocfft-device-1.so.0 => /opt/rocm-5.3.0/lib/librocfft-device-1.so.0 (0x00007fff6491b000)
-    	librocfft-device-2.so.0 => /opt/rocm-5.3.0/lib/librocfft-device-2.so.0 (0x00007fff2a828000)
-    	librocfft-device-3.so.0 => /opt/rocm-5.3.0/lib/librocfft-device-3.so.0 (0x00007ffef7eee000)
-    	libnghttp2.so.14 => /usr/lib64/libnghttp2.so.14 (0x00007ffef7cc6000)
-    	libidn2.so.0 => /usr/lib64/libidn2.so.0 (0x00007ffef7aa9000)
-    	libssh.so.4 => /usr/lib64/libssh.so.4 (0x00007ffef783b000)
-    	libpsl.so.5 => /usr/lib64/libpsl.so.5 (0x00007ffef7629000)
-    	libssl.so.1.1 => /usr/lib64/libssl.so.1.1 (0x00007ffef758a000)
-    	libcrypto.so.1.1 => /usr/lib64/libcrypto.so.1.1 (0x00007ffef724a000)
-    	libgssapi_krb5.so.2 => /usr/lib64/libgssapi_krb5.so.2 (0x00007ffef6ff8000)
-    	libldap_r-2.4.so.2 => /usr/lib64/libldap_r-2.4.so.2 (0x00007ffef6da4000)
-    	liblber-2.4.so.2 => /usr/lib64/liblber-2.4.so.2 (0x00007ffef6b95000)
-    	libzstd.so.1 => /usr/lib64/libzstd.so.1 (0x00007ffef6865000)
-    	libbrotlidec.so.1 => /usr/lib64/libbrotlidec.so.1 (0x00007ffef6659000)
-    	libunistring.so.2 => /usr/lib64/libunistring.so.2 (0x00007ffef62d6000)
-    	libjitterentropy.so.3 => /usr/lib64/libjitterentropy.so.3 (0x00007ffef60cf000)
-    	libkrb5.so.3 => /usr/lib64/libkrb5.so.3 (0x00007ffef5df6000)
-    	libk5crypto.so.3 => /usr/lib64/libk5crypto.so.3 (0x00007ffef5bde000)
-    	libcom_err.so.2 => /lib64/libcom_err.so.2 (0x00007ffef59da000)
-    	libkrb5support.so.0 => /usr/lib64/libkrb5support.so.0 (0x00007ffef57cb000)
-    	libresolv.so.2 => /lib64/libresolv.so.2 (0x00007ffef55b3000)
-    	libsasl2.so.3 => /usr/lib64/libsasl2.so.3 (0x00007ffef5396000)
-    	libbrotlicommon.so.1 => /usr/lib64/libbrotlicommon.so.1 (0x00007ffef5175000)
-    	libkeyutils.so.1 => /usr/lib64/libkeyutils.so.1 (0x00007ffef4f70000)
-    	libselinux.so.1 => /lib64/libselinux.so.1 (0x00007ffef4d47000)
-    	libpcre.so.1 => /usr/lib64/libpcre.so.1 (0x00007ffef4abe000)
+        linux-vdso.so.1 (0x00007fffeda02000)
+        libgcc_s.so.1 => /lib64/libgcc_s.so.1 (0x00007fffed5bb000)
+        libpthread.so.0 => /lib64/libpthread.so.0 (0x00007fffed398000)
+        libm.so.6 => /lib64/libm.so.6 (0x00007fffed04d000)
+        librt.so.1 => /lib64/librt.so.1 (0x00007fffece44000)
+        libamdhip64.so.4 => /opt/rocm-4.5.2/lib/libamdhip64.so.4 (0x00007fffec052000)
+        libmpi_cray.so.12 => /opt/cray/pe/lib64/libmpi_cray.so.12 (0x00007fffe96cc000)
+        libmpi_gtl_hsa.so.0 => /opt/cray/pe/lib64/libmpi_gtl_hsa.so.0 (0x00007fffe9469000)
+        libhsa-runtime64.so.1 => /opt/rocm-5.3.0/lib/libhsa-runtime64.so.1 (0x00007fffe8fdc000)
+        libhwloc.so.15 => /mnt/bb/hagertnl/lmp_libs/libhwloc.so.15 (0x00007fffe8d82000)
+        libdl.so.2 => /lib64/libdl.so.2 (0x00007fffe8b7e000)
+        libhipfft.so => /opt/rocm-5.3.0/lib/libhipfft.so (0x00007fffed9d2000)
+        libstdc++.so.6 => /usr/lib64/libstdc++.so.6 (0x00007fffe875b000)
+        libc.so.6 => /lib64/libc.so.6 (0x00007fffe8366000)
+        /lib64/ld-linux-x86-64.so.2 (0x00007fffed7da000)
+        libamd_comgr.so.2 => /opt/rocm-5.3.0/lib/libamd_comgr.so.2 (0x00007fffe06e0000)
+        libnuma.so.1 => /usr/lib64/libnuma.so.1 (0x00007fffe04d4000)
+        libfabric.so.1 => /opt/cray/libfabric/1.15.2.0/lib64/libfabric.so.1 (0x00007fffe01e2000)
+        libatomic.so.1 => /usr/lib64/libatomic.so.1 (0x00007fffdffd9000)
+        libpmi.so.0 => /opt/cray/pe/lib64/libpmi.so.0 (0x00007fffdfdd7000)
+        libpmi2.so.0 => /opt/cray/pe/lib64/libpmi2.so.0 (0x00007fffdfb9e000)
+        libquadmath.so.0 => /usr/lib64/libquadmath.so.0 (0x00007fffdf959000)
+        libmodules.so.1 => /opt/cray/pe/lib64/cce/libmodules.so.1 (0x00007fffed9b5000)
+        libfi.so.1 => /opt/cray/pe/lib64/cce/libfi.so.1 (0x00007fffdf3b4000)
+        libcraymath.so.1 => /opt/cray/pe/lib64/cce/libcraymath.so.1 (0x00007fffed8ce000)
+        libf.so.1 => /opt/cray/pe/lib64/cce/libf.so.1 (0x00007fffed83b000)
+        libu.so.1 => /opt/cray/pe/lib64/cce/libu.so.1 (0x00007fffdf2ab000)
+        libcsup.so.1 => /opt/cray/pe/lib64/cce/libcsup.so.1 (0x00007fffed832000)
+        libamdhip64.so.5 => /opt/rocm-5.3.0/lib/libamdhip64.so.5 (0x00007fffdda8a000)
+        libelf.so.1 => /usr/lib64/libelf.so.1 (0x00007fffdd871000)
+        libdrm.so.2 => /usr/lib64/libdrm.so.2 (0x00007fffdd65d000)
+        libdrm_amdgpu.so.1 => /usr/lib64/libdrm_amdgpu.so.1 (0x00007fffdd453000)
+        libpciaccess.so.0 => /sw/frontier/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/libpciaccess-0.16-6evcvl74myxfxdrddmnsvbc7sgfx6s5j/lib/libpciaccess.so.0 (0x00007fffdd24a000)
+        libxml2.so.2 => /sw/frontier/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/libxml2-2.9.12-h7fe2yauotu3xit7rsaixaowd3noknur/lib/libxml2.so.2 (0x00007fffdcee6000)
+        librocfft.so.0 => /opt/rocm-5.3.0/lib/librocfft.so.0 (0x00007fffdca1a000)
+        libz.so.1 => /lib64/libz.so.1 (0x00007fffdc803000)
+        libtinfo.so.6 => /lib64/libtinfo.so.6 (0x00007fffdc5d5000)
+        libcxi.so.1 => /usr/lib64/libcxi.so.1 (0x00007fffdc3b0000)
+        libcurl.so.4 => /usr/lib64/libcurl.so.4 (0x00007fffdc311000)
+        libjson-c.so.3 => /usr/lib64/libjson-c.so.3 (0x00007fffdc101000)
+        libpals.so.0 => /opt/cray/pe/lib64/libpals.so.0 (0x00007fffdbefc000)
+        libgfortran.so.5 => /opt/cray/pe/gcc-libs/libgfortran.so.5 (0x00007fffdba50000)
+        liblzma.so.5 => /sw/frontier/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/xz-5.2.5-zwra4gpckelt5umczowf3jtmeiz3yd7u/lib/liblzma.so.5 (0x00007fffdb82a000)
+        libiconv.so.2 => /sw/frontier/spack-envs/base/opt/linux-sles15-x86_64/gcc-7.5.0/libiconv-1.16-coz5dzhtoeq5unhjirayfn2xftnxk43l/lib/libiconv.so.2 (0x00007fffdb52e000)
+        librocfft-device-0.so.0 => /opt/rocm-5.3.0/lib/librocfft-device-0.so.0 (0x00007fffa11a0000)
+        librocfft-device-1.so.0 => /opt/rocm-5.3.0/lib/librocfft-device-1.so.0 (0x00007fff6491b000)
+        librocfft-device-2.so.0 => /opt/rocm-5.3.0/lib/librocfft-device-2.so.0 (0x00007fff2a828000)
+        librocfft-device-3.so.0 => /opt/rocm-5.3.0/lib/librocfft-device-3.so.0 (0x00007ffef7eee000)
+        libnghttp2.so.14 => /usr/lib64/libnghttp2.so.14 (0x00007ffef7cc6000)
+        libidn2.so.0 => /usr/lib64/libidn2.so.0 (0x00007ffef7aa9000)
+        libssh.so.4 => /usr/lib64/libssh.so.4 (0x00007ffef783b000)
+        libpsl.so.5 => /usr/lib64/libpsl.so.5 (0x00007ffef7629000)
+        libssl.so.1.1 => /usr/lib64/libssl.so.1.1 (0x00007ffef758a000)
+        libcrypto.so.1.1 => /usr/lib64/libcrypto.so.1.1 (0x00007ffef724a000)
+        libgssapi_krb5.so.2 => /usr/lib64/libgssapi_krb5.so.2 (0x00007ffef6ff8000)
+        libldap_r-2.4.so.2 => /usr/lib64/libldap_r-2.4.so.2 (0x00007ffef6da4000)
+        liblber-2.4.so.2 => /usr/lib64/liblber-2.4.so.2 (0x00007ffef6b95000)
+        libzstd.so.1 => /usr/lib64/libzstd.so.1 (0x00007ffef6865000)
+        libbrotlidec.so.1 => /usr/lib64/libbrotlidec.so.1 (0x00007ffef6659000)
+        libunistring.so.2 => /usr/lib64/libunistring.so.2 (0x00007ffef62d6000)
+        libjitterentropy.so.3 => /usr/lib64/libjitterentropy.so.3 (0x00007ffef60cf000)
+        libkrb5.so.3 => /usr/lib64/libkrb5.so.3 (0x00007ffef5df6000)
+        libk5crypto.so.3 => /usr/lib64/libk5crypto.so.3 (0x00007ffef5bde000)
+        libcom_err.so.2 => /lib64/libcom_err.so.2 (0x00007ffef59da000)
+        libkrb5support.so.0 => /usr/lib64/libkrb5support.so.0 (0x00007ffef57cb000)
+        libresolv.so.2 => /lib64/libresolv.so.2 (0x00007ffef55b3000)
+        libsasl2.so.3 => /usr/lib64/libsasl2.so.3 (0x00007ffef5396000)
+        libbrotlicommon.so.1 => /usr/lib64/libbrotlicommon.so.1 (0x00007ffef5175000)
+        libkeyutils.so.1 => /usr/lib64/libkeyutils.so.1 (0x00007ffef4f70000)
+        libselinux.so.1 => /lib64/libselinux.so.1 (0x00007ffef4d47000)
+        libpcre.so.1 => /usr/lib64/libpcre.so.1 (0x00007ffef4abe000)
     *************************************
 
 Notice that the libraries are sent to the ``${exe}_libs`` directory in the same prefix as the executable.
 Once libraries are here, you cannot tell where they came from, so consider doing an ``ldd`` of your executable prior to ``sbcast``.
 
 
-Alternative: SBCASTing a binary with all libraries
+Best: SBCASTing a binary with ALL libraries
 """"""""""""""""""""""""""""""""""""""""""""""""""
 
 As mentioned above, you can alternatively use ``--exclude=NONE`` on ``sbcast`` to send all libraries along with the binary.
@@ -2921,16 +3134,16 @@ OLCF provides installations of AMD's `Omnitrace <https://github.com/AMDResearch/
 AMD provides documentation on the usage of Omnitrace at `<https://amdresearch.github.io/omnitrace/>`_.
 This section details the installation and common pitfalls of the ``omnitrace`` module on Frontier.
 
-Unlike ``omniperf``, the ``omnitrace`` module only relies on a ROCm module (``amd``, ``amd-mixed``, or ``rocm``).
+Unlike ``omniperf``, the ``omnitrace`` module only relies on a ROCm module.
 A ROCm module must be loaded before being able to do view or load the ``omnitrace`` module.
-As a rule of thumb, always load the ``omnitrace`` module last (especially after you load a ROCm module like ``amd``, ``rocm``, ``amd-mixed``).
+As a rule of thumb, always load the ``omnitrace`` module last (especially after you load a ROCm module).
 If you load a new version of ROCm, you will need to re-load ``omnitrace``.
 
 To use ``omnitrace``, you may use the following commands
 
 .. code::
  
-    module load amd-mixed
+    module load rocm
     module load omnitrace
 
 
@@ -3119,7 +3332,7 @@ The theoretical (not attainable) peak roofline constructs a theoretical maximum 
 
 .. note::
 
-    ``theoretical`` peak is determined by the hardware specifications and is not attainable in practice. ``attaiable`` peak is the performance as measured by
+    ``theoretical`` peak is determined by the hardware specifications and is not attainable in practice. ``attainable`` peak is the performance as measured by
     in-situ microbenchmarks designed to best utilize the hardware. ``achieved`` performance is what the profiled application actually achieves.
 
 
@@ -3141,25 +3354,7 @@ However, when using MFMA instructions, the theoretical peak floating-point FLOPS
 
 .. math::
 
-    TheoreticalFLOPS = flop\_per\_cycle(precision) FLOP/cycle/CU * 110 CU * 1700000000 cycles/second
-
-
-where ``flop_per_cycle(precision)`` is the published floating-point operations per clock cycle, per compute unit.
-Those values are:
-
-+------------+-----------------+
-| Data Type  | Flops/Clock/CU  |
-+============+=================+
-| FP64       | 256             |
-+------------+-----------------+
-| FP32       | 256             |
-+------------+-----------------+
-| FP16       | 1024            |
-+------------+-----------------+
-| BF16       | 1024            |
-+------------+-----------------+
-| INT8       | 1024            |
-+------------+-----------------+
+    TheoreticalFLOPS = 256 FLOP/cycle/CU * 110 CU * 1700000000 cycles/second = 47.9 TFLOP/s
 
 
 .. note::
@@ -3171,8 +3366,8 @@ Achieved FLOPS/s
 ^^^^^^^^^^^^^^^^
 
 We calculate the achieved performance at the desired level (here, double-precision floating point, FP64), by summing each metric count and weighting the FMA metric by 2, since a fused multiply-add is considered 2 floating point operations.
-Also note that these ``SQ_INSTS_VALU_<ADD,MUL,TRANS>`` metrics are reported as per-simd, so we mutliply by the wavefront size as well.
-The ``SQ_INSTS_VALU_MFMA_MOPS_*`` instructions should be multiplied by the ``Flops/Cycle/CU`` value listed above.
+Also note that these ``SQ_INSTS_VALU_<ADD,MUL,TRANS>_F64`` metrics are reported as per-simd, so we mutliply by the wavefront size as well.
+Similarly, the ``SQ_INSTS_VALU_MFMA_MOPS_*_F64`` instructions should be multiplied by 512.
 We use this equation to calculate the number of double-precision FLOPS:
 
 .. math::
@@ -3181,17 +3376,17 @@ We use this equation to calculate the number of double-precision FLOPS:
                          &+ SQ\_INSTS\_VALU\_MUL\_F64       \\\\
                          &+ SQ\_INSTS\_VALU\_TRANS\_F64     \\\\
                          &+ 2 * SQ\_INSTS\_VALU\_FMA\_F64)  \\\\
-                  + 256 *&(SQ\_INSTS\_VALU\_MFMA\_MOPS\_F64)
+                  + 512 *&(SQ\_INSTS\_VALU\_MFMA\_MOPS\_F64)
 
 
 When ``SQ_INSTS_VALU_MFMA_MOPS_*_F64`` instructions are used, then 47.8 TF/s is considered the theoretical maximum FLOPS/s.
-If only ``SQ_INSTS_VALU_<ADD,MUL,TRANS>`` are found, then 23.9 TF/s is the theoretical maximum FLOPS/s.
+If only ``SQ_INSTS_VALU_<ADD,MUL,TRANS>_F64`` are used, then 23.9 TF/s is the theoretical maximum FLOPS/s.
 Then, we divide the number of FLOPS by the elapsed time of the kernel to find FLOPS per second.
 This is found from subtracting the ``rocprof`` metrics ``EndNs`` by ``BeginNs``, provided by ``--timestamp on``, then converting from nanoseconds to seconds by dividing by 1,000,000,000 (power(10,9)).
 
 .. note::
 
-    For ROCm/5.2.0 and earlier, there is a known issue with the timings provided by ``--timestamp on``. See :ref:`crusher-known-issues`.
+    For ROCm/5.2.0 and earlier, there is a known issue causing the timings provided by ``--timestamp on`` to be inaccurate.
 
 
 Calculating for all precisions
@@ -3213,17 +3408,17 @@ The above formula can be adapted to compute the total FLOPS across all floating-
                          &+ SQ\_INSTS\_VALU\_MUL\_F64       \\\\
                          &+ SQ\_INSTS\_VALU\_TRANS\_F64     \\\\
                          &+ 2 * SQ\_INSTS\_VALU\_FMA\_F64)  \\\\
-                  + 1024 &*(SQ\_INSTS\_VALU\_MFMA\_MOPS\_F16) \\\\
-                  + 1024 &*(SQ\_INSTS\_VALU\_MFMA\_MOPS\_BF16) \\\\
-                  + 256 *&(SQ\_INSTS\_VALU\_MFMA\_MOPS\_F32) \\\\
-                  + 256 *&(SQ\_INSTS\_VALU\_MFMA\_MOPS\_F64) \\\\
+                  + 512 &*(SQ\_INSTS\_VALU\_MFMA\_MOPS\_F16) \\\\
+                  + 512 &*(SQ\_INSTS\_VALU\_MFMA\_MOPS\_BF16) \\\\
+                  + 512 *&(SQ\_INSTS\_VALU\_MFMA\_MOPS\_F32) \\\\
+                  + 512 *&(SQ\_INSTS\_VALU\_MFMA\_MOPS\_F64) \\\\
 
 
 Arithmetic Intensity
 ^^^^^^^^^^^^^^^^^^^^
 
 Arithmetic intensity calculates the ratio of FLOPS to bytes moved between HBM and L2 cache.
-We calculated FLOPS above (FP64_FLOPS).
+We calculated FLOPS above (``FP64_FLOPS``).
 We can calculate the number of bytes moved using the ``rocprof`` metrics ``TCC_EA_WRREQ_64B``, ``TCC_EA_WRREQ_sum``, ``TCC_EA_RDREQ_32B``, and ``TCC_EA_RDREQ_sum``.
 ``TCC`` refers to the L2 cache, and ``EA`` is the interface between L2 and HBM.
 ``WRREQ`` and ``RDREQ`` are write-requests and read-requests, respectively.
@@ -3252,12 +3447,12 @@ OLCF provides installations of AMD's `Omniperf <https://github.com/AMDResearch/o
 AMD provides documentation on the usage of Omniperf at `<https://amdresearch.github.io/omniperf/>`_.
 This section details the installation and common pitfalls of the ``omniperf`` module on Frontier.
 
-The ``omniperf`` module relies on two other modules -- a ROCm module (``amd``, ``amd-mixed``, or ``rocm``) and optionally a ``cray-python`` module.
+The ``omniperf`` module relies on two other modules -- a ``rocm`` module and optionally a ``cray-python`` module.
 A ROCm module must be loaded before being able to do view or load the ``omniperf`` module.
 As for ``cray-python``, ``omniperf`` is a Python script and has several dependencies that cannot be met by the system's default Python, and are not met by the default ``cray-python`` installation.
 As such, you must either (1) load the ``cray-python`` module or (2) satisfy the Python dependencies in your own Python environment (ie, in a Conda environment).
 
-As a rule of thumb, always load the ``omniperf`` module last (especially after you load a ROCm module like ``amd``, ``rocm``, ``amd-mixed``).
+As a rule of thumb, always load the ``omniperf`` module last (especially after you load a ROCm module).
 If you load a new version of ROCm, you will need to re-load ``omniperf``.
 
 Using ``cray-python``
@@ -3267,7 +3462,7 @@ To use ``omniperf`` with ``cray-python``, you may use the following commands:
 
 .. code::
  
-    module load amd-mixed
+    module load rocm
     module load cray-python
     module load omniperf
 
@@ -3297,7 +3492,7 @@ Once you have installed the dependencies, you may load ``omniperf`` using comman
 .. code::
  
     # Your Python environment should be active by this point
-    module load amd-mixed
+    module load rocm
     module load omniperf
 
 Again, it is **critically** important that if you load a different version of ROCm that you re-load ``omniperf``.
@@ -3580,6 +3775,43 @@ If it is necessary to have bit-wise reproducible results from these libraries, i
 
 System Updates 
 ============== 
+
+2024-09-03
+----------
+On Tuesday, September 3, 2024, Frontier's system software was upgraded to Slingshot 2.2.0. Please report any issues to help@olcf.ornl.gov.
+
+2024-08-20
+----------
+On Tuesday, August 20, 2024, Frontier's system software will be upgraded.
+
+The following system changes will take place:
+
+-  Upgrade to AMD GPU 6.8.5 device driver (ROCm 6.2.0 release).
+-  Upgrade to Slingshot Host Software 2.2.0. This changes the libfabric version from 1.15.2.0 to 1.20.1.0 and changes the location of the shared libraries from `/opt/cray/libfabric/1.15.2.0` to `/usr/lib64`.
+-  Upgrade to Cray OS 3.0 (SLES-15 SP5).
+-  Upgrade Slurm to version 24.05.
+-  HPE/Cray Programming Environment (CPE) 24.03 AND 24.07 are now available via the ``cpe/24.03`` and ``cpe/24.07`` modulefiles.
+-  ROCm 6.1.3 and 6.2.0 are now available via the ``rocm`` modulefiles.
+-  CPE 23.12 and ROCm 5.7.1 remain as default.
+
+Please report any issues to help@olcf.ornl.gov.
+The `Frontier Known Issues <https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#known-issues>`_ have been updated with the latest available information.
+
+
+2024-07-16
+----------
+On Tuesday, July 16, 2024, Frontier's system software will be upgraded. The following changes will take place:
+
+-  ROCm 5.7.1 and HPE/Cray PE 23.12 will become default.
+-  The system will be upgraded to the AMD GPU 6.7.0 device driver (ROCm 6.1.0 release).
+
+Please note major changes in the AMD and GNU programming environments detailed in Known Issues `OLCFDEV-1799 <https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#olcfdev-1799-new-rocm-module-layout-for-prgenv-amd>`_ and `OLCFDEV_1801 <https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#olcfdev-1801-new-prgenv-gnu-module-implementation>`_:
+
+-  If using ``PrgEnv-gnu``, the ``gcc`` module has been renamed to ``gcc-native`` beginning in HPE/Cray PE 23.12. ``gcc`` modules still exist in older HPE/Cray PE versions.
+-  If using ``PrgEnv-amd``, you must load a ``rocm`` module in addition to the ``amd`` module. ``amd`` no longer provides the full ROCm toolkit, only the host compiler. The versions of these modules must match.
+-  If using ``amd-mixed``, please use a ``rocm`` module instead. ``amd-mixed`` no longer provides the full ROCm toolkit, only the host compiler.
+
+Users are encouraged to try the versions that will become default and report any issues to help@olcf.ornl.gov.
 
 2024-04-17
 ----------

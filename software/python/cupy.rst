@@ -78,17 +78,17 @@ First, load the gnu compiler module (most Python packages assume GCC), relevant 
 
          $ module load gcc/9.3.0-compiler_only # might work with other GCC versions
          $ module load cuda/11.7.1
-         $ module load miniforge3/23.11.0
+         $ module load miniforge3/24.3.0-0
 
    .. tab-item:: Frontier
       :sync: frontier
 
       .. code-block:: bash
 
-         $ module load PrgEnv-gnu/8.3.3
-         $ module load amd-mixed/5.3.0 # may work with other ROCm versions
+         $ module load PrgEnv-gnu/8.5.0
+         $ module load rocm/5.7.1 # may work with other ROCm versions
          $ module load craype-accel-amd-gfx90a
-         $ module load miniforge3/23.11.0
+         $ module load miniforge3/23.11.0-0
 
    .. tab-item:: Andes
       :sync: andes
@@ -97,7 +97,7 @@ First, load the gnu compiler module (most Python packages assume GCC), relevant 
 
          $ module load gcc/9.3.0 # works with older GCC versions if using cuda/10.2.89
          $ module load cuda/11.2.2
-         $ module load python
+         $ module load miniforge3/23.11.0-0
 
 Loading a python module puts you in a "base" environment, but you need to create a new environment using the ``conda create`` command:
 
@@ -108,21 +108,21 @@ Loading a python module puts you in a "base" environment, but you need to create
 
       .. code-block:: bash
 
-         $ conda create -n cupy-summit python=3.10 numpy scipy
+         $ conda create -n cupy-summit python=3.10 numpy=1.26.4 scipy
 
    .. tab-item:: Frontier
       :sync: frontier
 
       .. code-block:: bash
 
-         $ conda create -n cupy-frontier python=3.10 numpy scipy
+         $ conda create -n cupy-frontier python=3.10 numpy=1.26.4 scipy
 
    .. tab-item:: Andes
       :sync: andes
 
       .. code-block:: bash
 
-         $ conda create -n cupy-andes python=3.10 numpy scipy
+         $ conda create -n cupy-andes python=3.10 numpy=1.26.4 scipy
 
 After following the prompts for creating your new environment, you can now activate it:
 
@@ -175,7 +175,7 @@ To make sure that you are building from source, and not a pre-compiled binary, u
          $ export CUPY_INSTALL_USE_HIP=1
          $ export ROCM_HOME=/opt/rocm-5.3.0
          $ export HCC_AMDGPU_TARGET=gfx90a
-         $ CC=gcc pip install --no-cache-dir --no-binary=cupy cupy==12.3.0
+         $ CC=gcc CXX=g++ pip install --no-cache-dir --no-binary=cupy cupy==12.3.0
 
    .. tab-item:: Andes
       :sync: andes
@@ -501,7 +501,7 @@ Example "submit_timings" batch script:
 
          module load gcc/9.3.0-compiler_only
          module load cuda/11.7.1
-         module load miniforge3/23.11.0
+         module load miniforge3/24.3.0-0
 
          source activate cupy-summit
          export CUPY_CACHE_DIR="${MEMBERWORK}/<project_id>/.cupy/kernel_cache"

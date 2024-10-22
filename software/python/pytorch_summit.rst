@@ -3,7 +3,7 @@ PyTorch on Summit
 *****************
 
 PyTorch is an optimized tensor library for deep learning using GPUs and CPUs. This page outlines the how to run
-PyTorch on various OLCF systems.
+PyTorch on Summit.
 
 Summit
 ======
@@ -58,7 +58,7 @@ Python version:
 
 .. code-block::
 
-    module load miniforge3/23.11.0
+    module load miniforge3/24.3.0-0
     conda create -p <env_path> python=x.yy
     source activate <env_path>
     pip install <wheel package>
@@ -94,7 +94,7 @@ First load the necessary modules (you can play around with these as needed):
 
 ..  code-block::
 
-    module load miniforge3/23.11.0
+    module load miniforge3/24.3.0-0
     module load DefApps-2023
     module load gcc/11.2.0
     module load cuda/11.7.1
@@ -107,7 +107,7 @@ Create a conda environment and install dependencies:
 
     conda create -p <env_path> python=x.yy
     source activate <env_path>
-    conda install cmake ninja pyyaml typing_extensions numpy
+    conda install cmake ninja pyyaml typing_extensions numpy=1.26.4
 
 Finally clone and build pytorch:
 

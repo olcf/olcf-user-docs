@@ -1449,7 +1449,7 @@ Step 4 (local system)
 ^^^^^^^^^^^^^^^^^^^^^
 
 Launch the vncviewer. When you launch the vncviewer that you downloaded you will
-need to specify ``localhost:5901``. You will also set a passoword for the initial
+need to specify ``localhost:5901``. You will also set a password for the initial
 connection or enter the created password for subsequent connections.
 
 vmd-vgl.sh (GPU rendering)
@@ -1487,13 +1487,13 @@ vmd-vgl.sh (GPU rendering)
     export DISPLAY=:1
     module load vmd
     vglrun vmd
-    vncserver -kill :1
+    /opt/TurboVNC/bin/vncserver -kill :1
 
 Remote Visualization using Nice DCV (GPU nodes only)
 ----------------------------------------------------
 
-.. warning::
-   Nice DCV is currently undergoing maintenance. Instead, please use the VNC options detailed above.
+.. note::
+   Nice DCV is back online and working on Andes again. If you see issues email help@olcf.ornl.gov
 
 Step 1 (terminal 1)
 ^^^^^^^^^^^^^^^^^^^

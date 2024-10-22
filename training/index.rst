@@ -29,4 +29,4 @@ The New User Quick Start is a Git Repo with an outline that connects recordings 
 
 You will need to use your current OLCF project_ID in all the batch scripts for the hands-on exercises.
 
-To get started click here:  `New User Quick Start Guide <https://github.com/olcf/NewUserQuickStart/blob/master/README.md>`_
+To get started click here:  `New User Quick Start Guide <https://github.com/olcf/NewUserQuickStart>`_

@@ -68,7 +68,7 @@ The Crusher nodes are connected with [4x] HPE Slingshot 200 Gbps (25 GB/s) NICs 
 File Systems
 ------------
 
-Crusher is connected to the center-wide IBM Spectrum Scale™ filesystem providing 250 PB of storage capacity with a peak write speed of 2.5 TB/s. Crusher also has access to the center-wide NFS-based filesystem (which provides user and project home areas). While Crusher does not have *direct* access to the center’s High Performance Storage System (HPSS) - for user and project archival storage - users can log in to the :ref:`dtn-user-guide` to move data to/from HPSS. 
+Crusher is connected to the center-wide IBM Spectrum Scale™ filesystem providing 250 PB of storage capacity with a peak write speed of 2.5 TB/s. Crusher also has access to the center-wide NFS-based filesystem (which provides user and project home areas). While Crusher does not have *direct* access to the center’s Nearline archival storage system (Kronos) - for user and project archival storage - users can log in to the moderate DTNs to move data to/from Kronos or use the "OLCF Kronos" Globus collection. For more information on using Kronos, see the :ref:`kronos` section. 
 
 GPUs
 ----
@@ -1124,7 +1124,7 @@ Output:
 
 .. note::
 
-   The ``--exact`` parameter is important to avoid the error message ``srun: Job <job id> step creation temporarily disabled, retrying (Requested nodes are busy)``. The ``wait`` command is also critical, or your job script and allocation will immediately end after launching your jobs in the background. The ``sleep`` command is currently required to work around a known issue that causes MPICH ERROR. See :ref:`crusher-known-issues` for more information and alternative workarounds. ``sleep`` will no longer be needed in a future update.
+   The ``--exact`` parameter is important to avoid the error message ``srun: Job <job id> step creation temporarily disabled, retrying (Requested nodes are busy)``. The ``wait`` command is also critical, or your job script and allocation will immediately end after launching your jobs in the background. The ``sleep`` command is currently required to work around a known issue that causes MPICH ERROR. ``sleep`` will no longer be needed in a future update.
 
 .. note::
 
@@ -1836,9 +1836,6 @@ If only ``SQ_INSTS_VALU_<ADD,MUL,TRANS>`` are found, then 23.9 TF/s is the theor
 Then, we divide the number of FLOPS by the elapsed time of the kernel to find FLOPS per second.
 This is found from subtracting the ``rocprof`` metrics ``EndNs`` by ``BeginNs``, provided by ``--timestamp on``, then converting from nanoseconds to seconds by dividing by 1,000,000,000 (power(10,9)).
 
-.. note::
-
-    For ROCm/5.2.0 and earlier, there is a known issue with the timings provided by ``--timestamp on``. See :ref:`crusher-known-issues`.
 
 
 Calculating for all precisions
@@ -2303,13 +2300,5 @@ Getting Help
 
 If you have problems or need helping running on Crusher, please submit a ticket
 by emailing help@olcf.ornl.gov.
-
-.. _crusher-known-issues:
-
-Known Issues
-============
-
-.. JIRA_CONTENT_HERE
-
 
 

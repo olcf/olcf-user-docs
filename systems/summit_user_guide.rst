@@ -140,8 +140,7 @@ File Systems
 
 Summit is connected to an IBM Spectrum Scale™ filesystem named Alpine2.
 Summit also has access to the center-wide NFS-based filesystem (which provides user and
-project home areas) and has access to the center’s High Performance
-Storage System (HPSS) for user and project archival storage.
+project home areas) and has access to the center’s Nearline archival storage system (Kronos) for user and project archival storage.
 
 Operating System
 ----------------

@@ -28,7 +28,7 @@ First, load the python module and the gnu compiler module (most Python packages 
       .. code-block:: bash
 
          $ module load gcc/12.1.0
-         $ module load miniforge3/23.11.0
+         $ module load miniforge3/24.3.0-0
 
    .. tab-item:: Andes
       :sync: andes
@@ -36,15 +36,15 @@ First, load the python module and the gnu compiler module (most Python packages 
       .. code-block:: bash
 
          $ module load gcc/9.3.0
-         $ module load python
+         $ module load miniforge3/23.11.0-0
 
    .. tab-item:: Frontier
       :sync: frontier
 
       .. code-block:: bash
 
-         $ module load PrgEnv-gnu/8.3.3
-         $ module load miniforge3/23.11.0
+         $ module load PrgEnv-gnu/8.5.0
+         $ module load miniforge3/23.11.0-0
 
 
 This puts you in the "base" conda environment, which is the default Python environment after loading the module.
@@ -56,7 +56,7 @@ To see a list of environments, use the command ``conda env list``:
 
    # conda environments:
    #
-   base                  *  /sw/summit/miniforge3/23.11.0
+   base                  *  /sw/summit/miniforge3/24.3.0-0
 
 This also is a great way to keep track of the locations and names of all other environments that have been created.
 The current environment is indicated by ``*``.
@@ -67,7 +67,7 @@ To see what packages are installed in the active environment, use ``conda list``
 
    $ conda list
 
-   # packages in environment at /sw/summit/miniforge3/23.11.0:
+   # packages in environment at /sw/summit/miniforge3/24.3.0-0:
    #
    # Name                    Version                   Build  Channel
    _libgcc_mutex             0.1                 conda_forge    conda-forge
@@ -168,9 +168,9 @@ To build a package from source, use ``pip install --no-binary=<package_name> <pa
 
 .. code-block:: bash
 
-   $ CC=gcc pip install --no-binary=numpy numpy
+   $ CC=gcc CXX=g++ pip install --no-binary=numpy numpy
 
-The ``CC=gcc`` flag will ensure that you are using the proper compiler and wrapper.
+The ``CC=gcc`` and ``CXX=g++`` flags will ensure that you are using the proper compiler and wrapper.
 Building from source results in a longer installation time for packages, so you may need to wait a few minutes for the install to finish.
 
 You have successfully built NumPy from source in your conda environment;
