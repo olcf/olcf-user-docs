@@ -21,11 +21,10 @@ https://www.cs.uoregon.edu/research/tau/docs.phpx
 Enabling TAU
 ============
 
-```bash
-module unload darshan-runtime  # incompatible with TAU
-module load tau
-env | grep TAU                 # display TAU settings
-```
+.. code-block:: bash
+  module unload darshan-runtime  # incompatible with TAU
+  module load tau
+  env | grep TAU                 # display TAU settings
 
 The TAU environment variables show the location of the TAU
 installation and the setting for the default TAU_MAKEFILE.  TAU
@@ -48,18 +47,17 @@ spent in known functions, such as MPI, OpenMP, or pthreads.  Note,
 using ``tau_exec`` does not profile user-defined code, so its
 functionality can be limited.
 
-```bash
-module unload darshan-runtime  # incompatible with TAU
-module load tau
-# Copy from the TAU installation
-rsync -va $OLCF_TAU_ROOT/examples/taututorial ./taututorial
-cd ./taututorial
-# This tutorial is a Pi calculation with MPI support.
+.. code-block:: bash
+  module unload darshan-runtime  # incompatible with TAU
+  module load tau
+  # Copy from the TAU installation
+  rsync -va $OLCF_TAU_ROOT/examples/taututorial ./taututorial
+  cd ./taututorial
+  # This tutorial is a Pi calculation with MPI support.
 
-# Use CC (C++) to compile (Note: not using TAU wrappers)
-# Use the -include flag to add missing headers (if needed)
-CC computePi.cpp -o computePi --include "climits"
-```
+  # Use CC (C++) to compile (Note: not using TAU wrappers)
+  # Use the -include flag to add missing headers (if needed)
+  CC computePi.cpp -o computePi --include "climits"
 
 Profiling the execution
 -----------------------
