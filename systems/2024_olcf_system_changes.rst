@@ -212,6 +212,9 @@ hsi_xfer Utility
 .. warning::
   The ``hsi_xfer`` utility requires full paths.  Please specify the full path to the source and destination directories.
 
+.. note::
+  To maximize availability of transfer resources for all users, there is a limit of one active ``hsi_xfer`` operation per user
+
 
 
 .. _hpss_decom:
