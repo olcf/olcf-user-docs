@@ -13,6 +13,7 @@ The table below lists presentations given at previous OLCF training events. For 
    :header: "Date", "Title", "Speaker", "Event", "Presentation"
    :widths: 12 22 22 22 22
 
+    "2024-10-30", "Kronos Overview and Data Migration", "Gregg Gawinski and Jake Wynne (OLCF)", `October 2024 OLCF User Conference Call <https://www.olcf.ornl.gov/calendar/userconcall-oct2024/>`__, (`recording <https://vimeo.com/1024872906>`__ | `slides <https://www.olcf.ornl.gov/wp-content/uploads/UM_2024_Kronos.pdf>`__ | `hsiXfer Notes <https://www.olcf.ornl.gov/wp-content/uploads/hsi_xfer_notes.pdf>`__)
     "2024-09-26", "AI Training Series: SmartSim 2024", "Andrew Shao (HPE)", `SmartSim 2024 <https://www.olcf.ornl.gov/calendar/smartsim-2024/>`__, (`recording <https://vimeo.com/1013517492>`__ | `slides <https://www.olcf.ornl.gov/wp-content/uploads/SmartSim_NERSC_OLCF_Workshop2024.pdf>`__ | `tutorial <https://github.com/CrayLabs/smartsim_workshops/tree/nersc_olcf_2024>`__)
     "2024-08-29", "ParaView on Frontier", "Ken Moreland (ORNL)", `ParaView on Frontier <https://www.olcf.ornl.gov/calendar/paraview-on-frontier/>`__, (`recording <https://vimeo.com/1004226604>`__)
     "2024-08-28", "Containers on Frontier", "Subil Abraham (OLCF)", `August 2024 OLCF User Conference Call <https://www.olcf.ornl.gov/calendar/userconcall-aug2024/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/containers_on_frontier.pdf>`__ | `recording <https://vimeo.com/1003732108>`__)
