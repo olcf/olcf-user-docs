@@ -194,7 +194,7 @@ HSI Data Lists
 
 
 hsi_xfer Utility
-  The ``hsi_xfer`` utility provides an easy way to utilize the hsi data list feature.  The utility will recursively copy a directory on the HPSS to a directory on Kronos.  The utility will create the needed data lists and call hsi behind the scenes.  Please note that you must specify full paths for both the source and destination diretories.  The utility can be executed on the DTN after loading the ``hsi_xfer`` module.
+  The ``hsi_xfer`` utility provides an easy way to utilize the hsi data list feature.  The utility will recursively copy a directory on the HPSS to a directory on Kronos.  The utility will create the needed data lists and call hsi behind the scenes.  Please note that you must specify full paths for both the source and destination diretories.  The utility can be executed on the DTN after loading the ``hsi_xfer`` module. Additional documentation on the ``hsi_xfer`` utility (common flags, common problems, etc.) can be found `here <https://www.olcf.ornl.gov/wp-content/uploads/hsi_xfer_notes.pdf>`__ .
 
   * **Syntax** ``hsi_xfer hpss_source_dir kronos_destination_dir`` 
 
