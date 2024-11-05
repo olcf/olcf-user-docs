@@ -16,28 +16,28 @@ Request a New Allocation
 =============================
 
 Access to OLCF resources is limited to approved projects and their
-users. The type of project (INCITE, ALCC, or Director's Discretion) will
+users. The type of project (INCITE, ALCC, or Director's Discretionary) will
 determine the application and review procedures. \*Quarterly reports are
-required from industrial Director's Discretion projects only.
+required from industrial Director's Discretionary projects only.
 
-+------------------------------+-----------------------------------------------------------------------+-----------------------------+--------------------------------------------------------------------------------+
-|                              | **INCITE**                                                            | **Director's Discretion**   | **ALCC**                                                                       |
-+==============================+=======================================================================+=============================+================================================================================+
-| **Allocations**              | Large                                                                 | Small                       | Large                                                                          |
-+------------------------------+-----------------------------------------------------------------------+-----------------------------+--------------------------------------------------------------------------------+
-| **Call for Proposals**       | Once per year                                                         | At any time                 | Once per year                                                                  |
-+------------------------------+-----------------------------------------------------------------------+-----------------------------+--------------------------------------------------------------------------------+
-| **Duration**                 | 1 year                                                                | Up to 12 months             | 1 year                                                                         |
-+------------------------------+-----------------------------------------------------------------------+-----------------------------+--------------------------------------------------------------------------------+
-| **Priority**                 | High                                                                  | Medium                      | High                                                                           |
-+------------------------------+-----------------------------------------------------------------------+-----------------------------+--------------------------------------------------------------------------------+
-| **Closeout Report**          | yes                                                                   | yes                         | yes                                                                            |
-+------------------------------+-----------------------------------------------------------------------+-----------------------------+--------------------------------------------------------------------------------+
-| **Quarterly Reports**        | yes                                                                   | no*                         | yes                                                                            |
-+------------------------------+-----------------------------------------------------------------------+-----------------------------+--------------------------------------------------------------------------------+
-| **Where to apply**           | `Apply for INCITE                                                     | `Apply for DD`_             | `Apply for ALCC                                                                |
-|                              | <https://doeleadershipcomputing.org/proposal/call-for-proposals/>`__  |                             | <http://science.energy.gov/ascr/facilities/accessing-ascr-facilities/alcc/>`__ |
-+------------------------------+-----------------------------------------------------------------------+-----------------------------+--------------------------------------------------------------------------------+
++------------------------------+-----------------------------------------------------------------------+------------------------------+--------------------------------------------------------------------------------+
+|                              | **INCITE**                                                            | **Director's Discretionary** | **ALCC**                                                                       |
++==============================+=======================================================================+==============================+================================================================================+
+| **Allocations**              | Large                                                                 | Small                        | Large                                                                          |
++------------------------------+-----------------------------------------------------------------------+------------------------------+--------------------------------------------------------------------------------+
+| **Call for Proposals**       | Once per year                                                         | At any time                  | Once per year                                                                  |
++------------------------------+-----------------------------------------------------------------------+------------------------------+--------------------------------------------------------------------------------+
+| **Duration**                 | 1 year                                                                | Up to 12 months              | 1 year                                                                         |
++------------------------------+-----------------------------------------------------------------------+------------------------------+--------------------------------------------------------------------------------+
+| **Priority**                 | High                                                                  | Medium                       | High                                                                           |
++------------------------------+-----------------------------------------------------------------------+------------------------------+--------------------------------------------------------------------------------+
+| **Closeout Report**          | yes                                                                   | yes                          | yes                                                                            |
++------------------------------+-----------------------------------------------------------------------+------------------------------+--------------------------------------------------------------------------------+
+| **Quarterly Reports**        | yes                                                                   | no*                          | yes                                                                            |
++------------------------------+-----------------------------------------------------------------------+------------------------------+--------------------------------------------------------------------------------+
+| **Where to apply**           | `Apply for INCITE                                                     | `Apply for DD`_              | `Apply for ALCC                                                                |
+|                              | <https://doeleadershipcomputing.org/proposal/call-for-proposals/>`__  |                              | <http://science.energy.gov/ascr/facilities/accessing-ascr-facilities/alcc/>`__ |
++------------------------------+-----------------------------------------------------------------------+------------------------------+--------------------------------------------------------------------------------+
 
 .. _Apply for DD: https://my.olcf.ornl.gov/project-application-new
  
@@ -70,13 +70,13 @@ leadership computing resources. For more information or to submit a
 proposal, please visit the `ASCR Leadership Computing Challenge
 webpage <http://science.energy.gov/ascr/facilities/accessing-ascr-facilities/alcc/>`__.
 
-**DD –** Director’s Discretion (DD) projects are dedicated to leadership
+**DD –** Director’s Discretionary (DD) projects are dedicated to leadership
 computing preparation, INCITE and ALCC scaling, and application
 performance to maximize scientific application efficiency and
 productivity on leadership computing platforms. The OLCF Resource
 Utilization Council, as well as independent referees, review and approve
 all DD requests. Applications are accepted year-round via the `OLCF
-Director's Discretion Project
+Director's Discretionary Project
 Application <https://my.olcf.ornl.gov/project-application-new/>`__. Select
 "OLCF Director's Discretionary Project" from the drop down menu to begin.
 
