@@ -1,60 +1,61 @@
-.. _tau:
+.. _tau_2024:
 
 ************************************
 Tuning and Analysis Utilities (TAU)
 ************************************
 
-TAU is a portable profiling and tracing toolkit for the performance
-analysis of parallel programs written in C, C++, Fortran and other
-languages. The instrumentation of programs can be done by binary code
-rewriting, manual compiler directives, or automatic source code
-transformation. TAU can support many parallel programming interfaces,
-including MPI, OpenMP, pthreads, and ROCm.  TAU includes `paraprof`
-which is a profile visualization tool, and generated traces can be
-displayed by the Vampir, Paraver or JumpShot (included) visualization
-tools.
+TAU is a portable profiling and tracing toolkit for the performance analysis of
+parallel programs written in C, C++, Fortran and other languages. The
+instrumentation of programs can be done by binary code rewriting, manual
+compiler directives, or automatic source code transformation. TAU can support
+many parallel programming interfaces, including MPI, OpenMP, pthreads, and ROCm.
+TAU includes `paraprof` which is a profile visualization tool, and generated
+traces can be displayed by the Vampir, Paraver or JumpShot (included)
+visualization tools.
 
-https://www.cs.uoregon.edu/research/tau/home.php
-https://www.cs.uoregon.edu/research/tau/docs.phpx
+* TAU Home: https://www.cs.uoregon.edu/research/tau/home.php  
+* TAU Docs: https://www.cs.uoregon.edu/research/tau/docs.phpx
 
 
 Enabling TAU
 ============
 
+On many OLCF systems TAU is available as a module.  Note: since TAU can work by
+preloading and intercepting function calls, it is incompatible with other
+software that works in a similar way (e.g. darshan-runtime).  
+
 .. code-block:: bash
+
   module unload darshan-runtime  # incompatible with TAU
   module load tau
   env | grep TAU                 # display TAU settings
 
-The TAU environment variables show the location of the TAU
-installation and the setting for the default TAU_MAKEFILE.  TAU
-compiler wrappers use the TAU_MAKEFILE for capabilities supported
-while compiling code.
+The TAU environment variables show the location of the TAU installation and the
+default TAU_MAKEFILE.  The TAU compiler wrappers use the TAU_MAKEFILE for
+capabilities to be supported while compiling code.
 
 
-Profiling and Tracing
-=====================
+Run using tau_exec
+===================
 
-Simple run using tau_exec
--------------------------
+The simplest way to profile with TAU is to prepend ``tau_exec`` to an
+executable.  There is no need to recompile code with this approach.  The
+``tau_exec`` preloads a library that adds instrumentation to specific library
+functions at runtime.  This method uses uses statistical sampling to estimate
+time spent in functions (depending on how TAU is configured, libraries can
+include MPI, OpenMP, and pthreads).  Note, using ``tau_exec`` does not profile
+user-defined code, so its functionality may be limited.
 
-The simplest way to profile with TAU is to use the ``tau_exec``
-command with an executable.  There is no need to recompile code with
-this approach.  The ``tau_exec`` preloads TAU's dynamic library object
-that intercepts and adds instrumentation at to known libraries at
-runtime.  This method uses uses statistical sampling to estimate time
-spent in known functions, such as MPI, OpenMP, or pthreads.  Note,
-using ``tau_exec`` does not profile user-defined code, so its
-functionality can be limited.
-
-.. code-block:: bash
+.. code:: bash
+  
   module unload darshan-runtime  # incompatible with TAU
   module load tau
+
   # Copy from the TAU installation
   rsync -va $OLCF_TAU_ROOT/examples/taututorial ./taututorial
   cd ./taututorial
-  # This tutorial is a Pi calculation with MPI support.
 
+  # This tutorial is a Pi calculation with MPI support.
   # Use CC (C++) to compile (Note: not using TAU wrappers)
   # Use the -include flag to add missing headers (if needed)
   CC computePi.cpp -o computePi --include "climits"
@@ -62,99 +63,150 @@ functionality can be limited.
 Profiling the execution
 -----------------------
 
-The ``tau_exec`` tool will profile the code, tracking the time 
-spent in various parts of the code.
+The ``tau_exec`` tool will profile the code by default, tracking the time spent
+in various parts of the code.
 
-```bash
-# Make output directory (default is the current dir)
-mkdir profiledir 
-export PROFILEDIR=profiledir
+.. code:: bash
 
-# Allocate 1 node and run 2 tasks, collect profile (default)
-srun -A <ACCOUNT> -N 1 -t 5 -n 2 tau_exec ./computePi
+  # Make output directory (default is the current dir)
+  mkdir profiledir 
+  export PROFILEDIR=profiledir
 
-# Other tau_exec options
-# tau_exec -ebs             # event-based-sampling
-# tau_exec -T serial,rocm   # -T <option> tau options
+  # Allocate 1 node and run 2 tasks, collect profile (default)
+  srun -A <ACCOUNT> -N 1 -t 5 -n 2 tau_exec ./computePi
 
-# The run the Paraprof profiler (included with TAU)
-pprof ./profiledir      # command line view
-paraprof ./profiledir   # graphical, requires X-forwarding/X-display
-# Note: Oct 2024 for Mac XQuartx use 'paraprof -fix-xquartz'
-```
+  # Other tau_exec options
+  # tau_exec -ebs             # event-based-sampling
+  # tau_exec -T serial,rocm   # -T <option> tau options
+
+  # The run the Paraprof profiler (included with TAU)
+  pprof ./profiledir      # command line view
+  paraprof ./profiledir   # graphical, requires X-forwarding/X-display
+  # Note: Oct 2024 for Mac XQuartx use 'paraprof -fix-xquartz'
+
+This textual output generated by ``pprof`` shows the time profile of the
+execution.
+
 .. image:: /images/tau_new/tau_computepi_pprof.png
-   :align: left
+   :align: center
    :alt:  TAU pprof output
-   :scale: 50%
+   :scale: 45%
+   
+The profile can be viewed using the graphical ``paraprof`` tool, which can also
+produce a number of other views of the execution.  See XXXXXXXXXXXXXXXXXX for
+more information and examples.
+
 .. image:: /images/tau_new/tau_computepi_paraprof.png
-   :align: right
+   :align: center
    :alt:  TAU pprof output
-   :scale: 50%
+   :scale: 45%
+
 
 Tracing the execution
 ---------------------
 
-This example uses the included Jumpshot trace visualization tool.  TAU
-can also create traces for Chrome/Pefetto (json) and for Vampir (otf2)
-visualization.
+This example displays the generated trace using the included Jumpshot trace
+visualization tool.  TAU can also create traces for Chrome/Pefetto (json) and
+for Vampir (otf2) visualization.  See XXXXXXXXXXXXXXXXXX for more information
+abut tracing.
 
-```bash
-# Make output directory (default is the current dir)
-mkdir tracedir 
-export TRACEDIR=tracedir
+.. code:: bash
 
-# Allocate 1 node and run 2 tasks, collect trace
-export TAU_TRACE=1 TAU_PROFILE=0 
-srun -A <ACCOUNT> -N 1 -t 5 -n 2 tau_exec ./computePi-mpicxx
+  # Make output directory (default is the current dir)
+  mkdir tracedir 
+  export TRACEDIR=tracedir
 
-# Post process trace files
-cd ${TRACEDIR} 
-rm -f tau.trc tau.edf         # remove old files
-tau_treemerge.pl              # merge traces for tau
-tau2slog2 tau.trc tau.edf -o yourprogram.slog2 
-# Launch the (included) trace viewer (requires X-forwarding)
-jumpshot yourprogram.slog2
-```
+  # Allocate 1 node and run 2 tasks, collect trace
+  export TAU_TRACE=1 TAU_PROFILE=0 
+  srun -A <ACCOUNT> -N 1 -t 5 -n 2 tau_exec ./computePi
 
-Automatic source instrumentation using `tau_compiler.sh`
---------------------------------------------------------
+  # Post process trace files
+  cd ${TRACEDIR} 
+  rm -f tau.trc tau.edf         # remove old files
+  tau_treemerge.pl              # merge traces for tau
+  tau2slog2 tau.trc tau.edf -o yourprogram.slog2 
+  # Launch the (included) trace viewer (requires X-forwarding)
+  # The trace can be scp'ed to your local machine to avoid X-forwarding
+  jumpshot yourprogram.slog2
 
-This approach uses TAU shell scripts (`tau_cc.sh`, `tau_cxx.sh`,
-`tau_f90.sh`) to recompile code, automatically adding timer
-start/stop calls into a copy of the code.  The Program Database
-Toolkit (PDT) is used to parse the source code and add
-instrumentation.  A selective filter file can be used to reduce
-overhead and specify areas for instrumentation.
+The Jumpshot trace view here is restricted to the most time consuming functions,
+and it can be clearly seen how the MPI_Recv is waiting in the two processes.
 
-```bash
-module unload darshan-runtime  # incompatible with TAU
-module load tau
-# Copy from the TAU installation
-rsync -va $OLCF_TAU_ROOT/examples/taututorial ./taututorial
-cd ./taututorial
+.. image:: /images/tau_new/tau_computepi_trace_jumpshot.png
+   :align: center
+   :alt:  TAU tracing using jumpshot
+   :scale: 35%
 
-# See the current/default TAU support
-echo $TAU_MAKEFILE 
-# To change the TAU support, use other Makefiles
-# setenv TAU_MAKEFILE $OLCF_TAU_ROOT/lib/Makefile<other-support>
 
-# Use TAU wrappers to compile
-# Use the -include flag to add missing headers (if needed)
-tau_cxx.sh computePi.cpp -o computePi -include "climits"
+Automatic source instrumentation using TAU compiler wrappers
+------------------------------------------------------------
 
-# To keep intermediate files, turn on the verbose mode and use a selective
-# instrumentation file select.tau, set TAU_OPTIONS
-# setenv TAU_OPTIONS  '-optKeepFiles -optVerbose -optTauSelectFile="select.tau"'
-```
+TAU compiler wrapper scripts (`tau_cc.sh`, `tau_cxx.sh`, `tau_f90.sh`) can be
+used to build code, automatically adding timer start/stop calls into a copy of
+the code (this does not change the original code).  The Program Database Toolkit
+(PDT) is used to parse the source code and add instrumentation.  A selective
+filter file can be used to reduce overhead and specify areas for
+instrumentation.
 
-Profiling and tracing this execution will follow the earlier example.
+- For C: use the TAU wrapper ``tau_cc.sh``
+- For C++: use the TAU wrapper ``tau_cxx.sh``
+- For Fortran: use the TAU wrapper ``tau_f90.sh`` / ``tau_f77.sh``
+
+.. code:: bash
+
+  module unload darshan-runtime  # incompatible with TAU
+  module load tau
+  # Copy from the TAU installation
+  rsync -va $OLCF_TAU_ROOT/examples/taututorial ./taututorial
+  cd ./taututorial
+
+  # See the current/default TAU support
+  echo $TAU_MAKEFILE 
+  # To change the TAU support, use other Makefiles
+  # setenv TAU_MAKEFILE $OLCF_TAU_ROOT/lib/Makefile<other-support>
+
+  # Use TAU wrappers to compile
+  # Use the -include flag to add missing headers (if needed)
+  tau_cxx.sh computePi.cpp -o computePi -include "climits"
+
+  # To keep intermediate files, turn on the verbose mode and use a selective
+  # instrumentation file select.tau, set TAU_OPTIONS
+  # setenv TAU_OPTIONS  '-optKeepFiles -optVerbose -optTauSelectFile="select.tau"'
+
+Profiling and tracing for this execution follow the earlier example.
+
+.. code:: bash
+
+  # Make output directories
+  mkdir profiledir tracedir 
+  export PROFILEDIR=profiledir TRACEDIR=tracedir
+
+  # Collect profile, trace in the same run
+  export TAU_TRACE=1 TAU_PROFILE=1
+
+  # Allocate 1 node and run 2 task
+  # Note: This is not using tau_exec
+  srun -A <ACCOUNT> -N 1 -t 5 -n 2 ./computePi
+
+  # View profile using command line pprof
+  pprof   # Used the PROFILEDIR to find data
+
+  # View trace using Jumpshot
+  cd ${TRACEDIR}
+  tau_treemerge.pl
+  tau2slog2 tau.trc tau.edf -o yourprogram.slog2 
+  # Launch the (included) trace viewer (requires X-forwarding)
+  jumpshot yourprogram.slog2
+
+
 
 
 Manual source instrumentation
 ------------------------------
 
-TAU provides a rich set of functions that can be used to instrument code at very specific locations.   
-The TAU documentation gives a list of all the functions available to instrument your code.
+TAU provides a rich set of functions that can be used to instrument code at very
+specific locations. The TAU documentation gives a list of all the functions
+available to instrument your code.
 www.cs.uoregon.edu/research/tau/docs/newguide/bk03rn01.html 
 
 
@@ -175,7 +227,8 @@ Example
 References
 ==========
 
-Some previous TAU training on the OLCF Training archive https://docs.olcf.ornl.gov/training/training_archive.html
+Some previous TAU training on the OLCF Training archive
+https://docs.olcf.ornl.gov/training/training_archive.html
 
 .. csv-table::
    :header: "Date", "Title", "Speaker", "Event", "Presentation"
@@ -190,12 +243,12 @@ Some previous TAU training on the OLCF Training archive https://docs.olcf.ornl.g
 
 
 
-In this section, some approaches for profiling and tracing will be presented.  
-In most cases, we need to use wrappers to recompile the application:
+In this section, some approaches for profiling and tracing will be presented. In
+most cases, we need to use wrappers to recompile the application:
 
-- For C: replace the compiler with the TAU wrapper ``tau_cc.sh``
-- For C++: replace the compiler with the TAU wrapper ``tau_cxx.sh``
-- For Fortran: replace the compiler with the TAU wrapper ``tau_f90.sh`` / ``tau_f77.sh``
+- For C: use the TAU wrapper ``tau_cc.sh``
+- For C++: use the TAU wrapper ``tau_cxx.sh``
+- For Fortran: use the TAU wrapper ``tau_f90.sh`` / ``tau_f77.sh``
 
 Even if you don't compile your application with a TAU wrapper, you can
 profile some basic functionalities with ``tau_exec``, for example:
@@ -481,7 +534,7 @@ Instrumenting the MPI version of MiniWeather
 
 For the MPI version, we should use a makefile with MPI. The compilation could
 fail if the makefile supports MPI+OpenMP, but the code doesn't include any
-OpenMP calls. Moreover, with ``TAU_OPTIONS`` declared below, we will add options to
+OpenMP calls. Moreover, with ``TAU_OPTIONS`` declared below, we will add options  
 the linker.
 
 .. code::

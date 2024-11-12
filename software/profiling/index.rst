@@ -10,4 +10,5 @@ Profiling Tools
 
    Scorep
    TAU
+   TAU-2024
    Vampir
