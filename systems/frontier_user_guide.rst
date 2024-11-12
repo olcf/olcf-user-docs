@@ -3776,15 +3776,24 @@ If it is necessary to have bit-wise reproducible results from these libraries, i
 System Updates 
 ============== 
 
+2024-11-12
+----------
+On Tuesday, November 12, 2024, Frontier's system software was upgraded to a new BIOS, Node Controller, and GPU Integrated Firmware Image (IFWI).
+Additionally, the following changes took place:
+
+- ROCm/6.2.4 has been made available as non-default
+- A patched rocFFT library has been integrated into ROCm/6.0.0, 6.1.3, and 6.2.0 to fix the Known Issue, `OLCFDEV_1808 <https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#olcfdev-1808-rocfft-error-beginning-in-rocm-6-0-0>`_
+
+
 2024-09-03
 ----------
 On Tuesday, September 3, 2024, Frontier's system software was upgraded to Slingshot 2.2.0. Please report any issues to help@olcf.ornl.gov.
 
 2024-08-20
 ----------
-On Tuesday, August 20, 2024, Frontier's system software will be upgraded.
+On Tuesday, August 20, 2024, Frontier's system software was upgraded.
 
-The following system changes will take place:
+The following system changes took place:
 
 -  Upgrade to AMD GPU 6.8.5 device driver (ROCm 6.2.0 release).
 -  Upgrade to Slingshot Host Software 2.2.0. This changes the libfabric version from 1.15.2.0 to 1.20.1.0 and changes the location of the shared libraries from `/opt/cray/libfabric/1.15.2.0` to `/usr/lib64`.
@@ -3800,7 +3809,7 @@ The `Frontier Known Issues <https://docs.olcf.ornl.gov/systems/frontier_user_gui
 
 2024-07-16
 ----------
-On Tuesday, July 16, 2024, Frontier's system software will be upgraded. The following changes will take place:
+On Tuesday, July 16, 2024, Frontier's system software was upgraded. The following changes took place:
 
 -  ROCm 5.7.1 and HPE/Cray PE 23.12 will become default.
 -  The system will be upgraded to the AMD GPU 6.7.0 device driver (ROCm 6.1.0 release).
