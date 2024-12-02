@@ -86,12 +86,69 @@ All OLCF users have access to the "premium" (>=20 qubits) and "open" (<20
 qubit) devices.  Since most of the open devices are shared with the public,
 queue times will often be longer than the queues for the larger devices.
 
+
+Allocations & Usage Limits
+--------------------------
+
+.. warning::
+   Due to a change in IBM's usage model: As of Sept. 3rd 2024,  we have implemented a new system for requesting large allocation times.
+
+* **Project allocations have a default limit of 100 minutes during a moving 28-day window**.
+* Minutes are shared across all users on a given project and across all backends.
+* Once a project reaches the usage limit, no jobs will be able to run until minutes are freed up on the project (see example below).
+
+For more information on how job priority is affected based on your limit, please see `<https://docs.quantum.ibm.com/guides/instances#how-usage-affects-job-priority-within-an-instance>`__.
+
+If you are planning to use a large allocation (over 100 minutes), please send a usage request to our Quantum Resource Utilization Council (QRUC) through our help ticket system (help@olcf.ornl.gov).
+**Special requests must be submitted by a project PI with sufficient computational and scientific justification.**
+QRUC will evaluate the merit of your request, and if approved, can get you the additional time you need by working with the IBM team specifically on your request.  
+
+The 28-day rolling window
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The new 28-day rolling window only considers usage in a given 28 days.
+Every new day, the window "rolls" by 1 day, which effectively erases usage run on the specific day 29 days ago.
+Any past usage that has fallen out of the new window is no longer accounted for, thus freeing up usage on the project.
+If no past usage falls out of the new window (i.e., no jobs were run specifically 29 days ago), then no minutes get freed up.
+
+Example window
+""""""""""""""
+
+Example for a project that has a 1000 minute limit in the ``10/18-11/15`` window.
+For simplicity, let's just say in this example that they aren't running any new jobs right now, and have only run jobs in the past.
+
+The "current" ``10/18-11/15`` window:
+
+* 100 minutes used on 10/18
+* 10 minutes used on 10/22
+* 500 minutes used on 10/24
+
+A total of 610 minutes out of 1000 limit.
+
+Tomorrow's window ``10/19-11/16``:
+
+* 10 minutes used on 10/22
+* 500 minutes used on 10/24
+
+A total of 510 minutes out of 1000 limit (100 minutes "freed" up because they fell out of the rolling window).
+
+The next window ``10/20-11/17``:
+
+* 10 minutes used on 10/22
+* 500 minutes used on 10/24
+
+Still 510 minutes accounted for since no "new" past usage rolled out of the window.
+
+The takeaway is that if I run a job on Day XYZ, then I won't get those minutes back until 29 days from Day XYZ.
+Until then, they will be accounted for in a given window and count toward the minute limit for a project.
+
+
 Submitting Jobs
 ---------------
 
 Jobs are compiled and submitted via Qiskit in a Python virtual environment or
-Jupyter notebook (see :ref:`Cloud Access <ibm-cloud>` and 
-:ref:`Local Access <ibm-local>` sections above). 
+Jupyter notebook (see :ref:`Cloud Access <ibm-cloud>` and
+:ref:`Local Access <ibm-local>` sections above).
 
 * Circuit jobs comprise jobs of constructed quantum circuits and algorithms
   submitted to backends in IBM Quantum fair-share queue.
@@ -99,19 +156,12 @@ Jupyter notebook (see :ref:`Cloud Access <ibm-cloud>` and
 * Program jobs utilize a pre-compiled quantum program utilizing the Qiskit
   Runtime framework.
 
-Allocations & Usage Limits
---------------------------
-
-.. warning::
-   Due to a change in IBM's usage model, as of Sept. 3rd, we have implemented a new system for requesting large allocation times.
-
-Project allocations have a default limit of 100 min during a moving 28-day window. If you are planning to use a large allocation (over 100 minutes), please send a usage request to QRUC through our help ticket system (help@olcf.ornl.gov).  QRUC will evaluate the merit of your request, and if approved, can get you the additional time you need by working with the IBM team specifically on your request.  
 
 Sessions
 --------
 
 .. warning::
-   IBM Quantum retired reservations on Apr. 1st. Reservations were replaced by sessions.
+   IBM Quantum retired reservations on Apr. 1st 2024. Reservations were replaced by sessions.
 
 A session in Qiskit Runtime is a tool designed for running multiple jobs in sequence more effectively.
 It streamlines the process by grouping jobs together, reducing the wait times often associated with individually queued jobs. 
