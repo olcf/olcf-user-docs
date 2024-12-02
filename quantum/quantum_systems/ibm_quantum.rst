@@ -66,13 +66,13 @@ Running Jobs & Queue Policies
 =============================
 
 User can submit jobs to IBM Quantum backends both via a fair-sharing queue
-system as well as via priority reservation system.  As discussed below, the
+system as well as via priority sessions system.  As discussed below, the
 dynamic fair-sharing queue system determines the queuing order of jobs so as to
 fairly balance system time between access providers, of which the OLCF QCUP is
 only one.  Because of this, the order of when a user's job in the fair-share
 queue will run varies dynamically, and can't be predicted. In light of this,
 for time-critical applications or iterative algorithms, IBM Quantum recommends
-users consider making a priority reservation. 
+users consider using sessions. 
 
 Fair-Share Queue Policy
 -----------------------
@@ -102,38 +102,16 @@ Jupyter notebook (see :ref:`Cloud Access <ibm-cloud>` and
 Allocations & Usage Limits
 --------------------------
 
-Because of the queuing method described above, users have no set allocation.
-Job throughput is only limited via the dynamic queue.
+.. warning::
+   Due to a change in IBM's usage model, as of Sept. 3rd, we have implemented a new system for requesting large allocation times.
 
-There is a time limit on program-wide usage of reservable systems (see below).  
+Project allocations have a default limit of 100 min during a moving 28-day window. If you are planning to use a large allocation (over 100 minutes), please send a usage request to QRUC through our help ticket system (help@olcf.ornl.gov).  QRUC will evaluate the merit of your request, and if approved, can get you the additional time you need by working with the IBM team specifically on your request.  
 
-Reservations & Sessions
------------------------
+Sessions
+--------
 
 .. warning::
-   IBM Quantum will be retiring reservations on Apr. 1st. Reservations will be replaced by sessions.
-
-In addition to the fair-share queue, users may request a backend reservation
-for a certain period of time by contacting help@olcf.ornl.gov. If the
-reservation is granted, the reserved backend will be blocked from general use
-for a specified period of time, and the user will have sole use of the
-backend for that period.
-
-There is a limited number of minutes per month that can be reserved on each
-device. Reservations are supported on these devices with these monthly
-allocations:
-
-  * ibmq_kolkata, 2400 minutes per month
-
-In order to make the most efficient use of reservation allocations:
-
-* Reservations requests must be submitted to the project Principle Investigator
-  (PI) to help@olcf.ornl.gov
-
-* Requests for reservations must include technical justification.  
-
-* Once submitted, requests will be sent to the Quantum Resource Utilization 
-  Council (QRUC) for consideration.
+   IBM Quantum retired reservations on Apr. 1st. Reservations were replaced by sessions.
 
 A session in Qiskit Runtime is a tool designed for running multiple jobs in sequence more effectively.
 It streamlines the process by grouping jobs together, reducing the wait times often associated with individually queued jobs. 
