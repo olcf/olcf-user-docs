@@ -15,7 +15,7 @@ What is Citadel
 The National Center for Computational Science (NCCS) and the Oak Ridge Leadership Computing Facility (OLCF) have implemented the CITADEL security framework as **part of their Scalable Protected Infrastructure (SPI)**. This infrastructure provides resources and protocols that enable researchers to process protected data at scale. With the CITADEL framework, **researchers can use the OLCF’s large HPC resources to compute** data containing protected health information (PHI), personally identifiable information (PII), data protected under International Traffic in Arms Regulations, and other types of data that require privacy.
 
 .. note::
-  With the CITADEL framework, researchers can use the OLCF’s large HPC resources including **Frontier** and **Summit** to compute data containing protected health information (PHI), personally identifiable information (PII), data protected under International Traffic in Arms Regulations, and other types of data that require privacy.
+  With the CITADEL framework, researchers can use the OLCF’s large HPC resources including **Frontier** to compute data containing protected health information (PHI), personally identifiable information (PII), data protected under International Traffic in Arms Regulations, and other types of data that require privacy.
 
 The NCCS CITADEL security framework was originally conceived to facilitate the large-scale analysis of protected health information (PHI) data from the US Department of Veterans Affairs' (VA) Million Veteran Program. The NCCS SPI team, with assistance from ORNL Risk Management and ORNL’s Information Technology Services Division (ITSD), refined the initial prototype and expanded CITADEL's capabilities to accommodate a diverse array of programs, projects, and sponsors.
 
@@ -25,11 +25,11 @@ CITADEL, having undergone comprehensive technical-, legal-, and policy-oriented 
 
 
 .. note::
-    The :ref:`Citadel framework<spi-compute-citadel>` provides the ability to compute SPI workflows on the OLCF's Summit and Frontier resources. 
+    The :ref:`Citadel framework<spi-compute-citadel>` provides the ability to compute SPI workflows on the OLCF's Frontier resources. 
 
 
 Citadel (SPI) Documentation
 ============================
-For details on the Citadel framework and how it dffers from the non-SPI Summit/Frontier workflows, please see the :ref:`SPI documentation<spi-compute-citadel>`.
+For details on the Citadel framework and how it dffers from the non-SPI Frontier workflows, please see the :ref:`SPI documentation<spi-compute-citadel>`.
 
 
