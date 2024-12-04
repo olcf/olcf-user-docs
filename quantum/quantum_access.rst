@@ -151,8 +151,8 @@ Accessing Quantum Resources
 As opposed to setting up a personal account through each of the individual
 vendor websites, OLCF has purchased subscriptions to those vendor services and
 handles setting up your access to each one once your Quantum User Application
-is approved. You will receive individual email invitations from Quantinuum and
-Rigetti with further instructions, whereas for IBM you can proceed directly to
+is approved. You will receive individual email invitations from Quantinuum
+with further instructions, whereas for IBM you can proceed directly to
 their website to create an account. More details for gaining access to each
 vendor are listed below.
 
@@ -187,24 +187,6 @@ as well as monitor batch submissions and job history. Information on using the
 quantum resources via Jupyter notebooks is available in the UI via the “Examples” 
 tab. Quantinuum’s systems feature mid-circuit measurement and qubit reuse, and are 
 compatible with a variety of software frameworks.
-
-Rigetti
--------
-
-After submitting the OLCF quantum account application and receiving approval,
-you will receive an email from support@rigetti.com inviting you to create your
-quantum account. If you did not receive this, proceed to
-`<https://qcs.rigetti.com/sign-in>`__ and click “Sign In”. It is necessary that the
-email you use for sign in be associated with an affiliated subscribing
-institution, i.e. ORNL, ANL, etc. If sign in fails, contact help@olcf.ornl.gov.
-Once logged in, users will have access to Quantum Cloud Services (QCS),
-Rigetti’s online platform for accessing the hybrid infrastructure of available
-quantum processors and classical computational framework via the cloud. From
-the QCS, users can view system status and availability, initiate and manage
-quantum infrastructure reservations (either executing programs manually or
-adding them to the queue). Information on using this resource is available on
-the `Rigetti's Documentation <https://docs.rigetti.com/qcs/>`__ or our 
-:doc:`OLCF Rigetti Guide </quantum/quantum_systems/rigetti>`.
 
 IonQ
 ----------
