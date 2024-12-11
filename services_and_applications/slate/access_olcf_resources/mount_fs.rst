@@ -12,6 +12,7 @@ to get the necessary configuration injected into the container at runtime.
 
   "Marble", "ccs.ornl.gov/fs", "alpine2", "/ccs/sw, /ccs/home, /ccs/sys, /ccs/proj, /gpfs/alpine2"
   "Marble", "ccs.ornl.gov/fs", "orion", "/ccs/sw, /ccs/home, /ccs/sys, /ccs/proj, /lustre/orion"
+  "Marble", "ccs.ornl.gov/fs", "kronos", "/ccs/sw, /ccs/home, /ccs/sys, /ccs/proj, /nl/kronos"
   "Onyx", "ccs.ornl.gov/fs", "themis", "/ccsopen/sw, /ccsopen/home, /ccsopen/proj, /nl/themis"
   "Onyx", "ccs.ornl.gov/fs", "wolf2", "/ccsopen/sw, /ccsopen/home, /ccsopen/proj, /gpfs/wolf2"
 
