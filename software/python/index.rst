@@ -5,7 +5,7 @@ Python on OLCF Systems
 ***********************
 
 .. note::
-    Frontier, Summit, and Andes have new conda modules: ``miniforge3``.
+    Frontier and Andes have new conda modules: ``miniforge3``.
     `Miniforge <https://github.com/conda-forge/miniforge>`__ behaves similarly to
     older Anaconda modules, but target the ``conda-forge`` channel by default.
     Old modules remain available.
@@ -31,14 +31,10 @@ different versions of binary software packages and any required libraries
 appropriate for their computing platform.  The versatility of conda allows a
 user to essentially build their own isolated Python environment, without having
 to worry about clashing dependencies and other system installations of Python.
-Conda is available on select OLCF systems (Summit, Andes, and Frontier).
+Conda is available on select OLCF systems (Andes and Frontier).
 
 For users interested in using Python with Jupyter, see our :doc:`Jupyter at OLCF
 </services_and_applications/jupyter/overview>` page instead.
-
-For users interested in using the machine learning ``open-ce`` module (formerly
-``ibm-wml-ce``) on Summit, see our :doc:`/software/analytics/ibm-wml-ce` page.
-
 
 .. _python-guides:
 
@@ -56,16 +52,16 @@ Below is a list of guides created for using Python on OLCF systems.
    cupy
    sbcast_conda
    jupyter_envs
-   pytorch_summit
    pytorch_frontier
+   jax
 
-* :doc:`Conda Basics Guide </software/python/conda_basics>`: Goes over the basic workflow and commands of Conda **(Summit/Andes/Frontier)**
-* :doc:`Installing mpi4py and h5py Guide </software/python/parallel_h5py>`: Teaches you how to install parallel-enabled h5py and mpi4py **(Summit/Andes/Frontier)**
-* :doc:`Installing CuPy Guide </software/python/cupy>`: Teaches you how to install CuPy **(Summit/Andes/Frontier)**
+* :doc:`Conda Basics Guide </software/python/conda_basics>`: Goes over the basic workflow and commands of Conda **(Andes/Frontier)**
+* :doc:`Installing mpi4py and h5py Guide </software/python/parallel_h5py>`: Teaches you how to install parallel-enabled h5py and mpi4py **(Andes/Frontier)**
+* :doc:`Installing CuPy Guide </software/python/cupy>`: Teaches you how to install CuPy **(Andes/Frontier)**
 * :doc:`Sbcast Conda Environments Guide </software/python/sbcast_conda>`: Teaches you how to ``sbcast`` your conda environments to speedup initialization **(Frontier)**
 * :doc:`Jupyter Visibility Guide </software/python/jupyter_envs>`: Teaches you how to make your conda environments visible to Jupyter **(Frontier/Andes)**
-* :doc:`PyTorch on Summit </software/python/pytorch_summit>`: Shows how to access PyTorch on Summit **(Summit)**
 * :doc:`PyTorch on Frontier </software/python/pytorch_frontier>`: Shows how to access PyTorch on Frontier **(Frontier)**
+* :doc:`JAX </software/python/jax>`: Teaches you how to install JAX **(Frontier)**
 
 
 .. note::
@@ -84,19 +80,12 @@ To start using Python, all you need to do is load the module:
 
 .. tab-set::
 
-   .. tab-item:: Summit
-      :sync: summit
-
-      .. code-block:: bash
-
-         $ module load miniforge3/24.3.0-0
-
    .. tab-item:: Andes
       :sync: andes
 
       .. code-block:: bash
 
-         $ module load miniforge3/23.11.0-0
+         module load miniforge3/23.11.0-0
 
       .. note::
          Loading the older ``python`` module on Andes is still possible.
@@ -107,7 +96,7 @@ To start using Python, all you need to do is load the module:
 
       .. code-block:: bash
 
-         $ module load miniforge3/23.11.0-0
+         module load miniforge3/23.11.0-0
 
       .. note::
          Using the ``cray-python`` module on Frontier is also an option but is
@@ -128,7 +117,7 @@ Base Environment
 Loading the Python module on all systems will put you in a "base"
 pre-configured environment. This option is recommended for users who do not
 need custom environments and only require a Python installation. Loading
-the relevant ``miniforge3`` module on Summit, Frontier, and Andes provides
+the relevant ``miniforge3`` module on Frontier and Andes provides
 some basic analysis packages like NumPy, Scipy, and Matplotlib. However, the
 pre-installed package list is inherently minimal and users are encouraged to
 install additional packages for themselves.
@@ -138,37 +127,13 @@ A small preview is provided below:
 
 .. tab-set::
 
-   .. tab-item:: Summit
-      :sync: summit
-
-      .. code-block:: bash
-
-         $ module load miniforge3/24.3.0-0
-         $ conda list
-
-         # packages in environment at /autofs/nccs-svm1_sw/summit/miniforge3/24.3.0-0:
-         #
-         # Name                    Version                   Build  Channel
-         _libgcc_mutex             0.1                 conda_forge    conda-forge
-         _openmp_mutex             4.5                       2_gnu    conda-forge
-         ansible                   10.0.0             pyh707e725_0    conda-forge
-         ansible-core              2.17.0             pyh707e725_0    conda-forge
-         archspec                  0.2.3              pyhd8ed1ab_0    conda-forge
-         boltons                   24.0.0             pyhd8ed1ab_0    conda-forge
-         brotli                    1.1.0                ha17a0cc_1    conda-forge
-         brotli-bin                1.1.0                ha17a0cc_1    conda-forge
-         brotli-python             1.1.0           py310h9de49d8_1    conda-forge
-         .
-         .
-         .
-
    .. tab-item:: Andes
       :sync: andes
 
       .. code-block:: bash
 
-         $ module load miniforge3/23.11.0-0
-         $ conda list
+         module load miniforge3/23.11.0-0
+         conda list
 
          # packages in environment at /autofs/nccs-svm1_sw/andes/miniforge3/23.11.0-0:
          #
@@ -191,8 +156,8 @@ A small preview is provided below:
 
       .. code-block:: bash
 
-         $ module load miniforge3/23.11.0-0
-         $ conda list
+         module load miniforge3/23.11.0-0
+         conda list
 
          # packages in environment at /autofs/nccs-svm1_sw/frontier/miniforge3/23.11.0-0:
          #
@@ -238,39 +203,22 @@ To create and activate an environment:
 
 .. tab-set::
 
-   .. tab-item:: Summit
-      :sync: summit
-
-      .. code-block:: bash
-
-         #1. Load the module
-         $ module load miniforge3/24.3.0-0
-
-         #2a. Create "my_env" with Python version X.Y at the desired path
-         $ conda create -p /path/to/my_env python=X.Y
-
-         #2b. Create "my_env" with Python version X.Y with a specific name (defaults to $HOME directory)
-         $ conda create --name my_env python=X.Y
-
-         #3. Activate "my_env"
-         $ source activate /path/to/my_env
-
    .. tab-item:: Andes
       :sync: andes
 
       .. code-block:: bash
 
          #1. Load the module
-         $ module load miniforge3/23.11.0-0
+         module load miniforge3/23.11.0-0
 
          #2a. Create "my_env" with Python version X.Y at the desired path
-         $ conda create -p /path/to/my_env python=X.Y
+         conda create -p /path/to/my_env python=X.Y
 
          #2b. Create "my_env" with Python version X.Y with a specific name (defaults to $HOME directory)
-         $ conda create --name my_env python=X.Y
+         conda create --name my_env python=X.Y
 
          #3. Activate "my_env"
-         $ source activate /path/to/my_env
+         source activate /path/to/my_env
 
    .. tab-item:: Frontier
       :sync: frontier
@@ -278,16 +226,16 @@ To create and activate an environment:
       .. code-block:: bash
 
          #1. Load the module
-         $ module load miniforge3/23.11.0-0
+         module load miniforge3/23.11.0-0
 
          #2a. Create "my_env" with Python version X.Y at the desired path
-         $ conda create -p /path/to/my_env python=X.Y
+         conda create -p /path/to/my_env python=X.Y
 
          #2b. Create "my_env" with Python version X.Y with a specific name (defaults to $HOME directory)
-         $ conda create --name my_env python=X.Y
+         conda create --name my_env python=X.Y
 
          #3. Activate "my_env"
-         $ source activate /path/to/my_env
+         source activate /path/to/my_env
 
 
 .. note::
@@ -303,21 +251,13 @@ Deactivating an environment can be achieved through:
 
 .. tab-set::
 
-   .. tab-item:: Summit
-      :sync: summit
-
-      .. code-block:: bash
-
-         # Deactivate the current environment
-         $ source deactivate
-
    .. tab-item:: Andes
       :sync: andes
 
       .. code-block:: bash
 
          # Deactivate the current environment
-         $ source deactivate
+         source deactivate
 
    .. tab-item:: Frontier
       :sync: frontier
@@ -325,7 +265,7 @@ Deactivating an environment can be achieved through:
       .. code-block:: bash
 
          # Deactivate the current environment
-         $ source deactivate
+         source deactivate
 
 
 How to Run
@@ -345,62 +285,6 @@ not affect how you invoke python in your scripts, although we encourage
 specifying ``python2`` or ``python3`` as a best practice, or specifying the
 full path to your Python installation.
 
-Summit
-------
-
-Before jumping into batch scripts, remember to check out the :ref:`python-mods`
-section first, which details the differences between Python modules and
-environments on our different systems.
-
-Batch Script - Summit
-^^^^^^^^^^^^^^^^^^^^^
-
-To use Python on a Summit compute node, you **must** use ``jsrun``, even if
-running in serial.
-
-Additionally, ``$PATH`` issues are known to occur after having loaded multiple
-conda environments before submitting a batch script. Therefore, it is
-recommended to use a fresh login shell before submission. The ``-L`` flag for
-``bsub`` ensures that no previously set environment variables are passed into
-the batch job.
-
-.. code-block:: bash
-
-   $ bsub -L $SHELL submit.lsf
-
-This means you will have to load your modules and activate your environment
-inside the batch script. An example batch script for Summit is provided below:
-
-.. code-block:: bash
-
-   #!/bin/bash
-   #BSUB -P PROJECT_ID
-   #BSUB -W 00:05
-   #BSUB -nnodes 1
-   #BSUB -J python
-   #BSUB -o python.%J.out
-   #BSUB -e python.%J.err
-
-   cd $LSB_OUTDIR
-   date
-
-   module load miniforge3/24.3.0-0
-   source activate my_env
-
-   jsrun -n1 -r1 -a1 -c1 python3 script.py
-
-Interactive Job - Summit
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-To use Python in an interactive session on Summit:
-
-.. code-block:: bash
-
-   $ module load miniforge3/24.3.0-0
-   $ bsub -W 0:05 -nnodes 1 -P <PROJECT_ID> -Is $SHELL
-   $ source activate my_env
-   $ jsrun -n1 -r1 -a1 -c1 python3 script.py
-
 Frontier / Andes
 ----------------
 
@@ -416,17 +300,16 @@ batch job.  Therefore, you only need to use ``srun`` if you plan to run
 parallel-enabled Python, and you *do not* need to specify ``srun`` if you are
 running a serial application.
 
-Similar to Summit (see above), ``$PATH`` issues are known to occur if not
-submitting from a fresh login shell, which can result in the wrong environment
-being detected. To avoid this, you must use the ``--export=NONE`` flag during
-job submission and use ``unset SLURM_EXPORT_ENV`` in your job script (before
-calling ``srun``), which ensures that no previously set environment variables
-are passed into the batch job, but makes sure that ``srun`` can still find your
-python path:
+``$PATH`` issues are known to occur if not submitting from a fresh login shell,
+which can result in the wrong environment being detected. To avoid this, you
+must use the ``--export=NONE`` flag during job submission and use ``unset
+SLURM_EXPORT_ENV`` in your job script (before calling ``srun``), which ensures
+that no previously set environment variables are passed into the batch job, but
+makes sure that ``srun`` can still find your python path:
 
 .. code-block:: bash
 
-   $ sbatch --export=NONE submit.sl
+   sbatch --export=NONE submit.sl
 
 This means you will have to load your modules and activate your environment
 inside the batch script. An example batch script for is provided below:
@@ -495,20 +378,20 @@ To use Python in an interactive session on Frontier and Andes:
 
       .. code-block:: bash
 
-         $ salloc -A <PROJECT_ID> -N 1 -t 0:05:00
-         $ module load miniforge3/23.11.0-0
-         $ source activate my_env
-         $ python3 script.py
+         salloc -A <PROJECT_ID> -N 1 -t 0:05:00
+         module load miniforge3/23.11.0-0
+         source activate my_env
+         python3 script.py
 
    .. tab-item:: Andes
       :sync: andes
 
       .. code-block:: bash
 
-         $ salloc -A <PROJECT_ID> -N 1 -t 0:05:00
-         $ module load miniforge3/23.11.0-0
-         $ source activate my_env
-         $ python3 script.py
+         salloc -A <PROJECT_ID> -N 1 -t 0:05:00
+         module load miniforge3/23.11.0-0
+         source activate my_env
+         python3 script.py
 
 
 When in an interactive job, if you want to use an interactive Python prompt and
@@ -516,7 +399,7 @@ When in an interactive job, if you want to use an interactive Python prompt and
 
 .. code-block:: bash
 
-   $ srun --pty python3
+   srun --pty python3
 
 
 .. _python-best-pract:
@@ -551,7 +434,7 @@ Best Practices
 
     .. code-block:: bash
 
-       $ echo "Using this Python environment: $(which python3)"
+       echo "Using this Python environment: $(which python3)"
 
     Having a line similar to the above in your batch scripts may help diagnose
     compute jobs that may be using the wrong environment.
@@ -563,18 +446,18 @@ Best Practices
     yourself and install packages into the clone.  To clone an environment, you
     must use the ``--clone <env_to_clone>`` flag when creating a new conda
     environment. An example for cloning the base environment into a specific
-    directory called ``envs/summit/`` in your "Project Home" on Summit is provided below:
+    directory called ``envs/frontier/`` in your "Project Home" on NFS is provided below:
 
     .. code-block:: bash
 
-       $ conda create -p /ccs/proj/<project_id>/<user_id>/envs/summit/baseclone-summit --clone base
-       $ source activate /ccs/proj/<project_id>/<user_id>/envs/summit/baseclone-summit
+       conda create -p /ccs/proj/<project_id>/<user_id>/envs/frontier/baseclone-frontier --clone base
+       source activate /ccs/proj/<project_id>/<user_id>/envs/frontier/baseclone-frontier
 
 * **Cloning the "base environment" using venv**:
 
     .. code-block:: bash
 
-       $ python3 -m venv /path/to/new_env --system-site-packages
+       python3 -m venv /path/to/new_env --system-site-packages
 
 * **Environment locations (storage)**:
 
@@ -603,21 +486,21 @@ Best Practices
     default (such as ``/ccs/proj/...``), then there is an option to add directories
     to the ``envs_dirs`` list.
   
-    For example, to track conda environments in a subdirectory called ``summit``
+    For example, to track conda environments in a subdirectory called ``frontier``
     in Project Home you would execute:
 
     .. code-block:: bash
 
-       $ conda config --append envs_dirs /ccs/proj/<project_id>/<user_id>/envs/summit
+       conda config --append envs_dirs /ccs/proj/<project_id>/<user_id>/envs/frontier
 
     This will create a ``.condarc`` file in your ``$HOME`` directory if you do not have
     one already, which will now contain this new envs_dirs location.  This will now
     enable you to use the ``--name env_name`` flag when using conda commands for
-    environments stored in the ``summit`` directory, instead of having to use the
-    ``-p /ccs/proj/<project_id>/<user_id>/envs/summit/env_name``
+    environments stored in the ``frontier`` directory, instead of having to use the
+    ``-p /ccs/proj/<project_id>/<user_id>/envs/frontier/env_name``
     flag and specifying the full path to the environment.  For example, you can do
     ``source activate my_env`` instead of ``source activate
-    /ccs/proj/<project_id>/<user_id>/envs/summit/my_env``.
+    /ccs/proj/<project_id>/<user_id>/envs/frontier/my_env``.
 
 * **Make note of and clean your pip cache location**:
 
@@ -628,13 +511,13 @@ Best Practices
 
         .. code-block:: bash
 
-           $ pip cache info
+           pip cache info
 
     * To clean your cache, use:
 
         .. code-block:: bash
 
-           $ pip cache purge
+           pip cache purge
 
 * **Clean your conda cache**:
 
@@ -643,7 +526,7 @@ Best Practices
 
     .. code-block:: bash
 
-       $ conda clean -a
+       conda clean -a
 
 * **Deactivate your environments before running batch jobs**:
 
@@ -659,7 +542,7 @@ Best Practices
 
     .. code-block:: bash
 
-       $ python3 -u script.py
+       python3 -u script.py
 
 
 Additional Resources

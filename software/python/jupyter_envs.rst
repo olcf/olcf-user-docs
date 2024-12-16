@@ -10,10 +10,6 @@ OLCF Systems this guide applies to:
 * Andes
 * Frontier
 
-.. note::
-
-   Summit users can follow this guide, but due to the architecture of Summit, some packages may not behave properly on OLCF's JupyterLab.
-
 Making your environment visible to Jupyter
 ==========================================
 
@@ -28,16 +24,16 @@ First, let's load the relevant Python module along with the gnu compiler module 
 
       .. code-block:: bash
 
-         $ module load gcc/9.3.0
-         $ module load miniforge3/23.11.0-0
+         module load gcc/9.3.0
+         module load miniforge3/23.11.0-0
 
    .. tab-item:: Frontier
       :sync: frontier
 
       .. code-block:: bash
 
-         $ module load PrgEnv-gnu/8.5.0
-         $ module load miniforge3/23.11.0-0
+         module load PrgEnv-gnu/8.5.0
+         module load miniforge3/23.11.0-0
 
 Next, create your environment and activate it:
 
@@ -48,16 +44,16 @@ Next, create your environment and activate it:
 
       .. code-block:: bash
 
-         $ conda create -p /path/to/your/jupyter_env_andes python=3.10
-         $ source activate /path/to/your/jupyter_env_andes
+         conda create -p /path/to/your/jupyter_env_andes python=3.10
+         source activate /path/to/your/jupyter_env_andes
 
    .. tab-item:: Frontier
       :sync: frontier
 
       .. code-block:: bash
 
-         $ conda create -p /path/to/your/jupyter_env_frontier python=3.10
-         $ source activate /path/to/your/jupyter_env_frontier
+         conda create -p /path/to/your/jupyter_env_frontier python=3.10
+         source activate /path/to/your/jupyter_env_frontier
 
 .. note::
 
@@ -72,14 +68,14 @@ Next, install ``ipykernel`` which we will use to install a "Kernel" of your envi
 
       .. code-block:: bash
 
-         $ pip install ipykernel
+         pip install ipykernel
 
    .. tab-item:: Frontier
       :sync: frontier
 
       .. code-block:: bash
 
-         $ pip install ipykernel
+         pip install ipykernel
 
 Finally, let's use ``ipykernel`` to expose your environment to Jupyter:
 
@@ -90,14 +86,14 @@ Finally, let's use ``ipykernel`` to expose your environment to Jupyter:
 
       .. code-block:: bash
 
-         $ ipython kernel install --user --name=jupyter_env_andes
+         ipython kernel install --user --name=jupyter_env_andes
 
    .. tab-item:: Frontier
       :sync: frontier
 
       .. code-block:: bash 
 
-         $ ipython kernel install --user --name=jupyter_env_frontier
+         ipython kernel install --user --name=jupyter_env_frontier
 
 .. note::
 

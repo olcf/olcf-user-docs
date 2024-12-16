@@ -15,7 +15,6 @@ In this guide, you will:
 
 OLCF Systems this guide applies to:
 
-* Summit
 * Frontier
 * Andes
 
@@ -24,10 +23,10 @@ OLCF Systems this guide applies to:
 +------------+-------------------------+
 | ``python`` | .. centered:: ``cupy``  |
 +============+=========================+
-|  3.10.13   |  13.0.0*, 12.3.0        |   
+|  3.11.11   |  13.3.0*, 12.3.0        |   
 +------------+-------------------------+
 
-:sup:`* Version 13.0.0 does not work on Frontier properly`
+:sup:`* Version 13.x.y does not work on Frontier properly`
 
 .. note::
    Working installations are **not** limited to what is shown above.
@@ -37,7 +36,7 @@ CuPy
 ====
 
 GPU computing has become a big part of the data science landscape, as array operations with NVIDIA GPUs can provide considerable speedups over CPU computing.
-Although GPU computing on Summit is often utilized in codes that are written in Fortran and C, GPU-related Python packages are quickly becoming popular in the data science community.
+Although GPU computing in HPC is often utilized in codes that are written in Fortran and C, GPU-related Python packages are quickly becoming popular in the data science community.
 One of these packages is `CuPy <https://cupy.dev/>`__, a NumPy/SciPy-compatible array library accelerated with NVIDIA CUDA.
 
 CuPy is a library that implements NumPy arrays on NVIDIA GPUs by utilizing CUDA Toolkit libraries like cuBLAS, cuRAND, cuSOLVER, cuSPARSE, cuFFT, cuDNN and NCCL.
@@ -71,83 +70,60 @@ First, load the gnu compiler module (most Python packages assume GCC), relevant 
 
 .. tab-set::
 
-   .. tab-item:: Summit
-      :sync: summit
-
-      .. code-block:: bash
-
-         $ module load gcc/9.3.0-compiler_only # might work with other GCC versions
-         $ module load cuda/11.7.1
-         $ module load miniforge3/24.3.0-0
-
    .. tab-item:: Frontier
       :sync: frontier
 
       .. code-block:: bash
 
-         $ module load PrgEnv-gnu/8.5.0
-         $ module load rocm/5.7.1 # may work with other ROCm versions
-         $ module load craype-accel-amd-gfx90a
-         $ module load miniforge3/23.11.0-0
+         module load PrgEnv-gnu/8.5.0
+         module load rocm/5.7.1 # may work with other ROCm versions
+         module load craype-accel-amd-gfx90a
+         module load miniforge3/23.11.0-0
 
    .. tab-item:: Andes
       :sync: andes
 
       .. code-block:: bash
 
-         $ module load gcc/9.3.0 # works with older GCC versions if using cuda/10.2.89
-         $ module load cuda/11.2.2
-         $ module load miniforge3/23.11.0-0
+         module load gcc/9.3.0 # works with older GCC versions if using cuda/10.2.89
+         module load cuda/11.2.2
+         module load miniforge3/23.11.0-0
 
 Loading a python module puts you in a "base" environment, but you need to create a new environment using the ``conda create`` command:
 
 .. tab-set::
 
-   .. tab-item:: Summit
-      :sync: summit
-
-      .. code-block:: bash
-
-         $ conda create -n cupy-summit python=3.10 numpy=1.26.4 scipy
-
    .. tab-item:: Frontier
       :sync: frontier
 
       .. code-block:: bash
 
-         $ conda create -n cupy-frontier python=3.10 numpy=1.26.4 scipy
+         conda create -n cupy-frontier python=3.10 numpy=1.26.4 scipy -c conda-forge
 
    .. tab-item:: Andes
       :sync: andes
 
       .. code-block:: bash
 
-         $ conda create -n cupy-andes python=3.10 numpy=1.26.4 scipy
+         conda create -n cupy-andes python=3.11 numpy scipy -c conda-forge
 
 After following the prompts for creating your new environment, you can now activate it:
 
 .. tab-set::
 
-   .. tab-item:: Summit
-      :sync: summit
-
-      .. code-block:: bash
-
-         $ source activate cupy-summit
-
    .. tab-item:: Frontier
       :sync: frontier
 
       .. code-block:: bash
 
-         $ source activate cupy-frontier
+         source activate cupy-frontier
 
    .. tab-item:: Andes
       :sync: andes
 
       .. code-block:: bash
 
-         $ source activate cupy-andes
+         source activate cupy-andes
 
 Finally, install CuPy from source into your environment.
 To make sure that you are building from source, and not a pre-compiled binary, use ``pip``:
@@ -160,35 +136,28 @@ To make sure that you are building from source, and not a pre-compiled binary, u
 
 .. tab-set::
 
-   .. tab-item:: Summit
-      :sync: summit
-
-      .. code-block:: bash
-
-         $ CC=gcc NVCC=nvcc pip install --no-cache-dir --no-binary=cupy cupy==13.0.0
-
    .. tab-item:: Frontier
       :sync: frontier
 
       .. code-block:: bash
 
-         $ export CUPY_INSTALL_USE_HIP=1
-         $ export ROCM_HOME=/opt/rocm-5.3.0
-         $ export HCC_AMDGPU_TARGET=gfx90a
-         $ CC=gcc CXX=g++ pip install --no-cache-dir --no-binary=cupy cupy==12.3.0
+         export CUPY_INSTALL_USE_HIP=1
+         export ROCM_HOME=${ROCM_PATH}
+         export HCC_AMDGPU_TARGET=gfx90a
+         CC=gcc CXX=g++ pip install --no-cache-dir --no-binary=cupy cupy==12.3.0
 
    .. tab-item:: Andes
       :sync: andes
 
       .. code-block:: bash
 
-         $ salloc -A PROJECT_ID -N1 -p gpu -t 01:00:00
-         $ export all_proxy=socks://proxy.ccs.ornl.gov:3128/
-         $ export ftp_proxy=ftp://proxy.ccs.ornl.gov:3128/
-         $ export http_proxy=http://proxy.ccs.ornl.gov:3128/
-         $ export https_proxy=http://proxy.ccs.ornl.gov:3128/
-         $ export no_proxy='localhost,127.0.0.0/8,*.ccs.ornl.gov'
-         $ CC=gcc NVCC=nvcc pip install --no-cache-dir --no-binary=cupy cupy==13.0.0
+         salloc -A PROJECT_ID -N1 -p gpu -t 01:00:00
+         export all_proxy=socks://proxy.ccs.ornl.gov:3128/
+         export ftp_proxy=ftp://proxy.ccs.ornl.gov:3128/
+         export http_proxy=http://proxy.ccs.ornl.gov:3128/
+         export https_proxy=http://proxy.ccs.ornl.gov:3128/
+         export no_proxy='localhost,127.0.0.0/8,*.ccs.ornl.gov'
+         CC=gcc NVCC=nvcc pip install --no-cache-dir --no-binary=cupy cupy==13.3.0
 
       .. note::
          To be able to build CuPy on Andes, you must be within a compute job
@@ -196,50 +165,12 @@ To make sure that you are building from source, and not a pre-compiled binary, u
          This allows CuPy to see the GPU properly when linking and building.
 
 The ``CC`` and ``NVCC`` flags ensure that you are passing the correct wrappers, while the various flags for Frontier tell CuPy to build for AMD GPUs.
-Note that, on Summit, if you are using the instructions for installing CuPy with OpenCE below, a ``cuda`` module will automatically be loaded.
 This installation takes, on average, 10-20 minutes to complete (due to building everything from scratch), so don't panic if it looks like the install timed-out.
 Eventually you should see output similar to this (versions will vary):
 
 .. code-block::
 
-   Successfully installed cupy-13.0.0 fastrlock-0.8.2
-
-Installing CuPy in an OpenCE Environment (Summit only)
-------------------------------------------------------
-
-If you wish to use CuPy within a clone of the OpenCE environment, the installation process is very similar to what we do in the regular CuPy installation we saw above.
-
-.. warning::
-   The open-ce/1.2.0-pyXY-0 (which is the current default) will not support this. So make sure you are using open-ce/1.5.0-pyXY-0 or higher.
-   
-The contents of the open-ce module cannot be modified so you need to make your own clone of the open-ce environment.
-
-.. code-block::
-
-   $ module purge
-   $ module load DefApps
-   $ module unload xl
-   $ module load open-ce/1.10.0-py39-ibm
-   $ conda create --clone /sw/summit/ibmsw/minicondas/rocketce-1.10-py3.9-pytorch -p /ccs/proj/<project_id>/<user_id>/envs/summit/opence_cupy_summit
-   $ conda activate /ccs/proj/<project_id>/<user_id>/envs/summit/opence_cupy_summit
-
-Next, install CuPy the way you did before. This installation will use the system GCC /usr/bin/gcc which is currently 8.5.0.
-
-.. code-block::
-
-   $ CC=gcc NVCC=nvcc pip install --no-cache-dir --no-binary=cupy cupy==13.0.0
-
-Now, everytime you want to use this environment with CuPy on a new login or in a job, you will have to do the sequence of the following
-
-.. code-block::
-
-   module purge
-   module load DefApps
-   module unload xl
-   module load open-ce/1.10.0-py39-ibm
-   conda activate /ccs/proj/<project_id>/<user_id>/envs/summit/opence_cupy_summit
-
-
+   Successfully installed cupy-13.3.0 fastrlock-0.8.2
 
 
 Getting Started With CuPy
@@ -258,12 +189,11 @@ It is good practice to change it to your scratch directory:
 
 .. code-block:: bash
 
-   $ export CUPY_CACHE_DIR="${MEMBERWORK}/<YOUR_PROJECT_ID>/.cupy/kernel_cache"
+   export CUPY_CACHE_DIR="${MEMBERWORK}/<YOUR_PROJECT_ID>/.cupy/kernel_cache"
 
 Before you start testing CuPy with Python scripts, let's go over some of the basics.
 The developers provide a great introduction to using CuPy in their user guide under the `CuPy Basics <https://docs.cupy.dev/en/stable/user_guide/basic.html>`__ section.
-We will be following this walkthrough on Summit.
-The syntax below assumes being in a Python shell with access to 4 GPUs (through a ``jsrun -g4 ...`` command).
+The syntax below assumes being in a Python shell with access to 4 GPUs.
 
 .. note::
    On Frontier, running in an interactive job will return 8 GPUs available to CuPy.
@@ -397,135 +327,6 @@ In CuPy, all CUDA operations are enqueued onto the current stream, and the queue
 This can result in some GPU operations finishing before some CPU operations.
 As CuPy streams are out of the scope of this guide, you can find additional information in the `CuPy User Guide <https://docs.cupy.dev/en/stable/user_guide/index.html>`__.
 
-NumPy Speed Comparison (Summit only)
-==========================================
-
-.. warning::
-   As noted in `AMD+CuPy limitations <https://docs.cupy.dev/en/stable/install.html#limitations>`__,
-   data sizes explored here hang. So, this section currently does not apply to Frontier.
-
-Now that you know how to use CuPy, time to see the actual benefits that CuPy provides for large datasets.
-More specifically, let's see how much faster CuPy can be than NumPy on Summit.
-You won't need to fix any errors; this is mainly a demonstration on what CuPy is capable of.
-
-There are a few things to consider when running on GPUs, which also apply to using CuPy:
-
-* Higher precision means higher cost (time and space)
-* The structuring of your data is important
-* The larger the data, the better for GPUs (but needs careful planning)
-
-These points are explored in the example script ``timings.py``:
-
-.. code-block:: python
-
-   # timings.py
-   import cupy as cp
-   import numpy as np
-   import time as tp
-
-   A      = np.random.rand(3000,3000) # NumPy rand
-   G      = cp.random.rand(3000,3000) # CuPy rand
-   G32    = cp.random.rand(3000,3000,dtype=cp.float32) # Create float32 matrix instead of float64 (default)
-   G32_9k = cp.random.rand(9000,1000,dtype=cp.float32) # Create float32 matrix of a different shape
-
-   t1 = tp.time()
-   np.linalg.svd(A) # NumPy Singular Value Decomposition
-   t2 = tp.time()
-   print("CPU time: ", t2-t1)
-
-   t3 = tp.time()
-   cp.linalg.svd(G) # CuPy Singular Value Decomposition
-   cp.cuda.Stream.null.synchronize() # Waits for GPU to finish
-   t4 = tp.time()
-   print("GPU time: ", t4-t3)
-
-   t5 = tp.time()
-   cp.linalg.svd(G32)
-   cp.cuda.Stream.null.synchronize()
-   t6 = tp.time()
-   print("GPU float32 time: ", t6-t5)
-
-   t7 = tp.time()
-   cp.linalg.svd(G32_9k)
-   cp.cuda.Stream.null.synchronize()
-   t8 = tp.time()
-   print("GPU float32 restructured time: ", t8-t7)
-
-This script times the decomposition of a matrix with 9 million elements across four different methods.
-First, NumPy is timed for a 3000x3000 dimension matrix.
-Then, a 3000x3000 matrix in CuPy is timed.
-As you will see shortly, the use of CuPy will result in a major performance boost when compared to NumPy, even though the matrices are structured the same way.
-This is improved upon further by switching the data type to ``float32`` from ``float64`` (the default).
-Lastly, a 9000x1000 matrix is timed, which contains the same number of elements as the original matrix, just rearranged.
-Although you may not expect it, the restructuring results in a big performance boost as well.
-
-Before asking for a compute node, change into your scratch directory:
-
-.. code-block:: bash
-
-   $ cd $MEMBERWORK/<YOUR_PROJECT_ID>
-   $ mkdir cupy_test
-   $ cd cupy_test
-
-Let's see the boosts explicitly by running the ``timings.py`` script.
-To do so, you must submit ``submit_timings`` to the queue:
-
-.. tab-set::
-
-   .. tab-item:: Summit
-      :sync: summit
-
-      .. code-block:: bash
-
-         $ bsub -L $SHELL submit_timings.lsf
-
-Example "submit_timings" batch script:
-
-.. tab-set::
-
-   .. tab-item:: Summit
-      :sync: summit
-
-      .. code-block:: bash
-
-         #!/bin/bash
-         #BSUB -P <PROJECT_ID>
-         #BSUB -W 00:05
-         #BSUB -nnodes 1
-         #BSUB -J cupy_timings
-         #BSUB -o cupy_timings.%J.out
-         #BSUB -e cupy_timings.%J.err
-
-         cd $LSB_OUTDIR
-         date
-
-         module load gcc/9.3.0-compiler_only
-         module load cuda/11.7.1
-         module load miniforge3/24.3.0-0
-
-         source activate cupy-summit
-         export CUPY_CACHE_DIR="${MEMBERWORK}/<project_id>/.cupy/kernel_cache"
-
-         jsrun -n1 -g1 python3 timings.py
-
-
-After the job completes, in ``cupy_timings.<JOB_ID>.out`` you will see something similar to:
-
-.. code-block::
-
-   CPU time:  21.632022380828857
-   GPU time:  11.382664203643799
-   GPU float32 time:  4.066986799240112
-   GPU float32 restructured time:  0.8666532039642334
-
-The exact numbers may be slightly different, but you should see a speedup factor of approximately 2 or better when comparing "GPU time" to "CPU time".
-Switching to ``float32`` was easier on memory for the GPU, which improved the time further.
-Things are even better when you look at "GPU float32 restructured time", which represents an additional factor of 4 speedup when compared to "GPU float32 time".
-Overall, using CuPy and restructuring the data led to a speedup factor of >20 when compared to traditional NumPy!
-This factor would diminish with smaller datasets, but represents what CuPy is capable of at this scale.
-
-You have now discovered what CuPy can provide!
-Now you can try speeding up your own codes by swapping CuPy and NumPy where you can.
 
 Additional Resources
 ====================
