@@ -14,12 +14,28 @@ OLCF Systems this guide applies to:
 
 * Frontier
 
+Table of Contents:
+==================
+
+* :ref:`Installing PyTorch <install>`
+   * :ref:`Optional: install mpi4py <install-mpi>`
+* :ref:`Example Usage <example>`
+   * :ref:`Multinode script <ex-code>`
+   * :ref:`Batch script <ex-batch>`
+* :ref:`Best Practices <practices>`
+* :ref:`PyTorch Geometric <torch-geo>`
+* :ref:`Troubleshooting <troubleshoot>`
+* :ref:`Additional Resources <resources>`
+
+
+.. _install:
+
 Installing PyTorch
 ==================
 
 In general, installing either the "stable" or "nightly" wheels of PyTorch>=2.1.0 listed on `Pytorch's Website <https://pytorch.org/get-started/locally/>`__ works well on Frontier.
 When navigating the install instructions on their website, make sure to indicate "Linux", "Pip", and "ROCm" for accurate install instructions.
-Let's follow those instructions to install the stable wheel of ``pytorch2.2.2+rocm5.7``. 
+Let's follow those instructions to install a stable wheel of torch. 
 
 First, load your modules:
 
@@ -27,21 +43,21 @@ First, load your modules:
 
    module load PrgEnv-gnu/8.5.0
    module load miniforge3/23.11.0-0
-   module load rocm/5.7.1
+   module load rocm/6.1.3
    module load craype-accel-amd-gfx90a
  
 Next, create and activate a conda environment that we will install ``torch`` into:
 
 .. code-block:: bash
 
-   conda create -p /path/to/my_env python=3.10
+   conda create -p /path/to/my_env python=3.11 -c conda-forge
    source activate /path/to/my_env
 
 Finally, install PyTorch:
 
 .. code-block:: bash
 
-   pip3 install torch==2.2.2 torchvision==0.17.2 torchaudio==2.2.2 --index-url https://download.pytorch.org/whl/rocm5.7
+   pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.1
    
 You should now be ready to use PyTorch on Frontier!
 
@@ -56,15 +72,22 @@ For users interested in older versions of PyTorch, or for those needing to insta
 If you need to install from source, take a look at AMD's PyTorch+ROCm fork on github: https://github.com/ROCm/pytorch .
 If you're having trouble installing from source, feel free to submit a ticket to help@olcf.ornl.gov .
 
+.. _install-mpi:
+
 Optional: Install mpi4py
 ------------------------
 
 Although ``mpi4py`` isn't required in general (you can accomplish the same task using system environment variables), it acts as a nice convenience when needing to set various MPI parameters when using PyTorch for distributed training.
+This is taken from our :doc:`/software/python/parallel_h5py` guide:
 
 .. code-block:: bash
 
    MPICC="cc -shared" pip install --no-cache-dir --no-binary=mpi4py mpi4py
 
+.. note::
+   The below example uses ``mpi4py``
+
+.. _example:
 
 Example Usage
 -------------
@@ -76,9 +99,12 @@ Even if the *physical* GPU ID on Frontier is different, and even though there ar
 
 The adapted script ``multinode_olcf.py`` is below:
 
+.. _ex-code:
+
 .. code-block:: python
 
    #multinode_olcf.py
+   from mpi4py import MPI
    import torch
    import torch.nn.functional as F
    from torch.utils.data import Dataset, DataLoader
@@ -211,8 +237,6 @@ The adapted script ``multinode_olcf.py`` is below:
        num_gpus_per_node = torch.cuda.device_count()
        print ("num_gpus_per_node = " + str(num_gpus_per_node), flush=True)
 
-       from mpi4py import MPI
-       import os
        comm = MPI.COMM_WORLD
        world_size = comm.Get_size()
        global_rank = rank = comm.Get_rank()
@@ -239,6 +263,8 @@ The adapted script ``multinode_olcf.py`` is below:
 
 To run the python script, an example batch script is given below:
 
+.. _ex-batch:
+
 .. code-block:: bash
 
    #!/bin/bash
@@ -256,7 +282,7 @@ To run the python script, an example batch script is given below:
 
    # Load modules
    module load PrgEnv-gnu/8.5.0
-   module load rocm/5.7.1
+   module load rocm/6.1.3
    module load craype-accel-amd-gfx90a
    module load miniforge3/23.11.0-0
 
@@ -284,6 +310,8 @@ As mentioned on our :doc:`/software/python/index` page, submitting batch scripts
 After running the script, you will have successfully used PyTorch to train on 16 different GPUs for 2000 epochs and save a training snapshot.
 Depending on how long PyTorch takes to initialize, the script should complete in 10-20 seconds.
 If the script is able to utilize any cache (e.g., if you ran the script again in the same compute job), then it should complete in approximately 5 seconds.
+
+.. _practices:
 
 Best Practices
 ==============
@@ -346,8 +374,7 @@ To build the plugin on Frontier (using rocm 5.7.1 as an example):
    module load craype-accel-amd-gfx90a
    module load gcc-native/12.3
    module load cray-mpich/8.1.28
-   module load libtool
-   libfabric_path=/opt/cray/libfabric/1.15.2.0
+   libfabric_path=/opt/cray
 
    # Download the plugin repo
    git clone --recursive https://github.com/ROCmSoftwarePlatform/aws-ofi-rccl
@@ -370,7 +397,7 @@ To build the plugin on Frontier (using rocm 5.7.1 as an example):
    echo "Add the following line in the environment to use the AWS OFI RCCL plugin"
    echo "export LD_LIBRARY_PATH="$PLUG_PREFIX"/lib:$""LD_LIBRARY_PATH"
 
-.. note::
+.. warning::
    RCCL library location varies based on ROCm version.
 
    * Before 6.0.0: ``/opt/rocm-${version}/rccl/lib`` or ``/opt/rocm-${version}/rccl/include``
@@ -399,13 +426,65 @@ Some variables to try are:
    NCCL_CROSS_NIC=1       # On large systems, this NCCL setting has been found to improve performance
    NCCL_DEBUG=info        # For debugging only (warning: generates a large amount of messages)
 
+.. _torch-geo:
 
-..
-  Flash-attention (future section)
-  ---------------
+PyTorch Geometric
+=================
+
+`PyTorch Geometric <https://pytorch-geometric.readthedocs.io/en/latest/>`__ (also known as ``PyG`` or ``torch_geometric``) is a library built upon PyTorch to easily write and train Graph Neural Networks (GNNs).
+Assuming you already have a working PyTorch installation (see above), install instructions for the ``torch_geometric`` suite of libraries on Frontier are provided below:
+
+.. code-block:: bash
+
+   # Activate your virtual environment
+   source activate /path/to/my_env
+
+   # Install some build tools
+   pip install ninja packaging
+
+   # Install PyG libraries (latest version tests in comments)
+   MAX_JOBS=16 pip install torch-geometric # v2.6.1
+   MAX_JOBS=16 pip install torch-cluster # v1.6.3
+   MAX_JOBS=16 pip install torch-spline-conv # v1.2.2
+
+   git clone --recursive https://github.com/rusty1s/pytorch_sparse # v0.6.18
+   cd pytorch_sparse
+   CC=gcc CXX=g++ MAX_JOBS=16 python3 setup.py bdist_wheel
+   pip install dist/*.whl
+   cd ..
+
+   git clone --recursive https://github.com/rusty1s/pytorch_scatter # v2.1.2
+   cd pytorch_scatter
+   CC=gcc CXX=g++ MAX_JOBS=16 python3 setup.py bdist_wheel
+   pip install dist/*.whl
+   cd ..
+
+
+.. _troubleshoot:
 
 Troubleshooting
 ===============
+
+MPICH mpi4py Errors
+-------------------
+
+If you see ``mpich`` error messages indicating a given rank isn't confined to a single NUMA node or domain like this:
+
+.. code-block:: bash
+
+   MPICH ERROR: Unable to use a NIC_POLICY of 'NUMA'. Rank 4 is not confined to a single NUMA node.  There are 4 numa_nodes detected (rc=0).
+   MPICH ERROR [Rank 0] [job id 2853270.0] [Fri Dec 13 13:41:36 2024] [frontier05084] - Abort(2665871) (rank 0 in comm 0): Fatal error in PMPI_Init_thread: Other MPI error, error stack:
+   MPIR_Init_thread(170).................:
+   MPID_Init(501)........................:
+   MPIDI_OFI_mpi_init_hook(580)..........:
+   open_fabric(1519).....................:
+   MPIDI_CRAY_ofi_nic_assign_policy(3548):
+   MPIDI_CRAY_ofi_get_nic_index(1801)....: OFI invalid value for environment variable
+
+and you are sure you are mapping your cores correctly via ``srun``, try importing ``mpi4py`` **before** ``torch``.
+A recent update in PyTorch broke importing ``mpi4py`` after ``torch``.
+If you still see these errors, please contact ``help@olcf.ornl.gov`` for other workarounds (because it's likely not a PyTorch issue).
+
 
 Proxy Settings
 --------------
@@ -447,6 +526,8 @@ For example, to manage your Hugging Face cache, you can change it from ``~/.cach
    export HF_DATASETS_CACHE="/path/to/another/directory"
 
 It is recommended to move your cache directory to another location if you're seeing quota issues; however, if you store your cache directory on Orion, be mindful that data stored on Orion is subject to purge policies if data is not accessed often.
+
+.. _resources:
 
 Additional Resources
 ====================

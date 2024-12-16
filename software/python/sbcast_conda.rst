@@ -21,7 +21,7 @@ To install ``conda-pack``, install it from the ``conda-forge`` channel like so:
 
 .. code-block:: bash
 
-   $ conda install -c conda-forge conda-pack
+   conda install -c conda-forge conda-pack
 
 .. note::
    If ``conda-pack`` is unable to be installed in your production environment, you can install ``conda-pack`` in a separate environment instead and follow a similar workflow.
@@ -31,7 +31,7 @@ Installing ``conda-pack`` will let you use the ``conda pack`` command which can 
 .. code-block:: bash
 
    # Pack environment located at an explicit path into my_env.tar.gz
-   $ conda pack -p /explicit/path/to/my_env
+   conda pack -p /explicit/path/to/my_env
 
 After packing your environment, it can then be moved to the NVMe using ``sbcast`` when in a compute job.
 Packing your environment will also put a ``conda-unpack`` script into the same ``.tar.gz`` archive.
@@ -49,34 +49,34 @@ First, let's load our modules and setup the environment:
 .. code-block:: bash
 
    # Loading the relevant modules
-   $ module load PrgEnv-gnu/8.5.0
-   $ module load rocm/5.7.1
-   $ module load craype-accel-amd-gfx90a
+   module load PrgEnv-gnu/8.5.0
+   module load rocm/5.7.1
+   module load craype-accel-amd-gfx90a
 
    # Create your conda environment
-   $ module load miniforge3/23.11.0-0
-   $ conda create -p $MEMBERWORK/<PROJECT_ID>/torch_env python=3.10
-   $ source activate $MEMBERWORK/<PROJECT_ID>/torch_env
+   module load miniforge3/23.11.0-0
+   conda create -p $MEMBERWORK/<PROJECT_ID>/torch_env python=3.10
+   source activate $MEMBERWORK/<PROJECT_ID>/torch_env
 
    # Install PyTorch w/ ROCm 5.7 support from pre-compiled binary
-   $ pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm5.7
+   pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm5.7
 
    # Install Conda-Pack into your environment
-   $ conda install -c conda-forge conda-pack
+   conda install -c conda-forge conda-pack
 
 
 Next, let's pack our new conda environment:
 
 .. code-block:: bash
 
-   $ cd $MEMBERWORK/<PROJECT_ID>
-   $ conda pack -p $MEMBERWORK/<PROJECT_ID>/torch_env
+   cd $MEMBERWORK/<PROJECT_ID>
+   conda pack -p $MEMBERWORK/<PROJECT_ID>/torch_env
 
 Finally, let's run a compute job:
 
 .. code-block:: bash
 
-   $ sbatch --export=NONE submit.sbatch
+   sbatch --export=NONE submit.sbatch
 
 Below is an example batch script that uses ``sbcast``, unpacks our environment, and runs an example Python script across 8 nodes:
 
