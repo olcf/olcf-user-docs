@@ -819,14 +819,6 @@ you would run the following commands:
     export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
 
 
-.. note::
-    
-    CrayPE provides ``rc.lua`` files in ``/opt/cray/pe/cpe/YY.MM/rc.lua`` which you may copy to your own directory and modify.
-    This file allows you to set your own default modules in your current environment.
-    You can make this file take effect by setting ``export LMOD_MODULERCFILE=/path/to/your/rc.lua``.
-    If you always use ``cpe/24.07`` for example, you may find it useful to adopt the ``rc.lua`` file and set it in your build and Slurm scripts.
-
-
 OpenMP
 ------
 
