@@ -532,11 +532,6 @@ Modules with dependencies are only available when the underlying dependencies, s
 | ``module spider <string>``               | Searches for modulefiles containing ``<string>``                                     |
 +------------------------------------------+--------------------------------------------------------------------------------------+
 
-.. note::
-
-    Due to the implementation of the module heirarchy on Frontier, ``module spider`` does not currently locate OLCF-provided Spack-built modulefiles in ``/sw/frontier``.
-
-
 Compilers
 ---------
 
@@ -763,8 +758,14 @@ Releases of ``cray-mpich`` are each compiled using a specific version of ROCm, a
 OLCF will maintain compatible default modules when possible.
 If using non-default modules, you can determine compatibility by reviewing the *Product and OS Dependencies* section in the ``cray-mpich`` release notes.
 This can be displayed by running ``module show cray-mpich/<version>``. If the notes indicate compatibility with *AMD ROCM X.Y or later*, only use ``rocm/X.Y.Z`` modules.
-If you are loading compatible ROCm and Cray MPICH versions but still getting errors, try setting ``MPICH_VERSION_DISPLAY=1`` to verify the correct Cray MPICH version is being used at run-time.
-If it is not, verify you are prepending ``LD_LIBRARY_PATH`` with ``CRAY_LD_LIBRARY_PATH`` or ``${MPICH_DIR}/lib``.
+
+.. note::
+
+    If you are loading compatible ROCm and Cray MPICH versions but still getting errors,
+    try setting ``MPICH_VERSION_DISPLAY=1`` to verify the correct Cray MPICH version is being used at run-time.
+    If it is not, verify you are prepending ``LD_LIBRARY_PATH`` with either ``$CRAY_LD_LIBRARY_PATH``, or ``${MPICH_DIR}/lib`` and ``${CRAY_MPICH_ROOTDIR}/gtl/lib``.
+    This ``LD_LIBRARY_PATH`` modification is required to run with non-default modules.
+
 The following compatibility table below was determined by testing of the linker and basic GPU-aware MPI functions with all current combinations of ``cray-mpich`` and ROCm modules on Frontier.
 Alongside ``cray-mpich``, we load the corresponding ``cpe`` module, which loads other important modules for MPI such as ``cray-pmi`` and ``craype``.
 It is strongly encouraged to load a ``cpe`` module when using non-default modules.
@@ -784,9 +785,9 @@ An asterisk indicates the latest officially supported version of ROCm for each `
 +------------+-------+--------------------------------------------------+
 |   8.1.28   | 23.12 | 5.7.1, 5.7.0*, 5.6.0, 5.5.1, 5.4.3, 5.4.0, 5.3.0 |
 +------------+-------+--------------------------------------------------+
-|   8.1.29   | 24.03 | 6.1.3, 6.0.0*                                    |
+|   8.1.29   | 24.03 | 6.2.4, 6.2.0, 6.1.3, 6.0.0*                      |
 +------------+-------+--------------------------------------------------+
-|   8.1.30   | 24.07 | 6.1.3*, 6.0.0                                    |
+|   8.1.30   | 24.07 | 6.2.4, 6.2.0, 6.1.3*, 6.0.0                      |
 +------------+-------+--------------------------------------------------+
 
 .. note::
@@ -816,6 +817,14 @@ you would run the following commands:
 
     # Since these modules are not default, make sure to prepend CRAY_LD_LIBRARY_PATH to LD_LIBRARY_PATH
     export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
+
+
+.. note::
+    
+    CrayPE provides ``rc.lua`` files in ``/opt/cray/pe/cpe/YY.MM/rc.lua`` which you may copy to your own directory and modify.
+    This file allows you to set your own default modules in your current environment.
+    You can make this file take effect by setting ``export LMOD_MODULERCFILE=/path/to/your/rc.lua``.
+    If you always use ``cpe/24.07`` for example, you may find it useful to adopt the ``rc.lua`` file and set it in your build and Slurm scripts.
 
 
 OpenMP
