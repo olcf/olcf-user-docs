@@ -532,11 +532,6 @@ Modules with dependencies are only available when the underlying dependencies, s
 | ``module spider <string>``               | Searches for modulefiles containing ``<string>``                                     |
 +------------------------------------------+--------------------------------------------------------------------------------------+
 
-.. note::
-
-    Due to the implementation of the module heirarchy on Frontier, ``module spider`` does not currently locate OLCF-provided Spack-built modulefiles in ``/sw/frontier``.
-
-
 Compilers
 ---------
 
@@ -763,8 +758,14 @@ Releases of ``cray-mpich`` are each compiled using a specific version of ROCm, a
 OLCF will maintain compatible default modules when possible.
 If using non-default modules, you can determine compatibility by reviewing the *Product and OS Dependencies* section in the ``cray-mpich`` release notes.
 This can be displayed by running ``module show cray-mpich/<version>``. If the notes indicate compatibility with *AMD ROCM X.Y or later*, only use ``rocm/X.Y.Z`` modules.
-If you are loading compatible ROCm and Cray MPICH versions but still getting errors, try setting ``MPICH_VERSION_DISPLAY=1`` to verify the correct Cray MPICH version is being used at run-time.
-If it is not, verify you are prepending ``LD_LIBRARY_PATH`` with ``CRAY_LD_LIBRARY_PATH`` or ``${MPICH_DIR}/lib``.
+
+.. note::
+
+    If you are loading compatible ROCm and Cray MPICH versions but still getting errors,
+    try setting ``MPICH_VERSION_DISPLAY=1`` to verify the correct Cray MPICH version is being used at run-time.
+    If it is not, verify you are prepending ``LD_LIBRARY_PATH`` with either ``$CRAY_LD_LIBRARY_PATH``, or ``${MPICH_DIR}/lib`` and ``${CRAY_MPICH_ROOTDIR}/gtl/lib``.
+    This ``LD_LIBRARY_PATH`` modification is required to run with non-default modules.
+
 The following compatibility table below was determined by testing of the linker and basic GPU-aware MPI functions with all current combinations of ``cray-mpich`` and ROCm modules on Frontier.
 Alongside ``cray-mpich``, we load the corresponding ``cpe`` module, which loads other important modules for MPI such as ``cray-pmi`` and ``craype``.
 It is strongly encouraged to load a ``cpe`` module when using non-default modules.
@@ -784,9 +785,9 @@ An asterisk indicates the latest officially supported version of ROCm for each `
 +------------+-------+--------------------------------------------------+
 |   8.1.28   | 23.12 | 5.7.1, 5.7.0*, 5.6.0, 5.5.1, 5.4.3, 5.4.0, 5.3.0 |
 +------------+-------+--------------------------------------------------+
-|   8.1.29   | 24.03 | 6.1.3, 6.0.0*                                    |
+|   8.1.29   | 24.03 | 6.2.4, 6.2.0, 6.1.3, 6.0.0*                      |
 +------------+-------+--------------------------------------------------+
-|   8.1.30   | 24.07 | 6.1.3*, 6.0.0                                    |
+|   8.1.30   | 24.07 | 6.2.4, 6.2.0, 6.1.3*, 6.0.0                      |
 +------------+-------+--------------------------------------------------+
 
 .. note::
@@ -3776,15 +3777,24 @@ If it is necessary to have bit-wise reproducible results from these libraries, i
 System Updates 
 ============== 
 
+2024-11-12
+----------
+On Tuesday, November 12, 2024, Frontier's system software was upgraded to a new BIOS, Node Controller, and GPU Integrated Firmware Image (IFWI).
+Additionally, the following changes took place:
+
+- ROCm/6.2.4 has been made available as non-default
+- A patched rocFFT library has been integrated into ROCm/6.0.0, 6.1.3, and 6.2.0 to fix the Known Issue, `OLCFDEV_1808 <https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#olcfdev-1808-rocfft-error-beginning-in-rocm-6-0-0>`_
+
+
 2024-09-03
 ----------
 On Tuesday, September 3, 2024, Frontier's system software was upgraded to Slingshot 2.2.0. Please report any issues to help@olcf.ornl.gov.
 
 2024-08-20
 ----------
-On Tuesday, August 20, 2024, Frontier's system software will be upgraded.
+On Tuesday, August 20, 2024, Frontier's system software was upgraded.
 
-The following system changes will take place:
+The following system changes took place:
 
 -  Upgrade to AMD GPU 6.8.5 device driver (ROCm 6.2.0 release).
 -  Upgrade to Slingshot Host Software 2.2.0. This changes the libfabric version from 1.15.2.0 to 1.20.1.0 and changes the location of the shared libraries from `/opt/cray/libfabric/1.15.2.0` to `/usr/lib64`.
@@ -3800,7 +3810,7 @@ The `Frontier Known Issues <https://docs.olcf.ornl.gov/systems/frontier_user_gui
 
 2024-07-16
 ----------
-On Tuesday, July 16, 2024, Frontier's system software will be upgraded. The following changes will take place:
+On Tuesday, July 16, 2024, Frontier's system software was upgraded. The following changes took place:
 
 -  ROCm 5.7.1 and HPE/Cray PE 23.12 will become default.
 -  The system will be upgraded to the AMD GPU 6.7.0 device driver (ROCm 6.1.0 release).
@@ -3812,6 +3822,10 @@ Please note major changes in the AMD and GNU programming environments detailed i
 -  If using ``amd-mixed``, please use a ``rocm`` module instead. ``amd-mixed`` no longer provides the full ROCm toolkit, only the host compiler.
 
 Users are encouraged to try the versions that will become default and report any issues to help@olcf.ornl.gov.
+
+2024-04-17
+----------
+On Wednesday, April 17, 2024, the ``lfs-wrapper/0.0.1`` modulefile became default. If you encounter any issues or have questions, please contact help@olcf.ornl.gov.
 
 2024-03-19
 ----------

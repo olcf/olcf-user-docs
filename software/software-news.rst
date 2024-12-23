@@ -8,10 +8,10 @@ most recent changes are listed first.
 
 ----
 
-Frontier: Updated modules for cpe/24.07 (October 16 2024)
+Frontier: Updated modules for cpe/23.12 (October 16 2024)
 ---------------------------------------------------------
 
-For the HPE/Cray Programming Environment 24.7 (cpe/24.07) on Frontier,
+For the HPE/Cray Programming Environment 23.12 (cpe/23.12) on Frontier,
 the table below lists packages that are updated or added.  New CPU packages
 are netcdf, paraview, stat, tau, unifyfs, and visit.  New GPU packages
 are ascent, blaspp, hwloc, lapackpp and paraview.

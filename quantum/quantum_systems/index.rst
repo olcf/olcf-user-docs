@@ -8,7 +8,6 @@ Quantum Systems
    :maxdepth: 2
 
    ibm_quantum
-   rigetti
    quantinuum
    ionq
 
