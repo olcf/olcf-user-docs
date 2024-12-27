@@ -10,4 +10,5 @@ Quantum Systems
    ibm_quantum
    quantinuum
    ionq
+   iqm
 
