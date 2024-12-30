@@ -106,12 +106,12 @@ Software
 ========
 
 * `IQM's Qiskit-on-IQM  Documentation <https://iqm-finland.github.io/qiskit-on-iqm/user_guide.html#/>`__
-* `IQM's Resource Calculator <https://www.iqmacademy.com/qpu/resourceCalculator/>`__
 
 
 Additional Resources
 ====================
 
 * For a complete list of IQM's available tutorials on the foundations of quantum computing, applications, and algorithms, see `here <https://www.iqmacademy.com/tutorials/>`__
+* `IQM's Resource Calculator <https://www.iqmacademy.com/qpu/resourceCalculator/>`__
 
 
