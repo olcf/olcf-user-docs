@@ -301,4 +301,70 @@ After running the above script, you should see something similar to:
 
 
 
+IQM
+===
+
+An IQM+Qiskit plugin provides access to IQM backends.
+
+For more information please see:
+
+* `<https://iqm-finland.github.io/qiskit-on-iqm/user_guide.html>`__
+
+.. note::
+
+   Your IQM API Token is listed on your IQM Resonance dashboard at `<https://resonance.meetiqm.com/>`__.
+
+.. list-table:: Latest script tests
+   :widths: 33 33 34
+   :header-rows: 1
+
+   * - ``python``
+     - ``qiskit``
+     - ``qiskit-iqm``
+   * - 3.11.11
+     - 1.1.2
+     - 15.5
+
+.. code-block:: python
+
+    from iqm.qiskit_iqm import IQMProvider, transpile_to_IQM
+    from qiskit import QuantumCircuit
+
+    # Backend to connect to (e.g., Garnet's algorithm checker)
+    server_url = "https://cocos.resonance.meetiqm.com/garnet:mock"
+
+    # Authentication token (alternatively can set the IQM_TOKEN environment variable)
+    api_token = "PUT TOKEN HERE"
+
+    SHOTS = 100
+
+    # Define quantum circuit
+    num_qb = 5
+    qc = QuantumCircuit(num_qb)
+
+    qc.h(0)
+    for qb in range(1, num_qb):
+        qc.cx(0, qb)
+    qc.barrier()
+    qc.measure_all()
+
+    # Initialize backend
+    backend = IQMProvider(server_url, token=api_token).get_backend()
+
+    # Transpile circuit
+    qc_transpiled = transpile_to_IQM(qc, backend)
+    print(qc_transpiled.draw(output="text"))
+
+    # Run circuit
+    job = backend.run(qc_transpiled, shots=SHOTS)
+    print(job.result().get_counts())
+
+
+After running the above script, you should see something similar to:
+
+.. code-block::
+
+    {'10101': 25, '11111': 23, '01010': 24, '00000': 28}
+
+
 
