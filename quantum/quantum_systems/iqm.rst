@@ -83,9 +83,9 @@ storing IQM API keys can be found `here <https://resonance.meetiqm.com/docs>`__.
 Submitting Jobs
 ---------------
 
-Once you have been granted credits (detailed in :ref:`iqm-alloc`, you can can request a timeslot or 
+Once you have been granted credits (process detailed in :ref:`iqm-alloc`), you can can request a timeslot or 
 use the pay-as-you-go option. Usage pricing, circuit limits, and shot limits for each of the available 
-computers is listed on the resonance dashboard when you click on either of the backends.
+computers is listed on the resonance dashboard when you click on either of the backends in the "Quantum Computers" section.
 
 With your IQM API key, users submit job to a given backend's URL: e.g. for garnet: 
 
