@@ -110,6 +110,38 @@ See these links for more information:
             pip install qiskit==1.2.0 qiskit-ionq==0.5.4 --no-cache-dir
 
 
+IQM Qiskit Plugin
+-----------------
+
+The ``qiskit-iqm`` plugin can be installed to access IQM's backends through Qiskit.
+
+See these links for more information:
+
+* `<https://iqm-finland.github.io/qiskit-on-iqm/user_guide.html>`__
+
+.. tab-set::
+
+    .. tab-item:: Andes
+
+        .. code-block:: bash
+
+            module load gcc/9.3.0
+            module load python
+            conda create -n ENV_NAME python=3.11 -c conda-forge
+            source activate ENV_NAME
+            pip install qiskit-iqm==15.5 --no-cache-dir
+
+    .. tab-item:: Frontier
+
+        .. code-block:: bash
+
+            module load PrgEnv-gnu/8.5.0
+            module load miniforge3/23.11.0-0
+            conda create -n ENV_NAME python=3.11 -c conda-forge
+            source activate ENV_NAME
+            pip install qiskit-iqm==15.5 --no-cache-dir
+
+
 PyQuil/Forest SDK (Rigetti)
 ===========================
 
