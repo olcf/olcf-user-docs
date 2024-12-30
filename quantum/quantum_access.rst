@@ -195,8 +195,19 @@ After submitting the OLCF quantum account application and receiving approval,
 you will receive an email from IonQ inviting you to create your quantum
 account. Once logged in, users will have access to IonQ's User Interface,
 `<https://cloud.ionq.com/>`__, their online platform for managing jobs and
-accessing the available quantum systems, including the Harmony and Aria-1 systems,
+accessing the available quantum systems, including the Forte and Aria systems,
 as well as the simulator, via the cloud. From the UI, users can view system status
+and upcoming system availability, as well as monitor batch submissions and job history.
+
+IQM
+---
+
+After submitting the OLCF quantum account application and receiving approval,
+you will receive an email from IQM inviting you to create your quantum
+account. Once logged in, users will have access to IQM's User Interface,
+`<https://resonance.meetiqm.com>`__, their online dashboard for managing jobs and
+accessing the available quantum systems, including the Garnet and Deneb systems,
+as well as the simulator, via the cloud. From the dashboard, users can view system status
 and upcoming system availability, as well as monitor batch submissions and job history.
 
 Publication Citations
