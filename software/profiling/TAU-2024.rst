@@ -6,13 +6,13 @@ Tuning and Analysis Utilities (TAU)  (OLCF Docs 2025)
 *****************************************************
 
 The University of Oregon's TAU is an open-source portable profiling and tracing
-toolkit for the performance analysis of parallel programs written in C, C++,
-Fortran and other languages. The instrumentation of programs can be done by
-binary code rewriting, manual compiler directives, or automatic source code
-transformation. TAU can support many parallel programming interfaces, including
-MPI, OpenMP, pthreads, and ROCm. TAU includes `paraprof` which is a profile
-visualization tool, and generated execution traces can be displayed by the
-Vampir, Paraver or JumpShot (included) visualization tools.
+toolkit for the performance analysis of parallel programs written in Fortran, C,
+C++, UPC, Java, Python and other languages. The instrumentation of programs can
+be done by binary code rewriting, manual compiler directives, or automatic
+source code transformation. TAU can support many parallel programming
+interfaces, including MPI, OpenMP, pthreads, and ROCm. TAU includes `paraprof`
+which is a profile visualization tool, and generated execution traces can be
+displayed by the Vampir, Paraver or JumpShot (included) visualization tools.
 
 * TAU Home: https://www.cs.uoregon.edu/research/tau/home.php  
 * TAU Docs: https://www.cs.uoregon.edu/research/tau/docs.phpx
@@ -149,17 +149,21 @@ Vampir (otf2) visualization.
   # The output from jumpshot will be shown in the next section
 
 TAU traces can be viewed by Chrome/Perfetto by converting them to ``json`` or in
-Vampir by converting to ``otf2``
+Vampir by converting to ``otf2``.  Information about using the Vampir viewer at
+OLCF can be found at https://docs.olcf.ornl.gov/software/profiling/Vampir.html.
 
 .. code:: bash
 
   # Convert trace to json for Chrome/Perfetto
   tau_trace2json tau.trc tau.edf –chrome –ignoreatomic –o app.json
-  # chrome://tracing (Load -> app.json) Or use Perfetto.dev and load in UI
+  # View using chrome://tracing (Load -> app.json) 
+  # Or use https://ui.perfetto.dev/ and load the trace
 
   # Convert trace to otf2 for Vampir
   export TAU_TRACE=1; export TAU_TRACE_FORMAT=otf2
   mpirun -np 64 tau_exec ./a.out; vampir traces.otf2 &
+  # Information about using the Vampir viewer at OLCF
+  # https://docs.olcf.ornl.gov/software/profiling/Vampir.html
 
 
 Automatic source instrumentation using compiler wrappers
@@ -259,8 +263,7 @@ other code annotations.
 A selective instumentation file can be used with the flag
 ``-tau_options=-optTauSelectFile=<file>`` or by setting the environment variable
 ``export TAU_OPTIONS='-optTauSelectFile="<file>"'``.  This can work very well
-when used in combination with ``tau_exec`` to dynamically instrument your
-executable. 
+when used in combination with the TAU compiler wrappers to instrument your code. 
 
 The following example is taken with minor changes from the TAU manual.
 
@@ -405,13 +408,13 @@ References
 ==========
 
 TAU has many capabilites that are not covered here, e.g. memory tracking, call
-path profiling, MPI, Kokkos, OpenACC, OpenMP, CUDA, HIP, OneAPI support.  Please
-see the 'TAU on Crusher' presentation listed below for some idea of the
-capabilites on similar OLCF systems.
+path profiling, python support, MPI, Kokkos, OpenACC, OpenMP, CUDA, HIP, OneAPI
+support.  Please see the 'TAU on Crusher' presentation listed below for some
+idea of the capabilites on similar OLCF systems.
 
 * Main TAU website: https://www.cs.uoregon.edu/research/tau/home.php
-* TAU on Crusher (pre-Frontier OLCF system), Sameer Shende (U Oregon), http://www.nic.uoregon.edu/~khuck/RAPIDS/TAUonCrusher.pdf, March 2022
-* TAU Performance System, Sameer Shende (U Oregon), https://www.vi-hps.org/cms/upload/material/tw45/TAU_TW45.pdf, June 2024
+* TAU on Crusher (pre-Frontier OLCF system), March 2022, Sameer Shende (U Oregon), http://www.nic.uoregon.edu/~khuck/RAPIDS/TAUonCrusher.pdf
+* TAU Performance System, June 2024, Sameer Shende (U Oregon), https://www.vi-hps.org/cms/upload/material/tw45/TAU_TW45.pdf
 * TAU training on the OLCF Training Archive https://docs.olcf.ornl.gov/training/training_archive.html
 
 .. csv-table::
