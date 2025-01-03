@@ -206,8 +206,9 @@ After submitting the OLCF quantum account application and receiving approval,
 you will receive an email from IQM inviting you to create your quantum
 account. Once logged in, users will have access to IQM's User Interface,
 `<https://resonance.meetiqm.com>`__, their online dashboard for managing jobs and
-accessing the available quantum systems, including the Garnet and Deneb systems,
-as well as the simulator, via the cloud. From the dashboard, users can view system status
+accessing the available quantum systems. Users will gain access to the Garnet and Deneb systems,
+as well as the quantum algorithm checker (which verifies that the execution of workflow is possible, but does not yield sensible results),
+via the cloud. From the dashboard, users can view system status
 and upcoming system availability, as well as monitor batch submissions and job history.
 
 Publication Citations

@@ -366,5 +366,6 @@ After running the above script, you should see something similar to:
 
     {'10101': 25, '11111': 23, '01010': 24, '00000': 28}
 
+.. note::
 
-
+   The mock system used here is only for testing your algorithm. It will compile your code for the instruments of an IQM quantum computer. However, as no actual instruments are connected to the Mock environment, it will only yield random results – this is not a simulator. See `facade backends <https://iqm-finland.github.io/qiskit-on-iqm/user_guide.html#running-a-quantum-circuit-on-a-facade-backend>`__ for an alternative option.

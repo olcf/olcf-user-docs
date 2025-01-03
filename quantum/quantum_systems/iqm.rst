@@ -36,7 +36,7 @@ Users can submit jobs to IQM backends both via a timeslot (reservation) system a
 
 In timeslot mode, your project is assigned specific quantum computer access periods that must be
 booked in advance. During these slots, access is exclusive to your project. The Resonance
-dashboard's "Upcoming Timeslots" section lists the schedule. Jobs can be submitted anytime but
+dashboard's "Availability" section lists the schedule. Jobs can be submitted anytime but
 remain in a "waiting" state until the next active timeslot. An upcoming booked timeslot is
 required to submit jobs in this mode. For instructions on booking a timeslot see `here <https://www.iqmacademy.com/tutorials/resonance/>`__.
 
@@ -89,7 +89,7 @@ computers is listed on the resonance dashboard when you click on either of the b
 
 With your IQM API key, users submit job to a given backend's URL: e.g. for garnet: 
 
-* General URL: ``https://cocos.resonance.meetiqm.com/garnet`` (can be used for both pay-as-you-go or timeslots)
+* General URL: ``https://cocos.resonance.meetiqm.com/garnet`` (can only be used for pay-as-you-go)
 * Timeslot URL: ``https://cocos.resonance.meetiqm.com/garnet:timeslot`` (can only be used for timeslots)
 * Mock URL: ``https://cocos.resonance.meetiqm.com/garnet:mock`` (syntax checker -- if available)
 
