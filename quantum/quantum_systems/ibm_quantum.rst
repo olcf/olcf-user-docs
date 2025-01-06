@@ -101,7 +101,7 @@ For more information on how job priority is affected based on your limit, please
 
 If you are planning to use a large allocation (over 100 minutes), please send a usage request to our Quantum Resource Utilization Council (QRUC) through our help ticket system (help@olcf.ornl.gov).
 **Special requests must be submitted by a project PI with sufficient computational and scientific justification.**
-QRUC will evaluate the merit of your request, and if approved, can get you the additional time you need by working with the IBM team specifically on your request.  
+QRUC will evaluate the merit of your request, and if approved, can get you the additional time you need for your work.
 
 The 28-day rolling window
 ^^^^^^^^^^^^^^^^^^^^^^^^^
