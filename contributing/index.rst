@@ -17,11 +17,9 @@ Setup authoring environment
 
 #. Install Sphinx and the ReadTheDocs theme locally::
 
-        $ pip3 install sphinx==7.2.6 sphinx_rtd_theme==2.0.0 sphinx-design==0.5.0
+        $ pip3 install sphinx==7.4.7 sphinx_rtd_theme==3.0.2 sphinx-design==0.6.1 sphinx-copybutton==0.5.2
 
    This can be in your home area, a virtual environment, container, etc.
-
-   .. note:: This has been most recently tested with Python 3.10
 
 #. Fork the documentation repository on GitHub
 
