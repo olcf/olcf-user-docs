@@ -275,5 +275,4 @@ Checking System Availability
 
 The `OLCF home page <https://www.olcf.ornl.gov/>`_ includes a current status
 listing and scheduled downtimes for our major compute and storage resources.
-This information also has a dedicated `Center Status
-<https://www.olcf.ornl.gov/for-users/center-status/>`_ page. 
+This information also has a dedicated Center Status section of the `myOLCF <https://my.olcf.ornl.gov/login>`_ login page. 

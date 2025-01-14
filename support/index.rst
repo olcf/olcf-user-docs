@@ -72,10 +72,7 @@ Communication to Users
 -----------------------
 
 System statuses
-    System statuses can be found on the `Center Status <https://www.olcf.ornl.gov/for-users/center-status/>`_ page. 
-    Alternatively, The `OLCF homepage <http://www.olcf.ornl.gov/>`_ includes a listing of our major compute resources and their current availability, as well as upcoming downtimes. 
-    Similarly, the status of a particular system can be found on its respective System User Guide. 
-    When a system’s state changes (up to down, or down to up), an automated message is sent to the system’s notice mailing list.
+    System status information and upcoming scheduled maintenance can be found on the `myOLCF <https://my.olcf.ornl.gov/login>`_ login page. 
 
 Weekly Updates
     Each week, typically on Wednesday morning, an email announcing the next week’s scheduled outages is sent to all users. 
