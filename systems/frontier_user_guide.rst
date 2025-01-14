@@ -743,6 +743,8 @@ The following table shows the recommended ROCm version for each CCE version, alo
 +-------------+-------+---------------------------+
 |   18.0.0    | 24.07 | 6.1.3                     |
 +-------------+-------+---------------------------+
+|   18.0.1    | 24.11 | 6.2.4                     |
++-------------+-------+---------------------------+
 
 .. note::
 
@@ -788,6 +790,8 @@ An asterisk indicates the latest officially supported version of ROCm for each `
 |   8.1.29   | 24.03 | 6.2.4, 6.2.0, 6.1.3, 6.0.0*                      |
 +------------+-------+--------------------------------------------------+
 |   8.1.30   | 24.07 | 6.2.4, 6.2.0, 6.1.3*, 6.0.0                      |
++------------+-------+--------------------------------------------------+
+|   8.1.31   | 24.11 | 6.3.1, 6.2.4, 6.2.0*, 6.1.3, 6.0.0               |
 +------------+-------+--------------------------------------------------+
 
 .. note::
@@ -3776,6 +3780,17 @@ If it is necessary to have bit-wise reproducible results from these libraries, i
 
 System Updates 
 ============== 
+
+2025-01-14
+----------
+On Tuesday, January 14, 2025, Frontier's system software was upgraded.
+The following changes took place:
+
+- Upgrade to AMD GPU 6.8.5 device driver (ROCm 6.3.1 release).
+- Upgrade to Slingshot Host Software 11.0.2. This fixes a known performance regression in the existing libfabric 1.20.1 version and changes the location of libfabric 1.20.1 from `/usr/lib64` to `/opt/cray/libfabric/1.20.1`.
+- HPE/Cray Programming Environment (CPE) 24.11 is now available via the ``cpe/24.11`` modulefile.
+- Upgrade to the Node and Chassis Controller
+- ROCm/6.3.1 has been made available as non-default (as of December 27, 2024).
 
 2024-11-12
 ----------
