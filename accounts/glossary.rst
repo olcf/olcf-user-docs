@@ -27,12 +27,12 @@ Glossary
   Human Health Data
     Human Health Data is intentionally broadly defined to include any information 
     that relates to the past, present, or future physical or mental health, condition, 
-    or wellbeing of an individual or human population—regardless of the presence of personal 
+    or well-being of an individual or human population—regardless of the presence of personal 
     identifiers.
 
     Examples include:
       - Genomic data
-      - Clinical data (e.g. electronic health records)
+      - Clinical data (e.g., electronic health records)
       - Data protected by HIPAA (PHI or Limited Data Set)
       - Health surveillance data
       - Public health data

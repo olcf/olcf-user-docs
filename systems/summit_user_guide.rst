@@ -159,7 +159,7 @@ physical cores has 4 “slices”. These slices provide Simultaneous Multi
 Threading (SMT) support within the core. Three SMT modes are supported:
 SMT4, SMT2, and SMT1. In SMT4 mode, each of the slices operates
 independently of the other three. This would permit four separate
-streams of execution (i.e. OpenMP threads or MPI tasks) on each physical
+streams of execution (i.e., OpenMP threads or MPI tasks) on each physical
 core. In SMT2 mode, pairs of slices work together to run tasks. Finally,
 in SMT1 mode the four slices work together to execute the task/thread
 assigned to the physical core. Regardless of the SMT mode used, the four
@@ -223,8 +223,7 @@ Visualization and analysis tasks should be done on the Andes cluster. There are 
 few tools provided for various visualization tasks, as described in the
 :ref:`andes-viz-tools` section of the :ref:`andes-user-guide`.
 
-For a full list of software available at the OLCF, please see the
-Software section (coming soon).
+For a full list of software available at the OLCF, please see :ref:`software-at-the-olcf`.
 
 .. _shell-programming-environments:
 
@@ -531,7 +530,7 @@ OpenMP
 .. note::
     When using OpenMP with IBM XL compilers, the thread-safe
     compiler variant is required; These variants have the same name as the
-    non-thread-safe compilers with an additional ``_r`` suffix. e.g. to
+    non-thread-safe compilers with an additional ``_r`` suffix. e.g., to
     compile OpenMPI C code one would use ``xlc_r``
 
 .. note::
@@ -606,9 +605,9 @@ IBM
 """
 
 The IBM compiler suite is made available through the default loaded xl
-module, the cuda module is also required.
+module, the ``cuda`` module is also required.
 
-``xlcuf`` : primary Cuda fortran compiler, thread safe
+``xlcuf`` : primary CUDA Fortran compiler, thread safe
 
 **Language support flags**
 
@@ -625,14 +624,14 @@ PGI
 
 The PGI compiler suite is available through the ``pgi`` module.
 
-``pgfortran`` : Primary fortran compiler with CUDA Fortran support
+``pgfortran`` : Primary Fortran compiler with CUDA Fortran support
 
 **Language support:**
 
-Files with ``.cuf`` suffix automatically compiled with cuda fortran support
+Files with ``.cuf`` suffix are automatically compiled with CUDA Fortran support.
 
-Standard fortran suffixed source files determines the standard involved,
-see the man page for full details
+Standard Fortran suffixed source files determines the standard involved,
+see the man page for full details.
 
 ``-Mcuda`` : Enable CUDA Fortran on provided source file
 
@@ -643,7 +642,7 @@ OLCF systems provide many software packages and scientific
 libraries pre-installed at the system-level for users to take advantage
 of. In order to link these libraries into an application, users must
 direct the compiler to their location. The ``module show`` command can
-be used to determine the location of a particular library. For example
+be used to determine the location of a particular library. For example:
 
 ::
 
@@ -752,10 +751,10 @@ scheduling system. Aside from the lines containing LSF options, the
 batch script is simply the series commands needed to set up and run your
 job.
 
-To submit a batch script, use the bsub command: ``bsub myjob.lsf``
+To submit a batch script, use the ``bsub`` command: ``bsub myjob.lsf``
 
 If you’ve previously used LSF, you’re probably used to submitting a job
-with input redirection (i.e. ``bsub < myjob.lsf``). This is not needed
+with input redirection (i.e., ``bsub < myjob.lsf``). This is not needed
 (and will not work) on Summit.
 
 As an example, consider the following batch script:
@@ -866,11 +865,11 @@ noted, these can be used from batch scripts or interactive jobs. For
 interactive jobs, the options are simply added to the ``bsub`` command
 line. For batch scripts, they can either be added on the ``bsub``
 command line or they can appear as a ``#BSUB`` directive in the batch
-script. If conflicting options are specified (i.e. different walltime
+script. If conflicting options are specified (i.e., different walltime
 specified on the command line versus in the script), the option on the
 command line takes precedence. Note that LSF has numerous options; only
 the most common ones are described here. For more in-depth information
-about other LSF options, see the ``bsub`` man page.
+about other LSF options, see the ``bsub`` `man page <https://www.ibm.com/docs/en/spectrum-lsf/10.1.0?topic=bsub-options>`_.
 
 .. table::
     :widths: 12 25 63
@@ -951,10 +950,10 @@ The default SMT level is 4.
 MPS
 """
 
-The Multi-Process Service (MPS) enables multiple processes (e.g. MPI
+The Multi-Process Service (MPS) enables multiple processes (e.g., MPI
 ranks) to concurrently share the resources on a single GPU. This is
 accomplished by starting an MPS server process, which funnels the work
-from multiple CUDA contexts (e.g. from multiple MPI ranks) into a single
+from multiple CUDA contexts (e.g., from multiple MPI ranks) into a single
 CUDA context. In some cases, this can increase performance due to better
 utilization of the resources. As mentioned in the `Common bsub Options <#common-bsub-options>`__
 section above, MPS can be enabled with the ``-alloc_flags "gpumps"`` option to
@@ -1718,7 +1717,7 @@ well as some of the most useful options to those commands and
 information on ``jsrun``, Summit's job launch command. Many commands
 have much more information than can be easily presented here. More
 information about these commands is available via the online manual
-(i.e. ``man jsrun``). Additional LSF information can be found on `IBM’s
+(i.e., ``man jsrun``). Additional LSF information can be found on `IBM’s
 website <https://www.ibm.com/support/knowledgecenter/en/SSWRJV/product_welcome_spectrum_lsf.html>`__.
 
 
@@ -2436,7 +2435,7 @@ Tuesday and completes Wednesday, the job's utilization will be recorded
 Thursday. Only batch jobs which write an end record are used to calculate
 utilization. Batch jobs which do not write end records due to system failure or
 other reasons are not used when calculating utilization. Jobs which fail because
-of run-time errors (e.g. the user's application causes a segmentation fault) are
+of run-time errors (e.g., the user's application causes a segmentation fault) are
 counted against the allocation.
 
 Each user may view usage for projects on which they are members from the command
@@ -2942,10 +2941,10 @@ GPU.
 .. image:: /images/nv_mps_1.png
    :align: center
 
-The Multi-Process Service (MPS) enables multiple processes (e.g. MPI ranks) to
+The Multi-Process Service (MPS) enables multiple processes (e.g., MPI ranks) to
 *concurrently* share the resources on a single GPU. This is accomplished by
 starting an MPS server process, which funnels the work from multiple CUDA
-contexts (e.g. from multiple MPI ranks) into a single CUDA context. In some
+contexts (e.g., from multiple MPI ranks) into a single CUDA context. In some
 cases, this can increase performance due to better utilization of the resources.
 The figure below illustrates MPS on a pre-Volta GPU.
 
@@ -2975,7 +2974,7 @@ Unified Memory
 
 Unified memory is a single virtual address space that is accessible to
 any processor in a system (within a node). This means that programmers
-only need to allocate a single unified-memory pointer (e.g. using
+only need to allocate a single unified-memory pointer (e.g., using
 cudaMallocManaged) that can be accessed by both the CPU and GPU, instead
 of requiring separate allocations for each processor. This "managed
 memory" is automatically migrated to the accessing processor, which
@@ -3028,7 +3027,7 @@ reach the synchronization point.
    :align: center
 
 The Tesla V100 introduces warp-level synchronization by implementing warps with
-a program counter and call stack for each individual thread (i.e.  independent
+a program counter and call stack for each individual thread (i.e.,  independent
 thread scheduling).
 
 .. image:: /images/nv_ind_threads_3.png
@@ -3793,13 +3792,13 @@ Some users have noticed that their login shells, batch jobs, etc. are not sourci
 
 Bash sources different files based on two attributes of the shell: whether or not it's a login shell, and whether or not it's an interactive shell. These attributes are not mutually exclusive (so a shell can be "interactive login", "interactive non-login", etc.):
 
-#. If a shell is an interactive login shell (i.e. an ssh to the system) or a non-interactive shell started with the ``--login`` option (say, a batch script with ``#!/bin/bash --login`` as the first line), it will source ``/etc/profile`` and will then search your home directory for ``~/.bash_profile``, ``~/.bash_login``, and ``~/.profile``. It will source the first of those that it finds (once it sources one, it stops looking for the others).
+#. If a shell is an interactive login shell (i.e., an ssh to the system) or a non-interactive shell started with the ``--login`` option (say, a batch script with ``#!/bin/bash --login`` as the first line), it will source ``/etc/profile`` and will then search your home directory for ``~/.bash_profile``, ``~/.bash_login``, and ``~/.profile``. It will source the first of those that it finds (once it sources one, it stops looking for the others).
 #. If a shell is an interactive, non-login shell (say, if you run 'bash' in your login session to start a subshell), it will source ``~/.bashrc``
 #. If a shell is a non-interactive, non-login shell, it will source whatever file is defined by the ``$BASH_ENV`` variable in the shell from which it was invoked. 
 
 In any case, if the files listed above that should be sourced in a particular situation do not exist, it is not an error. 
 
-On Summit and Andes, batch-interactive jobs using bash (i.e. those submitted with ``bsub -Is`` or ``salloc``) run as interactive, non-login shells (and therefore source ``~/.bashrc``, if it exists). Regular batch jobs using bash on those systems are non-interactive, non-login shells and source the file defined by the variable ``$BASH_ENV`` in the shell from which you submitted the job. This variable is not set by default, so this means that none of these files will be sourced for a regular batch job unless you explicitly set that variable.
+On Summit and Andes, batch-interactive jobs using bash (i.e., those submitted with ``bsub -Is`` or ``salloc``) run as interactive, non-login shells (and therefore source ``~/.bashrc``, if it exists). Regular batch jobs using bash on those systems are non-interactive, non-login shells and source the file defined by the variable ``$BASH_ENV`` in the shell from which you submitted the job. This variable is not set by default, so this means that none of these files will be sourced for a regular batch job unless you explicitly set that variable.
 
 Some systems are configured to have additional files in ``/etc`` sourced, and sometimes the files in ``/etc`` look for and source files in your home directory such as ``~/.bashrc``, so the behavior on any given system may seem to deviate a bit from the information above (which is from the bash manpage). This can explain why jobs (or other shells) on other systems you've used have sourced your ``.bashrc`` file on login.
 
@@ -3808,7 +3807,7 @@ Improper permissions on ``~/.ssh/config`` cause job state flip-flop/jobs ending 
 
 Improper permissions on your SSH configuration file (``~/.ssh/config``) will cause jobs to alternate between pending & running states until the job ultimately ends up in a PSUSP state.
 
-LSF uses SSH to communicate with nodes allocated to your job, and in this case the improper permissions (i.e. write permission for anyone other than the user) cause SSH to fail, which in turn causes the job launch to fail. Note that SSH only checks the permissions of the configuration file itself. Thus, even if the ``~/.ssh/`` directory itself grants no group or other permissions, SSH will fail due to permissions on the configuration file.
+LSF uses SSH to communicate with nodes allocated to your job, and in this case the improper permissions (i.e., write permission for anyone other than the user) cause SSH to fail, which in turn causes the job launch to fail. Note that SSH only checks the permissions of the configuration file itself. Thus, even if the ``~/.ssh/`` directory itself grants no group or other permissions, SSH will fail due to permissions on the configuration file.
 
 To fix this, use a more secure permission setting on the configuration file. An appropriate setting would be read and write permission for the user and no other permissions. You can set this with the command ``chmod 600 ~/.ssh/config``.
 
@@ -3897,7 +3896,7 @@ issue when compiled with Spectrum MPI's wrappers and run with jsrun:
    CUDA Hook Library: Failed to find symbol mem_find_dreg_entries, ./a.out: undefined symbol: __PAMI_Invalidate_region
 
 The same issue can occur if CUDA API calls that interact with the GPU
-(e.g. allocating memory) are called before MPI_Init() in an MPI enabled
+(e.g., allocating memory) are called before MPI_Init() in an MPI enabled
 application. Depending on context, this error can either be harmless or
 it can be fatal.
 
@@ -4013,7 +4012,7 @@ jsrun latency priority capitalization allocates incorrect resources
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 jsrun's latency priority (``-l``) flag can be given lowercase values
-(i.e. gpu-cpu) or capitalized values (i.e. GPU-CPU).
+(i.e., gpu-cpu) or capitalized values (i.e., GPU-CPU).
 
 **Expected behavior**:
 
@@ -4191,13 +4190,13 @@ function with more than one resource set per node.
    MPI to not use fast GPU Peer-to-peer communication. This option will
    allow your code to run with more than one resource set per host, but
    you may see slower GPU to GPU communication.
-#. Run in a single resource set per host, i.e. with
+#. Run in a single resource set per host, i.e., with
    ``jsrun --gpu_per_rs 6``
 
 If on-node MPI communication between GPUs is critical to your
 application performance, option B is recommended but you’ll need to set
 the GPU affinity manually. This could be done with an API call in your
-code (e.g. ``cudaSetDevice``), or by using a wrapper script.
+code (e.g., ``cudaSetDevice``), or by using a wrapper script.
 
 Simultaneous backgrounded jsruns (Resolved: May 21, 2019)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -4270,7 +4269,7 @@ JSM stdio options do not create files (Resolved: February 19, 2019)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 When using ``--stdio_stdout`` or ``--stdio_stderr`` users must use
-absolute paths. Using relative paths (e.g. ``./my_stdout``) will not
+absolute paths. Using relative paths (e.g., ``./my_stdout``) will not
 successfully create the file in the user's current working directory. An
 bug has been filed with IBM to fix this issue and allow relative paths.
 
