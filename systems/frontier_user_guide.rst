@@ -3786,7 +3786,7 @@ System Updates
 On Tuesday, January 14, 2025, Frontier's system software was upgraded.
 The following changes took place:
 
-- Upgrade to AMD GPU 6.8.5 device driver (ROCm 6.3.1 release).
+- Upgrade to AMD GPU 6.10.5 device driver (ROCm 6.3.1 release).
 - Upgrade to Slingshot Host Software 11.0.2. This fixes a known performance regression in the existing libfabric 1.20.1 version and changes the location of libfabric 1.20.1 from `/usr/lib64` to `/opt/cray/libfabric/1.20.1`.
 - HPE/Cray Programming Environment (CPE) 24.11 is now available via the ``cpe/24.11`` modulefile.
 - Upgrade to the Node and Chassis Controller
