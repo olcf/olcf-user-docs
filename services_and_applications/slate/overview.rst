@@ -17,7 +17,7 @@ Kubernetes. The *Slate* service today consists two user facing OpenShift cluster
 Marble Cluster
 ==============
 
-Marble is in the Moderate security enclave and has access to Frontier and Orion (Lustre). 
+Marble is in the Moderate Security Enclave and has access to Frontier and Orion (Lustre). 
 
 Marble is a heterogeneus cluster of 30 nodes with 10 Gigabit ethernet connectivity. Marble
 has a node pool of GPU nodes with 3x NVIDIA V100 each, a node pool with Infiniband connectivity
@@ -26,7 +26,7 @@ to Frontier and Lustre access, and a node pool of standard compute nodes.
 Onyx Cluster
 ============
 
-Onyx is in the Open security enclave and has access to Ascent (:ref:`ascent-user-guide`) and Wolf (GPFS)
+Onyx is in the Open Security Enclave and has access to Ascent (:ref:`ascent-user-guide`) and Wolf (GPFS)
 
 Onyx is a heterogeneus cluster of 15 nodes with 10 Gigabit ethernet connectivity. Onyx has a
 node pool of ppc64le nodes and a node pool of standard compute nodes.
@@ -51,7 +51,7 @@ integrated registry services.
 
 Simply, OpenShift is a platform as a service (PaaS) offering from Red Hat, provided as a 
 supported and trusted distribution of Kubernetes. The API that OpenShift provides
-can be accessed via either the Web UI or on the command line via the `oc` tool. See the
+can be accessed via either the Web UI or on the command line via the ``oc`` tool. See the
 :ref:`slate_getting_started` guide for more information.
 
 `<https://www.openshift.com/>`_
