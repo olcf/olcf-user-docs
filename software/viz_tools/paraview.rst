@@ -15,8 +15,8 @@ information regarding ParaView can be found at the links provided in the
 :ref:`paraview-resources` section.
 
 ParaView was developed to analyze extremely large datasets using distributed
-memory computing resources. The OLCF provides ParaView server installs on Andes,
-Summit, and Frontier to facilitate large scale distributed visualizations.
+memory computing resources. The OLCF provides ParaView server installs on Andes
+and Frontier to facilitate large scale distributed visualizations.
 The ParaView server may be used in a headless batch processing
 mode or be used to drive a ParaView GUI client running on your local machine.
 
@@ -34,7 +34,7 @@ Installing and Setting Up ParaView
 Although in a single machine setup both the ParaView client and server run on
 the same host, this need not be the case. It is possible to run a local
 ParaView client to display and interact with your data while the ParaView
-server runs in an Andes, Summit, or Frontier batch job, allowing interactive analysis of very large data sets.
+server runs in an Andes or Frontier batch job, allowing interactive analysis of very large data sets.
 
 You will obtain the best performance by running the ParaView client on your
 local computer and running the server on OLCF resources with the same version
@@ -45,7 +45,6 @@ from `Kitware <https://www.paraview.org/download/>`__.
 
 Recommended ParaView versions on our systems:
 
-* **Summit**: ParaView 5.9.1, 5.10.0, 5.11.0 (via the ``DefApps-2023`` module)
 * **Andes**: ParaView 5.9.1, 5.10.0, 5.11.0, 5.12.1
 * **Frontier**: ParaView 5.12.1 (via the UMS032 module)
 
@@ -95,24 +94,6 @@ connected to. For example, to see these modules on specific OLCF systems:
          paraview/5.12.1-rocm
          paraview/5.12.1
 
-   .. tab-item:: Summit
-      :sync: summit
-
-      .. code-block:: bash
-
-         $ module load DefApps-2023 #only necessary on Summit
-         $ module -t avail paraview
-
-         /sw/summit/modulefiles/core:
-         paraview/5.9.1-egl
-         paraview/5.9.1-osmesa
-         paraview/5.10.0-egl
-         paraview/5.10.0-osmesa
-         paraview/5.11.0-egl
-         paraview/5.11.0-osmesa
-
-      .. warning::
-          On Summit, you **must** load ``DefApps-2023`` first.
 
 
 .. note::
@@ -296,109 +277,6 @@ methods may be used, the one described should work in most cases.
               </Server>
             </Servers>
 
-   .. tab-item:: Summit
-      :sync: summit
-
-      .. code-block::
-
-            <Servers>
-              <Server name="ORNL summit" resource="csrc://localhost">
-                <CommandStartup>
-                  <Options>
-                    <Option name="HOST" label="Server host" save="true">
-                      <String default="summit.olcf.ornl.gov"/>
-                    </Option>
-                    <Option name="HEADLESS_API" label="Server headless API" save="true">
-                      <Enumeration default="osmesa">
-                        <Entry value="osmesa" label= "OSMesa" />
-                        <Entry value="egl" label= "EGL" />
-                      </Enumeration>
-                    </Option>
-                    <Option name="USER" label="Server username" save="true">
-                      <String default="YOURUSERNAME"/>
-                    </Option>
-                    <Switch name="PV_CLIENT_PLATFORM">
-                      <Case value="Apple">
-                        <Set name="TERM_PATH" value="/opt/X11/bin/xterm" />
-                        <Set name="TERM_ARG1" value="-T" />
-                        <Set name="TERM_ARG2" value="ParaView" />
-                        <Set name="TERM_ARG3" value="-e" />
-                        <Set name="SSH_PATH" value="ssh" />
-                      </Case>
-                      <Case value="Linux">
-                        <Set name="TERM_PATH" value="xterm" />
-                        <Set name="TERM_ARG1" value="-T" />
-                        <Set name="TERM_ARG2" value="ParaView" />
-                        <Set name="TERM_ARG3" value="-e" />
-                        <Set name="SSH_PATH" value="ssh" />
-                      </Case>
-                      <Case value="Windows">
-                        <Set name="TERM_PATH" value="cmd" />
-                        <Set name="TERM_ARG1" value="/C" />
-                        <Set name="TERM_ARG2" value="start" />
-                        <Set name="TERM_ARG3" value="" />
-                        <Set name="SSH_PATH" value="plink.exe" />
-                      </Case>
-                      <Case value="Unix">
-                        <Set name="TERM_PATH" value="xterm" />
-                        <Set name="TERM_ARG1" value="-T" />
-                        <Set name="TERM_ARG2" value="ParaView" />
-                        <Set name="TERM_ARG3" value="-e" />
-                        <Set name="SSH_PATH" value="ssh" />
-                      </Case>
-                    </Switch>
-                    <Option name="PV_SERVER_PORT" label="Server port ">
-                      <Range type="int" min="1025" max="65535" step="1" default="random"/>
-                    </Option>
-                    <Option name="NUM_NODES" label="Number of compute nodes" save="true">
-                      <Range type="int" min="1" max="100" step="1" default="1"/>
-                    </Option>
-                    <Option name="NRS" label="Number of resource sets (RS)" save="true">
-                      <Range type="int" min="1" max="202400" step="1" default="1"/>
-                    </Option>
-                    <Option name="TASKS_PER_RS" label="Number of MPI tasks (ranks) per RS" save="true">
-                      <Range type="int" min="1" max="42" step="1" default="1"/>
-                    </Option>
-                    <Option name="CPU_PER_RS" label="Number of CPUs (cores) per RS" save="true">
-                      <Range type="int" min="1" max="42" step="1" default="1"/>
-                    </Option>
-                    <Option name="GPU_PER_RS" label="Number of GPUs per RS" save="true">
-                      <Range type="int" min="0" max="6" step="1" default="0"/>
-                    </Option>
-                    <Option name="PROJECT" label="Project to charge" save="true">
-                      <String default="cscXXX"/>
-                    </Option>
-                    <Option name="MINUTES" label="Number of minutes to reserve" save="true">
-                      <Range type="int" min="1" max="240" step="1" default="30"/>
-                    </Option>
-                  </Options>
-                  <Command exec="$TERM_PATH$" delay="5">
-                    <Arguments>
-                      <Argument value="$TERM_ARG1$"/>
-                      <Argument value="$TERM_ARG2$"/>
-                      <Argument value="$TERM_ARG3$"/>
-                      <Argument value="$SSH_PATH$"/>
-                      <Argument value="-t"/>
-                      <Argument value="-R"/>
-                      <Argument value="$PV_SERVER_PORT$:localhost:$PV_SERVER_PORT$"/>
-                      <Argument value="$USER$@$HOST$"/>
-                      <Argument value="/sw/summit/paraview/pvsc/ORNL/login_node.sh"/>
-                      <Argument value="$NUM_NODES$"/>
-                      <Argument value="$MINUTES$"/>
-                      <Argument value="$PV_SERVER_PORT$"/>
-                      <Argument value="$PV_VERSION_FULL$"/>
-                      <Argument value="$HEADLESS_API$"/>
-                      <Argument value="/sw/summit/paraview/pvsc/ORNL/summit.cfg"/>
-                      <Argument value="PROJECT=$PROJECT$"/>
-                      <Argument value="NRS=$NRS$"/>
-                      <Argument value="TASKS_PER_RS=$TASKS_PER_RS$"/>
-                      <Argument value="CPU_PER_RS=$CPU_PER_RS$"/>
-                      <Argument value="GPU_PER_RS=$GPU_PER_RS$"/>
-                    </Arguments>
-                  </Command>
-                </CommandStartup>
-              </Server>
-            </Servers>
 
 .. note::  
     Although they can be separate files, all OLCF server 
@@ -422,11 +300,11 @@ Click Load Servers button and find the servers.pvsc file
 .. note::  
     The ``Fetch Servers`` button fetches
     `Official Kitware Server Configurations <https://www.paraview.org/files/pvsc>`__.
-    Summit, Andes, and Frontier configurations can be imported through this method, but are
+    Andes and Frontier configurations can be imported through this method, but are
     not guaranteed to be supported in future updates. Users may use these at their own risk.
 
 After successfully completing the above steps, you should now be able to
-connect to either Andes, Summit, or Frontier.
+connect to either Andes or Frontier.
 
 .. _paraview-gui:
 
@@ -435,7 +313,7 @@ Remote GUI Usage
 
 After setting up and installing ParaView, you can connect to OLCF systems
 remotely to visualize your data interactively through ParaView's GUI. To do so,
-go to File→Connect and select either ORNL Andes, ORNL Summit, or ORNL Frontier
+go to File→Connect and select either ORNL Andes or ORNL Frontier
 (provided they were successfully imported -- as outlined in :ref:`paraview-install-setup`).
 Next, click on Connect and change the values in the Connection Options box.
 
@@ -470,7 +348,7 @@ tool useful. The Trace tool creates a Python script that reflects most actions
 taken in ParaView, which then can be used by either PvPython or PvBatch
 (ParaView's Python interfaces) to accomplish the same actions. See section
 :ref:`paraview-command-line` for an example of how to run a Python script using
-PvBatch on Andes and Summit.
+PvBatch on Andes and Frontier.
 
 To start tracing from the GUI, click on Tools→Start Trace. An options window
 will pop up and prompt for specific Trace settings other than the default. Upon
@@ -540,51 +418,18 @@ batch scripts, along with a working Python example, are provided below.
 
         srun -n 28 pvbatch para_example.py
 
-  .. tab-item:: Summit
-     :sync: summit
-
-      .. code-block:: bash
-        :linenos:
-
-        #!/bin/bash
-        #BSUB -P XXXYYY
-        #BSUB -W 00:05
-        #BSUB -nnodes 1
-        #BSUB -J para_test
-        #BSUB -o para_test.%J.out
-        #BSUB -e para_test.%J.err
-
-        cd $LSB_OUTDIR
-        date
-
-        module load DefApps-2023
-        module load paraview/5.11.0-osmesa
-
-        # Set up flags for jsrun
-        export NNODES=$(($(cat $LSB_DJOB_HOSTFILE | uniq | wc -l)-1))
-        export NCORES_PER_NODE=28
-        export NGPU_PER_NODE=0
-        export NRS_PER_NODE=1
-        export NMPI_PER_RS=28
-        export NCORES_PER_RS=$(($NCORES_PER_NODE/$NRS_PER_NODE))
-        export NGPU_PER_RS=$(($NGPU_PER_NODE/$NRS_PER_NODE))
-        export NRS=$(($NNODES*$NRS_PER_NODE))
-
-        jsrun -n ${NRS} -r ${NRS_PER_NODE} -a ${NMPI_PER_RS} -g ${NGPU_PER_RS} -c ${NCORES_PER_RS} pvbatch para_example.py
 
 .. warning::
     If you plan on using the EGL version of the ParaView module (e.g.,
     paraview/5.12.1-egl), then you must be connected to the GPUs. On Andes,
-    this is done by using the gpu partition via ``#SBATCH -p gpu``, while 
-    on Summit the ``-g`` flag in the ``jsrun`` command must be greater 
-    than zero.
+    this is done by using the gpu partition via ``#SBATCH -p gpu``.
 
 Submitting one of the above scripts will submit a job to the batch partition
 for five minutes using 28 MPI tasks across 1 node. As rendering speeds and
 memory issues widely vary for different datasets and MPI tasks, users are
 encouraged to find the optimal amount of MPI tasks to use for their data. Users
 with large datasets may also find a slight increase in performance by using the
-gpu partition on Andes, or by utilizing the GPUs on Summit. Once the batch job
+gpu partition on Andes, or by utilizing the GPUs on Frontier. Once the batch job
 makes its way through the queue, the script will launch the loaded ParaView
 module (specified with ``module load``) and execute a python script called
 ``para_example.py`` using PvBatch. The example python script is detailed below,
@@ -639,7 +484,7 @@ If everything is working properly, the above image should be generated after
 the batch job is complete.
 
 All of the above can also be achieved in an interactive batch job through the
-use of the ``salloc`` command on Andes and Frontier, or the ``bsub -Is`` command on Summit.
+use of the ``salloc`` command on Andes and Frontier.
 Recall that login nodes should *not* be used for memory- or compute-intensive tasks, including ParaView.
 
 Troubleshooting
@@ -669,8 +514,7 @@ command line and raises errors about OpenGL drivers or features, this is most
 likely due to not being connected to any GPUs.
 
 Double check that you are either running on the GPU partition on Andes (i.e.,
-``-p gpu``), or that you have ``-g`` set to a value greater than zero in your
-``jsrun`` command on Summit.
+``-p gpu``).
 
 If problems persist and you do not need EGL, try using the OSMesa version of
 the module instead (e.g., paraview/5.9.1-osmesa instead of paraview/5.9.1-egl).

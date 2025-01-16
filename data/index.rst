@@ -14,8 +14,8 @@ The storage area to use in any given situation depends upon the activity you wis
 
 Each user has a User Home area on NFS. Each project has a Project Home area on NFS, and multiple Work areas on Spectrum Scale/Lustre. Moderate projects each have an archival storage area on Kronos with project-shared, world-shared, and users directories (each of these 3 areas share a 200TB total Archival quota). The different storage areas are summarized in the list and table below.
 
-- **User Home:** Long-term data for routine access that is unrelated to a project. It is mounted on compute nodes of Summit as read only. It is mounted as read/write on the Frontier compute nodes, but we strongly recommend that users launch and run jobs from the Orion parallel filesystem due to its larger storage capacity and superior performance.
-- **Project Home:** Long-term project data for routine access that's shared with other project members. It is mounted on compute nodes of Summit as read only. It is mounted as read/write on the Frontier compute nodes, but we strongly recommend that users launch and run jobs from the Orion parallel filesystem due to its larger storage capacity and superior performance.
+- **User Home:** Long-term data for routine access that is unrelated to a project. It is mounted as read/write on the Frontier compute nodes, but we strongly recommend that users launch and run jobs from the Orion parallel filesystem due to its larger storage capacity and superior performance.
+- **Project Home:** Long-term project data for routine access that's shared with other project members. It is mounted as read/write on the Frontier compute nodes, but we strongly recommend that users launch and run jobs from the Orion parallel filesystem due to its larger storage capacity and superior performance.
 - **Member Work:** Short-term user data for fast, batch-job access that is not shared with other project members.
 - **Project Work:** Short-term project data for fast, batch-job access that's shared with other project members.
 - **World Work:** Short-term project data for fast, batch-job access that's shared with users outside your project.
@@ -28,11 +28,11 @@ Each user has a User Home area on NFS. Each project has a Project Home area on N
 +--------------------------------+---------------------------------------------+---------+------------------------+-------------+-----------+---------+---------+------------+-----------------------------------------+
 | Area                           | Path                                        | Enclave | Type                   | Permissions |   Quota   | Backups | Purged  | Retention  | On Compute Nodes                        |
 +================================+=============================================+=========+========================+=============+===========+=========+=========+============+=========================================+
-| User Home                      | ``/ccs/home/[userid]``                      | M1, M2  | NFS                    | User set    |   50 GB   | Yes     | No      | 90 days    | Summit: Read-only, Frontier: Read/Write |
+| User Home                      | ``/ccs/home/[userid]``                      | M1, M2  | NFS                    | User set    |   50 GB   | Yes     | No      | 90 days    | Frontier: Read/Write                    |
 +--------------------------------+---------------------------------------------+---------+------------------------+-------------+-----------+---------+---------+------------+-----------------------------------------+
 | User Archive                   | ``/nl/kronos/olcf/[projid]/users/[userid]`` | M1      | Nearline               | User set    |  200 TB*  | Yes     | No      | 90 days    | No                                      |
 +--------------------------------+---------------------------------------------+---------+------------------------+-------------+-----------+---------+---------+------------+-----------------------------------------+
-| Project Home                   | ``/ccs/proj/[projid]``                      | M1, M2  | NFS                    | 770         |   50 GB   | Yes     | No      | 90 days    | Summit: Read-only, Frontier: Read/Write |
+| Project Home                   | ``/ccs/proj/[projid]``                      | M1, M2  | NFS                    | 770         |   50 GB   | Yes     | No      | 90 days    | Frontier: Read/Write                    |
 +--------------------------------+---------------------------------------------+---------+------------------------+-------------+-----------+---------+---------+------------+-----------------------------------------+
 | Orion Member Work              | ``/lustre/orion/[projid]/scratch/[userid]`` | M1, M2  | Lustre HPE ClusterStor | 700         |   50 TB   | No      | 90 days | N/A [#f4]_ | Read/Write                              |
 +--------------------------------+---------------------------------------------+---------+------------------------+-------------+-----------+---------+---------+------------+-----------------------------------------+
@@ -74,9 +74,9 @@ Each user has a User Home area on NFS. Each project has a Project Home area on N
 | **Path -** The path (symlink) to the storage area's directory.
 | **Enclave -** The security enclave where the path is available. There are several security enclaves:
 |      - *Open (O) -* Ascent and other OLCF machines accessible with a username/password
-|      - *Moderate Projects not subject to export control (M1)* - These are projects on machines such as Summit or Andes that require 2-factor authentication but are not subject to export control restrictions.
+|      - *Moderate Projects not subject to export control (M1)* - These are projects on machines such as Frontier or Andes that require 2-factor authentication but are not subject to export control restrictions.
 |      - *Moderate Projects subject to export control (M2) -* Same as M1, but projects that are subject to export control restrictions.
-|      - *Moderated Enhanced (ME) -* These are projects that might involve HIPAA or ITAR regulations. These projects utilize Summit compute resources but have extra security precautions and separate file systems.
+|      - *Moderated Enhanced (ME) -* These are projects that might involve HIPAA or ITAR regulations. These projects utilize Frontier compute resources but have extra security precautions and separate file systems.
 | **Type -** The underlying software technology supporting the storage area.
 | **Permissions -** UNIX Permissions enforced on the storage area's top-level directory.
 | **Quota -** The limits placed on total number of bytes and/or files in the storage area.
@@ -89,7 +89,7 @@ Each user has a User Home area on NFS. Each project has a Project Home area on N
     Files within "Work" directories (i.e., Member Work, Project Work, World Work) are *not* backed up and are *purged* on a regular basis according to the timeframes listed above.
 
 .. tip::
-    If your home directory reaches its quota, your batch jobs might fail with the error ``cat: write error: Disk quota exceeded``. This error may not be intuitive, especially if your job exclusively uses work areas that are well under quota. The error is actually related to your home directory quota. Sometimes, batch systems write temporary files to the home directory (for example, on Summit LSF writes temporary data in ``~/.lsbatch``), so if the home directory is over quota and that file creation fails, the job will fail with the quota error.
+    If your home directory reaches its quota, your batch jobs might fail with the error ``cat: write error: Disk quota exceeded``. This error may not be intuitive, especially if your job exclusively uses work areas that are well under quota. The error is actually related to your home directory quota. Sometimes, batch systems write temporary files to the home directory, so if the home directory is over quota and that file creation fails, the job will fail with the quota error.
 
     You can check your home directory quota with the ``quota`` command. If it is over quota, you need to bring usage under the quota and then your jobs should run without encountering the ``Disk quota exceeded`` error.
 
@@ -100,7 +100,7 @@ Each user has a User Home area on NFS. Each project has a Project Home area on N
 .. [#f4] Retention is not applicable as files will follow purge cycle.
 
 
-.. On Summit, Andes, and the DTNs, additional paths to the various project-centric work areas are available via the following symbolic links and/or environment variables:
+.. On Frontier, Andes, and the DTNs, additional paths to the various project-centric work areas are available via the following symbolic links and/or environment variables:
 
 .. - Member Work Directory:  ``/gpfs/alpine/scratch/[userid]/[projid]`` or ``$MEMBERWORK/[projid]``
 .. - Project Work Directory: ``/gpfs/alpine/proj-shared/[projid]`` or ``$PROJWORK/[projid]``
@@ -316,7 +316,7 @@ By default, the OLCF does not guarantee lifetime data retention on any OLCF reso
 Orion Lustre HPE ClusterStor Filesystem 
 ***************************************
 
-Frontier mounts Orion, a parallel filesystem based on Lustre and HPE ClusterStor, with a 679 PB usable namespace (/lustre/orion/). In addition to Frontier, Orion is available on the OLCF's data transfer nodes. It is not available from Summit. Files older than 90 days are purged from Orion.
+Frontier mounts Orion, a parallel filesystem based on Lustre and HPE ClusterStor, with a 679 PB usable namespace (/lustre/orion/). In addition to Frontier, Orion is available on the OLCF's data transfer nodes. Files older than 90 days are purged from Orion.
 
 Orion is a cluster of servers with approximately 500 nodes. Each node plays a role in providing a POSIX namespace for users (/lustre/orion/).  .. A file on Lustre consists of one or more components that may hit one or more servers. Lustre has a distributed lock management process for concurrent access to files or regions within files. 
 
@@ -330,7 +330,7 @@ Orion has three performance tiers:
 Orion Performance Tiers and File Striping Policy
 ================================================
 
-Lustre, in addition to other servers and components, is composed of Objects Storage Targets (OSTs) on which the data for files is stored. A file may be "striped" or divided over multiple OSTs. Striping provides the ability to store files that are larger than the space available on any single OST and allows a larger I/O bandwidth than could be managed by a single OST. Striping is one of the main differences between Frontier's Orion Lustre and Summit's Alpine GPFS because GPFS has no concept of striping exposed to the user. For Orion, files are striped between object storage targets (OST) in the three capacity tiers to achieve the best performance. Below, we describe this automatic file striping policy and its motivations.
+Lustre, in addition to other servers and components, is composed of Objects Storage Targets (OSTs) on which the data for files is stored. A file may be "striped" or divided over multiple OSTs. Striping provides the ability to store files that are larger than the space available on any single OST and allows a larger I/O bandwidth than could be managed by a single OST. Striping is one of the main differences between Frontier's Orion Lustre and Summit's Alpine GPFS filesystems because GPFS has no concept of striping exposed to the user. For Orion, files are striped between object storage targets (OST) in the three capacity tiers to achieve the best performance. Below, we describe this automatic file striping policy and its motivations.
 
 Orion uses a feature called Data-on-Metadata-Trarget (DoM), where a portion of the file is stored along with the file’s metadata. Currently, directories are configured to store up to the first 256 KB of a file on the metadata tier using DoM. This reduces contention and provides better performance for small file I/O. Orion uses a feature called Progressive File Layout (PFL) to change the striping of a file as it grows. For example, a file smaller than 8 MB will be striped to a single OST, and larger files will be striped across multiple OSTs, taking advantage of more hardware resources. As files grow larger, they are automatically striped between the storage tiers.
 OLCF is refining the automatic file striping policy to optimize I/O performance for users.
@@ -420,45 +420,6 @@ Purge
 
 To keep the Lustre file system exceptionally performant, files that have not been accessed (e.g., read) or modified within 90 days in the project and user areas are purged. Please make sure that valuable data is moved off of these systems regularly. See HPSS Data Archival System for information about using the HSI and HTAR utilities and Globus to archive data on HPSS.
 
-
-.. _data-alpine-ibm-spectrum-scale-filesystem:
-
-*************************************
-Alpine2 IBM Spectrum Scale Filesystem
-*************************************
-
-Summit mounts a POSIX-based IBM Spectrum Scale parallel filesystem called Alpine2. Alpine2's maximum capacity is 50 PB. It consists of 16 IBM Elastic Storage Server (ESS) 3500 nodes, running GPFS 5.1, which are called Network Shared Disk (NSD) servers. Each IBM ESS 3500 node, is a scalable storage unit (SSU), constituted by two single socket AMD x86_64 IBM storage servers, and a 4X EDR InfiniBand network for up to 100Gbit/sec of networking bandwidth.
-
-.. Alpine2's maximum capacity is 250 PB. It is consisted of 77  IBM Elastic Storage Server (ESS) GL4 nodes running IBM Spectrum Scale 5.x which are called Network Shared Disk (NSD) servers. Each IBM ESS GL4 node, is a scalable storage unit (SSU), constituted by two dual-socket IBM POWER9 storage servers, and a 4X EDR InfiniBand network for up to 100Gbit/sec of networking bandwidth.  The maximum performance of the final production system will be about 2.5 TB/s for sequential I/O and 2.2 TB/s for random I/O under FPP mode, which means each process, writes its own file. Metada operations are improved with around to minimum 50,000 file access per sec and aggregated up to 2.6 million accesses of 32KB small files.  
-
-
-.. figure:: /images/summit_nds_final.png
-   :align: center
-
-   Figure 1. An example of the NDS servers on Summit
-
-=============================================
-Alpine2 Performance under non-ideal workloads
-=============================================
-
-The I/O performance can be lower than the optimal one when you save one single shared file 
-with non-optimal I/O pattern. Moreover, the previous performance results are achieved under 
-an ideal system, the system is dedicated, and a specific number of compute nodes are used. 
-The file system is shared across many users; the I/O performance can vary because other users 
-that perform heavy I/O as also executing large scale jobs and stress the interconnection network.  
-Finally, if the I/O pattern is not aligned, then the I/O performance can be significantly lower 
-than the ideal one.  Similar, related to the number of the concurrent users, is applied for the 
-metadata operations, they can be lower than the expected performance.
-
-====
-Tips
-====
-
-- For best performance on the IBM Spectrum Scale filesystem, use large page aligned I/O and asynchronous reads and writes. The filesystem blocksize is 16MB, the minimum fragment size is 16K so when a file under 16K is stored, it will still use 16K of the disk. Writing files of 16 MB or larger, will achieve better performance. All files are striped across LUNs which are distributed across all IO servers.
-
-- If your application occupies up to two compute nodes and it requires a significant number of I/O operations, you could try to add the following flag in your job script  file and investigate if the total execution time is decreased. This flag could cause worse results, it depends on the application.
-
-                   ``#BSUB -alloc_flags maximizegpfs``
 
 ======================================================================
 Major difference between Lustre HPE ClusterStor and IBM Spectrum Scale
@@ -882,21 +843,5 @@ See the manual pages for more information:
 
 .. note::
     Standard file transfer protocol (FTP) and remote copy (RCP) should not be used to transfer files to the NCCS high-performance computing (HPC) systems due to security concerns.
-
-
-**********************************
-Burst Buffer and Spectral Library
-**********************************
-
-Summit has node-local NVMe devices that can be used as :ref:`burst-buffer` by
-jobs, and the :ref:`spectral-library` can help with some of these use cases.
-
-
-
-
-
-
-
-
 
 

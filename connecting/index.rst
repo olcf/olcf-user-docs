@@ -192,13 +192,6 @@ OLCF System Hostnames
 |                      |                          | - ED25519 MD5: ``76:89:40:82:a5:92:65:88:e1:90:57:e3:25:68:d5:60`` |
 |                      |                          | - ED25519 SHA256: ``svTxlziE4JOmVlvLp9PIa3uSHZdGokM/7EU8T6f6x0A``  |
 +----------------------+--------------------------+--------------------------------------------------------------------+
-| Summit               | ``summit.olcf.ornl.gov`` | - RSA MD5: ``08:d0:fe:3f:f3:41:96:9c:ae:73:73:a8:92:6c:79:34``     |
-|                      |                          | - RSA SHA256: ``nA7X4qyPvtEpXWxG5MDeXEC8xfpmm0UMiLq/LkgM33I``      |
-|                      |                          | - ECDSA MD5: ``cf:32:f9:35:fd:3f:2a:0f:ed:d3:84:b1:2d:f0:35:1b``   |
-|                      |                          | - ECDSA SHA256: ``m0iF9JJEoJu6jJGA8FFbSABlpKFYPGKbdmi25rFC1AI``    |
-|                      |                          | - ED25519 MD5: ``7a:fe:53:04:0c:4b:6d:dc:9e:f2:cc:dd:b0:bc:01:2c`` |
-|                      |                          | - ED25519 SHA256: ``JM2ZfZx2dVHW5AOLdnoRAm3Ui1faV6lqCLmyBd73g8k``  |
-+----------------------+--------------------------+--------------------------------------------------------------------+
 | Moderate-Enhanced    | ``citadel.ccs.ornl.gov`` | - RSA MD5: ``26:9d:38:64:57:73:3b:d3:0d:94:0d:ce:13:28:74:0a``     |
 | Enclave Login Node   |                          | - RSA SHA256: ``srq2/sRnB+U1PmmZXhk2Z/RnycgHbP7JCbu6hmFdWz4``      |
 |                      |                          | - ECDSA MD5: ``b3:7d:a1:cb:90:92:31:78:03:84:ab:f6:8c:f2:8b:18``   |
