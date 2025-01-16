@@ -29,7 +29,7 @@ OpenACC) and combinations. It works in combination with Periscope, Scalasca, Vam
 Usage
 =====
 
-Steps in a typical Score-P workflow to run on :ref:`summit-user-guide`:
+Steps in a typical Score-P workflow to run on Summit:
 
 1. Login to :ref:`Summit <connecting-to-olcf>`: ``ssh <user_id>@summit.olcf.ornl.gov``
 2. Instrument your code with Score-P
@@ -322,7 +322,7 @@ using a batch script or an interactive job; Additionaly you will need to load mo
 
      jsrun -n 1 ./<binary to run>
 
-For more information on launching jobs on Summit, please see the :ref:`Running Jobs <running-jobs>` section of the Summit User Guide.
+For more information on launching jobs on Summit, please see the Running Jobs section of the Summit User Guide.
 
 The output files generated when the profile measurement runs are successful will be placed in a folder uniquely named:
 

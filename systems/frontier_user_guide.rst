@@ -93,7 +93,6 @@ File Systems
 
 Frontier is connected to Orion, a parallel filesystem based on Lustre and HPE ClusterStor, with a 679 PB usable 
 namespace (``/lustre/orion/``). In addition to Frontier, Orion is available on the OLCF's data transfer nodes and on the Andes cluster. 
-Orion is not available from Summit and Frontier does not mount Summit's Alpine2 filesystem. 
 Frontier also has access to the center-wide NFS-based filesystem (which provides user and project home areas). 
 Each compute node has two 1.92TB Non-Volatile Memory storage devices. See :ref:`frontier-data-storage` for more information. 
 
@@ -140,7 +139,7 @@ Data and Storage
 Transition from Alpine to Orion
 -------------------------------
 
-* Frontier mounts Orion, a parallel filesystem based on Lustre and HPE ClusterStor, with a 679 PB usable namespace (/lustre/orion/). In addition to Frontier, Orion is available on the OLCF's data transfer nodes. It is not available from Summit.  
+* Frontier mounts Orion, a parallel filesystem based on Lustre and HPE ClusterStor, with a 679 PB usable namespace (/lustre/orion/). In addition to Frontier, Orion is available on the OLCF's data transfer nodes. 
 * On Alpine, there was no user-exposed concept of file striping, the process of dividing a file between the storage elements of the filesystem. Orion uses a feature called Progressive File Layout (PFL) that changes the striping of files as they grow. Because of this, we ask users not to manually adjust the file striping. If you feel the default striping behavior of Orion is not meeting your needs, please contact help@olcf.ornl.gov. 
 * As with Alpine, files older than 90 days are purged from Orion.  Please plan your data management and lifecycle at OLCF before generating the data. 
 
@@ -3098,7 +3097,7 @@ is a command-line debugger useful for traditional debugging and
 investigating code crashes. GDB lets you debug programs written in Ada,
 C, C++, Objective-C, Pascal (and many other languages). 
 
-GDB is availableon Summit under all compiler families:
+GDB is available on Frontier under all compiler families:
 
 .. code::
 

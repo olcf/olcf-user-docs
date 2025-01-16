@@ -53,7 +53,7 @@ deploy anything on Slate's clusters.
 This example uses Helm version 3 to deploy a MinIO standalone Helm chart on
 Slate's `Marble <https://console-openshift-console.apps.marble.ccs.ornl.gov/>`_
 Cluster. This is the cluster in OLCF's Moderate enclave, the same enclave as
-Summit.
+Frontier.
 
 To start, clone the `slate helm examples repository
 <https://code.ornl.gov/ryu/slate_helm_examples>`_ , containing the MinIO
