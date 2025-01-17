@@ -10,3 +10,5 @@ and data analytics tasks on OLCF systems.
    :maxdepth: 2
 
    apache-spark
+   pytorch_frontier
+   jax
