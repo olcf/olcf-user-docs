@@ -3098,7 +3098,7 @@ is a command-line debugger useful for traditional debugging and
 investigating code crashes. GDB lets you debug programs written in Ada,
 C, C++, Objective-C, Pascal (and many other languages). 
 
-GDB is available on Summit under all compiler families:
+GDB is available on Frontier under all compiler families:
 
 .. code::
 
