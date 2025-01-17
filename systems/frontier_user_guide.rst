@@ -3135,7 +3135,7 @@ Omnitrace
 ---------
 
 OLCF provides installations of AMD's `Omnitrace <https://github.com/AMDResearch/omnitrace>`_ profiling tools on Frontier.
-AMD provides documentation on the usage of Omnitrace (rebranded to ROCm) at `<https://rocm.docs.amd.com/projects/rocprofiler-systems/en/latest/index.html>`_.
+AMD provides documentation on the usage of Omnitrace (rebranded to ROCm Systems Profiler) at `<https://rocm.docs.amd.com/projects/rocprofiler-systems/en/latest/index.html>`_.
 This section details the installation and common pitfalls of the ``omnitrace`` module on Frontier.
 
 Unlike ``omniperf``, the ``omnitrace`` module only relies on a ROCm module.
@@ -3276,7 +3276,7 @@ Getting Started with the ROCm Profiler
 For a simple view of kernels being run, ``rocprof --stats --timestamp on`` is a great place to start.
 With the ``--stats`` option enabled, ``rocprof`` will generate a file that is named ``results.stats.csv`` by default, but named ``<output>.stats.csv`` if the ``-o`` flag is supplied.
 This file will list all kernels being run, the number of times they are run, the total duration and the average duration (in nanoseconds) of the kernel, and the GPU usage percentage.
-More detailed infromation on ``rocprof`` profiling modes can be found at `ROCm Profiler <https://rocm.docs.amd.com/en/latest/>`__ documentation.
+More detailed infromation on ``rocprof`` profiling modes can be found at `ROCm Profiler <https://rocm.docs.amd.com/projects/rocprofiler/en/latest/index.html>`__ documentation.
 
 .. note::
 
@@ -3447,8 +3447,8 @@ where
 Omniperf
 --------
 
-OLCF provides installations of AMD's `Omniperf <https://github.com/AMDResearch/omniperf>`_ profiling tools on Frontier.
-AMD provides documentation on the usage of Omniperf at `<https://amdresearch.github.io/omniperf/>`_.
+OLCF provides installations of AMD's `Omniperf <https://github.com/AMDResearch/omniperf>`_ (rebranded to ROCm Compute Profiler) profiling tools on Frontier.
+AMD provides documentation on the usage of Omniperf at `<https://rocm.docs.amd.com/projects/rocprofiler-compute/en/latest/>`_.
 This section details the installation and common pitfalls of the ``omniperf`` module on Frontier.
 
 The ``omniperf`` module relies on two other modules -- a ``rocm`` module and optionally a ``cray-python`` module.
