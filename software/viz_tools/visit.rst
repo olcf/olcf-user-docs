@@ -26,7 +26,6 @@ OLCF resources. VisIt for your local computer can be obtained here:
 
 Recommended VisIt versions on our systems:
 
-* Summit: VisIt 3.1.4
 * Andes: VisIt 3.3.3, 3.4.1
 * Frontier: VisIt 3.3.3 (via the UMS022 module)
 
@@ -163,51 +162,6 @@ Restart VisIt, and go to Options→Host Profiles. Select “New Host”
           to the "Launcher arguments" section under the "Advanced" tab (make sure
           to also check the "Launcher arguments" box).
 
-  .. tab-item:: Summit
-
-      **For Summit:**
-
-      - **Host nickname**: ``Summit`` (this is arbitrary)
-      - **Remote hostname**: ``summit.olcf.ornl.gov`` (required)
-      - **Host name aliases**: ``login#`` (required)
-      - **Maximum Nodes**: Unchecked
-      - **Maximum processors**: Unchecked (arbitrary)
-      - **Path to VisIt Installation**: ``/sw/summit/visit`` (required)
-      - **Username**: Your OLCF Username (required)
-      - **Tunnel data connections through SSH**: Checked (required)
-
-      Under the “Launch Profiles” tab create a launch profile. Most of these values
-      are arbitrary
-
-      - **Profile Name**: ``batch`` (arbitrary)
-      - **Timeout**: 480 (arbitrary)
-      - **Number of threads per task**: 0 (arbitrary, but not tested
-        with OMP/pthread support)
-      - **Additional arguments**: blank (arbitrary)
-
-      Under the “Parallel” Tab:
-
-      - **Launch parallel engine**: Checked (required)
-      - Launch Tab:
-
-          - **Parallel launch method**:
-            ``bsub`` (required)
-          - **Partition/Pool/Queue**: ``batch`` (required)
-          - **Number of processors**: 1 (arbitrary, but 
-            high number may lead to OOM errors) (max is 42)
-          - **Number of nodes**: 1 (arbitrary)
-          - **Bank/Account**: Your OLCF project to use (required)
-          - **Time Limit**: 01:00 (arbitrary, ``HH:MM``)
-          - **Machine file**: Unchecked (required – Lets VisIt get 
-            the nodelist from the scheduler)
-          - **Constraints**: Unchecked
-      - Advanced tab – All boxes unchecked
-      - GPU Acceleration
-
-          - **Use cluster’s graphics cards**: Unchecked
-
-      Click “Apply” and make sure to save the settings (Options/Save Settings).
-      Exit and re-launch VisIt.
 
 .. _visit-modify-host:
 
@@ -285,10 +239,9 @@ Once you have VisIt installed and set up on your local computer:
 -  Once specified, the server side of VisIt will be launched, and you
    can interact with your data.
 
-The above procedure can also be followed to connect to Summit or Frontier, with
-the main difference being the number of available processors. The time limit
-syntax for Andes, Summit, and Frontier also differ. Summit uses the format
-HH:MM while Andes and Frontier follow HH:MM:SS.
+The above procedure can also be followed to connect to Frontier, with
+the main difference being the number of available processors.
+Both Andes and Frontier follow HH:MM:SS syntax for the time limit.
 
 Please do not run VisIt's GUI client from an OLCF machine. You will get much 
 better performance if you install a client on your workstation and launch 
@@ -309,26 +262,6 @@ Although most users find better performance following the approach outlined in
 performance using VisIt's CLI in a batch job. An example for doing this on
 OLCF systems is provided below.
 
-**For Summit (module):**
-
-.. code::
-
-   $ module load DefApps-2023
-   $ module load visit
-   $ visit -nowin -cli -v 3.1.4 -l bsub/jsrun -p batch -b XXXYYY -t 00:05 -np 42 -nn 1 -s visit_example.py
-
-Due to the nature of the custom VisIt launcher for Summit, users are unable to
-solely specify ``-l jsrun`` for VisIt to work properly. Instead of manually
-creating a batch script, as seen in the Andes method outlined below, VisIt
-submits its own through ``-l bsub/jsrun``. The **-t** flag sets the time limit,
-**-b** specifies the project to be charged, and **-p** designates the queue the
-job will submit to.
-
-.. note::
-    This method on Summit requires the user to be present until the job completes.
-    For users who have long scripts or are unable to monitor the job, you can
-    submit the above lines in a batch script. However, you will wait in the queue
-    twice, so this is not recommended. Alternatively, one can use Andes.
 
 **For Andes/Frontier (Slurm Script):**
 
@@ -374,7 +307,7 @@ job will submit to.
         visit -nowin -cli -v 3.3.3 -l srun -np 28 -nn 1 -s visit_example.py
 
 Following one of the methods above will submit a batch job for five minutes to
-either Summit, Andes, or Frontier.  Once the batch job makes its way through
+either Andes or Frontier.  Once the batch job makes its way through
 the queue, the script will launch VisIt version X.Y.Z (specified with the
 **-v** flag, required on Andes) and execute a python script called
 ``visit_example.py`` (specified with the **-s** flag, required if using a
@@ -472,7 +405,7 @@ displayed on lines 13 and 14 -- however saving the window in this manner on
 OLCF systems has resulted in errors in the past.
 
 All of the above can also be achieved in an interactive batch job through the
-use of the ``salloc`` command on Andes or the ``bsub -Is`` command on Summit.
+use of the ``salloc`` command on Andes or Frontier.
 Recall that login nodes should *not* be used for memory- or compute-intensive
 tasks, including VisIt.
 
@@ -502,8 +435,6 @@ can result in another compute engine crash). To avoid this, screen capture must
 be enabled. Go to File→"Set save options" and check the box labeled "Screen
 capture".
 
-Using VisIt on Summit is also an option, as the scalable rendering problem is
-currently not an issue on Summit (as of Sept. 2021).
 
 As of February 2022, this issue on Andes has been fixed (must use VisIt 3.2.2 or higher).
 
@@ -516,7 +447,7 @@ the specific error listed as "The reason for the exception was not described",
 double check your host profiles. This bug may occur when you have two or more
 host profiles that represent the same system (e.g., if you have two host
 profiles that connect to andes.olcf.ornl.gov, but may have different settings /
-usernames for both). This bug can affect both Summit and Andes.
+usernames for both). This bug can affect both Frontier and Andes.
 
 One solution is to change the host nickname of the duplicate host profile to
 start with "Copy of".  For example, if my original host profile was named "ORNL
@@ -570,11 +501,10 @@ under "Username".
 VisIt will not connect when you try to draw an image.
 -----------------------------------------------------
 
-If VisIt will not connect to Andes or Summit when you try to draw an image, you
+If VisIt will not connect to Andes or Frontier when you try to draw an image, you
 should login to the system and check if a job is in the queue. To do this on
-Andes, enter ``squeue`` from the command line. To do this on Summit, enter
-``bjobs`` from the command line. Your VisIt job should appear in the queue. If
-you see it in a state marked "PD" or "PEND" you should wait a bit longer to see
+Andes or Frontier , enter ``squeue`` from the command line. Your VisIt job should appear in the queue.
+If you see it in a state marked "PD" or "PEND" you should wait a bit longer to see
 if it will start. If you do not see your job listed in the queue, check to make
 sure your project ID is entered in your VisIt host profile. See the
 :ref:`visit-modify-host` section for instructions.

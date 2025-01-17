@@ -9,7 +9,7 @@ System Overview
 
 Andes is a 704-compute node commodity-type linux cluster. The primary purpose of Andes is to provide a
 conduit for large-scale scientific discovery via pre/post processing and
-analysis of simulation data generated on Summit.  
+analysis of simulation data generated on Frontier.  
 
 
 .. _andes-compute-nodes:
@@ -82,8 +82,8 @@ For more information on connecting to OLCF resources, see :ref:`connecting-to-ol
 File Systems
 ------------
 
-The OLCF's center-wide :ref:`data-orion-lustre-hpe-clusterstor-filesystem` and Summit's 
-Alpine2 are available on Andes for computational work.  An NFS-based file system provides
+The OLCF's center-wide :ref:`data-orion-lustre-hpe-clusterstor-filesystem` 
+is available on Andes for computational work.  An NFS-based file system provides
 :ref:`data-user-home-directories-nfs` and :ref:`data-project-home-directories-nfs`.
 Additionally, the OLCF's :ref:`data-hpss` provides archival spaces.
 
@@ -1070,7 +1070,7 @@ allocated to multiple jobs. Because the OLCF charges based on what a job makes
 uses only one core on a node. To simplify the process, users are given a
 multiples of entire nodes through Slurm.
 
-Allocations on Andes are separate from those on Summit and other OLCF resources.
+Allocations on Andes are separate from those on Frontier and other OLCF resources.
 
 Node-Hour Calculation
 ^^^^^^^^^^^^^^^^^^^^^
@@ -1233,14 +1233,14 @@ Visualization tools
 ParaView
 --------
 
-Information regarding ParaView, and how to run it on both Andes and Summit, has moved
-to the Software Section. Click :doc:`HERE </software/viz_tools/paraview>` to go to the new page.
+Information regarding ParaView, and how to run it on both Andes and Frontier, has moved
+to the Software Section. Click :doc:`HERE </software/viz_tools/paraview>` to go to the page.
 
 VisIt
 -----
 
-Information regarding VisIt, and how to run it on both Andes and Summit, has moved
-to the Software Section. Click :doc:`HERE </software/viz_tools/visit>` to go to the new page.
+Information regarding VisIt, and how to run it on both Andes and Frontier, has moved
+to the Software Section. Click :doc:`HERE </software/viz_tools/visit>` to go to the page.
 
 Remote Visualization using VNC (non-GPU)
 ----------------------------------------

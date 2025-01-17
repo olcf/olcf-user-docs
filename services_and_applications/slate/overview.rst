@@ -26,7 +26,7 @@ to Frontier and Lustre access, and a node pool of standard compute nodes.
 Onyx Cluster
 ============
 
-Onyx is in the Open Security Enclave and has access to Wolf2 (GPFS)
+Onyx is in the Open Security Enclave and has access to Wolf2 (GPFS).
 
 Onyx is a heterogeneus cluster of 15 nodes with 10 Gigabit ethernet connectivity. Onyx has a
 node pool of ppc64le nodes and a node pool of standard compute nodes.

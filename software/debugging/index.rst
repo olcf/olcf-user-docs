@@ -22,10 +22,6 @@ The section below demonstrates configuration of the remote client and Reverse Co
 Download
 ========
 
-**Summit**
-
-    You can download the remote client (version 21.1.x) from the `Linaro Forge <https://www.linaroforge.com/downloadForge/>`_ page.
-
 **Andes**
 
     You can download the remote client (version 23.1) from the `Linaro Forge <https://www.linaroforge.com/downloadForge/>`_ page.
@@ -48,85 +44,6 @@ Configuration
 
 .. tab-set::
 
-    .. tab-item:: Summit
-
-        #. Once installed, launch the Forge DDT client on your local machine.
-
-        #. You can ignore any information about the lack of license, as the license on the remote machine will be used.
-
-        #. When you reach the welcome screen, you should see a “Remote Launch” combo box (with “Off” selected). Select the “Configure” option.
-
-        #. Click the "Add" button.
-
-        #. Enter the details of your remote hosts:
-
-            .. figure:: /images/ddt_config_summit.png
-                :align: center
-                :width: 800
-
-            * (Optionally) enter a name for your remote connection (otherwise the host name will be used)
-
-            * Enter your username and hostname (e.g. ``username@summit.olcf.ornl.gov``)
-
-                * If the host you wish to connect to requires connecting through a gateway machine, you can enter ``user@hostname1`` ``user@hostname2`` (where ``hostname1`` is the gateway and ``hostname2`` is the final destination).
-
-            * Enter the remote path to the Linaro Forge installation (To find the path for a version of Forge, load the forge/22.1.1 module file in a terminal and run ``echo $DDT_HOME``)
-
-            * For the remaining fields, the default values will work for the vast majority of setups. See the `Linaro Forge documentation <https://www.linaroforge.com/documentation/>`_ for more information on these fields.
-
-        #. You may click the "Test Remote Launch" button to test your configuration, or click "OK" to save your configuration.
-
-        #. Return to the welcome screen, and select the name of your remote connection from the "Remote Launch" combo box. (You will be asked for your OLCF PASSCODE).
-
-        .. figure:: /images/ddt_launch_summit.png
-            :align: center
-            :width: 400
-
-        Once connected, Forge will look and behave as usual, but will launch jobs, browse for files, and use/set the configuration on the remote system. The “Reverse Connect” feature, described below, is also available.
-
-        **Reverse Connect**
-
-        For example, if you have a batch script containing:
-
-        .. code-block:: bash
-
-            jsrun -n 24 -g 1 ./miniWeather_mpi_openacc
-
-        You could edit this to:
-
-        .. code-block:: bash
-
-            module load forge/22.1.1
-            ddt --connect jsrun -n 24 -g 1 ./miniWeather_mpi_openacc
-
-        When your job is executed, the ``ddt --connect`` command will establish a connection with your already-running remote client (must be running before launching the job). This provides a convenient way for the remote client to access a job within the batch system, and more importantly, avoids the need to explicitly tell DDT or MAP about any program parameters, environment variables, or module files required.
-
-        **Reverse Connect Setup Instructions**
-
-        #. Launch the Forge remote client and connect to a remote host using the steps above. Once connected, this client will monitor for new connections.
-
-        .. figure:: /images/ddt_launch_summit.png
-            :align: center
-            :width: 400
-
-        #. In a separate terminal, load the ``forge/22.1.1`` module, and run a ``ddt --connect`` command via the batch system (e.g. by editing and running a job script, or running with an interactive shell).
-
-            .. code-block:: bash
-
-                module load forge/22.1.1
-                dt --connect jsrun -n 24 -g 1 ./miniWeather_mpi_openacc
-
-        #. The remote client will notify you of a new connection.
-
-        .. figure:: /images/ddt_reverse_prompt.png
-            :align: center
-
-        #. Once accepted, you can configure some final debugging options before launching the program.
-
-        .. figure:: /images/ddt_run_options.png
-            :align: center
-
-        #. Click “Run”, and DDT will start your session.
 
     .. tab-item:: Andes
         
@@ -315,21 +232,6 @@ More information on its use on OLCF systems can be found below.
 
 .. tab-set::
 
-    .. tab-item:: Summit
-
-        GDB is available on Summit under all compiler families:
-
-        .. code::
-
-            module load gdb
-
-        To use GDB to debug your application run:
-
-        .. code::
-
-            gdb ./path_to_executable
-
-        Additional information about GDB usage can befound on the `GDB Documentation Page <https://www.sourceware.org/gdb/documentation/>`__.
 
     .. tab-item:: Andes
 
@@ -370,37 +272,6 @@ Valgrind
 
 .. tab-set::
 
-    .. tab-item:: Summit
-
-        `Valgrind <http://valgrind.org>`__ is an instrumentation framework for
-        building dynamic analysis tools. There are Valgrind tools that can
-        automatically detect many memory management and threading bugs, and
-        profile your programs in detail. You can also use Valgrind to build new
-        tools.
-
-        The Valgrind distribution currently includes five production-quality
-        tools: a memory error detector, a thread error detector, a cache and
-        branch-prediction profiler, a call-graph generating cache profiler,
-        and a heap profiler. It also includes two experimental tools: a data
-        race detector, and an instant memory leak detector.
-
-        The Valgrind tool suite provides a number of debugging and
-        profiling tools. The most popular is Memcheck, a memory checking tool
-        which can detect many common memory errors such as:
-
-            - Touching memory you shouldn’t (eg. overrunning heap block boundaries, or reading/writing freed memory).
-            - Using values before they have been initialized.
-            - Incorrect freeing of memory, such as double-freeing heap blocks.
-            - Memory leaks.
-
-        Valgrind is available on Summit under all compiler families:
-
-        .. code::
-
-            module load valgrind
-
-        Additional information about Valgrind usage and OLCF-provided builds can
-        be found on the `Valgrind Software Page <https://www.olcf.ornl.gov/software_package/valgrind/>`__.
 
     .. tab-item:: Andes
 
