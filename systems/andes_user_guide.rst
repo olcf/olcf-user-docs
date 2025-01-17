@@ -14,7 +14,7 @@ analysis of simulation data generated on Frontier.
 
 .. _andes-compute-nodes:
 
-Compute nodes
+Compute Nodes
 -------------
 
 Andes contains 704 compute nodes and 9 GPU nodes. Andes has two partitions:
@@ -59,7 +59,7 @@ transfer rate of 200 Gb/s.
 
 .. _andes-login-nodes:
 
-Login nodes
+Login Nodes
 -----------
 
 Andes features 8 login nodes which are identical to the *batch* partition
@@ -79,7 +79,7 @@ For more information on connecting to OLCF resources, see :ref:`connecting-to-ol
 
 --------------
 
-File systems
+File Systems
 ------------
 
 The OLCF's center-wide :ref:`data-orion-lustre-hpe-clusterstor-filesystem` 
@@ -87,24 +87,24 @@ is available on Andes for computational work.  An NFS-based file system provides
 :ref:`data-user-home-directories-nfs` and :ref:`data-project-home-directories-nfs`.
 Additionally, the OLCF's :ref:`data-hpss` provides archival spaces.
 
-LFS setstripe wrapper
+LFS setstripe Wrapper
 ---------------------
 
 The OLCF provides a wrapper for the ``lfs setstripe`` command that simplifies the process of striping files. The wrapper will enforce that certain settings are used to ensure that striping is done correctly. This will help to ensure good performance for users as well as prevent filesystem issues that could arise from incorrect striping practices. The wrapper is accessible via the ``lfs-wrapper`` module and will soon be added to the default environment on Frontier. 
 
 Orion is different than other Lustre filesystems that you may have used previously. To make effective use of Orion and to help ensure that the filesystem performs well for all users, it is important that you do the following:
 
-* Use the `capacity` OST pool tier (e.g. ``lfs setstripe -p capacity``)
-* Stripe across no more than 450 OSTs (e.g. ``lfs setstripe -c`` <= 450)
+* Use the `capacity` OST pool tier (e.g., ``lfs setstripe -p capacity``)
+* Stripe across no more than 450 OSTs (e.g., ``lfs setstripe -c`` <= 450)
 
 When the module is active in your environment, the wrapper will enforce the above settings. The wrapper will also do the following:
 
-* If a user provides a stripe count of -1 (e.g. ``lfs setstripe -c -1``) the wrapper will set the stripe count to the maximum allowed by the filesystem (currently 450)
-* If a user provides a stripe count of 0 (e.g. ``lfs setstripe -c 0``) the wrapper will use the OLCF default striping command which has been optimized by the OLCF filesystem managers: ``lfs setstripe -E 256K -L mdt -E 8M -c 1 -S 1M -p performance -z 64M -E 128G -c 1 -S 1M -z 16G -p capacity -E -1 -z 256G -c 8 -S 1M -p capacity``
+* If a user provides a stripe count of -1 (e.g., ``lfs setstripe -c -1``) the wrapper will set the stripe count to the maximum allowed by the filesystem (currently 450)
+* If a user provides a stripe count of 0 (e.g., ``lfs setstripe -c 0``) the wrapper will use the OLCF default striping command which has been optimized by the OLCF filesystem managers: ``lfs setstripe -E 256K -L mdt -E 8M -c 1 -S 1M -p performance -z 64M -E 128G -c 1 -S 1M -z 16G -p capacity -E -1 -z 256G -c 8 -S 1M -p capacity``
 
 Please contact the OLCF User Assistance Center if you have any questions about using the wrapper or if you encounter any issues.
 
-Shell and programming environments
+Shell and Programming Environments
 ==================================
 
 OLCF systems provide hundreds of software packages and scientific libraries
@@ -133,7 +133,7 @@ help@olcf.ornl.gov.
 
 --------------
 
-Environment management with lmod
+Environment Management with lmod
 --------------------------------
 
 The *modules* software package allows you to dynamically modify your user
@@ -152,12 +152,12 @@ Environment modules are structured hierarchically by compiler family such that
 packages built with a given compiler will only be accessible if the compiler
 family is first present in the environment.
 
-    **note:** Lmod can interpret both Lua modulefiles and legacy Tcl
+.. note:: 
+    Lmod can interpret both Lua modulefiles and legacy Tcl
     modulefiles. However, long and logic-heavy Tcl modulefiles may require
     porting to Lua.
 
-
-General usage
+General Usage
 ^^^^^^^^^^^^^
 
 Typical use of Lmod is very similar to that of interacting with modulefiles on
@@ -196,7 +196,7 @@ other OLCF systems. The interface to Lmod is provided by the ``module`` command:
     recursively processes loaded modules and automatically resolves
     conflicts.
 
-Searching for modules
+Searching for Modules
 ^^^^^^^^^^^^^^^^^^^^^
 
 Modules with dependencies are only available when the underlying dependencies,
@@ -218,12 +218,12 @@ sub-command can be used as summarized in the following table.
 +----------------------------------------+------------------------------------------------------------------------------------+
 
  
-Defining custom module collections
+Defining Custom Module Collections
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Lmod supports caching commonly used collections of environment modules on a
 per-user basis in ``$home/.lmod.d``. To create a collection called "NAME" from
-the currently loaded modules, simply call ``module save NAME``. omitting "NAME"
+the currently loaded modules, simply call ``module save NAME``. Omitting "NAME"
 will set the user’s default collection. Saved collections can be recalled and
 examined with the commands summarized in the following table.
 
@@ -249,7 +249,7 @@ examined with the commands summarized in the following table.
 
 .. note::
     In order to avoid conflicts between user-defined collections
-    on multiple compute systems that share a home file system (e.g.
+    on multiple compute systems that share a home file system (e.g.,
     ``/ccs/home/[username]``), Lmod appends the hostname of each system to the
     files saved in in your ``~/.lmod.d`` directory (using the environment
     variable ``lmod_system_name``). This ensures that only collections
@@ -266,40 +266,39 @@ Installed Software
 The OLCF provides hundreds of pre-installed software packages and scientific
 libraries for your use, in addition to taking `software installation requests
 <https://www.olcf.ornl.gov/support/software/software-request/>`__. See the
-`software <https://www.olcf.ornl.gov/for-users/software/>`__ page for complete
-details on existing installs.
+:ref:`software-at-the-olcf` page for complete details on existing installs.
 
 Compiling
 =========
 
-Compiling code on andes is typical of commodity or Beowulf-style HPC Linux
+Compiling code on Andes is typical of commodity or Beowulf-style HPC Linux
 clusters.
 
-Available compilers
+Available Compilers
 -------------------
 
 The following compilers are available on Andes:
 
-- `intel <https://www.olcf.ornl.gov/software_package/intel/>`__, intel composer xe (default)
-- `pgi <https://www.olcf.ornl.gov/software_package/pgi/>`__, the portland group compilar suite
-- `gcc <https://www.olcf.ornl.gov/software_package/gcc/>`__, the gnu compiler collection
+- **intel**, Intel composer xe (default)
+- **pgi**, the Portland group compiler suite
+- **gcc**, the gnu compiler collection
 
-Upon login, default versions of the intel compiler and openmpi (message passing
+Upon login, default versions of the Intel compiler and OpenMPI (message passing
 interface) libraries are automatically added to each user's environment. Users
-do not need to make any environment changes to use the default version of intel
-and openmpi.
+do not need to make any environment changes to use the default version of Intel
+and OpenMPI.
 
 --------------
 
-Changing compilers
+Changing Compilers
 ------------------
 
 If a different compiler is required, it is important to use the correct
 environment for each compiler. To aid users in pairing the correct compiler and
-environment, the module system on andes automatically pulls in libraries compiled
+environment, the module system on Andes automatically pulls in libraries compiled
 with a given compiler when changing compilers. The compiler modules will load
 the correct pairing of compiler version, message passing libraries, and other
-items required to build and run code. To change the default loaded intel
+items required to build and run code. To change the default loaded Intel
 environment to the gcc environment for example, use:
 
 .. code::
@@ -310,7 +309,7 @@ This will automatically unload the current compiler and system libraries
 associated with it, load the new compiler environment and automatically load
 associated system libraries as well.
 
-Changing versions of the same compiler
+Changing Versions of the Same Compiler
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 To use a specific compiler *version*, you must first ensure the compiler's
@@ -325,20 +324,21 @@ a non-default gcc compiler version:
 
 ..
 
-    **note: we recommend the following general guidelines for using the
-    programming environment modules:**
+.. note:: 
+    We recommend the following general guidelines for using the
+    programming environment modules:
 
     -  Do not purge all modules; rather, use the default module environment
        provided at the time of login, and modify it.
-    -  Do not swap moab, torque, or mysql modules after loading a
+    -  Do not swap ``moab``, ``torque``, or ``mysql`` modules after loading a
        programming environment modulefile.
 
 --------------
 
-Compiler wrappers
+Compiler Wrappers
 -----------------
 
-Commodity clusters at the olcf can be accessed via the following wrapper
+Commodity clusters at the OLCF can be accessed via the following wrapper
 programs:
 
 -  ``mpicc`` to invoke the c compiler
@@ -347,17 +347,17 @@ programs:
    fortran compiler
 
 These wrapper programs are cognizant of your currently loaded modules, and will
-ensure that your code links against our openmpi installation.  more information
-about using openmpi at our center can be found in our `software documentation
-<https://www.olcf.ornl.gov/software_package/openmpi/>`__.
+ensure that your code links against our OpenMPI installation.  More information
+about using OpenMPI at our center can be found in our `Best Practices video
+<https://vimeo.com/1037493298?share=copy>`__.
 
-Compiling threaded codes
+Compiling Threaded Codes
 ------------------------
 
 When building threaded codes, compiler-specific flags must be included to ensure
 a proper build.
 
-Openmp
+OpenMP
 ^^^^^^
 
 For pgi, add "-mp" to the build line.
@@ -461,7 +461,7 @@ Writing Batch Scripts
 Batch scripts, or job submission scripts, are the mechanism by which a user
 configures and submits a job for execution. A batch script is simply a shell
 script that also includes commands to be interpreted by the batch scheduling
-software (e.g. Slurm).
+software (e.g., Slurm).
 
 Batch scripts are submitted to the batch scheduler, where they are then parsed
 for the scheduling configuration options. The batch scheduler then places the
@@ -498,7 +498,7 @@ executable content of the batch job. If any ``#SBATCH`` lines follow executable
 statements, they will be treated as comments only.
 
 The execution section of a script will be interpreted by a shell and can contain
-multiple lines of executables, shell commands, and comments.  when the job's
+multiple lines of executables, shell commands, and comments.  When the job's
 queue wait time is finished, commands within this section will be executed on
 the primary compute node of the job's allocated resources. Under normal
 circumstances, the batch job will exit the queue after the last line of the
@@ -549,7 +549,7 @@ from where the script was submitted.
 
 8: This command will run the date command.
 
-9: This command will run (8) MPI instances of the executable a.out
+9: This command will run (8) MPI instances of the executable "a.out"
 on the compute nodes allocated by the batch system.
 
 
@@ -564,9 +564,8 @@ If successfully submitted, a Slurm job ID will be returned. This ID can be used
 to track the job. It is also helpful in troubleshooting a failed job; make a
 note of the job ID for each of your jobs in case you must contact the `OLCF User
 Assistance Center for support
-<https://www.olcf.ornl.gov/for-users/user-assistance/>`__.
-
-
+<https://www.olcf.ornl.gov/for-users/user-assistance/>`__. To check the status and obtain 
+additional information of all queued jobs, you can use ``squeue`` as described in the Job Monitoring Commands :ref:`subsection <squeue-ref>`.
 
 --------------
 
@@ -609,10 +608,10 @@ through a batch script).
 Debugging
 ^^^^^^^^^
 
-A common use of interactive batch is to aid in debugging efforts.  interactive
+A common use of interactive batch is to aid in debugging efforts.  Interactive
 access to compute resources allows the ability to run a process to the point of
 failure; however, unlike a batch job, the process can be restarted after brief
-changes are made without losing the compute resource pool; thus speeding up the
+changes are made without losing the compute resource pool; thus, speeding up the
 debugging effort.
 
 Choosing a Job Size
@@ -784,6 +783,8 @@ the most common and useful of these tools.
 Job Monitoring Commands
 ^^^^^^^^^^^^^^^^^^^^^^^
 
+.. _squeue-ref:
+
 ``squeue``
 """"""""""
 
@@ -919,7 +920,7 @@ your job, it may be useful to control task layout within and across nodes.
 Physical Core Binding
 """""""""""""""""""""
 
-The following will run four copies of a.out, one per CPU, two per node with
+The following will run four copies of "a.out", one per CPU, two per node with
 physical core binding
 
 .. image:: /images/Andes-layout-physical-core-1-per-CPU-SMT1.jpg
@@ -928,7 +929,7 @@ physical core binding
 
 Simultaneous Multithreading Binding
 """""""""""""""""""""""""""""""""""
-The following will run four copies of a.out, one per SMT, two per node
+The following will run four copies of "a.out", one per SMT, two per node
 using a round robin task layout between nodes:
 
 .. image:: /images/Andes-layout-1-per-SMT1-cyclic.jpg
@@ -940,7 +941,7 @@ Thread Layout
 """""""""""""
 **Thread per SMT**
 
-The following will run four copies of a.out. Each task will launch two threads.
+The following will run four copies of "a.out". Each task will launch two threads.
 The ``-c`` flag will provide room for the threads.
 
 .. image:: /images/Andes-layout-thread-per-SMT1.jpg
@@ -977,7 +978,7 @@ Multiple simultaneous sruns can be executed within a batch job by placing each
 
 .. warning::
     The ``--exclusive`` flag must be used to prevent
-    resource sharing. Without the flag each backgrounded srun
+    resource sharing. Without the flag each backgrounded ``srun``
     will likely be placed on the same resources.
 
 .. _batch-queues-on-andes:
@@ -1099,7 +1100,7 @@ Tuesday and completes Wednesday, the job's utilization will be recorded
 Thursday. Only batch jobs which write an end record are used to calculate
 utilization. Batch jobs which do not write end records due to system failure or
 other reasons are not used when calculating utilization. Jobs which fail because
-of run-time errors (e.g. the user's application causes a segmentation fault) are
+of run-time errors (e.g., the user's application causes a segmentation fault) are
 counted against the allocation.
 
 Each user may view usage for projects on which they are members from the command
@@ -1173,7 +1174,7 @@ is a command-line debugger useful for traditional debugging and
 investigating code crashes. GDB lets you debug programs written in Ada,
 C, C++, Objective-C, Pascal (and many other languages). 
 
-GDB is available on andes via the ``gdb`` module:
+GDB is available on Andes via the ``gdb`` module:
 
 .. code::
 
@@ -1206,7 +1207,7 @@ The Valgrind tool suite provides a number of debugging and
 profiling tools. The most popular is Memcheck, a memory checking tool
 which can detect many common memory errors such as:
 
-- Touching memory you shouldn’t (eg. overrunning heap block boundaries,
+- Touching memory you shouldn’t (e.g., overrunning heap block boundaries,
   or reading/writing freed memory).
 - Using values before they have been initialized.
 - Incorrect freeing of memory, such as double-freeing heap blocks.
@@ -1220,7 +1221,7 @@ Valgrind is available on Andes via the ``valgrind`` module:
 
 Additional information about Valgrind usage and OLCF-provided builds can
 be found on the `Valgrind Software
-Page <https://www.olcf.ornl.gov/software_package/valgrind/>`__.
+Page <https://docs.olcf.ornl.gov/software/debugging/index.html#valgrind>`__.
 
 
 
@@ -1244,10 +1245,10 @@ to the Software Section. Click :doc:`HERE </software/viz_tools/visit>` to go to 
 Remote Visualization using VNC (non-GPU)
 ----------------------------------------
 
-In addition to the instructions below, `Benjamin
-Hernandez <https://www.olcf.ornl.gov/directory/staff-member/benjamin-hernandez/>`__ of the `OLCF
+In addition to the instructions below, Benjamin
+Hernandez, previously of the `OLCF
 Advanced Technologies
-Section <https://www.olcf.ornl.gov/about-olcf/staff-sections/advanced-technologies/>`__
+Section <https://www.olcf.ornl.gov/about-olcf/staff-sections/advanced-technologies/>`__,
 presented a related talk, `GPU Rendering in Rhea and
 Titan <https://www.olcf.ornl.gov/wp-content/uploads/2016/01/GPURenderingRheaTitan-1.pdf>`__,
 during the 2016 OLCF User Meeting.

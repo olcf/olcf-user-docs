@@ -55,7 +55,7 @@ Secondly, the  :term:`Pod` needs something to do when it starts. For an nginx se
 
 ``args: ["echo 'Hello World!'; cat"]``
 
-Finally, we need a tty. This will give us the ability to open a shell in our  :term:`Pod` and get a better understanding of what is happing. To do this, add the following two lines under the command line that you just added:
+Finally, we need a tty. This will give us the ability to open a shell in our  :term:`Pod` and get a better understanding of what is happening. To do this, add the following two lines under the command line that you just added:
 
 ``tty: true``
 
@@ -68,9 +68,9 @@ Your page should now look as follows:
 
 You can now click the 'Create' button in the lower left which will take you to the screen where the   :term:`Pod` is created.
 
-You should now be on the 'Pod' screen with the 'Overview' tab selected From here you can get a quick idea of the amount of resources (memory, CPU etc) that your  :term:`Pod` is using.
+You should now be on the 'Pod' screen with the 'Overview' tab selected. From here you can get a quick idea of the amount of resources (memory, CPU etc) that your  :term:`Pod` is using.
 
-Click on the 'Logs' tab to get the logs from your pod. This will display "Hello World!" in our example because of our echo command. There will be a dropdown here that for our example will contain only one item named 'hello-openshift'. This is the name of the container that you are viewing the logs for inside your pod.
+Click on the 'Logs' tab to get the logs from your pod. This will display "Hello World!" in our example because of our ``echo`` command. There will be a dropdown here that, for our example, will contain only one item named 'hello-openshift'. This is the name of the container that you are viewing the logs for inside your pod.
 
 The 'Events' tab is for the events that took place to create your pod. This is for things that happen outside of the code that is running inside your pod such as pulling the pod image, scheduling the pod onto a node etc.
 

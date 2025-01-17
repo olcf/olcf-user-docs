@@ -26,8 +26,8 @@ by emailing **help@olcf.ornl.gov**.
 | - Project PI
 | - Enclave (i.e. Open or Moderate Enclave - Onyx or Marble respectively)
 |   **NOTE:** Frontier is in Moderate
-| - Description (i.e. How you will use Slate)
-| - Resource Request (i.e. CPU/Memory/Storage requirements - Default is
+| - Description (i.e., How you will use Slate)
+| - Resource Request (i.e., CPU/Memory/Storage requirements - Default is
 |   8CPU/16GB/50GB respectively)
 
 Logging in
@@ -62,7 +62,7 @@ project's usable space within the requested resource boundaries
 Install the OC tool
 -------------------
 
-The OC tool provides CLI access to the OpenShift cluster. It needs to be
+The ``oc`` tool provides CLI access to the OpenShift cluster. It needs to be
 installed on your machine.
 
 It is a single binary that can be downloaded from a number of places (the
@@ -113,7 +113,7 @@ Test login with OC Tool
 
    $ oc login <URL> --username=loginName
 
-where the loginName is your username for the cluster. After entering the login command above, oc will ask you to obtain an API token and will provide a URL like the following: ``https://oauth-openshift.apps.<CLUSTER>.ccs.ornl.gov/oauth/token/request``.
+where the "loginName" is your username for the cluster. After entering the login command above, ``oc`` will ask you to obtain an API token and will provide a URL like the following: ``https://oauth-openshift.apps.<CLUSTER>.ccs.ornl.gov/oauth/token/request``.
 
 You will need to go to the given URL in your browser, log in with NCCS, click the ``Display Token`` link, copy the command under ``Log in with this token`` and enter it into your terminal.
 

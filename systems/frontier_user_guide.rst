@@ -143,7 +143,7 @@ Transition from Alpine to Orion
 * On Alpine, there was no user-exposed concept of file striping, the process of dividing a file between the storage elements of the filesystem. Orion uses a feature called Progressive File Layout (PFL) that changes the striping of files as they grow. Because of this, we ask users not to manually adjust the file striping. If you feel the default striping behavior of Orion is not meeting your needs, please contact help@olcf.ornl.gov. 
 * As with Alpine, files older than 90 days are purged from Orion.  Please plan your data management and lifecycle at OLCF before generating the data. 
 
-For more detailed information about center-wide file systems and data archiving available on Frontier, please refer to the pages on :ref:`data-storage-and-transfers`. The subsections below give a quick overview of NFS, Lustre, abd archival storage spaces as well as the on node NVMe "Burst Buffers" (SSDs).
+For more detailed information about center-wide file systems and data archiving available on Frontier, please refer to the pages on :ref:`data-storage-and-transfers`. The subsections below give a quick overview of NFS, Lustre, and archival storage spaces as well as the on node NVMe "Burst Buffers" (SSDs).
 
 LFS setstripe wrapper
 ---------------------
@@ -152,13 +152,13 @@ The OLCF provides a wrapper for the ``lfs setstripe`` command that simplifies th
 
 Orion is different than other Lustre filesystems that you may have used previously. To make effective use of Orion and to help ensure that the filesystem performs well for all users, it is important that you do the following:
 
-* Use the `capacity` OST pool tier (e.g. ``lfs setstripe -p capacity``)
-* Stripe across no more than 450 OSTs (e.g. ``lfs setstripe -c`` <= 450)
+* Use the `capacity` OST pool tier (e.g., ``lfs setstripe -p capacity``)
+* Stripe across no more than 450 OSTs (e.g., ``lfs setstripe -c`` <= 450)
 
 When the module is active in your environment, the wrapper will enforce the above settings. The wrapper will also do the following:
 
-* If a user provides a stripe count of -1 (e.g. ``lfs setstripe -c -1``) the wrapper will set the stripe count to the maximum allowed by the filesystem (currently 450)
-* If a user provides a stripe count of 0 (e.g. ``lfs setstripe -c 0``) the wrapper will use the OLCF default striping command which has been optimized by the OLCF filesystem managers: ``lfs setstripe -E 256K -L mdt -E 8M -c 1 -S 1M -p performance -z 64M -E 128G -c 1 -S 1M -z 16G -p capacity -E -1 -z 256G -c 8 -S 1M -p capacity``
+* If a user provides a stripe count of -1 (e.g., ``lfs setstripe -c -1``) the wrapper will set the stripe count to the maximum allowed by the filesystem (currently 450)
+* If a user provides a stripe count of 0 (e.g., ``lfs setstripe -c 0``) the wrapper will use the OLCF default striping command which has been optimized by the OLCF filesystem managers: ``lfs setstripe -E 256K -L mdt -E 8M -c 1 -S 1M -p performance -z 64M -E 128G -c 1 -S 1M -z 16G -p capacity -E -1 -z 256G -c 8 -S 1M -p capacity``
 
 Please contact the OLCF User Assistance Center if you have any questions about using the wrapper or if you encounter any issues.
 
@@ -410,11 +410,11 @@ kernel, indexed along the X, Y, and Z dimensions.
 - Max number of threads that can be specified along each dimension in a block: (1024, 1024, 1024)
 
   - However, the total of number of threads in a block has an upper limit of 1024
-    [i.e. (size of x dimension * size of y dimension * size of z dimension) cannot exceed
+    [i.e., (size of x dimension * size of y dimension * size of z dimension) cannot exceed
     1024].
   - And the total number of threads in a kernel launch has an upper limit of 2147483647.
 
-Each block (or workgroup) of threads is assigned to a single Compute Unit i.e. a single
+Each block (or workgroup) of threads is assigned to a single Compute Unit, i.e., a single
 block won’t be split across multiple CUs. The threads in a block are scheduled in units of
 64 threads called wavefronts (similar to warps in CUDA, but warps only have 32 threads
 instead of 64). When launching a kernel, up to 64KB of block level shared memory called
@@ -459,10 +459,10 @@ of tutorials on programming with HIP and also converting existing CUDA code to H
 
 Things To Remember When Programming for AMD GPUs
 ------------------------------------------------
-* The MI250X has different denormal handling for FP16 and BF16 datatypes, which is relevant for ML training. Prefer using the BF16 over the FP16 datatype for ML models as you are more likely to encounter denormal values with FP16 (which get flushed to zero, causing failure in convergence for some ML models). See more in :ref:`using-reduced-precision`.
+* The MI250X has different denormal handling for FP16 and BF16 datatypes, which is relevant for ML training. It is recommended using BF16 over the FP16 datatype for ML models as you are more likely to encounter denormal values with FP16 (which get flushed to zero, causing failure in convergence for some ML models). See more in :ref:`using-reduced-precision`.
 * Memory can be automatically migrated to GPU from CPU on a page fault if XNACK operating mode is set.  No need to explicitly migrate data or provide managed memory. This is useful if you're migrating code from a programming model that relied on 'unified' or 'managed' memory. See more in :ref:`enabling-gpu-page-migration`. Information about how memory is accessed based on the allocator used and the XNACK mode can be found in :ref:`migration-of-memory-allocator-xnack`.
 * HIP has two kinds of memory allocations, coarse grained and fine grained, with tradeoffs between performance and coherence. Particularly relevant if you want to ues the hardware FP atomic instructions. See more in :ref:`fp-atomic-ops-coarse-fine-allocations`.
-* FP32 atomicAdd operations on Local Data Store (i.e. block shared memory) can be slower than the equivalent FP64 operations. See more in :ref:`performance-lds-atomicadd`.
+* FP32 atomicAdd operations on Local Data Store (i.e., block shared memory) can be slower than the equivalent FP64 operations. See more in :ref:`performance-lds-atomicadd`.
 
 
 
@@ -517,7 +517,7 @@ The interface to Lmod is provided by the ``module`` command:
 Searching for Modules
 ^^^^^^^^^^^^^^^^^^^^^
 
-Modules with dependencies are only available when the underlying dependencies, such as compiler families, are loaded. Thus, module avail will only display modules that are compatible with the current state of the environment. To search the entire hierarchy across all possible dependencies, the ``spider`` sub-command can be used as summarized in the following table.
+Modules with dependencies are only available when the underlying dependencies, such as compiler families, are loaded. Thus, ``module avail`` will only display modules that are compatible with the current state of the environment. To search the entire hierarchy across all possible dependencies, the ``spider`` sub-command can be used as summarized in the following table.
 
 +------------------------------------------+--------------------------------------------------------------------------------------+
 | Command                                  | Description                                                                          |
@@ -684,8 +684,8 @@ where the include path implies that ``#include <hip/hip_runtime.h>`` is included
 
 
 
-2. Compiling without the Cray compiler wrappers, e.g. ``hipcc``
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+2. Compiling without the Cray compiler wrappers, e.g., ``hipcc``
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 To use ``hipcc`` with GPU-aware Cray MPICH, the following is needed to setup the needed header files and libraries. 
 
@@ -718,7 +718,7 @@ There are three primary sources of compatibility required to successfully build 
 Compatible Compiler & ROCm toolchain versions
 """""""""""""""""""""""""""""""""""""""""""""
 
-All compilers in the same HPE/Cray Programming Environment (CrayPE) release are generally ABI-compatible (e.g. code generated by CCE can be linked against code compiled by GCC).
+All compilers in the same HPE/Cray Programming Environment (CrayPE) release are generally ABI-compatible (, code generated by CCE can be linked against code compiled by GCC).
 However, the AMD and CCE compilers are both LLVM/Clang-based, and it is recommended to use the same major LLVM version when cross-compiling.
 CCE's module version indicates the base LLVM version, but for AMD, you must run ``amdclang --version``.
 For example, ROCm/5.3.0 is based on LLVM 15.0.0.
@@ -747,7 +747,7 @@ The following table shows the recommended ROCm version for each CCE version, alo
 
 .. note::
 
-    Recall that the CPE module is a meta-module that simple loads the correct version for each Cray-provided module (e.g. CCE, Cray MPICH, Cray Libsci).
+    Recall that the CPE module is a meta-module that simple loads the correct version for each Cray-provided module (e.g., CCE, Cray MPICH, Cray Libsci).
     This is the best way to load the versions of modules from a specific CrayPE release.
 
 
@@ -804,10 +804,10 @@ Compatibility with other CrayPE-provided Software
 The HPE/Cray Programming Environment (CrayPE) provides many libraries for use on Frontier, including the well-known libraries like Cray MPICH, Cray Libsci, and Cray FFTW.
 CrayPE also has many modules that operate in the background and can easily be overlooked.
 For example, the ``craype`` module provides the ``cc``, ``CC``, and ``ftn`` Cray compiler drivers.
-These drivers are written to link to specific libraries (e.g. the ``ftn`` wrapper in September 2023 PE links to ``libtcmalloc_minimal.so``),
+These drivers are written to link to specific libraries (e.g., the ``ftn`` wrapper in September 2023 PE links to ``libtcmalloc_minimal.so``),
 which may not be needed by compiler versions other than the one they were released with.
 
-For the full compatibility of your loaded CrayPE environment, we strongly recommended loading the ``cpe`` module of your desired CrayPE release (version is the last two digits of the year and the two-digit month, e.g. September 2023 is version 23.09).
+For the full compatibility of your loaded CrayPE environment, we strongly recommended loading the ``cpe`` module of your desired CrayPE release (version is the last two digits of the year and the two-digit month, e.g., September 2023 is version 23.09).
 For example, to load the September 2023 PE (CCE 16.0.1, Cray MPICH 8.1.27, ROCm 5.5.1 compatibility), 
 you would run the following commands:
 
@@ -881,7 +881,7 @@ OpenACC
 
 This section shows how to compile code with OpenACC. Currently only the Cray compiler supports OpenACC for Fortran. The AMD and
 GNU programming environments do not support OpenACC at all.
-C and C++ support for OpenACC is provided by `clacc <https://csmd.ornl.gov/project/clacc>`_ which maintains a fork of the LLVM
+C and C++ support for OpenACC is provided by `clacc <https://impact.ornl.gov/en/publications/clacc-openacc-for-cc-in-clang>`_ which maintains a fork of the LLVM
 compiler with added support for OpenACC. It can be obtained by loading the UMS modules
 ``ums``, ``ums025``, and ``clacc``. 
 
@@ -1020,7 +1020,7 @@ The following sections describe in detail how to create, submit, and manage jobs
 Login vs Compute Nodes
 ----------------------
 
-Recall from the System Overview that Frontier contains two node types: Login and Compute. When you connect to the system, you are placed on a *login* node. Login nodes are used for tasks such as code editing, compiling, etc. They are shared among all users of the system, so it is not appropriate to run tasks that are long/computationally intensive on login nodes. Users should also limit the number of simultaneous tasks on login nodes (e.g. concurrent tar commands, parallel make 
+Recall from the System Overview that Frontier contains two node types: Login and Compute. When you connect to the system, you are placed on a *login* node. Login nodes are used for tasks such as code editing, compiling, etc. They are shared among all users of the system, so it is not appropriate to run tasks that are long/computationally intensive on login nodes. Users should also limit the number of simultaneous tasks on login nodes (e.g., concurrent tar commands, parallel make 
 
 Compute nodes are the appropriate place for long-running, computationally-intensive tasks. When you start a batch job, your batch script (or interactive shell for batch-interactive jobs) runs on one of your allocated compute nodes.
 
@@ -1236,7 +1236,7 @@ Slurm Environment Variables
 
 Slurm reads a number of environment variables, many of which can provide the same information as the job options noted above. We recommend using the job options rather than environment variables to specify job options, as it allows you to have everything self-contained within the job submission script (rather than having to remember what options you set for a given job).
 
-Slurm also provides a number of environment variables within your running job. The following table summarizes those that may be particularly useful within your job (e.g. for naming output log files):
+Slurm also provides a number of environment variables within your running job. The following table summarizes those that may be particularly useful within your job (e.g., for naming output log files):
 
 +--------------------------+-----------------------------------------------------------------------------------------+
 | Variable                 | Description                                                                             |
@@ -1352,7 +1352,7 @@ parameter, which all jobs in the bin receive.
 The ``batch`` partition (queue) is the default partition for production work on Frontier. Most work on Frontier is handled through this partition. The following policies are enforced for the ``batch`` partition:
 
 * Limit of four *eligible-to-run* jobs per user. (Jobs in excess of this number will be held, but will move to the eligible-to-run state at the appropriate time.)
-* Users may have only 100 jobs queued across all partitions at any time (this includes jobs in all states) i.e. jobs submitted in different partitions on Frontier are added up together to check if its within the 100 queued jobs limit. Additional jobs will be rejected at submit time.
+* Users may have only 100 jobs queued across all partitions at any time (this includes jobs in all states), i.e., jobs submitted in different partitions on Frontier are added up together to check if its within the 100 queued jobs limit. Additional jobs will be rejected at submit time.
 
 
 ``extended`` Partition (queue) Policy
@@ -1363,7 +1363,7 @@ The ``extended`` partition (queue) is designated for smaller long-running jobs o
 * 24-Hour maximum wall time for each queued job.
 * 64-Node maximum job size for each queued job. 
 * Each user will be allowed 1 running job and 1 *eligible-to-run* job at a given time. Any additional queued jobs will be held in an ineligible state until the previous job runs. 
-* Users may have only 100 jobs queued across all partitions at any time (this includes jobs in all states) i.e. jobs submitted in different partitions on Frontier are added up together to check if its within the 100 queued jobs limit. Additional jobs will be rejected at submit time.
+* Users may have only 100 jobs queued across all partitions at any time (this includes jobs in all states), i.e., jobs submitted in different partitions on Frontier are added up together to check if its within the 100 queued jobs limit. Additional jobs will be rejected at submit time.
 
 
 ``debug`` Quality of Service Class
@@ -2673,7 +2673,7 @@ Tips for Launching at Scale
 SBCAST your executable and libraries
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Slurm contains a utility called ``sbcast``. This program takes a file and broadcasts it to each node's node-local storage (ie, ``/tmp``, NVMe).
+Slurm contains a utility called ``sbcast``. This program takes a file and broadcasts it to each node's node-local storage (i.e., ``/tmp``, NVMe).
 This is useful for sharing large input files, binaries and shared libraries, while reducing the overhead on shared file systems and overhead at startup.
 This is highly recommended at scale if you have multiple shared libraries on Lustre/NFS file systems.
 
@@ -2803,7 +2803,7 @@ SBCASTing a binary with libraries stored on shared file systems
     # Failure to remove may result in unnecessary calls to stat shared file systems
     export LD_LIBRARY_PATH="/mnt/bb/$USER/${exe}_libs:${LD_LIBRARY_PATH}"
 
-    # If you SBCAST **all** your libraries (ie, `--exclude=NONE`), you may use the following line:
+    # If you SBCAST **all** your libraries (i.e., `--exclude=NONE`), you may use the following line:
     #export LD_LIBRARY_PATH="/mnt/bb/$USER/${exe}_libs:$(pkg-config --variable=libdir libfabric)"
     # Use with caution -- certain libraries may use ``dlopen`` at runtime, and that is NOT covered by sbcast
     # If you use this option, we recommend you contact OLCF Help Desk for the latest list of additional steps required
@@ -3135,7 +3135,7 @@ Omnitrace
 ---------
 
 OLCF provides installations of AMD's `Omnitrace <https://github.com/AMDResearch/omnitrace>`_ profiling tools on Frontier.
-AMD provides documentation on the usage of Omnitrace at `<https://amdresearch.github.io/omnitrace/>`_.
+AMD provides documentation on the usage of Omnitrace (rebranded to ROCm Systems Profiler) at `<https://rocm.docs.amd.com/projects/rocprofiler-systems/en/latest/index.html>`_.
 This section details the installation and common pitfalls of the ``omnitrace`` module on Frontier.
 
 Unlike ``omniperf``, the ``omnitrace`` module only relies on a ROCm module.
@@ -3276,7 +3276,7 @@ Getting Started with the ROCm Profiler
 For a simple view of kernels being run, ``rocprof --stats --timestamp on`` is a great place to start.
 With the ``--stats`` option enabled, ``rocprof`` will generate a file that is named ``results.stats.csv`` by default, but named ``<output>.stats.csv`` if the ``-o`` flag is supplied.
 This file will list all kernels being run, the number of times they are run, the total duration and the average duration (in nanoseconds) of the kernel, and the GPU usage percentage.
-More detailed infromation on ``rocprof`` profiling modes can be found at `ROCm Profiler <https://rocmdocs.amd.com/en/latest/ROCm_Tools/ROCm-Tools.html>`__ documentation.
+More detailed infromation on ``rocprof`` profiling modes can be found at `ROCm Profiler <https://rocm.docs.amd.com/projects/rocprofiler/en/latest/index.html>`__ documentation.
 
 .. note::
 
@@ -3447,14 +3447,14 @@ where
 Omniperf
 --------
 
-OLCF provides installations of AMD's `Omniperf <https://github.com/AMDResearch/omniperf>`_ profiling tools on Frontier.
-AMD provides documentation on the usage of Omniperf at `<https://amdresearch.github.io/omniperf/>`_.
+OLCF provides installations of AMD's `Omniperf <https://github.com/AMDResearch/omniperf>`_ (rebranded to ROCm Compute Profiler) profiling tools on Frontier.
+AMD provides documentation on the usage of Omniperf at `<https://rocm.docs.amd.com/projects/rocprofiler-compute/en/latest/>`_.
 This section details the installation and common pitfalls of the ``omniperf`` module on Frontier.
 
 The ``omniperf`` module relies on two other modules -- a ``rocm`` module and optionally a ``cray-python`` module.
 A ROCm module must be loaded before being able to do view or load the ``omniperf`` module.
 As for ``cray-python``, ``omniperf`` is a Python script and has several dependencies that cannot be met by the system's default Python, and are not met by the default ``cray-python`` installation.
-As such, you must either (1) load the ``cray-python`` module or (2) satisfy the Python dependencies in your own Python environment (ie, in a Conda environment).
+As such, you must either (1) load the ``cray-python`` module or (2) satisfy the Python dependencies in your own Python environment (i.e., in a Conda environment).
 
 As a rule of thumb, always load the ``omniperf`` module last (especially after you load a ROCm module).
 If you load a new version of ROCm, you will need to re-load ``omniperf``.
@@ -3526,7 +3526,7 @@ If you encounter significant differences when running using reduced precision, e
 
 Additional information on MI250X reduced precision can be found at:
   * The MI250X ISA specification details the flush to zero denorm behavior at: https://developer.amd.com/wp-content/resources/CDNA2_Shader_ISA_18November2021.pdf (See page 41 and 46)
-  * AMD rocBLAS library reference guide details this behavior at: https://rocblas.readthedocs.io/en/master/API_Reference_Guide.html#mi200-gfx90a-considerations
+  * AMD rocBLAS library reference guide details this behavior at: https://rocm.docs.amd.com/projects/rocBLAS/en/latest/how-to/what-is-rocblas.html
 
 .. _enabling-gpu-page-migration:
 
@@ -3534,7 +3534,7 @@ Enabling GPU Page Migration
 ---------------------------
 The AMD MI250X and operating system on Frontier supports unified virtual addressing across the entire host and device memory, and automatic page migration between CPU and GPU memory. Migratable, universally addressable memory is sometimes called 'managed' or 'unified' memory, but neither of these terms fully describes how memory may behave on Frontier. In the following section we'll discuss how the heterogenous memory space on a Frontier node is surfaced within your application.
 
-The accessibility of memory from GPU kernels and whether pages may migrate depends three factors: how the memory was allocated; the XNACK operating mode of the GPU; whether the kernel was compiled to support page migration. The latter two factors are intrinsically linked, as the MI250X GPU operating mode restricts the types of kernels which may run.
+The accessibility of memory from GPU kernels and whether pages may migrate depends on three factors: how the memory was allocated; the XNACK operating mode of the GPU; whether the kernel was compiled to support page migration. The latter two factors are intrinsically linked, as the MI250X GPU operating mode restricts the types of kernels which may run.
 
 XNACK (pronounced X-knack) refers to the AMD GPU's ability to retry memory accesses that fail due to a page fault. The XNACK mode of an MI250X can be changed by setting the environment variable ``HSA_XNACK`` before starting a process that uses the GPU. Valid values are 0 (disabled) and 1 (enabled), and all processes connected to a GPU must use the same XNACK setting. The default MI250X on Frontier is ``HSA_XNACK=0``.
 
@@ -3752,8 +3752,8 @@ Finally, the following table summarizes the nature of the memory returned based 
 Performance considerations for LDS FP atomicAdd()
 -------------------------------------------------
 
-Hardware FP atomic operations performed in LDS memory are usually always faster than an equivalent CAS loop, in particular when contention on LDS memory locations is high.
-Because of a hardware design choice, FP32 LDS atomicAdd() operations can be slower than equivalent FP64 LDS atomicAdd(), in particular when contention on memory locations is low (e.g. random access pattern).
+Hardware FP atomic operations performed in local data store (LDS) memory are usually always faster than an equivalent CAS loop, in particular when contention on LDS memory locations is high.
+Because of a hardware design choice, FP32 LDS atomicAdd() operations can be slower than equivalent FP64 LDS atomicAdd(), in particular when contention on memory locations is low (e.g., random access pattern).
 The aforementioned behavior is only true for FP atomicAdd() operations. Hardware atomic operations for CAS/Min/Max on FP32 are usually faster than the FP64 counterparts.
 In cases when contention is very low, a FP32 CAS loop implementing an atomicAdd() operation could be faster than an hardware FP32 LDS atomicAdd().
 Applications using single precision FP atomicAdd() are encouraged to experiment with the use of double precision to evaluate the trade-off between high atomicAdd() performance vs. potential lower occupancy due to higher LDS usage.

@@ -59,7 +59,7 @@ Kronos Overview
 ^^^^^^^^^^^^^^^^
 
 Overview
-  Kronos is the center's new nearline storage resource.  Kronos is multi-tiered containing both disk and tape.  Users will interact with the system's disk sub-system which leverages IBM Storage Scale (GPFS).  Data stored on the disk sub-system will automatically be stored on they system's tape sub-system.  The disk sub-system will provide an initial capacity of 134 PB with the ability to expand as need increases.  Kronos is capable of bandwidth of up-to 200 GB/s from the center's Data Transfer Nodes.
+  Kronos is the center's new nearline storage resource.  Kronos is multi-tiered containing both disk and tape.  Users will interact with the system's disk sub-system which leverages IBM Storage Scale (GPFS).  Data stored on the disk sub-system will automatically be stored on they system's tape sub-system.  The disk sub-system will provide an initial capacity of 134 PB with the ability to expand as need increases.  Kronos is capable of bandwidth of up-to 200 GB/s from the center's Data Transfer Nodes (DTNs).
 
 Availability Timeline
   Kronos is expected to be available late July 2024.

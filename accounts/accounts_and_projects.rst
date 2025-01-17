@@ -58,7 +58,7 @@ and to `submit a
 proposal <https://doeleadershipcomputing.org/proposal/call-for-proposals/>`__.
 
 **ALCC –**
-The ASCR Leadership Computing Challenge (ALCC) is open to scientists
+The Advanced Scientific Computing Research (ASCR) Leadership Computing Challenge (ALCC) is open to scientists
 from the research community in national laboratories, academia and
 industry. The ALCC program allocates computational resources at the OLCF
 for special situations of interest to the Department with an emphasis on
@@ -203,12 +203,12 @@ Get access to additional projects
 If you already have a user account at the OLCF, your existing credentials can be
 leveraged across multiple projects.
 
-If your user account has an associated RSA SecurID (i.e. you have an "OLCF Moderate" account), you
+If your user account has an associated RSA SecurID (i.e., you have an "OLCF Moderate" account), you
 gain access to another project by logging in to the `myOLCF self-service portal <https://my.olcf.ornl.gov>`__
 and filling out the application under `My Account` > `Join Another Project`. For more information,
 see the :ref:`myOLCF self-service portal documentation<myolcf-overview>`.
 
-If your user account has only an associated password (i.e. you have an "OLCF Open" account) you
+If your user account has only an associated password (i.e., you have an "OLCF Open" account) you
 gain access to another project by filling out the `Account Request Form
 <https://my.olcf.ornl.gov/account-application-new>`__; logging in to myOLCF is only available 
 to users with RSA SecurID tokens at this time.
