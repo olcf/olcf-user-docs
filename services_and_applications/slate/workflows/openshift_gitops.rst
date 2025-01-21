@@ -205,7 +205,7 @@ Multiple Project Management
 
 By default, OpenShift GitOps will automatically configure the project and add the necessary roles to allow for the deployment of
 Kubernetes resources to the same project that contains the ArgoCD deployment. If it is desired to manage resources in a project
-other than where ArgoCD is deployed, please contact the Platforms Group to assistance in configuring the additional projects.
+other than where ArgoCD is deployed, please contact the Platforms Group for assistance in configuring the additional projects.
 
 Application Deployment
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -232,7 +232,7 @@ In order to deploy resources, one should have the following to start with:
 - ``kustomization.yaml`` file
 - one or more overlay directories
 
-Unlike helm which is a template framework for deployment of kubernetes resources, ``kustomize`` is a patching framework. Once the base
+Unlike helm, which is a template framework for deployment of kubernetes resources, ``kustomize`` is a patching framework. Once the base
 directory of YAML files is in place, ``kustomize`` patches those files to modify kubernetes resources for deployment with custom 
 configurations for one or multiple environments such as dev, test, and prod.
 
@@ -267,7 +267,7 @@ OpenShift project resources, new YAML files for resources that have not been dep
 command, or even an existing git repository of YAML files located in GitHub or GitLab maintained by someone else. The ``overlays`` directory
 was added to contain patches for distinct deployments. In this case, two deployments (``production`` and ``staging``), often referred to as
 environments, have been specified. The ``production`` environment has a patch file for the ``deployment.yaml`` resource file and the
-staging environment contains the ``map.yaml`` resource file which is a patch file for ``configMap.yaml``.
+staging environment contains the ``map.yaml`` resource file, which is a patch file for ``configMap.yaml``.
 
 .. note::
    If using a remote repository as a base set of resources, make sure to pin the version at a specific tag or hash to prevent unexpected changes in your project should upstream change.
@@ -477,12 +477,12 @@ ArgoCD to deploy and manage kubernetes resources.
 
 From the ArgoCD ``Applications`` screen, click the ``Create Application`` button. In the ``General`` application settings, give the
 application deployment a name for ArgoCD to refer to in the display.
-For ``Project`` usually the ArgoCD ``default`` project created during the ArgoCD instance installation is
+For ``Project``, usually the ArgoCD ``default`` project created during the ArgoCD instance installation is
 sufficient. However, your workload may benefit from a different logical grouping by using multiple
 `ArgoCD projects <https://argo-cd.readthedocs.io/en/stable/user-guide/projects/>`_. If it is
 desired to have ArgoCD automatically deploy resources to an OpenShift namespace, change the ``Sync Policy`` to ``Automatic``. Check the
 ``Prune Resources`` to automatically remove objects when they are removed from the repository and ``Self Heal`` to automatically restore
-configuration of objects when their configuration gets of sync with the specified files in the git repository.
+configuration of objects when their configuration gets out of sync with the specified files in the git repository.
 
 .. image:: /images/slate/argocdNewAppGeneral.png
    :alt: Image of ArgoCD new application general settings.
