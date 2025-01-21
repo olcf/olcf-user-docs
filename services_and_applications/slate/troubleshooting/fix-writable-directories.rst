@@ -4,9 +4,9 @@ Fix Container Image Permissions
 -------------------------------
 
 Running containers as non-root can be challenging when consuming container images from an upstream source
-such as the Docker Hub since many images are build with the intention of running as root. You may encounter
+such as the Docker Hub since many images are built with the intention of running as root. You may encounter
 this issue if your container enters a **CrashLoopBackoff** state, check the logs for the container and if
-there are Permission Denied issues then you may need to fix directory permissions in the image.
+there are "Permission Denied" issues then you may need to fix directory permissions in the image.
 
 Mount an EmptyDir Volume
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -54,15 +54,15 @@ to write to that directory.
 Build a New Image
 ^^^^^^^^^^^^^^^^^
 
-If you need to run a container in a project and mount NCCS home and project areas then we will need to build an new container
-and modify permissions to allow the project user the container will be running as to access the filesystem of the image.
+If you need to run a container in a project and mount NCCS home and project areas, then we will need to build a new container
+and modify permissions to allow it to access the filesystem of the image.
 
 We will use OpenShift to build a new image based on the upstream one and change owner of the directories that need to be
 writable during container execution. Here is an example ``Dockerfile`` which derives from an upstream image and changes ownership
-of directories to the user id that the container will run as in the cluster.
+of directories to the user id (UID) that the container will run as in the cluster.
 
 For example, if we are using the UID ``63114`` for our NCCS project user and we need to write to ``/opt/application-data`` during
-the runtime of the container image we could do this:
+the runtime of the container image, we could do this:
 
 .. code-block:: Dockerfile
 
@@ -79,10 +79,10 @@ We will use this ``Dockerfile`` to generate a BuildConfig and then build a new i
 
 The build should start automatically, monitor it with ``oc logs bc/my-image -f``.
 
-Now that we have a new image with our /opt/application-data directory owned by the right user we can either update an existing
+Now that we have a new image with our /opt/application-data directory owned by the right user, we can either update an existing
 deployment or create a new one with the image.
 
-Note that in this example, I am updating the Deployment and setting the image of the container named ``containername`` and
+Note that in the following example, I am updating the Deployment and setting the image of the container named ``containername`` and
 ``--source=istag`` says I am using a ImageStream tag. The ImageStream in my OpenShift project stf002 is ``stf002/my-image:mytag``.
 
 .. code-block::
