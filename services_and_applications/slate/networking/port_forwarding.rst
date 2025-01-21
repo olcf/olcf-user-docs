@@ -34,6 +34,6 @@ Additionally, ``oc port-forward`` doesn't have to be given a pod name. This tool
 
 You will be forwarded to any of the pods matched by the service or deployment.
 
-Furthermore, this doesn't only work for http traffic. You could also access other exposed services such as databases.
+Furthermore, this doesn't only work for HTTP traffic. You could also access other exposed services such as databases.
 
 For instance, if you have a mongoDB instance running on port 27017 with a deployment named ``mongodb``\ , you could run ``oc port-forward deployment/mongodb 7777:27017``. Now you can simply run ``mongo --port 7777`` (assuming you have the ``mongo`` client installed on your local machine) and have access to your mongodb instance in the cluster, as if it were running on your local machine.
