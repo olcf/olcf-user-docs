@@ -4,12 +4,12 @@
 Pods
 ####
 
-A `pod <http://kubernetes.io/docs/user-guide/pods/>`_ is the smallest unit in Kubernetes, it is a grouping of containers that will be scheduled
-together onto a node in the cluster. usually it will just be one container but it could be a group
+A `pod <https://kubernetes.io/docs/concepts/workloads/pods/>`_ is the smallest deployable unit in Kubernetes. A pod is a group of one or more containers that will be scheduled
+together onto a node in the cluster. Usually, a pod will just be one container, but it could be a group
 of processes that make up an application.
 
 Pods have a lifecycle: they are defined, scheduled onto a node, and then they run until their
-containers exit or the pod is removed from the node for some reason. Pods are immutable and changes
+containers exit or the pod is removed from the node. Pods are immutable and changes
 to a pod are not persisted between restarts.
 
 .. caution::
@@ -23,14 +23,14 @@ to a pod are not persisted between restarts.
 Running a Container in a Pod with the CLI
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Lets get started:
+Let's get started:
 
 .. code-block:: text
 
    oc run --restart=Never hello-world-pod --image openshift/hello-openshift:latest
 
-Under the hood, the ``oc run`` command is taking options and creating a specification
-that it is then passing to Kubernetes to run. To see the spec it is creating append
+The ``oc run`` command takes options and creates a specification
+that it is then passed to Kubernetes to run. To see the spec it is creating append
 ``-o yaml`` to the ``oc run`` command and you will get an output of what it is sending
 to Kubernetes.
 
@@ -64,25 +64,25 @@ The initial port in the port pair references a non-allocated port on our local s
 port forwarding works.
 
 Pods also have logs.
-And we can see the logs for the pod: (whatever was printed to stdout from within the container, not kubernetes).
+We can see the logs for the pod: (whatever was printed to stdout from within the container, not kubernetes).
 
 .. code-block:: text
 
    oc logs hello-world-pod
 
-Now lets delete our pod:
+Now let's delete our pod:
 
 .. code-block:: text
 
    oc delete pod hello-world-pod
 
-Deleting the pod will remove our ability to inspect the log output from ``oc logs`` so if you are debugging an issue
+Deleting the pod will remove our ability to inspect the log output from ``oc logs``, so if you are debugging an issue
 you will want to keep the pod until the issue is resolved.
 
 Running a Container in a Pod with the Web Console
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-To create a single pod using the web console we will create from YAML
+To create a single pod using the web console, we will create from YAML.
 
 First, in the upper right-hand corner, click the ``+`` symbol. This can be used to add any YAML object from the web UI.
 
@@ -122,7 +122,7 @@ Wait for this to say "Running" on the right side of the screen in the ``Status``
 .. image:: /images/slate/beginnersguide-hello-world-pod-describe.png
    :alt: Hello World Pod
 
-Finally we can delete the pod by clicking Actions -> Delete Pod
+Finally, we can delete the pod by clicking "Actions" -> "Delete Pod".
 
 .. image:: /images/slate/actions-delete-pod.png
    :alt: Pod Actions
