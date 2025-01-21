@@ -30,7 +30,7 @@ Setting Values
 
 You could simply run ``helm install mysql stable/mysql``\ , and an basic mysql deployment would be created with default values. However, we probably want to customize this deployment a bit. Let's take a look at the `documentation for the mysql helm chart <https://github.com/helm/charts/tree/master/stable/mysql>`_.
 
-Under the "Configuration" section, there is a large list of all the variables you can provide the chart, as well as their default values. Let's say we want to customize our mysql resource utilization as well as using a block volume instead of the default NFS volume for persistent storage. We'll also add a `NodePort service <../networking/nodeport.md>`_ in order to access our new database from outside the cluster.
+Under the "Configuration" section, there is a large list of all the variables you can provide the chart, as well as their default values. Let's say we want to customize our mysql resource utilization as well as using a block volume instead of the default NFS volume for persistent storage. We'll also add a `NodePort service <https://docs.olcf.ornl.gov/services_and_applications/slate/networking/nodeport.html>`_ in order to access our new database from outside the cluster.
 
 There are two ways to set values for ``helm install``\ :
 
@@ -69,13 +69,13 @@ In this example, we'll be using the latter method. Let's create a file called ``
 Now mysql can be installed with these values by running ``helm install mysql stable/mysql --values values.yaml --namespace <project_name>``
 
 .. note::
-  To install quickly with ``--set`` instead of writing a values file, for example, if the default values are preferred except the persistent storage size and storageClass, this could be done by running ``helm install mysql stable/mysql --set persistence.size="20Gi" --set persistence.storageClass="netapp-block"``. Note that you can pass multiple values by passing ``--set`` multiple times.
+  It is possible to quickly install with ``--set`` instead of writing a values file if the default values are mostly adequate. For example, if only persistent storage size and storageClass need to be changed from the default values, this could be done by running ``helm install mysql stable/mysql --set persistence.size="20Gi" --set persistence.storageClass="netapp-block"``. Note that you can pass multiple values by passing ``--set`` multiple times.
 
 After Installation
 ~~~~~~~~~~~~~~~~~~
 
-To see all deployed helm charts in a namespace, along with their status, run ``helm list --namespace <project_name>``
-If following the above example, this command will show the new mysql deployment, with ``mysql`` under ``NAME``.
+To see all deployed helm charts in a namespace, along with their status, run ``helm list --namespace <project_name>``.
+From the above example, this command will show the new mysql deployment, with ``mysql`` under ``NAME``.
 
 You can run ``helm status <release_name> --namespace <project_name>`` in order to get information about the deployment. In this example, our release name is ``mysql``. Running this command for our ``mysql`` installation will give us information on how to connect and authenticate to our newly created database. 
 
@@ -96,7 +96,7 @@ Running ``helm search hub`` will search `the Helm Hub <https://hub.helm.sh/>`_\ 
 
 Note that this searches much more than the ``stable`` repo we added above, so you may need to add another repo with ``helm repo add``. Be sure to run ``helm repo update`` before installing new charts, to make sure the charts are up to date.
 
-You can also search only the repos that you have added to your local client with ``helm search repo``
+You can also search only the repos that you have added to your local client with ``helm search repo``.
 
 Writing Charts
 ^^^^^^^^^^^^^^
