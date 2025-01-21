@@ -6,7 +6,7 @@ MinIO Object Store (On an NCCS Filesystem)
 
 `MinIO <https://min.io/>`_ is a high-performance software-defined object
 storage suite that enables the ability to easily deploy cloud-native data
-infrastructure for various data workloads. In this example we are deploying a
+infrastructure for various data workloads. In this example, we are deploying a
 simple, standalone implementation of MinIO on our cloud-native platform, Slate
 (:ref:`slate_overview`).
 
@@ -67,7 +67,7 @@ If you are interested in the details of this Helm chart, please look at the
 minio-standalone chart's `README
 <https://code.ornl.gov/ryu/slate_helm_examples/-/blob/master/charts/minio-standalone/README.md>`_.
 
-Next, log into Marble with the OC CLI tool by running this command on your
+Next, log into Marble with the ``oc`` CLI tool by running this command on your
 local machine:
 
 .. code-block:: bash
@@ -151,7 +151,7 @@ What do you need to configure?
 - ``host`` (Set the URL of your application)
 - ``name`` (Set the name of your application)
 - ``use_olcf_fs`` (Controls if NCCS filesystems are used or not - ``enabled`` or ``disabled``)
-- ``olcf_mount`` (Set the mount path to your project directory (i.e ``/ccs/proj/<projectID>/minio/``))
+- ``olcf_mount`` (Set the mount path to your project directory (i.e., ``/ccs/proj/<projectID>/minio/``))
 - ``pvc_storage`` (Set the quota for your dedicated storage if ``use_olcf_fs`` is ``disabled``)
 - ``network_policy_namespace`` (Set the network policy's namespace to your project name, this will be the output of the ``oc project`` command)
 
@@ -236,9 +236,9 @@ To list your available project spaces run this command:
 
 Check list:
 
-- You have the OC CLI Tool
-- You have Helm version 3
-- You are logged into Marble, with the OC CLI Tool, and in the correct Marble project.
+- You have the ``oc`` CLI Tool.
+- You have Helm version 3.
+- You are logged into Marble, with the ``oc`` CLI Tool, and in the correct Marble project.
 - You have configured your ``values.yaml`` file.
 - You have created your MinIO Application's Secret Tokens and applied them to the Marble project you are logged into.
 - You are in the ``slate_helm_examples/charts`` directory, within your local copy of the `slate helm examples repository <https://code.ornl.gov/ryu/slate_helm_examples>`_.
@@ -308,12 +308,13 @@ project space or an isolated volume dedicated/isolated to this MinIO server.
 Within the GUI you can create buckets and upload/download data. If you are
 running this on NFS or GPFS the bucket will map to a directory.
 
-**NOTE:** This application runs as the **automation user** ID, setup for your
-project. Anyone who logs into the MinIO app, runs as that user. If you are
-integrated with an NCCS filesystem, any file uploaded through MinIO will be
-owned by that user. If you plan to run something like this for your OLCF
-project, it is recommended to create a directory in the ``$PROJWORK``
-space.
+.. note::
+  This application runs as the **automation user** ID, setup for your
+  project. Anyone who logs into the MinIO app, runs as that user. If you are
+  integrated with an NCCS filesystem, any file uploaded through MinIO will be
+  owned by that user. If you plan to run something like this for your OLCF
+  project, it is recommended to create a directory in the ``$PROJWORK``
+  space.
 
 Deleting the MinIO Standalone Application
 -----------------------------------------
