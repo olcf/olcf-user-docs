@@ -155,7 +155,7 @@ to make an update with no downtime to the end users.
 
 The two most common values here will be ``RollingUpdate`` and ``Recreate``. The default is ``RollingUpdate``.
 
-Since the end user usually will be accessing an application with a `route <../../networking/routes.md>`_\ , the
+Since the end user usually will be accessing an application with a `route <https://docs.olcf.ornl.gov/services_and_applications/slate/networking/route.html#slate-routes>`_\ , the
 deployment strategy can focus on deployment configuration features. Here are a few examples of the
 deployment configuration based strategies.
 
@@ -164,7 +164,7 @@ deployment configuration based strategies.
   any readiness check fails, the deployment configuration will continue to try to run the pod until it
   times out. The default timeout is ``10m``. This value can be set in ``deployment.spec.strategy.params.TimeoutSeconds``
 
-The default strategy, if omitted, is ``RollingUpdate``
+The default strategy, if omitted, is ``RollingUpdate``.
 
 Rolling Strategy
 ~~~~~~~~~~~~~~~~
@@ -254,7 +254,7 @@ sake of showing how route-based deployments work, we'll use a route.
 
 .. note::
   The below examples use commands to create everything for demonstration purposes but the
-  general best practice is to use yaml files for for all your deploying and configuration.
+  general best practice is to use YAML files for for all your deploying and configuration.
 
 #. 
    Create two copies of your application, one for the old service (green) and one for the
