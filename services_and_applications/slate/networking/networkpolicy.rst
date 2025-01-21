@@ -19,14 +19,14 @@ Creating a Network Policy
 In the GUI
 ^^^^^^^^^^
 
-To create a Network policy using the GUI click the **Networking** tab followed by the **Network Policy** tab:
+To create a Network policy using the GUI, click the **Networking** tab followed by the **Network Policy** tab:
 
 
 .. image:: /images/slate/NetworkPolicy.png
    :alt: Creating Network Policies
 
 
-This will place you in an editor with some boiler plate YAML. From here you can define the network policy that you need for your namespace. Below is an example Network Policy that you would use to allow all external traffic to access a nodePort in your namespace. 
+This will place you in an editor with some boiler plate YAML. From here, you can define the network policy that you need for your namespace. Below is an example Network Policy that you would use to allow all external traffic to access a nodePort in your namespace. 
 
 .. code-block:: yaml
 
@@ -47,8 +47,8 @@ A blank field matches all. The above example matches on all from/port combinatio
 
 .. note::
 
-  The key value pair, or label, under **spec.podSelector.matchLabels** will need to match exactly to the pod in your namespace that 
-  the policy is for example the above NetworkPolicy would match pods with these labels set:
+  The key value pair, or label, under **spec.podSelector.matchLabels** must match exactly to the labels of the pod in your namespace that 
+  the policy is intended for. For example, the above NetworkPolicy would match pods with these labels set:
 
   .. code-block:: yaml
 
@@ -68,13 +68,11 @@ To view the Network policies in your namespace you can run:
 
    oc get networkpolicy -n YOUR_NAMESPACE
 
-to get the name of the network policy and then:
+To get the name of the network policy and then view object's YAML:
 
 .. code-block:: bash
 
    oc get networkpolicy NETWORKPOLICY_NAME -o yaml
-
-to view object's YAML.
 
 To create a Network Policy, define one in YAML similar to the output of the previous command and run:
 
@@ -82,6 +80,6 @@ To create a Network Policy, define one in YAML similar to the output of the prev
 
    oc create -f FILENAME
 
-For a more complex example of a Network Policy please see the `Kubernetes doc. <https://kubernetes.io/docs/concepts/services-networking/network-policies/#networkpolicy-resource>`_
+For a more complex example of a Network Policy, please see the `Kubernetes doc. <https://kubernetes.io/docs/concepts/services-networking/network-policies/#networkpolicy-resource>`_
 
-A full reference of Network Policies can `be found here. <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#networkpolicy-v1-networking-k8s-io>`_
+A full reference of Network Policies can `be found here. <https://kubernetes.io/docs/concepts/services-networking/network-policies/>`_
