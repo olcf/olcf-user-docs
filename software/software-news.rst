@@ -729,6 +729,22 @@ improvements to DDL including support for ``jsrun``.
 
 .. raw:: html
 
+   <p style="font-size:20px"><b>Summit: Software Installation/Default Software Changes (April 8, 2020)</b></p>
+
+The following modules were installed as default on April 8, 2020.
+
+.. csv-table::
+    :header: "Package", "Current Default", "New Default"
+
+    "ibm-wml-ce", "1.7.0-1", "1.7.0-2"
+
+The new IBM Watson Machine Learning (WML) Community Edition (CE) install adds
+improvements to DDL including support for ``jsrun``.
+
+----
+
+.. raw:: html
+
    <p style="font-size:20px"><b>Summit: Software Installation/Default Software Changes (March 10, 2020)</b></p>
 
 The following modules will be installed as default on March 10, 2020. The new
