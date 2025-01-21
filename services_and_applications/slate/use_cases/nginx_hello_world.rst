@@ -8,7 +8,7 @@ One of the simplest use cases for Kubernetes is running a web server. We will wa
 steps needed to set up an NGINX web server on OpenShift that serves a static html file. This
 example assumes that you have an allocation on the cluster.
 
-First make sure that you are in the correct project:
+First, make sure that you are in the correct project:
 
 .. code-block:: text
 
@@ -24,7 +24,7 @@ saved into a file and then added to the cluster with the command:
 The first object we wish to create is our BuildConfig. This is the object that defines how we build
 our NGINX image.
 
-Before we create the BuildConfig we should give it a way to access two files before they are
+Before we create the BuildConfig, we should give it a way to access two files before they are
 pulled into the build pod. The files are my ``index.html`` and my ``nginx.conf`` file. You can get them
 into your build pod however you wish, for simplicity I chose to add them to a public git repository
 and wget them. The ``index.html`` and ``nginx.conf`` file are defined respectively as:
@@ -98,8 +98,8 @@ and wget them. The ``index.html`` and ``nginx.conf`` file are defined respective
 
 .. note::
   The NGINX configuration file is completely standard except I changed the listen port to be
-  from 80 to 8080 since the server will be running as a non-root user. The Route that we will add
-  later on will redirect traffic coming in on port 80 to our server running on port 8080.
+  from 80 to 8080 since the server will be running as a non-root user. The Route, that we will add
+  later on, will redirect traffic coming in on port 80 to our server running on port 8080.
 
 The BuildConfig, the following should be placed inside a ``buildconfig.yaml`` file:
 
@@ -138,7 +138,7 @@ We create the BuildConfig object with:
    oc create -f buildconfig.yaml
 
 We now need to create an ImageStream with the same name as our build. This will create a place for
-our BuildConfig to push the image to and our Deployment to pull the image from during a deployment.
+our BuildConfig to push the image to, and our Deployment to pull the image from during a deployment.
 
 .. code-block:: text
 
@@ -151,7 +151,7 @@ We can now start a build to get our NGINX image:
    oc start-build nginx-hello-world --from-dir=./ --follow
 
 This should spin up a build pod that produces a nginx-hello-world image while also tailing the
-logs. Once the build completes then we should have an image pushed to our ImageStream:
+logs. Once the build completes, then we should have an image pushed to our ImageStream:
 
 .. code-block:: text
 
@@ -209,7 +209,7 @@ View the deployment:
 .. note::
   You should see Desired: 3 and Current: 3
 
-After the deployment has been created it will spin up a pod running NGINX but we need to get
+After the deployment has been created, it will spin up a pod running NGINX, but we need to get
 traffic from outside the cluster to the pod so that we can display the hello world.
 
 The Service object will create a Cluster IP address that will direct traffic to any pod in our
@@ -241,12 +241,12 @@ Create the Service object:
    oc create -f service.yaml
 
 The Route object will set up the cluster load balancers to accept traffic for a specified hostname
-and direct the traffic to the service which will in turn direct the traffic to any pod into our
+and direct the traffic to the service, which will, in turn, direct the traffic to any pod into our
 deployment that is considered by the cluster to be ready.
 
 If you do not set a hostname on the route, one will be automatically chosen. We will use this
 mechanism for this demo but you can choose any hostname as long as it ends with
-``apps.CLUSTER.ccs.ornl.gov`` where CLUSTER is one marble or onyx.
+``apps.CLUSTER.ccs.ornl.gov``, where CLUSTER is one marble or onyx.
 
 The following should be placed inside a ``route.yaml`` file:
 
@@ -283,10 +283,10 @@ We need to get the route so that we can see the generated hostname.
    NAME                HOST/PORT                                             PATH      SERVICES            PORT      TERMINATION     WILDCARD
    nginx-hello-world   nginx-hello-world-test.apps.granite.ccs.ornl.gov                nginx-hello-world   nginx     edge/Redirect   None
 
-Now if you access the hostname that you set up with the route from a browser you should see the
+Now if you access the hostname that you set up with the route from a browser, you should see the
 text "Hello World".
 
-Once you are finished you can remove the resources that were created for this demo:
+Once you are finished, you can remove the resources that were created for this demo:
 
 .. code-block:: text
 
