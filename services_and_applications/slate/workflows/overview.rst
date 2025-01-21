@@ -10,7 +10,7 @@ and tasks may utilize other NCCS compute and storage systems.
 CI/CD Workflows
 ^^^^^^^^^^^^^^^
 
-Taking the `GitLab CI/CD concepts documentation <https://docs.gitlab.com/ee/ci/introduction/>`_ as a start point,
+Taking the `GitLab CI/CD concepts documentation <https://docs.gitlab.com/ee/ci/index.html>`_ as a start point,
 Continuous Integration (CI) completes tasks necessary to test and build software resulting in a container image.
 Example tasks performed could be code linting, test coverage, unit testing, functional testing, code compiling
 or integration testing. Tasks would be triggered whenever code is pushed into a repository.
