@@ -45,7 +45,9 @@ to project-centric pages for the current project context.
    "**Current Allocations**", "A list of current project allocations"
    "**Historical Allocations**", "A list of current project allocations"
    "**Allocation Usage**", "Usage metrics and graphs, per-allocation"
+   "**IP Allow Lists**", "A list of and place to edit project IP allow lists (only available for enhanced enclave projects)"
    "**Usage**", "Usage metrics and graphs, queryable by resource and timespan"
+   "**Compute Jobs**", "A list of project compute jobs, queryable by resource and timespan"
 
 
 
