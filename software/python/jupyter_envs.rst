@@ -7,10 +7,10 @@ This guide will walk you through how to create a custom environment that can the
 
 OLCF Systems this guide applies to: 
 
-* Andes
-* Frontier
+* :doc:`Andes </systems/andes_user_guide>`
+* :doc:`Frontier </systems/frontier_user_guide>`
 
-Making your environment visible to Jupyter
+Making your Environment Visible to Jupyter
 ==========================================
 
 Although this guide starts from a new environment, existing environments can follow the same steps (ignoring environment creation) to accomplish the same goal.
