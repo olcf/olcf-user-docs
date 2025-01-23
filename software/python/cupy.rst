@@ -15,8 +15,8 @@ In this guide, you will:
 
 OLCF Systems this guide applies to:
 
-* Frontier
-* Andes
+* :doc:`Frontier </systems/frontier_user_guide>`
+* :doc:`Andes </systems/andes_user_guide>`
 
 **Guide last tested with:**
 
