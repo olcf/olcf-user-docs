@@ -146,6 +146,10 @@ Quotas are enforced on user home directories. To request an increased quota, con
 .. note::
    Moderate enhanced projects home directores are located in GPFS. There is no enforced quota, but it is recommended that users not exceed 50 TB. These directories are subject to the 90 day purge.
 
+
+.. tip::
+   To find your project quota, you use the ``df`` command as described in :ref:`project-quota`, instead of the ``quota`` command.
+
 User Home Permissions
 ---------------------
 
@@ -190,6 +194,8 @@ Open and Moderate Projects are provided with a Project Home storage area in the 
 .. note::
    Moderate Enhanced projects are not provided with Project Home spaces, just Project Work spaces.
 
+
+.. _project-quota:
 
 Project Home Path, Quota, and Permissions
 -----------------------------------------
@@ -249,8 +255,8 @@ Moderate projects without export control restrictions are also allocated project
 .. note::
     There is no archival storage for Moderate Enhanced Projects, Moderate Projects subject to export control, or Open projects.
 
-Three Project Archive Areas Facilitae Collaboration on Archival Data
---------------------------------------------------------------------
+Three Project Archive Areas Facilitate Collaboration on Archival Data
+---------------------------------------------------------------------
 
 To facilitate collaboration among researchers, the OLCF provides (3) distinct types of project-centric archival storage areas: *Member Archive* directories, *Project Archive* directories, and *World Archive* directories.  These directories should be used for storage of data not immediately needed in either the Project Home (NFS) areas or Project Work (Orion/Alpine2) areas and to serve as a location to store backup copies of project-related files.
 
@@ -318,7 +324,7 @@ Orion Lustre HPE ClusterStor Filesystem
 
 Frontier mounts Orion, a parallel filesystem based on Lustre and HPE ClusterStor, with a 679 PB usable namespace (/lustre/orion/). In addition to Frontier, Orion is available on the OLCF's data transfer nodes. Files older than 90 days are purged from Orion.
 
-Orion is a cluster of servers with approximately 500 nodes. Each node plays a role in providing a POSIX namespace for users (/lustre/orion/).  .. A file on Lustre consists of one or more components that may hit one or more servers. Lustre has a distributed lock management process for concurrent access to files or regions within files. 
+Orion is a cluster of servers with approximately 500 nodes. Each node plays a role in providing a POSIX namespace for users (/lustre/orion/). A file on Lustre consists of one or more components that may hit one or more servers. Lustre has a distributed lock management process for concurrent access to files or regions within files. 
 
 Orion has three performance tiers:
 
@@ -332,7 +338,7 @@ Orion Performance Tiers and File Striping Policy
 
 Lustre, in addition to other servers and components, is composed of Objects Storage Targets (OSTs) on which the data for files is stored. A file may be "striped" or divided over multiple OSTs. Striping provides the ability to store files that are larger than the space available on any single OST and allows a larger I/O bandwidth than could be managed by a single OST. Striping is one of the main differences between Frontier's Orion Lustre and Summit's Alpine GPFS filesystems because GPFS has no concept of striping exposed to the user. For Orion, files are striped between object storage targets (OST) in the three capacity tiers to achieve the best performance. Below, we describe this automatic file striping policy and its motivations.
 
-Orion uses a feature called Data-on-Metadata-Trarget (DoM), where a portion of the file is stored along with the file’s metadata. Currently, directories are configured to store up to the first 256 KB of a file on the metadata tier using DoM. This reduces contention and provides better performance for small file I/O. Orion uses a feature called Progressive File Layout (PFL) to change the striping of a file as it grows. For example, a file smaller than 8 MB will be striped to a single OST, and larger files will be striped across multiple OSTs, taking advantage of more hardware resources. As files grow larger, they are automatically striped between the storage tiers.
+Orion uses a feature called Data-on-Metadata-Target (DoM), where a portion of the file is stored along with the file’s metadata. Currently, directories are configured to store up to the first 256 KB of a file on the metadata tier using DoM. This reduces contention and provides better performance for small file I/O. Orion uses a feature called Progressive File Layout (PFL) to change the striping of a file as it grows. For example, a file smaller than 8 MB will be striped to a single OST, and larger files will be striped across multiple OSTs, taking advantage of more hardware resources. As files grow larger, they are automatically striped between the storage tiers.
 OLCF is refining the automatic file striping policy to optimize I/O performance for users.
 
 .. note::
@@ -355,7 +361,7 @@ Some sufficiently large (>512 GB per file) single-shared-file workloads may bene
 
 
 .. note::
-   When manually setting striping you must specify -p capacity with the stripe command. Otherwise, Orion defaults to using the performance tier, which isn't optimized for handling larger single files. 
+   When manually setting striping you must specify ``-p capacity`` with the stripe command. Otherwise, Orion defaults to using the performance tier, which isn't optimized for handling larger single files. 
 
 
 If you feel that the default file striping on Orion or the recommended striping for large single-shared-file workloads is not meeting your needs, please contact OLCF-help so that we can work with you to understand your application's I/O performance.
@@ -382,13 +388,13 @@ The OLCF provides a wrapper for the ``lfs setstripe`` command that simplifies th
 
 Orion is different than other Lustre filesystems that you may have used previously. To make effective use of Orion and to help ensure that the filesystem performs well for all users, it is important that you do the following:
 
-* Use the `capacity` OST pool tier (e.g. ``lfs setstripe -p capacity``)
-* Stripe across no more than 450 OSTs (e.g. ``lfs setstripe -c`` <= 450)
+* Use the `capacity` OST pool tier (e.g., ``lfs setstripe -p capacity``)
+* Stripe across no more than 450 OSTs (e.g., ``lfs setstripe -c`` <= 450)
 
 When the module is active in your environment, the wrapper will enforce the above settings. The wrapper will also do the following:
 
-* If a user provides a stripe count of -1 (e.g. ``lfs setstripe -c -1``) the wrapper will set the stripe count to the maximum allowed by the filesystem (currently 450)
-* If a user provides a stripe count of 0 (e.g. ``lfs setstripe -c 0``) the wrapper will use the OLCF default striping command which has been optimized by the OLCF filesystem managers: ``lfs setstripe -E 256K -L mdt -E 8M -c 1 -S 1M -p performance -z 64M -E 128G -c 1 -S 1M -z 16G -p capacity -E -1 -z 256G -c 8 -S 1M -p capacity``
+* If a user provides a stripe count of -1 (e.g., ``lfs setstripe -c -1``) the wrapper will set the stripe count to the maximum allowed by the filesystem (currently 450)
+* If a user provides a stripe count of 0 (e.g., ``lfs setstripe -c 0``) the wrapper will use the OLCF default striping command which has been optimized by the OLCF filesystem managers: ``lfs setstripe -E 256K -L mdt -E 8M -c 1 -S 1M -p performance -z 64M -E 128G -c 1 -S 1M -z 16G -p capacity -E -1 -z 256G -c 8 -S 1M -p capacity``
 
 Please contact the OLCF User Assistance Center if you have any questions about using the wrapper or if you encounter any issues.
 
@@ -418,7 +424,7 @@ Unloading darshan-runtime is recommended for users profiling their applications 
 Purge
 =====
 
-To keep the Lustre file system exceptionally performant, files that have not been accessed (e.g., read) or modified within 90 days in the project and user areas are purged. Please make sure that valuable data is moved off of these systems regularly. See HPSS Data Archival System for information about using the HSI and HTAR utilities and Globus to archive data on HPSS.
+To keep the Lustre file system exceptionally performant, files that have not been accessed (e.g., read) or modified within 90 days in the project and user areas are purged. Please make sure that valuable data is moved off of these systems regularly. See :ref:`data-hpss` for information about using the HSI and HTAR utilities and Globus to archive data on HPSS.
 
 
 ======================================================================
@@ -571,7 +577,7 @@ By selecting one of these collections and some offsite collection, you can use G
 
 * Globus has restriction of 8 active transfers across all the users. Each user has a limit of 3 active transfers, so it is required to transfer a lot of data on each transfer than less data across many transfers. 
 
-* If a folder is constituted with mixed files including thousands of small files (less than 1MB each one), it would be better to tar the smallfiles.  Otherwise, if the files are larger, Globus will handle them. 
+* If a folder is constituted with mixed files including thousands of small files (less than 1MB each one), it would be better to tar the small files.  Otherwise, if the files are larger, Globus will handle them. 
 
 
 Using Globus to Move Data Between Collections 
@@ -581,7 +587,7 @@ The following example is intended to help users move data to and from the Orion 
  
 .. note::
   
- Globus does not preserve file permissions and will overwrite destination files with identically named sources files without warning.
+ Globus does not preserve file permissions and will overwrite destination files with identically named source files without warning.
  
 
 Below is a summary of the steps for data transfer using Globus:
@@ -625,7 +631,7 @@ HSI
 .. note::
    HPSS is now read-only. Users cannot transfer data into HPSS and should instead use :ref:`kronos`. For more information on migrating your files from HPSS to Kronos or another storage location, see the :ref:`hpss-migration` section.
 
-HSI (Hierarchial Storage Interface) is used to transfer data to/from OLCF systems and HPSS. When retrieving data from a tar archive larger than 1 TB, we recommend that you pull only the files that you need rather than the full archive.  Examples of this will be given in the htar section below. Issuing the command ``hsi`` will start HSI in interactive mode. Alternatively, you can use:
+HSI (Hierarchial Storage Interface) is used to transfer data to/from OLCF systems and HPSS. When retrieving data from a tar archive larger than 1 TB, we recommend that you pull only the files that you need rather than the full archive.  Examples of this will be given in the :ref:`htar` section below. Issuing the command ``hsi`` will start HSI in interactive mode. Alternatively, you can use:
 
      ``hsi [options] command(s)``
 
@@ -670,6 +676,7 @@ There is interactive documentation on the ``hsi`` command available by running:
 
 Additional documentation can be found on the `HPSS Collaboration website <http://www.hpss-collaboration.org/user_doc.shtml>`__.
 
+.. _htar:
 
 ===========
 HTAR
@@ -705,22 +712,21 @@ To extract all files from the ``project1/src`` directory in the archive file cal
 HTAR Limitations
 ================
 
-The ``htar`` utility has several limitations.
+The ``htar`` utility has several limitations:
 
-Apending data
--------------
-
+1. Appending data
+-----------------
 You cannot add or append files to an existing archive.
 
-File Path Length
-----------------
+2. File Path Length
+-------------------
 
 File path names within an ``htar`` archive of the form prefix/name are limited to 154 characters for the prefix and 99 characters for the file name. Link names cannot exceed 99 characters.
 
-Size
-----
+3. Size
+-------
 
-There are limits to the size and number of files that can be placed in an HTAR archive.
+There are limits to the size and number of files that can be placed in an HTAR archive:
 
 =================================== ========================
 Individual File Size Maximum        68GB, due to POSIX limit
