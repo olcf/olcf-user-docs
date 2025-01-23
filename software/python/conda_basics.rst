@@ -10,10 +10,10 @@ This guide introduces a user to the basic workflow of using conda environments, 
 
 OLCF Systems this guide applies to: 
 
-* Andes
-* Frontier
+* :doc:`Andes </systems/andes_user_guide>`
+* :doc:`Frontier </systems/frontier_user_guide>`
 
-Inspecting and setting up an environment
+Inspecting and Setting Up an Environment
 ========================================
 
 First, load the python module and the gnu compiler module (most Python packages assume use of GCC)
@@ -84,7 +84,7 @@ You can find the version of Python that exists in this base environment by execu
 .. note::
    Although the base environment is ``3.10.13``, you are **NOT** limited to this version in any subsequent conda environments. I.e., you can install other Python versions in new conda environments.
 
-Creating a new environment
+Creating a New Environment
 ==========================
 
 For this guide, you are going to install a different version of Python.
@@ -137,7 +137,7 @@ And if you check with ``conda env list`` again, you should see that the ``*`` ma
                          *  /ccs/proj/<project_id>/<username>/envs/frontier/py311-frontier
    base                     /sw/frontier/...
 
-Installing packages
+Installing Packages
 ===================
 
 Next, let's install a package (`NumPy <https://numpy.org/>`__). 
@@ -171,7 +171,7 @@ Let's install a more optimized version using a different method instead, but fir
 
    $ pip uninstall numpy
 
-Installing with conda commands
+Installing with Conda Commands
 ------------------------------
 
 The traditional, and more basic, approach to installing/uninstalling packages into a conda environment is to use the commands ``conda install`` and ``conda remove``.
@@ -184,7 +184,7 @@ Let's do this to install NumPy:
 Because NumPy depends on other packages for optimization, this will also install all of its dependencies.
 You have just installed an optimized version of NumPy, now let's test it.
 
-Testing your new environment
+Testing Your New Environment
 ============================
 
 Let's run a test to make sure everything installed properly.
@@ -214,7 +214,7 @@ Make sure you're in a Python shell first, then print out the versions of Python 
 Additional Tips
 ===============
 
-* Cloning the base environment:
+* **Cloning the base environment**:
 
     It is not recommended to try to install new packages into the base environment.
     Instead, you can clone the base environment for yourself and install packages into the clone.
@@ -226,7 +226,7 @@ Additional Tips
        $ conda create -p /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/envs/frontier/baseclone-frontier --clone base
        $ source activate /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/envs/frontier/baseclone-frontier
 
-* Adding known environment locations:
+* **Adding known environment locations**:
 
     For a conda environment to be callable by a "name", it must be installed in one of the ``envs_dirs`` directories.
     The list of known directories can be seen by executing:
@@ -248,7 +248,7 @@ Additional Tips
     This will now enable you to use the ``--name env_name`` flag when using conda commands for environments stored in the ``frontier`` directory, instead of having to use the ``-p /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/envs/frontier/env_name`` flag and specifying the full path to the environment.
     For example, you can do ``source activate py3711-frontier`` instead of ``source activate /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/envs/frontier/py3711-frontier``.
 
-* Exporting (sharing) an environment:
+* **Exporting (sharing) an environment**:
 
     You may want to share your environment with someone else.
     One way to do this is by creating your environment in a shared location where other users can access it.
