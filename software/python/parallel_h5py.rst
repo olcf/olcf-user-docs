@@ -19,8 +19,8 @@ In this guide, you will:
 
 OLCF Systems this guide applies to: 
 
-* Frontier
-* Andes
+* :doc:`Frontier </systems/frontier_user_guide>`
+* :doc:`Andes </systems/andes_user_guide>`
 
 **Guide last tested with:**
 
@@ -54,7 +54,7 @@ MPI support in Python is accomplished through the `mpi4py <https://mpi4py.readth
 Building h5py against mpi4py allows you to write to an HDF5 file using multiple parallel processes, which can be helpful for users handling large datasets in Python.
 h5Py is available after loading the default Python module on either Frontier or Andes, but it has not been built with parallel support.
 
-Setting up the environment
+Setting Up the Environment
 ==========================
 
 .. warning::
@@ -424,4 +424,4 @@ Additional Resources
 
 * `h5py Documentation <https://docs.h5py.org/en/stable/>`__
 * `mpi4py Documentation <https://mpi4py.readthedocs.io/en/stable/>`__
-* `HDF5 Support Page <https://portal.hdfgroup.org/display/HDF5/HDF5>`__
+* `HDF5 Support Page <https://support.hdfgroup.org/>`__
