@@ -38,23 +38,23 @@ login node.
 .. _vamps:
 
 ``vampirserver`` is the backend software component that can run across multiple compute nodes taking advantage
-of the machine's memory, this in turn provides an increase in performance for viewing large trace files, i.e., >1GB.
+of the machine's memory, this in turn provides an increase in performance for viewing large trace files i.e. >1GB.
 
 .. Note:: VampirServer does not take advantage of GPU components
 
 
-The following sections will cover the 3 different methods for using Vampir on Frontier.
-For each method, you will need to enable `X11 forwarding <https://docs.olcf.ornl.gov/connecting/index.html#x11-forwarding>`_.
-when logging in to Frontier to allow for launching a GUI from Frontier.
+The following sections will cover the 3 different methods for using Vampir on Summit.
+For each method, you will need to enable `X11 forwarding <https://docs.olcf.ornl.gov/connecting/index.html#x11-forwarding>`_
+when logging in to Summit to allow for launching a GUI from Summit.
 To do so, you can use the ``ssh`` option ``-X`` as shown below
 
 
 
 .. code::
 
-   $ ssh -X <USERID>@frontier.olcf.ornl.gov
+   $ ssh -X <USERID>@summit.olcf.ornl.gov
 
-Please visit this link if you need more information for logging onto `Frontier <https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#connecting>`_.
+Please visit this link if you need more information for logging onto `Summit <https://docs.olcf.ornl.gov/systems/summit_user_guide.html#connecting>`_
 
 Vampir on a Login Node
 ======================
@@ -76,7 +76,7 @@ Vampir on a Login Node
 
    Do not run Vampir on a login node for trace files > 1 GB! Please see the next 2 sections for running larger trace files.
 
-After logging onto `Frontier <https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#connecting>`_ (with `X11 forwarding <https://docs.olcf.ornl.gov/connecting/index.html#x11-forwarding>`_), execute the series of commands below:
+After logging onto `Summit <https://docs.olcf.ornl.gov/systems/summit_user_guide.html#connecting>`_ (with `X11 forwarding <https://docs.olcf.ornl.gov/connecting/index.html#x11-forwarding>`_), execute the series of commands below:
 
 .. code::
 
@@ -125,11 +125,11 @@ Vampir Using VampirServer
 
    Please use this connection method for trace files larger than (> 1 GB), and see the next section :ref:`Vampir Tunneling to VampirServer <vamptunnel>` for an even more optimal solution.
    Attempting to visualize large trace files (> 1 GB) will be very slow over X11 forwarding and can cause decreased performance on the shared
-   login nodes for other users.
+   login nodes for other users
 
 
 
-After connecting to `Frontier <https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#connecting>`_ using `X11 forwarding <https://docs.olcf.ornl.gov/connecting/index.html#x11-forwarding>`_
+After connecting to `Summit <https://docs.olcf.ornl.gov/systems/summit_user_guide.html#connecting>`_ using `X11 forwarding <https://docs.olcf.ornl.gov/connecting/index.html#x11-forwarding>`_
 you will need to load the Vampir module and start the :ref:`VampirServer. <vamps>`
 
 .. code::
@@ -146,7 +146,7 @@ Successful VampirServer startup message should appear in terminal window. You wi
 
 .. code::
 
-   [Test@login5.frontier ~]$ vampirserver start  - - -P 123456 -w 60 -q debug
+   [Test@login5.summit ~]$ vampirserver start  - - -P 123456 -w 60 -q debug
    Launching VampirServer...
    Submitting LSF batch job (this might take a while)...
    Warning: more than 1 task/rank assigned to a core
@@ -244,7 +244,7 @@ This connection method is more complex than the other 2 methods, however it also
 
    If you do not have a local copy, please reach out to the help desk at help@olcf.ornl.gov for instructions on getting a local copy.
 
-Similar to the previous methods outlined above, you will start by connecting to `Frontier <https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#connecting>`_.
+Similar to the previous methods outlined above, you will start by connecting to `Summit <https://docs.olcf.ornl.gov/systems/summit_user_guide.html#connecting>`_.
 Once connected you will then need to start the :ref:`VampirServer. <vamps>`
 
 .. code::
@@ -270,7 +270,7 @@ port forward command. This will open a secure tunnel from your local machine to 
 
 .. code::
 
-   ssh -L <localport>:<Node ID>:<Remote port>  <USERID>@frontier.olcf.ornl.gov
+   ssh -L <localport>:<Node ID>:<Remote port>  <USERID>@summit.olcf.ornl.gov
 
 .. Note::
 
@@ -284,7 +284,7 @@ port forward command. This will open a secure tunnel from your local machine to 
 
     #This can take a minute to return anything. If nothing is returned, your selected port is open
 
-After submitting the port forward command as seen above, it will ask for your login password to access Frontier. **Leave this terminal window open!**
+After submitting the port forward command as seen above, it will ask for your login password to access Summit. **Leave this terminal window open!**
 
 **Launch the Vampir GUI on your local machine**
 
