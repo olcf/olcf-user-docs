@@ -7,7 +7,7 @@ JAX provides a familiar NumPy-style API that can execute on either CPUs, GPUs, o
 
 OLCF Systems this guide applies to:
 
-* Frontier
+* :doc:`Frontier </systems/frontier_user_guide>`
 
 
 **Guide last tested with:**
