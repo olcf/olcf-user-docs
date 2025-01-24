@@ -12,7 +12,7 @@ compiler instrumentation, or manually using the instrumentation API.
 Webpage: https://www.cs.uoregon.edu/research/tau/home.php
 
 TAU is installed with `Program Database Toolkit (PDT)
-<https://www.cs.uoregon.edu/research/pdt/home.php>`_ on Frontier. PDT is a
+<https://www.cs.uoregon.edu/research/pdt/home.php>`_ on Summit. PDT is a
 framework for analyzing source code written in several programming languages.
 Moreover, `Performance Application Programming Interface (PAPI)
 <https://icl.utk.edu/papi/>`_ is supported. PAPI counters are used to assess
@@ -118,15 +118,10 @@ Environment variables to be used during compilation through the environment vari
 MiniWeather Example Application
 ================================
 
-.. warning::
-  The following is an example workflow that should work on Andes, but not Frontier. 
-  Your patience is appreciated while we update our profiling tools/documentation to be compatible with Frontier. 
-  In the meantime, please reach out to help@olcf.ornl.gov for any questions regarding profiling.
-
 Getting the source code
 -----------------------
 
-- Connect to Andes and navigate to your project space
+- Connect to Summit and navigate to your project space
 - For the following examples, we'll use the MiniWeather application:
   https://github.com/mrnorman/miniWeather
 
@@ -152,7 +147,7 @@ Compile the application
 
 	$ module load cmake
 	$ cd miniWeather/c/build
-        $ ./cmake_andes_pgi_cpu.sh
+        $ ./cmake_summit_pgi.sh
 	$ make serial
 	$ make mpi
 	$ make openmp
@@ -165,7 +160,7 @@ Below, we'll look at using TAU to profile each case.
 Modifications
 -------------
 
-- Edit the cmake_andes_pgi_cpu.sh and replace ``mpic++`` with ``tau_cxx.sh``. This applies
+- Edit the cmake_summit_pgi.sh and replace ``mpic++`` with ``tau_cxx.sh``. This applies
   only for the non-GPU versions.
 - TAU works with special TAU makefiles to declare what programming models are
   expected from the application:
@@ -176,11 +171,11 @@ Modifications
 
         $ module show tau
         ---------------------------------------------------------------
-           /sw/andes/modulefiles/core/tau/2.28.1:
+           /sw/summit/modulefiles/core/tau/2.28.1:
         ---------------------------------------------------------------
         whatis("TAU 2.28.1 github ")
-        setenv("TAU_DIR","/sw/andes/tau/tau2/ibm64linux")
-        prepend_path("PATH","/sw/andes/tau/tau2/ibm64linux/bin")
+        setenv("TAU_DIR","/sw/summit/tau/tau2/ibm64linux")
+        prepend_path("PATH","/sw/summit/tau/tau2/ibm64linux/bin")
         help([[https://www.olcf.ornl.gov/software_package/tau
         ]])
 
@@ -190,10 +185,10 @@ The available Makefiles are named per-compiler and are located in:
 .. code::
 
         $ ls ${TAU_DIR}/lib/Makefile.tau-pgi*
-        /sw/andes/tau/tau2/ibm64linux/lib/Makefile.tau-pgi-papi-mpi-cupti-pdt-openmp-pgi
-        /sw/andes/tau/tau2/ibm64linux/lib/Makefile.tau-pgi-papi-mpi-cupti-pdt-pgi
-        /sw/andes/tau/tau2/ibm64linux/lib/Makefile.tau-pgi-papi-pdt-pgi
-        /sw/andes/tau/tau2/ibm64linux/lib/Makefile.tau-pgi_memory_manager-papi-mpi-cupti-pdt-pgi
+        /sw/summit/tau/tau2/ibm64linux/lib/Makefile.tau-pgi-papi-mpi-cupti-pdt-openmp-pgi
+        /sw/summit/tau/tau2/ibm64linux/lib/Makefile.tau-pgi-papi-mpi-cupti-pdt-pgi
+        /sw/summit/tau/tau2/ibm64linux/lib/Makefile.tau-pgi-papi-pdt-pgi
+        /sw/summit/tau/tau2/ibm64linux/lib/Makefile.tau-pgi_memory_manager-papi-mpi-cupti-pdt-pgi
 
 - To list all TAU makefiles:
 
@@ -216,15 +211,15 @@ PNetCDF.
 .. code::
 
 	$ module load tau
-	$ export TAU_MAKEFILE=/sw/andes/tau/tau2/ibm64linux/lib/Makefile.tau-pgi-papi-mpi-cupti-pdt-pgi
+	$ export TAU_MAKEFILE=/sw/summit/tau/tau2/ibm64linux/lib/Makefile.tau-pgi-papi-mpi-cupti-pdt-pgi
 	$ export TAU_OPTIONS='-optLinking=-lpnetcdf -optVerbose'
-        $ ./cmake_andes_pgi.sh
+        $ ./cmake_summit_pgi.sh
 	$ make serial
 
 If there were no MPI headers, you should select the makefile
-``/sw/andes/tau/tau2//ibm64linux/lib/Makefile.tau-pgi-papi-pdt-pgi`` or if
+``/sw/summit/tau/tau2//ibm64linux/lib/Makefile.tau-pgi-papi-pdt-pgi`` or if
 you don't want PDT support,
-``/sw/andes/tau/tau2//ibm64linux/lib/Makefile.tau-pgi-papi-pgi``
+``/sw/summit/tau/tau2//ibm64linux/lib/Makefile.tau-pgi-papi-pgi``
 Add to your submission script the TAU variables that you want to use (or
 uncomment them below). By default the TAU will apply profiling, and not apply tracing.
 
@@ -320,7 +315,7 @@ the linker.
 .. code::
 
         $ module load tau
-        $ export TAU_MAKEFILE=/sw/andes/tau/tau2/ibm64linux/lib/Makefile.tau-pgi-papi-mpi-cupti-pdt-pgi
+        $ export TAU_MAKEFILE=/sw/summit/tau/tau2/ibm64linux/lib/Makefile.tau-pgi-papi-mpi-cupti-pdt-pgi
         $ export TAU_OPTIONS='-optLinking=-lpnetcdf -optVerbose'
         $ make mpi
 
@@ -351,14 +346,14 @@ tracing.
 Instrumenting the MPI+OpenMP version of MiniWeather
 ---------------------------------------------------
 
-The difference with the MPI instrumentation is the TAU Makefile, the ``jsrun``
+The difference with the MPI instrumentation is the TAU Makefile, the jsrun
 execution command, and the declaration of the OpenMP threads.
 
 
 .. code::
 
         $ module load tau
-        $ export TAU_MAKEFILE=/sw/andes/tau/tau2/ibm64linux/lib/Makefile.tau-pgi-papi-mpi-cupti-pdt-openmp-pgi
+        $ export TAU_MAKEFILE=/sw/summit/tau/tau2/ibm64linux/lib/Makefile.tau-pgi-papi-mpi-cupti-pdt-openmp-pgi
         $ export TAU_OPTIONS='-optLinking=-lpnetcdf -optVerbose'
         $ make openmp
 
@@ -498,7 +493,7 @@ Paraprof
   there is a potential for performance improvement.
 
 - Menu Windows -> 3D Visualization (3D demands OpenGL) will not work on
-  Andes, and you will need to download the data on your laptop and install 
+  Summit, and you will need to download the data on your laptop and install 
   TAU locally to use this feature.
 - You can see per MPI rank, per routine, the exclusive time and the floating
   operations.
@@ -551,7 +546,7 @@ MPI+OpenMP
 ^^^^^^^^^^
 
 - Execute the MPI+OpenMP version
-- Now you can see the duration of parallel for loops and decide when they should
+- Now you can see the duration of parallelfor loops and decide when they should
   be improved or even removed.
 
 .. image:: /images/tau_openmp.png
@@ -577,7 +572,7 @@ GPU
 CUDA Profiling Tools Interface
 ===============================
 
-The `CUDA Profiling Tools Interface (CUPTI) <https://developer.nvidia.com/cupti>`__ is used by profiling and tracing
+The `CUDA Profiling Tools Interface (CUPTI) <https://docs.nvidia.com/cupti/Cupti/r_main.html#metrics-reference>`__ is used by profiling and tracing
 tools that target CUDA applications.
 
 .. image:: /images/cupti.png
@@ -603,14 +598,14 @@ Output directories:
 	MULTI__achieved_occupancy
 
 There are many directories because the achieved occupancy is calculated with this
-formula:
+formula
 
 ``Achieved_occupancy = CUDA.Tesla_V100-SXM2-16GB.domain_d.active_warps / CUDA.Tesla_V100-SXM2-16GB.domain_d.active_cycles``
 
 You can see in the window with the profiling data after you pack them and
 execute paraprof, the profiling data are not across all the processes, it
 depends if a routine (color) is executed across all of them or not based on
-the type of the routine CPU/GPU.
+the type of the rourine CPU/GPU.
 
 .. image:: /images/cupti_main.png
    :align: center
@@ -651,7 +646,7 @@ Use Vampir for visualization.
 Selective Instrumentation
 =========================
 
-For example, do not instrument routine ``sort*(int *)``:
+For example, do not instrument routine ``sort*(int *)``
 
 - Create a file ``select.tau``
 
