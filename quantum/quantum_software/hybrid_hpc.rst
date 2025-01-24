@@ -19,12 +19,6 @@ and our :doc:`Conda Basics guide </software/python/conda_basics>`.
 
 Example Python scripts for each QCUP vendor are located at our new :doc:`/quantum/hello_qcup` page.
 
-.. warning::
-    Currently, the install steps listed below only work for our x86_64 based
-    systems (Andes, Frontier, etc.). The steps can be explored on Summit,
-    but -- due to Summit's Power architecture -- is not recommended or guaranteed
-    to work.
-
 .. note::
    Working installations are **not** limited to versions shown below.
    Versions for libraries listed below are what was tested most recently.
@@ -415,7 +409,7 @@ For more information please see:
 * `<https://tket.quantinuum.com/api-docs/>`__
 * `<https://cqcl.github.io/pytket-quantinuum/api/>`__
 * `<https://tket.quantinuum.com/api-docs/getting_started.html>`__
-* `<https://github.com/CQCL/pytket-quantinuum/tree/main/examples>`__
+* `<https://docs.quantinuum.com/h-series/trainings/getting_started/pytket_quantinuum/pytket_quantinuum.html>`__
 
 .. tab-set::
 
