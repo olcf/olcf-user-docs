@@ -21,16 +21,17 @@ Overview
 
 The `Score-P  <https://www.vi-hps.org/projects/score-p>`__ measurement infrastructure is a highly
 scalable and easy-to-use tool suite for profiling, event tracing, and online analysis of HPC
-applications. Score-P supports analyzing C, C++ and Fortran applications that make use of multi-processing (MPI, SHMEM), thread parallelism (OpenMP, PThreads) and accelerators (CUDA, OpenCL,
+applications. Score-P supports analyzing C, C++ and Fortran applications that make use of multi
+processing (MPI, SHMEM), thread parallelism (OpenMP, PThreads) and accelerators (CUDA, OpenCL,
 OpenACC) and combinations. It works in combination with Periscope, Scalasca, Vampir, and Tau.
 
 
 Usage
 =====
 
-Steps in a typical Score-P workflow to run on Frontier:
+Steps in a typical Score-P workflow to run on Summit:
 
-1. Login to :ref:`Frontier <connecting-to-olcf>`: ``ssh <user_id>@frontier.olcf.ornl.gov``
+1. Login to :ref:`Summit <connecting-to-olcf>`: ``ssh <user_id>@summit.olcf.ornl.gov``
 2. Instrument your code with Score-P
 3. Perform a measurement run with profiling enabled
 4. Perform a profile analysis with CUBE or cube_stat
@@ -44,7 +45,7 @@ Instrumentation
 
 To instrument your code, you need to compile the code using the Score-P instrumentation command (``scorep``), which is added as a prefix to your compile statement.
 In most cases the Score-P instrumentor is able to automatically detect the programming paradigm from the set of compile and link options given to the compiler.
-Some cases will, however, require some additional link options within the compile statement, e.g., CUDA instrumentation.
+Some cases will, however, require some additional link options within the compile statement e.g. CUDA instrumentation.
 
 Below are some basic examples of the different instrumentation scenarios:
 
@@ -65,7 +66,7 @@ Below are some basic examples of the different instrumentation scenarios:
             .. code-block:: bash
 
                 $ module unload darshan-runtime
-                $ module load scorep-gcc-amd
+                $ module load scorep
                 $ module load gcc
                 $ scorep gcc -c test.c
                 $ scorep gcc -o test test.o
@@ -75,7 +76,7 @@ Below are some basic examples of the different instrumentation scenarios:
             .. code-block:: bash
 
                 $ module unload darshan-runtime
-                $ module load scorep-gcc-amd
+                $ module load scorep
                 $ module load gcc
                 $ scorep g++ -c test.cpp main.cpp
                 $ scorep g++ -o test test.o main.o
@@ -85,7 +86,7 @@ Below are some basic examples of the different instrumentation scenarios:
             .. code-block:: bash
 
                 $ module unload darshan-runtime
-                $ module load scorep-gcc-amd
+                $ module load scorep
                 $ module load gcc
                 $ scorep gfortran -c test_def.f90 test.f90 main.f90
                 $ scorep gfortran -o test test_def.o test.o main.o
@@ -101,8 +102,8 @@ Below are some basic examples of the different instrumentation scenarios:
             .. code-block:: bash
 
                   $ module unload darshan-runtime
-                  $ module load scorep-gcc-amd
-                  $ module load cray-mpich
+                  $ module load scorep
+                  $ module load spectrum-mpi
                   $ module load gcc
                   $ scorep mpicc -c test.c main.c
                   $ scorep mpicc -o test test.o main.o
@@ -112,8 +113,8 @@ Below are some basic examples of the different instrumentation scenarios:
             .. code-block:: bash
 
                   $ module unload darshan-runtime
-                  $ module load scorep-gcc-amd
-                  $ module load cray-mpich
+                  $ module load scorep
+                  $ module load spectrum-mpi
                   $ module load gcc
                   $ scorep mpiCC -c test.cpp main.cpp
                   $ scorep mpiCC -o test test.o main.o
@@ -124,7 +125,7 @@ Below are some basic examples of the different instrumentation scenarios:
 
                 $ module unload darshan-runtime
                 $ module load gcc
-                $ module load scorep-gcc-amd
+                $ module load Scorep
                 $ scorep mpifort -c test.f90
                 $ scorep mpifort -o test test.o
 
@@ -138,7 +139,7 @@ Below are some basic examples of the different instrumentation scenarios:
             .. code-block:: bash
 
                   $ module unload darshan-runtime
-                  $ module load scorep-gcc-amd
+                  $ module load scorep
                   $ module load gcc
                   $ scorep mpicc -fopenmp -c test.c main.c
                   $ scorep mpicc -fopenmp -o test test.o main.o
@@ -148,7 +149,7 @@ Below are some basic examples of the different instrumentation scenarios:
             .. code-block:: bash
 
                   $ module unload darshan-runtime
-                  $ module load scorep-gcc-amd
+                  $ module load scorep
                   $ module load gcc
                   $ scorep mpiCC -fopenmp -c test.cpp main.cpp
                   $ scorep mpiCC -fopenmp -o test test.o main.o
@@ -158,14 +159,14 @@ Below are some basic examples of the different instrumentation scenarios:
             .. code-block:: bash
 
                   $ module unload darshan-runtime
-                  $ module load scorep-gcc-amd
+                  $ module load scorep
                   $ module load gcc
                   $ scorep mpifort -pthread -fopenmp -c test.f90
                   $ scorep mpifort -pthread -fopenmp -o test test.o
 
 .. dropdown:: CUDA
 
-    In some cases, e.g., **CUDA** applications, Score-P needs to be made aware of the programming paradigm in order to do the correct instrumentation.
+    In some cases e.g. **CUDA** applications, Score-P needs to be made aware of the programming paradigm in order to do the correct instrumentation.
 
     .. code-block:: bash
 
@@ -181,9 +182,9 @@ Makefiles
 ---------
 
 Setting ``PREP = scorep`` variable within a Makefile will allow for instrumentation control while using
-``make``.
+``make``
 
-Additionally, one can add other Score-P options within the ``PREP`` variable, e.g., ``--cuda``.
+Additionaly, one can add other Score-P options within the ``PREP`` variable e.g. ``--cuda``
 
 .. code::
 
@@ -216,7 +217,7 @@ linker with the corresponding wrapper at configuration time so that they will be
 As the Score-P instrumentation during the CMake or configure steps is likely to fail, the wrapper script allows for disabling the instrumentation by setting the variable ``SCOREP_WRAPPER=off``.
 
 
-For CMake and Autotools based builds, it is recommended to configure in the following way(s):
+For CMake and Autotools based builds it is recommended to configure in the following way(s):
 
 .. code::
 
@@ -296,8 +297,8 @@ You can check what current Score-P environment variables are set:
 Profiling
 =========
 
-To generate a profile run of your instrumented code on Frontier, you will first need to get a node allocation
-using a batch script or an interactive job. Additionally, you will need to load modules ``otf2`` and ``cubew``:
+To generate a profile run of your instrumented code on Summit, you will first need to get a node allocation
+using a batch script or an interactive job; Additionaly you will need to load modules ``otf2`` and ``cubew``:
 
 .. code::
 
@@ -321,7 +322,7 @@ using a batch script or an interactive job. Additionally, you will need to load 
 
      jsrun -n 1 ./<binary to run>
 
-For more information on launching jobs on Frontier, please see the **Running Jobs** section of the :doc:`Frontier User Guide </systems/frontier_user_guide>`.
+For more information on launching jobs on Summit, please see the Running Jobs section of the Summit User Guide.
 
 The output files generated when the profile measurement runs are successful will be placed in a folder uniquely named:
 
@@ -408,7 +409,7 @@ analyze the ``.otf2`` trace file generated with Score-P.
 .. Note::
 
    Small trace files can be viewed locally on your machine if you have the Vampir client downloaded,
-   otherwise they can be viewed locally on Frontier. For large trace files, it is strongly recommended to run
+   otherwise they can be viewed locally on Summit. For large trace files, it is strongly recommended to run
    ``vampirserver`` reverse-connected to a local copy of the Vampir client. See the :ref:`vamptunnel` section for more details.
 
 Manual Instrumentation
