@@ -140,7 +140,8 @@ When users are ready to run their containers on Frontier they can bind in CPE an
 
 .. important::
 
-    While OLCF seeks to make these containers compatible with CPE the compatibility is NOT guaranteed.
+    While OLCF seeks to make these containers compatible with CPE the compatibility is NOT guaranteed. We build the images
+    with `Velocity <https://olcf.github.io/velocity/>`_. The image definitions can be found `here <https://github.com/olcf/velocity-images>`_.
 
 .. note::
 
