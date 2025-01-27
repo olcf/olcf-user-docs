@@ -142,6 +142,14 @@ When users are ready to run their containers on Frontier they can bind in CPE an
 
     While OLCF seeks to make these containers compatible with CPE the compatibility is NOT guaranteed.
 
+.. note::
+
+    We are transitioning our image builds to OCI format instead of SIF to make them more widely usable and enable security
+    scanning. For docker/podman users you will now be able to pull images from ``savannah.ornl.gov`` (as them become available).
+    For apptainer users you will need to change the bootstrap type from ``oras`` to ``docker``
+    (i.e ``apptainer pull docker://savannah.ornl.gov/olcf-container-images/frontier/<...>``). Please bear with any unavailable
+    that occurs as we make this transition.
+
 .. table::
 
     +-------+--------------------------------------------------------------------+------------+--------------------------------------------------------------------------------+
@@ -182,6 +190,18 @@ When users are ready to run their containers on Frontier they can bind in CPE an
     |       |                                                                    | OpenSUSE   | savannah.ornl.gov/olcf-container-images/frontier/opensuse/clang/cpe:24.07      |
     |       |                                                                    +------------+--------------------------------------------------------------------------------+
     |       |                                                                    | RockyLinux | savannah.ornl.gov/olcf-container-images/frontier/rockylinux/clang/cpe:24.07    |
+    +-------+--------------------------------------------------------------------+------------+--------------------------------------------------------------------------------+
+    | 24.11 | gnu - [ ``GCC@13.2.0``,  ``MPICH@3.4.3``,  ``ROCM@6.2.4``` ]       | Ubuntu     | savannah.ornl.gov/olcf-container-images/frontier/ubuntu/gnu/cpe:24.11          |
+    |       |                                                                    +------------+--------------------------------------------------------------------------------+
+    |       |                                                                    | OpenSUSE   | savannah.ornl.gov/olcf-container-images/frontier/opensuse/gnu/cpe:24.11        |
+    |       |                                                                    +------------+--------------------------------------------------------------------------------+
+    |       |                                                                    | RockyLinux | savannah.ornl.gov/olcf-container-images/frontier/rockylinux/gnu/cpe:24.11      |
+    |       +--------------------------------------------------------------------+------------+--------------------------------------------------------------------------------+
+    |       | cray/amd - [ ``LLVM@18.1.8``,  ``MPICH@3.4.3``,  ``ROCM@6.2.4`` ]  | Ubuntu     | savannah.ornl.gov/olcf-container-images/frontier/ubuntu/clang/cpe:24.11        |
+    |       |                                                                    +------------+--------------------------------------------------------------------------------+
+    |       |                                                                    | OpenSUSE   | savannah.ornl.gov/olcf-container-images/frontier/opensuse/clang/cpe:24.11      |
+    |       |                                                                    +------------+--------------------------------------------------------------------------------+
+    |       |                                                                    | RockyLinux | savannah.ornl.gov/olcf-container-images/frontier/rockylinux/clang/cpe:24.11    |
     +-------+--------------------------------------------------------------------+------------+--------------------------------------------------------------------------------+
 
 Apptainer Modules
