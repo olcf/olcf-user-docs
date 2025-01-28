@@ -1,9 +1,8 @@
-.. _tau_2024:
+.. _tau:
 
-
-*****************************************************
-Tuning and Analysis Utilities (TAU)  (OLCF Docs 2025)
-*****************************************************
+***********************************
+Tuning and Analysis Utilities (TAU)
+***********************************
 
 The University of Oregon's TAU is an open-source portable profiling and tracing
 toolkit for the performance analysis of parallel programs written in Fortran, C,

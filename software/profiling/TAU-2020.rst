@@ -1,8 +1,8 @@
-.. _tau:
+.. _tau_2020:
 
-************************************
-Tuning and Analysis Utilities (TAU)
-************************************
+*******************************************************
+Tuning and Analysis Utilities (TAU) (last updated 2020)
+*******************************************************
 
 TAU is a portable profiling and tracing toolkit that supports many programming
 languages. The instrumentation can be done by inserting in the source code
