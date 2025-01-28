@@ -374,7 +374,7 @@ To build the plugin on Frontier (using rocm 5.7.1 as an example):
    module load craype-accel-amd-gfx90a
    module load gcc-native/12.3
    module load cray-mpich/8.1.28
-   libfabric_path=/opt/cray
+   libfabric_path=/opt/cray/libfabric/1.20.1
 
    # Download the plugin repo
    git clone --recursive https://github.com/ROCmSoftwarePlatform/aws-ofi-rccl
