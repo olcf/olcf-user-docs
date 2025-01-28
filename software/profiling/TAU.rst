@@ -1,39 +1,328 @@
-.. _tau:
+.. _tau_2024:
 
-************************************
-Tuning and Analysis Utilities (TAU)
-************************************
 
-TAU is a portable profiling and tracing toolkit that supports many programming
-languages. The instrumentation can be done by inserting in the source code
-using an automatic tool based on the Program Database Toolkit (PDT), on the
-compiler instrumentation, or manually using the instrumentation API.
+*****************************************************
+Tuning and Analysis Utilities (TAU)  (OLCF Docs 2025)
+*****************************************************
 
-Webpage: https://www.cs.uoregon.edu/research/tau/home.php
+The University of Oregon's TAU is an open-source portable profiling and tracing
+toolkit for the performance analysis of parallel programs written in Fortran, C,
+C++, UPC, Java, Python and other languages. The instrumentation of programs can
+be done by binary code rewriting, manual compiler directives, or automatic
+source code transformation. TAU can support many parallel programming
+interfaces, including MPI, OpenMP, pthreads, and ROCm. TAU includes `paraprof`
+which is a profile visualization tool, and generated execution traces can be
+displayed by the Vampir, Paraver or JumpShot (included) visualization tools.
 
-TAU is installed with `Program Database Toolkit (PDT)
-<https://www.cs.uoregon.edu/research/pdt/home.php>`_ on Summit. PDT is a
-framework for analyzing source code written in several programming languages.
-Moreover, `Performance Application Programming Interface (PAPI)
-<https://icl.utk.edu/papi/>`_ is supported. PAPI counters are used to assess
-the CPU performance. In this section, some approaches for profiling and tracing
-will be presented.
+* TAU Home: https://www.cs.uoregon.edu/research/tau/home.php  
+* TAU Docs: https://www.cs.uoregon.edu/research/tau/docs.phpx
 
-In most cases, we need to use wrappers to recompile the application:
 
-- For C: replace the compiler with the TAU wrapper ``tau_cc.sh``
-- For C++: replace the compiler with the TAU wrapper ``tau_cxx.sh``
-- For Fortran: replace the compiler with the TAU wrapper ``tau_f90.sh`` / ``tau_f77.sh``
+Enabling TAU at OLCF
+====================
 
-Even if you don't compile your application with a TAU wrapper, you can
-profile some basic functionalities with ``tau_exec``, for example:
+On most OLCF systems TAU is available as a module.  Note: since TAU can work by
+preloading and intercepting function calls, it is incompatible with other
+software that works in a similar way (e.g. darshan-runtime).  
 
-.. code::
+.. code-block:: bash
 
-	jsrun -n 4 –r 4 –a 1 –c 1 tau_exec -T mpi ./test
+  module unload darshan-runtime  # incompatible with TAU
+  module load tau
+  env | grep TAU                 # display TAU settings
 
-The above command profiles MPI for the binary ``test``, which was not compiled
-with the TAU wrapper.
+The TAU environment variables show the location of the TAU installation and the
+default TAU_MAKEFILE.  TAU compiler wrappers use the TAU_MAKEFILE for
+capabilities to be supported while instrumenting and compiling code.
+
+
+
+
+Profile and trace using "tau_exec exe"
+======================================
+
+The simplest way to profile with TAU is to prepend ``tau_exec`` to an
+executable.  There is no need to recompile code with this approach.  The
+``tau_exec`` preloads a library that instruments specific functions that are
+intercepted at runtime.  This method uses statistical sampling to estimate
+time spent in functions.  Depending on how TAU is configured, intercepted
+functions can include MPI, OpenMP, pthreads, GPU libraries, and others. 
+
+.. code:: bash
+  
+  module unload darshan-runtime  # incompatible with TAU
+  module load tau
+
+  # Copy from the TAU installation
+  rsync -va $OLCF_TAU_ROOT/examples/taututorial ./taututorial
+  cd ./taututorial
+
+  # This tutorial is a Pi calculation with MPI support.
+  # Use CC (C++) to compile (Note: not using TAU wrappers)
+  # Use the -include flag to add missing headers (if needed)
+  CC computePi.cpp -o computePi_CC --include "climits"
+
+Using ``tau_exec`` simplifies profiling and tracing code, but there is a lot of
+information missing.  This approach cannot instrument user source code so much
+of the user context is missing.  
+
+Profiling the execution
+-----------------------
+
+The ``tau_exec`` tool will profile the code by default, tracking the time spent
+in various parts of the code.  The generated profile data can be viewed using a
+command line tool ``pprof`` or the graphical interface ``paraprof``.  Using the
+graphical viewer may require X-display forwarding (e.g. ``ssh -X <host>``, see
+https://docs.olcf.ornl.gov/connecting/index.html#x11-forwarding for details).
+
+
+.. code:: bash
+
+  # Make output directory (default is the current dir)
+  mkdir profiledir 
+  export PROFILEDIR=profiledir
+  export TAU_PROFILE=1
+
+  # Allocate 1 node and run 4 tasks, collect profile (default)
+  srun -A <ACCOUNT> -N 1 -t 5 -n 4 tau_exec ./computePi_CC
+
+  # Other tau_exec options
+  # tau_exec -ebs             # event-based-sampling
+  # tau_exec -T serial,rocm   # -T <option> tau options
+
+  # To run the Paraprof profiler (included with TAU)
+  pprof $PROFILEDIR      # command line view
+  paraprof $PROFILEDIR   # graphical, requires X-forwarding/X-display
+  # Note: Oct 2024 for Mac XQuartx uses 'paraprof -fix-xquartz'
+  # X-forwarding: https://docs.olcf.ornl.gov/connecting/index.html#x11-forwarding
+
+This textual output generated by ``pprof`` shows the time profile of the
+execution.  The execution used multiple MPI processes, and the function summary
+(mean) shows the average time profile of the processes. The ``MPI_Allreduce``
+and ``MPI_Recv`` functions can be seen as major time consumers.  
+
+.. figure:: /images/tau_new/tau_computepi_CC_pprof.png
+  :align: center
+  :alt:  TAU pprof output
+  :scale: 45%
+  
+  pprof $PROFILEDIR
+
+The profile can be viewed using the graphical ``paraprof`` tool, which can also
+produce a number of other views of the execution (not discussed here).  The
+basic TIME view (top left) shows as a stacked bar, a simple switch to unstack
+the bars (bottom left) can show load imbalances in functions.
+
+.. figure:: /images/tau_new/tau_computepi_CC_paraprof.png
+  :align: center
+  :alt:  TAU paraprof viewer
+  :scale: 45%
+
+  paraprof $PROFILEDIR
+
+Tracing the execution
+---------------------
+
+The ``tau_exec`` tool can also generate a trace file for the execution and the
+generated trace can be displayed using the included Jumpshot trace visualization
+tool.  Note: TAU can also create traces for Chrome/Perfetto (json) and for
+Vampir (otf2) visualization.  
+
+.. code:: bash
+
+  # Make output directory (default is the current dir)
+  mkdir tracedir 
+  export TRACEDIR=tracedir
+
+  # Allocate 1 node and run 2 tasks, collect trace
+  export TAU_TRACE=1 TAU_PROFILE=0 
+  srun -A <ACCOUNT> -N 1 -t 5 -n 2 tau_exec ./computePi_CC
+  # Note: Still using the un-instrumented executable
+
+  # Post process trace files
+  cd ${TRACEDIR} 
+  rm -f tau.trc tau.edf         # remove old files
+  tau_treemerge.pl              # merge traces for tau
+  tau2slog2 tau.trc tau.edf -o yourprogram.slog2 
+  # Launch the (included) trace viewer (requires X-forwarding)
+  # The slog2 trace can be scp'ed to your local machine to avoid X-forwarding
+  jumpshot yourprogram.slog2
+  # The output from jumpshot will be shown in the next section
+
+TAU traces can be viewed by Chrome/Perfetto by converting them to ``json`` or in
+Vampir by converting to ``otf2``.  Information about using the Vampir viewer at
+OLCF can be found at https://docs.olcf.ornl.gov/software/profiling/Vampir.html.
+
+.. code:: bash
+
+  # Convert trace to json for Chrome/Perfetto
+  tau_trace2json tau.trc tau.edf –chrome –ignoreatomic –o app.json
+  # View using chrome://tracing (Load -> app.json) 
+  # Or use https://ui.perfetto.dev/ and load the trace
+
+  # Convert trace to otf2 for Vampir
+  export TAU_TRACE=1; export TAU_TRACE_FORMAT=otf2
+  mpirun -np 64 tau_exec ./a.out; vampir traces.otf2 &
+  # Information about using the Vampir viewer at OLCF
+  # https://docs.olcf.ornl.gov/software/profiling/Vampir.html
+
+
+Automatic source instrumentation using compiler wrappers
+========================================================
+
+TAU compiler wrapper scripts (`tau_cc.sh`, `tau_cxx.sh`, `tau_f90.sh`) can be
+used to build code, automatically adding timer start/stop calls around
+code-regions (this works on a copy and does not change the original code). The
+Program Database Toolkit (PDT) is used to parse the source code and add this
+instrumentation.  A selective filter file can be used to reduce overhead and
+specify areas for instrumentation.
+
+- For C: use the TAU wrapper ``tau_cc.sh``
+- For C++: use the TAU wrapper ``tau_cxx.sh``
+- For Fortran: use the TAU wrapper ``tau_f90.sh`` / ``tau_f77.sh``
+
+.. code:: bash
+
+  module unload darshan-runtime  # incompatible with TAU
+  module load tau
+  # Copy example from the TAU installation
+  rsync -va $OLCF_TAU_ROOT/examples/taututorial ./taututorial
+  cd ./taututorial
+
+  # See the current/default TAU support
+  echo $TAU_MAKEFILE 
+  # To change the TAU support, use other Makefiles
+  # setenv TAU_MAKEFILE $OLCF_TAU_ROOT/lib/Makefile<other-support>
+
+  # Use TAU wrappers to compile
+  # Use the -include flag to add missing headers (if needed)
+  tau_cxx.sh computePi.cpp -o computePi_taucxx -include "climits"
+
+  # To keep intermediate files, or turn on the verbose mode or use a selective
+  # instrumentation file select.tau, set TAU_OPTIONS
+  # setenv TAU_OPTIONS  '-optKeepFiles -optVerbose -optTauSelectFile="select.tau"'
+
+Profiling and tracing for code execution follow the earlier example.
+
+.. code:: bash
+
+  # Make output directories
+  mkdir profiledir tracedir 
+  export PROFILEDIR=profiledir TRACEDIR=tracedir
+
+  # Collect profile, trace in the same run
+  export TAU_TRACE=1 TAU_PROFILE=1
+
+  # Allocate 1 node for 5 min and run 2 tasks 
+  # Note: This is not using tau_exec
+  srun -A <ACCOUNT> -N 1 -t 5 -n 2 ./computePi_taucxx
+
+  # View profile using command line pprof
+  pprof   # Uses the PROFILEDIR var to find data
+  # Could also use GUI: paraprof $PROFILEDIR
+
+The generated profile now has information about the users code. 
+
+.. figure:: /images/tau_new/tau_computepi_taucxx_pprof.png
+  :align: center
+  :alt:  TAU pprof output
+  :scale: 45%
+  
+  pprof $PROFILEDIR
+
+.. code:: bash
+
+  # View trace using Jumpshot
+  cd ${TRACEDIR}
+  tau_treemerge.pl
+  tau2slog2 tau.trc tau.edf -o yourprogram.slog2 
+  # Launch the (included) trace viewer (requires X-forwarding)
+  # Or copy the slog2 file and use a local jumpshot tool
+  jumpshot yourprogram.slog2
+
+The Jumpshot trace view here is restricted to the most time consuming functions,
+and it can be clearly seen how the MPI_Recv is waiting in the two processes. The
+user code functions can be seen in context with the automatic instrumentation.
+
+.. figure:: /images/tau_new/tau_computepi_taucxx_trace_jumpshot.png
+   :align: center
+   :alt:  TAU tracing using jumpshot
+   :scale: 35%
+
+   jumpshot yourprogram.slog2
+
+
+Selective Instrumentation
+=========================
+
+A program can have a number of smallar functions that do not take a significant
+amount of execution time but are called repeatedly.  These smaller functions can
+make the profile complicated without adding any value to the profiling analysis.
+TAU can selectively exclude functions, annotate (outer) loops, and add a few
+other code annotations.  
+
+A selective instumentation file can be used with the flag
+``-tau_options=-optTauSelectFile=<file>`` or by setting the environment variable
+``export TAU_OPTIONS='-optTauSelectFile="<file>"'``.  This can work very well
+when used in combination with the TAU compiler wrappers to instrument your code. 
+
+The following example is taken with minor changes from the TAU manual.
+
+* https://www.cs.uoregon.edu/research/tau/docs/newguide/bk01ch01s03.html
+
+.. code:: bash
+
+  # Wildcards for routine names are specified with the # mark (because * symbols
+  # show up in routine signatures.) The # mark is unfortunately the comment
+  # character as well, so to specify a leading wildcard, place the entry in quotes.
+
+  # Wildcards for file names are specified with * symbols.
+
+  #Tell tau to not profile these functions
+  BEGIN_EXCLUDE_LIST
+  void quicksort(int *, int, int)
+  # The next line excludes all functions beginning with "sort_" and having 
+  # arguments "int *"
+  void sort_#(int *)
+  END_EXCLUDE_LIST
+
+  #Exclude these files from profiling
+  BEGIN_FILE_EXCLUDE_LIST
+  *.so
+  END_FILE_EXCLUDE_LIST
+
+
+  #Instrument specific loops or other things
+  BEGIN_INSTRUMENT_SECTION
+  # instrument all the outer loops in this routine
+  loops file="loop_test.cpp" routine="multiply"
+  # tracks memory allocations/deallocations as well as potential leaks
+  memory file="foo.f90" routine="INIT"
+  # tracks the size of read, write and print statements in this routine
+  io file="foo.f90" routine="RINB"
+  # A dynamic phase will break up the profile into phase where
+  # each events is recorded according to what phase of the application
+  # in which it occured.
+  dynamic phase name="foo1_bar" file="foo.c" line=26 to line=27
+  END_INSTRUMENT_SECTION
+
+The ``dynamic phase`` at the bottom of the ``INSTRUMENT_SECTION`` puts TAU
+instrumentation around ``foo.c`` line 26-29, and adds to the profile each time
+the run enters and exits those lines.  This can be very flexible but may lead to
+unexpected overhead, so use with care.  A ``static phase`` option accumulates
+data for a region into a single record, so may be a better option for certain
+cases.
+
+
+Manual source instrumentation
+=============================
+
+TAU provides a rich set of functions that can be used to instrument code at very
+specific locations. Discussion of manual code instrumentation is outside the
+scope of this guide, but the TAU documentation gives details of all the
+functions available to instrument your code.  
+
+* https://www.cs.uoregon.edu/research/tau/docs/newguide/bk03rn01.html
 
 
 Run-Time Environment Variables
@@ -42,9 +331,9 @@ Run-Time Environment Variables
 The following TAU environment variables may be useful in job submission scripts.
 
 +------------------------+---------+-------------------------------------------------------------------------------------------------------------+
-| Variable  	         | Default | Description			     									 |
+| Variable  	           | Default | Description			     									 |
 +========================+=========+=============================================================================================================+
-| TAU_TRACE	         |    0    | Setting to 1 turns on tracing       									 |
+| TAU_TRACE	             |    0    | Setting to 1 turns on tracing       									 |
 +------------------------+---------+-------------------------------------------------------------------------------------------------------------+
 | TAU_CALLPATH           |    0    | Setting to 1 turns on callpath profiling							                 |
 +------------------------+---------+-------------------------------------------------------------------------------------------------------------+
@@ -74,11 +363,12 @@ The following TAU environment variables may be useful in job submission scripts.
 +------------------------+---------+-------------------------------------------------------------------------------------------------------------+
 
 
-
 Compile-Time Environment Variables
 ======================================
 
-Environment variables to be used during compilation through the environment variable ``TAU_OPTIONS``
+Environment variables to be used during compilation through the environment
+variable ``TAU_OPTIONS``.  For example, ``export TAU_OPTIONS='-optKeepFiles
+-optVerbose -optTauSelectFile="select.tau"'``
 
 +----------------------------+------------------------------------------------------------------------------+
 | Variable                   | Description                                                                  |
@@ -115,610 +405,23 @@ Environment variables to be used during compilation through the environment vari
 +----------------------------+------------------------------------------------------------------------------+
 
 
-MiniWeather Example Application
-================================
-
-Getting the source code
------------------------
-
-- Connect to Summit and navigate to your project space
-- For the following examples, we'll use the MiniWeather application:
-  https://github.com/mrnorman/miniWeather
-
-.. code::
-
-	$ git clone https://github.com/mrnorman/miniWeather.git
-
-
-Compile the application
-------------------------
-
-- We'll use the PGI compiler; this application supports serial, MPI, MPI+OpenMP,
-  and MPI+OpenACC
-
-.. code::
-
-	$ module load pgi
-	$ module load parallel-netcdf
-
-- Different compilations for Serial, MPI, MPI+OpenMP, and MPI+OpenACC:
-
-.. code::
-
-	$ module load cmake
-	$ cd miniWeather/c/build
-        $ ./cmake_summit_pgi.sh
-	$ make serial
-	$ make mpi
-	$ make openmp
-	$ make openacc
-
-
-Below, we'll look at using TAU to profile each case.
-
-
-Modifications
--------------
-
-- Edit the cmake_summit_pgi.sh and replace ``mpic++`` with ``tau_cxx.sh``. This applies
-  only for the non-GPU versions.
-- TAU works with special TAU makefiles to declare what programming models are
-  expected from the application:
-
-  - The available makefiles are located inside TAU installation:
-
-.. code::
-
-        $ module show tau
-        ---------------------------------------------------------------
-           /sw/summit/modulefiles/core/tau/2.28.1:
-        ---------------------------------------------------------------
-        whatis("TAU 2.28.1 github ")
-        setenv("TAU_DIR","/sw/summit/tau/tau2/ibm64linux")
-        prepend_path("PATH","/sw/summit/tau/tau2/ibm64linux/bin")
-        help([[https://www.olcf.ornl.gov/software_package/tau
-        ]])
-
-
-The available Makefiles are named per-compiler and are located in:
-
-.. code::
-
-        $ ls ${TAU_DIR}/lib/Makefile.tau-pgi*
-        /sw/summit/tau/tau2/ibm64linux/lib/Makefile.tau-pgi-papi-mpi-cupti-pdt-openmp-pgi
-        /sw/summit/tau/tau2/ibm64linux/lib/Makefile.tau-pgi-papi-mpi-cupti-pdt-pgi
-        /sw/summit/tau/tau2/ibm64linux/lib/Makefile.tau-pgi-papi-pdt-pgi
-        /sw/summit/tau/tau2/ibm64linux/lib/Makefile.tau-pgi_memory_manager-papi-mpi-cupti-pdt-pgi
-
-- To list all TAU makefiles:
-
-.. code::
-
-        $ ls ${TAU_DIR}/lib/Makefile.tau*
-
-
-Instrumenting the serial version of MiniWeather
------------------------------------------------
-
-For a serial application, we should not use a Makefile with a programming
-model such as MPI or OpenMP. However, as the source code for this **specific**
-case includes MPI headers that are not excluded during the compilation of the
-serial version, we should declare a Makefile with MPI. We can declare a TAU
-makefile with the environment variable ``TAU_MAKEFILE``. Moreover, with
-``TAU_OPTIONS`` below, we add options to the linker as the application depends on
-PNetCDF.
-
-.. code::
-
-	$ module load tau
-	$ export TAU_MAKEFILE=/sw/summit/tau/tau2/ibm64linux/lib/Makefile.tau-pgi-papi-mpi-cupti-pdt-pgi
-	$ export TAU_OPTIONS='-optLinking=-lpnetcdf -optVerbose'
-        $ ./cmake_summit_pgi.sh
-	$ make serial
-
-If there were no MPI headers, you should select the makefile
-``/sw/summit/tau/tau2//ibm64linux/lib/Makefile.tau-pgi-papi-pdt-pgi`` or if
-you don't want PDT support,
-``/sw/summit/tau/tau2//ibm64linux/lib/Makefile.tau-pgi-papi-pgi``
-Add to your submission script the TAU variables that you want to use (or
-uncomment them below). By default the TAU will apply profiling, and not apply tracing.
-
-.. code::
-
-	#PAPI metrics
-	#export TAU_METRICS=TIME:PAPI_TOT_INS:PAPI_TOT_CYC
-
-	# Instrument the callpath
-	export TAU_CALLPATH=1
-	export TAU_CALLPATH_DEPTH=10
-
-	#Activate tracing
-	#export TAU_TRACE=1
-
-	jsrun -n 1 -r 1 -a 1 -c 1 -g 1  ./miniWeather_serial
-
-
-When the execution finishes, one directory is created for each ``TAU_METRICS``
-declaration with the format ``MULTI__``
-
-- If you do not declare the ``TAU_METRICS`` variable, then ``TIME`` is used by
-  default, and the profiling files are not in a directory. When the execution
-  ends there will be one file per process called ``profile.X.Y.Z``. In this
-  case there is just one file, called **profile.0.0.0**
-
-We can export a text file with some information through the ``pprof`` tool or
-visualize it by using ``paraprof``.
-
-If an application has no MPI at all, use the argument ``--smpiargs="off"`` for
-``jsrun``. Otherwise, TAU will fail as MPI is active by default.
-
-.. code::
-
-	$ pprof profile.0.0.0
-	Reading Profile files in profile.*
-
-	NODE 0;CONTEXT 0;THREAD 0:
-	---------------------------------------------------------------------------------------
-	%Time    Exclusive    Inclusive       #Call      #Subrs  Inclusive Name
-        	      msec   total msec                          usec/call
-	---------------------------------------------------------------------------------------
-	100.0        0.038     1:10.733           1           1   70733442 .TAU application
-	100.0            9     1:10.733           1        4654   70733404 int main(int, char **)
- 	 97.1           15     1:08.668        4501       27006      15256 void perform_timestep(double *, double *, double *, double *, double)
-	 97.1        1,167     1:08.653       27006       54012       2542 void semi_discrete_step(double *, double *, double *, double, int, double *, double *)
- 	 48.4       34,240       34,240       13503           0       2536 void compute_tendencies_z(double *, double *, double *)
- 	 46.9       33,199       33,199       13503           0       2459 void compute_tendencies_x(double *, double *, double *)
-  	  2.5          224        1,752         151       33361      11608 void output(double *, double)
-	  1.7        1,211        1,211         604         604       2006 MPI_File_write_at_all()
-  	  0.4           36          250           1      100003     250708 void init(int *, char ***)
-	...
-
-
-	USER EVENTS Profile :NODE 0, CONTEXT 0, THREAD 0
-	---------------------------------------------------------------------------------------
-	NumSamples   MaxValue   MinValue  MeanValue  Std. Dev.  Event Name
-	---------------------------------------------------------------------------------------
-      	      1058    1.6E+05          4  9.134E+04  7.919E+04  MPI-IO Bytes Written
-       	       454        284          4      5.947       13.2  MPI-IO Bytes Written : int main(int, char **) => void output(double *, double) => MPI_File_write_at()
-       	       604    1.6E+05    1.6E+05    1.6E+05          0  MPI-IO Bytes Written : int main(int, char **) => void output(double *, double) => MPI_File_write_at_all()
-              1058       9412     0.1818       3311       3816  MPI-IO Write Bandwidth (MB/s)
-               454      1.856     0.1818     0.5083     0.1904  MPI-IO Write Bandwidth (MB/s) : int main(int, char **) => void output(double *, double) => MPI_File_write_at()
-               604       9412      2.034       5799       3329  MPI-IO Write Bandwidth (MB/s) : int main(int, char **) => void output(double *, double) => MPI_File_write_at_all()
-               755          8          8          8          0  Message size for all-reduce
-               302  2.621E+05          4  1.302E+05  1.311E+05  Message size for broadcast
-	---------------------------------------------------------------------------------------
-
-
-Explanation:
-  - One process was running as it is a serial application, even MPI calls
-    are executed from a single thread.
-  - The total execution time is 70.733 seconds and only 9 msec are
-    exclusive for the main routine. The rest are caused by subroutines.
-  - The exclusive time is the time caused by the mentioned routine, and
-    the inclusive is with the execution time from the subroutines.
-  - The #Subrs is the number of the called subroutines.
-  - There is also information about the parallel I/O if any exists, the
-    bytes, and the bandwidth.
-
-
-Next, we will look at using the ``paraprof`` tool for the MPI version of MiniWeather.
-
-
-Instrumenting the MPI version of MiniWeather
---------------------------------------------
-
-For the MPI version, we should use a makefile with MPI. The compilation could
-fail if the makefile supports MPI+OpenMP, but the code doesn't include any
-OpenMP calls. Moreover, with ``TAU_OPTIONS`` declared below, we will add options to
-the linker.
-
-.. code::
-
-        $ module load tau
-        $ export TAU_MAKEFILE=/sw/summit/tau/tau2/ibm64linux/lib/Makefile.tau-pgi-papi-mpi-cupti-pdt-pgi
-        $ export TAU_OPTIONS='-optLinking=-lpnetcdf -optVerbose'
-        $ make mpi
-
-Add to your submission script the TAU variables that you want to use (or
-uncomment them below). By default, the TAU will apply profiling, and not
-tracing.
-
-.. code::
-
-        #PAPI metrics
-        export TAU_METRICS=TIME:PAPI_TOT_INS:PAPI_TOT_CYC
-
-        # Instrument the callpath
-        export TAU_CALLPATH=1
-        export TAU_CALLPATH_DEPTH=10
-
-	#Track MPI messages
-	export TAU_TRACK_MESSAGE=1
-	export TAU_COMM_MATRIX=1
-
-        #Activate tracing
-        #export TAU_TRACE=1
-
-        jsrun -n 64 -r 8 -a 1 -c 1 ./miniWeather_mpi
-
-
-
-Instrumenting the MPI+OpenMP version of MiniWeather
----------------------------------------------------
-
-The difference with the MPI instrumentation is the TAU Makefile, the jsrun
-execution command, and the declaration of the OpenMP threads.
-
-
-.. code::
-
-        $ module load tau
-        $ export TAU_MAKEFILE=/sw/summit/tau/tau2/ibm64linux/lib/Makefile.tau-pgi-papi-mpi-cupti-pdt-openmp-pgi
-        $ export TAU_OPTIONS='-optLinking=-lpnetcdf -optVerbose'
-        $ make openmp
-
-Add to your submission script the TAU variables that you want to use (or
-uncomment them below). By default, the TAU will apply profiling, and not
-tracing.
-
-.. code::
-
-        #PAPI metrics
-        export TAU_METRICS=TIME:PAPI_TOT_INS:PAPI_TOT_CYC
-
-        # Instrument the callpath
-        export TAU_CALLPATH=1
-        export TAU_CALLPATH_DEPTH=10
-
-	#Track MPI messages
-	export TAU_TRACK_MESSAGE=1
-	export TAU_COMM_MATRIX=1
-
-        #Activate tracing
-        #export TAU_TRACE=1
-
-	export OMP_NUM_THREADS=4
-	jsrun -n 16 -r 8 -a 1 -c 4 -b packed:4 ./miniWeather_mpi_openmp
-
-
-Instrumenting the MPI+OpenACC version of MiniWeather
-----------------------------------------------------
-
-- For the current TAU version, you should use the ``tau_exec`` and not the TAU
-  wrappers only for the compilation.
-- Use the ``mpic++`` compiler in the Makefile, do not use TAU wrapper.
-- Build the MPI+OpenACC version by running ``make openacc``.
-- Add the following in your submission file:
-
-.. code::
-
-        export TAU_METRICS=TIME
-        export TAU_PROFILE=1
-        export TAU_TRACK_MESSAGE=1
-        export TAU_COMM_MATRIX=1
-        jsrun -n 6 -r 6 --smpiargs="-gpu" -g 1  tau_exec -T mpi,pgi,pdt -openacc ./miniWeather_mpi_openacc
-
-- We declare to TAU to profile the MPI with PDT support through the ``-T``
-  parameters, as well as using the ``pgi`` tag for the TAU makefile and OpenACC.
-
-- CUPTI metrics for OpenACC are not yet supported for TAU.
-
-
-Preparing profiling data
-------------------------
-
-- When the execution of the instrumented application finishes, there is one
-  directory for each ``TAU_METRICS`` declaration with the format ``MULTI__``
-
-  - If you do not declare the ``TAU_METRICS`` variable, then by default ``TIME``
-    is used and the profiling files are not in a directory. When the execution
-    ends, there will be one file per process, called ``profile.X.Y.Z``.
-
-- In order to use paraprof to visualize the data, your ssh connection should
-  support X11 forwarding.
-
-- Pack the profiling data with a name that you prefer and start the paraprof GUI
-
-.. code::
-
-        $ paraprof --pack name.ppk
-        $ paraprof name.ppk &
-
-
-Paraprof
-^^^^^^^^^
-
-- The first window that opens when the ``paraprof name.ppk`` command is
-  executed shows the experiment and the used metrics, for this case, ``TIME``,
-  ``PAPI_FP_OPS``, ``PAPI_TOT_INS``, ``PAPI_TOT_CYC``.
-
-.. image:: /images/tau_paraprof_manager.png
-   :align: center
-
-- The user is responsible for understanding which PAPI metrics should be used
-
-- The second window that is automatically loaded shows the ``TIME`` metric for
-  each process (they are called "nodes") where each color is a different call.
-  Each horizontal line is a process or Std.Dev./mean/max/min. The length of each
-  color is related to the metric, if it is ``TIME``, it is duration.
-
-.. image:: /images/tau_mpi_time.png
-   :align: center
-
-
-- Select Options -> Uncheck Stack Bars Together
-	- It is easier to check the load imbalance across the processes
-
-.. image:: /images/tau_mpi_stack_bars.png
-   :align: center
-
-- If you click on any color, then a new window opens with information about the
-  specific routine.
-
-.. image:: /images/tau_mpi_click_color.png
-   :align: center
-
-- If you click on the label (node 0, node 1, max, etc.), you can see the value
-  across each routine in your application.
-
-.. image:: /images/tau_mpi_sort_time.png
-   :align: center
-
-- Right click on the label (node 0, node 1, max, etc.), and then select "Show
-  Context Event Window" (with callpath activated). We can then see various calls
-  from where they were executed, how many times, and other various information.
-
-.. image:: /images/tau_mpi_context_event.png
-   :align: center
-
-- Select Options -> Show Derived Metric Panel, choose the metrics and then the
-  operator that you want, then click Apply. Uncheck the Show Derived
-  Metric.
-
-.. image:: /images/tau_mpi_derived_metric.png
-   :align: center
-
-- Click on the new metric, "PAPI_TOT_INS / PAPI_TOT_CYC" to see the instructions per
-  cycle (IPC) across the various routines.
-
-.. image:: /images/tau_mpi_ipc.png
-   :align: center
-
-- Click on the label mean:
-
-.. image:: /images/tau_mpi_mean_ipc.png
-   :align: center
-
-- For the non-MPI routines/calls, an IPC that is lower than 1.5 means that
-  there is a potential for performance improvement.
-
-- Menu Windows -> 3D Visualization (3D demands OpenGL) will not work on
-  Summit, and you will need to download the data on your laptop and install 
-  TAU locally to use this feature.
-- You can see per MPI rank, per routine, the exclusive time and the floating
-  operations.
-
-.. image:: /images/tau_mpi_3d_fp_ops.png
-   :align: center
-
-- Change the PAPI_FP_OPS to (PAPI_TOT_INS/PAPI_TOT_CYC)
-- You can see per MPI rank, per routine, the exclusive time and the
-  corresponding IPC.
-
-.. image:: /images/tau_mpi_3d_tot_ins.png
-   :align: center
-
-
-Which loops consume most of the time?
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-- Create a file called, for example, ``select.tau`` with the content:
-
-.. code::
-
-	BEGIN_INSTRUMENT_SECTION
-	loops routine="#"
-	END_INSTRUMENT_SECTION
-
-Then declare the options in your submission script:
-
-.. code::
-
-	export TAU_OPTIONS="-optTauSelectFile=select.tau -optLinking=lpnetcdf -optVerbose"
-
-- The linking option is required for this application, but may not be for all applications.
-- Do not forget to unset ``TAU_OPTIONS`` when it's not necessary.
-- Execute the application as previously shown.
-- Now you can see the duration of all the loops
-
-.. image:: /images/tau_mpi_loops1.png
-   :align: center
-
-- Select Options -> Select Metric… -> Exclusive… -> PAPI_TOT_INS/PAPI_TOT_CYC
-
-.. image:: /images/tau_mpi_loops2.png
-   :align: center
-
-The loops with less than 1.5 IPC have poor performance and could likely be improved.
-
-
-MPI+OpenMP
-^^^^^^^^^^
-
-- Execute the MPI+OpenMP version
-- Now you can see the duration of parallelfor loops and decide when they should
-  be improved or even removed.
-
-.. image:: /images/tau_openmp.png
-   :align: center
-
-
-GPU
-^^^
-
-- When we instrument the MPI with OpenACC, we can see the following through paraprof
-- We can observe the duration of the OpenACC calls
-
-.. image:: /images/tau_openacc.png
-   :align: center
-
-- From the main window right click one label and select “Show User Event
-  Statistics Window”. Then, we can see the data transfered to the devices
-
-.. image:: /images/tau_mpi_openacc_data.png
-   :align: center
-
-
-CUDA Profiling Tools Interface
-===============================
-
-The `CUDA Profiling Tools Interface (CUPTI) <https://docs.nvidia.com/cupti/Cupti/r_main.html#metrics-reference>`__ is used by profiling and tracing
-tools that target CUDA applications.
-
-.. image:: /images/cupti.png
-   :align: center
-
-Matrix multiplication with MPI+OpenMP:
-
-.. code::
-
-	$ export TAU_METRICS=TIME,achieved_occupancy
-	$ jsrun -n 2 -r 2 -g 1  tau_exec -T mpi,pdt,papi,cupti,openmp -ompt -cupti  ./add
-
-
-We choose to use ``tau_exec`` with MPI, PDT, PAPI, CUPTI, and OpenMP.
-
-Output directories:
-
-.. code::
-
-	MULTI__TAUGPU_TIME
-	MULTI__CUDA.Tesla_V100-SXM2-16GB.domain_d.active_warps
-	MULTI__CUDA.Tesla_V100-SXM2-16GB.domain_d.active_cycles
-	MULTI__achieved_occupancy
-
-There are many directories because the achieved occupancy is calculated with this
-formula
-
-``Achieved_occupancy = CUDA.Tesla_V100-SXM2-16GB.domain_d.active_warps / CUDA.Tesla_V100-SXM2-16GB.domain_d.active_cycles``
-
-You can see in the window with the profiling data after you pack them and
-execute paraprof, the profiling data are not across all the processes, it
-depends if a routine (color) is executed across all of them or not based on
-the type of the rourine CPU/GPU.
-
-.. image:: /images/cupti_main.png
-   :align: center
-
-.. image:: /images/cupti_main_window.png
-   :align: center
-
-- Select the metric achieved occupancy
-
-.. image:: /images/cupti_occupancy.png
-   :align: center
-
-- Click on the colored bar
-- The achieved occupancy for this simple benchmark is 6.2%
-
-
-.. image:: /images/cupti_occupancy_kernel.png
-   :align: center
-
-A similar approach for other metrics, not all of them can be used.
-TAU provides a tool called ``tau_cupti_avail``, where we can see the list of
-available metrics, then we have to figure out which CUPTI metrics use these ones.
-
-Tracing
-=======
-
-Activate tracing and declare the data format to OTF2. OTF2 format is supported
-only by MPI and OpenSHMEM applications.
-
-.. code::
-
-	$ export TAU_TRACE=1
-	$ export TAU_TRACE_FORMAT=otf2
-
-Use Vampir for visualization.
-
-
-Selective Instrumentation
-=========================
-
-For example, do not instrument routine ``sort*(int *)``
-
-- Create a file ``select.tau``
-
-.. code::
-
-	BEGIN_EXCLUDE_LIST
-	void sort_#(int *)
-	END_EXCLUDE_LIST
-
-- Declare the ``TAU_OPTIONS`` variable
-
-.. code::
-
-	export TAU_OPTIONS=“-optTauSelectFile=select.tau”
-
-- Now, the routine ``sort*(int *)`` is excluded from the instrumentation.
-
-
-Dynamic Phase
-=============
-
-- Create a file called ``phase.tau``.
-
-.. code::
-
-	BEGIN_INSTRUMENT_SECTION
-	dynamic phase name=“phase1” file=“miniWeather_mpi.cpp” line=300 to line=327
-	END_INSTRUMENT_SECTION
-
-- Declare the ``TAU_OPTIONS`` variable.
-
-.. code::
-
-        export TAU_OPTIONS=“-optTauSelectFile=phase.tau”
-
-- Now when you instrument your application, the phase called phase 1 are the
-  lines 300-327 of the file ``miniWeather_mpi.cpp``. Every call will be
-  instrumented. This could create signiificant overhead, thus you should be
-  careful when you use it.
-
-
-Static Phase
-============
-
-- Create a file called ``phases.tau``.
-
-.. code::
-
-        BEGIN_INSTRUMENT_SECTION
-	static phase name="phase1" file="miniWeather_mpi.cpp" line=300 to line=327
-	static phase name="phase2" file="miniWeather_mpi.cpp" line=333 to line=346
-        END_INSTRUMENT_SECTION
-
-- Declare the ``TAU_OPTIONS`` variable.
-
-.. code::
-
-        export TAU_OPTIONS=“-optTauSelectFile=phases.tau”
-
-- Now, when you use paraprof, you can see different colors for the phase1 and phase2
-
-.. image:: /images/tau_static_phases.png
-   :align: center
-
-OpenMP Offload
-==============
-
-- Initially compile your application without TAU and create a dynamic binary
-- Use all the compiler options requiried for OpenMP offload
-
-- Then execute, for example with XL compiler, 1 resource set, 1 MPI process with 2 OpenMP threads, and 2 GPUs:
-
-.. code::
-
-	jsrun --smpiargs="-gpu" -n 1 -a 2 -c 2 -r 1 -g 2 -b packed:2 tau_exec -T cupti,papi,openmp,xl -cupti ./a.out
+References
+==========
+
+TAU has many capabilites that are not covered here, e.g. memory tracking, call
+path profiling, python support, MPI, Kokkos, OpenACC, OpenMP, CUDA, HIP, OneAPI
+support.  Please see the 'TAU on Crusher' presentation listed below for some
+idea of the capabilites on similar OLCF systems.
+
+* Main TAU website: https://www.cs.uoregon.edu/research/tau/home.php
+* TAU on Crusher (pre-Frontier OLCF system), March 2022, Sameer Shende (U Oregon), http://www.nic.uoregon.edu/~khuck/RAPIDS/TAUonCrusher.pdf
+* TAU Performance System, June 2024, Sameer Shende (U Oregon), https://www.vi-hps.org/cms/upload/material/tw45/TAU_TW45.pdf
+* TAU training on the OLCF Training Archive https://docs.olcf.ornl.gov/training/training_archive.html
+
+.. csv-table::
+   :header: "Date", "Title", "Speaker", "Event", "Presentation"
+   :widths: 12 22 22 22 22
+   
+    "2020-07-28", "TAU Performance Analysis", "Sameer Shende", `TAU Performance Analysis <https://www.olcf.ornl.gov/calendar/tau-performance-analysis-training/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2020/02/tau_ornl20.pdf>`__ | `recording <https://vimeo.com/442482720>`__)
+    "2019-08-08", "Performance Analysis with TAU", "George Makomanolis (OLCF)", `Profiling Tools Workshop <https://www.olcf.ornl.gov/calendar/profiling-tools-workshop/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/08/profiling_tools_tau_day_2.pdf>`__ | `recording <https://vimeo.com/428143973>`__)
+    "2019-08-07", "Intro to TAU", "George Makomanolis (OLCF)", `Profiling Tools Workshop <https://www.olcf.ornl.gov/calendar/profiling-tools-workshop/>`__, (`slides <https://www.olcf.ornl.gov/wp-content/uploads/2019/08/3_tau_day_1.pdf>`__ | `recording <https://vimeo.com/427531006>`__)
