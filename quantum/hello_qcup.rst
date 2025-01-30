@@ -148,7 +148,7 @@ For more information please see:
 * `<https://tket.quantinuum.com/api-docs/>`__
 * `<https://cqcl.github.io/pytket-quantinuum/api/>`__
 * `<https://tket.quantinuum.com/api-docs/getting_started.html>`__
-* `<https://github.com/CQCL/pytket-quantinuum/tree/main/examples>`__
+* `<https://docs.quantinuum.com/h-series/trainings/getting_started/pytket_quantinuum/pytket_quantinuum.html>`__
 
 .. list-table:: Latest script tests
    :widths: 33 33 34

@@ -8,7 +8,7 @@ most recent changes are listed first.
 
 ----
 
-Frontier: Updated modules for cpe/23.12 (October 16 2024)
+Frontier: Updated Modules for cpe/23.12 (October 16 2024)
 ---------------------------------------------------------
 
 For the HPE/Cray Programming Environment 23.12 (cpe/23.12) on Frontier,
@@ -81,10 +81,10 @@ Please report any issues to help@olcf.ornl.gov.
 
 ----
 
-Frontier: Core module (October 15, 2024)
+Frontier: Core Module (October 15, 2024)
 ------------------------------------------------
 
-On October 15, 2024 the ``Core`` module on Frontier will be updated from ``Core/24.00`` to ``Core/24.07`` .  
+On October 15, 2024, the ``Core`` module on Frontier will be updated from ``Core/24.00`` to ``Core/24.07`` .  
 Please test the new module and report issues to help@olcf.ornl.gov 
 
 The table below summarizes the main version changes.
@@ -143,10 +143,10 @@ As a result of the upgrade, the following packages are now default:
     "AMD Compiler (AMD)", "5.3.0", "5.7.1"
 
 In addition to the default modules changing, the layout of the modules for the OLCF provided software stack will change.
-Going forward our core software (i.e software independent of compiler type/version) will be in a default module
-called `Core` with the version being in the format `year/month`. Additionally explicit suffixes have been added to modules to indicate MPI, OpenMP, and GPU support. 
-All modules that depend on ROCm are suffixed with `-gpu`. The same is true for packages with mpi `-mpi` and
-openmp `-omp`. Software is built to target CPE releases based on compiler (e.g. cce, amd or gcc), cray-mpich, and ROCm versions.
+Going forward our core software (i.e., software independent of compiler type/version) will be in a default module
+called ``Core`` with the version being in the format `year/month`. Additionally explicit suffixes have been added to modules to indicate MPI, OpenMP, and GPU support. 
+All modules that depend on ROCm are suffixed with ``-gpu``. The same is true for packages with mpi ``-mpi`` and
+openmp ``-omp``. Software is built to target CPE releases based on compiler (e.g., cce, amd, or gcc), cray-mpich, and ROCm versions.
 If you have an :ref:`unsupported combination <understanding-the-compatibility-of-compilers-rocm-and-cray-mpich>` of those modules you may not see certain parts of the normal software stack.
 
 Please contact help@olcf.ornl.gov if you encounter any issues or have questions.
@@ -296,7 +296,7 @@ Please contact help@olcf.ornl.gov with any issues or questions.
 
    <p style="font-size:20px"><b>Frontier: Darshan Runtime 3.4.0 (May 10, 2023)</b></p>
 
-The Darshan Runtime modulefile `darshan-runtime/3.4.0` on Frontier is now loaded by default. This module will allow users to profile the I/O of their applications with minimal impact. The logs are available to users on the Orion file system in `/lustre/orion/darshan/<system>/<yyyy>/<mm>/<dd>`. 
+The Darshan Runtime modulefile ``darshan-runtime/3.4.0`` on Frontier is now loaded by default. This module will allow users to profile the I/O of their applications with minimal impact. The logs are available to users on the Orion file system in ``/lustre/orion/darshan/<system>/<yyyy>/<mm>/<dd>``. 
 
 Unloading `darshan-runtime` modulefile is recommended for users profiling their applications with other profilers to prevent conflicts.
 
@@ -363,18 +363,18 @@ The following packages are available in this release of OpenCE:
     "OpenCV", "4.5.5"
     "DALI", "1.9.0"
     "Horovod", "0.23.0"
-
+    
 ----
 
 .. raw:: html
 
    <p style="font-size:20px"><b>Ascent: Software Installation/Default Software Changes (February 7-11, 2022)</b></p>
 
-Ascent's operating system will be upgraded to Red Hat Enterprise Linux 8 (RHEL 8) on February 7-11, 2022.  
+Ascent's operating system was upgraded to Red Hat Enterprise Linux 8 (RHEL 8) on February 7-11, 2022.  
 
 .. warning:: **Codes should be rebuilt** prior to running following the upgrade due to the OS and software changes.
 
-As a result of the upgrade, the following new packages will become available:
+As a result of the upgrade, the following new packages became available:
 
 .. csv-table::
     :header: "Package", "Current Default", "New Default"

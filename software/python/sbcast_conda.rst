@@ -10,7 +10,7 @@ This guide walks through an example of how to ``tar`` up your conda environment 
 
 OLCF Systems this guide applies to:
 
-* Frontier
+* :doc:`Frontier </systems/frontier_user_guide>`
 
 Installing Conda-Pack
 =====================

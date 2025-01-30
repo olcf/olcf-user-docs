@@ -2,8 +2,8 @@
 PyTorch on Frontier
 *******************
 
-PyTorch is a library for Python programs that pairs well with HPC resources and facilitates building DL projects.
-PyTorch emphasizes the flexibility and human-readableness of Python and allows deep learning models to be expressed in a similar manner.
+PyTorch is a library for Python programs that pairs well with HPC resources and facilitates building deep learning (DL) projects.
+PyTorch emphasizes the flexibility and human-readableness of Python and allows DL models to be expressed in a similar manner.
 Compared to other frameworks and libraries, it is one of the more "beginner friendly" ML/DL packages due to its dynamic and familiar "Pythonic" nature.
 PyTorch is also useful when GPUs are involved because of its strong GPU acceleration ability.
 On Frontier, PyTorch is able to take advantage of the many AMD GPUs available on the system.
@@ -12,7 +12,7 @@ This guide outlines installation and running best practices for PyTorch on Front
 
 OLCF Systems this guide applies to:
 
-* Frontier
+* :doc:`Frontier </systems/frontier_user_guide>`
 
 Table of Contents:
 ==================
@@ -512,7 +512,7 @@ When using PyTorch and DDP, you may get warning messages like this:
    (errno: 97 - Address family not supported by protocol).
 
 Messages like above are harmless and it does not affect PyTorch+DDP when you're using the NCCl/RCCL backend.
-Context: After PyTorch v1.x, when using tcp to initialize PyTorch DDP, the deault is to use IPv6 addresses; PyTorch falls back to use IPv4 if IPv6 does not work.
+Context: After PyTorch v1.x, when using tcp to initialize PyTorch DDP, the default is to use IPv6 addresses; PyTorch falls back to use IPv4 if IPv6 does not work.
 
 Dataset Cache
 -------------

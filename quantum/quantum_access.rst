@@ -103,8 +103,8 @@ Closeout and Quarterly Reports
 ------------------------------
 
 All QCUP projects are required to submit 
-`quarterly reports <https://www.olcf.ornl.gov/wp-content/accounts/Closeout_Template.doc>`__ and a
-`closeout report <https://www.olcf.ornl.gov/wp-content/accounts/industry_quarterly_report.doc>`__.
+`quarterly reports <https://www.olcf.ornl.gov/wp-content/uploads/industry_quarterly_report.doc>`__ and a
+`closeout report <https://www.olcf.ornl.gov/wp-content/uploads/Closeout_Template.doc>`__.
 These forms may be emailed to accounts@ccs.ornl.gov.
 
 .. _quantum-user:

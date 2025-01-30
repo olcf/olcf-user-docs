@@ -31,7 +31,7 @@ different versions of binary software packages and any required libraries
 appropriate for their computing platform.  The versatility of conda allows a
 user to essentially build their own isolated Python environment, without having
 to worry about clashing dependencies and other system installations of Python.
-Conda is available on select OLCF systems (Andes and Frontier).
+Conda is available on select OLCF systems (:doc:`Andes </systems/andes_user_guide>` and :doc:`Frontier </systems/frontier_user_guide>`).
 
 For users interested in using Python with Jupyter, see our :doc:`Jupyter at OLCF
 </services_and_applications/jupyter/overview>` page instead.

@@ -13,7 +13,7 @@ Client Setup and Usage
 
 The Linaro Forge remote client allows debugging (via DDT) or profiling (via MAP) of remote jobs, while running the GUI on your local machine. This is faster than X11 (particularly for slow connections), and provides a native GUI.
 
-In addition, the client can be used as a viewer for collected MAP profiles. See the Linaro Forge page for more information.
+In addition, the client can be used as a viewer for collected MAP profiles. See the `Linaro Forge <https://www.linaroforge.com/downloadForge/>`_ page for more information.
 
 Remote clients are available for Windows, Mac, and Linux, and can be used without an additional license.
 
@@ -46,6 +46,8 @@ Configuration
 
 
     .. tab-item:: Andes
+
+        The following section will outline how to configure the Linaro Forge client for **Andes**.
         
         .. note::
            Andes has Forge/23.1 installed. So make sure to download the corresponding remote client version from  `Linaro Forge <https://www.linaroforge.com/downloadForge/>`_ page.
@@ -53,7 +55,7 @@ Configuration
 
         **Reverse Connect Setup Instructions**
         
-        Prior to launching the reverse connect you will need to set a couple of environment variables so the connection request gets routed correctly. The following export vars will need to be sourced in your batch script prior to srun or you can just source them prior to obtaining your node allocation.
+        Prior to launching the reverse connect you will need to set a couple of environment variables so the connection request gets routed correctly. The following ``export`` vars will need to be sourced in your batch script prior to ``srun`` or you can just source them prior to obtaining your node allocation.
         
 
         .. code-block:: bash
@@ -61,7 +63,7 @@ Configuration
             export ALLINEA_CONFIG_DIR=<Somewhere on the Filesystem that can be accessed by the compute nodes i.e. /lustre/orion/<project>>
             export ALLINEA_REVERSE_CONNECT_DIR=<Somewhere on the Filesystem that can be accessed by the compute nodes i.e. /lustre/orion/<project>>
     
-        Also, if you plan on running the Forge client from your local machine (i.e. laptop), you will need to create a bash file containing the above environment vars. The file can be saved in /ccs/home/<user>. Once created and saved, you will enter the path to the file in the Forge Remote Launch setup window next to Remote Script as shown below.
+        Also, if you plan on running the Forge client from your local machine (i.e., laptop), you will need to create a bash file containing the above environment vars. The file can be saved in ``/ccs/home/<user>``. Once created and saved, you will enter the path to the file in the Forge Remote Launch setup window next to Remote Script as shown below.
 
         **Make sure you set actual paths for the above environment variables.**
 
@@ -81,7 +83,7 @@ Configuration
 
             * (Optionally) In the ``Connection Name`` box, enter a name for your remote connection (otherwise the host name will be used)
 
-            * In the ``Host Name`` box, enter your username and hostname (e.g. ``username@andes.olcf.ornl.gov``)
+            * In the ``Host Name`` box, enter your username and hostname (e.g., ``username@andes.olcf.ornl.gov``)
 
                 * If the host you wish to connect to requires connecting through a gateway machine, you can enter ``user@hostname1`` ``user@hostname2`` (where ``hostname1`` is the gateway and ``hostname2`` is the final destination).
 
@@ -106,7 +108,7 @@ Configuration
 
         **Reverse Connect**
     
-        #. In a separate terminal where you are logged into Andes, load the ``forge/23.1`` module, and run a ``ddt --connect`` command via the batch system (e.g. by editing and running a job script, or running with an interactive shell).
+        #. In a separate terminal where you are logged into Andes, load the ``forge/23.1`` module, and run a ``ddt --connect`` command via the batch system (e.g., by editing and running a job script, or running with an interactive shell).
 
             .. code-block:: bash
 
@@ -132,10 +134,12 @@ Configuration
 
     .. tab-item:: Frontier
 
+        The following section will outline how to configure the Linaro Forge client for **Frontier**.
+
 
         **Reverse Connect Setup Instructions**
         
-        Prior to launching the reverse connect you will need to set a couple of environment variables so the connection request gets routed correctly. The following export vars will need to be sourced in your batch script prior to srun or you can just source them prior to obtaining your node allocation.
+        Prior to launching the reverse connect you will need to set a couple of environment variables so the connection request gets routed correctly. The following ``export`` vars will need to be sourced in your batch script prior to srun or you can just source them prior to obtaining your node allocation.
         
 
         .. code-block:: bash
@@ -143,7 +147,7 @@ Configuration
             export ALLINEA_CONFIG_DIR=<Somewhere on the Filesystem that can be accessed by the compute nodes i.e. /lustre/orion/<project>>
             export ALLINEA_REVERSE_CONNECT_DIR=<Somewhere on the Filesystem that can be accessed by the compute nodes i.e. /lustre/orion/<project>>
     
-        Also, if you plan on running the Forge client from your local machine (i.e. laptop), you will need to create a bash file containing the above environment vars. The file can be saved in /ccs/home/<user>. Once created and saved, you will enter the path to the file in the Forge Remote Launch setup window next to Remote Script as shown below.
+        Also, if you plan on running the Forge client from your local machine (i.e., laptop), you will need to create a bash file containing the above environment vars. The file can be saved in ``/ccs/home/<user>``. Once created and saved, you will enter the path to the file in the Forge Remote Launch setup window next to Remote Script as shown below.
 
         **Make sure you set actual paths for the above environment variables.**
 
@@ -163,7 +167,7 @@ Configuration
 
             * (Optionally) In the ``Connection Name`` box, enter a name for your remote connection (otherwise the host name will be used)
 
-            * In the ``Host Name`` box, enter your username and hostname (e.g. ``username@frontier.olcf.ornl.gov``)
+            * In the ``Host Name`` box, enter your username and hostname (e.g., ``username@frontier.olcf.ornl.gov``)
 
                 * If the host you wish to connect to requires connecting through a gateway machine, you can enter ``user@hostname1`` ``user@hostname2`` (where ``hostname1`` is the gateway and ``hostname2`` is the final destination).
 
@@ -188,7 +192,7 @@ Configuration
 
         **Reverse Connect**
     
-        #. In a separate terminal where you are logged into Frontier, load the ``forge/23.1`` module, and run a ``ddt --connect`` command via the batch system (e.g. by editing and running a job script, or running with an interactive shell).
+        #. In a separate terminal where you are logged into Frontier, load the ``forge/23.1`` module, and run a ``ddt --connect`` command via the batch system (e.g., by editing and running a job script, or running with an interactive shell).
 
             .. code-block:: bash
 
@@ -211,11 +215,11 @@ Configuration
 
         When your job is executed, the ``ddt --connect`` command will establish a connection with your already-running remote client (must be running before launching the job). This provides a convenient way for the remote client to access a job within the batch system, and more importantly, avoids the need to explicitly tell DDT or MAP about any program parameters, environment variables, or module files required.
 
-        .. note::
-            If you're needing to debug an MPI+HIP code that you compile with the Cray compiler wrapper, you may want to unload the darshan-runtime module and then recompile your code. If you don't do this, Forge will error out when you start a debugging session with the ROCm option selected.
+        .. warning::
+            If you're needing to debug an MPI+HIP code that you compile with the Cray compiler wrapper, you may want to unload the ``darshan-runtime`` module and then recompile your code. If you don't do this, Forge will error out when you start a debugging session with the ROCm option selected.
 
         .. note::
-            Setting a breakpoint inside a GPU kernel is only supported for the rocm/5.6.0 at this time. Loading other rocm modules will lead to GPU driver mismatch errors. Documentation on GPU debugging with DDT can be found `here <https://docs.linaroforge.com/23.1/html/forge/ddt/gpu_debugging/index.html>`__ . 
+            Setting a breakpoint inside a GPU kernel is only supported for the ``rocm/5.6.0`` at this time. Loading other rocm modules will lead to GPU driver mismatch errors. Documentation on GPU debugging with DDT can be found `here <https://docs.linaroforge.com/23.1/html/forge/ddt/gpu_debugging/index.html>`__ . 
 
 
 
@@ -291,7 +295,7 @@ Valgrind
         profiling tools. The most popular is Memcheck, a memory checking tool
         which can detect many common memory errors such as:
 
-            - Touching memory you shouldn’t (eg. overrunning heap block boundaries, or reading/writing freed memory).
+            - Touching memory you shouldn’t (e.g., overrunning heap block boundaries, or reading/writing freed memory).
             - Using values before they have been initialized.
             - Incorrect freeing of memory, such as double-freeing heap blocks.
             - Memory leaks.
@@ -302,22 +306,19 @@ Valgrind
 
             module load valgrind
 
-        Additional information about Valgrind usage and OLCF-provided builds can
-        be found on the `Valgrind Software Page <https://www.olcf.ornl.gov/software_package/valgrind/>`__.
-
     .. tab-item:: Frontier
 
-        Valgrind4hpc is a Valgrind-based debugging tool to aid in the detection of memory leaks
-        and errors in parallel applications. Valgrind4hpc aggregates any duplicate
+        ``Valgrind4hpc`` is a Valgrind-based debugging tool to aid in the detection of memory leaks
+        and errors in parallel applications. ``Valgrind4hpc`` aggregates any duplicate
         messages across ranks to help provide an understandable picture of
-        program behavior. Valgrind4hpc manages starting and redirecting output from many
+        program behavior. ``Valgrind4hpc`` manages starting and redirecting output from many
         copies of Valgrind, as well as deduplicating and filtering Valgrind messages.
-        If your program can be debugged with Valgrind, it can be debugged with Valgrind4hpc.
+        If your program can be debugged with Valgrind, it can be debugged with ``Valgrind4hpc``.
 
-        Valgrind4hpc is available on Frontier under all compiler families:
+        ``Valgrind4hpc`` is available on Frontier under all compiler families:
 
         .. code::
 
             module load valgrind4hpc
 
-        Additional information about Valgrind4hpc usage can be found on the `HPE Cray Programming Environment User Guide Page <https://support.hpe.com/hpesc/public/docDisplay?docId=a00115110en_us&page=Debug_Applications_With_valgrind4hpc_To_Find_Common_Errors.html>`__.
+        Additional information about ``Valgrind4hpc`` usage can be found on the `HPE Cray Programming Environment User Guide Page <https://support.hpe.com/hpesc/public/docDisplay?docId=a00115110en_us&page=Debug_Applications_With_valgrind4hpc_To_Find_Common_Errors.html>`__.
