@@ -12,13 +12,13 @@ Creating the BuildConfig
 
 We will create a BuildConfig that will take a Binary (Local) source which will stream the contents of our local filesystem to the builder.
 
-First, we will log into the cluster using the **oc** CLI tool
+First, we will log into the cluster using the ``oc`` CLI tool
 
 .. code-block:: text
 
    oc login https://api.<cluster>.ccs.ornl.gov
 
-Next we will create the ImageStream that the BuildConfig will push the completed image to. The ImageStream is a direct mapping to the image stored in the OpenShift integrated registry.
+Next, we will create the ImageStream that the BuildConfig will push the completed image to. The ImageStream is a direct mapping to the image stored in the OpenShift integrated registry.
 
 .. code-block:: text
 
@@ -143,7 +143,7 @@ Once that is complete, we can see that the image was uploaded to the integrated 
 Deploy the Image
 ^^^^^^^^^^^^^^^^
 
-Now that we have built a container image we can deploy it with a Deployment object. Using the Docker Repo specified in the ImageStream we can create our deployment:
+Now that we have built a container image, we can deploy it with a Deployment object. Using the Docker Repo specified in the ImageStream we can create our deployment:
 
 .. code-block:: yaml
 
@@ -182,7 +182,7 @@ Create a file with the above contents and instantiate the objects in Kubernetes
 .. note:: 
    Snippet created with ``oc create deployment local-image --image image-registry.openshift-image-registry.svc:5000/stf002platform/local-image --dry-run -o yaml``
 
-Now once the Deployment controller creates a pod we should be able to do a port forward and test that our web server is serving our index.html file
+Now, once the Deployment controller creates a pod, we should be able to do a port forward and test that our web server is serving our index.html file
 
 .. code-block:: text
 
@@ -194,7 +194,7 @@ Now once the Deployment controller creates a pod we should be able to do a port 
    Forwarding from [::1]:8080 -> 8080
    Forwarding from 127.0.0.1:8080 -> 8080
 
-Since this is running the foreground, in a second terminal use curl to run the test:
+Since this is running the foreground, in a second terminal use ``curl`` to run the test:
 
 .. code-block:: text
    
@@ -213,7 +213,7 @@ Can you modify the **index.html** page to display "Hello from (your name)"?
   <details>
   <summary><a>Stuck?</a></summary>
 
-Modify index.html in your current directory
+Modify **index.html** in your current directory
 
 Start a new image build: oc start-build local-image --from-dir=. --follow
 

@@ -21,7 +21,7 @@ on docker builds `can be found here <https://docs.docker.com/engine/reference/co
 S2I
 ^^^
 
-Source to image is a tool to build docker formatted container images. This is accomplished by injecting source code
+Source to image (S2I) is a tool to build docker formatted container images. This is accomplished by injecting source code
 into a container image and then building a new image. The new image will contain the source code ready to run,
 via the ``$ docker run`` command inside the newly built image. 
 

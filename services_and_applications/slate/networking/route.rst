@@ -13,7 +13,7 @@ Why Routes
 ----------
 
 Routes are best used when you have created a service which communicates over HTTP or HTTPS, and you
-want this service to be accessible from outside the cluster with a FQDN.
+want this service to be accessible from outside the cluster with a fully qualified domain name (FQDN).
 
 If your application doesn't communicate over HTTP or HTTPS, you should use :ref:`slate_nodeports` instead.
 
@@ -94,7 +94,7 @@ The following command will create a secured route with passthrough termination.
    oc create route passthrough --service=my-project \
      --hostname=my-project.apps.<cluster>.ccs.ornl.gov
 
-The produced yaml will look like this:
+The produced YAML will look like this:
 
 .. code-block::
 
@@ -195,10 +195,10 @@ Requirements
 ^^^^^^^^^^^^
 
 
-* All routes require authentication
+* All routes require authentication.
 * HTTPS is required on routes for authentication so that sensitive cookie information is not leaked.
-* The authenticated user must use their NCCS Username and RSA PASSCODE to log in to OpenShift
-* The authenticated user must be on the project in order to use the application running in OpenShift
+* The authenticated user must use their NCCS Username and RSA PASSCODE to log in to OpenShift.
+* The authenticated user must be on the project in order to use the application running in OpenShift.
 
 Optional Application Authentication
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

@@ -36,12 +36,13 @@ Like ``oc``, Helm is a single binary executable.
    release page, you can copy this executable into ``/usr/local/bin`` to add it to
    ``$PATH``.
 
- **NOTE:** One nice feature of Helm is that it uses the underlying
- authentication credentials used with ``oc``, so once you login with ``oc login``,
- the helm client will authenticate automatically.
+.. note::
+  One nice feature of Helm is that it uses the underlying
+  authentication credentials used with ``oc``, so once you login with ``oc login``,
+  the helm client will authenticate automatically.
 
- Once ``oc`` and ``helm`` are setup and you are logged in with ``oc login``, test Helm:
+Once ``oc`` and ``helm`` are setup and you are logged in with ``oc login``, test Helm:
 
-  .. code-block:: bash
+.. code-block:: bash
 
-     $ helm ls
+    $ helm ls

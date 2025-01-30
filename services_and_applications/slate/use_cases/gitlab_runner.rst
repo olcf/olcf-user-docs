@@ -22,15 +22,20 @@ Prior to installation of the GitLab Runner, a registration token for the runner 
 allow a GitLab runner to register to the server in the needed location for running CI/CD jobs. Runners themselves may be registered
 to either a group as a shared runner or a project as a repository specific runner.
 
-If the runner is to be a group shared runner, navigate to the group in GitLab and then go to Settings -> CI/CD. Expand the Runners
-section of the CI/CD Settings panel. Ensure that the "Enable shared runners for this group" toggle is enabled. The
-registration token should also be available for retrieval from "Group Runners" area.
+If the runner is to be a group shared runner:
 
-If the runner is to be registered to a specific project, first ensure that the project is enabled for pipelines by navigating to
-the project in GitLab. In the Settings for the project, select General. Expand the "Visibility, project features, and permissions"
-section and locate the "Pipelines" option. If it is currently disabled, enable the "Pipelines" option and then "Save Changes".
-Once saved, refresh the project General Settings page, and locate the newly available "CI/CD Settings" option. Select "CI/CD", and
-expand the "Runners" section of the CI/CD settings. In the "Specific Runners" area, the registration token should be available for retrieval.
+#. Navigate to the group in GitLab and then go to Settings -> CI/CD. 
+#. Expand the Runners section of the CI/CD Settings panel, and ensure that the "Enable shared runners for this group" toggle is enabled. 
+#. The registration token should also be available for retrieval from "Group Runners" area.
+
+If the runner is to be registered to a specific project:
+
+#. Ensure that the project is enabled for pipelines by navigating to the project in GitLab. 
+#. In the Settings for the project, select General. 
+#. Expand the "Visibility, project features, and permissions" section and locate the "Pipelines" option. If it is currently disabled, enable the "Pipelines" option and then "Save Changes".
+#. Once saved, refresh the project General Settings page, and locate the newly available "CI/CD Settings" option. 
+#. Select "CI/CD", and expand the "Runners" section of the CI/CD settings. 
+#. In the "Specific Runners" area, the registration token should be available for retrieval.
 
 Installation and Configuration
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -45,13 +50,13 @@ To deploy a GitLab Runner from the Developer Perspective, navigate to "Topology"
 
 On the resulting screen, one can customize the installation of the GitLab Runner helm chart. The chart has been forked from upstream to
 allow for customized deployment to Slate. From the Form View, expand the "GitLab Runner" fields. Using the registration token retrieved
-in the prior section, enter token for adding the runner to the GitLab server in the empty field.
+in the prior section, enter the token for adding the runner to the GitLab server in the empty field.
 
 .. note::
 
    If the Registration Token is left blank, the runner installation will not succeed.
 
-If the GitLab Runner needs to be able to use batch scheduler command, toggle the "Enable Batch Scheduler" option to true. Then, select the
+If the GitLab Runner needs to be able to use batch scheduler command, toggle the "Enable Batch Scheduler" option to "true". Then, select the
 necessary filesystem annotation to use for the cluster the chart is being deployed. For Marble, the "olcf" annotation would be used whereas
 whereas for Onyx the "ccsopen" annotation would be used.
 
@@ -62,7 +67,7 @@ This helm chart was forked from the the upstream GitLab Runner helm chart. As su
 upstream chart could be provided here as well.
 
 To verify that the GitLab runner was properly deployed, one could explore the deployed resources from the Topology view from the
-Slate web console. Or, from the command line:
+Slate web console, or from the command line by using the following:
 
 .. code-block:: bash
 

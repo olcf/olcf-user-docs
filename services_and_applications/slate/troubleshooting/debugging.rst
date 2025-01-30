@@ -27,19 +27,19 @@ What if we want to get a shell inside of the container to debug?
 
    oc run centos-debug-test --restart=Never --image=centos -- /usr/bin/sleep 1d
 
-Lets make sure it successfully gets scheduled and started, look for ``Status: Running``
+Let's make sure it successfully gets scheduled and started, look for ``Status: Running``
 
 .. code-block:: text
 
    oc describe pod centos-debug-test
 
-Now we have a running pod, lets check it out:
+Now we have a running pod, let's check it out:
 
 .. code-block:: text
 
    oc exec -it centos-debug-test /bin/bash
 
-Now lets delete the pod:
+Now let's delete the pod:
 
 .. code-block:: text
 
