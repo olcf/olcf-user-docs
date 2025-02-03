@@ -146,10 +146,9 @@ When users are ready to run their containers on Frontier they can bind in CPE an
 .. note::
 
     We are transitioning our image builds to OCI format instead of SIF to make them more widely usable and enable security
-    scanning. For docker/podman users you will now be able to pull images from ``savannah.ornl.gov`` (as them become available).
+    scanning. For docker/podman users you will now be able to pull images from ``savannah.ornl.gov`` (as they become available).
     For apptainer users you will need to change the bootstrap type from ``oras`` to ``docker``
-    (i.e ``apptainer pull docker://savannah.ornl.gov/olcf-container-images/frontier/<...>``). Please bear with any unavailable
-    that occurs as we make this transition.
+    (i.e ``apptainer pull docker://savannah.ornl.gov/olcf-container-images/frontier/<...>``).
 
 .. table::
 
