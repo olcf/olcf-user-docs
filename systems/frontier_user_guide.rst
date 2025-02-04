@@ -3782,12 +3782,12 @@ System Updates
 
 2025-02-18
 ----------
-On Tuesday, February 18, 2025, Frontier's system software will be upgraded and the default modules will been updated.
-The following changes took place:
+On Tuesday, February 18, 2025, Frontier's system software will be upgraded and the default modules will be updated.
+The following changes will take place:
 
-- The default modules on Frontier will be updated to the HPE/Cray Programming Environment (CPE) 24.11 and ROCm/6.3.1.
+- The default modules on Frontier will be updated to the HPE/Cray Programming Environment (CPE) 24.11 and ROCm/6.2.4.
 - Upgrade to Cray OS 3.2 (SLES-15 SP6).
-- Upgrade to Slingshot Host Software 11.1.0 (``libfabric/1.22.0``). This release of ``libfabric`` is not compatible with ``cray-mpich`` < 8.1.28 (CPE/23.12), so the prior release of ``libfabric`` remains on Frontier as non-default for use with older ``cray-mpich`` modules.
+- Upgrade to Slingshot Host Software 11.1.0 (``libfabric/1.22.0``). This release of ``libfabric`` is not compatible with ``cray-mpich`` < 8.1.28 (CPE/23.12), so the prior release of ``libfabric`` will remain on Frontier as non-default for use with older ``cray-mpich`` modules.
 
 2025-01-14
 ----------
