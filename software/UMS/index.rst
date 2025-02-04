@@ -71,7 +71,14 @@ Currently Available User-Managed Software
     |            |                |                                            |                                                                                |
     |            |                |                                            | Source:            https://github.com/llvm-doe-org/llvm-project/tree/clacc/main|
     +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
-
+    | ums042     | FFTX           | Peter McCorquodale (PWMcCorquodale@lbl.gov)| FFTX high-performance FFT library                                              |
+    |            |                |                                            |                                                                                |
+    |            |                |                                            | Website:           https://spiral-software.github.io/fftx/                     |
+    |            |                |                                            |                                                                                |
+    |            |                |                                            | Issue Tracker:     https://github.com/spiral-software/fftx/issues              |
+    |            |                |                                            |                                                                                |    
+    |            |                |                                            | Source:            https://github.com/spiral-software/fftx                     |
+    +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
 
 
 Usage
