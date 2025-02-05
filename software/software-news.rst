@@ -8,6 +8,30 @@ most recent changes are listed first.
 
 ----
 
+Frontier: System Software Update (February 18, 2025)
+------------------------------------------------
+
+The Frontier system will be upgraded to a new version of the system software stack.  
+
+.. warning:: **Codes should be rebuilt** prior to running following the upgrade due to the OS and software changes.
+
+As a result of the upgrade, the following packages are now default:
+
+.. csv-table::
+    :header: "Package", "Previous Default", "New Default"
+
+    "ROCm", "5.7.1", "6.2.4"
+    "HPE/Cray Programming Environment (CPE)", "23.12", "24.11"
+    "Cray Compiler Environment (CCE)", "17.0.0", "18.0.1"
+    "GNU Compiler Collection (GCC)", "12.3.0", "13.2.0"
+    "AMD Compiler (AMD)", "5.7.1", "6.2.4"
+    "libfabric", "1.20.1", "1.22.0"
+
+As part of this upgrade, the libfabric/1.15.2.0 module will also be removed, as a new libfabric version, 1.22.0, is available.
+Version 1.20.1 will be retained, as libfabric/1.22.0 is not compatible with cray-mpich modules prior to 8.1.28.
+
+Please contact help@olcf.ornl.gov if you encounter any issues or have questions.
+
 Frontier: Updated Modules for cpe/23.12 (October 16 2024)
 ---------------------------------------------------------
 
