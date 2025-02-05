@@ -610,7 +610,8 @@ For example, to load the AMD programming environment, do: 
 
 This module will setup your programming environment with paths to software and libraries that are compatible with AMD host compilers.
 
-When loading non-default versions of Cray-provided components, please see :ref:`understanding-the-compatibility-of-compilers-rocm-and-cray-mpich` for information about loading a set of compatible Cray modules.
+When loading non-default versions of Cray-provided components, you must set ``export LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH`` at runtime.
+Additionally, please see :ref:`understanding-the-compatibility-of-compilers-rocm-and-cray-mpich` for information about loading a set of compatible Cray modules.
 
 .. note::
    Use the ``-craype-verbose`` flag to display the full include and link information used by the Cray compiler wrappers. This must be called on a file to see the full output (e.g., ``CC -craype-verbose test.cpp``).
@@ -3785,7 +3786,7 @@ System Updates
 On Tuesday, February 18, 2025, Frontier's system software will be upgraded and the default modules will be updated.
 The following changes will take place:
 
-- The default modules on Frontier will be updated to the HPE/Cray Programming Environment (CPE) 24.11 and ROCm/6.2.4.
+- ACTION RECOMMENDED: The default modules on Frontier will be updated to the HPE/Cray Programming Environment (CPE) 24.11 and ROCm/6.2.4. For teams using the default module environment on Frontier, we highly recommend preemptively upgrading and re-building your application prior to the outage. You may do so by loading the ``cpe/24.11`` module and setting ``export LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH``, as required when using non-default modules. This may be removed after the February 18 outage once CPE/24.11 is made default.
 - Upgrade to Cray OS 3.2 (SLES-15 SP6).
 - Upgrade to Slingshot Host Software 11.1.0 (``libfabric/1.22.0``). This release of ``libfabric`` is not compatible with ``cray-mpich`` < 8.1.28 (CPE/23.12), so the prior release of ``libfabric`` will remain on Frontier as non-default for use with older ``cray-mpich`` modules.
 
