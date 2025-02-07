@@ -30,6 +30,8 @@ As a result of the upgrade, the following packages are now default:
 As part of this upgrade, the libfabric/1.15.2.0 module will also be removed, as a new libfabric version, 1.22.0, is available.
 Version 1.20.1 will be retained, as libfabric/1.22.0 is not compatible with cray-mpich modules prior to 8.1.28.
 
+Please see the `Frontier System Updates post <https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#id17>`_ for further information about this upgrade.
+
 Please contact help@olcf.ornl.gov if you encounter any issues or have questions.
 
 Frontier: Updated Modules for cpe/23.12 (October 16 2024)
