@@ -4,7 +4,7 @@
 Workflows
 #########
 
-Scientific workflows are a cornerstone of modern scientific computing, and 
+Workflows are cornerstones of modern scientific computing, and 
 are used widely across scientific domains. Workflow systems provide 
 **abstraction** and **automation** for describing complex computational 
 applications that require efficient and robust management of large volumes of 
@@ -68,19 +68,11 @@ you will find a list of current frameworks natively supported in our
 +------------------------------------------------+-------------+
 | Workflow System                                | OLCF System |
 +================================================+=============+
-| :ref:`Ensemble Toolkit (EnTK)<workflows-entk>` | Summit      |
+| :ref:`Ensemble Toolkit (EnTK)<workflows-entk>` | Frontier    |
 +------------------------------------------------+-------------+
-| :ref:`FireWorks<workflows-fireworks>`          | Summit      |
+| :ref:`Parsl<workflows-parsl>`                  | Frontier    |
 +------------------------------------------------+-------------+
-| :ref:`MLflow<workflows-mlflow>`                | Summit      |
-+------------------------------------------------+-------------+
-| :ref:`Parsl<workflows-parsl>`                  | Summit      |
-+------------------------------------------------+-------------+
-| :ref:`pmake<workflows-pmake>`                  | All         |
-+------------------------------------------------+-------------+
-| :ref:`Swift/T<workflows-swiftt>`               | Summit      |
-+------------------------------------------------+-------------+
-| :ref:`libEnsemble<workflows-libensemble>`      | All         |
+| :ref:`Swift/T<workflows-swiftt>`               | Frontier    |
 +------------------------------------------------+-------------+
 
 ---------
@@ -93,10 +85,12 @@ Workflow Systems
    :maxdepth: 1
    
    entk
-   fireworks
-   mlflow
    parsl
-   pmake
    swift_t
-   libensemble
+
+.. note:: 
+    Only one workflow module may be loaded at a time as they are based on conda
+    environments. The modules will unload any other python related modules.
+    They are based on the miniforge3 module.
+
 
