@@ -48,7 +48,6 @@ project ID in the line specified:
 .. code-block:: python
 
 
-
    ======
     import parsl
     from parsl.app.app import python_app, bash_app
@@ -61,9 +60,9 @@ project ID in the line specified:
     from parsl.launchers import SrunLauncher
     from parsl.addresses import address_by_interface
 
-""" This config assumes that it is used to launch parsl tasks from the login nodes
-of Frontier at OLCF. Each job submitted to the scheduler will request 2 nodes for 10 minutes.
-"""
+    """ This config assumes that it is used to launch parsl tasks from the login nodes
+    of Frontier at OLCF. Each job submitted to the scheduler will request 2 nodes for 10 minutes.
+    """
     config = Config(
         executors=[
             HighThroughputExecutor(
