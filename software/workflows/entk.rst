@@ -31,21 +31,20 @@ Then, to use EnTK on Summit, load the module as shown below:
 
 .. code-block:: console
 
-    $ module load workflows
-    $ module load entk/1.13.0
+    $ module load entk/1.80.0
 
 Run the following command to verify that EnTK is available:
 
 .. code-block:: console
 
     $ radical-utils-version
-    1.13.0
+    5d086a
 
 Hello world!
 ============
 
-To run EnTK on Summit, you will create two files and then execute two commands
-from a Summit login node. Currently, EnTK must be run from a Summit login node,
+To run EnTK on Frontier, you will create two files and then execute two commands
+from a login node. Currently, EnTK must be run from a login node,
 rather than within a batch job.
 
 First, create a setup file ``setup.bash`` that will load the correct modules and
@@ -53,8 +52,7 @@ define environment variables.
 
 .. code-block:: bash
 
-    module load workflows
-    module load entk/1.13.0
+    module load entk/1.80.0
 
     export RADICAL_PILOT_DBURL="mongodb://admin:password@apps.marble.ccs.ornl.gov:32767/test"
     export RMQ_HOSTNAME="apps.marble.ccs.ornl.gov"
@@ -94,7 +92,7 @@ Now, create a ``demo.py3`` file with the following lines:
     # Use the objects to model the workflow.
 
     appman.resource_desc = {
-        "resource": "ornl.summit",
+        "resource": "ornl.frontier",
         "walltime": 10,
         "cpus":     1,
         "project":  "abc123" # replace with your own project identifier
@@ -126,6 +124,6 @@ login node:
     $ python3 demo.py3
 
 Congratulations! You should now see interactive output from EnTK while it
-launches and monitors your job on Summit.
+launches and monitors your job on Frontier.
 
 

@@ -8,10 +8,10 @@ Swift/T
 Overview
 ========
 
-Swift/T is a completely new implementation of the Swift language for
+Swift/T is a new implementation of the Swift language for
 high-performance computing which translates Swift scripts into MPI programs
 that use the Turbine (hence, /T) and ADLB runtime libraries. This tutorial
-shows how to get up and running with Swift/T on Summit specifically. For more
+shows how to get up and running with Swift/T on Frontier specifically. For more
 information about Swift/T, please refer to its
 `documentation <http://swift-lang.org/Swift-T/>`_.
 
@@ -19,12 +19,11 @@ information about Swift/T, please refer to its
 Prerequisites
 =============
 
-Swift/T is available as a module on Summit, and it can be loaded as follows:
+Swift/T is available as a module on Frontier, and it can be loaded as follows:
 
 .. code-block:: console
 
-    $ module load workflows
-    $ module load swift/1.5.0
+    $ module load swift-t/1.6.5
 
 You will also need to set the ``PROJECT`` environment variable:
 
@@ -36,7 +35,7 @@ You will also need to set the ``PROJECT`` environment variable:
 Hello world!
 ============
 
-To run an example "Hello world" program with Swift/T on Summit, create a
+To run an example "Hello world" program with Swift/T on Frontier, create a
 file called ``hello.swift`` with the following contents:
 
 .. code-block:: swift
@@ -48,24 +47,24 @@ Now, run the program from a shell or script:
 
 .. code-block:: console
 
-    $ swift-t -m lsf hello.swift
+    $ export PROJECT=ABC123
+    $ swift-t -m slurm hello.swift
 
 
 The output should look something like the following:
 
 .. code-block::
 
-    TURBINE-LSF SCRIPT
+    TURBINE-SLURM SCRIPT
     NODES=2
     PROCS=2
     PPN=1
-    TURBINE_OUTPUT=/ccs/home/seanwilk/turbine-output/2021/06/18/17/11/29
-    wrote: /ccs/home/seanwilk/turbine-output/2021/06/18/17/11/29/turbine-lsf.sh
-    PWD: /autofs/nccs-svm1_home2/seanwilk/turbine-output/2021/06/18/17/11/29
-    Job <1095064> is submitted to default queue <batch>.
-    JOB_ID=1095064
+    TURBINE_OUTPUT=/ccs/home/ketan2/turbine-output/2025/02/12/13/10/37
+    TURBINE_HOME=/sw/frontier/conda_envs/swift_t/swift-t/turbine
+    wrote: /ccs/home/ketan2/turbine-output/2025/02/12/13/10/37/turbine-slurm.sh
+    JOB_ID=3037491
 
-Congratulations! You have now submitted a Swift/T job to Summit. Inspect the
+Congratulations! You have now submitted a Swift/T job to Frontier. Inspect the
 ``TURBINE_OUTPUT`` directory to find the workflow outputs and other artifacts. 
 
 Cross Facility Workflow
@@ -86,7 +85,7 @@ data to produce some output. The Swift source file ``workflow.swift`` looks as f
     app (void v) processdata(file f)
     {
      // change path per your location
-     "/gpfs/alpine/scratch/ketan2/stf019/swift-work/cross-facility/processdata.sh" f ;
+     "/lustre/orion/proj-shared/stf053/swift-work/cross-facility/processdata.sh" f ;
     }
 
     for (boolean b = true; b; b=c)
@@ -151,7 +150,7 @@ In the second terminal, we will run the swift workflow as follows (make sure to 
     $ module load imagemagick # for convert utility
     $ export WALLTIME=00:10:00
     $ export PROJECT=STF019
-    $ export TURBINE_OUTPUT=/gpfs/alpine/scratch/ketan2/stf019/swift-work/cross-facility/data
-    $ swift-t -O0 -m lsf workflow.swift
+    $ export TURBINE_OUTPUT=/lustre/orion/proj-shared/stf053/swift-data
+    $ swift-t -O0 -m slurm workflow.swift
 
 If all goes well, and when the job starts running, the output will be produced in the ``data`` directory ``output.txt`` file.

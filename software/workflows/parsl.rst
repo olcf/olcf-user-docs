@@ -22,8 +22,7 @@ from a login node:
 
 .. code-block:: console
 
-    $ module load workflows
-    $ module load parsl/1.1.0
+    $ module load parsl/2024.12.2
 
 
 Hello world!
@@ -48,47 +47,50 @@ project ID in the line specified:
 
 .. code-block:: python
 
-    from parsl.addresses import address_by_interface
-    from parsl.config import Config
-    from parsl.executors import HighThroughputExecutor
-    from parsl.launchers import JsrunLauncher
-    from parsl.providers import LSFProvider
 
-    from parsl import python_app
-
+   ======
     import parsl
+    from parsl.app.app import python_app, bash_app
+    from parsl.data_provider.files import File
+    import os
+    from parsl.config import Config
+    from parsl.channels import LocalChannel
+    from parsl.providers import SlurmProvider
+    from parsl.executors import HighThroughputExecutor
+    from parsl.launchers import SrunLauncher
+    from parsl.addresses import address_by_interface
 
-    parsl.set_stream_logger()
-
+    """ This config assumes that it is used to launch parsl tasks from the login nodes
+    of Frontier at OLCF. Each job submitted to the scheduler will request 2 nodes for 10 minutes.
+    """
     config = Config(
-        executors = [
+        executors=[
             HighThroughputExecutor(
-                label = 'Summit_HTEX',
-                address = address_by_interface('ib0'),
-                worker_port_range = (50000, 55000),
-                provider = LSFProvider(
-                    launcher = JsrunLauncher(),
-                    walltime = '00:10:00',
-                    nodes_per_block = 1,
-                    init_blocks = 1,
-                    max_blocks = 1,
-                    worker_init = 'source activate parsl-py36',
-                    project = 'abc123', # replace this line
-                    cmd_timeout = 30
-                )
+                label="frontier_htex",
+                address=address_by_interface('hsn0'),
+                provider=SlurmProvider(
+                    cmd_timeout=60,
+                    channel=LocalChannel(),
+                    nodes_per_block=1,
+                    partition='extended',
+                    scheduler_options='#SBATCH -A ABC123',   # Replace by your own allocation
+                    worker_init='module load parsl/2024.12.2',
+                    walltime='00:10:00',
+                    launcher=SrunLauncher(),
+                ),
             )
-        ]
+        ],
     )
+
+    parsl.load(config)
 
     @python_app
     def hello ():
         import platform
         return 'Hello from {}'.format(platform.uname())
 
-    parsl.load(config)
     print(hello().result())
     parsl.clear()
-
 
 Now, run the program from a shell or script:
 
@@ -97,15 +99,12 @@ Now, run the program from a shell or script:
     $ python3 hello-parsl.py
 
 
-There will be a flood of output to ``stdout``, but the lines that indicate
-successful execution will look something like the following:
+In the case of a successful execution, the output to ``stdout`` will look as follows:
 
 .. code-block::
 
-    2021-06-28 16:10:46 parsl.dataflow.dflow:431 [INFO]  Task 0 completed (launched -> exec_done)
-    Hello from uname_result(system='Linux', node='a01n14', release='4.14.0-115.21.2.el7a.ppc64le', version='#1 SMP Thu May 7 22:22:31 UTC 2020', machine='ppc64le', processor='ppc64le')
+    Hello from uname_result(system='Linux', node='frontier10305', release='5.14.21-150500.55.49_13.0.57-cray_shasta_c', version='#1 SMP Sun May 12 13:35:37 UTC 2024 (33add2b)', machine='x86_64')
 
-
-Congratulations! You have now run a Parsl job on Summit.
+Congratulations! You have now run a Parsl job on Frontier.
 
 
