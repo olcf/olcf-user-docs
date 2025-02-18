@@ -1533,3 +1533,236 @@ session in first terminal:
 
     $ dcv close-session mySessionName
     $ kill %1
+
+
+.. _andes-containers:
+
+Container Usage
+===============
+
+Apptainer v1.3.4 is provided on Andes for building and running containers.
+To be able to use Apptainer on Andes for building images, the user must have the definition file for the image.
+If you have a Dockerfile rather, it is possible to convert to the Apptainer format.
+Please refer to the `Official Apptainer Docs <https://my.olcf.ornl.gov>`__
+for instructions on writing the Apptainer definition file and more on containers with Apptainer.
+
+.. note::
+    The containers section of this docs will continue to evolve and change over time
+    as we document best practices and more examples for andes.
+    Thus, if you run into issues with container builds/runs that worked previously, please be sure
+    to come back and check the docs to see if anything has changed.
+
+
+Examples for Building and Running Containers
+--------------------------------------------
+
+These examples will walk you through key steps for building and running varying kinds of containers on Andes.
+It will include building and running basic containers, MPI enabled containers and containers with GPU aware applications.
+
+
+Building a Simple Container Image
+---------------------------------
+
+This container image is for summing two vectors, ``A`` and ``B`` for ``C``.
+It installs the compilers needed for building the simple vector addition code, copies the vector_addition.c file
+into the container and compiles the code. Please follow the steps below for building this image.
+
+- Create a directory on home or lustre called ``vector_addition`` and ``cd`` into it.
+- Create a file ``vector_addition.c`` with the following content
+
+ ::
+
+   #include <stdio.h>
+   #include <stdlib.h>
+   #include <math.h>
+
+   // Size of array
+   #define N 1048576
+
+   // Main program
+   int main()
+   {
+    // Number of bytes to allocate for N doubles
+    size_t bytes = N*sizeof(double);
+
+    // Allocate memory for arrays A, B, and C on host
+    double *A = (double*)malloc(bytes);
+    double *B = (double*)malloc(bytes);
+    double *C = (double*)malloc(bytes);
+
+
+
+    // Fill host arrays A, B, and C
+    for(int i=0; i<N; i++)
+    {
+        A[i] = 1.0;
+        B[i] = 2.0;
+        C[i] = 0.0;
+    }
+
+    //Summing arrays A and B for C
+    for(int i=0; i<N; i++)
+    {
+            C[i] = A[i] + B[i];
+    }
+
+
+    // Free CPU memory
+    free(A);
+    free(B);
+    free(C);
+
+    printf("\n---------------------------\n");
+    printf("__SUCCESS__\n");
+    printf("---------------------------\n");
+    printf("N                 = %d\n", N);
+    printf("---------------------------\n");
+
+    return 0;
+   }
+
+- Create an Apptainer definition file called ``opensusebase.def`` with the content below
+
+ ::
+
+     Bootstrap: docker
+     From: opensuse/leap:15.4
+
+     %files
+     vector_addition.c /app/vector_addition.c
+
+     %post
+     echo "Installing required packages..."
+     export DEBIAN_FRONTEND=noninteractive
+     zypper install -y wget sudo gzip gcc-c++ gcc-fortran tar make autoconf automake binutils cpp glibc-devel m4 makeinfo zlib-devel gcc-info git glibc-info patch pkg-config # openssh
+     zypper install -y -t pattern devel_basis
+     zypper install -y -t pattern devel_basis
+     zypper install -y -t pattern devel_C_C++
+     zypper install -y -t pattern devel_C_C++
+
+     cd /app && g++ -o vector_addition vector_addition.c
+
+     - Now build the image with ``apptainer build opensusebase.sif opensusebase.def``
+- Your image in the Singularity Image Format (SIF) should now be available in your work directory.
+
+Running a Simple Container Through a Batch Job
+-----------------------------------------------
+
+- To run the vector addition code within the container, create the file ``submit.sh`` in the same work directory and with content below.
+  Remember to update the account ID in the submit script.
+
+ ::
+
+     #!/bin/bash
+     #SBATCH -t00:20:00
+     #SBATCH -Astf007
+     #SBATCH -N2
+     #SBATCH -J andes_tests
+     #SBATCH -o logs/%x_%j.out
+     #SBATCH -e logs/%x_%j.out
+
+
+     srun  -N1 -n1 --tasks-per-node 1 apptainer exec opensusebase.sif ./vector_addition
+
+- Submit the job with ``sbatch submit.sh``. This should produce an output that looks like
+
+::
+
+   __SUCCESS__
+  N                 = 1048576
+
+
+
+Running an MPI Application within a Container
+---------------------------------------------
+
+Openmpi is installed on Andes for running MPI applications.
+As a result, we install openmpi 4.0.4 within the container for this MPI example.
+Follow the steps below to build and run this container.
+
+- Create a new directory ``mpiexample`` and ``cd`` into it.
+
+- Create the file ``hello_world.c`` with the content below
+
+ ::
+
+    #include <stdio.h>
+    #include <mpi.h>
+
+    int main (int argc, char *argv[])
+    {
+    int rank, size;
+    MPI_Comm comm;
+
+    comm = MPI_COMM_WORLD;
+    MPI_Init (&argc, &argv);
+    MPI_Comm_rank (comm, &rank);
+    MPI_Comm_size (comm, &size);
+
+    printf("Hello from rank %d\n", rank);
+
+    MPI_Barrier(comm);
+    MPI_Finalize();
+    }
+
+- Create an Apptainer definition file ``mpiexample.def`` with the content below
+
+ ::
+
+     Bootstrap: localimage
+     From: /lustre/orion/stf016/world-shared/containers/rockybaseopenmpi404.sif
+
+     %files
+     hello_world.c /app/hello_world.c
+
+     %post
+     export OMPI_DIR=/opt/ompi
+     export PATH="$OMPI_DIR/bin:$PATH"
+     export LD_LIBRARY_PATH="$OMPI_DIR/lib:$LD_LIBRARY_PATH"
+     cd /app && mpicc -o hello_world hello_world.c
+
+- Now build the image with ``apptainer build mpiexample.sif mpiexample.def``
+
+
+- Create the batch script ``submit.sh`` for running the container with the following content. Remember to update the account
+
+ ::
+
+        #!/bin/bash
+        #SBATCH -t01:20:00
+        #SBATCH -Astf007
+        #SBATCH -N2
+        #SBATCH -J andes_mpiexample
+        #SBATCH -e logs/%x_%j.out
+
+
+
+        export APPTAINER=apptainer
+
+        module load openmpi
+        export MPICH_GPU_SUPPORT_ENABLED=1
+        export APPTAINERENV_LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$OLCF_OPENMPI_ROOT"
+        export MPICH_DIR="/sw/andes/spack-envs/base/opt/linux-rhel8-x86_64/gcc-9.3.0/openmpi-4.0.4-skxqfeiocc5jtuw3y6dwtnxzzqjp5ffs"
+        export APPTAINER_CONTAINLIBS="/usr/lib64/libjson-c.so.4,/lib64/libtinfo.so.6,/lib64/libreadline.so.7,/usr/lib64/libnl-3.so.200"
+        export BINDS=/usr/share/libdrm,/usr/lib64/slurm/libslurm_pmi.so,/lib64/libpmi2.so.0,/lib64/libpmi.so.0,/var/spool/slurm,/sw/andes/gcc/9.3.0/lib/../lib64/libatomic.so.1,/opt/mellanox/hcoll/lib/libhcoll.so.1,/sw/andes/spack-envs/base/opt/linux-rhel8-x86_64/gcc-9.3.0/libfabric-1.8.0-c75evdt25adk7fzoyox4ttc2msi72unv/lib/libfabric.so.1,/opt/mellanox/hcoll/lib/libocoms.so.0,${PWD},$MPICH_DIR
+
+
+        echo "TEST: (bind mode) MPI helloworld test"
+
+        srun  -N2 -n6 --tasks-per-node 3 $APPTAINER exec --bind $BINDS   --workdir `pwd`  mpiexample.sif  /app/hello_world
+
+- Submit the job with ``sbatch submit.sh``. This should produce an output that looks like
+
+ ::
+
+     Hello from rank 2
+     Hello from rank 0
+     Hello from rank 1
+     Hello from rank 3
+     Hello from rank 5
+     Hello from rank 4
+
+
+.. note::
+   We have verified that running an MPI application with MPICH 3.4.2 installed within the container
+   works well on Andes. Users are welcomed to try out other MPI distributions.
