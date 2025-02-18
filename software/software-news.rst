@@ -9,7 +9,7 @@ most recent changes are listed first.
 ----
 
 Frontier: System Software Update (February 18, 2025)
-------------------------------------------------
+----------------------------------------------------
 
 The Frontier system will be upgraded to a new version of the system software stack.  
 

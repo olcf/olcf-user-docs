@@ -85,6 +85,25 @@ Users have access to the API validator to check program syntax, and to the Quant
 .. note::
    A recommended workflow for running on Quantinuum's quantum computers is to utilize the syntax checker first, run on the emulator, then run on one of the quantum computers.
 
+.. _quantinuum-quotas:
+
+Default Quotas
+==============
+
+Due to limited amount of resources, the default quotas are enforced:
+
+* ``H1-1SC``, ``H2-1SC`` : Unlimited
+* ``H1-1E`` : Unlimited
+* ``H1-1``, ``H2-1``, ``H2-2`` : 0
+* ``H2-1E``, ``H2-2E`` : 2000
+
+As noted :ref:`below<quantinuum-alloc>`, quotas can be raised by sending a request to help@olcf.ornl.gov with sufficient justification.
+To see your current usage or quotas in Quantinuum Nexus (e.g., how many HQC credits you have available), navigate to the `Organization section of your Account Settings <https://nexus.quantinuum.com/settings/organization>`__.
+
+.. note::
+   For resources that have "Unlimited" quota, the dashboard may make it seem like you do not have access to those resources; however, you do. If you have problems accessing those resources, please reach out to help@olcf.ornl.gov.
+
+
 .. _quantinuum-alloc:
 
 Allocations & Credit Usage
@@ -92,7 +111,6 @@ Allocations & Credit Usage
 
 Running a job on the System Model H1 family and System Model H2 hardware requires Quantinuum Credits.
 Additional information on credit usage for H-Series devices can be found in the `H-Series User Guide <https://docs.quantinuum.com/h-series/user_guide/hardware_user_guide/system_operation.html#estimating-circuit-time>`__.
-Due to increased demand and to make the most efficient use of credits, the following allocating policy will go into effect starting October 1st 2022:
 
 * Any request for credits must be submitted by the project Principle Investigator (PI) to help@olcf.ornl.gov
 
@@ -100,15 +118,12 @@ Due to increased demand and to make the most efficient use of credits, the follo
 
 * Requests will be evaluated based on the provided technical justification, programmatic efficiency, and machine availability. The effective usage of prior allocations by the project will also be considered.
 
-* Allocations will be granted on a monthly basis to maximize the availability of the H1 family and H2 machines. Please note that allocations do not carry over to the next month and must be consumed in the month granted.
+* Allocations will be granted on a monthly basis to maximize the availability of the H1 family and H2 machines. Please note that allocations do not carry over to the next month and must be consumed in the month granted. **Credits reset on the first day of every month.**
  
 * Allocation requests requiring 20 qubits and fewer will be considered for H1 family machines, and allocation requests requiring 21 or more qubits will be considered for H2.
 
 Allocation requests for the following month must be submitted no later than the 25th of the preceding month.
 The uptime schedule is available on the *Calendar* tab of the legacy `Quantinuum User Portal <https://um.qapi.quantinuum.com/>`__, or by navigating to a specific backend in Nexus (e.g., for H1-1: https://nexus.quantinuum.com/backends/Quantinuum/H1-1 ).
-
-
-Due to hardware emulation complexity, jobs using greater than 29 qubits for statevector emulation are likely to experience significantly slowed execution times. 
 
 Software
 ========
@@ -117,12 +132,14 @@ The TKET framework is a software platform for the development and execution of g
 It was created and is maintained by Quantinuum.
 The toolset is designed to extract the most out of the available NISQ devices of today and is platform-agnostic.
 
-In python, the ``pytket`` package is available for python 3.10+.
-The ``pytket`` and ``pytket-quantinuum`` packages are included as part of the installation instructions on the user portal.
+The ``pytket`` package is a python module for interfacing with tket (available for python 3.10+).
+The ``pytket-quantinuum`` package is a python client enabling access to Quantinuum Systems, which is an alternative job submission tool to ``qnexus`` -- the python client to Quantinuum Nexus.
 
 For more information, see the following links:
 
 * `pytket documentation <https://tket.quantinuum.com/api-docs/>`__
 * `pytket-quantinuum documentation <https://tket.quantinuum.com/extensions/pytket-quantinuum/>`__
+* `qnexus documentation <https://docs.quantinuum.com/nexus/>`__
 
-
+.. warning::
+   Please note that the platform ``pytket-quantinuum`` serves is being replaced by Quantinuum Nexus and will be deprecated **March 31, 2025**. After this date, ``pytket-quantinuum`` will not be compatible with Quantinuum Nexus. For guidance on how to access H-Series through Nexus, please use the `qnexus <https://pypi.org/project/qnexus/>`__ Python package and the `Nexus Getting Started guide <https://docs.quantinuum.com/nexus/trainings/getting_started.html>`__.
