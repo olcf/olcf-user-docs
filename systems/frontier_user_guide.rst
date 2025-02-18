@@ -3783,13 +3783,13 @@ System Updates
 
 2025-02-18
 ----------
-On Tuesday, February 18, 2025, Frontier's system software will be upgraded and the default modules will be updated.
+On Tuesday, February 18, 2025, Frontier's system software was upgraded and the default modules were updated.
 The following changes will take place:
 
-- ACTION RECOMMENDED: The default modules on Frontier will be updated to the HPE/Cray Programming Environment (CPE) 24.11 and ROCm/6.2.4. For teams using the default module environment on Frontier, we highly recommend preemptively upgrading and re-building your application prior to the outage. You may do so by loading the ``cpe/24.11`` module and setting ``export LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH``, as required when using non-default modules. This may be removed after the February 18 outage once CPE/24.11 is made default.
+- ACTION REQUIRED: The default modules on Frontier have been updated to the HPE/Cray Programming Environment (CPE) 24.11 and ROCm/6.2.4. For any teams using the default modules, application code must be re-compiled and re-linked prior to running after the outage.
 - Upgrade to Cray OS 3.2 (SLES-15 SP6).
-- Upgrade to Slingshot Host Software 11.1.0 (``libfabric/1.22.0``). This release of ``libfabric`` is not compatible with ``cray-mpich`` < 8.1.28 (CPE/23.12), so the prior release of ``libfabric`` will remain on Frontier as non-default for use with older ``cray-mpich`` modules.
-- ``libfabric/1.15.2.0`` will be going away, as the performance regression in ``libfabric/1.20.1`` has been fixed as of the January 14, 2025 outage. Please retry running with the default ``libfabric/1.20.1``.
+- Upgrade to Slingshot Host Software 11.1.0 (``libfabric/1.22.0``). This release of ``libfabric`` is not compatible with ``cray-mpich`` < 8.1.28 (CPE/23.12), so the prior release of ``libfabric`` (1.20.1) will remain on Frontier as non-default for use with older ``cray-mpich`` modules.
+- ``libfabric/1.15.2.0`` has been removed, as the performance regression in ``libfabric/1.20.1`` has been fixed as of the January 14, 2025 outage. Please retry running with the default ``libfabric`` (1.22.0).
 
 Please see the `Software News post <https://docs.olcf.ornl.gov/software/software-news.html#frontier-system-software-update-february-18-2025>`_ for further information about the new default modules.
 
