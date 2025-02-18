@@ -11,7 +11,7 @@ most recent changes are listed first.
 Frontier: System Software Update (February 18, 2025)
 ----------------------------------------------------
 
-The Frontier system will be upgraded to a new version of the system software stack.  
+The Frontier system was upgraded to a new version of the system software stack.
 
 .. warning:: **Codes should be rebuilt** prior to running following the upgrade due to the OS and software changes.
 
@@ -27,8 +27,8 @@ As a result of the upgrade, the following packages are now default:
     "AMD Compiler (AMD)", "5.7.1", "6.2.4"
     "libfabric", "1.20.1", "1.22.0"
 
-As part of this upgrade, the libfabric/1.15.2.0 module will also be removed, as a new libfabric version, 1.22.0, is available.
-Version 1.20.1 will be retained, as libfabric/1.22.0 is not compatible with cray-mpich modules prior to 8.1.28.
+As part of this upgrade, the libfabric/1.15.2.0 module has also be removed, as a new libfabric version, 1.22.0, is available.
+Version 1.20.1 is retained, as libfabric/1.22.0 is not compatible with cray-mpich modules prior to 8.1.28.
 
 Please see the `Frontier System Updates post <https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#id17>`_ for further information about this upgrade.
 
