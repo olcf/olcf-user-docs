@@ -21,7 +21,7 @@ To install ``conda-pack``, install it from the ``conda-forge`` channel like so:
 
 .. code-block:: bash
 
-   conda install -c conda-forge conda-pack
+   conda install conda-pack -c conda-forge
 
 .. note::
    If ``conda-pack`` is unable to be installed in your production environment, you can install ``conda-pack`` in a separate environment instead and follow a similar workflow.
@@ -49,20 +49,20 @@ First, let's load our modules and setup the environment:
 .. code-block:: bash
 
    # Loading the relevant modules
-   module load PrgEnv-gnu/8.5.0
-   module load rocm/5.7.1
+   module load PrgEnv-gnu/8.6.0
+   module load rocm/6.2.4
    module load craype-accel-amd-gfx90a
 
    # Create your conda environment
    module load miniforge3/23.11.0-0
-   conda create -p $MEMBERWORK/<PROJECT_ID>/torch_env python=3.10
+   conda create -p $MEMBERWORK/<PROJECT_ID>/torch_env python=3.10 -c conda-forge
    source activate $MEMBERWORK/<PROJECT_ID>/torch_env
 
-   # Install PyTorch w/ ROCm 5.7 support from pre-compiled binary
-   pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm5.7
+   # Install PyTorch w/ ROCm 6.2 support from pre-compiled binary
+   pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.2
 
    # Install Conda-Pack into your environment
-   conda install -c conda-forge conda-pack
+   conda install conda-pack -c conda-forge
 
 
 Next, let's pack our new conda environment:
@@ -98,8 +98,8 @@ Below is an example batch script that uses ``sbcast``, unpacks our environment, 
    unset SLURM_EXPORT_ENV
 
    # Setup modules
-   module load PrgEnv-gnu/8.5.0
-   module load rocm/5.7.1
+   module load PrgEnv-gnu/8.6.0
+   module load rocm/6.2.4
    module load miniforge3/23.11.0-0
    module load craype-accel-amd-gfx90a
 
