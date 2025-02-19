@@ -10,4 +10,3 @@ Profiling Tools
 
    Scorep
    TAU
-   Vampir
