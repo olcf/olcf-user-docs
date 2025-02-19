@@ -15,7 +15,7 @@ OLCF Systems this guide applies to:
 +------------+-------------------------+
 | ``python`` | .. centered:: ``jax``   |
 +============+=========================+
-|  3.11.10   |  0.4.35                 |
+|  3.11.11   |  0.4.35                 |
 +------------+-------------------------+
 
 
@@ -35,8 +35,8 @@ First, load the correct modules:
 
       .. code-block:: bash
 
-         module load PrgEnv-gnu/8.5.0
-         module load rocm/6.1.3 # may work with ROCm 6.0.0 and 6.2.x
+         module load PrgEnv-gnu/8.6.0
+         module load rocm/6.2.4 # may work with ROCm 6.0.0 and 6.1.x
          module load craype-accel-amd-gfx90a
          module load miniforge3/23.11.0-0
 
@@ -49,7 +49,7 @@ Loading a python module puts you in a "base" environment, but you need to create
 
       .. code-block:: bash
 
-         conda create -n jax_env-frontier python=3.11.10 numpy scipy -c conda-forge
+         conda create -n jax_env-frontier python=3.11 numpy scipy -c conda-forge
          source activate jax_env-frontier
 
 .. note::
@@ -72,14 +72,11 @@ Now that you have a fresh environment, we will install things into your new envi
 
       .. code-block:: bash
 
-         # Install jaxlib
-         pip install https://github.com/ROCm/jax/releases/download/rocm-jax-v0.4.35/jaxlib-0.4.35-cp311-cp311-manylinux_2_28_x86_64.whl
-
          # Install the ROCm plugins
-         pip install https://github.com/ROCm/jax/releases/download/rocm-jax-v0.4.35/jax_rocm60_pjrt-0.4.35-py3-none-manylinux_2_28_x86_64.whl https://github.com/ROCm/jax/releases/download/rocm-jax-v0.4.35/jax_rocm60_plugin-0.4.35-cp311-cp311-manylinux_2_28_x86_64.whl
+         pip install jax-rocm60-pjrt==0.4.35 jax-rocm60-plugin==0.4.35 --no-cache-dir
 
-         # Install JAX
-         pip install jax==0.4.35
+         # Install JAX (will also install jaxlib)
+         pip install jax==0.4.35 --no-cache-dir
 
 
 Testing JAX

@@ -33,7 +33,7 @@ First, load the python module and the gnu compiler module (most Python packages 
 
       .. code-block:: bash
 
-         $ module load PrgEnv-gnu/8.5.0
+         $ module load PrgEnv-gnu/8.6.0
          $ module load miniforge3/23.11.0-0
 
 

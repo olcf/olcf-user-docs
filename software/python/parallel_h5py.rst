@@ -27,7 +27,7 @@ OLCF Systems this guide applies to:
 +------------+----------+------------+
 | ``python`` | ``h5py`` | ``mpi4py`` |
 +============+==========+============+
-|  3.11.11   |  3.12.1  |   4.0.1    |
+|  3.11.11   |  3.13.0  |   4.0.3    |
 +------------+----------+------------+
 
 .. note::
@@ -82,8 +82,8 @@ First, load the gnu compiler module (most Python packages assume GCC), hdf5 modu
 
       .. code-block:: bash
 
-         module load PrgEnv-gnu/8.5.0
-         module load cray-hdf5-parallel/1.12.2.9
+         module load PrgEnv-gnu/8.6.0
+         module load cray-hdf5-parallel/1.12.2.11
          module load miniforge3/23.11.0-0
 
 .. note::
@@ -270,8 +270,8 @@ Example "submit_hello" batch script:
          cd $SLURM_SUBMIT_DIR
          date
 
-         module load PrgEnv-gnu/8.5.0
-         module load cray-hdf5-parallel/1.12.2.9
+         module load PrgEnv-gnu/8.6.0
+         module load cray-hdf5-parallel/1.12.2.11
          module load miniforge3/23.11.0-0
 
          source activate h5pympi-frontier
@@ -387,8 +387,8 @@ Example "submit_h5py" batch script:
          cd $SLURM_SUBMIT_DIR
          date
 
-         module load PrgEnv-gnu/8.5.0
-         module load cray-hdf5-parallel/1.12.2.9
+         module load PrgEnv-gnu/8.6.0
+         module load cray-hdf5-parallel/1.12.2.11
          module load miniforge3/23.11.0-0
 
          source activate h5pympi-frontier
