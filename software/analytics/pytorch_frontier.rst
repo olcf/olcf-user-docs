@@ -41,23 +41,23 @@ First, load your modules:
 
 .. code-block:: bash
 
-   module load PrgEnv-gnu/8.5.0
+   module load PrgEnv-gnu/8.6.0
    module load miniforge3/23.11.0-0
-   module load rocm/6.1.3
+   module load rocm/6.2.4
    module load craype-accel-amd-gfx90a
  
 Next, create and activate a conda environment that we will install ``torch`` into:
 
 .. code-block:: bash
 
-   conda create -p /path/to/my_env python=3.11 -c conda-forge
+   conda create -p /path/to/my_env python=3.10 -c conda-forge
    source activate /path/to/my_env
 
 Finally, install PyTorch:
 
 .. code-block:: bash
 
-   pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.1
+   pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.2
    
 You should now be ready to use PyTorch on Frontier!
 
@@ -281,8 +281,8 @@ To run the python script, an example batch script is given below:
    unset SLURM_EXPORT_ENV
 
    # Load modules
-   module load PrgEnv-gnu/8.5.0
-   module load rocm/6.1.3
+   module load PrgEnv-gnu/8.6.0
+   module load rocm/6.2.4
    module load craype-accel-amd-gfx90a
    module load miniforge3/23.11.0-0
 
@@ -338,9 +338,9 @@ Setting the variables above are of utmost importance when using multiple nodes.
 Torchrun
 --------
 
-Please avoid using ``torchrun`` if possible.
-It is recommended to use ``srun`` to handle the task mapping instead.
-On Frontier, the use of ``torchrun`` significantly impacts the performance of your code.
+Use ``torchrun`` at your own risk.
+It is recommended to use ``srun`` to handle the task mapping instead, and to avoid ``torchrun`` completely.
+On Frontier, the use of ``torchrun`` can significantly impact the performance of some applications; however, if your application is strongly tied to ``torchrun``, you can try testing it with your application at your own risk.
 Initial tests have shown that a script which normally runs on order of 10 seconds can take up to 10 minutes to run when using ``torchrun`` -- over an order of magnitude worse!
 Additionally, nesting ``torchrun`` within ``srun`` (i.e., ``srun torchrun ...``) does not help, as the two task managers will clash.
 
@@ -366,15 +366,15 @@ To build the plugin on Frontier (using rocm 5.7.1 as an example):
 
 .. code-block:: bash
 
-   rocm_version=5.7.1
+   rocm_version=6.2.4
 
    # Load modules
-   module load PrgEnv-gnu/8.5.0
+   module load PrgEnv-gnu/8.6.0
    module load rocm/$rocm_version
    module load craype-accel-amd-gfx90a
-   module load gcc-native/12.3
-   module load cray-mpich/8.1.28
-   libfabric_path=/opt/cray/libfabric/1.20.1
+   module load gcc-native/13.2
+   module load cray-mpich/8.1.31
+   libfabric_path=/opt/cray/libfabric/1.22.0
 
    # Download the plugin repo
    git clone --recursive https://github.com/ROCmSoftwarePlatform/aws-ofi-rccl
@@ -385,7 +385,7 @@ To build the plugin on Frontier (using rocm 5.7.1 as an example):
    export LD_LIBRARY_PATH=/opt/rocm-$rocm_version/hip/lib:$LD_LIBRARY_PATH
    PLUG_PREFIX=$PWD
 
-   CC=hipcc CFLAGS=-I/opt/rocm-$rocm_version/rccl/include ./configure \
+   CC=hipcc CFLAGS=-I/opt/rocm-$rocm_version/include ./configure \
    --with-libfabric=$libfabric_path --with-rccl=/opt/rocm-$rocm_version --enable-trace \
    --prefix=$PLUG_PREFIX --with-hip=/opt/rocm-$rocm_version/hip --with-mpi=$MPICH_DIR
 
