@@ -1642,7 +1642,7 @@ into the container and compiles the code. Please follow the steps below for buil
 
      cd /app && g++ -o vector_addition vector_addition.c
 
-     - Now build the image with ``apptainer build opensusebase.sif opensusebase.def``
+- Now build the image with ``apptainer build opensusebase.sif opensusebase.def``
 - Your image in the Singularity Image Format (SIF) should now be available in your work directory.
 
 Running a Simple Container Through a Batch Job
@@ -1734,6 +1734,7 @@ Follow the steps below to build and run this container.
         #SBATCH -N2
         #SBATCH -J andes_mpiexample
         #SBATCH -e logs/%x_%j.out
+        #SBATCH -o logs/%x_%j.out
 
 
 
@@ -1743,7 +1744,7 @@ Follow the steps below to build and run this container.
         export MPICH_GPU_SUPPORT_ENABLED=1
         export APPTAINERENV_LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$OLCF_OPENMPI_ROOT"
         export MPICH_DIR="/sw/andes/spack-envs/base/opt/linux-rhel8-x86_64/gcc-9.3.0/openmpi-4.0.4-skxqfeiocc5jtuw3y6dwtnxzzqjp5ffs"
-        export APPTAINER_CONTAINLIBS="/usr/lib64/libjson-c.so.4,/lib64/libtinfo.so.6,/lib64/libreadline.so.7,/usr/lib64/libnl-3.so.200"
+        export APPTAINER_CONTAINLIBS="/usr/lib64/libjson-c.so.4,/usr/lib64/libnl-3.so.200"
         export BINDS=/usr/share/libdrm,/usr/lib64/slurm/libslurm_pmi.so,/lib64/libpmi2.so.0,/lib64/libpmi.so.0,/var/spool/slurm,/sw/andes/gcc/9.3.0/lib/../lib64/libatomic.so.1,/opt/mellanox/hcoll/lib/libhcoll.so.1,/sw/andes/spack-envs/base/opt/linux-rhel8-x86_64/gcc-9.3.0/libfabric-1.8.0-c75evdt25adk7fzoyox4ttc2msi72unv/lib/libfabric.so.1,/opt/mellanox/hcoll/lib/libocoms.so.0,${PWD},$MPICH_DIR
 
 
