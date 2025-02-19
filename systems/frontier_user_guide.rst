@@ -3041,7 +3041,8 @@ A job script for the previous example, modified for sending all libraries is sho
     # cray-mpich dlopen's libhsa-runtime64.so and libamdhip64.so (non-versioned), so symlink on each node:
     srun -N ${SLURM_NNODES} -n ${SLURM_NNODES} --ntasks-per-node=1 --label -D /mnt/bb/$USER/${exe}_libs \
         bash -c "if [ -f libhsa-runtime64.so.1 ]; then ln -s libhsa-runtime64.so.1 libhsa-runtime64.so; fi;
-        if [ -f libamdhip64.so.5 ]; then ln -s libamdhip64.so.5 libamdhip64.so; fi"
+        if [ -f libamdhip64.so.5 ]; then ln -s libamdhip64.so.5 libamdhip64.so; fi;
+        elif [ -f libamdhip64.so.6 ]; then ln -s libamdhip64.so.6 libamdhip64.so; fi"
 
     # RocBLAS has over 1,000 device libraries that may be `dlopen`'d by RocBLAS during a run.
     # It's impractical to SBCAST all of these, so you can set this path instead, if you use RocBLAS:
@@ -3784,7 +3785,7 @@ System Updates
 2025-02-18
 ----------
 On Tuesday, February 18, 2025, Frontier's system software was upgraded and the default modules were updated.
-The following changes will take place:
+The following changes took place:
 
 - ACTION REQUIRED: The default modules on Frontier have been updated to the HPE/Cray Programming Environment (CPE) 24.11 and ROCm/6.2.4. For any teams using the default modules, application code must be re-compiled and re-linked prior to running after the outage.
 - Upgrade to Cray OS 3.2 (SLES-15 SP6).
