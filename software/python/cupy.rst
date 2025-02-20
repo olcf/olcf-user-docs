@@ -75,7 +75,7 @@ First, load the gnu compiler module (most Python packages assume GCC), relevant 
 
       .. code-block:: bash
 
-         module load PrgEnv-gnu/8.5.0
+         module load PrgEnv-gnu/8.6.0
          module load rocm/5.7.1 # may work with other ROCm versions
          module load craype-accel-amd-gfx90a
          module load miniforge3/23.11.0-0

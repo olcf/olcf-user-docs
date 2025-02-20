@@ -362,7 +362,7 @@ AWS-OFI-RCCL Plugin
 The `AWS-OFI-RCCL plugin <https://github.com/ROCm/aws-ofi-rccl>`__ enables using libfabric as a network provider while running AMD's RCCL based applications.
 This plugin can be built and used by common ML/DL libraries like PyTorch to increase performance when running on AMD GPUs.
 
-To build the plugin on Frontier (using rocm 5.7.1 as an example):
+To build the plugin on Frontier (using ROCm 6.2.4 as an example):
 
 .. code-block:: bash
 
