@@ -3913,4 +3913,7 @@ On Tuesday, May 9, 2023, the `darshan-runtime` modulefile was added to `DefApps`
 Known Issues
 ============
 
+.. raw:: html
+   :file: issues_table.html
+
 .. JIRA_CONTENT_HERE

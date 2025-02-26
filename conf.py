@@ -124,6 +124,11 @@ class PatchedHTMLTranslator(HTMLTranslator):
 def setup(app):
     '''Function to setup sphinx customizations.'''
     app.set_translator('html', PatchedHTMLTranslator)
+    # Add DataTables JavaScript
+    app.add_js_file('https://cdn.datatables.net/2.2.1/js/dataTables.js')
+    app.add_js_file('https://code.jquery.com/jquery-3.7.1.js')
+    # Add DataTables CSS
+    app.add_css_file('https://cdn.datatables.net/2.2.1/css/dataTables.dataTables.css')
 
 
 # globally-available substitutions
