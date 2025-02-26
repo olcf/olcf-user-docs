@@ -3489,6 +3489,14 @@ ROCm Compute Profiler is a Python tool with non-standard dependencies.
 As such, we provide a conda environment built using the miniforge3 module if we detect that you do not have your own Python version loaded (ie, if ``which python3`` returns ``/usr/bin/python3``).
 Warnings will be printed out when the module is loaded if the pre-built conda environment is not loaded.
 
+For example, to use rocprofiler-compute:
+
+.. code::
+ 
+    module load rocm
+    module load rocprofiler-compute
+
+
 As a rule of thumb, always load the ``rocprofiler-compute`` module last (especially after you load a ROCm module).
 If you load a new version of ROCm, you will need to re-load ``rocprofiler-compute``.
 
