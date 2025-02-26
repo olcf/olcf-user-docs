@@ -3133,25 +3133,23 @@ Valgrind4hpc is available on Frontier under all compiler families:
 Additional information about Valgrind4hpc usage can be found on the `HPE Cray Programming Environment User Guide Page <https://support.hpe.com/hpesc/public/docDisplay?docId=a00115110en_us&page=Debug_Applications_With_valgrind4hpc_To_Find_Common_Errors.html>`__.
 
 
-Omnitrace
----------
+Omnitrace/ROCm Systems Profiler
+-------------------------------
 
-OLCF provides installations of AMD's `Omnitrace <https://github.com/AMDResearch/omnitrace>`_ profiling tools on Frontier.
-AMD provides documentation on the usage of Omnitrace (rebranded to ROCm Systems Profiler) at `<https://rocm.docs.amd.com/projects/rocprofiler-systems/en/latest/index.html>`_.
-This section details the installation and common pitfalls of the ``omnitrace`` module on Frontier.
+OLCF provides installations of AMD's `Omnitrace <https://github.com/AMDResearch/omnitrace>`_ and the new re-branded `ROCm Systems Profiler <https://rocm.docs.amd.com/projects/rocprofiler-systems/en/latest/index.html>`_ profiling tools on Frontier.
+AMD provides documentation on the usage of the ROCm Systems Profiler at `<https://rocm.docs.amd.com/projects/rocprofiler-systems/en/latest/index.html>`_.
+This section details the installation and common pitfalls of the ``omnitrace`` and ``rocprofiler-systems`` modules on Frontier.
 
-Unlike ``omniperf``, the ``omnitrace`` module only relies on a ROCm module.
-A ROCm module must be loaded before being able to do view or load the ``omnitrace`` module.
-As a rule of thumb, always load the ``omnitrace`` module last (especially after you load a ROCm module).
-If you load a new version of ROCm, you will need to re-load ``omnitrace``.
+A ROCm module must be loaded before being able to view or load either the ``omnitrace`` or ``rocprofiler-systems`` modules.
+As a rule of thumb, always load the profiler's module last (but specifically after you load a ROCm module).
+If you load a new version of ROCm, you will need to re-load the profiler module.
 
-To use ``omnitrace``, you may use the following commands
+To use ``omnitrace`` or ``rocprofiler-systems``, you may use the following commands
 
 .. code::
  
     module load rocm
-    module load omnitrace
-
+    module load omnitrace # or module load rocprofiler-systems
 
 Profiling Applications
 ======================
@@ -3274,6 +3272,9 @@ More detailed information on HPCToolkit can be found in the `HPCToolkit User's M
 Getting Started with the ROCm Profiler
 --------------------------------------
 
+Rocprof v1 (For ROCm<=6.5)
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 ``rocprof`` gathers metrics on kernels run on AMD GPU architectures. The profiler works for HIP kernels, as well as offloaded kernels from OpenMP target offloading, OpenCL, and abstraction layers such as Kokkos.
 For a simple view of kernels being run, ``rocprof --stats --timestamp on`` is a great place to start.
 With the ``--stats`` option enabled, ``rocprof`` will generate a file that is named ``results.stats.csv`` by default, but named ``<output>.stats.csv`` if the ``-o`` flag is supplied.
@@ -3285,6 +3286,20 @@ More detailed infromation on ``rocprof`` profiling modes can be found at `ROCm P
     If you are using ``sbcast``, you need to explicitly ``sbcast`` the AQL profiling library found in ``${ROCM_PATH}/hsa-amd-aqlprofile/lib/libhsa-amd-aqlprofile64.so``.
     A symbolic link to this library can also be found in ``${ROCM_PATH}/lib``.
     Alternatively, you may leave ``${ROCM_PATH}/lib`` in your ``LD_LIBRARY_PATH``.
+
+.. warning::
+
+    ``rocprof`` should not be used in ROCm/6.2 due to an accuracy issue, as documented by `OLCFDEV-1825 <https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#olcfdev-1825-rocprof-incorrect-profiling-results-beginning-in-rocm-6-2-0>`__. This is resolved by ROCm/6.3.
+
+Rocprof v3 (For ROCm>=6.2)
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+``rocprofv3`` was introduced in ROCm/6.2 and utilizes the new rocprofiler API in ROCm.
+The same information can be queried as with ``rocprof``, but the command-line flags for ``rocprofv3`` are slightly different than ``rocprof``.
+For exampe, to get a simple view of kernels being run, you will want to use ``rocprofv3 --kernel-trace --stats -- ./myexecutable`` instead of ``rocprof --stats ./myexecutable``.
+``rocprofv3`` will also default output to files named based on the process ID of the profiled run.
+In the previous kernel tracing command, the stats will be found in a file named ``<somePID>_kernel_stats.csv``.
+You can use the ``--output`` flag to override the resulting CSV file name.
 
 
 Roofline Profiling with the ROCm Profiler
@@ -3299,13 +3314,17 @@ The model detailed here calculates the bytes moved as they move to and from the 
 
     Integer instructions and cache levels are currently not documented here.
 
+Gathering data using rocprof or rocprofv3
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 To get started, you will need to make an input file for ``rocprof``, to be passed in through ``rocprof -i <input_file> --timestamp on -o my_output.csv <my_exe>``.
+This same input file is valid for ``rocprofv3`` (in ROCm >= 6.2).
 Below is an example, and contains the information needed to roofline profile GPU 0, as seen by each rank:
 
 .. code::
 
-    pmc : TCC_EA_RDREQ_32B_sum TCC_EA_RDREQ_sum TCC_EA_WRREQ_sum TCC_EA_WRREQ_64B_sum SQ_INSTS_VALU_ADD_F16 SQ_INSTS_VALU_MUL_F16 SQ_INSTS_VALU_FMA_F16 SQ_INSTS_VALU_TRANS_F16 SQ_INSTS_VALU_ADD_F32 SQ_INSTS_VALU_MUL_F32 SQ_INSTS_VALU_FMA_F32 SQ_INSTS_VALU_TRANS_F32
-    pmc : SQ_INSTS_VALU_ADD_F64 SQ_INSTS_VALU_MUL_F64 SQ_INSTS_VALU_FMA_F64 SQ_INSTS_VALU_TRANS_F64 SQ_INSTS_VALU_MFMA_MOPS_F16 SQ_INSTS_VALU_MFMA_MOPS_BF16 SQ_INSTS_VALU_MFMA_MOPS_F32 SQ_INSTS_VALU_MFMA_MOPS_F64
+    pmc: TCC_EA_RDREQ_32B_sum TCC_EA_RDREQ_sum TCC_EA_WRREQ_sum TCC_EA_WRREQ_64B_sum SQ_INSTS_VALU_ADD_F16 SQ_INSTS_VALU_MUL_F16 SQ_INSTS_VALU_FMA_F16 SQ_INSTS_VALU_TRANS_F16 SQ_INSTS_VALU_ADD_F32 SQ_INSTS_VALU_MUL_F32 SQ_INSTS_VALU_FMA_F32 SQ_INSTS_VALU_TRANS_F32
+    pmc: SQ_INSTS_VALU_ADD_F64 SQ_INSTS_VALU_MUL_F64 SQ_INSTS_VALU_FMA_F64 SQ_INSTS_VALU_TRANS_F64 SQ_INSTS_VALU_MFMA_MOPS_F16 SQ_INSTS_VALU_MFMA_MOPS_BF16 SQ_INSTS_VALU_MFMA_MOPS_F32 SQ_INSTS_VALU_MFMA_MOPS_F64
     gpu: 0
 
 
@@ -3323,6 +3342,8 @@ For example:
 .. code:: bash
 
     srun -N 2 -n 16 --ntasks-per-node=8 --gpus-per-node=8 --gpu-bind=closest bash -c 'rocprof -o ${SLURM_JOBID}_${SLURM_PROCID}.csv -i <input_file> --timestamp on <exe>'
+    OR for rocprofv3:
+    srun -N 2 -n 16 --ntasks-per-node=8 --gpus-per-node=8 --gpu-bind=closest bash -c 'rocprofv3 -o ${SLURM_JOBID}_${SLURM_PROCID}.csv -i <input_file> --kernel-trace -- <exe>'
 
 
 .. note::
@@ -3330,6 +3351,16 @@ For example:
     The ``gpu:`` filter in the ``rocprof`` input file identifies GPUs by the number the MPI rank would see them as. In the ``srun`` example above,
     each MPI rank only has 1 GPU, so each rank sees its GPU as GPU 0.
 
+Additional steps for rocprofv3
+==============================
+
+``rocprofv3`` does not do any counter aggregation in large counter-collecting runs, so you will find that you get one directory per `pmc` block in the ``rocprofv3`` input file, named ``pmc_1``, ``pmc_2``, and so on.
+If you want to have a single file output, like with ``rocprof``, you will need to run the Python script located in ``/sw/frontier/amdsw/rocprofiler-extras/bin/convert-rocprofv3-to-rocprofv1.py``.
+For example, ``/sw/frontier/amdsw/rocprofiler-extras/bin/convert-rocprofv3-to-rocprofv1.py -i ./pmc_1 ./pmc_2 -o mycounters.csv``.
+
+.. warning::
+
+    The ``convert-rocprofv3-to-rocprofv1.py`` script cannot yet preserve timestamps, so computing the FLOPS per second is not yet possible on the aggregated counters file. Such computations will need to be done by manually stitching together the aggregated counters file with the kernel tracing file output by ``rocprofv3``.
 
 Theoretical Roofline
 ^^^^^^^^^^^^^^^^^^^^
@@ -3446,63 +3477,20 @@ where
     BytesRead = 32 * TCC\_EA\_RDREQ\_32B\_sum + 64 * (TCC\_EA\_RDREQ\_sum - TCC\_EA\_RDREQ\_32B\_sum)
 
 
-Omniperf
---------
+ROCm Compute Profiler (formerly Omniperf)
+-----------------------------------------
 
-OLCF provides installations of AMD's `Omniperf <https://github.com/AMDResearch/omniperf>`_ (rebranded to ROCm Compute Profiler) profiling tools on Frontier.
-AMD provides documentation on the usage of Omniperf at `<https://rocm.docs.amd.com/projects/rocprofiler-compute/en/latest/>`_.
-This section details the installation and common pitfalls of the ``omniperf`` module on Frontier.
+OLCF provides installations of AMD's `ROCm Compute Profiler <https://github.com/ROCm/rocprofiler-compute>`_ (previously called Omniperf) profiling tools on Frontier.
+AMD provides documentation on the usage of ROCm Compute Profiler at `<https://rocm.docs.amd.com/projects/rocprofiler-compute/en/latest/>`_.
+This section details the installation and common pitfalls of the ``rocprofiler-compute`` module on Frontier.
 
-The ``omniperf`` module relies on two other modules -- a ``rocm`` module and optionally a ``cray-python`` module.
-A ROCm module must be loaded before being able to do view or load the ``omniperf`` module.
-As for ``cray-python``, ``omniperf`` is a Python script and has several dependencies that cannot be met by the system's default Python, and are not met by the default ``cray-python`` installation.
-As such, you must either (1) load the ``cray-python`` module or (2) satisfy the Python dependencies in your own Python environment (i.e., in a Conda environment).
+A ROCm module must be loaded before being able to view or load the ``rocprofiler-compute`` module.
+ROCm Compute Profiler is a Python tool with non-standard dependencies.
+As such, we provide a conda environment built using the miniforge3 module if we detect that you do not have your own Python version loaded (ie, if ``which python3`` returns ``/usr/bin/python3``).
+Warnings will be printed out when the module is loaded if the pre-built conda environment is not loaded.
 
-As a rule of thumb, always load the ``omniperf`` module last (especially after you load a ROCm module).
-If you load a new version of ROCm, you will need to re-load ``omniperf``.
-
-Using ``cray-python``
-^^^^^^^^^^^^^^^^^^^^^
-
-To use ``omniperf`` with ``cray-python``, you may use the following commands:
-
-.. code::
- 
-    module load rocm
-    module load cray-python
-    module load omniperf
-
-No more work is needed on your part -- ``omniperf`` points to a directory that contains pre-built libraries for the ``cray-python`` version you are running.
-It is **critically** important that if you load a different version of ROCm or ``cray-python`` that you re-load ``omniperf``.
-
-.. note::
-
-    Omniperf requires relatively new versions of many dependencies.
-    Installing dependencies may break some currently installed packages that require older versions of the dependencies.
-    It is recommended that you use the newest ``cray-python`` modules available.
-
-
-Using your own Python
-^^^^^^^^^^^^^^^^^^^^^
-
-To use ``omniperf`` with your own Python installation, you must first install the dependencies of Omniperf in your Python's environment.
-To do so, use the ``requirements.txt`` file in the `Omniperf GitHub Repo <https://github.com/AMDResearch/omniperf>`_.
-You may install the dependencies using a command like:
-
-.. code::
-
-    python3 -m pip install -r requirements.txt
-
-Once you have installed the dependencies, you may load ``omniperf`` using commands like:
-
-.. code::
- 
-    # Your Python environment should be active by this point
-    module load rocm
-    module load omniperf
-
-Again, it is **critically** important that if you load a different version of ROCm that you re-load ``omniperf``.
-
+As a rule of thumb, always load the ``rocprofiler-compute`` module last (especially after you load a ROCm module).
+If you load a new version of ROCm, you will need to re-load ``rocprofiler-compute``.
 
 ----
 
