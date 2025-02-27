@@ -3352,7 +3352,7 @@ For example:
     each MPI rank only has 1 GPU, so each rank sees its GPU as GPU 0.
 
 Additional steps for rocprofv3
-==============================
+""""""""""""""""""""""""""""""
 
 ``rocprofv3`` does not do any counter aggregation in large counter-collecting runs, so you will find that you get one directory per `pmc` block in the ``rocprofv3`` input file, named ``pmc_1``, ``pmc_2``, and so on.
 If you want to have a single file output, like with ``rocprof``, you will need to run the Python script located in ``/sw/frontier/amdsw/rocprofiler-extras/bin/convert-rocprofv3-to-rocprofv1.py``.
