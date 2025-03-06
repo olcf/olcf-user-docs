@@ -29,6 +29,9 @@ get faster resolution by supporting a few best practices:
   - MOST IMPORTANT: do not hesitate to contact us (help@olcf.ornl.gov); we will
     work through the details with you.
 
+After submitting a ticket, you can respond and interact with the ticket through email or
+or through the ticket interface on :ref:`myOLCF`.
+
 
 Authentication Support
 ----------------------
