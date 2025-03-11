@@ -14,7 +14,7 @@ Overview
 Vampir is a software performance visualizer focused on highly-parallel applications. It presents a unified view on an application run
 including the use of programming paradigms like MPI, SHMEM, OpenMP, PThreads, HIP, CUDA, OpenCL and OpenACC.
 Vampir can also incorporate file I/O, hardware performance counters and other performance data sources.
-Various interactive displays offer detailed insight into the performance behavior of the analyzed application.s
+Various interactive displays offer detailed insight into the performance behavior of the analyzed application.
 Vampir's scalable analysis server and visualization engine enable interactive navigation of large amounts of performance data.
 
 Score-P and TAU are two instrumentation and runtime-measurement tools that can generate OTF2 trace files for Vampir to visualize.
