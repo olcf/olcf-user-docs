@@ -4,6 +4,15 @@
 Defiant Quick-Start Guide
 *************************
 
+.. _defiant-system-decommission:
+
+Defiant System Decommission
+===========================
+
+.. warning::
+        The OLCF test resource, Defiant, and its scratch filesystem, Polis, will be **decommissioned at 8:00am on April 21, 2025**.  Data remaining on Polis will be **permanently deleted** following the decommission.  Data owners are responsible for retrieving needed data prior to decommission, so we recommend that this is completed as soon as possible.  The replacement for Defiant is anticipated to enter service in June.  Please contact help@olcf.ornl.gov with any questions.
+
+
 .. _defiant-system-overview:
 
 System Overview
