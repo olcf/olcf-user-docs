@@ -501,12 +501,20 @@ via the following symbolic links and/or environment variables:
 Data Retention Overview
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-By default, there is no lifetime retention for any data on OLCF
-resources. The OLCF specifies a limited post-deactivation timeframe
-during which user and project data will be retained. When the retention
-timeframe expires, the OLCF retains the right to delete data. If you
-have data retention needs outside of the default policy, please notify
-the OLCF.
+By default, there is no lifetime retention for any data stored on OLCF
+resources. Please begin making arrangements to copy data from the OLCF to an
+offsite location of your choosing before your project ends. When your project
+has ended, the OLCF will delete any data left on OLCF systems on a timeframe
+specified by the OLCF data retention policy (currently 90 days following
+project end).
+
+Data Only Mode
+^^^^^^^^^^^^^^
+
+When your project has ended, the project will lose compute access and the
+project will enter "Data Only" mode for 30 days. Projects in Data Only mode
+will only have login access to ``home.ccs.ornl.gov`` and ``dtn.ccs.ornl.gov``
+to retrieve data stored on the OLCF filesystems.
 
 User Data Retention
 ^^^^^^^^^^^^^^^^^^^
