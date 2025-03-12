@@ -38,13 +38,35 @@ In timeslot mode, your project is assigned specific quantum computer access peri
 booked in advance. During these slots, access is exclusive to your project. The Resonance
 dashboard's "Availability" section lists the schedule. Jobs can be submitted anytime but
 remain in a "waiting" state until the next active timeslot. An upcoming booked timeslot is
-required to submit jobs in this mode. For instructions on booking a timeslot see `here <https://www.iqmacademy.com/tutorials/resonance/>`__.
+required to submit jobs in this mode.
 
 In pay-as-you-go mode, allocation used is based on the QPU-reserved seconds your job uses. Jobs
 enter a global queue and run during designated pay-as-you-go windows, which may shift due to
 dedicated timeslot bookings. You can check your job's queue position, estimated runtime, and final cost
 in the "Jobs" section of the Resonance dashboard. In light of this, for specific execution times, 
 time-critical applications, or iterative algorithms, IQM recommends users consider using timeslots. 
+
+Project/Team Roles
+------------------
+
+The IQM equivalent to an OLCF project is an IQM "Team". The PI of a given
+project is assigned the ``Scheduler`` role, while all other members are given the
+``User`` role.
+
+* **By default, only OLCF project PI's have the ability to book timeslots for
+  their IQM Team via the Scheduler role.** If other members of the Team
+  require the ``Scheduler`` role, please contact help@olcf.ornl.gov.
+
+* Team members with the ``User`` role cannot view or manage credit balances
+  and cannot book timeslots, but can run jobs as long as there are credits
+  available for their Team or if a timeslot was booked by their PI.
+
+See :ref:`iqm-alloc` for details on how to receive credits for your Team.
+
+For more details on the capabilities of roles on a Team, please refer to the
+"User Roles" subsection in the "Organization Management" section at
+https://resonance.meetiqm.com/docs
+
 
 .. _iqm-alloc:
 
@@ -83,15 +105,21 @@ storing IQM API keys can be found `here <https://resonance.meetiqm.com/docs>`__.
 Submitting Jobs
 ---------------
 
-Once you have been granted credits (process detailed in :ref:`iqm-alloc`), you can can request a timeslot or 
-use the pay-as-you-go option. Usage pricing, circuit limits, and shot limits for each of the available 
-computers is listed on the resonance dashboard when you click on either of the backends in the "Quantum Computers" section.
+Once you have been granted credits (process detailed in :ref:`iqm-alloc`), you
+can use a timeslot (if booked by your PI) or use the pay-as-you-go option.
+Usage pricing, circuit limits, and shot limits for each of the available
+computers is listed on the resonance dashboard when you click on either of the
+backends in the "Quantum Computers" section.
 
 With your IQM API key, users submit job to a given backend's URL: e.g. for garnet: 
 
 * General URL: ``https://cocos.resonance.meetiqm.com/garnet`` (can only be used for pay-as-you-go)
 * Timeslot URL: ``https://cocos.resonance.meetiqm.com/garnet:timeslot`` (can only be used for timeslots)
 * Mock URL: ``https://cocos.resonance.meetiqm.com/garnet:mock`` (syntax checker -- if available)
+
+.. note::
+   
+   The mock system is only for testing your algorithm. It will compile your code for the instruments of an IQM quantum computer. However, as no actual instruments are connected to the Mock environment, it will only yield random results – this is not a simulator. See `facade backends <https://iqm-finland.github.io/qiskit-on-iqm/user_guide.html#running-a-quantum-circuit-on-a-facade-backend>`__ for an alternative option.
 
 
 Checking System Availability

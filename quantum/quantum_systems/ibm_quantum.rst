@@ -7,12 +7,9 @@ IBM Quantum
 Overview
 ========
 
-IBM Quantum Services provides access to more than 20 currently available
-quantum systems (known as backends).  IBM's quantum processors are made up of
-superconducting transmon qubits, and users can utilize these systems via the
-universal, gate-based, circuit model of quantum computation.  Additionally,
-users have access to 5 different types of simulators, simulating from 32 up to
-5000 qubits to represent different aspects of the quantum backends. 
+IBM's quantum processors are made up of superconducting transmon qubits, and
+users can utilize these systems via the universal, gate-based, circuit model of
+quantum computation.
 
 This guide describes how to use the system once you have access. For
 instructions on how to gain access, see our :doc:`Quantum Access
@@ -23,9 +20,8 @@ instructions on how to gain access, see our :doc:`Quantum Access
 Connecting
 ==========
 
-Access to the IBM Quantum Computing queues, reservations, and simulators can be
-obtained via multiple methods -- either through the :ref:`cloud <ibm-cloud>` or 
-:ref:`locally <ibm-local>`.
+Access to the IBM Quantum Computing queues can be obtained via multiple methods
+-- either through the :ref:`cloud <ibm-cloud>` or :ref:`locally <ibm-local>`.
 
 .. _ibm-cloud:
 
@@ -34,10 +30,9 @@ Cloud Access
 
 Users can access information about IBM Quantum's systems, view queue
 information, and submit jobs on their cloud dashboard at
-`<https://quantum-computing.ibm.com>`__. The cloud dashboard allows access to
-IBM Quantum's graphical circuit builder, Quantum Composer, IBM's Quantum Lab,
-and associated program examples.  A Jupyterlab server is provisioned with IBM
-Quantum's Qiskit programming framework for job submission.
+`<https://quantum.ibm.com/>`__. The cloud dashboard allows access to
+IBM Quantum's graphical circuit builder, Quantum Composer, and associated
+program examples.
 
 .. _ibm-local:
 
@@ -51,14 +46,12 @@ backend, and run the compiled circuits as jobs. Additional information on using
 Qiskit is available at `<https://qiskit.org/learn/>`__ and in our 
 :ref:`Software Section <ibm-soft>` below.
 
-As opposed to using IBM's JupyterLab server (described in :ref:`Cloud Access <ibm-cloud>` above), 
-users are able to install IBM Quantum Qiskit locally via two methods: 
+Users are able to install IBM Quantum's Qiskit locally like so: 
 
-* Installing manually: `<https://qiskit.org/documentation/stable/0.24/install.html>`__.
+* Installing manually: `<https://docs.quantum.ibm.com/guides/install-qiskit>`__.
   This option allows for building locally and executing jobs via a python virtual
   environment.
 
-* Docker: `<https://www.ibm.com/cloud/learn/docker>`__ or `<https://hub.docker.com/u/ibmq>`__ 
 
 .. _ibm-jobs:
 
@@ -82,9 +75,7 @@ When jobs are submitted on IBM Quantum backends, the jobs enter into the
 order so as to provide fair sharing among all users of the device, to prevent
 individual projects or users from monopolizing a given backend.  
 
-All OLCF users have access to the "premium" (>=20 qubits) and "open" (<20
-qubit) devices.  Since most of the open devices are shared with the public,
-queue times will often be longer than the queues for the larger devices.
+All OLCF users have access to the "premium" (>=20 qubits) devices.
 
 
 Allocations & Usage Limits
@@ -177,9 +168,9 @@ For more information on sessions can be found here:
 Checking System Availability & Capability
 =========================================
 
-Current status listing, scheduled maintenance, and system capabilities for IBM
+Current status listings and system capabilities for IBM
 Quantum's quantum resources can be found here:
-`<https://quantum-computing.ibm.com/services?services=systems>`__
+`<https://quantum.ibm.com/services/resources>`__
 
 .. _ibm-soft:
 
@@ -188,18 +179,11 @@ Software
 
 * Qiskit documentation is available at `<https://qiskit.org/documentation/>`__
 
-* Qiskit Terra is the foundational module set upon which the rest of Qiskit's
-  features are built; for more information, see:
-  `<https://qiskit.org/documentation/apidoc/terra.html>`__
-
-* Qiskit Aer is IBM Quantum's package for simulating quantum circuits, with
+* `Qiskit Aer <https://qiskit.github.io/qiskit-aer/>`__ is IBM Quantum's package for simulating quantum circuits, with
   different backends for specific types of simulation
-
-  * Simulator backends currently available: `<https://quantum-computing.ibm.com/services?services=simulators>`__
 
 Additional Resources
 ====================
 
-* `IBM's Documentation <https://quantum-computing.ibm.com/docs/>`__
-
-* `IBM Quantum Insider <https://thequantuminsider.com/2022/11/09/ibm-quantum-computing/>`__
+* `IBM's Documentation <https://docs.quantum.ibm.com/>`__
+* `IBM's Announcements Page <https://docs.quantum.ibm.com/announcements>`__ : Includes service alerts (retirements, downtimes) and product updates. 

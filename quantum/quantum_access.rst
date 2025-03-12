@@ -164,14 +164,14 @@ IBM Quantum Computing
 ---------------------
 
 After submitting the OLCF quantum account application and receiving approval,
-proceed to `<https://quantum-computing.ibm.com/>`__ and click on "Create an IBMid
+proceed to `<https://quantum.ibm.com/>`__ and click on "Create an IBMid
 account". Your IBM Quantum Hub account email will be the email associated with
 your OLCF account. If sign-in fails, contact help@olcf.ornl.gov. Once logged
 in, users will have access to the IBM Quantum Hub, IBM’s online platform for
 QPU access, forums for quantum computing discussion, etc. From the IBM Quantum
 Hub Dashboard, users can manage system reservations, view system (backend)
 statuses, and view the results of your past jobs. More information about using
-these IBM quantum resources can be found on the `IBM's Documentation <https://quantum-computing.ibm.com/docs/>`__
+these IBM quantum resources can be found on the `IBM's Documentation <https://docs.quantum.ibm.com/>`__
 or our :doc:`OLCF IBM Quantum Guide </quantum/quantum_systems/ibm_quantum>`.
 
 Quantinuum 
@@ -179,14 +179,13 @@ Quantinuum
 
 After submitting the OLCF quantum account application and receiving approval,
 you will receive an email from Quantinuum inviting you to create your quantum
-account. Once logged in, users will have access to Quantinuum's User Interface,
-`<https://um.qapi.quantinuum.com>`__, their online platform for managing jobs and 
-accessing the available quantum systems, including the System Model H1, via the 
-cloud. From the UI, users can view system status and upcoming system availability, 
-as well as monitor batch submissions and job history. Information on using the 
-quantum resources via Jupyter notebooks is available in the UI via the “Examples” 
-tab. Quantinuum’s systems feature mid-circuit measurement and qubit reuse, and are 
-compatible with a variety of software frameworks.
+account. Once logged in, users will have access to Quantinuum's Nexus
+Interface, `<https://nexus.quantinuum.com/>`__, their online platform
+for managing jobs and accessing the available quantum systems via the cloud.
+From Nexus, users can view system status and upcoming system availability, as
+well as monitor batch submissions and job history. More information about using
+Quantinuum resources can be found on our :doc:`OLCF Quantinuum Guide
+</quantum/quantum_systems/quantinuum>`.
 
 IonQ
 ----------
@@ -198,6 +197,8 @@ account. Once logged in, users will have access to IonQ's User Interface,
 accessing the available quantum systems, including the Forte and Aria systems,
 as well as the simulator, via the cloud. From the UI, users can view system status
 and upcoming system availability, as well as monitor batch submissions and job history.
+More information about using IonQ resources can be found on our :doc:`OLCF IonQ
+Guide </quantum/quantum_systems/ionq>`.
 
 IQM
 ---
@@ -206,10 +207,12 @@ After submitting the OLCF quantum account application and receiving approval,
 you will receive an email from IQM inviting you to create your quantum
 account. Once logged in, users will have access to IQM's User Interface,
 `<https://resonance.meetiqm.com>`__, their online dashboard for managing jobs and
-accessing the available quantum systems. Users will gain access to the Garnet and Deneb systems,
-as well as the quantum algorithm checker (which verifies that the execution of workflow is possible, but does not yield sensible results),
-via the cloud. From the dashboard, users can view system status
-and upcoming system availability, as well as monitor batch submissions and job history.
+accessing the available quantum systems. Users will gain access to IQM hardware,
+as well as the quantum algorithm checker (which verifies that the execution of
+workflow is possible, but does not yield sensible results), via the cloud. From
+the dashboard, users can view system status and upcoming system availability,
+as well as monitor batch submissions and job history.  More information about
+using IQM resources can be found on our :doc:`OLCF IQM Guide </quantum/quantum_systems/iqm>`.
 
 Publication Citations
 =====================
