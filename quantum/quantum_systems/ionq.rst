@@ -13,7 +13,7 @@ instructions on how to gain access, see our :doc:`Quantum Access
 
 IonQ systems
 ============
-Currently accessible IonQ trapped-ion systems include Harmony (#AQ 9) and Aria (#AQ 25).
+Currently accessible IonQ trapped-ion systems include Aria (#AQ 25) and Forte (#AQ 36).
 
 IonQ measures overall system size and performance using application-based benchmarking to determine the number of 
 `algorithmic qubits, or #AQ <https://ionq.com/resources/algorithmic-qubits-a-better-single-number-metric>`__. 
@@ -23,11 +23,11 @@ two-qubit gates.
 For up-to-date characterization of these systems (including 1Q and 2Q gate error rates, SPAM 
 error rates, dephasing times, and gate times, updated weekly), refer to the Backends tab on the
 `IonQ Cloud Console <https://cloud.ionq.com/backends/>`__ (requires IonQ login).
-This information is also available `via the IonQ API <https://docs.ionq.com/#tag/characterizations>`__.
+This information is also available `via the IonQ API <https://docs.ionq.com/user-manual/glossary#characterizations>`__.
 More information is also available on IonQ's website `here <https://ionq.com/quantum-systems/compare>`__.
 
 IonQ also provides access to a cloud-based simulator, which can be used with 
-`noise models based on Harmony and Aria <https://ionq.com/docs/get-started-with-hardware-noise-model-simulation>`__. 
+`noise models based on Aria and Forte <https://docs.ionq.com/guides/simulation-with-noise-models>`__. 
 The simulator can be accessed and used in the same way as IonQ’s trapped-ion hardware systems.
 
 Connecting
@@ -54,11 +54,10 @@ environment, with any of the Python SDKs listed below.
 IonQ API
 --------
 
-IonQ's systems can be accessed directly via their IonQ Cloud Platform API, using 
-curl to submit requests formatted in their language-agnostic JSON circuit representation.
-The guide `How to run your first program on IonQ cloud <https://ionq.com/docs/run-your-first-program-quantum-cloud>`__
-walks through this process in detail. The complete API documentation is located at 
-`docs.ionq.com <https://docs.ionq.com/>`__.
+IonQ's systems can be accessed directly via their IonQ Cloud Platform API,
+using ``curl`` to submit requests formatted in their language-agnostic JSON
+circuit representation.  The complete API documentation is located at
+`docs.ionq.com <https://docs.ionq.com/api-reference/v0.3/introduction>`__.
 
 .. _ionq-sdks:
 
@@ -70,7 +69,8 @@ IonQ supports several different quantum software development kits, including:
 * `Qiskit <https://ionq.com/docs/get-started-with-qiskit>`__
 * `Cirq <https://ionq.com/docs/get-started-with-cirq>`__
 * `ProjectQ <https://ionq.com/docs/get-started-with-projectq-on-ionq-hardware>`__
-* `Pennylane <https://ionq.com/resources/hello-many-worlds-in-7-quantum-languages#hello-pennylane>`__
+* `PennyLane <https://docs.ionq.com/sdks/pennylane/index>`__
+* `qBraid <https://docs.ionq.com/sdks/qbraid/index>`__
 * `Pytket <https://ionq.com/resources/hello-many-worlds-in-7-quantum-languages#hello-pytket>`__
 * `XACC <https://ionq.com/resources/hello-many-worlds-in-7-quantum-languages#hello-xacc>`__
 
@@ -88,7 +88,7 @@ generated from the `IonQ Cloud Console <https://cloud.ionq.com/settings/keys>`__
 IonQ API keys can only be viewed when they are generated, and IonQ recommends storing
 each API key locally in an environment variable. Instructions for generating and 
 storing IonQ API keys can be found 
-`here <https://ionq.com/docs/security-enhancement-ionq-api-keys-no-longer-visible-after-creation>`__.
+`here <https://docs.ionq.com/guides/managing-api-keys#managing-api-keys>`__.
 
 
 .. _ionq-jobs:
@@ -120,7 +120,7 @@ Running a job on IonQ hardware requires IonQ Credits. In order to request an Ion
 
 * Any request for credits must be submitted by the project Principle Investigator (PI) to help@olcf.ornl.gov
 
-* Requests for machine credits must be justified using results from the appropriate simulator to determine the appropriate amount needed. Requests without simulator-based justifications will be denied.
+* Requests for machine credits must be justified using results from the appropriate simulator to determine the appropriate amount needed. Requests without simulator-based justifications will be denied. Using `IonQ's Resource Estimator <https://ionq.com/programs/research-credits/resource-estimator>`__ is also highly recommended.
 
 * Requests will be evaluated based on the provided technical justification, programmatic efficiency, and machine availability. The effective usage of prior allocations by the project will also be considered.
 
@@ -138,7 +138,7 @@ each QPU and simulator.
 
 Additionally, `status.ionq.co <https://status.ionq.co/>`__ provides the most up-to-date information about system status 
 and outages, including more details about historical availability and queue time. Users can also sign up for system 
-status notifications. System status information is also `available via the IonQ API <https://docs.ionq.com/#tag/backends>`__.
+status notifications.
 
 .. _ionq-resources:
 

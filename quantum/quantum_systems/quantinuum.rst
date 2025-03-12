@@ -143,3 +143,9 @@ For more information, see the following links:
 
 .. warning::
    Please note that the platform ``pytket-quantinuum`` serves is being replaced by Quantinuum Nexus and will be deprecated **March 31, 2025**. After this date, ``pytket-quantinuum`` will not be compatible with Quantinuum Nexus. For guidance on how to access H-Series through Nexus, please use the `qnexus <https://pypi.org/project/qnexus/>`__ Python package and the `Nexus Getting Started guide <https://docs.quantinuum.com/nexus/trainings/getting_started.html>`__.
+
+Additional Resources
+====================
+
+* `Nexus Status Page <https://nexus-status.quantinuum.com/>`__ : Where you can automatically receive future maintenance announcements, reminders, incidents, and unplanned outage notifications.
+ 

@@ -61,11 +61,11 @@ See these links for more information:
 
         .. code-block:: bash
 
-            module load PrgEnv-gnu/8.5.0
+            module load PrgEnv-gnu/8.6.0
             module load miniforge3/23.11.0-0
             conda create -n ENV_NAME python=3.11 -c conda-forge
             source activate ENV_NAME
-            conda install qiskit=1.2.0 qiskit-ibm-runtime=0.28.0 qiskit-aer=0.14.2 psutil -c conda-forge
+            conda install qiskit=1.4.1 qiskit-ibm-runtime=0.36.1 qiskit-aer=0.16.2 psutil -c conda-forge
 
 
 Qiskit IonQ Provider
@@ -97,11 +97,11 @@ See these links for more information:
 
         .. code-block:: bash
 
-            module load PrgEnv-gnu/8.5.0
+            module load PrgEnv-gnu/8.6.0
             module load miniforge3/23.11.0-0
-            conda create -n ENV_NAME python=3.11 numpy=1.26.4 scipy -c conda-forge
+            conda create -n ENV_NAME python=3.11 -c conda-forge
             source activate ENV_NAME
-            pip install qiskit==1.2.0 qiskit-ionq==0.5.4 --no-cache-dir
+            pip install qiskit==1.4.1 qiskit-ionq==0.5.12 --no-cache-dir
 
 
 IQM Qiskit Plugin
@@ -129,11 +129,11 @@ See these links for more information:
 
         .. code-block:: bash
 
-            module load PrgEnv-gnu/8.5.0
+            module load PrgEnv-gnu/8.6.0
             module load miniforge3/23.11.0-0
             conda create -n ENV_NAME python=3.11 -c conda-forge
             source activate ENV_NAME
-            pip install qiskit-iqm==15.5 --no-cache-dir
+            pip install qiskit-iqm==17.5 --no-cache-dir
 
 
 PyQuil/Forest SDK (Rigetti)
@@ -188,7 +188,7 @@ Below is an example script that will download, build, and install all dependenci
 
         .. code-block:: bash
 
-            module load PrgEnv-gnu/8.5.0 cmake
+            module load PrgEnv-gnu/8.6.0 cmake
 
 .. warning::
    By default this will install the libraries into your ``$HOME`` directory.
@@ -335,7 +335,7 @@ Finally, you are ready to install pyQuil:
 
         .. code-block:: bash
 
-            module load PrgEnv-gnu/8.5.0
+            module load PrgEnv-gnu/8.6.0
             module load miniforge3/23.11.0-0
             conda create -n ENV_NAME python=3.11 numpy=1.26.4 scipy -c conda-forge
             source activate ENV_NAME
@@ -393,7 +393,7 @@ On our systems, the install method is relatively simple:
 
         .. code-block:: bash
 
-            module load PrgEnv-gnu/8.5.0
+            module load PrgEnv-gnu/8.6.0
             module load miniforge3/23.11.0-0
             conda create -n ENV_NAME python=3.11 pennylane -c conda-forge
             source activate ENV_NAME
@@ -427,11 +427,11 @@ For more information please see:
 
         .. code-block:: bash
 
-            module load PrgEnv-gnu/8.5.0
+            module load PrgEnv-gnu/8.6.0
             module load miniforge3/23.11.0-0
-            conda create -n ENV_NAME python=3.11 numpy=1.26.4 scipy -c conda-forge
+            conda create -n ENV_NAME python=3.11 -c conda-forge
             source activate ENV_NAME
-            pip install pytket==1.31.1 pytket-quantinuum==0.37.0 --no-cache-dir
+            pip install pytket==1.41.0 qnexus==0.11.0 --no-cache-dir
 
 CUDA-Q
 ======

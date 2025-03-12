@@ -44,7 +44,7 @@ If your account was established prior to July 5th, 2020, and was not through
 the OLCF directly, your access to quantum resources has been removed, and you
 will need to re-apply to an OLCF project.  Also, if your access to your OLCF
 project or the project access itself has expired, you will also need to
-reapply.
+reapply. Please contact help@olcf.ornl.gov for assistance.
 
 I applied to a quantum computing resource via the vendor website, but don’t have access; what do I do? 
 ======================================================================================================
