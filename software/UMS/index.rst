@@ -21,64 +21,72 @@ To apply to the UMS program, fill out the application at:
 `https://my.olcf.ornl.gov/project-application-new <https://my.olcf.ornl.gov/project-application-new>`_.
 Select "User Managed Software Program" from the drop down menu to begin. 
 
+.. _current_ums:
+
 Currently Available User-Managed Software
 -----------------------------------------
 
 .. tab-set::
 
   .. tab-item:: Frontier
+ 
+    .. list-table:: Currently Available User-Managed Software on Frontier
+       :widths: 5 15 35 45
+       :header-rows: 1
 
-    **Currently Available User-Managed Software on Frontier**
-    
-    +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
-    | Project    | Packages       | Point of Contact                           | Information                                                                    |
-    +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
-    | ums012     | AMD AFAR       | Felipe Jaramillo (cabarcas@udel.edu)       | AMD ROCM AFAR compiler based on AMD development                                |
-    |            |                |                                            |                                                                                |
-    |            | LLVM           | Sunita Chandrasekaran (schandra@udel.edu)  | LLVM Development builds                                                        |
-    +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
-    | ums014     | UPC++          | Paul H. Hargrove (phhargrove@lbl.gov)      | UPC++ library                                                                  |
-    |            |                |                                            |                                                                                |
-    |            |                |                                            | Issue Tracker:     https://upcxx.lbl.gov/issues                                |
-    |            |                |                                            |                                                                                |
-    |            |                |                                            | Support Forum:     https://groups.google.com/g/upcxx                           |
-    +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
-    | ums015     | Intel oneAPI   | Codeplay Software (sycl@codeplay.com)      | Intel oneAPI compiler and runtime libraries                                    |
-    |            |                |                                            |                                                                                |
-    |            |                |                                            | Website:           https://oneapi.io/ and https://developer.codeplay.com/      |
-    |            |                |                                            |                                                                                |
-    |            |                |                                            | Issue Tracker:     https://github.com/intel/llvm/issues                        |
-    |            |                |                                            |                                                                                |
-    |            |                |                                            | Support Forum:     https://support.codeplay.com/                               |
-    +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
-    | ums022     | VisIt          | Eric Brugger (brugger1@llnl.gov)           | VisIt Visualization and Analysis Tool                                          |
-    +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
-    | ums023     | HPCToolkit     | Wileam Phan (wil.phan@rice.edu)            | HPCToolkit Performance measurement and analysis tools                          |
-    |            |                |                                            |                                                                                |
-    |            |                | John Mellor-Crummey (johnmc@rice.edu)      | Website:           http://hpctoolkit.org/                                      |
-    |            |                |                                            |                                                                                |
-    |            |                |                                            | Issue Tracker:     https://gitlab.com/hpctoolkit/hpctoolkit/-/issues           |
-    |            |                |                                            |                                                                                |
-    |            |                |                                            | Mailing List:      hpctoolkit-forum@rice.edu                                   |
-    +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
-    | ums024     | Open MPI       | Thomas Naughton (naughtont@ornl.gov)       | Open MPI for Exascale -- MPI library                                           |
-    |            |                |                                            |                                                                                |
-    |            |                | Amir Shehata (shehataa@ornl.gov)           | Issue Tracker:     https://github.com/OMPI-X/platforms/issues                  |
-    +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
-    | ums025     | Clacc          | Joel E. Denny (dennyje@ornl.gov)           | Clacc: Clang/LLVM fork to support OpenACC in C/C++                             |
-    |            |                |                                            |                                                                                |
-    |            |                |                                            | General Info:      https://csmd.ornl.gov/project/clacc                         |
-    |            |                |                                            |                                                                                |
-    |            |                |                                            | Source:            https://github.com/llvm-doe-org/llvm-project/tree/clacc/main|
-    +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
-    | ums042     | FFTX           | Peter McCorquodale (PWMcCorquodale@lbl.gov)| FFTX high-performance FFT library                                              |
-    |            |                |                                            |                                                                                |
-    |            |                |                                            | Website:           https://spiral-software.github.io/fftx/                     |
-    |            |                |                                            |                                                                                |
-    |            |                |                                            | Issue Tracker:     https://github.com/spiral-software/fftx/issues              |
-    |            |                |                                            |                                                                                |    
-    |            |                |                                            | Source:            https://github.com/spiral-software/fftx                     |
-    +------------+----------------+--------------------------------------------+--------------------------------------------------------------------------------+
+       * - Project
+         - Packages
+         - Point of Contact
+         - Information
+       * - ums002
+         - E4S
+         - Kevin Huck (khuck@cs.uoregon.ede)
+         - `Extreme Scale Scientific Software Stack <https://e4s.io/>`__
+       * - ums012
+         - | AMD AFAR
+           | LLVM
+         - | Felipe Jaramillo (cabarcas@udel.edu)
+           | Sunita Chandrasekaran (schandra@udel.edu)
+         - | AMD ROCM AFAR compiler based on AMD development
+           | LLVM Development builds
+       * - ums014
+         - UPC++
+         - Paul H. Hargrove (phhargrove@lbl.gov)
+         - | UPC++ library
+           | Issue Tracker:     https://upcxx.lbl.gov/issues
+           | Support Forum:     https://groups.google.com/g/upcxx
+       * - ums025
+         - Clacc
+         - Joel E. Denny (dennyje@ornl.gov)
+         - | Clacc: Clang/LLVM fork to support OpenACC in C/C++
+           | General Info:      https://csmd.ornl.gov/project/clacc
+           | Source:            https://github.com/llvm-doe-org/llvm-project/tree/clacc/main
+       * - ums029
+         - ADIOS
+         - Norbert Podhorski (pnorbert@ornl.gov)
+         - | `ADIOS <https://github.com/ornladios/ADIOS2>`__
+           | ADIOS Issue tracker: https://github.com/ornladios/ADIOS2/issues 
+       * - ums032
+         - PESO/OASIS SDK
+         - Ryan Krattiger (ryan.krattiger@kitware.com)
+         - Data and Visualization SDK: https://dav-sdk.github.io/
+       * - ums036
+         - Legion
+         - Zulip chat instance (https://legion.zulipchat.com)
+         - | Please direct all support questions and concerns regarding this software installation to Legion's Zulip chat instance.
+           | Issue tracker: https://github.com/StanfordLegion/legion/issues
+       * - ums038
+         - MVAPICH-Plus
+         - Mailing list (mvapich-discuss@lists.osu.edu)
+         - | When contacting the mailing list, please indicate that you are using the UMS Module on Frontier in your message.
+           | User Guide: https://mvapich.cse.ohio-state.edu/
+       * - ums042
+         - FFTX
+         - Peter McCorquodale (PWMcCorquodale@lbl.gov)
+         - | FFTX high-performance FFT library
+           | Website:           https://spiral-software.github.io/fftx/
+           | Issue Tracker:     https://github.com/spiral-software/fftx/issues
+           | Source:            https://github.com/spiral-software/fftx
 
 
 Usage
@@ -129,6 +137,10 @@ to gain access to that project’s provided software. For example:
       ----------------- /sw/frontier/modulefiles ------------------
         ums/default (L)
       ...
+
+.. warning::
+   Some legacy ``ums`` modules may appear with ``module avail`` that are no longer supported by active UMS projects.
+   Please refer to :ref:`current_ums` for active UMS projects and modules.
   
 If there are issues with a UMS provided product, you can find information in that package's gateway module using ``module show ums-``:
 
