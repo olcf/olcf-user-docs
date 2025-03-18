@@ -8,6 +8,47 @@ most recent changes are listed first.
 
 ----
 
+Frontier: Core Module (March 18, 2025)
+------------------------------------------------
+
+On March 18, 2025, a new version of the ``Core`` module, ``Core/25.03``, will be provided on Frontier. Note that the default ``Core`` will remain ``Core/24.07`` at this time.
+Please test this module and report any issues to help@olcf.ornl.gov.
+
+The table below summarizes the main version changes.
+
+.. csv-table::
+    :header: "Component", "Old Version", "New Version"
+
+    "ccache", "4.6.3", "4.10.2"
+    "cmake", "3.27.9", "3.30.5"
+    "darshan-util", "3.4.4", "3.4.6"
+    "emacs", "29.3", "29.4"
+    "gdb", "14.1", "15.2"
+    "git-lfs", "3.3.0", "3.5.1"
+    "git", "2.45.1", "2.47.0"
+    "go", "1.22.2", "1.23.2"
+    "gsl", "2.7.1", "2.8"
+    "htop", "3.2.2", "3.3.0"
+    "hwloc", "2.9.1", "2.11.1"
+    "imagemagick", "7.1.1-29", "7.1.1-39"
+    "julia", "1.10.2", "1.11.0"
+    "libjpeg-turbo", "3.0.0", "3.0.3"
+    "linaro-forge", "24.0.2", "24.0.6"
+    "mercurial", "6.6.3", "6.7.3"
+    "nano", "7.2", "8.2"
+    "ninja", "1.11.1", "1.12.1"
+    "openblas", "0.3.26", "0.3.28"
+    "parallel", "20220522", "20240822"
+    "python", "3.11.7", "3.13.0"
+    "r", "4.4.0", "4.4.1"
+    "tau", "N/A", "2.34"
+    "vim", "9.0.0045", "9.1.0437"
+    "wget", "1.21.3", "1.24.5"
+
+Other packages provided by ``Core/25.03`` are ``autoconf``, ``bazel``, ``bear``, ``exuberant-ctags``, ``gmake``, ``gnupg``,
+``gnuplot``, ``googletest``, ``hpctoolkit``, ``libpng``, ``libzmq``, ``papi``, ``pkgconf``, ``screen``, ``subversion``, ``tmux``, and ``zlib``.
+If you use a package not listed here, and it was provided by ``Core/24.07``, please contact help@olcf.ornl.gov.
+
 Frontier: System Software Update (February 18, 2025)
 ----------------------------------------------------
 
