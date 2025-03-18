@@ -11,7 +11,7 @@ most recent changes are listed first.
 Frontier: Core Module (March 18, 2025)
 ------------------------------------------------
 
-On March 18, 2025, a new version of the ``Core`` module, ``Core/25.03``, will be provided on Frontier. Note that the default ``Core`` will remain ``Core/24.07`` at this time.
+On March 18, 2025, a new version of the ``Core`` module, ``Core/25.03``, was provided on Frontier. Note that the default ``Core`` will remain ``Core/24.07`` at this time.
 Please test this module and report any issues to help@olcf.ornl.gov.
 
 The table below summarizes the main version changes.
@@ -47,6 +47,7 @@ The table below summarizes the main version changes.
 
 Other packages provided by ``Core/25.03`` are ``autoconf``, ``bazel``, ``bear``, ``exuberant-ctags``, ``gmake``, ``gnupg``,
 ``gnuplot``, ``googletest``, ``hpctoolkit``, ``libpng``, ``libzmq``, ``papi``, ``pkgconf``, ``screen``, ``subversion``, ``tmux``, and ``zlib``.
+These packages' versions have not changed from ``Core/24.07`` to ``Core/25.03``.
 If you use a package not listed here, and it was provided by ``Core/24.07``, please contact help@olcf.ornl.gov.
 
 Frontier: System Software Update (February 18, 2025)
