@@ -142,7 +142,8 @@ Quantinuum
 
 .. note::
     
-    The ``pytket-quantinuum`` backend extension is being depreciated March 31, 2025 and will be replaced by Quantinuum Nexus.
+    The platform that ``pytket-quantinuum`` serves is being depreciated March 31, 2025 and will be replaced by Quantinuum Nexus.
+    ``pytket-quantinuum`` will continue to function, but won't be able to target new Quantinuum Nexus devices.
 
 The tket framework is a software platform for the development and execution of gate-level quantum computation, providing state-of-the-art performance in circuit compilation.
 `Pytket <https://tket.quantinuum.com/api-docs/>`__ is a python module for interfacing with tket, and installing the `Quantinuum pytket extension <https://cqcl.github.io/pytket-quantinuum/api/>`__ allows pytket circuits to be executed on Quantinuum's quantum devices.
