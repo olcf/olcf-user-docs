@@ -11,7 +11,7 @@ most recent changes are listed first.
 Frontier: Core Module (March 18, 2025)
 ------------------------------------------------
 
-On March 18, 2025, a new version of the ``Core`` module, ``Core/25.03``, was provided on Frontier. Note that the default ``Core`` will remain ``Core/24.07`` at this time.
+On March 18, 2025, a new version of the ``Core`` module, ``Core/25.03``, was provided on Frontier. Note that the default ``Core`` remains ``Core/24.07`` at this time.
 Please test this module and report any issues to help@olcf.ornl.gov.
 
 The table below summarizes the main version changes.
