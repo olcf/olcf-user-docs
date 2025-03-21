@@ -3,8 +3,7 @@
 OLCF Software List
 ******************
 
-OLCF provides a wide range of software packages for use on its systems.
-The software packages are made available using the Environment Modules system.
+OLCF provides a wide range of software modules for use on its systems.
 See the `Module Usage Example`_ below for more information on how to use module commands.
 
 .. raw:: html

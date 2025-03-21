@@ -63,10 +63,12 @@ function format(d) {
             '<dd>' +
                 'Name: ' + d.name + '<br />' +
                 'System: ' + d.system + '<br />' +
-                (d.description ? 'Description: ' + escapeHTML(d.description) + '<br />' : '') +
+                (d.description != 'None' ? 'Description: ' + escapeHTML(d.description) + '<br />' : '') +
                 (isValidURL(d.homepage) ? 'Homepage: ' + '<a href=\"'+escapeHTML(d.homepage)+'\" target=\"_blank\">'+escapeHTML(d.homepage)+'</a>' + '<br />' : '') +
-            '</dd>' +
-            (d.nameVersion !== 'nan' ? '<dt>Available versions:</dt>' + '<dd>' + d.nameVersion + '<br />' + '</dd>' : '') +
+                (d.tags != 'None' ? 'Tags: ' + d.tags + '<br />' : '') +
+            '</dd>' + 
+            '<dt>Available versions:</dt>' + 
+            '<dd>' + d.nameVersion + '<br />' + '</dd>'
         '</dl>'
     return retstr;
 }
