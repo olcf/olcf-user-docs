@@ -122,7 +122,7 @@ class PatchedHTMLTranslator(HTMLTranslator):
             node['target'] = '_blank'
         super().visit_reference(node)
 
-def copy_sw_file(app):
+def copy_sw_file(app, exception):
     src = '/tmp/software_list_group.json'
     dest = os.path.join(app.builder.outdir, 'software/software_list/', 'software_list_group.json')
 
