@@ -86,7 +86,15 @@ let table = new DataTable('#swtable', {
         },
         { data: 'name' },
         { data: 'system' },
-        { data: 'description' }
+        { data: 'description' },
+        { data: 'tags' }
+    ],
+    columnDefs: [
+        {
+            "targets": [4],   // Index of the column you want to hide (e.g., column 1)
+            "visible": false,  // Hide the column from the table
+            "searchable": true // Keep the column searchable
+        }
     ],
     order: [[1, 'asc']],
     layout: {
