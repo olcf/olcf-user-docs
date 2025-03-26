@@ -9,6 +9,10 @@ See the `Module Usage Example`_ below for more information on how to use module 
 .. raw:: html
    :file: software_list_group.html
 
+Note: A module which has a ``Description: None`` may have more information using
+``module help <package>``. An ``OUTDATED`` module is one that was not found in
+the most recent scan, but has been seen previously in the last 60 days.  
+
 |
 .. _Module Usage Example:
 
@@ -17,11 +21,13 @@ See the `Module Usage Example`_ below for more information on how to use module 
 Missing software? If there is a software package you would like, please let us
 know by `submitting a ticket <https://www.olcf.ornl.gov/for-users/getting-started/submit-ticket/>`_.
 
-* To search for a package: ``module spider <package>``
-* To get a list of prerequisite modules:  ``module spider <package>/<version>``
-* To get package information after loading prerequisites: ``module help <package>/<version>``
+* Search for a package: ``module spider <package>``
+* Get a list of prerequisite modules:  ``module spider <package>/<version>``
+* Get package information after loading prerequisites: ``module help <package>/<version>``
+* Get general information on a package: ``module help <package>``
 
-For example, to find an adaptive mesh refinement packages, search for ``amr``.
+
+**Example:** To find an adaptive mesh refinement packages, search for ``amr``.
 The search returns that the ``amrex`` package is available on several systems.
 To find out how to use the package, log onto one of the systems, ``module spider
 amrex`` and ``module spider amrex/22.11-gpu-mpi`` using the desired
