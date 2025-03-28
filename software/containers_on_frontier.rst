@@ -143,66 +143,113 @@ When users are ready to run their containers on Frontier they can bind in CPE an
     While OLCF seeks to make these containers compatible with CPE the compatibility is NOT guaranteed. We build the images
     with `Velocity <https://olcf.github.io/velocity/>`_. The image definitions can be found `here <https://github.com/olcf/velocity-images>`__.
 
-.. note::
+.. tab-set::
 
-    We are transitioning our image builds to OCI format instead of SIF to make them more widely usable and enable security
-    scanning. For docker/podman users you will now be able to pull images from ``savannah.ornl.gov`` (as they become available).
-    For apptainer users you will need to change the bootstrap type from ``oras`` to ``docker``
-    (i.e ``apptainer pull docker://savannah.ornl.gov/olcf-container-images/frontier/<...>``).
+   .. tab-item:: Apptainer & Singularity
+      :sync: apptainer
 
-.. table::
+      .. code:: bash
 
-    +-------+--------------------------------------------------------------------+------------+--------------------------------------------------------------------------------+
-    | CPE   | PrgEnv - Components [ Compiler,  MPI,  ROCm ]                      | Distro     | URL                                                                            |
-    +-------+--------+-----------------------------------------------------------+------------+--------------------------------------------------------------------------------+
-    | 23.12 | gnu - [ ``GCC@12.3.0``,  ``MPICH@3.4.3``,  ``ROCM@5.7.1`` ]        | Ubuntu     | savannah.ornl.gov/olcf-container-images/frontier/ubuntu/gnu/cpe:23.12          |
-    |       |                                                                    +------------+--------------------------------------------------------------------------------+
-    |       |                                                                    | OpenSUSE   | savannah.ornl.gov/olcf-container-images/frontier/opensuse/gnu/cpe:23.12        |
-    |       |                                                                    +------------+--------------------------------------------------------------------------------+
-    |       |                                                                    | RockyLinux | savannah.ornl.gov/olcf-container-images/frontier/rockylinux/gnu/cpe:23.12      |
-    |       +--------------------------------------------------------------------+------------+--------------------------------------------------------------------------------+
-    |       | cray/amd - [ ``LLVM@17.0.6``,  ``MPICH@3.4.3``,  ``ROCM@5.7.1`` ]  | Ubuntu     | savannah.ornl.gov/olcf-container-images/frontier/ubuntu/clang/cpe:23.12        |
-    |       |                                                                    +------------+--------------------------------------------------------------------------------+
-    |       |                                                                    | OpenSUSE   | savannah.ornl.gov/olcf-container-images/frontier/opensuse/clang/cpe:23.12      |
-    |       |                                                                    +------------+--------------------------------------------------------------------------------+
-    |       |                                                                    | RockyLinux | savannah.ornl.gov/olcf-container-images/frontier/rockylinux/clang/cpe:23.12    |
-    +-------+--------------------------------------------------------------------+------------+--------------------------------------------------------------------------------+
-    | 24.03 | gnu - [ ``GCC@13.2.0``,  ``MPICH@3.4.3``,  ``ROCM@6.0.1`` ]        | Ubuntu     | savannah.ornl.gov/olcf-container-images/frontier/ubuntu/gnu/cpe:24.03          |
-    |       |                                                                    +------------+--------------------------------------------------------------------------------+
-    |       |                                                                    | OpenSUSE   | savannah.ornl.gov/olcf-container-images/frontier/opensuse/gnu/cpe:24.03        |
-    |       |                                                                    +------------+--------------------------------------------------------------------------------+
-    |       |                                                                    | RockyLinux | savannah.ornl.gov/olcf-container-images/frontier/rockylinux/gnu/cpe:24.03      |
-    |       +--------------------------------------------------------------------+------------+--------------------------------------------------------------------------------+
-    |       | cray/amd - [ ``LLVM@17.0.6``,  ``MPICH@3.4.3``,  ``ROCM@6.0.1`` ]  | Ubuntu     | savannah.ornl.gov/olcf-container-images/frontier/ubuntu/clang/cpe:24.03        |
-    |       |                                                                    +------------+--------------------------------------------------------------------------------+
-    |       |                                                                    | OpenSUSE   | savannah.ornl.gov/olcf-container-images/frontier/opensuse/clang/cpe:24.03      |
-    |       |                                                                    +------------+--------------------------------------------------------------------------------+
-    |       |                                                                    | RockyLinux | savannah.ornl.gov/olcf-container-images/frontier/rockylinux/clang/cpe:24.03    |
-    +-------+--------------------------------------------------------------------+------------+--------------------------------------------------------------------------------+
-    | 24.07 | gnu - [ ``GCC@13.2.0``,  ``MPICH@3.4.3``,  ``ROCM@6.1.3``` ]       | Ubuntu     | savannah.ornl.gov/olcf-container-images/frontier/ubuntu/gnu/cpe:24.07          |
-    |       |                                                                    +------------+--------------------------------------------------------------------------------+
-    |       |                                                                    | OpenSUSE   | savannah.ornl.gov/olcf-container-images/frontier/opensuse/gnu/cpe:24.07        |
-    |       |                                                                    +------------+--------------------------------------------------------------------------------+
-    |       |                                                                    | RockyLinux | savannah.ornl.gov/olcf-container-images/frontier/rockylinux/gnu/cpe:24.07      |
-    |       +--------------------------------------------------------------------+------------+--------------------------------------------------------------------------------+
-    |       | cray/amd - [ ``LLVM@18.1.6``,  ``MPICH@3.4.3``,  ``ROCM@6.1.3`` ]  | Ubuntu     | savannah.ornl.gov/olcf-container-images/frontier/ubuntu/clang/cpe:24.07        |
-    |       |                                                                    +------------+--------------------------------------------------------------------------------+
-    |       |                                                                    | OpenSUSE   | savannah.ornl.gov/olcf-container-images/frontier/opensuse/clang/cpe:24.07      |
-    |       |                                                                    +------------+--------------------------------------------------------------------------------+
-    |       |                                                                    | RockyLinux | savannah.ornl.gov/olcf-container-images/frontier/rockylinux/clang/cpe:24.07    |
-    +-------+--------------------------------------------------------------------+------------+--------------------------------------------------------------------------------+
-    | 24.11 | gnu - [ ``GCC@13.2.0``,  ``MPICH@3.4.3``,  ``ROCM@6.2.4``` ]       | Ubuntu     | savannah.ornl.gov/olcf-container-images/frontier/ubuntu/gnu/cpe:24.11          |
-    |       |                                                                    +------------+--------------------------------------------------------------------------------+
-    |       |                                                                    | OpenSUSE   | savannah.ornl.gov/olcf-container-images/frontier/opensuse/gnu/cpe:24.11        |
-    |       |                                                                    +------------+--------------------------------------------------------------------------------+
-    |       |                                                                    | RockyLinux | savannah.ornl.gov/olcf-container-images/frontier/rockylinux/gnu/cpe:24.11      |
-    |       +--------------------------------------------------------------------+------------+--------------------------------------------------------------------------------+
-    |       | cray/amd - [ ``LLVM@18.1.8``,  ``MPICH@3.4.3``,  ``ROCM@6.2.4`` ]  | Ubuntu     | savannah.ornl.gov/olcf-container-images/frontier/ubuntu/clang/cpe:24.11        |
-    |       |                                                                    +------------+--------------------------------------------------------------------------------+
-    |       |                                                                    | OpenSUSE   | savannah.ornl.gov/olcf-container-images/frontier/opensuse/clang/cpe:24.11      |
-    |       |                                                                    +------------+--------------------------------------------------------------------------------+
-    |       |                                                                    | RockyLinux | savannah.ornl.gov/olcf-container-images/frontier/rockylinux/clang/cpe:24.11    |
-    +-------+--------------------------------------------------------------------+------------+--------------------------------------------------------------------------------+
+         apptainer pull docker://savannah.ornl.gov/olcf-container-images/cpe:<tag>
+
+      .. code:: bash
+
+         singularity pull docker://savannah.ornl.gov/olcf-container-images/cpe:<tag>
+
+   .. tab-item:: Podman & Docker
+      :sync: podman
+
+      .. code:: bash
+
+         podman pull savannah.ornl.gov/olcf-container-images/cpe:<tag>
+
+      .. code:: bash
+
+         docker pull savannah.ornl.gov/olcf-container-images/cpe:<tag>
+
+
+.. tab-set::
+
+   .. tab-item:: CPE/23.12
+      :sync: cpe_23_12
+
+      **Contents:**
+
+      +---------------------------------------------------+----------------------------------------------------+
+      | GNU                                               | CLANG                                              |
+      +===================================================+====================================================+
+      | **gcc@12.3.0** + **mpich@3.4.3** + **rocm@5.7.1** | **llvm@17.0.6** + **mpich@3.4.3** + **rocm@5.7.1** |
+      +---------------------------------------------------+----------------------------------------------------+
+
+      **Tags:**
+
+      - ``23.12_gnu_ubuntu``
+      - ``23.12_gnu_opensuse``
+      - ``23.12_gnu_rockylinux``
+      - ``23.12_clang_ubuntu``
+      - ``23.12_clang_opensuse``
+      - ``23.12_clang_rockylinux``
+
+   .. tab-item:: CPE/24.03
+      :sync: cpe_24_03
+
+      **Contents:**
+
+      +---------------------------------------------------+----------------------------------------------------+
+      | GNU                                               | CLANG                                              |
+      +===================================================+====================================================+
+      | **gcc@13.2.0** + **mpich@3.4.3** + **rocm@6.0.1** | **llvm@17.0.6** + **mpich@3.4.3** + **rocm@6.0.1** |
+      +---------------------------------------------------+----------------------------------------------------+
+
+      **Tags:**
+
+      - ``24.03_gnu_ubuntu``
+      - ``24.03_gnu_opensuse``
+      - ``24.03_gnu_rockylinux``
+      - ``24.03_clang_ubuntu``
+      - ``24.03_clang_opensuse``
+      - ``24.03_clang_rockylinux``
+
+   .. tab-item:: CPE/24.07
+      :sync: cpe_24_07
+
+      **Contents:**
+
+      +---------------------------------------------------+----------------------------------------------------+
+      | GNU                                               | CLANG                                              |
+      +===================================================+====================================================+
+      | **gcc@13.2.0** + **mpich@3.4.3** + **rocm@6.1.3** | **llvm@18.1.6** + **mpich@3.4.3** + **rocm@6.1.3** |
+      +---------------------------------------------------+----------------------------------------------------+
+
+      **Tags:**
+
+      - ``24.07_gnu_ubuntu``
+      - ``24.07_gnu_opensuse``
+      - ``24.07_gnu_rockylinux``
+      - ``24.07_clang_ubuntu``
+      - ``24.07_clang_opensuse``
+      - ``24.07_clang_rockylinux``
+
+   .. tab-item:: CPE/24.11
+      :selected:
+      :sync: cpe_24_11
+
+      **Contents:**
+
+      +---------------------------------------------------+----------------------------------------------------+
+      | GNU                                               | CLANG                                              |
+      +===================================================+====================================================+
+      | **gcc@13.2.0** + **mpich@3.4.3** + **rocm@6.2.4** | **llvm@18.1.8** + **mpich@3.4.3** + **rocm@6.2.4** |
+      +---------------------------------------------------+----------------------------------------------------+
+
+      **Tags:**
+
+      - ``24.11_gnu_ubuntu``
+      - ``24.11_gnu_opensuse``
+      - ``24.11_gnu_rockylinux``
+      - ``24.11_clang_ubuntu``
+      - ``24.11_clang_opensuse``
+      - ``24.11_clang_rockylinux``
 
 Apptainer Modules
 ^^^^^^^^^^^^^^^^^
