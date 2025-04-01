@@ -745,6 +745,8 @@ The following table shows the recommended ROCm version for each CCE version, alo
 +-------------+-------+---------------------------+
 |   18.0.1    | 24.11 | 6.2.4                     |
 +-------------+-------+---------------------------+
+|   19.0.0    | 25.03 | 6.2.4                     |
++-------------+-------+---------------------------+
 
 .. note::
 
@@ -793,6 +795,8 @@ An asterisk indicates the latest officially supported version of ROCm for each `
 +------------+-------+--------------------------------------------------+
 |   8.1.31   | 24.11 | 6.3.1, 6.2.4, 6.2.0*, 6.1.3, 6.0.0               |
 +------------+-------+--------------------------------------------------+
+|   8.1.32   | 25.03 | 6.3.1, 6.2.4, 6.2.0*, 6.1.3, 6.0.0               |
++------------+-------+--------------------------------------------------+
 
 .. note::
 
@@ -808,16 +812,16 @@ For example, the ``craype`` module provides the ``cc``, ``CC``, and ``ftn`` Cray
 These drivers are written to link to specific libraries (e.g., the ``ftn`` wrapper in September 2023 PE links to ``libtcmalloc_minimal.so``),
 which may not be needed by compiler versions other than the one they were released with.
 
-For the full compatibility of your loaded CrayPE environment, we strongly recommended loading the ``cpe`` module of your desired CrayPE release (version is the last two digits of the year and the two-digit month, e.g., September 2023 is version 23.09).
-For example, to load the September 2023 PE (CCE 16.0.1, Cray MPICH 8.1.27, ROCm 5.5.1 compatibility), 
+For the full compatibility of your loaded CrayPE environment, we strongly recommended loading the ``cpe`` module of your desired CrayPE release (version is the last two digits of the year and the two-digit month, e.g., December 2024 is version 24.11).
+For example, to load the December 2024 PE (CCE 17.0.1, Cray MPICH 8.1.31, ROCm 6.2.4 compatibility), 
 you would run the following commands:
 
 .. code:: bash
 
     module load PrgEnv-cray
-    # Load the cpe module after your desired PE, but before rocm -- sometimes cpe attempts to set a rocm version
-    module load cpe/23.09
-    module load rocm/5.5.1
+    # Load the cpe module after your desired PrgEnv, but before rocm -- cpe may attempt to load a rocm version other than what you want
+    module load cpe/24.11
+    module load rocm/6.2.4
 
     # Since these modules are not default, make sure to prepend CRAY_LD_LIBRARY_PATH to LD_LIBRARY_PATH
     export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
@@ -3777,6 +3781,16 @@ If it is necessary to have bit-wise reproducible results from these libraries, i
 
 System Updates 
 ============== 
+
+2025-04-01
+----------
+On Tuesday, April 1, 2025, Frontier's system software was upgraded.
+The following changes took place:
+
+- Upgrade to Slurm 24.11.3
+- HPE/Cray Programming Environment (CPE) 25.03 (CCE/19.0.0) is now available via the ``cpe/25.03`` modulefile.
+- Add support for the ``kdreg2`` Slingshot fabric cache monitor (ie, ``export FI_MR_CACHE_MONITOR=kdreg2``).
+- Implement a parameter change in SHS 11.1.0 to improve performance of large-scale ``MPI_Alltoall``.
 
 2025-02-18
 ----------
