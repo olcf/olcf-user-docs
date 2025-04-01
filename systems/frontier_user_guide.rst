@@ -3789,6 +3789,7 @@ The following changes took place:
 
 - Upgrade to Slurm 24.11.3
 - HPE/Cray Programming Environment (CPE) 25.03 (CCE/19.0.0) is now available via the ``cpe/25.03`` modulefile.
+- Add support for the ``kdreg2`` Slingshot fabric cache monitor (ie, ``export FI_MR_CACHE_MONITOR=kdreg2``).
 
 2025-02-18
 ----------
