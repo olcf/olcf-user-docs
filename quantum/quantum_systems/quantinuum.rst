@@ -96,6 +96,10 @@ Due to limited amount of resources, the default quotas are enforced:
 * ``H1-1E`` : Unlimited
 * ``H1-1``, ``H2-1``, ``H2-2`` : 0
 * ``H2-1E``, ``H2-2E`` : 2000
+* **Nexus Simulation Time**: 6000 s
+* **Nexus Compilation Time**: 6000 s
+* **Nexus Storage**: 500 MB
+* **Nexus Lab**: First come, first served (total 500 hours shared among all QCUP users)
 
 As noted :ref:`below<quantinuum-alloc>`, quotas can be raised by sending a request to help@olcf.ornl.gov with sufficient justification.
 To see your current usage or quotas in Quantinuum Nexus (e.g., how many HQC credits you have available), navigate to the `Organization section of your Account Settings <https://nexus.quantinuum.com/settings/organization>`__.
