@@ -384,6 +384,20 @@ For intel, add "-qopenmp" to the build line.
 For information on *running threaded codes*, please see the :ref:`andes-thread-layout`
 subsection of the :ref:`andes-running-jobs` section in this user guide.
 
+Compiling CUDA Codes
+-------------------
+
+Andes login nodes do not have GPUs, and therefore do not provide `libcuda.so` required for CUDA compilation.
+
+In order to access the appropriate CUDA libraries, it is then required to launch an "interactive compute job" on a compute node:
+
+.. code::
+
+    $ salloc -A abc123 -N1 -t 00:30:00 -p gpu
+    $ module load cuda
+
+Please refer to :ref:`andes-interactive-jobs`
+
 .. _andes-running-jobs:
 
 Running Jobs
@@ -569,6 +583,7 @@ additional information of all queued jobs, you can use ``squeue`` as described i
 
 --------------
 
+.. _andes-interactive-jobs:
 Interactive Batch Jobs on Commodity Clusters
 --------------------------------------------
 
