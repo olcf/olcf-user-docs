@@ -4,7 +4,7 @@
             <tr>
                 <th></th>
                 <th>Name</th>
-                <th>System</th>
+                <th>Systems</th>
                 <th>Description</th>
             </tr>
         </thead>
@@ -12,7 +12,7 @@
             <tr>
                 <th></th>
                 <th>Name</th>
-                <th>System</th>
+                <th>Systems</th>
                 <th>Description</th>
             </tr>
         </tfoot>
@@ -56,20 +56,33 @@ function isValidURL(url) {
 
 // Formatting function for row details
 function format(d) {
+
+    // Build versions summary string here
+    let versionSummary = ''
+
     // `d` is the original data object for the row
     let retstr =
         '<dl>' +
             '<dt>Software Package:</dt>' +
             '<dd>' +
                 'Name: ' + d.name + '<br />' +
-                'System: ' + d.system + '<br />' +
-                (d.description != 'None' ? 'Description: ' + escapeHTML(d.description) + '<br />' : '') +
+                'Systems: ' + d.systems + '<br />' +
+                (d.description != 'None' && d.description != null ? 'Description: ' + escapeHTML(d.description) + '<br />' : '') +
                 (isValidURL(d.homepage) ? 'Homepage: ' + '<a href=\"'+escapeHTML(d.homepage)+'\" target=\"_blank\">'+escapeHTML(d.homepage)+'</a>' + '<br />' : '') +
-                (d.tags != 'None' ? 'Tags: ' + d.tags + '<br />' : '') +
+                (d.tags != 'None' && d.tags != null ? 'Tags: ' + d.tags + '<br />' : '') +
             '</dd>' + 
-            '<dt>Available versions:</dt>' + 
-            '<dd>' + d.nameVersion + '<br />' + '</dd>'
-        '</dl>'
+            '<dt>Available versions:</dt>';
+
+    // Create version summary string for each system
+    (d.systemsList.forEach(sys => {
+        versionSummary = versionSummary +
+        '<dd>' + '<details>' + '<summary>Versions available: ' + sys + '</summary>' +
+        '<p>' + d[sys + 'PkgVers'] + '<p />' + '</details>' + '</dd>' 
+    }));
+
+    // end the return string
+    retstr += versionSummary +'</dl>'
+
     return retstr;
 }
 
@@ -85,7 +98,7 @@ let table = new DataTable('#swtable', {
             defaultContent: ''
         },
         { data: 'name' },
-        { data: 'system' },
+        { data: 'systems' },
         { data: 'description' },
         { data: 'tags' }
     ],
@@ -98,9 +111,9 @@ let table = new DataTable('#swtable', {
     ],
     order: [[1, 'asc']],
     layout: {
-        top2Start: 'search',
+        top1Start: 'search',
         topEnd: ''
-    }
+    },
 });
 
 // Add event listener for opening and closing details
