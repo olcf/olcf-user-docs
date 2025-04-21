@@ -9,7 +9,7 @@ Frontier User Guide
 System Overview
 ===============
 
-Frontier is a HPE Cray EX supercomputer located at the Oak Ridge Leadership Computing Facility. With a theoretical peak double-precision performance of approximately 2 exaflops (2 quintillion calculations per second), it is the fastest system in the world for a wide range of traditional computational science applications. The system has 74 Olympus rack HPE cabinets, each with 128 AMD compute nodes, and a total of 9,408 AMD compute nodes.
+Frontier is a HPE Cray EX supercomputer located at the Oak Ridge Leadership Computing Facility. With a theoretical peak double-precision performance of approximately 2 exaflops (2 quintillion calculations per second), it is the fastest system in the world for a wide range of traditional computational science applications. The system has 77 Olympus rack HPE cabinets, each with 128 AMD compute nodes, and a total of 9,856 AMD compute nodes.
 
 
 .. _frontier-nodes:
@@ -1339,7 +1339,7 @@ parameter, which all jobs in the bin receive.
 +-----+-----------+-----------+----------------------+--------------------+
 | Bin | Min Nodes | Max Nodes | Max Walltime (Hours) | Aging Boost (Days) |
 +=====+===========+===========+======================+====================+
-| 1   | 5,645     | 9,408     | 12.0                 | 8                  |
+| 1   | 5,645     | 9,472     | 12.0                 | 8                  |
 +-----+-----------+-----------+----------------------+--------------------+
 | 2   | 1,882     | 5,644     | 12.0                 | 4                  |
 +-----+-----------+-----------+----------------------+--------------------+
