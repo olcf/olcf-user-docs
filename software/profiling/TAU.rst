@@ -27,8 +27,10 @@ software that works in a similar way (e.g. darshan-runtime).
 .. code-block:: bash
 
   module unload darshan-runtime  # incompatible with TAU
-  module load tau
-  env | grep TAU                 # display TAU settings
+  module avail tau      # list available TAU modules
+  # On Apr 2025: tau/2.34-gpu-mpi-omp    tau/2.34-gpu-omp    tau/2.34-mpi-omp (L)    tau/2.34-omp (D)
+  module load tau       # load the default TAU module (tau/2.34-omp)
+  env | grep TAU        # display TAU settings
 
 The TAU environment variables show the location of the TAU installation and the
 default TAU_MAKEFILE.  TAU compiler wrappers use the TAU_MAKEFILE for
@@ -183,7 +185,8 @@ specify areas for instrumentation.
 .. code:: bash
 
   module unload darshan-runtime  # incompatible with TAU
-  module load tau
+  # NOTE: The tau mpi-omp module is used here
+  module load tau/2.34-mpi-omp
   # Copy example from the TAU installation
   rsync -va $OLCF_TAU_ROOT/examples/taututorial ./taututorial
   cd ./taututorial
