@@ -217,7 +217,7 @@ Profiling and tracing for code execution follow the earlier example.
 
   # Allocate 1 node for 5 min and run 2 tasks 
   # Note: This is not using tau_exec
-  srun -A $SBATCH_ACCOUNT -N 1 -t 5 -n 2 ./computePi_taucxx
+  srun -A <ACCOUNT> -N 1 -t 5 -n 2 ./computePi_taucxx
 
   # View profile using command line pprof
   pprof   # Uses the PROFILEDIR var to find data
