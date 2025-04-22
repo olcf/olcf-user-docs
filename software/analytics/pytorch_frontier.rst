@@ -410,21 +410,62 @@ Once the plugin is installed, you must include it in your ``LD_LIBRARY_PATH`` wh
    export LD_LIBRARY_PATH=${PATH TO THE PLUGIN}/lib/:${LD_LIBRARY_PATH}
 
 
+To avoid a possible deadlock between RCCL and the default libfabric memory registration cache monitor (`memhooks`), before running you should set either
+
+.. code-block:: bash
+
+   export FI_MR_CACHE_MONITOR=kdreg2
+
+or
+
+.. code-block:: bash
+
+   export FI_MR_CACHE_MONITOR=userfaultfd
+
+
 More information about RCCL, the plugin, and profiling its effect on Frontier applications can be found `here <https://www.olcf.ornl.gov/wp-content/uploads/OLCF_AI_Training_0417_2024.pdf>`__.
 
 
 Environment Variables
 ---------------------
 
-When running with the NCCL (RCCL) backend, there are specific environment variables that you should test to see how it affects your application's performance.
-Some variables to try are:
+When running with the NCCL (RCCL) backend, there are many environment variables that can affect your application's performance. These environment variables are recommended by HPE and AMD on Frontier for best performance at scale:
 
 .. code-block:: bash
 
-   NCCL_NET_GDR_LEVEL=3   # Can improve performance, but remove this setting if you encounter a hang/crash.
+   FI_MR_CACHE_MONITOR=kdreg2     # Required to avoid a deadlock.
+   FI_CXI_DEFAULT_CQ_SIZE=131072  # Ask the network stack to allocate additional space to process message completions.
+   FI_CXI_DEFAULT_TX_SIZE=2048    # Ask the network stack to allocate additional space to hold pending outgoing messages.
+   FI_CXI_RX_MATCH_MODE=hybrid    # Allow the network stack to transition to software mode if necessary. 
+
+   NCCL_NET_GDR_LEVEL=3           # Typically improves performance, but remove this setting if you encounter a hang/crash.
+   NCCL_CROSS_NIC=1               # On large systems, this NCCL setting has been found to improve performance
+   NCCL_SOCKET_IFNAME=hsn0        # NCCL/RCCL will use the high speed network to coordinate startup.
+
+RCCL and NCCL are highly configurable with environment variables. Some other variables to try are:
+
+.. code-block:: bash
+
    NCCL_ALGO=TREE or RING # May see performance difference with either setting. (should not need to use this, but can try)
-   NCCL_CROSS_NIC=1       # On large systems, this NCCL setting has been found to improve performance
    NCCL_DEBUG=info        # For debugging only (warning: generates a large amount of messages)
+
+Alternative Rendezvous Protocol
+---------------------------------
+
+On Frontier it is possible to configure the network to use a different protocol for rendezvous messages that improves RCCL performance at large scales. 
+This alternative protocol may negatively impact MPI performance, so it is best used for jobs that mostly use RCCL for communication.
+
+To use the alternative protocol you need to both add the flag ``--network=disable_rdzv_get`` to your Slurm allocation request and set the environment variable ``FI_CXI_RDZV_PROTO=alt_read``.
+You can add these to your batch scripts for your jobs:
+
+.. code-block:: bash
+
+   #SBATCH --network=disable_rdzv_get
+
+   export FI_CXI_RDZV_PROTO=alt_read
+
+For more information on this alternative protocal and HPE's recommendations for running RCCL on Slingshot networks, see `here <https://support.hpe.com/hpesc/public/docDisplay?docId=dp00004854en_us&docLocale=en_US>`__.
+
 
 .. _torch-geo:
 
