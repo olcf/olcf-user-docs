@@ -164,15 +164,21 @@ IBM Quantum Computing
 ---------------------
 
 After submitting the OLCF quantum account application and receiving approval,
-proceed to `<https://quantum.ibm.com/>`__ and click on "Create an IBMid
-account". Your IBM Quantum Hub account email will be the email associated with
-your OLCF account. If sign-in fails, contact help@olcf.ornl.gov. Once logged
-in, users will have access to the IBM Quantum Hub, IBM’s online platform for
-QPU access, forums for quantum computing discussion, etc. From the IBM Quantum
-Hub Dashboard, users can manage system reservations, view system (backend)
-statuses, and view the results of your past jobs. More information about using
-these IBM quantum resources can be found on the `IBM's Documentation <https://docs.quantum.ibm.com/>`__
-or our :doc:`OLCF IBM Quantum Guide </quantum/quantum_systems/ibm_quantum>`.
+proceed to `<https://quantum.ibm.com/>`__, click on "Continue with IBMid", and
+click on "Create an IBMid" on the following page.  Your IBM Quantum Hub account
+email will be the email associated with your OLCF account. If sign-in fails,
+contact help@olcf.ornl.gov. Once logged in, users will have access to the IBM
+Quantum Hub, IBM’s online platform for QPU access, forums for quantum computing
+discussion, etc. From the IBM Quantum Hub Dashboard, users can manage system
+reservations, view system (backend) statuses, and view the results of your past
+jobs. More information about using these IBM quantum resources can be found on
+the `IBM's Documentation <https://docs.quantum.ibm.com/>`__ or our :doc:`OLCF
+IBM Quantum Guide </quantum/quantum_systems/ibm_quantum>`.
+
+.. warning::
+   When creating an account, DO NOT follow the "New to IBM Quantum? Create an
+   account on the upgraded IBM Quantum Platform" link.  Instead follow the
+   instructions as indicated above.
 
 Quantinuum 
 ----------
