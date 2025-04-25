@@ -2,17 +2,11 @@
 Quantinuum
 **********
 
-.. note::
-   Quantinuum has launched a new cloud-based platform called `Quantinuum Nexus <https://docs.quantinuum.com/nexus/user_guide/concepts/concepts.html>`__.
-   Instructions for accessing Nexus will be sent to QCUP users in January 2025.
-   QCUP users should transition to Nexus for a newer user dashboard experience.
-   See the :ref:`quantinuum-nexus` section for more details.
-
 Overview
 ========
 
-Quantinuum offers access to trapped ion quantum computers and emulators, accessible via their API and User Portal.
-For the complete set of currently available devices, qubit numbers, etc. see the *Quantinuum Systems User Guide* under the *Examples* tab on the legacy `Quantinuum User Portal <https://um.qapi.quantinuum.com/>`__ or the *Backends* tab on `Nexus <https://nexus.quantinuum.com/backends>`__. 
+Quantinuum offers access to trapped ion quantum computers and emulators, accessible via their API and Quantinuum Nexus user portal.
+For the complete set of currently available devices, qubit numbers, etc. see the *Backends* tab on `Nexus <https://nexus.quantinuum.com/backends>`__. 
 
 This guide describes how to use the system once you have access.
 For instructions on how to gain access, see our :doc:`Quantum Access </quantum/quantum_access>` page instead.
@@ -47,7 +41,7 @@ Connecting
 Cloud Access
 ------------
 
-Users can access information about Quantinuum's systems, view submitted jobs, look up machine availability, and update job notification preferences on the cloud dashboard on the legacy `Quantinuum User Portal <https://um.qapi.quantinuum.com/>`__ or `Quantinuum Nexus <https://nexus.quantinuum.com/>`__. 
+Users can access information about Quantinuum's systems, view submitted jobs, look up machine availability, and update job notification preferences on `Quantinuum Nexus <https://nexus.quantinuum.com/>`__. 
 
 
 .. _quantinuum-nexus:
@@ -71,7 +65,7 @@ Locally via pytket
 ------------------
 
 Users are able to submit jobs that run remotely on Quantinuum's systems from a local python development environment.
-Directions for setting up the python environment and getting started in a notebook locally as well as additional examples utilizing conditional logic and mid-circuit measurement are found under the *Examples* tab on the legacy `Quantinuum User Portal <https://um.qapi.quantinuum.com/>`__ or Quantinuum's H-Series `Getting Started page <https://docs.quantinuum.com/h-series/trainings/getting_started/getting_started_index.html>`__.
+Directions for setting up the python environment and getting started in a notebook locally, as well as additional examples utilizing conditional logic and mid-circuit measurement, are found on the Quantinuum's H-Series `Getting Started page <https://docs.quantinuum.com/h-series/trainings/getting_started/getting_started_index.html>`__.
 
 .. _quantinuum-jobs:
 
@@ -110,10 +104,10 @@ To see your current usage or quotas in Quantinuum Nexus (e.g., how many HQC cred
 
 .. _quantinuum-alloc:
 
-Allocations & Credit Usage
-==========================
+Allocation Policies & Credit Usage
+==================================
 
-Running a job on the System Model H1 family and System Model H2 hardware requires Quantinuum Credits.
+Running a job on Quantinuum's H-Series hardware requires Quantinuum Credits.
 Additional information on credit usage for H-Series devices can be found in the `H-Series User Guide <https://docs.quantinuum.com/h-series/user_guide/hardware_user_guide/system_operation.html#estimating-circuit-time>`__.
 
 * Any request for credits must be submitted by the project Principle Investigator (PI) to help@olcf.ornl.gov
@@ -122,12 +116,15 @@ Additional information on credit usage for H-Series devices can be found in the 
 
 * Requests will be evaluated based on the provided technical justification, programmatic efficiency, and machine availability. The effective usage of prior allocations by the project will also be considered.
 
-* Allocations will be granted on a monthly basis to maximize the availability of the H1 family and H2 machines. Please note that allocations do not carry over to the next month and must be consumed in the month granted. **Credits reset on the first day of every month.**
- 
-* Allocation requests requiring 20 qubits and fewer will be considered for H1 family machines, and allocation requests requiring 21 or more qubits will be considered for H2.
+* Allocations will be granted on a monthly basis to maximize the availability of the H-Series devices. Please note that allocations do not carry over to the next month and must be consumed in the month granted. **Credits reset on the first day of every month.**
+
+* To ensure efficient utilization of our hardware resources, allocations will be considered for two phases:
+
+    #. The first 3 weeks of the month (credits granted at the beginning of the month): ensured resource is available for your request
+    #. The last week of the month (credits granted the last full week of the month): resource may become unavailable due to high demand, at which point request for time in future months is expected
 
 Allocation requests for the following month must be submitted no later than the 25th of the preceding month.
-The uptime schedule is available on the *Calendar* tab of the legacy `Quantinuum User Portal <https://um.qapi.quantinuum.com/>`__, or by navigating to a specific backend in Nexus (e.g., for H1-1: https://nexus.quantinuum.com/backends/Quantinuum/H1-1 ).
+The uptime schedule is available by navigating to a specific backend in Nexus (e.g., for H1-1: https://nexus.quantinuum.com/backends/Quantinuum/H1-1 ).
 
 Software
 ========
@@ -145,8 +142,6 @@ For more information, see the following links:
 * `pytket-quantinuum documentation <https://tket.quantinuum.com/extensions/pytket-quantinuum/>`__
 * `qnexus documentation <https://docs.quantinuum.com/nexus/>`__
 
-.. warning::
-   Please note that the platform ``pytket-quantinuum`` serves is being replaced by Quantinuum Nexus and will be deprecated **March 31, 2025**. After this date, ``pytket-quantinuum`` will not be compatible with Quantinuum Nexus. For guidance on how to access H-Series through Nexus, please use the `qnexus <https://pypi.org/project/qnexus/>`__ Python package and the `Nexus Getting Started guide <https://docs.quantinuum.com/nexus/trainings/getting_started.html>`__.
 
 Additional Resources
 ====================
