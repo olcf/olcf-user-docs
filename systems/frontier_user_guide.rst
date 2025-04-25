@@ -3078,6 +3078,12 @@ Visualization and analysis tasks should be done on the Andes cluster. There are 
 
 For a full list of software availability and latest news at the OLCF, please reference the :doc:`Software </software/software-news>` section in OLCF's User Documentation.
 
+
+Containers
+==========
+
+Frontier uses `Apptainer <https://apptainer.org/docs/user/latest/>`__ as its container builder and runtime. You can read more on how to use containers on Frontier in the :doc:`Containers on Frontier </software/containers_on_frontier>` section in the OLCF User Documentation.
+
 Debugging
 ============
 

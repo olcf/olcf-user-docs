@@ -283,6 +283,17 @@ After the image is built, transfer it to Frontier if it's on another machine, an
 
         FATAL:   container creation failed: mount hook function failure: mount /opt/cray->/opt/cray error: while mounting /opt/cray: destination /opt/cray doesn't exist in container
 
+
+
+Sample Applications
+-------------------
+
+Some examples of containerizing and running specific applications on Frontier can be seen 
+in the  `olcf_container_examples repository
+<https://github.com/olcf/olcf_containers_examples/tree/main/frontier/sample_apps/>`__ . If you have
+suggestions for other examples you would like to see, or would like to contribute one yourself, feel
+free to open an issue or pull request on the Github page above. 
+
 Some Restrictions and Tips
 --------------------------
 
