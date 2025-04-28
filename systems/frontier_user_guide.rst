@@ -3800,10 +3800,11 @@ The following changes will take place:
 - Add patch to HPE/Cray Programming Environment (CPE) 25.03 to resolve `OLCFDEV-1852 <https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#olcfdev-1852-cray-compiler-wrappers-may-not-link-gtl-if-offload-arch-flag-is-provided>`_
 - ROCm/6.4.0 will be made available as non-default via the ``rocm/6.4.0`` module.
 
-Recommended User Action
-^^^^^^^^^^^^^^^^^^^^^^^
+.. note::
 
-- If setting ``FI_MR_CACHE_MONITOR=memhooks`` or ``FI_MR_CACHE_MONITOR=disabled``, please try removing those workarounds and trying ``kdreg2``. Prior to the outage, you may explicitly set ``FI_MR_CACHE_MONITOR=kdreg2``.
+    **Recommended User Action**:
+
+    - If setting ``FI_MR_CACHE_MONITOR=memhooks`` or ``FI_MR_CACHE_MONITOR=disabled``, please try removing those workarounds and trying ``kdreg2``. Prior to the outage, you may explicitly set ``FI_MR_CACHE_MONITOR=kdreg2``.
 
 2025-04-01
 ----------
