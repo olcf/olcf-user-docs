@@ -424,17 +424,14 @@ Unloading darshan-runtime is recommended for users profiling their applications 
 Purge
 =====
 
-To keep the Lustre file system exceptionally performant, files that have not been accessed (e.g., read) or modified within 90 days in the project and user areas are purged. Please make sure that valuable data is moved off of these systems regularly. See :ref:`data-hpss` for information about using the HSI and HTAR utilities and Globus to archive data on HPSS.
+To help ensure performance and availability for all projects, Orion is regularly purged. Files that have not been accessed (e.g., read) or modified within 90-days are eligible to be purged. Because Orion is considered scratch and not backed-up by the center, data owners should ensure needed data is regularly backed-up. See :ref:`kronos` for information about using the center's archival storage resource.
+
+Temporary purge exmptions can be requested by contacting help@olcf.ornl.gov .
+
+.. warning::
+   Orion is a scratch filesystem.  Data that has not been accessed in 90-days are eligible for purge.  Data owners are responsible for backing up needed data.
 
 
-======================================================================
-Major difference between Lustre HPE ClusterStor and IBM Spectrum Scale
-======================================================================
-
-The file systems have many technical differences, but we will mention only what a user needs to be familiar with:
-
-- On Summit, there was no concept of striping from the user point of view. The GPFS handled the workload, the file system was tuned during the installation. 
-- On Frontier, Orion does have striping, but because of the complexity of file striping between Orion's performance tiers, users should refrain from attempting to manually control file striping. If you feel that the default file striping on Orion is not meeting your needs, please contact OLCF-help so we can work with you to understand your application's I/O performance.
 
 
 .. _data-hpss:
@@ -444,12 +441,7 @@ HPSS Data Archival System
 **************************
 
 .. warning::
-   On January 31, 2025, data remaining on the HPSS will no longer be accessible and will be **PERMANENTLY DELETED**. Following this date, the OLCF will no longer be able to retrieve data remaining on HPSS. Please do not wait to move needed data. For more information on migrating data from HPSS to Kronos (the center's new archival storage system) see the :ref:`hpss-migration` section.
-
-
-HPSS is now read-only. Users cannot transfer data into HPSS and should instead use :ref:`kronos`. For more information on migrating your files from HPSS to Kronos or another storage location, see the :ref:`hpss-migration` section.
-
-On January 31, 2025, data remaining on the HPSS will no longer be accessible and will be *permanently deleted*. Following this date, the OLCF will no longer be able to retrieve data remaining on HPSS.
+   On January 31, 2025, HPSS was decommissioned. The OLCF is no longer be able to retrieve data remaining on HPSS. 
 
 
 .. _kronos:
