@@ -1,0 +1,24 @@
+name: Mirror to GitLab
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source repo
+        uses: actions/checkout@v3
+
+      - name: Push to GitLab
+        env:
+          GITLAB_USERNAME: ${{ secrets.GITLAB_USERNAME }}
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+        run: |
+          git config --global user.name "GitHub Mirror Bot"
+          git config --global user.email "lelandkr@ornl.gov"
+          
+          git remote add gitlab https://$GITLAB_USERNAME:$GITLAB_TOKEN@gitlab.ccs.ornl.gov:ua/olcf-user-docs-internal-mirror.git
+          git push --mirror gitlab
