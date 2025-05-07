@@ -19,7 +19,7 @@ jobs:
           GITLAB_USERNAME: ${{ secrets.GITLAB_USERNAME }}
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
         run: |
-          git config --global user.name "kleland(github-push access token)"
+          git config --global user.name "GitHub Actions Bot"
           git config --global user.email "lelandkr@ornl.gov"
           
           # Add GitLab remote using the GitLab username and token
