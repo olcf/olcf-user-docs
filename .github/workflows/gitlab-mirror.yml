@@ -21,7 +21,7 @@ jobs:
           git config --global user.email "lelandkr@ornl.gov"
           
           # Add GitLab remote using the GitLab username and token
-          git remote add gitlab https://$GITLAB_USERNAME:$GITLAB_TOKEN@gitlab.ccs.ornl.gov/ua/olcf-user-docs-internal-mirror.git
+          git remote set-url gitlab https://$GITLAB_USERNAME:$GITLAB_TOKEN@gitlab.ccs.ornl.gov/ua/olcf-user-docs-internal-mirror.git
           
           # Push all branches and tags to GitLab (but do not overwrite GitLab-only branches)
           git push --all gitlab
