@@ -118,7 +118,7 @@ including with hardware-based noise models, is unlimited and requires no credits
 
 Running a job on IonQ hardware requires IonQ Credits. In order to request an IonQ Credit allocation, please adhere to the following policy:
 
-* Any request for credits must be submitted by the project Principle Investigator (PI) to help@olcf.ornl.gov
+* Any request for credits must be submitted by the project Principle Investigator (PI) by logging into `myOLCF <https://my.olcf.ornl.gov>`__, select your QCUP project under "My Projects" after login, and use the `Quantum Allocation Request form <https://my.olcf.ornl.gov/allocations/quantumAllocation>`__ under the "Allocations" section. Alternatively, you can send a request through our help ticket system (help@olcf.ornl.gov).
 
 * Requests for machine credits must be justified using results from the appropriate simulator to determine the appropriate amount needed. Requests without simulator-based justifications will be denied. Using `IonQ's Resource Estimator <https://ionq.com/programs/research-credits/resource-estimator>`__ is also highly recommended.
 

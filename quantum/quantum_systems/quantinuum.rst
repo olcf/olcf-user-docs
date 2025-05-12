@@ -110,7 +110,7 @@ Allocation Policies & Credit Usage
 Running a job on Quantinuum's H-Series hardware requires Quantinuum Credits.
 Additional information on credit usage for H-Series devices can be found in the `H-Series User Guide <https://docs.quantinuum.com/h-series/user_guide/hardware_user_guide/system_operation.html#estimating-circuit-time>`__.
 
-* Any request for credits must be submitted by the project Principle Investigator (PI) to help@olcf.ornl.gov
+* Any request for credits must be submitted by the project Principle Investigator (PI) by logging into `myOLCF <https://my.olcf.ornl.gov>`__, select your QCUP project under "My Projects" after login, and use the `Quantum Allocation Request form <https://my.olcf.ornl.gov/allocations/quantumAllocation>`__ under the "Allocations" section. Alternatively, you can send a request through our help ticket system (help@olcf.ornl.gov).
 
 * Requests for machine credits must be justified using results from the emulator to determine the appropriate amount needed. Requests without emulator-based justifications will be denied.
 
