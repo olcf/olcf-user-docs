@@ -3790,21 +3790,22 @@ System Updates
 
 2025-05-13
 ----------
-On Tuesday, May 13, 2025, Frontier's system software will be upgraded.
-The following changes will take place:
+On Tuesday, May 13, 2025, Frontier's system software was upgraded.
+The following changes took place:
 
 - Upgrade to AMD GPU 6.12.12 device driver (ROCm 6.4.0 release).
 - Upgrade to Slingshot 2.3.0
 - Set ``kdreg2`` as the default Slingshot fabric cache monitor (ie, ``export FI_MR_CACHE_MONITOR=kdreg2``). ``kdreg2`` is the recommended cache monitor for Slingshot 2.3 over the previous default of ``memhooks``.
-- Upgrade to Slurm 24.11.4 will resolve `OLCFDEV-1854 <https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#olcfdev-1854-slurm-8-srun-steps-per-node-may-not-launch-the-8th-step>`_
+- Upgrade to Slurm 24.11.4 resolves `OLCFDEV-1854 <https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#olcfdev-1854-slurm-8-srun-steps-per-node-may-not-launch-the-8th-step>`_
 - Add patch to HPE/Cray Programming Environment (CPE) 25.03 to resolve `OLCFDEV-1852 <https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#olcfdev-1852-cray-compiler-wrappers-may-not-link-gtl-if-offload-arch-flag-is-provided>`_
-- ROCm/6.4.0 will be made available as non-default via the ``rocm/6.4.0`` module.
+- ROCm/6.4.0 has been made available as non-default via the ``rocm/6.4.0`` module.
+- Orion system software was upgraded
 
 .. note::
 
     **Recommended User Action**:
 
-    - If setting ``FI_MR_CACHE_MONITOR=memhooks`` or ``FI_MR_CACHE_MONITOR=disabled``, please try removing those workarounds and trying ``kdreg2``. Prior to the outage, you may explicitly set ``FI_MR_CACHE_MONITOR=kdreg2``.
+    - If setting ``FI_MR_CACHE_MONITOR=memhooks`` or ``FI_MR_CACHE_MONITOR=disabled``, please try removing those workarounds and try the new default (``kdreg2``).
 
 2025-04-01
 ----------
