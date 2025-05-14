@@ -6,4 +6,5 @@ _build
 *.swp
 *.swo
 [#]*[#]
+.github/ #ignore workflow files
 
