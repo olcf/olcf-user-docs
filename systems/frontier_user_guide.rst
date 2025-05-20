@@ -1396,6 +1396,48 @@ Projects that overrun their allocation are still allowed to run on OLCF systems,
 +----------------------+-----------+
 
 
+Viewing Usage
+^^^^^^^^^^^^^
+
+Utilization is calculated daily using batch jobs which complete between 00:00 and 23:59 of the previous day. For example, if a job moves into a run state on Tuesday and completes Wednesday, the job's utilization will be recorded Thursday. Only batch jobs which write an end record are used to calculate utilization. Batch jobs which do not write end records due to system failure or other reasons are not used when calculating utilization. Jobs which fail because of run-time errors (e.g., the user's application causes a segmentation fault) are counted against the allocation.       
+
+Each user may view usage for projects on which they are members from the command line tool ``showusage`` and the `myOLCF site <https://my.olcf.ornl.gov>`__.
+
+On the Command Line via ``showusage``
+"""""""""""""""""""""""""""""""""""""
+
+The ``showusage`` utility can be used to view your usage from January 01 through midnight of the previous day. For example:
+
+.. code::
+
+      $ showusage
+        Usage:
+                                 Project Totals
+        Project             Allocation      Usage      Remaining     Usage
+        _________________|______________|___________|____________|______________
+        abc123           |  20000       |   126.3   |  19873.7   |   1560.80
+
+The ``-h`` option will list more usage details.
+
+On the Web via myOLCF
+""""""""""""""""""""""
+
+More detailed metrics may be found on each project's usage section of the `myOLCF site <https://my.olcf.ornl.gov>`__. The following information is available for each project:
+
+-  YTD usage by system, subproject, and project member
+-  Monthly usage by system, subproject, and project member
+-  YTD usage by job size groupings for each system, subproject, and
+   project member
+-  Weekly usage by job size groupings for each system, and subproject
+-  Batch system priorities by project and subproject
+-  Project members
+
+The myOLCF site is provided to aid in the utilization and management of OLCF allocations. See the :doc:`myOLCF Documentation </services_and_applications/myolcf/index>` for more information.
+
+If you have any questions or have a request for additional data, please contact the OLCF User Assistance Center.
+
+
+
 System Reservation Policy
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
