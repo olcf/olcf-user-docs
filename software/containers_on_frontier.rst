@@ -141,7 +141,14 @@ When users are ready to run their containers on Frontier they can bind in CPE an
 .. important::
 
     While OLCF seeks to make these containers compatible with CPE the compatibility is NOT guaranteed. We build the images
-    with `Velocity <https://olcf.github.io/velocity/>`_. The image definitions can be found `here <https://github.com/olcf/velocity-images>`__.
+    with `Velocity <https://olcf.github.io/velocity/>`_. The image definitions can be found `here <https://github.com/olcf/velocity-images>`_.
+
+.. attention::
+
+    Due to upstream vulnerabilities from software and operating systems some provided images cannot pass required
+    security scans. In these cases the image will be temporarily unavailable. We are sorry for any inconvenience that
+    this causes. Users are welcome to build there own images using our build tool
+    `Velocity <https://olcf.github.io/velocity/>`_ and `image definitions <https://github.com/olcf/velocity-images>`_.
 
 .. tab-set::
 
@@ -198,7 +205,7 @@ When users are ready to run their containers on Frontier they can bind in CPE an
       +---------------------------------------------------+----------------------------------------------------+
       | GNU                                               | CLANG                                              |
       +===================================================+====================================================+
-      | **gcc@13.2.0** + **mpich@3.4.3** + **rocm@6.0.1** | **llvm@17.0.6** + **mpich@3.4.3** + **rocm@6.0.1** |
+      | **gcc@13.2.0** + **mpich@3.4.3** + **rocm@6.0.3** | **llvm@17.0.6** + **mpich@3.4.3** + **rocm@6.0.3** |
       +---------------------------------------------------+----------------------------------------------------+
 
       **Tags:**
@@ -218,7 +225,7 @@ When users are ready to run their containers on Frontier they can bind in CPE an
       +---------------------------------------------------+----------------------------------------------------+
       | GNU                                               | CLANG                                              |
       +===================================================+====================================================+
-      | **gcc@13.2.0** + **mpich@3.4.3** + **rocm@6.1.3** | **llvm@18.1.6** + **mpich@3.4.3** + **rocm@6.1.3** |
+      | **gcc@13.2.0** + **mpich@3.4.3** + **rocm@6.1.3** | **llvm@18.1.8** + **mpich@3.4.3** + **rocm@6.1.3** |
       +---------------------------------------------------+----------------------------------------------------+
 
       **Tags:**
@@ -250,6 +257,26 @@ When users are ready to run their containers on Frontier they can bind in CPE an
       - ``24.11_clang_ubuntu``
       - ``24.11_clang_opensuse``
       - ``24.11_clang_rockylinux``
+
+   .. tab-item:: CPE/25.03
+      :sync: cpe_25_03
+
+      **Contents:**
+
+      +---------------------------------------------------+----------------------------------------------------+
+      | GNU                                               | CLANG                                              |
+      +===================================================+====================================================+
+      | **gcc@14.2.0** + **mpich@3.4.3** + **rocm@6.3.1** | **llvm@19.1.7** + **mpich@3.4.3** + **rocm@6.3.1** |
+      +---------------------------------------------------+----------------------------------------------------+
+
+      **Tags:**
+
+      - ``25.03_gnu_ubuntu``
+      - ``25.03_gnu_opensuse``
+      - ``25.03_gnu_rockylinux``
+      - ``25.03_clang_ubuntu``
+      - ``25.03_clang_opensuse``
+      - ``25.03_clang_rockylinux``
 
 Apptainer Modules
 ^^^^^^^^^^^^^^^^^
