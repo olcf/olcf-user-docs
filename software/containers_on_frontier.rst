@@ -4,7 +4,7 @@
 Containers on Frontier
 **********************
 
-Apptainer v1.3.0 is installed on Frontier. Apptainer can be used for both building
+Apptainer v1.3.6 is installed on Frontier. Apptainer can be used for both building
 and running containers on Frontier. The main user documentation on how to use Apptainer
 can be found `here <https://apptainer.org/docs/user/main/index.html>`__. This section of our documentation
 will only cover any additional info that you might need to build and run containers correctly
@@ -46,7 +46,7 @@ for a GPU aware MPI code.
 * To build the container image (the SIF file), run
   ::
 
-     apptainer build opensusempich342rocm571.sif opensusempich342rocm571.def
+     apptainer build opensusempich342rocm624.sif opensusempich342rocm624.def
 
 
   * Apptainer builds the container image in the SIF file format. Unlike Podman, Apptainer gives you a single file for your image that you can later run as your container.
@@ -81,7 +81,7 @@ in this example.
 
   ::
 
-    apptainer push <path to your sif file>/opensusempich342rocm571.sif  oras://registry-1.docker.io/<your docker username>/<your repo name:tag>
+    apptainer push <path to your sif file>/opensusempich342rocm624.sif  oras://registry-1.docker.io/<your docker username>/<your repo name:tag>
 
 * Using ``oras://`` tells Apptainer to push the image to given registry as an OCI
   artifact. Not all OCI registries support ORAS. See `ORAS Adopters page <https://oras.land/adopters/>`_ for list.
@@ -99,15 +99,15 @@ This example will look at building a container image for testing collective comm
 
 
 * Navigate to ``frontier/containers_on_frontier_docs/rccltests`` of the previously cloned github repo.
-* The Apptainer definition file for building the RCCL container image is rcclmpich342rocm571.def.
+* The Apptainer definition file for building the RCCL container image is rcclmpich342rocm624.def.
 
-  * This builds on the existing opensusempich342rocm571.sif image from a previous example. Hence, MPICH 3.4.2 and ROCm 5.7.1 are used in this image.
-  * To specify that we are building this container image off the existing opensusempich342rocm571.sif image, we indicate next to the Bootstrap Keyword (under the definition file Header), localimage, for image in your workdir.
+  * This builds on the existing opensusempich342rocm624.sif image from a previous example. Hence, MPICH 3.4.2 and ROCm 6.2.4 are used in this image.
+  * To specify that we are building this container image off the existing opensusempich342rocm624.sif image, we indicate next to the Bootstrap Keyword (under the definition file Header), localimage, for image in your workdir.
 
     ::
 
       Bootstrap: localimage
-      From: ../gpu_aware_mpi_example/opensusempich342rocm571.sif
+      From: ../gpu_aware_mpi_example/opensusempich342rocm624.sif
 
 * At this stage, follow the steps in the Building a container image section above for building and running the RCCL container. 
 
@@ -118,12 +118,12 @@ This example will look at building a container image for testing collective comm
    ::
 
       Bootstrap: docker
-      From: quay.io/opensuse/opensuse:15.5
+      From: quay.io/opensuse/opensuse:15.6
 
    ::
 
       Bootstrap: oras
-      From: docker.io/subilabrahamornl/opensusempich342rocm571:latest
+      From: docker.io/subilabrahamornl/ope1nsusempich342rocm624:latest
 
 OLCF Base Images & Apptainer Modules
 -------------------------------------
@@ -258,7 +258,7 @@ Apptainer Modules
     The modules described in this section are experimental!
 
 To make the use of apptainer easier, OLCF provides some modules that automatically bind in the needed libraries to run
-apptainer with the host mpi and rocm. To accsess these modules load ``olcf-container-tools``. You should then see two
+apptainer with the host mpi and rocm. To access these modules load ``olcf-container-tools``. You should then see two
 modules ``apptainer-enable-mpi`` and ``apptainer-enable-gpu``.
 
 Example Workflow
