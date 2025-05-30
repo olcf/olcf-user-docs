@@ -3836,8 +3836,8 @@ On Tuesday, June 17, 2025, Frontier's system software will be upgraded.
 The following changes will take place:
 
 - Upgrade to Slingshot Host Software 12.0.1. The default ``libfabric`` module will remain version 1.22.0.
-- Upgrade to Cray OS (COS) 3.3
-- Upgrade to User Services Software (USS) 1.3
+- Upgrade to HPE/Cray OS (COS) 3.3 (SLES-15 SP6)
+- Upgrade to HPE/Cray User Services Software (USS) 1.3
 
 No user action should be necessary.
 
