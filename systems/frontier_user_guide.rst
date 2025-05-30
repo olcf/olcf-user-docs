@@ -3839,7 +3839,7 @@ The following changes will take place:
 - Upgrade to HPE/Cray OS (COS) 3.3 (SLES-15 SP6)
 - Upgrade to HPE/Cray User Services Software (USS) 1.3
 
-No user action should be necessary.
+No user action required at this time.
 
 2025-05-13
 ----------
