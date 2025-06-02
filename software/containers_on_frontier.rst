@@ -141,7 +141,7 @@ When users are ready to run their containers on Frontier they can bind in CPE an
 .. important::
 
     While OLCF seeks to make these containers compatible with CPE the compatibility is NOT guaranteed. We build the images
-    with `Velocity <https://olcf.github.io/velocity/>`_. The image definitions can be found `here <https://github.com/olcf/velocity-images>`_.
+    with `Velocity <https://olcf.github.io/velocity/>`_. The image definitions can be found `here <https://github.com/olcf/velocity-images>`__.
 
 .. attention::
 
@@ -291,7 +291,7 @@ modules ``apptainer-enable-mpi`` and ``apptainer-enable-gpu``.
 Example Workflow
 ^^^^^^^^^^^^^^^^
 To see how one might use these containers and modules we have an example of building and running lammps. You can
-find examples for cpu and gpu lammps runs `here <https://github.com/olcf/olcf_containers_examples/tree/main/frontier/containers_on_frontier_docs/apptainer_wrappers_lammps>`_.
+find examples for cpu and gpu lammps runs `here <https://github.com/olcf/olcf_containers_examples/tree/main/frontier/containers_on_frontier_docs/apptainer_wrappers_lammps>`__.
 Clone the git repo onto Frontier (or any ``x86_64`` machine), navigate to the correct folder and run:
 
 .. code-block::
