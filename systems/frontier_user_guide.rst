@@ -1396,6 +1396,26 @@ Projects that overrun their allocation are still allowed to run on OLCF systems,
 +----------------------+-----------+
 
 
+Node-Hour Calculation
+^^^^^^^^^^^^^^^^^^^^^
+
+The *node-hour* charge for each batch job will be calculated as follows:
+
+.. code::
+
+    node-hours = nodes requested * ( batch job endtime - batch job starttime )
+
+Where *batch job starttime* is the time the job moves into a running state, and
+*batch job endtime* is the time the job exits a running state.
+
+A batch job's usage is calculated solely on requested nodes and the batch job's
+start and end time. The number of cores actually used within any particular node
+within the batch job is not used in the calculation. For example, if a job
+requests (6) nodes through the batch script, runs for (1) hour, uses only (2)
+CPU cores per node, the job will still be charged for 6 nodes \* 1 hour = *6
+node-hours*. Similarly, if a job *requests* (1) hour, but the job exits after
+(0.5) hours, then the job will only be charged for those (0.5) hours.
+
 Viewing Usage
 ^^^^^^^^^^^^^
 
