@@ -35,17 +35,17 @@ for complete details.
 
 `Join an Additional Project <https://my.olcf.ornl.gov/>`__
 Existing users with RSA SecurID tokens should log in to the myOLCF self-service portal to apply for additional projects.
-Existing users without RSA SecurID tokens should fill out the `Account Application Form <https://my.olcf.ornl.gov/account-application-new/>`__ that can be found at the top left of the 
+Existing users without RSA SecurID tokens should fill out the `Account Application Form <https://my.olcf.ornl.gov/account-application-new/>`__ that can be found at the top left of the
 myOLCF login page without needing to sign in.
 See the section :ref:`applying-for-a-user-account` for complete details.
 
 `Notary Token Verification <https://my.olcf.ornl.gov/video-conference/>`_
-For certain resources, ORNL requires identity proofing to authenticate a user’s identity and possession of the token prior to activation. You may schedule this verification with a member of our staff virtually my filling out the 
+For certain resources, ORNL requires identity proofing to authenticate a user’s identity and possession of the token prior to activation. You may schedule this verification with a member of our staff virtually my filling out the
 `Conference Scheduler Form <https://my.olcf.ornl.gov/video-conference/>`__.
 You will need your Application Confirmation Number that was emailed to you
 by our accounts team to schedule in this manner. If you do not possess
 a confirmation number (you are verifying a replacement token, for example),
-please email us at help@olcf.ornl.gov to schedule. 
+please email us at help@olcf.ornl.gov to schedule.
 
 `Nondisclosure Agreement
 Form <https://www.olcf.ornl.gov/wp-content/uploads/OLCF_NDA.pdf>`_ Required from
@@ -62,7 +62,7 @@ research and/or publicly available information.
 Forms to Request Changes to Computers, Jobs, or Accounts
 ========================================================
 
-You no longer need to use a special form for the following requests. If you 
+You no longer need to use a special form for the following requests. If you
 need to request any of the following, please do so via email to help@olcf.ornl.gov.
 
 - Relaxed queue limits for one or more jobs (longer walltime, higher priority)
@@ -80,8 +80,12 @@ Report Templates
 Use this template if you have been asked to submit a closeout report for your
 project.  Note this form does not apply to INCITE projects.  If you have been provided a template via email, only that template applies.
 
-`Industry Quarterly Report Template <https://www.olcf.ornl.gov/wp-content/uploads/industry_quarterly_report.doc>`_
+`Industry Quarterly Report Template <https://www.olcf.ornl.gov/wp-content/uploads/Industry-Quarterly-Report-Template.docx>`_
 Use this template if you have an industry project to submit a quarterly
+report.
+
+`Industry Closeout Report Template <https://www.olcf.ornl.gov/wp-content/uploads/Industry-Report-Template.docx>`_
+Use this template if you have an industry project to submit a closeout
 report.
 
 --------------
