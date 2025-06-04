@@ -11,7 +11,9 @@ See the `Module Usage Example`_ below for more information on how to use module 
 
 Note: A module which has a ``Description: None`` may have more information using
 ``module help <package>``. An ``OUTDATED`` module is one that was not found in
-the most recent scan, but has been seen previously in the last 60 days.  
+the most recent scan, but has been seen previously in the last 60 days.  A
+module with the tag ``e4s`` gets its Spack build recipe from the Extreme-scale
+Scientific Software Stack (E4S). 
 
 |
 .. _Module Usage Example:
