@@ -1234,6 +1234,10 @@ The table below summarizes options for submitted jobs. Unless otherwise noted, t
     |                        |                                            | (e.g. ``--signal=B:USR1@300``) to tell Slurm to signal only the batch shell;         |
     |                        |                                            | otherwise all processes will be signaled.                                            |
     +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | ``-p``                 | ``#SBATCH -p batch``                       | Request a specific compute partition for the job. (default is ``batch``)             |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | ``-q``                 | ``#SBATCH -q debug``                       | Request a "Quality of Service" (QOS) for the job. (default is ``normal``)            |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
 
 
 Slurm Environment Variables
