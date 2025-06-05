@@ -431,13 +431,13 @@ For example, let's say you have these files on Orion as of ``01/01/2025``:
 .. code-block:: bash
 
     $ ls -l
-    -rw-r--r--  1 ...  ...  ... Oct 3 2024 file1.txt (eligible to be purged on 1/1/25)
-    -rw-r--r--  1 ...  ...  ... Oct 4 2024 file2.txt (eligible to be purged on 1/2/25)
-    -rw-r--r--  1 ...  ...  ... Dec 1 2024 file3.txt (eligible to be purged on 3/1/25)
+    -rw-r--r--  1 ...  ...  ... Oct 2 2024 file1.txt (eligible to be purged on 1/1/25) (currently 91 days old)
+    -rw-r--r--  1 ...  ...  ... Oct 3 2024 file2.txt (eligible to be purged on 1/2/25) (currently 90 days old)
+    -rw-r--r--  1 ...  ...  ... Dec 1 2024 file3.txt (eligible to be purged on 3/2/25) (currently 31 days old)
 
-Because October 3rd 2024 is 90 days ago, ``file1.txt`` will be purged "today".
-On January 2nd ("tomorrow"), ``file2.txt`` will be purged.
-The purge will continuously run and it won't be until March 1st that ``file3.txt`` will be purged (unless accessed or modified by that time).
+Because ``file1.txt`` is over 90 days old, ``file1.txt`` will be purged "today".
+Although ``file2.txt`` is safe "today", on January 2nd ("tomorrow"), ``file2.txt`` will be purged.
+The purge will continuously run and it won't be until March 2nd that ``file3.txt`` will be purged (unless accessed or modified by that time).
 
 Because Orion is considered scratch and not backed-up by the center, data owners should ensure needed data is regularly backed-up. See :ref:`kronos` for information about using the center's archival storage resource.
 
