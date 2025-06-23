@@ -3227,6 +3227,15 @@ To use ``omnitrace`` or ``rocprofiler-systems``, you may use the following comma
     module load rocm
     module load omnitrace # or module load rocprofiler-systems
 
+``rocprofiler-systems`` does not support all available ROCm modules. Please consult the table below for the compatibility matrix.
+
++---------------------+--------------------------+
+| rocprofiler-compute |  Supported ROCm Versions |
++=====================+==========================+
+| 1.0.1               | 6.3.*, 6.4.*             |
++---------------------+--------------------------+
+
+
 Profiling Applications
 ======================
 
