@@ -1,3 +1,7 @@
+<!-- This html segment uses the Datatables js-plugin to display a json file
+which contains the software package information -->
+
+
 <div style="overflow-x:auto;">
    <table id="swtable" class="display" style="width:100%">
         <thead>
@@ -24,6 +28,7 @@
     #swtable {
         table-layout: fixed; /* Make the table cells respect the height setting */
         width: 100%; /* Ensures the table takes the full width */
+        margin: 0 auto;
     }
 
     td {
@@ -33,6 +38,22 @@
     .dataTables_filter {
         float: left !important;
     }
+
+    table.dataTable{
+        table-layout: fixed;
+        width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-wrap: nowrap;
+    }
+    .table-responsive { overflow-x: fixed !important; }
+
+    .trimCol {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
 </style>
 
 <script type="text/javascript">
@@ -104,10 +125,29 @@ let table = new DataTable('#swtable', {
     ],
     columnDefs: [
         {
-            "targets": [4],   // Index of the column you want to hide (e.g., column 1)
-            "visible": false,  // Hide the column from the table
-            "searchable": true // Keep the column searchable
-        }
+            targets: 4,   // Index of the column you want to hide (e.g., column 1)
+            visible: false,  // Hide the column from the table
+            searchable: true // Keep the column searchable
+        },
+        {
+            targets: 3,  // last column, contains descriptions
+            width: "20%",
+            className: "trimCol"
+        },
+        {
+            targets: 0,
+            width: "1%"
+        },
+        {
+            targets: 1,
+            width:  "4%",
+            className: "trimCol"
+        },
+        {
+            targets: 2,
+            width: "3%",
+            className: "trimCol"
+        },
     ],
     order: [[1, 'asc']],
     layout: {
