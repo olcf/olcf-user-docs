@@ -1,7 +1,7 @@
 .. _software_list:
 
-OLCF Software Inventory
-***********************
+OLCF Software Catalog
+*********************
 
 OLCF provides a wide range of software modules for use on its systems.
 See the `Module Usage Example`_ below for more information on how to use module commands.
