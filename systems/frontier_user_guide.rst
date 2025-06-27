@@ -9,7 +9,7 @@ Frontier User Guide
 System Overview
 ===============
 
-Frontier is a HPE Cray EX supercomputer located at the Oak Ridge Leadership Computing Facility. With a theoretical peak double-precision performance of approximately 2 exaflops (2 quintillion calculations per second), it is the fastest system in the world for a wide range of traditional computational science applications. The system has 74 Olympus rack HPE cabinets, each with 128 AMD compute nodes, and a total of 9,408 AMD compute nodes.
+Frontier is a HPE Cray EX supercomputer located at the Oak Ridge Leadership Computing Facility. With a theoretical peak double-precision performance of approximately 2 exaflops (2 quintillion calculations per second), it is the fastest system in the world for a wide range of traditional computational science applications. The system has 77 Olympus rack HPE cabinets, each with 128 AMD compute nodes, and a total of 9,856 AMD compute nodes.
 
 
 .. _frontier-nodes:
@@ -745,6 +745,8 @@ The following table shows the recommended ROCm version for each CCE version, alo
 +-------------+-------+---------------------------+
 |   18.0.1    | 24.11 | 6.2.4                     |
 +-------------+-------+---------------------------+
+|   19.0.0    | 25.03 | 6.2.4                     |
++-------------+-------+---------------------------+
 
 .. note::
 
@@ -793,6 +795,8 @@ An asterisk indicates the latest officially supported version of ROCm for each `
 +------------+-------+--------------------------------------------------+
 |   8.1.31   | 24.11 | 6.3.1, 6.2.4, 6.2.0*, 6.1.3, 6.0.0               |
 +------------+-------+--------------------------------------------------+
+|   8.1.32   | 25.03 | 6.3.1, 6.2.4, 6.2.0*, 6.1.3, 6.0.0               |
++------------+-------+--------------------------------------------------+
 
 .. note::
 
@@ -808,16 +812,16 @@ For example, the ``craype`` module provides the ``cc``, ``CC``, and ``ftn`` Cray
 These drivers are written to link to specific libraries (e.g., the ``ftn`` wrapper in September 2023 PE links to ``libtcmalloc_minimal.so``),
 which may not be needed by compiler versions other than the one they were released with.
 
-For the full compatibility of your loaded CrayPE environment, we strongly recommended loading the ``cpe`` module of your desired CrayPE release (version is the last two digits of the year and the two-digit month, e.g., September 2023 is version 23.09).
-For example, to load the September 2023 PE (CCE 16.0.1, Cray MPICH 8.1.27, ROCm 5.5.1 compatibility), 
+For the full compatibility of your loaded CrayPE environment, we strongly recommended loading the ``cpe`` module of your desired CrayPE release (version is the last two digits of the year and the two-digit month, e.g., December 2024 is version 24.11).
+For example, to load the December 2024 PE (CCE 17.0.1, Cray MPICH 8.1.31, ROCm 6.2.4 compatibility), 
 you would run the following commands:
 
 .. code:: bash
 
     module load PrgEnv-cray
-    # Load the cpe module after your desired PE, but before rocm -- sometimes cpe attempts to set a rocm version
-    module load cpe/23.09
-    module load rocm/5.5.1
+    # Load the cpe module after your desired PrgEnv, but before rocm -- cpe may attempt to load a rocm version other than what you want
+    module load cpe/24.11
+    module load rocm/6.2.4
 
     # Since these modules are not default, make sure to prepend CRAY_LD_LIBRARY_PATH to LD_LIBRARY_PATH
     export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
@@ -1230,6 +1234,10 @@ The table below summarizes options for submitted jobs. Unless otherwise noted, t
     |                        |                                            | (e.g. ``--signal=B:USR1@300``) to tell Slurm to signal only the batch shell;         |
     |                        |                                            | otherwise all processes will be signaled.                                            |
     +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | ``-p``                 | ``#SBATCH -p batch``                       | Request a specific compute partition for the job. (default is ``batch``)             |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
+    | ``-q``                 | ``#SBATCH -q debug``                       | Request a "Quality of Service" (QOS) for the job. (default is ``normal``)            |
+    +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
 
 
 Slurm Environment Variables
@@ -1335,7 +1343,7 @@ parameter, which all jobs in the bin receive.
 +-----+-----------+-----------+----------------------+--------------------+
 | Bin | Min Nodes | Max Nodes | Max Walltime (Hours) | Aging Boost (Days) |
 +=====+===========+===========+======================+====================+
-| 1   | 5,645     | 9,408     | 12.0                 | 8                  |
+| 1   | 5,645     | 9,472     | 12.0                 | 8                  |
 +-----+-----------+-----------+----------------------+--------------------+
 | 2   | 1,882     | 5,644     | 12.0                 | 4                  |
 +-----+-----------+-----------+----------------------+--------------------+
@@ -1390,6 +1398,68 @@ Projects that overrun their allocation are still allowed to run on OLCF systems,
 +----------------------+-----------+
 | > 125%               | 365 days  |
 +----------------------+-----------+
+
+
+Node-Hour Calculation
+^^^^^^^^^^^^^^^^^^^^^
+
+The *node-hour* charge for each batch job will be calculated as follows:
+
+.. code::
+
+    node-hours = nodes requested * ( batch job endtime - batch job starttime )
+
+Where *batch job starttime* is the time the job moves into a running state, and
+*batch job endtime* is the time the job exits a running state.
+
+A batch job's usage is calculated solely on requested nodes and the batch job's
+start and end time. The number of cores actually used within any particular node
+within the batch job is not used in the calculation. For example, if a job
+requests (6) nodes through the batch script, runs for (1) hour, uses only (2)
+CPU cores per node, the job will still be charged for 6 nodes \* 1 hour = *6
+node-hours*. Similarly, if a job *requests* (1) hour, but the job exits after
+(0.5) hours, then the job will only be charged for those (0.5) hours.
+
+Viewing Usage
+^^^^^^^^^^^^^
+
+Utilization is calculated daily using batch jobs which complete between 00:00 and 23:59 of the previous day. For example, if a job moves into a run state on Tuesday and completes Wednesday, the job's utilization will be recorded Thursday. Only batch jobs which write an end record are used to calculate utilization. Batch jobs which do not write end records due to system failure or other reasons are not used when calculating utilization. Jobs which fail because of run-time errors (e.g., the user's application causes a segmentation fault) are counted against the allocation.       
+
+Each user may view usage for projects on which they are members from the command line tool ``showusage`` and the `myOLCF site <https://my.olcf.ornl.gov>`__.
+
+On the Command Line via ``showusage``
+"""""""""""""""""""""""""""""""""""""
+
+The ``showusage`` utility can be used to view your usage from January 01 through midnight of the previous day. For example:
+
+.. code::
+
+      $ showusage
+        Usage:
+                                 Project Totals
+        Project             Allocation      Usage      Remaining     Usage
+        _________________|______________|___________|____________|______________
+        abc123           |  20000       |   126.3   |  19873.7   |   1560.80
+
+The ``-h`` option will list more usage details.
+
+On the Web via myOLCF
+""""""""""""""""""""""
+
+More detailed metrics may be found on each project's usage section of the `myOLCF site <https://my.olcf.ornl.gov>`__. The following information is available for each project:
+
+-  YTD usage by system, subproject, and project member
+-  Monthly usage by system, subproject, and project member
+-  YTD usage by job size groupings for each system, subproject, and
+   project member
+-  Weekly usage by job size groupings for each system, and subproject
+-  Batch system priorities by project and subproject
+-  Project members
+
+The myOLCF site is provided to aid in the utilization and management of OLCF allocations. See the :doc:`myOLCF Documentation </services_and_applications/myolcf/index>` for more information.
+
+If you have any questions or have a request for additional data, please contact the OLCF User Assistance Center.
+
 
 
 System Reservation Policy
@@ -3074,6 +3144,12 @@ Visualization and analysis tasks should be done on the Andes cluster. There are 
 
 For a full list of software availability and latest news at the OLCF, please reference the :doc:`Software </software/software-news>` section in OLCF's User Documentation.
 
+
+Containers
+==========
+
+Frontier uses `Apptainer <https://apptainer.org/docs/user/latest/>`__ as its container builder and runtime. You can read more on how to use containers on Frontier in the :doc:`Containers on Frontier </software/containers_on_frontier>` section in the OLCF User Documentation.
+
 Debugging
 ============
 
@@ -3150,6 +3226,15 @@ To use ``omnitrace`` or ``rocprofiler-systems``, you may use the following comma
  
     module load rocm
     module load omnitrace # or module load rocprofiler-systems
+
+``rocprofiler-systems`` does not support all available ROCm modules. Please consult the table below for the compatibility matrix.
+
++---------------------+--------------------------+
+| rocprofiler-compute |  Supported ROCm Versions |
++=====================+==========================+
+| 1.0.1               | 6.3.*, 6.4.*             |
++---------------------+--------------------------+
+
 
 Profiling Applications
 ======================
@@ -3777,6 +3862,46 @@ If it is necessary to have bit-wise reproducible results from these libraries, i
 
 System Updates 
 ============== 
+
+2025-06-17
+----------
+On Tuesday, June 17, 2025, Frontier's system software was upgraded.
+The following changes took place:
+
+- Upgrade to Slingshot Host Software 12.0.1. The default ``libfabric`` module remains version 1.22.0.
+- Upgrade to HPE/Cray OS (COS) 3.3 (SLES-15 SP6)
+- Upgrade to HPE/Cray User Services Software (USS) 1.3
+
+No user action required at this time.
+
+2025-05-13
+----------
+On Tuesday, May 13, 2025, Frontier's system software was upgraded.
+The following changes took place:
+
+- Upgrade to AMD GPU 6.12.12 device driver (ROCm 6.4.0 release).
+- Upgrade to Slingshot 2.3.0
+- Set ``kdreg2`` as the default Slingshot fabric cache monitor (ie, ``export FI_MR_CACHE_MONITOR=kdreg2``). ``kdreg2`` is the recommended cache monitor for Slingshot 2.3 over the previous default of ``memhooks``.
+- Upgrade to Slurm 24.11.5
+- Add patch to HPE/Cray Programming Environment (CPE) 25.03 to resolve `OLCFDEV-1852 <https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#olcfdev-1852-cray-compiler-wrappers-may-not-link-gtl-if-offload-arch-flag-is-provided>`_
+- ROCm/6.4.0 has been made available as non-default via the ``rocm/6.4.0`` module.
+- Orion system software was upgraded
+
+.. note::
+
+    **Recommended User Action**:
+
+    - If setting ``FI_MR_CACHE_MONITOR=memhooks`` or ``FI_MR_CACHE_MONITOR=disabled``, please try removing those workarounds and try the new default (``kdreg2``).
+
+2025-04-01
+----------
+On Tuesday, April 1, 2025, Frontier's system software was upgraded.
+The following changes took place:
+
+- Upgrade to Slurm 24.11.3
+- HPE/Cray Programming Environment (CPE) 25.03 (CCE/19.0.0) is now available via the ``cpe/25.03`` modulefile.
+- Add support for the ``kdreg2`` Slingshot fabric cache monitor (ie, ``export FI_MR_CACHE_MONITOR=kdreg2``).
+- Implement a parameter change in SHS 11.1.0 to improve performance of large-scale ``MPI_Alltoall``.
 
 2025-02-18
 ----------

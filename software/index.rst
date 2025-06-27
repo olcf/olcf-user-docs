@@ -15,7 +15,6 @@ Software
    profiling/index
    UMS/index
    workflows/index
-   spack_environments
    viz_tools/index
    containers_on_frontier
    debugging/index

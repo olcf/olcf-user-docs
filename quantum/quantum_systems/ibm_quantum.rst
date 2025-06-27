@@ -87,7 +87,8 @@ Allocations & Usage Limits
 
 For more information on how job priority is affected based on your limit, please see `<https://quantum.cloud.ibm.com/docs/guides/fair-share-scheduler#fair-share-scheduler>`__.
 
-If you are planning to use a large allocation (over 100 minutes), please send a usage request to our Quantum Resource Utilization Council (QRUC) through our help ticket system (help@olcf.ornl.gov).
+If you are planning to use a large allocation (over 100 minutes), please send a usage request to our Quantum Resource Utilization Council (QRUC) by logging into `myOLCF <https://my.olcf.ornl.gov>`__, select your QCUP project under "My Projects" after login, and use the `Quantum Allocation Request form <https://my.olcf.ornl.gov/allocations/quantumAllocation>`__ under the "Allocations" section.
+Alternatively, you can send a request through our help ticket system (help@olcf.ornl.gov).
 **Special requests must be submitted by a project PI with sufficient computational and scientific justification.**
 QRUC will evaluate the merit of your request, and if approved, can get you the additional time you need for your work.
 

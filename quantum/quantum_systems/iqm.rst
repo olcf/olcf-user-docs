@@ -75,7 +75,7 @@ Allocations & Usage Limits
 Running a job on the IQM hardware requires IQM credits. So as to make the most efficient use of
 credits, the following allocation policy is in effect:
 
-* Any request for credits must be submitted by the project Principle Investigator (PI) to help@olcf.ornl.gov
+* Any request for credits must be submitted by the project Principle Investigator (PI) by logging into `myOLCF <https://my.olcf.ornl.gov>`__, select your QCUP project under "My Projects" after login, and use the `Quantum Allocation Request form <https://my.olcf.ornl.gov/allocations/quantumAllocation>`__ under the "Allocations" section. Alternatively, you can send a request through our help ticket system (help@olcf.ornl.gov).
 
 * Requests for machine credits must be justified using an emulator/mock backend and `IQM's Resource Calculator <https://www.iqmacademy.com/qpu/resourceCalculator/>`__. For justifying the pay-as-you-go method, we recommend using the Resource Calculator in combination with the credits per second pricing information listed in the "Quantum Computers" section on the resonance dashboard for a given backend.
 
