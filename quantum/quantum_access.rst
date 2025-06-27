@@ -177,6 +177,11 @@ QPU access, viewing allocation details, accessing documention, etc. More informa
 these IBM quantum resources can be found on the `IBM's Documentation <https://quantum.cloud.ibm.com/docs/>`__
 or our :doc:`OLCF IBM Quantum Guide </quantum/quantum_systems/ibm_quantum>`.
 
+.. warning::
+   When creating an account, DO NOT follow the "New to IBM Quantum? Create an
+   account on the upgraded IBM Quantum Platform" link.  Instead follow the
+   instructions as indicated above.
+
 Quantinuum 
 ----------
 
