@@ -30,7 +30,7 @@ Cloud Access
 
 Users can access information about IBM Quantum's systems, view queue
 information, and submit jobs on their cloud dashboard at
-`<https://quantum.ibm.com/>`__. The cloud dashboard allows access to
+`<https://quantum.cloud.ibm.com/>`__. The cloud dashboard allows access to
 IBM Quantum's graphical circuit builder, Quantum Composer, and associated
 program examples.
 
@@ -48,7 +48,7 @@ Qiskit is available at `<https://qiskit.org/learn/>`__ and in our
 
 Users are able to install IBM Quantum's Qiskit locally like so: 
 
-* Installing manually: `<https://docs.quantum.ibm.com/guides/install-qiskit>`__.
+* Installing manually: `<https://quantum.cloud.ibm.com/docs/en/guides/install-qiskit>`__.
   This option allows for building locally and executing jobs via a python virtual
   environment.
 
@@ -75,20 +75,17 @@ When jobs are submitted on IBM Quantum backends, the jobs enter into the
 order so as to provide fair sharing among all users of the device, to prevent
 individual projects or users from monopolizing a given backend.  
 
-All OLCF users have access to the "premium" (>=20 qubits) devices.
+All OLCF users have access to the "premium" (>=20 qubits) devices in the Washington DC region.
 
 
 Allocations & Usage Limits
 --------------------------
 
-.. warning::
-   Due to a change in IBM's usage model: As of Sept. 3rd 2024,  we have implemented a new system for requesting large allocation times.
-
 * **Project allocations have a default limit of 100 minutes during a moving 28-day window**.
 * Minutes are shared across all users on a given project and across all backends.
 * Once a project reaches the usage limit, no jobs will be able to run until minutes are freed up on the project (see example below).
 
-For more information on how job priority is affected based on your limit, please see `<https://docs.quantum.ibm.com/guides/instances#how-usage-affects-job-priority-within-an-instance>`__.
+For more information on how job priority is affected based on your limit, please see `<https://quantum.cloud.ibm.com/docs/guides/fair-share-scheduler#fair-share-scheduler>`__.
 
 If you are planning to use a large allocation (over 100 minutes), please send a usage request to our Quantum Resource Utilization Council (QRUC) by logging into `myOLCF <https://my.olcf.ornl.gov>`__, select your QCUP project under "My Projects" after login, and use the `Quantum Allocation Request form <https://my.olcf.ornl.gov/allocations/quantumAllocation>`__ under the "Allocations" section.
 Alternatively, you can send a request through our help ticket system (help@olcf.ornl.gov).
@@ -152,33 +149,30 @@ Jupyter notebook (see :ref:`Cloud Access <ibm-cloud>` and
 Sessions
 --------
 
-.. warning::
-   IBM Quantum retired reservations on Apr. 1st 2024. Reservations were replaced by sessions.
-
 A session in Qiskit Runtime is a tool designed for running multiple jobs in sequence more effectively.
 It streamlines the process by grouping jobs together, reducing the wait times often associated with individually queued jobs. 
 For more information on sessions can be found here:
-`<https://docs.quantum.ibm.com/run/sessions>`__
+`<https://quantum.cloud.ibm.com/docs/en/guides/run-jobs-session>`__
 
-.. warning::
-     Please note, starting a session by using the /jobs endpoint will no longer be supported after March 31, 2024.
-     After this date, qiskit-ibm-runtime version 0.20.0 or later, or qiskit-ibm-provider version 0.10.0 or later must be used to start a session. 
-     If you are calling the API directly, use the /sessions endpoint instead. Refer to this documentation for information about using the Qiskit IBM Runtime API:
-     `<https://docs.quantum.ibm.com/api/runtime>`__ 
 
 Checking System Availability & Capability
 =========================================
 
 Current status listings and system capabilities for IBM
 Quantum's quantum resources can be found here:
-`<https://quantum.ibm.com/services/resources>`__
+`<https://quantum.cloud.ibm.com/computers>`__
+
+.. note::
+    The IBM Quantum cloud platform allocates OLCF users all QPUs in the Washington DC region.
+    If you would like access to QPUs in the Frankfurt region, please submit a help ticket to help@olcf.ornl.gov.
+
 
 .. _ibm-soft:
 
 Software
 ========
 
-* Qiskit documentation is available at `<https://qiskit.org/documentation/>`__
+* Qiskit documentation is available at `<https://quantum.cloud.ibm.com/docs/guides>`__
 
 * `Qiskit Aer <https://qiskit.github.io/qiskit-aer/>`__ is IBM Quantum's package for simulating quantum circuits, with
   different backends for specific types of simulation
@@ -186,5 +180,5 @@ Software
 Additional Resources
 ====================
 
-* `IBM's Documentation <https://docs.quantum.ibm.com/>`__
-* `IBM's Announcements Page <https://docs.quantum.ibm.com/announcements>`__ : Includes service alerts (retirements, downtimes) and product updates. 
+* `IBM's Documentation <https://quantum.cloud.ibm.com/docs>`__
+* `IBM's Announcements Page <https://quantum.cloud.ibm.com/announcements>`__ : Includes service alerts (retirements, downtimes) and product updates. 

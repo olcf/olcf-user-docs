@@ -26,7 +26,7 @@ Example Python scripts for each QCUP vendor are located at our new :doc:`/quantu
 Qiskit
 ======
 
-`Qiskit <https://docs.quantum.ibm.com/>`__ is open-source software for
+`Qiskit <https://quantum.cloud.ibm.com/docs/guides>`__ is open-source software for
 working with quantum computers at the level of circuits, pulses, and
 algorithms.
 Installing Qiskit provides access to the IBM Quantum backends by default, but
@@ -40,10 +40,10 @@ Since cloud-based simulators have been deprecated, installing ``qiskit-aer`` ena
 
 See these links for more information:
 
-* `<https://docs.quantum.ibm.com/start/install>`__
-* `<https://docs.quantum.ibm.com/start/hello-world>`__
-* `<https://docs.quantum.ibm.com/verify/local-testing-mode>`__
-* `<https://docs.quantum.ibm.com/guides/execution-modes>`__
+* `<https://quantum.cloud.ibm.com/docs/guides/install-qiskit>`__
+* `<https://quantum.cloud.ibm.com/docs/guides/hello-world>`__
+* `<https://quantum.cloud.ibm.com/docs/guides/local-testing-mode>`__
+* `<https://quantum.cloud.ibm.com/docs/guides/execution-modes>`__
 
 .. tab-set::
 
