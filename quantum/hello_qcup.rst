@@ -18,14 +18,14 @@ Although a given vendor may have various access options (see :doc:`/quantum/quan
 IBM Quantum 
 ===========
 
-`Qiskit <https://docs.quantum.ibm.com/>`__ provides access to the IBM backends.
+`Qiskit <https://quantum.cloud.ibm.com/docs/guides>`__ provides access to the IBM backends.
 
 For more information please see:
 
-* `<https://docs.quantum.ibm.com/start/install>`__
-* `<https://docs.quantum.ibm.com/start/hello-world>`__
-* `<https://docs.quantum.ibm.com/verify/local-testing-mode>`__
-* `<https://docs.quantum.ibm.com/guides/execution-modes>`__
+* `<https://quantum.cloud.ibm.com/docs/guides/install-qiskit>`__
+* `<https://quantum.cloud.ibm.com/docs/guides/hello-world>`__
+* `<https://quantum.cloud.ibm.com/docs/guides/local-testing-mode>`__
+* `<https://quantum.cloud.ibm.com/docs/guides/execution-modes>`__
 
 .. list-table:: Latest script tests
    :widths: 25 25 25 25
@@ -42,7 +42,11 @@ For more information please see:
 
 .. note::
 
-   Your IBMQ API Token is listed on your IBM dashboard at `<https://quantum-computing.ibm.com/>`__.
+   You can create an IBMQ API Token from your IBM Cloud dashboard at `<https://quantum.cloud.ibm.com/>`__,
+   or view previously created tokens at `<https://cloud.ibm.com/iam/apikeys>`__.
+
+   Additionally, you will need a Cloud Resource Name (CRN) for your IBM Quantum project.
+   You can find this on the "Instances" page in your IBM Quantum dashboard at `<https://quantum.cloud.ibm.com/instances>`__.
 
 .. tab-set::
 
@@ -55,8 +59,8 @@ For more information please see:
          import time
 
          # Save / Load Credentials (csc431 used as example project)
-         QiskitRuntimeService.save_account(channel="ibm_quantum", token="API TOKEN GOES HERE", overwrite=True)
-         service = QiskitRuntimeService(channel="ibm_quantum", instance="ibm-q-ornl/ornl/csc431")
+         QiskitRuntimeService.save_account(channel="ibm_cloud", token="API TOKEN GOES HERE", overwrite=True)
+         service = QiskitRuntimeService(channel="ibm_cloud", instance="CRN GOES HERE")
 
          # Get backend (csc431 used as example project)
          #backend = service.backend("backend_name_here", instance="ibm-q-ornl/ornl/csc431")

@@ -162,16 +162,19 @@ Example Python scripts for each QCUP vendor are located at our new :doc:`/quantu
 
 IBM Quantum Computing
 ---------------------
+.. note::
+   Beginning July 1, IBM's Quantum Cloud Platform allocates QPU resources by region. OLCF users will
+   be granted access to the QPU's Washington DC (us-east) region, however, if you would like access to
+   the QPU's in the Frankfurt (eu-de) region, please include this in your request.
 
-After submitting the OLCF quantum account application and receiving approval,
-proceed to `<https://quantum.ibm.com/>`__ and click on "Create an IBMid
-account". Your IBM Quantum Hub account email will be the email associated with
-your OLCF account. If sign-in fails, contact help@olcf.ornl.gov. Once logged
-in, users will have access to the IBM Quantum Hub, IBM’s online platform for
-QPU access, forums for quantum computing discussion, etc. From the IBM Quantum
-Hub Dashboard, users can manage system reservations, view system (backend)
-statuses, and view the results of your past jobs. More information about using
-these IBM quantum resources can be found on the `IBM's Documentation <https://docs.quantum.ibm.com/>`__
+After submitting the OLCF quantum account application and receiving approval, create an IBMid at `<https://login.ibm.com/>`__.
+Use your IBMid to login to your IBM Cloud Account by proceeding to `<https://quantum.cloud.ibm.com/signin>`__, 
+enter your IBMid email which will be the email associated with your OLCF account,
+leave the region selected as "Washington DC (us-east)", and press continue. 
+If sign-in fails or if you're asked for credit card information, contact help@olcf.ornl.gov. Once logged
+in, users will have access to the IBM Quantum Cloud Platform, IBM’s online platform for
+QPU access, viewing allocation details, accessing documention, etc. More information about using
+these IBM quantum resources can be found on the `IBM's Documentation <https://quantum.cloud.ibm.com/docs/>`__
 or our :doc:`OLCF IBM Quantum Guide </quantum/quantum_systems/ibm_quantum>`.
 
 Quantinuum 
