@@ -81,16 +81,20 @@ All OLCF users have access to the "premium" (>=20 qubits) devices in the Washing
 Allocations & Usage Limits
 --------------------------
 
-* **Project allocations have a default limit of 100 minutes during a moving 28-day window**.
+* **Project allocations have a default limit of 10 minutes during a moving 28-day window**.
 * Minutes are shared across all users on a given project and across all backends.
 * Once a project reaches the usage limit, no jobs will be able to run until minutes are freed up on the project (see example below).
 
 For more information on how job priority is affected based on your limit, please see `<https://quantum.cloud.ibm.com/docs/guides/fair-share-scheduler#fair-share-scheduler>`__.
 
-If you are planning to use a large allocation (over 100 minutes), please send a usage request to our Quantum Resource Utilization Council (QRUC) by logging into `myOLCF <https://my.olcf.ornl.gov>`__, select your QCUP project under "My Projects" after login, and use the `Quantum Allocation Request form <https://my.olcf.ornl.gov/allocations/quantumAllocation>`__ under the "Allocations" section.
+If you are planning to use a medium (up to 100 minutes) or large allocation (over 100 minutes), please send a usage request to our Quantum Resource Utilization Council (QRUC) by logging into `myOLCF <https://my.olcf.ornl.gov>`__, select your QCUP project under "My Projects" after login, and use the `Quantum Allocation Request form <https://my.olcf.ornl.gov/allocations/quantumAllocation>`__ under the "Allocations" section.
 Alternatively, you can send a request through our help ticket system (help@olcf.ornl.gov).
 **Special requests must be submitted by a project PI with sufficient computational and scientific justification.**
 QRUC will evaluate the merit of your request, and if approved, can get you the additional time you need for your work.
+
+.. note::
+  Special requests for medium allocations (up to 100 minutes) do not require as much computational/scientific justification as a request for large allocations (over 100 minutes), 
+  but still must be submitted by a project PI and are not guaranteed to be approved.
 
 The 28-day rolling window
 ^^^^^^^^^^^^^^^^^^^^^^^^^
