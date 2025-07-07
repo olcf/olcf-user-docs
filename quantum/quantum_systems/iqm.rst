@@ -9,13 +9,18 @@ Overview
 
 IQM provides access to quantum computing resources through their cloud platform, 
 IQM Resonance. Users can execute quantum algorithms on IQM's quantum computers, 
-such as the 20 qubit Garnet and the 6 qubit Deneb systems, using multiple supported
+such as the 54 qubit Emerald and the 20 qubit Garnet systems, using multiple supported
 software frameworks. IQM's quantum processors are made up of superconducting
 transmon qubits, utilizing multiple topologies. 
 
 This guide describes how to use the systems once you have access. For
 instructions on how to gain access, see our :doc:`Quantum Access
 </quantum/quantum_access>` page instead.
+
+Available Systems
+=================
+
+For a list of currently available systems, along with demos for each system, please see `IQM's QPU page <https://www.iqmacademy.com/qpu/>`__.
 
 .. _iqm-connecting:
 
@@ -119,7 +124,7 @@ With your IQM API key, users submit job to a given backend's URL: e.g. for garne
 
 .. note::
    
-   The mock system is only for testing your algorithm. It will compile your code for the instruments of an IQM quantum computer. However, as no actual instruments are connected to the Mock environment, it will only yield random results – this is not a simulator. See `facade backends <https://iqm-finland.github.io/qiskit-on-iqm/user_guide.html#running-a-quantum-circuit-on-a-facade-backend>`__ for an alternative option.
+   The mock system is only for testing your algorithm. It will compile your code for the instruments of an IQM quantum computer. However, as no actual instruments are connected to the Mock environment, it will only yield random results – this is not a simulator. See `fake and facade backends <https://docs.meetiqm.com/iqm-client/user_guide_qiskit.html#simulation>`__ for an alternative option.
 
 
 Checking System Availability
@@ -133,7 +138,8 @@ availability tab `here <https://resonance.meetiqm.com/>`__.
 Software
 ========
 
-* `IQM's Qiskit-on-IQM  Documentation <https://iqm-finland.github.io/qiskit-on-iqm/user_guide.html#/>`__
+* `IQM Client Documentation <https://docs.meetiqm.com/iqm-client/index.html>`__
+* `IQM's Qiskit-on-IQM  Documentation <https://docs.meetiqm.com/iqm-client/user_guide_qiskit.html>`__
 
 
 Additional Resources
