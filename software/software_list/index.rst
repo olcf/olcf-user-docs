@@ -46,9 +46,12 @@ package. Once the dependencies are loaded, the package can be loaded with
          amrex/22.11-gpu-mpi
          amrex/24.05-gpu-mpi
          amrex/24.05-mpi
-   For detailed information about a specific module use the modules full name.
-   For example:
-      $ module spider Foo/1.2.3
+         
+
+For detailed information about a specific module use the modules full name.
+For example: ``$ module spider Foo/1.2.3``
+
+.. code:: bash
 
    $ module spider amrex/22.11-gpu-mpi
    amrex:
@@ -57,10 +60,23 @@ package. Once the dependencies are loaded, the package can be loaded with
          cce/17.0.0  rocm/5.7.1  cray-mpich/8.1.28
          gcc/12.3  rocm/5.7.1  cray-mpich/8.1.28
 
+For a single package there may be several choices of prerequisites listed. These
+generally correspond to different compilers that were used to generate different
+builds of that package. You can select the prerequisites that match your desired
+compiler.  The module prerequisites need to be loaded before the module is
+loaded.
+
+.. code:: bash
+
    # Load the prerequisites
    $ module load cce/17.0.0  rocm/5.7.1  cray-mpich/8.1.28
    # Load amrex
    $ module load amrex/22.11-gpu-mpi
+
+The package can be queried to give general information and show it was
+configured.  
+
+.. code:: bash
 
    # General package informatiom
    $ module help amrex/22.11-gpu-mpi
