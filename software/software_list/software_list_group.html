@@ -97,7 +97,7 @@ function format(d) {
     // Create version summary string for each system
     (d.systemsList.forEach(sys => {
         versionSummary = versionSummary +
-        '<dd>' + '<details>' + '<summary>Versions available: ' + sys + '</summary>' +
+        '<dd>' + '<details>' + '<summary>Versions available on ' + sys + '</summary>' +
         '<p>' + d[sys + 'PkgVers'] + '<p />' + '</details>' + '</dd>' 
     }));
 
