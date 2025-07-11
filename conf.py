@@ -9,6 +9,8 @@ http://www.sphinx-doc.org/en/master/config
 # pylint: disable=import-error, invalid-name, redefined-builtin
 
 import datetime as dt
+import os
+import shutil
 from sphinx.writers.html import HTMLTranslator
 
 #
@@ -120,6 +122,11 @@ class PatchedHTMLTranslator(HTMLTranslator):
             node['target'] = '_blank'
         super().visit_reference(node)
 
+def copy_sw_file(app, exception):
+    src = '/tmp/software_list_group.json'
+    dest = os.path.join(app.builder.outdir, 'software/software_list/', 'software_list_group.json')
+
+    shutil.copy(src, dest)
 
 def setup(app):
     '''Function to setup sphinx customizations.'''
@@ -129,6 +136,8 @@ def setup(app):
     app.add_js_file('https://code.jquery.com/jquery-3.7.1.js')
     # Add DataTables CSS
     app.add_css_file('https://cdn.datatables.net/2.2.1/css/dataTables.dataTables.css')
+    # copy software list json after sphinx build completed
+    app.connect('build-finished', copy_sw_file)
 
 
 # globally-available substitutions

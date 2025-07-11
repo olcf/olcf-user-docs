@@ -1,0 +1,173 @@
+<!-- This html segment uses the Datatables js-plugin to display a json file
+which contains the software package information -->
+
+
+<div style="overflow-x:auto;">
+   <table id="swtable" class="display" style="width:100%">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Name</th>
+                <th>Systems</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th></th>
+                <th>Name</th>
+                <th>Systems</th>
+                <th>Description</th>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+<style>
+    /* Apply table layout fixed to ensure cell height is respected */
+    #swtable {
+        table-layout: fixed; /* Make the table cells respect the height setting */
+        width: 100%; /* Ensures the table takes the full width */
+        margin: 0 auto;
+    }
+
+    td {
+        vertical-align: middle; /* Align content vertically in the middle */
+    }
+
+    .dataTables_filter {
+        float: left !important;
+    }
+
+    table.dataTable{
+        table-layout: fixed;
+        width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-wrap: nowrap;
+    }
+    .table-responsive { overflow-x: fixed !important; }
+
+    .trimCol {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+</style>
+
+<script type="text/javascript">
+
+// Function to escape HTML to prevent XSS
+function escapeHTML(str) {
+    let div = document.createElement('div');
+    div.appendChild(document.createTextNode(str));
+    return div.innerHTML;
+}
+
+// Function to validate URLs to prevent malicious links
+function isValidURL(url) {
+    try {
+        let parsed = new URL(url);
+        return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+    } catch (e) {
+        return false;
+    }
+}
+
+// Formatting function for row details
+function format(d) {
+
+    // Build versions summary string here
+    let versionSummary = ''
+
+    // `d` is the original data object for the row
+    let retstr =
+        '<dl>' +
+            '<dt>Software Package:</dt>' +
+            '<dd>' +
+                'Name: ' + d.name + '<br />' +
+                'Systems: ' + d.systems + '<br />' +
+                (d.description != 'None' && d.description != null ? 'Description: ' + escapeHTML(d.description) + '<br />' : '') +
+                (isValidURL(d.homepage) ? 'Homepage: ' + '<a href=\"'+escapeHTML(d.homepage)+'\" target=\"_blank\">'+escapeHTML(d.homepage)+'</a>' + '<br />' : '') +
+                (d.tags != 'None' && d.tags != null ? 'Tags: ' + d.tags + '<br />' : '') +
+            '</dd>' + 
+            '<dt>Available versions:</dt>';
+
+    // Create version summary string for each system
+    (d.systemsList.forEach(sys => {
+        versionSummary = versionSummary +
+        '<dd>' + '<details>' + '<summary>Versions available on ' + sys + '</summary>' +
+        '<p>' + d[sys + 'PkgVers'] + '<p />' + '</details>' + '</dd>' 
+    }));
+
+    // end the return string
+    retstr += versionSummary +'</dl>'
+
+    return retstr;
+}
+
+let table = new DataTable('#swtable', {
+    // Note: This json file exists in the OLCF Sphinx backend infrastructure
+    // Elsewhere it will not exist, the table will be blank, and an error will be thrown
+    ajax: 'software_list_group.json',
+    columns: [
+        {
+            className: 'dt-control',
+            orderable: false,
+            data: null,
+            defaultContent: ''
+        },
+        { data: 'name' },
+        { data: 'systems' },
+        { data: 'description' },
+        { data: 'tags' }
+    ],
+    columnDefs: [
+        {
+            targets: 4,   // Index of the column you want to hide (e.g., column 1)
+            visible: false,  // Hide the column from the table
+            searchable: true // Keep the column searchable
+        },
+        {
+            targets: 3,  // last column, contains descriptions
+            width: "20%",
+            className: "trimCol"
+        },
+        {
+            targets: 0,
+            width: "1%"
+        },
+        {
+            targets: 1,
+            width:  "5%",
+            className: "trimCol"
+        },
+        {
+            targets: 2,
+            width: "3%",
+            className: "trimCol"
+        },
+    ],
+    order: [[1, 'asc']],
+    layout: {
+        top1Start: 'search',
+        topEnd: ''
+    },
+});
+
+// Add event listener for opening and closing details
+table.on('click', 'td.dt-control', function (e) {
+    let tr = e.target.closest('tr');
+    let row = table.row(tr);
+
+    if (row.child.isShown()) {
+        // This row is already open - close it
+        row.child.hide();
+    }
+    else {
+        // Open this row
+        row.child(format(row.data())).show();
+    }
+});
+</script>
