@@ -44,7 +44,8 @@ The above links will present you with a page similar to below.
 
 After successful authentication you will be presented with a choice of JupyterLab images (similar to the image below):
 
-- CPU-Only Lab
+- CPU-Only Orion/Filesystem Heavy Workload Lab
+- CPU-Only Compute Heavy Workload Lab
 - GPU-Lab (currently only available to Moderate Security Enclave projects)
 
 
@@ -56,8 +57,11 @@ After successful authentication you will be presented with a choice of JupyterLa
 
 **Select the lab you would like and click "Start".**
 
-The CPU Lab provides a single default notebook/environment in the "launcher" page of the JupyterLab interface.
-The GPU Lab provides options for CUDA 10 and CUDA 11 environments.
+.. tip::
+   You may only have one JupyterLab session running at a time. If you would like to switch between CPU labs and/or the GPU lab, you will need to stop your current JupyterLab session first (e.g., `File >> Hub Control Panel >> Stop My Server >> Start My Server`).
+
+The CPU Labs provide a single default notebook/environment in the "launcher" page of the JupyterLab interface, and
+the GPU Lab provides a default CUDA 12 environment.
 
 You can read more about the environments, and how to create your own Conda environment, in the :ref:`conda-environments` section.
 
@@ -76,17 +80,22 @@ Hardware Resources
 
   .. tab-item:: Moderate JupyterHub
 
-      Each CPU Lab spawned by OLCF's Moderate JupyterHub gets these default resources:
+      The **Orion/Filesystem CPU Lab** spawned by OLCF's Moderate JupyterHub gets these default resources:
 
-      - 32 CPUs
-      - 32GB Memory
+      - 24 CPUs
+      - 48GB Memory
       - NCCS filesystem access (Lustre and NFS)
 
+      The **Compute Heavy CPU Lab** spawned by OLCF's Moderate JupyterHub gets these default resources:
 
-      Each GPU Lab gets the following resources:
+      - 48 CPUs
+      - 128GB Memory
+      - NCCS filesystem access (Lustre and NFS)
+
+      Each **GPU Lab** gets the following resources:
 
       - 16 CPUs
-      - 32GB Memory
+      - 16GB Memory
       - Nvidia V100 GPU
       - NCCS filesystem access (Lustre and NFS)
 
@@ -96,14 +105,14 @@ Hardware Resources
 
   .. tab-item:: Open JupyterHub
 
-      Each CPU Lab spawned by OLCF's Open JupyterHub gets these default resources:
+      Each **CPU Lab** spawned by OLCF's Open JupyterHub gets these default resources:
 
       - 8 CPUs
       - 24GB Memory
       - NCCS Open filesystem access (GPFS and NFS)
 
 
-      Each GPU Lab gets the following resources:
+      Each **GPU Lab** gets the following resources:
 
       - Currently unavailable
 
@@ -116,13 +125,10 @@ Software and Libraries
 Both CPU and GPU labs have the standard analysis and ML libraries: PyTorch, TensorFlow,
 Pandas, NumPy; and visualization libraries: Bokeh, Jax, Matplotlib, OpenCV. To see the
 full list of installed libraries, open a Console from the Launcher page and type in
-``conda list``. These libraries should cover most use cases. You can also find
+``!conda list``. These libraries should cover most use cases. You can also find
 instructions for setting up a custom Conda environment for use with JupyterLab :ref:`here <conda-environments>`.
 
-The GPU lab provides two different environments, CUDA10 and CUDA11. Both the CUDA10 and
-CUDA11 environments provide GPU support for PyTorch, CuPy, and CudNN. **GPU support for
-Tensorflow is currently only available in the CUDA10 environment.** Tensorflow only has
-CPU support in the CUDA11 environments. The image below shows the CUDA options in the Launcher page.
+The GPU lab provides a single CUDA 12 environment which provides GPU support for PyTorch, TensorFlow, CuPy, and CudNN.
 
 .. image:: /images/jupyter/jupyter_launcher_cudaenvs.png
 
@@ -147,8 +153,8 @@ the notebook in your current path.
   sessions. Make sure you are saving your work in a location in /ccs or /lustre where you
   have write access.
 
-In the example image below, I have launched a notebook in my **/ccs/proj/<proj>/<uid>/**
-directory (the notebook filename is "Untitled.ipynb" - you can rename yours):
+In the example image below, I have launched a notebook in my **/lustre/orion/<proj>/scratch/<uid>/Jupyter_example**
+directory (the notebook filename is "Example.ipynb" - you can rename yours):
 
 .. image:: /images/jupyter/directory_example.png
 
@@ -239,7 +245,7 @@ Manually Stopping Your JupyterLab Session
 
 All JupyterLab sessions expire and termninate if they are left idle for 1-hour. 
 
-If you would like to terminate your session manually (e.g., so that you can switch between the CPU to GPU-enabled JupyterLab images, or vice versa), you can do so by going to **File -> Hub Control Panel -> Stop Server**. 
+If you would like to terminate your session manually (e.g., so that you can switch between the CPU to GPU-enabled JupyterLab images, or vice versa), you can do so by going to **File -> Hub Control Panel -> Stop My Server**. 
 
 This will take a few seconds to shutdown, then you can restart and reselect a provided JupyterLab image from the menu.
 
