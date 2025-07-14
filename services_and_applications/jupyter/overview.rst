@@ -53,7 +53,7 @@ After successful authentication you will be presented with a choice of JupyterLa
   These GPU-enabled labs are limited. You may get get a message saying the resource is not schedulable, if all GPUs in the pool are occupied.
 
 
-.. image:: /images/jupyter/jupyterlab_images.png
+.. image:: /images/jupyter/jupyterlab_images2.png
 
 **Select the lab you would like and click "Start".**
 
@@ -130,7 +130,7 @@ instructions for setting up a custom Conda environment for use with JupyterLab :
 
 The GPU lab provides a single CUDA 12 environment which provides GPU support for PyTorch, TensorFlow, CuPy, and CudNN.
 
-.. image:: /images/jupyter/jupyter_launcher_cudaenvs.png
+.. image:: /images/jupyter/jupyter_launcher_cudaenvs2.png
 
 Working within Lustre and NFS (Launching a Notebook)
 ----------------------------------------------------
@@ -138,7 +138,7 @@ Working within Lustre and NFS (Launching a Notebook)
 To see the root of your filesystem access, within your JupyterLab interface, click this
 circled folder (you can traverse to your user's spaces from there):
 
-.. image:: /images/jupyter/directory_access.png
+.. image:: /images/jupyter/directory_access2.png
 
 You should see **lustre** and **ccs** - the "top" of Lustre and NFS, respectively.
 
@@ -156,12 +156,12 @@ the notebook in your current path.
 In the example image below, I have launched a notebook in my **/lustre/orion/<proj>/scratch/<uid>/Jupyter_example**
 directory (the notebook filename is "Example.ipynb" - you can rename yours):
 
-.. image:: /images/jupyter/directory_example.png
+.. image:: /images/jupyter/directory_example2.png
 
 Another method of getting to the filesystem path of your choosing is selecting
 **File->"Open from Path"** and typing the desired path in the text box:
 
-.. image:: /images/jupyter/open_file_path.png
+.. image:: /images/jupyter/open_file_path2.png
 
 
 .. _conda-environments:
