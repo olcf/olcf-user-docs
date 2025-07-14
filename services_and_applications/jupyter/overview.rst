@@ -54,6 +54,8 @@ After successful authentication you will be presented with a choice of JupyterLa
 
 
 .. image:: /images/jupyter/jupyterlab_images2.png
+   :scale: 70%
+   :align: center
 
 **Select the lab you would like and click "Start".**
 
