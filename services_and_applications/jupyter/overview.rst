@@ -42,7 +42,7 @@ The above links will present you with a page similar to below.
 .. image:: /images/jupyter/login.png
 
 
-After successful authentication you will be presented with a choice of JupyterLab images (similar to the image below):
+After successful authentication you will be presented with a choice of JupyterLab images (similar to the image below if you are using the Moderate JupyterHub):
 
 - CPU-Only Orion/Filesystem Heavy Workload Lab
 - CPU-Only Compute Heavy Workload Lab
@@ -124,8 +124,9 @@ Software and Libraries
 
 Both CPU and GPU labs have the standard analysis and ML libraries: PyTorch, TensorFlow,
 Pandas, NumPy; and visualization libraries: Bokeh, Jax, Matplotlib, OpenCV. To see the
-full list of installed libraries, open a Console from the Launcher page and type in
-``!conda list``. These libraries should cover most use cases. You can also find
+full list of installed libraries, execute ``!conda list`` in a Jupyter cell, or
+open a Console from the Launcher page and type in ``conda list``.
+These libraries should cover most use cases. You can also find
 instructions for setting up a custom Conda environment for use with JupyterLab :ref:`here <conda-environments>`.
 
 The GPU lab provides a single CUDA 12 environment which provides GPU support for PyTorch, TensorFlow, CuPy, and CudNN.
@@ -179,7 +180,8 @@ Conda environments need to be saved in a ``/ccs`` or ``/lustre/orion`` directory
 
 .. warning::
 
-   Please note that **GPFS and Lustre are purged**.
+   Please note that **GPFS and Lustre are purged**. If you would like to request a purge exception, please contact our helpdesk at help@olcf.ornl.gov
+   or submit a ticket through the myOLCF "Ticket" portal.
 
 Example: Creating a Conda Environment on Jupyter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
