@@ -1,0 +1,56 @@
+<Servers>
+  <Server name="ORNL frontier (UMS)" resource="csrc://frontier.olcf.ornl.gov">
+    <CommandStartup>
+      <Options>
+        <Option name="HEADLESS_API" label="Accelerated Compute" save="true">
+          <Enumeration default="rocm">
+            <Entry value="rocm" label= "ROCm" />
+            <Entry value="none" label= "None" />
+          </Enumeration>
+        </Option>
+        <Option name="USER" label="Server username" save="true">
+          <String default="YOURUSERNAME"/>
+        </Option>
+        <Option name="PV_SERVER_PORT" label="Server port ">
+          <Range type="int" min="1025" max="65535" step="1" default="random"/>
+        </Option>
+        <Option name="NUM_NODES" label="Number of compute nodes" save="true">
+          <Range type="int" min="1" max="512" step="1" default="2"/>
+        </Option>
+        <Option name="NUM_MPI_TASKS" label="Total number of MPI tasks" save="true">
+          <Range type="int" min="1" max="16384" step="1" default="2"/>
+        </Option>
+        <Option name="NUM_CORES_PER_MPI_TASK" label="Number of cores per MPI task" save="true">
+          <Range type="int" min="1" max="28" step="1" default="1"/>
+        </Option>
+        <Option name="PROJECT" label="Project to charge" save="true">
+          <String default="cscXXX"/>
+        </Option>
+        <Option name="PARTITION" label="Partition (queue)" save="true">
+          <String default="batch"/>
+        </Option>
+        <Option name="MINUTES" label="Number of minutes to reserve" save="true">
+          <Range type="int" min="1" max="240" step="1" default="30"/>
+        </Option>
+      </Options>
+      <SSHCommand exec="/sw/frontier/ums/ums032/pvsc/ORNL/login_node.sh" timeout="0" delay="5">
+        <SSHConfig user="$USER$">
+          <Terminal/>
+          <PortForwarding/>
+        </SSHConfig>
+        <Arguments>
+          <Argument value="$NUM_NODES$"/>
+          <Argument value="$MINUTES$"/>
+          <Argument value="$PV_SERVER_PORT$"/>
+          <Argument value="$PV_VERSION_FULL$"/>
+          <Argument value="$HEADLESS_API$"/>
+          <Argument value="/sw/frontier/ums/ums032/pvsc/ORNL/frontier.cfg"/>
+          <Argument value="PROJECT=$PROJECT$"/>
+          <Argument value="PARTITION=$PARTITION$"/>
+          <Argument value="NUM_MPI_TASKS=$NUM_MPI_TASKS$"/>
+          <Argument value="NUM_CORES_PER_MPI_TASK=$NUM_CORES_PER_MPI_TASK$"/>
+        </Arguments>
+      </SSHCommand>
+    </CommandStartup>
+  </Server>
+</Servers>

@@ -2,7 +2,7 @@
 VisIt
 *****
 
-.. note:: VisIt 3.4.1 is now available on Andes.
+.. note:: VisIt 3.4.2 is now available on Andes.
 
 Overview
 ========
@@ -26,8 +26,8 @@ OLCF resources. VisIt for your local computer can be obtained here:
 
 Recommended VisIt versions on our systems:
 
-* Andes: VisIt 3.3.3, 3.4.1
-* Frontier: VisIt 3.3.3 (via the UMS022 module)
+* Andes: VisIt 3.3.3, 3.4.1, 3.4.2
+* Frontier: VisIt 3.3.3
 
 .. warning::
     Using a different version than what is listed above is not guaranteed to work properly.
@@ -120,7 +120,7 @@ Restart VisIt, and go to Options→Host Profiles. Select “New Host”
       - **Host name aliases**: ``login#`` (required)
       - **Maximum Nodes**: Unchecked
       - **Maximum processors**: Unchecked (arbitrary)
-      - **Path to VisIt Installation**: ``/sw/frontier/ums/ums022/linux-sles15-zen3/gcc-11.2.0/visit-3.3.3-zfoh2caq5tbshlvtujditymjizstvewe/`` (required)
+      - **Path to VisIt Installation**: ``/sw/frontier/spack-envs/cpe23.12-cpu/opt/gcc-12.3/visit-3.3.3-lde2fkdwxnk43faw64qtcskjtwn54vsy/`` (required)
       - **Username**: Your OLCF Username (required)
       - **Tunnel data connections through SSH**: Checked (required)
 
@@ -284,7 +284,7 @@ OLCF systems is provided below.
 
         module load visit
 
-        visit -nowin -cli -v 3.4.1 -l srun -np 28 -nn 1 -s visit_example.py
+        visit -nowin -cli -v 3.4.2 -l srun -np 28 -nn 1 -s visit_example.py
 
   .. tab-item:: Frontier
 
@@ -301,8 +301,10 @@ OLCF systems is provided below.
         cd $SLURM_SUBMIT_DIR
         date
 
-        module load ums
-        module load ums022
+        module load cpe/23.12
+        module load PrgEnv-gnu/8.5.0
+        module load gcc-native/12.3
+        module load visit
 
         visit -nowin -cli -v 3.3.3 -l srun -np 28 -nn 1 -s visit_example.py
 

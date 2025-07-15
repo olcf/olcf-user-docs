@@ -45,8 +45,11 @@ from `Kitware <https://www.paraview.org/download/>`__.
 
 Recommended ParaView versions on our systems:
 
-* **Andes**: ParaView 5.9.1, 5.10.0, 5.11.0, 5.12.1
-* **Frontier**: ParaView 5.12.1 (via the UMS032 module)
+* **Andes**:
+    * OLCF Installation: ParaView 5.9.1, 5.10.0, 5.11.0, 5.12.1, 5.13.1
+* **Frontier**:
+    * UMS032 Installation: ParaView 5.11.2, 5.12.1, 5.13.1
+    * OLCF Installation: ParaView 5.12.0, 5.13.1, 5.13.2
 
 .. warning::
     Using a different version than what is listed above is not guaranteed to work properly.
@@ -79,22 +82,48 @@ connected to. For example, to see these modules on specific OLCF systems:
          paraview/5.11.0-osmesa
          paraview/5.12.1-egl
          paraview/5.12.1-osmesa
+         paraview/5.13.1-egl
+         paraview/5.13.1-osmesa
 
    .. tab-item:: Frontier
       :sync: frontier
 
-      .. code-block:: bash
+      .. tab-set::
 
-         $ module load ums
-         $ module load ums032
-         $ module load dav-sdk
-         $ module -t avail paraview
+         .. tab-item:: UMS Installation
 
-         /sw/frontier/ums/ums032/modules:
-         paraview/5.12.1-rocm
-         paraview/5.12.1
+            .. code-block:: bash
 
+               $ module load ums
+               $ module load ums032
+               $ module load dav-sdk
+               $ module -t avail paraview
 
+               /sw/frontier/ums/ums032/modules:
+               paraview/5.11.2-rocm
+               paraview/5.11.2
+               paraview/5.12.1-rocm
+               paraview/5.12.1
+               paraview/5.13.1-rocm
+               paraview/5.13.1
+
+         .. tab-item:: OLCF Installation
+
+            .. code-block:: bash
+             
+               $ module load PrgEnv-gnu
+               $ module load gcc-native/13.2
+               $ module load rocm # needed to see the GPU-enabled modules
+               $ module -t avail paraview
+                
+               /sw/frontier/spack-envs/modules/gcc/13.2/cray-mpich-8.1.31/rocm-6.2.4/gcc-13.2:
+               paraview/5.12.0-gpu-mpi
+               paraview/5.13.1-gpu-mpi
+               paraview/5.13.2-gpu-mpi
+               /sw/frontier/spack-envs/modules/gcc/13.2/cray-mpich-8.1.31/gcc-13.2:
+               paraview/5.12.0-mpi
+               paraview/5.13.1-mpi
+               paraview/5.13.2-mpi
 
 .. note::
     The EGL mode seems to work better with larger datasets and is generally
@@ -115,168 +144,11 @@ methods may be used, the one described should work in most cases.
     create an ssh connection in step 2.
 
 
-**Step 1: Save the following servers.pvsc file to your local computer**
+**Step 1: Save the following PVSC files to your local computer**
 
-.. tab-set::
-
-   .. tab-item:: Andes
-      :sync: andes
-
-      .. code-block::
-
-            <Servers>
-              <Server name="ORNL andes" resource="csrc://localhost">
-                <CommandStartup>
-                  <Options>
-                    <Option name="HOST" label="Server host" save="true">
-                      <String default="andes.olcf.ornl.gov"/>
-                    </Option>
-                    <Option name="HEADLESS_API" label="Server headless API" save="true">
-                      <Enumeration default="osmesa">
-                        <Entry value="osmesa" label= "OSMesa" />
-                        <Entry value="egl" label= "EGL" />
-                      </Enumeration>
-                    </Option>
-                    <Option name="USER" label="Server username" save="true">
-                      <String default="YOURUSERNAME"/>
-                    </Option>
-                    <Switch name="PV_CLIENT_PLATFORM">
-                      <Case value="Apple">
-                        <Set name="TERM_PATH" value="/opt/X11/bin/xterm" />
-                        <Set name="TERM_ARG1" value="-T" />
-                        <Set name="TERM_ARG2" value="ParaView" />
-                        <Set name="TERM_ARG3" value="-e" />
-                        <Set name="SSH_PATH" value="ssh" />
-                      </Case>
-                      <Case value="Linux">
-                        <Set name="TERM_PATH" value="xterm" />
-                        <Set name="TERM_ARG1" value="-T" />
-                        <Set name="TERM_ARG2" value="ParaView" />
-                        <Set name="TERM_ARG3" value="-e" />
-                        <Set name="SSH_PATH" value="ssh" />
-                      </Case>
-                      <Case value="Windows">
-                        <Set name="TERM_PATH" value="cmd" />
-                        <Set name="TERM_ARG1" value="/C" />
-                        <Set name="TERM_ARG2" value="start" />
-                        <Set name="TERM_ARG3" value="" />
-                        <Set name="SSH_PATH" value="plink.exe" />
-                      </Case>
-                      <Case value="Unix">
-                        <Set name="TERM_PATH" value="xterm" />
-                        <Set name="TERM_ARG1" value="-T" />
-                        <Set name="TERM_ARG2" value="ParaView" />
-                        <Set name="TERM_ARG3" value="-e" />
-                        <Set name="SSH_PATH" value="ssh" />
-                      </Case>
-                    </Switch>
-                    <Option name="PV_SERVER_PORT" label="Server port ">
-                      <Range type="int" min="1025" max="65535" step="1" default="random"/>
-                    </Option>
-                    <Option name="NUM_NODES" label="Number of compute nodes" save="true">
-                      <Range type="int" min="1" max="512" step="1" default="2"/>
-                    </Option>
-                    <Option name="NUM_MPI_TASKS" label="Total number of MPI tasks" save="true">
-                      <Range type="int" min="1" max="16384" step="1" default="2"/>
-                    </Option>
-                    <Option name="NUM_CORES_PER_MPI_TASK" label="Number of cores per MPI task" save="true">
-                      <Range type="int" min="1" max="28" step="1" default="1"/>
-                    </Option>
-                    <Option name="PROJECT" label="Project to charge" save="true">
-                      <String default="cscXXX"/>
-                    </Option>
-                    <Option name="MINUTES" label="Number of minutes to reserve" save="true">
-                      <Range type="int" min="1" max="240" step="1" default="30"/>
-                    </Option>
-                  </Options>
-                  <Command exec="$TERM_PATH$" delay="5">
-                    <Arguments>
-                      <Argument value="$TERM_ARG1$"/>
-                      <Argument value="$TERM_ARG2$"/>
-                      <Argument value="$TERM_ARG3$"/>
-                      <Argument value="$SSH_PATH$"/>
-                      <Argument value="-t"/>
-                      <Argument value="-R"/>
-                      <Argument value="$PV_SERVER_PORT$:localhost:$PV_SERVER_PORT$"/>
-                      <Argument value="$USER$@$HOST$"/>
-                      <Argument value="/sw/andes/paraview/pvsc/ORNL/login_node.sh"/>
-                      <Argument value="$NUM_NODES$"/>
-                      <Argument value="$MINUTES$"/>
-                      <Argument value="$PV_SERVER_PORT$"/>
-                      <Argument value="$PV_VERSION_FULL$"/>
-                      <Argument value="$HEADLESS_API$"/>
-                      <Argument value="/sw/andes/paraview/pvsc/ORNL/andes.cfg"/>
-                      <Argument value="PROJECT=$PROJECT$"/>
-                      <Argument value="NUM_MPI_TASKS=$NUM_MPI_TASKS$"/>
-                      <Argument value="NUM_CORES_PER_MPI_TASK=$NUM_CORES_PER_MPI_TASK$"/>
-                    </Arguments>
-                  </Command>
-                </CommandStartup>
-              </Server>
-            </Servers>
-
-   .. tab-item:: Frontier
-      :sync: frontier
-
-      .. code-block::
-
-            <Servers>
-              <Server name="ORNL frontier (UMS)" resource="csrc://frontier.olcf.ornl.gov">
-                <CommandStartup>
-                  <Options>
-                    <Option name="HEADLESS_API" label="Accelerated Compute" save="true">
-                      <Enumeration default="rocm">
-                        <Entry value="rocm" label= "ROCm" />
-                        <Entry value="none" label= "None" />
-                      </Enumeration>
-                    </Option>
-                    <Option name="USER" label="Server username" save="true">
-                      <String default="YOURUSERNAME"/>
-                    </Option>
-                    <Option name="PV_SERVER_PORT" label="Server port ">
-                      <Range type="int" min="1025" max="65535" step="1" default="random"/>
-                    </Option>
-                    <Option name="NUM_NODES" label="Number of compute nodes" save="true">
-                      <Range type="int" min="1" max="512" step="1" default="2"/>
-                    </Option>
-                    <Option name="NUM_MPI_TASKS" label="Total number of MPI tasks" save="true">
-                      <Range type="int" min="1" max="16384" step="1" default="2"/>
-                    </Option>
-                    <Option name="NUM_CORES_PER_MPI_TASK" label="Number of cores per MPI task" save="true">
-                      <Range type="int" min="1" max="28" step="1" default="1"/>
-                    </Option>
-                    <Option name="PROJECT" label="Project to charge" save="true">
-                      <String default="cscXXX"/>
-                    </Option>
-                    <Option name="PARTITION" label="Partition (queue)" save="true">
-                      <String default="batch"/>
-                    </Option>
-                    <Option name="MINUTES" label="Number of minutes to reserve" save="true">
-                      <Range type="int" min="1" max="240" step="1" default="30"/>
-                    </Option>
-                  </Options>
-                  <SSHCommand exec="/sw/frontier/ums/ums032/pvsc/ORNL/login_node.sh" timeout="0" delay="5">
-                    <SSHConfig user="$USER$">
-                      <Terminal/>
-                      <PortForwarding local="$PV_SERVER_PORT$"/>
-                    </SSHConfig>
-                    <Arguments>
-                      <Argument value="$NUM_NODES$"/>
-                      <Argument value="$MINUTES$"/>
-                      <Argument value="$PV_SERVER_PORT$"/>
-                      <Argument value="$PV_VERSION_FULL$"/>
-                      <Argument value="$HEADLESS_API$"/>
-                      <Argument value="/sw/frontier/ums/ums032/pvsc/ORNL/frontier.cfg"/>
-                      <Argument value="PROJECT=$PROJECT$"/>
-                      <Argument value="PARTITION=$PARTITION$"/>
-                      <Argument value="NUM_MPI_TASKS=$NUM_MPI_TASKS$"/>
-                      <Argument value="NUM_CORES_PER_MPI_TASK=$NUM_CORES_PER_MPI_TASK$"/>
-                    </Arguments>
-                  </SSHCommand>
-                </CommandStartup>
-              </Server>
-            </Servers>
-
+* :download:`andes.pvsc </_static/host_profiles/andes.pvsc>`
+* :download:`frontier_ums.pvsc </_static/host_profiles/frontier_ums.pvsc>`
+* :download:`frontier_olcf.pvsc </_static/host_profiles/frontier_olcf.pvsc>`
 
 .. note::  
     Although they can be separate files, all OLCF server 
@@ -292,7 +164,7 @@ Start ParaView and then select ``File/Connect`` to begin.
 
 **Step 3: Import Servers**
 
-Click Load Servers button and find the servers.pvsc file
+Click Load Servers button and find the desired ``pvsc`` file
 
 .. image:: /images/paraview_step2a_Andes.png
    :align: center
