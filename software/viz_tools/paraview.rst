@@ -146,9 +146,9 @@ methods may be used, the one described should work in most cases.
 
 **Step 1: Save the following PVSC files to your local computer**
 
-* :download:`andes.pvsc </_static/host_profiles/andes.pvsc>`
-* :download:`frontier_ums.pvsc </_static/host_profiles/frontier_ums.pvsc>`
-* :download:`frontier_olcf.pvsc </_static/host_profiles/frontier_olcf.pvsc>`
+* :download:`andes.pvsc </_static/host_profiles/paraview/andes.pvsc>`
+* :download:`frontier_ums.pvsc </_static/host_profiles/paraview/frontier_ums.pvsc>`
+* :download:`frontier_olcf.pvsc </_static/host_profiles/paraview/frontier_olcf.pvsc>`
 
 .. note::  
     Although they can be separate files, all OLCF server 
