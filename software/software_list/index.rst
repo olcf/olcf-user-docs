@@ -30,12 +30,10 @@ know by `submitting a ticket <https://www.olcf.ornl.gov/for-users/getting-starte
 
 
 **Example:** To find an adaptive mesh refinement packages, search for ``amr``.
-The search returns that the ``amrex`` package is available on several systems.
-To find out how to use the package, log onto one of the systems, ``module spider
-amrex`` and ``module spider amrex/22.11-gpu-mpi`` using the desired
-version.  This will list any modules that may need to be preloaded to access the
-package. Once the dependencies are loaded, the package can be loaded with
-``module load amrex/22.11-gpu-mpi``.
+The search result shows that the ``amrex`` package is available on some system.
+To find out how to use the package, log onto that system,  and use the
+``module`` commands to find more details.  Run ``module spider amrex`` to find
+the versions of ``amrex`` that are available.
 
 .. code:: bash
 
@@ -48,7 +46,7 @@ package. Once the dependencies are loaded, the package can be loaded with
          amrex/24.05-mpi
          
 
-For detailed information about a specific module use the modules full name.
+For detailed information about a specific module use the modules version full name.
 For example: ``$ module spider Foo/1.2.3``
 
 .. code:: bash
