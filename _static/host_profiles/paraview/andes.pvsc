@@ -1,0 +1,90 @@
+<Servers>
+  <Server name="ORNL andes" resource="csrc://localhost">
+    <CommandStartup>
+      <Options>
+        <Option name="HOST" label="Server host" save="true">
+          <String default="andes.olcf.ornl.gov"/>
+        </Option>
+        <Option name="HEADLESS_API" label="Server headless API" save="true">
+          <Enumeration default="osmesa">
+            <Entry value="osmesa" label= "OSMesa" />
+            <Entry value="egl" label= "EGL" />
+          </Enumeration>
+        </Option>
+        <Option name="USER" label="Server username" save="true">
+          <String default="YOURUSERNAME"/>
+        </Option>
+        <Switch name="PV_CLIENT_PLATFORM">
+          <Case value="Apple">
+            <Set name="TERM_PATH" value="/opt/X11/bin/xterm" />
+            <Set name="TERM_ARG1" value="-T" />
+            <Set name="TERM_ARG2" value="ParaView" />
+            <Set name="TERM_ARG3" value="-e" />
+            <Set name="SSH_PATH" value="ssh" />
+          </Case>
+          <Case value="Linux">
+            <Set name="TERM_PATH" value="xterm" />
+            <Set name="TERM_ARG1" value="-T" />
+            <Set name="TERM_ARG2" value="ParaView" />
+            <Set name="TERM_ARG3" value="-e" />
+            <Set name="SSH_PATH" value="ssh" />
+          </Case>
+          <Case value="Windows">
+            <Set name="TERM_PATH" value="cmd" />
+            <Set name="TERM_ARG1" value="/C" />
+            <Set name="TERM_ARG2" value="start" />
+            <Set name="TERM_ARG3" value="" />
+            <Set name="SSH_PATH" value="plink.exe" />
+          </Case>
+          <Case value="Unix">
+            <Set name="TERM_PATH" value="xterm" />
+            <Set name="TERM_ARG1" value="-T" />
+            <Set name="TERM_ARG2" value="ParaView" />
+            <Set name="TERM_ARG3" value="-e" />
+            <Set name="SSH_PATH" value="ssh" />
+          </Case>
+        </Switch>
+        <Option name="PV_SERVER_PORT" label="Server port ">
+          <Range type="int" min="1025" max="65535" step="1" default="random"/>
+        </Option>
+        <Option name="NUM_NODES" label="Number of compute nodes" save="true">
+          <Range type="int" min="1" max="512" step="1" default="2"/>
+        </Option>
+        <Option name="NUM_MPI_TASKS" label="Total number of MPI tasks" save="true">
+          <Range type="int" min="1" max="16384" step="1" default="2"/>
+        </Option>
+        <Option name="NUM_CORES_PER_MPI_TASK" label="Number of cores per MPI task" save="true">
+          <Range type="int" min="1" max="28" step="1" default="1"/>
+        </Option>
+        <Option name="PROJECT" label="Project to charge" save="true">
+          <String default="cscXXX"/>
+        </Option>
+        <Option name="MINUTES" label="Number of minutes to reserve" save="true">
+          <Range type="int" min="1" max="240" step="1" default="30"/>
+        </Option>
+      </Options>
+      <Command exec="$TERM_PATH$" delay="5">
+        <Arguments>
+          <Argument value="$TERM_ARG1$"/>
+          <Argument value="$TERM_ARG2$"/>
+          <Argument value="$TERM_ARG3$"/>
+          <Argument value="$SSH_PATH$"/>
+          <Argument value="-t"/>
+          <Argument value="-R"/>
+          <Argument value="$PV_SERVER_PORT$:localhost:$PV_SERVER_PORT$"/>
+          <Argument value="$USER$@$HOST$"/>
+          <Argument value="/sw/andes/paraview/pvsc/ORNL/login_node.sh"/>
+          <Argument value="$NUM_NODES$"/>
+          <Argument value="$MINUTES$"/>
+          <Argument value="$PV_SERVER_PORT$"/>
+          <Argument value="$PV_VERSION_FULL$"/>
+          <Argument value="$HEADLESS_API$"/>
+          <Argument value="/sw/andes/paraview/pvsc/ORNL/andes.cfg"/>
+          <Argument value="PROJECT=$PROJECT$"/>
+          <Argument value="NUM_MPI_TASKS=$NUM_MPI_TASKS$"/>
+          <Argument value="NUM_CORES_PER_MPI_TASK=$NUM_CORES_PER_MPI_TASK$"/>
+        </Arguments>
+      </Command>
+    </CommandStartup>
+  </Server>
+</Servers>
