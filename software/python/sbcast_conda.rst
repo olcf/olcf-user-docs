@@ -31,7 +31,7 @@ Installing ``conda-pack`` will let you use the ``conda pack`` command which can 
 .. code-block:: bash
 
    # Pack environment located at an explicit path into my_env.tar.gz
-   conda pack -p /explicit/path/to/my_env
+   conda pack --format tar.gz --n-threads -1 --prefix /explicit/path/to/my_env --output ./my_env.tar.gz
 
 After packing your environment, it can then be moved to the NVMe using ``sbcast`` when in a compute job.
 Packing your environment will also put a ``conda-unpack`` script into the same ``.tar.gz`` archive.
@@ -70,7 +70,8 @@ Next, let's pack our new conda environment:
 .. code-block:: bash
 
    cd $MEMBERWORK/<PROJECT_ID>
-   conda pack -p $MEMBERWORK/<PROJECT_ID>/torch_env
+   # use all cores available for packing
+   conda pack --format tar.gz --n-threads -1 --prefix $MEMBERWORK/<PROJECT_ID>/torch_env --output ./torch_env.tar.gz 
 
 Finally, let's run a compute job:
 
@@ -118,7 +119,7 @@ Below is an example batch script that uses ``sbcast``, unpacks our environment, 
    # Untar the environment file (only need 1 task per node to do this)
    srun -N8 --ntasks-per-node 1 mkdir /mnt/bb/${USER}/torch_env
    echo "untaring torchenv"
-   srun -N8 --ntasks-per-node 1 tar -xzf /mnt/bb/${USER}/torch_env.tar.gz -C  /mnt/bb/${USER}/torch_env
+   srun -N8 --ntasks-per-node 1 -c56 tar --use-compress-program=pigz -xf /mnt/bb/${USER}/torch_env.tar.gz -C  /mnt/bb/${USER}/torch_env
 
    # Unpack the env
    source activate /mnt/bb/${USER}/torch_env
@@ -183,15 +184,17 @@ Here are the timings from the ``sbcast`` **NVMe** run:
 
 .. code-block::
 
-             JobID            Start              Elapsed 
-   --------------- ---------------- -------------------- 
-           jobid      .             00:01:13 
-     jobid.batch      .             00:01:13 
-    jobid.extern      .             00:01:13 
-         jobid.0      .             00:00:01 mkdir
-         jobid.1      .             00:00:49 untar
-         jobid.2      .             00:00:00 unpack
+             JobID            Start               Elapsed
+   --------------- ---------------- ---------------------
+           jobid      .             00:01:17
+     jobid.batch      .             00:01:17
+    jobid.extern      .             00:01:17
+         jobid.0      .             00:00:00 mkdir 
+         jobid.1      .             00:00:39 untar
+         jobid.2      .             00:00:03 conda unpack
          jobid.3      .             00:00:02 example.py
+
+
 
 Here are the timings if the environment was never broadcast from **Orion**:
 
