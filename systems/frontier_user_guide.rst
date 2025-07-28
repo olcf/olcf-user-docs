@@ -1239,7 +1239,7 @@ The table below summarizes options for submitted jobs. Unless otherwise noted, t
     | ``-q``                 | ``#SBATCH -q debug``                       | Request a "Quality of Service" (QOS) for the job. (default is ``normal``)            |
     +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
 
-.. _frontier_slurm_plugins:
+.. _frontier-slurm-plugins:
 
 OLCF Custom Slurm Plugins
 -------------------------
