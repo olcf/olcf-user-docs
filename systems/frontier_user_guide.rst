@@ -1259,9 +1259,10 @@ The following options are available as command-line parameters to ``sbatch`` or 
     +------------------------+--------------------------------------------+---------------------------------------------------------------------------------------+
     | ``--gpu-counters``     | ``#SBATCH --gpu-counters=0``               | When set to 1 (default), enables a rocprofiler-based daemon that automatically samples|
     |                        |                                            | GPU hardware counters from a subset of nodes in a compute job, when the job size is   |
-    |                        |                                            | greater than 1800 nodes. The resulting profiling data may be made available upon      |
+    |                        |                                            | greater than 1882 nodes. The resulting profiling data may be made available upon      |
     |                        |                                            | request. Please provide the requested job ID to help@olcf.ornl.gov.                   |
     |                        |                                            | Setting ``gpu-counters=0`` disables this feature.                                     |
+    |                        |                                            | This feature is not available for jobs <= 1882 nodes at this time.                    |
     +------------------------+--------------------------------------------+---------------------------------------------------------------------------------------+
 
 
