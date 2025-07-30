@@ -3863,6 +3863,10 @@ If it is necessary to have bit-wise reproducible results from these libraries, i
 System Updates 
 ============== 
 
+2025-07-29
+----------
+On Tuesday, July 29, 2025, Frontier's Slingshot Host Software 12.0.1 was patched to adjust a parameter known to contribute to a recent regression in the performance of ``MPI_Alltoall`` at full-system scale (>8K nodes).
+
 2025-06-17
 ----------
 On Tuesday, June 17, 2025, Frontier's system software was upgraded.
