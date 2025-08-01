@@ -15,7 +15,6 @@ the most recent scan, but has been seen previously in the last 60 days.  A
 module with the tag ``e4s`` gets its Spack build recipe from the Extreme-Scale
 Scientific Software Stack (E4S). 
 
-|
 .. _Module Usage Example:
 
 **Module Usage Example**
