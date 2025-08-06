@@ -54,7 +54,7 @@ Each Defiant CPU compute node consists of [2x] 32-core INTEL(R) XEON(R) PLATINUM
 Both CPUs have access to 512GB of DDR5 memory. The nodes have [1x] 400g Infiniband interconnect per node.
 Additionally, there are [1x] 25g connections for Data Streaming.
 
-.. image:: /images/Defiant_CPU_Node.png
+.. image:: /images/Defiant_CPU_node.png
    :align: center
    :width: 100%
    :alt: Defiant node architecture diagram
