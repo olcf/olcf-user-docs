@@ -6,3 +6,7 @@ Constellation
    :maxdepth: 2
 
    overview
+   infrastructure
+   authenticating
+   preparing_data
+   reusing_data
