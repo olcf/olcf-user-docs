@@ -1,7 +1,7 @@
 .. _constellation_infrastructure:
 
 **************
-Constellation Infrastructure
+Infrastructure
 **************
 
 Constellation leverages OLCF infrastructure for secure management of large datasets. Globus is used for data access and transfer. Draft datasets are uploaded to the Orion parallel filesystem in the Moderate security enclave via the OLCF DOI-UPLOADS Globus collection. After review and approval for publication, data are migrated to Themis, an IBM Spectrum Archive storage system in the Open security enclave. Data on Themis is open to the public, but users must register for a Globus account to download files.

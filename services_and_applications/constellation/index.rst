@@ -1,5 +1,5 @@
 *******
-Constellation
+Data Publication
 *******
 
 .. toctree::
