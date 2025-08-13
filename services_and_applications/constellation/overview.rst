@@ -4,7 +4,7 @@
 Overview
 *********
 
-OLCF provides 'Constellation <https://doi.ccs.ornl.gov>'_, a data repository and DOI service for open scientific research data. Constellation enables users to share, browse, search, and download datasets associated with research projects conducted within or in collaboration with OLCF and Oak Ridge National Laboratory (ORNL). Constellation helps researchers comply with DOE public sharing requirements including the DOE Public Access Plan and DOE O 241.1C. Data submissions may be from any scientific domain and are carefully reviewed before being made available to the general public.
+OLCF provides `Constellation <https://doi.ccs.ornl.gov>`_, a data repository and DOI service for open scientific research data. Constellation enables users to share, browse, search, and download datasets associated with research projects conducted within or in collaboration with OLCF and Oak Ridge National Laboratory (ORNL). Constellation helps researchers comply with DOE public sharing requirements including the DOE Public Access Plan and DOE O 241.1C. Data submissions may be from any scientific domain and are carefully reviewed before being made available to the general public.
 
 Constellation is suitable for datasets of all sizes, ranging from a couple of megabytes up to petabyte-scale publications. Archival storage and access are provided for a period of up to ten years before a review is conducted for continued retention and preservation.
 
