@@ -16,7 +16,7 @@ All data shared in Constellation should be identified by the depositor as approp
 - If applicable, adhere to relevant data standards or formats specific to your field/domain, which will facilitate easier comparison and integration with other datasets.
 - Copyrighted material may not be reshared through Constellation.
 
-Users should acknowledge the OLCF in all publications and presentations that speak to work performed on OLCF resources. The appropriate acknowledgement statement can be found at: `https://www.olcf.ornl.gov/about-olcf/media-assets/`.
+Users should acknowledge the OLCF in all publications and presentations that speak to work performed on OLCF resources. The appropriate acknowledgement statement can be found at: `https://www.olcf.ornl.gov/about-olcf/media-assets/`_.
 
 Data Review and Release
 -----------------------
@@ -40,9 +40,9 @@ Adding Data and Documentation
 
 In the “Draft Datasets” table, click the “Upload” link in the “Add Files” column. This link will direct you to your assigned directory in the OLCF DOI-UPLOADS collection in the Globus web interface.
 
-You have the option to transfer files from another Globus collection, such as an OLCF storage system, or to upload files directly from your local machine. If you need to add data files larger than 1 GB from your laptop or desktop, you will need to install Globus Connect Personal. This tool allows you to create your own Globus endpoint, facilitating uploads for large datasets. Globus Connect Personal installations for your operating system can be found at `https://www.globus.org/globus-connect-personal`.
+You have the option to transfer files from another Globus collection, such as an OLCF storage system, or to upload files directly from your local machine. If you need to add data files larger than 1 GB from your laptop or desktop, you will need to install Globus Connect Personal. This tool allows you to create your own Globus endpoint, facilitating uploads for large datasets. Globus Connect Personal installations for your operating system can be found at `https://www.globus.org/globus-connect-personal`_.
 
-Include essential documentation, such as a README file, data dictionary, or other relevant dataset information, in the same directory as your data files. At minimum, a README file is recommended for inclusion with all data deposits. README files provide additional context and citation information for your dataset and should help future researchers understand and reuse your data. Download Constellation’s standard README template at `https://doi.ccs.ornl.gov/data-depositor-guide`.
+Include essential documentation, such as a README file, data dictionary, or other relevant dataset information, in the same directory as your data files. At minimum, a README file is recommended for inclusion with all data deposits. README files provide additional context and citation information for your dataset and should help future researchers understand and reuse your data. Download Constellation’s standard README template at `https://doi.ccs.ornl.gov/data-depositor-guide`_.
 
 Once your metadata is complete and all data files are uploaded, send your dataset for curator review and publication. Return to your Constellation dashboard and open the metadata form. Change the dropdown status at the bottom of the page to "Needs Approval" and click "Save."
 
