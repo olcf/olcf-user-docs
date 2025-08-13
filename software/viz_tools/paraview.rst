@@ -46,7 +46,7 @@ from `Kitware <https://www.paraview.org/download/>`__.
 Recommended ParaView versions on our systems:
 
 * **Andes**:
-    * OLCF Installation: ParaView 5.9.1, 5.10.0, 5.11.0, 5.12.1, 5.13.1
+    * OLCF Installation: ParaView 5.9.1, 5.10.0, 5.11.0, 5.12.1, 5.13.1, 5.13.3
 * **Frontier**:
     * UMS032 Installation: ParaView 5.11.2, 5.12.1, 5.13.1
     * OLCF Installation: ParaView 5.12.0, 5.13.1, 5.13.2
@@ -84,6 +84,8 @@ connected to. For example, to see these modules on specific OLCF systems:
          paraview/5.12.1-osmesa
          paraview/5.13.1-egl
          paraview/5.13.1-osmesa
+         paraview/5.13.3-egl
+         paraview/5.13.3-osmesa
 
    .. tab-item:: Frontier
       :sync: frontier
