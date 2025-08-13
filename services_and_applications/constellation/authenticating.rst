@@ -1,8 +1,8 @@
 .. _constellation_authenticating:
 
-**************
+********************************
 Authentication and Account Setup
-**************
+********************************
 
 OLCF Moderate and Open users, as well as ORNL staff and students, can create a Constellation account to reserve DOIs and publish data. Visit `https://doi.ccs.ornl.gov <https://doi.ccs.ornl.gov>`_ and authenticate using an OLCF username and passcode (PIN + RSA SecurID TOKENCODE) or ORNL UCAMS/XCAMS three-character username and passphrase. The first time a user logs in they will be asked to enter a Globus user identity, and to accept a User Agreement describing Constellation’s terms of use.
 

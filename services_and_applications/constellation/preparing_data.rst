@@ -1,8 +1,8 @@
 .. _constellation_preparing_data:
 
-**************
+*****************************
 Preparing and Submitting Data
-**************
+*****************************
 
 Preparing Your Dataset
 ----------------------
