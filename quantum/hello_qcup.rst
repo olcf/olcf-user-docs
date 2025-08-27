@@ -58,11 +58,11 @@ For more information please see:
          from qiskit_ibm_runtime import QiskitRuntimeService, Session, SamplerV2 as Sampler
          import time
 
-         # Save / Load Credentials (csc431 used as example project)
+         # Save / Load Credentials
          QiskitRuntimeService.save_account(channel="ibm_cloud", token="API TOKEN GOES HERE", overwrite=True, instance="CRN GOES HERE")
          service = QiskitRuntimeService(channel="ibm_cloud", instance="CRN GOES HERE")
 
-         # Get backend (csc431 used as example project)
+         # Get backend
          #backend = service.backend("backend_name_here")
          backend = service.least_busy(simulator=False, operational=True)
 
