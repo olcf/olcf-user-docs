@@ -1,6 +1,6 @@
-****************
-Data Publication
-****************
+********************************
+Data Publication (Constellation)
+********************************
 
 .. toctree::
    :maxdepth: 2
