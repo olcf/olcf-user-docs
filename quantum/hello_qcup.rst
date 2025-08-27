@@ -35,10 +35,10 @@ For more information please see:
      - ``qiskit``
      - ``qiskit-ibm-runtime``
      - ``qiskit-aer``
-   * - 3.11.9
-     - 1.2.0
-     - 0.28.0
-     - 0.14.2
+   * - 3.12.0
+     - 2.1.2
+     - 0.41.1
+     - 0.17.1
 
 .. note::
 
@@ -59,8 +59,8 @@ For more information please see:
          import time
 
          # Save / Load Credentials (csc431 used as example project)
-         QiskitRuntimeService.save_account(channel="ibm_cloud", token="API TOKEN GOES HERE", overwrite=True)
-         service = QiskitRuntimeService(channel="ibm_cloud", instance="CRN GOES HERE")
+         QiskitRuntimeService.save_account(channel="ibm_cloud", token="API TOKEN GOES HERE", overwrite=True, instance="CRN GOES HERE")
+         service = QiskitRuntimeService()
 
          # Get backend (csc431 used as example project)
          #backend = service.backend("backend_name_here", instance="ibm-q-ornl/ornl/csc431")
