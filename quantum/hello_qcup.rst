@@ -60,10 +60,10 @@ For more information please see:
 
          # Save / Load Credentials (csc431 used as example project)
          QiskitRuntimeService.save_account(channel="ibm_cloud", token="API TOKEN GOES HERE", overwrite=True, instance="CRN GOES HERE")
-         service = QiskitRuntimeService()
+         service = QiskitRuntimeService(channel="ibm_cloud", instance="CRN GOES HERE")
 
          # Get backend (csc431 used as example project)
-         #backend = service.backend("backend_name_here", instance="ibm-q-ornl/ornl/csc431")
+         #backend = service.backend("backend_name_here")
          backend = service.least_busy(simulator=False, operational=True)
 
          # Build circuit
