@@ -321,6 +321,20 @@ in the  `olcf_container_examples repository
 suggestions for other examples you would like to see, or would like to contribute one yourself, feel
 free to open an issue or pull request on the Github page above. 
 
+AMD Dockerhub Images
+--------------------
+
+AMD regularly releases container images of various ML and AI related tools on their `Dockerhub page <https://hub.docker.com/u/rocm>`__ . 
+These should generally work on Frontier since they are built for ROCm and AMD GPUs. These are maintained by AMD, they are not tested and
+supported by the OLCF.
+
+The `olcf_container_examples <https://github.com/olcf/olcf_containers_examples>`__ repository has a 
+couple of examples demonstrating how to pull and use these containers. You can see an example for AMD
+Pytorch container `here <https://github.com/olcf/olcf_containers_examples/tree/main/frontier/sample_apps/pytorch/amdrocmregistry>`__ 
+and the AMD vLLM container `here <https://github.com/olcf/olcf_containers_examples/tree/main/frontier/sample_apps/vllm>`__ .
+
+
+
 Some Restrictions and Tips
 --------------------------
 
