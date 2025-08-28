@@ -35,10 +35,10 @@ For more information please see:
      - ``qiskit``
      - ``qiskit-ibm-runtime``
      - ``qiskit-aer``
-   * - 3.11.9
-     - 1.2.0
-     - 0.28.0
-     - 0.14.2
+   * - 3.12.0
+     - 2.1.2
+     - 0.41.1
+     - 0.17.1
 
 .. note::
 
@@ -58,12 +58,12 @@ For more information please see:
          from qiskit_ibm_runtime import QiskitRuntimeService, Session, SamplerV2 as Sampler
          import time
 
-         # Save / Load Credentials (csc431 used as example project)
-         QiskitRuntimeService.save_account(channel="ibm_cloud", token="API TOKEN GOES HERE", overwrite=True)
+         # Save / Load Credentials
+         QiskitRuntimeService.save_account(channel="ibm_cloud", token="API TOKEN GOES HERE", overwrite=True, instance="CRN GOES HERE")
          service = QiskitRuntimeService(channel="ibm_cloud", instance="CRN GOES HERE")
 
-         # Get backend (csc431 used as example project)
-         #backend = service.backend("backend_name_here", instance="ibm-q-ornl/ornl/csc431")
+         # Get backend
+         #backend = service.backend("backend_name_here")
          backend = service.least_busy(simulator=False, operational=True)
 
          # Build circuit
