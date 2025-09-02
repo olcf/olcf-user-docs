@@ -86,6 +86,8 @@ connected to. For example, to see these modules on specific OLCF systems:
          paraview/5.13.1-osmesa
          paraview/5.13.3-egl
          paraview/5.13.3-osmesa
+         paraview/6.0.0-egl-osmesa
+         paraview/6.0.0
 
    .. tab-item:: Frontier
       :sync: frontier
