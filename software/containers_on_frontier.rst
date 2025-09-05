@@ -125,6 +125,8 @@ This example will look at building a container image for testing collective comm
       Bootstrap: oras
       From: docker.io/subilabrahamornl/ope1nsusempich342rocm624:latest
 
+      
+
 OLCF Base Images & Apptainer Modules
 -------------------------------------
 To assist the container workflow on Frontier, OLCF provides some base container images and apptainer modules to
@@ -320,6 +322,51 @@ in the  `olcf_container_examples repository
 <https://github.com/olcf/olcf_containers_examples/tree/main/frontier/sample_apps/>`__ . If you have
 suggestions for other examples you would like to see, or would like to contribute one yourself, feel
 free to open an issue or pull request on the Github page above. 
+
+
+AMD DockerHub AI/ML Workload Containers on Frontier
+--------------------------------------------------------
+AMD has optimized several AI/ML frameworks to provide support on AMD hardware. Some of these frameworks are specifically equiped with ROCM backend to ensure support on AMD GPUs while others are merely equiped for standard AMD64 CPU architectures.
+
+To ensure optimal performance on Frontier, we recommend users utilize the AMD optimized AI/ML workloads from the AMD DockerHub. We demonstrate here how to access and build those images on Frontier as well as tips/tricks in running the images. We focus on PyTorch, Tensorflow and Jax.
+
+Building and Running the AMD DockerHub AI/ML Images on Frontier
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+We highlight the process of building and running AMD DockerHub PyTorch, Tensorflow and Jax images on Frontier. Since AMD releases several versions of these frameworks, we focus on the latest releases only for this documentation.
+
+.. tab-set::
+
+   .. tab-item:: PyTorch
+      :sync: apptainer
+
+      .. code:: bash
+
+         apptainer pull pytorch_latest.sif docker://rocm/pytorch-nightly:latest
+
+   .. tab-item:: Tensorflow
+      :sync: apptainer
+
+      .. code:: bash
+
+         apptainer pull tensorflow_latest.sif docker://rocm/tensorflow:latest
+
+   .. tab-item:: Jax
+      :sync: apptainer
+
+      .. code:: bash
+
+         apptainer pull jax_latest.sif docker://rocm/jax-community:latest
+
+
+The `olcf_container_examples <https://github.com/olcf/olcf_containers_examples>`__ repository has
+examples demonstrating how to use these containers on Frontier. You can see an example for AMD
+Pytorch container `here <https://github.com/olcf/olcf_containers_examples/tree/main/frontier/sample_apps/pytorch/amdrocmregistry>`__
+, AMD Tensorflow container `here <https://github.com/olcf/olcf_containers_examples/tree/main/frontier/sample_apps/tensorflow>`__, AMD Jax container `here <https://github.com/olcf/olcf_containers_examples/tree/main/frontier/sample_apps/jax>`__ and the AMD vLLM container `here <https://github.com/olcf/olcf_containers_examples/tree/main/frontier/sample_apps/vllm>`__ .
+
+
+.. important::
+
+    While OLCF demonstrates the build and usage of these container images on Frontier, the images and their content are managed by AMD on their dockerhub repository.
 
 Some Restrictions and Tips
 --------------------------
