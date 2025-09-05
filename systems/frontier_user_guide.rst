@@ -3109,8 +3109,11 @@ A job script for the previous example, modified for sending all libraries is sho
     export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:$(pkg-config --variable=libdir libfabric)"
 
     # cray-mpich dlopen's libhsa-runtime64.so and libamdhip64.so (non-versioned), so symlink on each node:
+    # also, some part of ROCm 6.4.x is dlopen'ing libamd_comgr.so (non-versioned), so symlink it too:
     srun -N ${SLURM_NNODES} -n ${SLURM_NNODES} --ntasks-per-node=1 --label -D /mnt/bb/$USER/${exe}_libs \
         bash -c "if [ -f libhsa-runtime64.so.1 ]; then ln -s libhsa-runtime64.so.1 libhsa-runtime64.so; fi;
+        if [ -f libamd_comgr.so.2 ]; then ln -s libamd_comgr.so.2 libamd_comgr.so; fi;
+        elif [ -f libamd_comgr.so.3 ]; then ln -s libamd_comgr.so.3 libamd_comgr.so; fi;
         if [ -f libamdhip64.so.5 ]; then ln -s libamdhip64.so.5 libamdhip64.so; fi;
         elif [ -f libamdhip64.so.6 ]; then ln -s libamdhip64.so.6 libamdhip64.so; fi"
 
