@@ -1301,7 +1301,7 @@ Container Usage
 Defiant provides Apptainer v1.2.5 installed for building and running containers. See documentation
 on how to write Apptainer definition files 
 `here <https://apptainer.org/docs/user/main/definition_files.html>`_ . 
-You can also pull images from a registry like Dockerhub, and Apptainer will automatically convert
+You can also pull images from a registry like Docker Hub, and Apptainer will automatically convert
 those images to its SIF format.
 
 .. note::
