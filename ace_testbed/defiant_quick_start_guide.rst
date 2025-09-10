@@ -287,11 +287,11 @@ Cray, NVIDIA, Intel, and GCC compilers are provided through modules on Defiant. 
 |        |                         |                 +----------+-------------------+------------------------------------+
 |        |                         |                 | Fortran  | ``ftn``           | ``nvfortran``                      |
 +--------+-------------------------+-----------------+----------+-------------------+------------------------------------+
-| Intel  | ``PrgEnv-intel``        | ``intel``       | C        | ``cc``            | ``N/A``                            |
+| Intel  | ``PrgEnv-intel``        | ``intel``       | C        | ``cc``            | ``icx``                            |
 |        |                         |                 +----------+-------------------+------------------------------------+
-|        |                         |                 | C++      | ``CC``            | ``N/A``                            |
+|        |                         |                 | C++      | ``CC``            | ``icpx``                           |
 |        |                         |                 +----------+-------------------+------------------------------------+
-|        |                         |                 | Fortran  | ``ftn``           | ``N/A``                            |
+|        |                         |                 | Fortran  | ``ftn``           | ``ifx``                            |
 +--------+-------------------------+-----------------+----------+-------------------+------------------------------------+
 | GCC    | ``PrgEnv-gnu``          | ``gcc``         | C        | ``cc``            | ``$GCC_PATH/bin/gcc``              |
 |        |                         |                 +----------+-------------------+------------------------------------+
@@ -360,7 +360,7 @@ and libraries. The following modules and environment variables must be set:
 .. code:: bash
 
     #Load your Programming Environment of Choice
-    module load [PrgEnv-cray, PrgEnv-nvidia, PrgEnv-gnu]
+    module load [PrgEnv-cray, PrgEnv-nvidia, PrgEnv-gnu, PrgEnv-intel]
     
     module load cuda/12.6
     module load craype-accel-nvidia90    
@@ -397,6 +397,10 @@ covered above.
 |        |            | | C++     | | ``nvc++``                               |                                     |
 |        |            | | Fortran | | ``nvfortan``                            |                                     |
 +--------+------------+-----------+-------------------------------------------+-------------------------------------+
+| Intel  | ``intel``  | | C       | | ``icx``                                 | ``-qopenmp``                        |
+|        |            | | C++     | | ``icpx``                                |                                     |
+|        |            | | Fortran | | ``ifx``                                 |                                     |
++--------+------------+-----------+-------------------------------------------+-------------------------------------+
 | GCC    | ``gcc``    | | C       | | ``$GCC_PATH/bin/gcc``                   | ``-fopenmp``                        |
 |        |            | | C++     | | ``$GCC_PATH/bin/g++``                   |                                     |
 |        |            | | Fortran | | ``$GCC_PATH/bin/gfortran``              |                                     |
@@ -423,6 +427,10 @@ This section shows how to compile with OpenMP Offload using the different compil
 | NVIDIA | ``nvidia`` | | C       | | ``nvc``                                 | ``-fopenmp``                                 |
 |        |            | | C++     | | ``nvc++``                               |                                              |
 |        |            | | Fortran | | ``nvfortan``                            |                                              |
++--------+------------+-----------+-------------------------------------------+----------------------------------------------+
+| Intel  | ``intel``  | | C       | | ``icx``                                 | ``-qopenmp``                                 |
+|        |            | | C++     | | ``icpx``                                |                                              |
+|        |            | | Fortran | | ``ifx``                                 |                                              |
 +--------+------------+-----------+-------------------------------------------+----------------------------------------------+
 
 
@@ -626,7 +634,7 @@ Process and Thread Mapping
 
 This section describes how to map processes (e.g., MPI ranks) and process 
 threads (e.g., OpenMP threads) to the CPUs and GPUs on Defiant. The 
-:ref:`defiant-compute-nodes` diagram will be helpful when reading this section
+:ref:`defiant-nodes` diagram will be helpful when reading this section
 to understand which hardware threads your processes and threads run on. 
 
 CPU Mapping
@@ -940,7 +948,7 @@ accomplish the GPU mapping, one new ``srun`` options will be used:
     To further clarify, ``--gpus-per-task`` does not actually bind GPUs to MPI ranks.
     It allocates GPUs to the job step. The default GPU map is what actually 
     maps a specific GPU to each rank.
-    (see the :ref:`defiant-compute-nodes` section).
+    (see the :ref:`defiant-nodes` section).
 
 
 .. code-block:: bash
@@ -1232,9 +1240,6 @@ This example show the usage of ``--gpu-bind=closest`` which will bind all GPUs t
 NVMe Usage
 ----------
 
-..warning::
-    NVME usage is currently not setup on Defiant. 
-
 Each Defiant compute node has [3x] 3.5 TB NVMe devices (SSDs). To use the NVMe, users must 
 request access during job allocation using the ``-C nvme`` option to 
 ``sbatch``, ``salloc``, or ``srun``. Once the devices have been granted to a job, 
@@ -1421,6 +1426,6 @@ by emailing help@olcf.ornl.gov.
 Known Issues
 ============
 
-- NVME usage is not setup currently.
+- None
 
 .. JIRA_CONTENT_HERE
