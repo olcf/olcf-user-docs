@@ -5,7 +5,7 @@ Defiant Quick-Start Guide
 *************************
 
 .. warning:: 
-	The Defiant documentation is still under construction. If you have anything you would like to add please reach out to help@olcf.ornl.gov. 
+	The Defiant documentation is being actively updated. If you have anything you would like to add please reach out to help@olcf.ornl.gov. 
 
 
 
@@ -15,10 +15,7 @@ System Overview
 ===============
 
 "Defiant2" is the all new hardware refresh of the original "Defiant" system; however, the name of the cluster will remain Defiant.
-Defiant is an NCCS open access system and is one of the Advanced Computing Ecosystem (ACE) testbeds that provides a sandbox
-for testing advances in IRI workflows and patterns, emerging compute architectures and techniques for HPC, emerging storage 
-architectures and techniques for HPC, emerging network architectures and techniques, cloudification of traditional HPC architectures.
-The system consists of 20 CPU, 2 GPU nodes and 1 login node for user code compilations.
+Defiant is an NCCS open access system and is one of the Advanced Computing Ecosystem (ACE) testbeds that provides a sandbox for testing advances in IRI workflows and patterns, emerging compute, network, and storage architectures, and cloudification of traditional HPC use-cases. The system currently consists of 20 CPU, 2 GPU nodes and 1 login node for user code compilations.
 
 
 .. _defiant-nodes:
