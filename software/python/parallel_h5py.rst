@@ -147,6 +147,10 @@ Now that you have a fresh environment, you will next install mpi4py into your ne
 
       .. code-block:: bash
 
+         # Unloading ROCm before building mpi4py prevents potential library linking issues
+         # When running, and after building mpi4py, you CAN have the ROCm module loaded
+         module unload rocm
+
          MPICC="cc -shared" pip install --no-cache-dir --no-binary=mpi4py mpi4py
 
 The ``MPICC`` flag ensures that you are using the correct C wrapper for MPI on the system.

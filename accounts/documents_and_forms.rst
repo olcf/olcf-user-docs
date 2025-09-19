@@ -80,6 +80,8 @@ Report Templates
 Use this template if you have been asked to submit a closeout report for your
 project.  Note this form does not apply to INCITE projects.  If you have been provided a template via email, only that template applies.
 
+--------------
+
 `Industry Quarterly Report Template <https://www.olcf.ornl.gov/wp-content/uploads/Industry-Quarterly-Report-Template.docx>`_
 Use this template if you have an industry project to submit a quarterly
 report.
@@ -87,6 +89,14 @@ report.
 `Industry Closeout Report Template <https://www.olcf.ornl.gov/wp-content/uploads/Industry-Report-Template.docx>`_
 Use this template if you have an industry project to submit a closeout
 report.
+
+--------------
+
+`ALCC Closeout Report Template <https://www.olcf.ornl.gov/wp-content/uploads/2025-26-ALCC-Closeout-Report-Template.docx>`_
+Use this template if you have an ALCC project to submit a quarterly report. 
+
+`ALCC Quarterly Report Template <https://www.olcf.ornl.gov/wp-content/uploads/ALCC-2025-26-Quarterly-Report-Template.docx>`_
+Use this template if you have an ALCC project to submit a quarterly report.
 
 --------------
 

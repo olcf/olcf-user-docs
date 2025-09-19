@@ -20,10 +20,11 @@ Table of Contents:
 * :ref:`Installing PyTorch <install>`
    * :ref:`Optional: install mpi4py <install-mpi>`
 * :ref:`Example Usage <example>`
-   * :ref:`Multinode script <ex-code>`
+   * :ref:`Multinode scripts <ex-code>`
    * :ref:`Batch script <ex-batch>`
 * :ref:`Best Practices <practices>`
 * :ref:`PyTorch Geometric <torch-geo>`
+* :ref:`Flash Attention <flash-attn>`
 * :ref:`Troubleshooting <troubleshoot>`
 * :ref:`Additional Resources <resources>`
 
@@ -33,9 +34,9 @@ Table of Contents:
 Installing PyTorch
 ==================
 
-In general, installing either the "stable" or "nightly" wheels of PyTorch>=2.1.0 listed on `Pytorch's Website <https://pytorch.org/get-started/locally/>`__ works well on Frontier.
-When navigating the install instructions on their website, make sure to indicate "Linux", "Pip", and "ROCm" for accurate install instructions.
-Let's follow those instructions to install a stable wheel of torch. 
+In general, installing either the "stable" or "nightly" wheels of PyTorch>=2.1.0 listed on `Pytorch's Website <https://pytorch.org/get-started/locally/>`__ works on Frontier; however, more recent PyTorch versions typically have better ROCm integration and support.
+When navigating the install instructions on PyTorch's website, make sure to indicate "Linux", "Pip", and "ROCm" for accurate install instructions.
+Let's follow those instructions to install a stable wheel of torch 2.8.0 with ROCm 6.4.1 (the current recommended version on Frontier).
 
 First, load your modules:
 
@@ -43,21 +44,21 @@ First, load your modules:
 
    module load PrgEnv-gnu/8.6.0
    module load miniforge3/23.11.0-0
-   module load rocm/6.2.4
+   module load rocm/6.4.1
    module load craype-accel-amd-gfx90a
  
 Next, create and activate a conda environment that we will install ``torch`` into:
 
 .. code-block:: bash
 
-   conda create -p /path/to/my_env python=3.10 -c conda-forge
+   conda create -p /path/to/my_env python=3.12 -c conda-forge
    source activate /path/to/my_env
 
 Finally, install PyTorch:
 
 .. code-block:: bash
 
-   pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.2
+   pip install torch==2.8.0 torchvision==0.23.0 torchaudio==2.8.0 --index-url https://download.pytorch.org/whl/rocm6.4
    
 You should now be ready to use PyTorch on Frontier!
 
@@ -82,6 +83,10 @@ This is taken from our :doc:`/software/python/parallel_h5py` guide:
 
 .. code-block:: bash
 
+   # Unloading ROCm before building mpi4py prevents potential library linking issues
+   # When running, and after building mpi4py, you CAN have the ROCm module loaded
+   module unload rocm
+
    MPICC="cc -shared" pip install --no-cache-dir --no-binary=mpi4py mpi4py
 
 .. note::
@@ -92,214 +97,390 @@ This is taken from our :doc:`/software/python/parallel_h5py` guide:
 Example Usage
 -------------
 
-We adapted the ``multinode.py`` `DDP tutorial <https://github.com/pytorch/examples/tree/main/distributed/ddp-tutorial-series>`__ to work with SLURM, ``mpi4py``, and to use 1 GPU per MPI task.
+We adapted the ``multinode.py`` `DDP tutorial <https://github.com/pytorch/examples/tree/main/distributed/ddp-tutorial-series>`__ and simplified AMD's `microbenchmarking script <https://github.com/ROCm/pytorch-micro-benchmarking>`__ to work with SLURM, ``mpi4py``, and to use 1 GPU per MPI task.
 Utilizing all the GPUs on the node in this manner means there will be 8 tasks per node.
 Because we are enforcing 1 GPU per task, each MPI task only sees device ``0`` in PyTorch.
 Even if the *physical* GPU ID on Frontier is different, and even though there are 8 GCDs (GPUs) on a node, **the torch device in this case is still 0** due to a task only being mapped to one GPU.
 
-The adapted script ``multinode_olcf.py`` is below:
-
 .. _ex-code:
 
-.. code-block:: python
+Both scripts below use ``DistributedDataParallel`` and can run across multiple nodes.
 
-   #multinode_olcf.py
-   from mpi4py import MPI
-   import torch
-   import torch.nn.functional as F
-   from torch.utils.data import Dataset, DataLoader
+.. dropdown:: multinode_olcf.py
 
-   import torch.multiprocessing as mp
-   from torch.utils.data.distributed import DistributedSampler
-   from torch.nn.parallel import DistributedDataParallel as DDP
+    .. code-block:: python
 
-   import torch.distributed as dist
+       #multinode_olcf.py
+       from mpi4py import MPI
+       import torch
+       import torch.nn.functional as F
+       from torch.utils.data import Dataset, DataLoader
 
-   import os
+       import torch.multiprocessing as mp
+       from torch.utils.data.distributed import DistributedSampler
+       from torch.nn.parallel import DistributedDataParallel as DDP
 
+       import torch.distributed as dist
 
-   class MyTrainDataset(Dataset):
-       def __init__(self, size):
-           self.size = size
-           self.data = [(torch.rand(20), torch.rand(1)) for _ in range(size)]
-
-       def __len__(self):
-           return self.size
-
-       def __getitem__(self, index):
-           return self.data[index]
+       import os
 
 
-   class Trainer:
-       def __init__(
-           self,
-           model: torch.nn.Module,
-           train_data: DataLoader,
-           optimizer: torch.optim.Optimizer,
-           save_every: int,
-           snapshot_path: str,
-           local_rank: int,
-           world_rank: int,
+       class MyTrainDataset(Dataset):
+           def __init__(self, size):
+               self.size = size
+               self.data = [(torch.rand(20), torch.rand(1)) for _ in range(size)]
 
-       ) -> None:
-           self.local_rank = local_rank
-           self.global_rank = global_rank
+           def __len__(self):
+               return self.size
 
-           self.model = model.to(self.local_rank)
-           self.train_data = train_data
-           self.optimizer = optimizer
-           self.save_every = save_every
-           self.epochs_run = 0
-           self.snapshot_path = snapshot_path
-           if os.path.exists(snapshot_path):
-               print("Loading snapshot")
-               self._load_snapshot(snapshot_path)
-
-           self.model = DDP(self.model, device_ids=[self.local_rank])
-
-       def _load_snapshot(self, snapshot_path):
-           loc = f"cuda:{self.local_rank}"
-           snapshot = torch.load(snapshot_path, map_location=loc)
-           self.model.load_state_dict(snapshot["MODEL_STATE"])
-           self.epochs_run = snapshot["EPOCHS_RUN"]
-           print(f"Resuming training from snapshot at Epoch {self.epochs_run}")
-
-       def _run_batch(self, source, targets):
-           self.optimizer.zero_grad()
-           output = self.model(source)
-           loss = F.cross_entropy(output, targets)
-           loss.backward()
-           self.optimizer.step()
-
-       def _run_epoch(self, epoch):
-           b_sz = len(next(iter(self.train_data))[0])
-           print(f"[GPU{self.global_rank}] Epoch {epoch} | Batchsize: {b_sz} | Steps: {len(self.train_data)}")
-           self.train_data.sampler.set_epoch(epoch)
-           for source, targets in self.train_data:
-               source = source.to(self.local_rank)
-               targets = targets.to(self.local_rank)
-               self._run_batch(source, targets)
-
-       def _save_snapshot(self, epoch):
-           snapshot = {
-               "MODEL_STATE": self.model.module.state_dict(),
-               "EPOCHS_RUN": epoch,
-           }
-           torch.save(snapshot, self.snapshot_path)
-           print(f"Epoch {epoch} | Training snapshot saved at {self.snapshot_path}")
-
-       def train(self, max_epochs: int):
-           for epoch in range(self.epochs_run, max_epochs):
-               self._run_epoch(epoch)
-               if self.local_rank == 0 and epoch % self.save_every == 0:
-                   self._save_snapshot(epoch)
+           def __getitem__(self, index):
+               return self.data[index]
 
 
-   def load_train_objs():
-       train_set = MyTrainDataset(2048)  # load your dataset
-       model = torch.nn.Linear(20, 1)  # load your model
-       optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
-       return train_set, model, optimizer
+       class Trainer:
+           def __init__(
+               self,
+               model: torch.nn.Module,
+               train_data: DataLoader,
+               optimizer: torch.optim.Optimizer,
+               save_every: int,
+               snapshot_path: str,
+               local_rank: int,
+               world_rank: int,
+
+           ) -> None:
+               self.local_rank = local_rank
+               self.global_rank = global_rank
+
+               self.model = model.to(self.local_rank)
+               self.train_data = train_data
+               self.optimizer = optimizer
+               self.save_every = save_every
+               self.epochs_run = 0
+               self.snapshot_path = snapshot_path
+               if os.path.exists(snapshot_path):
+                   print("Loading snapshot")
+                   self._load_snapshot(snapshot_path)
+
+               self.model = DDP(self.model, device_ids=[self.local_rank])
+
+           def _load_snapshot(self, snapshot_path):
+               loc = f"cuda:{self.local_rank}"
+               snapshot = torch.load(snapshot_path, map_location=loc)
+               self.model.load_state_dict(snapshot["MODEL_STATE"])
+               self.epochs_run = snapshot["EPOCHS_RUN"]
+               print(f"Resuming training from snapshot at Epoch {self.epochs_run}")
+
+           def _run_batch(self, source, targets):
+               self.optimizer.zero_grad()
+               output = self.model(source)
+               loss = F.cross_entropy(output, targets)
+               loss.backward()
+               self.optimizer.step()
+
+           def _run_epoch(self, epoch):
+               b_sz = len(next(iter(self.train_data))[0])
+               print(f"[GPU{self.global_rank}] Epoch {epoch} | Batchsize: {b_sz} | Steps: {len(self.train_data)}")
+               self.train_data.sampler.set_epoch(epoch)
+               for source, targets in self.train_data:
+                   source = source.to(self.local_rank)
+                   targets = targets.to(self.local_rank)
+                   self._run_batch(source, targets)
+
+           def _save_snapshot(self, epoch):
+               snapshot = {
+                   "MODEL_STATE": self.model.module.state_dict(),
+                   "EPOCHS_RUN": epoch,
+               }
+               torch.save(snapshot, self.snapshot_path)
+               print(f"Epoch {epoch} | Training snapshot saved at {self.snapshot_path}")
+
+           def train(self, max_epochs: int):
+               for epoch in range(self.epochs_run, max_epochs):
+                   self._run_epoch(epoch)
+                   if self.local_rank == 0 and epoch % self.save_every == 0:
+                       self._save_snapshot(epoch)
 
 
-   def prepare_dataloader(dataset: Dataset, batch_size: int):
-       return DataLoader(
-           dataset,
-           batch_size=batch_size,
-           pin_memory=True,
-           shuffle=False,
-           sampler=DistributedSampler(dataset)
-       )
+       def load_train_objs():
+           train_set = MyTrainDataset(2048)  # load your dataset
+           model = torch.nn.Linear(20, 1)  # load your model
+           optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
+           return train_set, model, optimizer
 
 
-   def main(save_every: int, total_epochs: int, batch_size: int, local_rank: int, world_rank: int, snapshot_path: str = "snapshot.pt"):    
-       dataset, model, optimizer = load_train_objs()
-       train_data = prepare_dataloader(dataset, batch_size)
+       def prepare_dataloader(dataset: Dataset, batch_size: int):
+           return DataLoader(
+               dataset,
+               batch_size=batch_size,
+               pin_memory=True,
+               shuffle=False,
+               sampler=DistributedSampler(dataset)
+           )
 
-       trainer = Trainer(model, train_data, optimizer, save_every, snapshot_path, local_rank, global_rank)
 
-       trainer.train(total_epochs)
+       def main(save_every: int, total_epochs: int, batch_size: int, local_rank: int, world_rank: int, snapshot_path: str = "snapshot.pt"):    
+           dataset, model, optimizer = load_train_objs()
+           train_data = prepare_dataloader(dataset, batch_size)
 
-       dist.destroy_process_group()
+           trainer = Trainer(model, train_data, optimizer, save_every, snapshot_path, local_rank, global_rank)
+
+           trainer.train(total_epochs)
+
+           dist.destroy_process_group()
 
 
-   if __name__ == "__main__":
-       import argparse
-       parser = argparse.ArgumentParser(description='simple distributed training job')
-       parser.add_argument('total_epochs', type=int, help='Total epochs to train the model')
-       parser.add_argument('save_every', type=int, help='How often to save a snapshot')
-       parser.add_argument('--batch_size', default=32, type=int, help='Input batch size on each device (default: 32)')
-       parser.add_argument("--master_addr", type=str, required=True)
-       parser.add_argument("--master_port", type=str, required=True)
+       if __name__ == "__main__":
+           import argparse
+           parser = argparse.ArgumentParser(description='simple distributed training job')
+           parser.add_argument('total_epochs', type=int, help='Total epochs to train the model')
+           parser.add_argument('save_every', type=int, help='How often to save a snapshot')
+           parser.add_argument('--batch_size', default=32, type=int, help='Input batch size on each device (default: 32)')
+           parser.add_argument("--master_addr", type=str, required=True)
+           parser.add_argument("--master_port", type=str, required=True)
 
-       args = parser.parse_args()
+           args = parser.parse_args()
 
-       num_gpus_per_node = torch.cuda.device_count()
-       print ("num_gpus_per_node = " + str(num_gpus_per_node), flush=True)
+           num_gpus_per_node = torch.cuda.device_count()
+           print ("num_gpus_per_node = " + str(num_gpus_per_node), flush=True)
 
-       comm = MPI.COMM_WORLD
-       world_size = comm.Get_size()
-       global_rank = rank = comm.Get_rank()
-       local_rank = int(rank) % int(num_gpus_per_node) # local_rank and device are 0 when using 1 GPU per task
-       backend = None
-       os.environ['WORLD_SIZE'] = str(world_size)
-       os.environ['RANK'] = str(global_rank)
-       os.environ['LOCAL_RANK'] = str(local_rank)
-       os.environ['MASTER_ADDR'] = str(args.master_addr)
-       os.environ['MASTER_PORT'] = str(args.master_port)
-       os.environ['NCCL_SOCKET_IFNAME'] = 'hsn0'
+           comm = MPI.COMM_WORLD
+           world_size = comm.Get_size()
+           global_rank = rank = comm.Get_rank()
+           local_rank = int(rank) % int(num_gpus_per_node) # local_rank and device are 0 when using 1 GPU per task
+           backend = None
+           os.environ['WORLD_SIZE'] = str(world_size)
+           os.environ['RANK'] = str(global_rank)
+           os.environ['LOCAL_RANK'] = str(local_rank)
+           os.environ['MASTER_ADDR'] = str(args.master_addr)
+           os.environ['MASTER_PORT'] = str(args.master_port)
+           os.environ['NCCL_SOCKET_IFNAME'] = 'hsn0'
 
-       dist.init_process_group(
-           backend="nccl",
-           #init_method="tcp://{}:{}".format(args.master_addr, args.master_port),
-           init_method='env://',
-           rank=rank,
-           world_size=world_size,
-       )
+           dist.init_process_group(
+               backend="nccl",
+               #init_method="tcp://{}:{}".format(args.master_addr, args.master_port),
+               init_method='env://',
+               rank=rank,
+               world_size=world_size,
+           )
 
-       torch.cuda.set_device(local_rank)
+           torch.cuda.set_device(local_rank)
 
-       main(args.save_every, args.total_epochs, args.batch_size, local_rank, global_rank)
+           main(args.save_every, args.total_epochs, args.batch_size, local_rank, global_rank)
 
-To run the python script, an example batch script is given below:
+.. dropdown:: microbench_olcf.py
+
+    .. code-block:: python
+
+        #microbench_olcf.py
+        import torch
+        import torchvision
+        import time
+        import argparse
+        import os
+        import copy
+        import csv
+        from mpi4py import MPI
+
+        def forwardbackward(inp, optimizer, network, target, step=0, opt_step=1):
+            if step % opt_step == 0:
+                optimizer.zero_grad()
+            
+            out = network(inp)
+            # If using HuggingFace model outputs logits, we need to extract them
+            if hasattr(out, 'logits'):
+                logits = out.logits
+            else:
+                logits = out
+            loss_fn = torch.nn.CrossEntropyLoss().to(device="cuda")
+
+            loss = loss_fn(logits, target)
+                
+            loss.backward()
+            if (step + 1) % opt_step == 0:
+                optimizer.step()
+                optimizer.zero_grad()
+
+
+        def run_benchmarking(local_rank, global_rank, world_size, params):
+            batch_size = params.batch_size
+            iterations = params.iterations
+
+            net = torchvision.models.resnet50
+            network = net().to(device="cuda")
+
+            param_copy = network.parameters()
+
+            ## MLPerf Setting
+            sgd_opt_base_learning_rate = 0.01
+            sgd_opt_weight_decay = 0.0001
+            sgd_opt_momentum = 0.9
+
+            optimizer = torch.optim.SGD(param_copy, lr = sgd_opt_base_learning_rate, momentum = sgd_opt_momentum, weight_decay=sgd_opt_weight_decay)
+
+            devices_to_run_on = [local_rank]
+            print (f"Rank {global_rank} running on device: {devices_to_run_on}")
+            network = torch.nn.parallel.DistributedDataParallel(network, device_ids=devices_to_run_on)
+            batch_size = int(batch_size / world_size)
+
+            inp = torch.randn(batch_size, 3, 224, 224, device="cuda")
+
+            # number of classes is 1000 for imagenet
+            target = torch.randint(0, 1000, (batch_size,), device="cuda")
+
+            forward_fn = forwardbackward
+            network.train()
+
+            ## warmup.
+            if global_rank == 0:
+                print (f"running forward and backward for warmup.")
+            for i in range(2):
+                forward_fn(inp, optimizer, network, target, step=0, opt_step=args.opt_step)
+
+            time.sleep(1)
+            torch.cuda.synchronize()
+
+            ## benchmark.
+            if global_rank == 0:
+                print (f"running the benchmark..")
+            
+            tm = time.time()
+            with torch.autograd.profiler.emit_nvtx(enabled=False):
+                for i in range(iterations):
+                    forward_fn(inp, optimizer, network, target, step=i, opt_step=args.opt_step)
+            torch.cuda.synchronize()
+
+            tm2 = time.time()
+            time_per_batch = (tm2 - tm) / iterations
+            throughput = batch_size / time_per_batch
+
+            dtype = 'FP32'
+
+            result = None
+            if not args.output_dir:
+                args.output_dir = "."
+
+            print (f"Rank {global_rank} finished: Mini batch size: {batch_size}, Throughput: {throughput}, Time per mini-batch: {time_per_batch}")
+
+            min_time = comm.reduce(time_per_batch,op=MPI.MIN, root=0)
+            max_time = comm.reduce(time_per_batch,op=MPI.MAX, root=0)
+            avg_time = comm.reduce(time_per_batch,op=MPI.SUM, root=0) # prep for avg later
+            tot_thru = comm.reduce(throughput,op=MPI.SUM, root=0)
+
+            time.sleep(3)
+            if global_rank == 0:
+                print ("")
+                print ("--------Overall Summary--------")
+                print (f"Num devices: {world_size}")
+                print (f"Dtype: {dtype}")
+                print (f"Mini batch size [img] : {batch_size*world_size}")
+                print (f"Mini batch size [img/gpu] : {batch_size}")
+                print (f"Total Throughput [img/sec] : {tot_thru}")
+                print (f"Time per mini-batch [sec] : Min: {min_time}, Max: {max_time}, Avg: {avg_time/world_size}")
+                result = {
+                    "GPUs": world_size,
+                    "Mini batch size [img]": batch_size * world_size,
+                    "Mini batch size [img/gpu]": batch_size,
+                    "Total Throughput [img/sec]": tot_thru,
+                    "Min Time [sec]": min_time,
+                    "Max Time [sec]": max_time,
+                    "Avg Time [sec]": avg_time/world_size
+                }
+            
+            csv_filename = f"{args.output_dir}/benchmark_summary.csv"
+            file_exists = os.path.isfile(csv_filename)
+            if result:
+                with open(csv_filename, "a", newline='') as csvfile:
+                    writer = csv.writer(csvfile)
+                    if not file_exists:
+                        writer.writerow(result.keys())
+                    writer.writerow(result.values())
+                print(f"Benchmark result saved to {csv_filename}")
+
+
+        if __name__ == '__main__':
+            parser = argparse.ArgumentParser()
+            parser.add_argument("--batch-size" , type=int, required=False, default=64, help="Batch size (will be split among devices used by this invocation)")
+            parser.add_argument("--iterations", type=int, required=False, default=20, help="Iterations")
+            parser.add_argument("--opt-step", type=int, required=False, default=1, help="Optimizer update step")
+            parser.add_argument("--output-dir", type=str, default="", help="assign output directory name.")
+            parser.add_argument("--master_addr", type=str, required=True)
+            parser.add_argument("--master_port", type=str, required=True)
+
+            args = parser.parse_args()
+
+            num_gpus_per_rank = torch.cuda.device_count()
+
+            comm = MPI.COMM_WORLD
+            world_size = comm.Get_size()
+            global_rank = rank = comm.Get_rank()
+            local_rank = int(rank) % int(num_gpus_per_rank) # local_rank and device are 0 when using 1 GPU per task
+            backend = None
+            os.environ['WORLD_SIZE'] = str(world_size)
+            os.environ['RANK'] = str(global_rank)
+            os.environ['LOCAL_RANK'] = str(local_rank)
+            os.environ['MASTER_ADDR'] = str(args.master_addr)
+            os.environ['MASTER_PORT'] = str(args.master_port)
+            os.environ['NCCL_SOCKET_IFNAME'] = 'hsn0'
+
+            torch.distributed.init_process_group(
+                backend="nccl",
+                #init_method=f"tcp://{args.master_addr}:{args.master_port}",
+                init_method='env://',
+                rank=global_rank,
+                world_size=world_size,
+            )
+
+            print (f"Rank {global_rank} GPUs Visible: {num_gpus_per_rank}", flush=True)
+
+            torch.cuda.set_device(local_rank) # local_rank and device are 0 when using 1 GPU per task
+
+            run_benchmarking(local_rank,global_rank,world_size,copy.deepcopy(args))
+
+            torch.distributed.destroy_process_group()
 
 .. _ex-batch:
 
-.. code-block:: bash
+To run the python scripts, an example batch script is given below:
 
-   #!/bin/bash
-   #SBATCH -A PROJECT_ID
-   #SBATCH -J ddp_test
-   #SBATCH -o logs/ddp_test-%j.o
-   #SBATCH -e logs/ddp_test-%j.e
-   #SBATCH -t 00:05:00
-   #SBATCH -p batch
-   #SBATCH -N 2
+.. dropdown:: Batch Script
 
-   # Only necessary if submitting like: sbatch --export=NONE ... (recommended)
-   # Do NOT include this line when submitting without --export=NONE
-   unset SLURM_EXPORT_ENV
+    .. code-block:: bash
 
-   # Load modules
-   module load PrgEnv-gnu/8.6.0
-   module load rocm/6.2.4
-   module load craype-accel-amd-gfx90a
-   module load miniforge3/23.11.0-0
+       #!/bin/bash
+       #SBATCH -A PROJECT_ID
+       #SBATCH -J ddp_test
+       #SBATCH -o logs/ddp_test-%j.o
+       #SBATCH -e logs/ddp_test-%j.e
+       #SBATCH -t 00:05:00
+       #SBATCH -p batch
+       #SBATCH -N 2
 
-   # Activate your environment
-   source activate /path/to/my_env
+       # Only necessary if submitting like: sbatch --export=NONE ... (recommended)
+       # Do NOT include this line when submitting without --export=NONE
+       unset SLURM_EXPORT_ENV
 
-   # Get address of head node
-   export MASTER_ADDR=$(hostname -i)
+       # Load modules
+       module load PrgEnv-gnu/8.6.0
+       module load rocm/6.4.1
+       module load craype-accel-amd-gfx90a
+       module load miniforge3/23.11.0-0
 
-   # Needed to bypass MIOpen, Disk I/O Errors
-   export MIOPEN_USER_DB_PATH="/tmp/my-miopen-cache"
-   export MIOPEN_CUSTOM_CACHE_DIR=${MIOPEN_USER_DB_PATH}
-   rm -rf ${MIOPEN_USER_DB_PATH}
-   mkdir -p ${MIOPEN_USER_DB_PATH}
+       # Activate your environment
+       source activate /path/to/my_env
 
-   # Run script
-   srun -N2 -n16 -c7 --gpus-per-task=1 --gpu-bind=closest python3 -W ignore -u ./multinode_olcf.py 2000 10 --master_addr=$MASTER_ADDR --master_port=3442
+       # Get address of head node
+       export MASTER_ADDR=$(hostname -i)
+
+       # Needed to bypass MIOpen, Disk I/O Errors
+       export MIOPEN_USER_DB_PATH="/tmp/my-miopen-cache"
+       export MIOPEN_CUSTOM_CACHE_DIR=${MIOPEN_USER_DB_PATH}
+       rm -rf ${MIOPEN_USER_DB_PATH}
+       mkdir -p ${MIOPEN_USER_DB_PATH}
+
+       # Run script
+       #srun -N2 -n16 -c7 --gpus-per-task=1 --gpu-bind=closest python3 -W ignore -u ./multinode_olcf.py 2000 10 --master_addr=$MASTER_ADDR --master_port=3442
+       #srun -N2 -n16 -c7 --gpus-per-task=1 --gpu-bind=closest python3 -W ignore -u ./microbench_olcf.py --batch-size 1024 --master_addr=$MASTER_ADDR --master_port=3442
 
 As mentioned on our :doc:`/software/python/index` page, submitting batch scripts like below is recommended when using conda environments:
 
@@ -499,6 +680,49 @@ Assuming you already have a working PyTorch installation (see above), install in
    CC=gcc CXX=g++ MAX_JOBS=16 python3 setup.py bdist_wheel
    pip install dist/*.whl
    cd ..
+
+.. _flash-attn:
+
+Flash Attention
+===============
+
+In addition to PyTorch's internal implementation of FlashAttention, some users may find it beneficial to build the external, `standalone version of FlashAttention <https://github.com/ROCm/flash-attention>`__.
+To install the ``flash-attn`` library on Frontier:
+
+.. code-block:: bash
+
+   # Activate your virtual environment
+   source activate /path/to/my_env
+
+   # Install some build tools
+   pip install ninja packaging
+
+   # Retrieve the FA repo
+   git clone https://github.com/ROCm/flash-attention
+   cd flash-attention/
+   git checkout v2.7.4-cktile
+   git submodule init
+   git submodule update
+
+   # Build the flash-attn wheel
+   python3 setup.py bdist_wheel
+
+   # Install flash-attn
+   pip install dist/*.whl
+
+To test if your installation was successful, you can run this small script:
+
+.. code-block:: python
+
+   import torch
+   from flash_attn import flash_attn_func
+
+   q = torch.randn([1, 4096, 8, 128]).cuda().half()
+   k = torch.randn([1, 4096, 8, 128]).cuda().half()
+   v= torch.randn([1, 4096, 8, 128]).cuda().half()
+
+   result = flash_attn_func(q, k, v, causal=True)
+   print(result.shape)
 
 
 .. _troubleshoot:
