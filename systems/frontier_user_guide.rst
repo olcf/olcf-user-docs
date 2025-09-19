@@ -1316,6 +1316,7 @@ In addition to state codes, jobs that are pending will have a "reason code" to e
 
 Many other states and job reason codes exist. For a more complete description, see the ``squeue`` man page (either on the system or online).
 
+.. _frontier-scheduling:
 
 Scheduling Policy
 -----------------
@@ -3149,6 +3150,12 @@ Containers
 ==========
 
 Frontier uses `Apptainer <https://apptainer.org/docs/user/latest/>`__ as its container builder and runtime. You can read more on how to use containers on Frontier in the :doc:`Containers on Frontier </software/containers_on_frontier>` section in the OLCF User Documentation.
+
+Jupyter
+==========
+
+OLCF operates a JupyterHub server that enables users to run single or multinode Jupyter notebooks on Frontier. 
+The JupyterHub server can be accessed at https://jupyter.frontier.olcf.ornl.gov and more information on using Jupyter notebooks can be found at [...].
 
 Debugging
 ============
