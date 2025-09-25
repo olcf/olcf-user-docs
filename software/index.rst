@@ -17,6 +17,5 @@ Software
    UMS/index
    workflows/index
    viz_tools/index
-   jupyter_on_frontier
    containers_on_frontier
    debugging/index
