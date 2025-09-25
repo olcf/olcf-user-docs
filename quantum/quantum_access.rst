@@ -90,6 +90,39 @@ along with the 6-character OLCF QCUP Project ID and resources allocation
 details. At this time project participants may proceed with applying for their
 individual user accounts. 
 
+After a project is approved, a PI can then ask for specific allocation amounts
+following the :ref:`quantum-req` instructions.
+
+.. _quantum-req:
+
+Credit Allocation Requests
+--------------------------
+
+Running jobs on quantum hardware through QCUP requires vendor-specific credits
+or time-based allocation, depending on the system. To ensure the efficient use
+of resources, the following allocation policy is in effect:
+
+* All credit or time requests must be submitted by the project's Principal
+  Investigator (PI). Requests can be made through the Quantum Allocation
+  Request form available under the "Allocations" section in `myOLCF <https://my.olcf.ornl.gov/login>`__ (select your
+  QCUP project under "My Projects" after login). Alternatively, you may submit
+  a request via the OLCF Help Ticket System at help@olcf.ornl.gov.
+
+* Requests must include a technical justification that demonstrates an
+  understanding of the resource requirements for the proposed quantum workload.
+  Users must simulate their workloads using the appropriate simulator,
+  emulator, or resource estimation tools provided by the vendor to estimate
+  circuit depth, qubit usage, execution time, and other relevant metrics.
+
+* Below are links to each vendor-specific instructions and policies:
+
+  * :ref:`IBM Allocation Instructions <ibm-alloc>`
+  * :ref:`Quantinuum Allocation Instructions <quantinuum-alloc>`
+  * :ref:`IonQ Allocation Instructions <ionq-alloc>`
+  * :ref:`IQM Allocation Instructions <iqm-alloc>`
+
+For questions or assistance with preparing a request, contact help@olcf.ornl.gov.
+
 Project Renewals 
 ----------------
 
