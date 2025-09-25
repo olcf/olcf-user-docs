@@ -1316,7 +1316,6 @@ In addition to state codes, jobs that are pending will have a "reason code" to e
 
 Many other states and job reason codes exist. For a more complete description, see the ``squeue`` man page (either on the system or online).
 
-.. _frontier-scheduling:
 
 Scheduling Policy
 -----------------
@@ -1623,7 +1622,7 @@ The job name and output options have been removed since stdout/stderr are typica
     +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
     | ``--gpus-per-node``                                    | Specify the number of GPUs per node required for the job.                                                      |
     +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
-    | ``--gpu-bind=closest``                                 | Binds each task to the GPU which is on the same L3 cache as the CPU core the MPI rank is running on.           |
+    | ``--gpu-bind=closest``                                 | Binds each task to the GPU which is on the same NUMA domain as the CPU core the MPI rank is running on.        |
     +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
     | ``--gpu-bind=map_gpu:<list>``                          | Bind tasks to specific GPUs by setting GPU masks on tasks (or ranks) as specified where                        |
     |                                                        | ``<list>`` is ``<gpu_id_for_task_0>,<gpu_id_for_task_1>,...``. If the number of tasks (or                      |
@@ -3153,12 +3152,6 @@ Containers
 ==========
 
 Frontier uses `Apptainer <https://apptainer.org/docs/user/latest/>`__ as its container builder and runtime. You can read more on how to use containers on Frontier in the :doc:`Containers on Frontier </software/containers_on_frontier>` section in the OLCF User Documentation.
-
-Jupyter
-==========
-
-OLCF operates a JupyterHub server that enables users to run single or multinode Jupyter notebooks on Frontier. 
-The JupyterHub server can be accessed at https://jupyter.frontier.olcf.ornl.gov and more information on using Jupyter notebooks can be found at :doc:`Jupyter on Frontier </software/jupyter_on_frontier>`.
 
 Debugging
 ============
