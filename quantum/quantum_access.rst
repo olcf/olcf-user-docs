@@ -104,9 +104,10 @@ of resources, the following allocation policy is in effect:
 
 * All credit or time requests must be submitted by the project's Principal
   Investigator (PI). Requests can be made through the Quantum Allocation
-  Request form available under the "Allocations" section in `myOLCF <https://my.olcf.ornl.gov/login>`__ (select your
-  QCUP project under "My Projects" after login). Alternatively, you may submit
-  a request via the OLCF Help Ticket System at help@olcf.ornl.gov.
+  Request form available under the "Allocations" section in
+  `myOLCF <https://my.olcf.ornl.gov/login>`__ (select your QCUP project under
+  "My Projects" after login). Alternatively, you may submit a request via the
+  OLCF Help Ticket System at help@olcf.ornl.gov.
 
 * Requests must include a technical justification that demonstrates an
   understanding of the resource requirements for the proposed quantum workload.
