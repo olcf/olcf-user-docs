@@ -78,6 +78,8 @@ individual projects or users from monopolizing a given backend.
 All OLCF users have access to the "premium" (>=20 qubits) devices in the Washington DC (us-east) region.
 
 
+.. _ibm-alloc:
+
 Allocations & Usage Limits
 --------------------------
 
