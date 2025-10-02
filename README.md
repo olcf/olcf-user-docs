@@ -2,7 +2,7 @@
 
 <hr>
 
-This respository contains technical documentation for Oak Ridge Leadership
+This repository contains technical documentation for Oak Ridge Leadership
 Computing Facility resources.
 
 Visit **[https://docs.olcf.ornl.gov](https://docs.olcf.ornl.gov)** for the
