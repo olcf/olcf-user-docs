@@ -1,5 +1,7 @@
 .. _myolcf_authenticating:
 
+*Coming soon*
+
 **************
 Authenticating
 **************
