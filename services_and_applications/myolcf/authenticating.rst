@@ -1,12 +1,10 @@
 .. _myolcf_authenticating:
 
-*Coming soon*
-
 **************
 Authenticating
 **************
 
-MyOLCF requires **OpenID Connect (OIDC®)** for all accounts.
+Starting October 9, 2025, myOLCF requires **OpenID Connect (OIDC®)** for all accounts.
 
 OLCF Moderate Accounts
 ----------------------
