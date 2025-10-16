@@ -3866,6 +3866,23 @@ If it is necessary to have bit-wise reproducible results from these libraries, i
 System Updates 
 ============== 
 
+2025-10-21
+----------
+On Tuesday, October 21, 2025, Frontier's system software will be upgraded.
+The following changes will take place:
+
+- Upgrade to AMD GPU 6.14.14 device driver (ROCm 7.0.1 release).
+- Upgrade to Slingshot 2.3.1
+- HPE/Cray Programming Environment (CPE) 25.09 will be made available via the ``cpe/25.09`` module. Please make sure to set ``export LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH`` if using this non-default CPE version. This includes CCE/20.0.0 and cray-mpich/9.0.1, with a recommended ROCm version of ROCm/6.4.2.
+- ROCm/7.0.1 will be made available as non-default via the ``rocm/7.0.1`` module.
+- ROCm/6.4.2 will be made available as non-default via the ``rocm/6.4.2`` module. This is the preferred ROCm version for CPE/25.09.
+
+.. note::
+
+    **Recommended User Action**:
+
+    With the addition of ROCm 7, users still relying on ROCm 5 should consider updating to newer ROCm versions (default CPE/24.11 or newer preferred), as backwards compatibility of the ROCm driver is not guaranteed. If you have software issues preventing updating, please report these to help@olcf.ornl.gov.
+
 2025-07-29
 ----------
 On Tuesday, July 29, 2025, Frontier's Slingshot Host Software 12.0.1 was patched to adjust a parameter known to contribute to a recent regression in the performance of ``MPI_Alltoall`` at full-system scale (>8K nodes).
