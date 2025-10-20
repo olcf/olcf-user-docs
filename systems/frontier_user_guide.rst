@@ -3883,6 +3883,7 @@ The following changes will take place:
 
     With the addition of ROCm 7, users still relying on ROCm 5 should consider updating to newer ROCm/CPE versions (default ROCm/6.2.4 with CPE/24.11 or newer preferred), as backwards compatibility of the ROCm driver is not guaranteed. If you have software issues preventing updating, please report these to help@olcf.ornl.gov.
 
+
 2025-07-29
 ----------
 On Tuesday, July 29, 2025, Frontier's Slingshot Host Software 12.0.1 was patched to adjust a parameter known to contribute to a recent regression in the performance of ``MPI_Alltoall`` at full-system scale (>8K nodes).
