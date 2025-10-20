@@ -3876,6 +3876,7 @@ The following changes will take place:
 - HPE/Cray Programming Environment (CPE) 25.09 will be made available via the ``cpe/25.09`` module. Please make sure to set ``export LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH`` if using this non-default CPE version. This includes CCE/20.0.0 and cray-mpich/9.0.1, with a recommended ROCm version of ROCm/6.4.2.
 - ROCm/7.0.2 will be made available as non-default via the ``rocm/7.0.2`` module.
 - ROCm/6.4.2 will be made available as non-default via the ``rocm/6.4.2`` module. This is the preferred ROCm version for CPE/25.09.
+- Modify miniforge modules to gracefully handle nested "module load miniforge" commands. Enables conda activate capability.
 
 .. note::
 
