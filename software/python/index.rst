@@ -410,9 +410,9 @@ Best Practices
 
     Loading a given ``miniforge3`` or ``python`` module twice in a single
     session is known to cause problems with detecting conda environments after activation.
-    This can lead to environments not being detected even after using ``source activate``.
-    Unloading, deactivating, or reloading the module will not solve the issue, so you'll
-    have to re-login or otherwise enter a fresh shell session to fix things.
+    This can lead to environments not being detected even after using ``source activate``
+    or ``conda activate``. Unloading, deactivating, or reloading the module will not solve
+    the issue, so you'll have to re-login or otherwise enter a fresh shell session to fix things.
 
 * **Specify or check your Python path**:
 
