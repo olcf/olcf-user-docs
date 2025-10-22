@@ -87,7 +87,7 @@ First, load the gnu compiler module (most Python packages assume GCC), relevant 
 
          module load gcc/9.3.0 # works with older GCC versions if using cuda/10.2.89
          module load cuda/11.2.2
-         module load miniforge3/23.11.0-0
+         module load miniforge3/24.11.3-2
 
 Loading a python module puts you in a "base" environment, but you need to create a new environment using the ``conda create`` command:
 
@@ -116,14 +116,14 @@ After following the prompts for creating your new environment, you can now activ
 
       .. code-block:: bash
 
-         source activate cupy-frontier
+         conda activate cupy-frontier
 
    .. tab-item:: Andes
       :sync: andes
 
       .. code-block:: bash
 
-         source activate cupy-andes
+         conda activate cupy-andes
 
 Finally, install CuPy from source into your environment.
 To make sure that you are building from source, and not a pre-compiled binary, use ``pip``:

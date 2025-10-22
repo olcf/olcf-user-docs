@@ -52,9 +52,9 @@ See these links for more information:
         .. code-block:: bash
 
             module load gcc/9.3.0
-            module load python
+            module load miniforge3/24.11.3-2
             conda create -n ENV_NAME python=3.11 -c conda-forge
-            source activate ENV_NAME
+            conda activate ENV_NAME
             conda install qiskit=1.2.0 qiskit-ibm-runtime=0.28.0 qiskit-aer=0.14.2 psutil -c conda-forge
 
     .. tab-item:: Frontier
@@ -64,7 +64,7 @@ See these links for more information:
             module load PrgEnv-gnu/8.6.0
             module load miniforge3/23.11.0-0
             conda create -n ENV_NAME python=3.11 -c conda-forge
-            source activate ENV_NAME
+            conda activate ENV_NAME
             conda install qiskit=1.4.1 qiskit-ibm-runtime=0.36.1 qiskit-aer=0.16.2 psutil -c conda-forge
 
 
@@ -88,9 +88,9 @@ See these links for more information:
         .. code-block:: bash
 
             module load gcc/9.3.0
-            module load python
+            module load miniforge3/24.11.3-2
             conda create -n ENV_NAME python=3.11 numpy=1.26.4 scipy -c conda-forge
-            source activate ENV_NAME
+            conda activate ENV_NAME
             pip install qiskit==1.2.0 qiskit-ionq==0.5.4 --no-cache-dir
 
     .. tab-item:: Frontier
@@ -100,7 +100,7 @@ See these links for more information:
             module load PrgEnv-gnu/8.6.0
             module load miniforge3/23.11.0-0
             conda create -n ENV_NAME python=3.11 -c conda-forge
-            source activate ENV_NAME
+            conda activate ENV_NAME
             pip install qiskit==1.4.1 qiskit-ionq==0.5.12 --no-cache-dir
 
 
@@ -120,9 +120,9 @@ See these links for more information:
         .. code-block:: bash
 
             module load gcc/9.3.0
-            module load python
+            module load miniforge3/24.11.3-2
             conda create -n ENV_NAME python=3.11 -c conda-forge
-            source activate ENV_NAME
+            conda activate ENV_NAME
             pip install qiskit-iqm==15.5 --no-cache-dir
 
     .. tab-item:: Frontier
@@ -132,7 +132,7 @@ See these links for more information:
             module load PrgEnv-gnu/8.6.0
             module load miniforge3/23.11.0-0
             conda create -n ENV_NAME python=3.11 -c conda-forge
-            source activate ENV_NAME
+            conda activate ENV_NAME
             pip install qiskit-iqm==17.5 --no-cache-dir
 
 
@@ -326,9 +326,9 @@ Finally, you are ready to install pyQuil:
         .. code-block:: bash
 
             module load gcc/9.3.0
-            module load python
+            module load miniforge3/24.11.3-2
             conda create -n ENV_NAME python=3.11 numpy=1.26.4 scipy -c conda-forge
-            source activate ENV_NAME
+            conda activate ENV_NAME
             pip install pyquil==4.14.2 pyquil-grpc-web==4.14.2 typing_extensions --no-cache-dir
 
     .. tab-item:: Frontier
@@ -338,7 +338,7 @@ Finally, you are ready to install pyQuil:
             module load PrgEnv-gnu/8.6.0
             module load miniforge3/23.11.0-0
             conda create -n ENV_NAME python=3.11 numpy=1.26.4 scipy -c conda-forge
-            source activate ENV_NAME
+            conda activate ENV_NAME
             pip install pyquil==4.14.2 pyquil-grpc-web==4.14.2 typing_extensions --no-cache-dir
 
 
@@ -383,9 +383,9 @@ General information of how to install and use PennyLane can be found here:
         .. code-block:: bash
 
             module load gcc/9.3.0
-            module load python
+            module load miniforge3/24.11.3-2
             conda create -n ENV_NAME python=3.11 pennylane -c conda-forge
-            source activate ENV_NAME
+            conda activate ENV_NAME
 
     .. tab-item:: Frontier
 
@@ -401,7 +401,7 @@ General information of how to install and use PennyLane can be found here:
 
             # Create initial conda env
             conda create -n ENV_NAME python=3.11 -c conda-forge
-            source activate ENV_NAME
+            conda activate ENV_NAME
 
             # Install ninja to help building
             pip install ninja
@@ -480,9 +480,9 @@ For more information please see:
         .. code-block:: bash
 
             module load gcc/9.3.0
-            module load python
+            module load miniforge3/24.11.3-2
             conda create -n ENV_NAME python=3.11 numpy=1.26.4 -c conda-forge
-            source activate ENV_NAME
+            conda activate ENV_NAME
             pip install pytket==1.31.1 pytket-quantinuum==0.37.0 scipy --no-cache-dir
 
     .. tab-item:: Frontier
@@ -492,7 +492,7 @@ For more information please see:
             module load PrgEnv-gnu/8.6.0
             module load miniforge3/23.11.0-0
             conda create -n ENV_NAME python=3.11 -c conda-forge
-            source activate ENV_NAME
+            conda activate ENV_NAME
             pip install pytket==1.41.0 qnexus==0.11.0 --no-cache-dir
 
 CUDA-Q
@@ -559,17 +559,11 @@ script:
     export no_proxy='localhost,127.0.0.0/8,*.ccs.ornl.gov'
 
 
-When using Python environments with SLURM, it is always recommended to submit a
-batch script using the ``export=NONE`` flag to avoid ``$PATH`` issues and use
-``unset SLURM_EXPORT_ENV`` in your job script (before calling ``srun``);
-however, this means that previously set environment variables are **NOT**
-passed into the batch job, so you will have to set them again (and load modules
-again) if they are required by your workflow. Alternatively, you can try
-submitting your batch script from a fresh login shell.
+To submit a batch script:
 
 .. code-block:: bash
 
-    $ sbatch --export=NONE submit.sl
+    $ sbatch submit.sl
 
 
 Below are example batch scripts for running on Andes and Frontier:
@@ -587,8 +581,6 @@ Below are example batch scripts for running on Andes and Frontier:
             #SBATCH -t 0:05:00
             #SBATCH -p batch
 
-            unset SLURM_EXPORT_ENV
-
             cd $SLURM_SUBMIT_DIR
             date
 
@@ -600,8 +592,8 @@ Below are example batch scripts for running on Andes and Frontier:
             export no_proxy='localhost,127.0.0.0/8,*.ccs.ornl.gov'
 
             # Load python module and virtual environment
-            module load python
-            source activate ENV_NAME
+            module load miniforge3/24.11.3-2
+            conda activate ENV_NAME
 
             # For software like Qiskit,PennyLane,Pytket
             #python3 script.py
@@ -624,8 +616,6 @@ Below are example batch scripts for running on Andes and Frontier:
             #SBATCH -t 0:05:00
             #SBATCH -p batch
 
-            unset SLURM_EXPORT_ENV
-
             cd $SLURM_SUBMIT_DIR
             date
 
@@ -638,7 +628,7 @@ Below are example batch scripts for running on Andes and Frontier:
 
             # Load python module and virtual environment
             module load miniforge3/23.11.0-0
-            source activate ENV_NAME
+            conda activate ENV_NAME
 
             # For software like Qiskit,PennyLane,Pytket
             #python3 script.py

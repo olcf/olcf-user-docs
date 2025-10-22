@@ -75,7 +75,7 @@ First, load the gnu compiler module (most Python packages assume GCC), hdf5 modu
 
          module load gcc/9.3.0
          module load hdf5/1.10.7
-         module load miniforge3/23.11.0-0
+         module load miniforge3/24.11.3-2
 
    .. tab-item:: Frontier
       :sync: frontier
@@ -118,14 +118,14 @@ After following the prompts for creating your new environment, you can now activ
 
       .. code-block:: bash
 
-         source activate h5pympi-andes
+         conda activate h5pympi-andes
 
    .. tab-item:: Frontier
       :sync: frontier
 
       .. code-block:: bash
 
-         source activate h5pympi-frontier
+         conda activate h5pympi-frontier
 
 
 Installing mpi4py
@@ -214,14 +214,14 @@ To do so, submit a job to the batch queue:
 
       .. code-block:: bash
 
-         sbatch --export=NONE submit_hello.sl
+         sbatch submit_hello.sl
 
    .. tab-item:: Frontier
       :sync: frontier
 
       .. code-block:: bash
 
-         sbatch --export=NONE submit_hello.sl
+         sbatch submit_hello.sl
 
 
 Example "submit_hello" batch script:
@@ -240,18 +240,14 @@ Example "submit_hello" batch script:
          #SBATCH -p gpu
          #SBATCH -t 0:05:00
 
-         # Only necessary if submitting like: sbatch --export=NONE ... (recommended)
-         # Do NOT include this line when submitting without --export=NONE
-         unset SLURM_EXPORT_ENV
-
          cd $SLURM_SUBMIT_DIR
          date
 
          module load gcc/9.3.0
          module load hdf5/1.10.7
-         module load miniforge3/23.11.0-0
+         module load miniforge3/24.11.3-2
 
-         source activate h5pympi-andes
+         conda activate h5pympi-andes
 
          srun -n42 python3 hello_mpi.py
 
@@ -267,10 +263,6 @@ Example "submit_hello" batch script:
          #SBATCH -p batch
          #SBATCH -t 0:05:00
 
-         # Only necessary if submitting like: sbatch --export=NONE ... (recommended)
-         # Do NOT include this line when submitting without --export=NONE
-         unset SLURM_EXPORT_ENV
-
          cd $SLURM_SUBMIT_DIR
          date
 
@@ -278,7 +270,7 @@ Example "submit_hello" batch script:
          module load cray-hdf5-parallel/1.12.2.11
          module load miniforge3/23.11.0-0
 
-         source activate h5pympi-frontier
+         conda activate h5pympi-frontier
 
          srun -n42 python3 hello_mpi.py
 
@@ -332,14 +324,14 @@ Time to execute "hdf5_parallel.py" by submitting "submit_h5py" to the batch queu
 
       .. code-block:: bash
 
-         sbatch --export=NONE submit_h5py.sl
+         sbatch submit_h5py.sl
 
    .. tab-item:: Frontier
       :sync: frontier
 
       .. code-block:: bash
 
-         sbatch --export=NONE submit_h5py.sl
+         sbatch submit_h5py.sl
 
 Example "submit_h5py" batch script:
 
@@ -357,18 +349,14 @@ Example "submit_h5py" batch script:
          #SBATCH -p gpu
          #SBATCH -t 0:05:00
 
-         # Only necessary if submitting like: sbatch --export=NONE ... (recommended)
-         # Do NOT include this line when submitting without --export=NONE
-         unset SLURM_EXPORT_ENV
-
          cd $SLURM_SUBMIT_DIR
          date
 
          module load gcc/9.3.0
          module load hdf5/1.10.7
-         module load miniforge3/23.11.0-0
+         module load miniforge3/24.11.3-2
 
-         source activate h5pympi-andes
+         conda activate h5pympi-andes
 
          srun -n42 python3 hdf5_parallel.py
 
@@ -384,10 +372,6 @@ Example "submit_h5py" batch script:
          #SBATCH -p batch
          #SBATCH -t 0:05:00
 
-         # Only necessary if submitting like: sbatch --export=NONE ... (recommended)
-         # Do NOT include this line when submitting without --export=NONE
-         unset SLURM_EXPORT_ENV
-
          cd $SLURM_SUBMIT_DIR
          date
 
@@ -395,7 +379,7 @@ Example "submit_h5py" batch script:
          module load cray-hdf5-parallel/1.12.2.11
          module load miniforge3/23.11.0-0
 
-         source activate h5pympi-frontier
+         conda activate h5pympi-frontier
 
          srun -n42 python3 hdf5_parallel.py
 

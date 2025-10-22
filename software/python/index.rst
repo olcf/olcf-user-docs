@@ -85,11 +85,7 @@ To start using Python, all you need to do is load the module:
 
       .. code-block:: bash
 
-         module load miniforge3/23.11.0-0
-
-      .. note::
-         Loading the older ``python`` module on Andes is still possible.
-         However, that Anaconda installation is quite old.
+         module load miniforge3/24.11.3-2
 
    .. tab-item:: Frontier
       :sync: frontier
@@ -132,10 +128,10 @@ A small preview is provided below:
 
       .. code-block:: bash
 
-         module load miniforge3/23.11.0-0
+         module load miniforge3/24.11.3-2
          conda list
 
-         # packages in environment at /autofs/nccs-svm1_sw/andes/miniforge3/23.11.0-0:
+         # packages in environment at /autofs/nccs-svm1_sw/andes/miniforge3/24.11.3-2:
          #
          # Name                    Version                   Build  Channel
          _libgcc_mutex             0.1                 conda_forge    conda-forge
@@ -209,7 +205,7 @@ To create and activate an environment:
       .. code-block:: bash
 
          #1. Load the module
-         module load miniforge3/23.11.0-0
+         module load miniforge3/24.11.3-2
 
          #2a. Create "my_env" with Python version X.Y at the desired path
          conda create -p /path/to/my_env python=X.Y
@@ -218,7 +214,7 @@ To create and activate an environment:
          conda create --name my_env python=X.Y
 
          #3. Activate "my_env"
-         source activate /path/to/my_env
+         conda activate /path/to/my_env
 
    .. tab-item:: Frontier
       :sync: frontier
@@ -235,7 +231,7 @@ To create and activate an environment:
          conda create --name my_env python=X.Y
 
          #3. Activate "my_env"
-         source activate /path/to/my_env
+         conda activate /path/to/my_env
 
 
 .. note::
@@ -257,7 +253,7 @@ Deactivating an environment can be achieved through:
       .. code-block:: bash
 
          # Deactivate the current environment
-         source deactivate
+         conda deactivate
 
    .. tab-item:: Frontier
       :sync: frontier
@@ -265,7 +261,7 @@ Deactivating an environment can be achieved through:
       .. code-block:: bash
 
          # Deactivate the current environment
-         source deactivate
+         conda deactivate
 
 
 How to Run
@@ -300,19 +296,18 @@ batch job.  Therefore, you only need to use ``srun`` if you plan to run
 parallel-enabled Python, and you *do not* need to specify ``srun`` if you are
 running a serial application.
 
-``$PATH`` issues are known to occur if not submitting from a fresh login shell,
-which can result in the wrong environment being detected. To avoid this, you
-must use the ``--export=NONE`` flag during job submission and use ``unset
-SLURM_EXPORT_ENV`` in your job script (before calling ``srun``), which ensures
-that no previously set environment variables are passed into the batch job, but
-makes sure that ``srun`` can still find your python path:
-
 .. code-block:: bash
 
-   sbatch --export=NONE submit.sl
+   sbatch submit.sl
 
-This means you will have to load your modules and activate your environment
-inside the batch script. An example batch script for is provided below:
+.. note::
+    As of October 2025, the usage of ``--export=NONE`` and ``unset SLURM_EXPORT_ENV`` 
+    are no longer necessary when submitting or running a batch script when using the 
+    default ``miniforge3`` module on Frontier and Andes. Older (non-default)
+    ``miniforge3`` modules do not have this change and are not recommended.
+    
+
+An example batch script for is provided below:
 
 .. tab-set::
 
@@ -328,15 +323,11 @@ inside the batch script. An example batch script for is provided below:
          #SBATCH -p batch
          #SBATCH -t 0:05:00
 
-         # Only necessary if submitting like: sbatch --export=NONE ... (recommended)
-         # Do NOT include this line when submitting without --export=NONE
-         unset SLURM_EXPORT_ENV
-
          cd $SLURM_SUBMIT_DIR
          date
 
          module load miniforge3/23.11.0-0
-         source activate my_env
+         conda activate my_env
 
          python3 script.py
 
@@ -353,15 +344,11 @@ inside the batch script. An example batch script for is provided below:
          #SBATCH -p batch
          #SBATCH -t 0:05:00
 
-         # Only necessary if submitting like: sbatch --export=NONE ... (recommended)
-         # Do NOT include this line when submitting without --export=NONE
-         unset SLURM_EXPORT_ENV
-
          cd $SLURM_SUBMIT_DIR
          date
 
-         module load miniforge3/23.11.0-0
-         source activate my_env
+         module load miniforge3/24.11.3-2
+         conda activate my_env
 
          python3 script.py
 
@@ -380,7 +367,7 @@ To use Python in an interactive session on Frontier and Andes:
 
          salloc -A <PROJECT_ID> -N 1 -t 0:05:00
          module load miniforge3/23.11.0-0
-         source activate my_env
+         conda activate my_env
          python3 script.py
 
    .. tab-item:: Andes
@@ -389,8 +376,8 @@ To use Python in an interactive session on Frontier and Andes:
       .. code-block:: bash
 
          salloc -A <PROJECT_ID> -N 1 -t 0:05:00
-         module load miniforge3/23.11.0-0
-         source activate my_env
+         module load miniforge3/24.11.3-2
+         conda activate my_env
          python3 script.py
 
 
@@ -414,10 +401,12 @@ Best Practices
     ``.bashrc``, ``.bash_profile``, etc.) and could cause problems when switching
     between HPC systems.  If you have a code-block in your configuration file
     starting with ``>>> conda initialize >>>``, it is recommended to delete the entire block.
-    Running ``conda activate`` may also cause this issue. Ignore any "deprecation" or "deprecated"
-    messages and still use ``source activate``.
+    Ignore any "deprecation" or "deprecated" messages about ``source activate``.
 
 * **Avoid loading conda modules twice**:
+
+    .. note::
+        As of October 2025, default ``miniforge3`` modules on Andes and Frontier avoid this issue.
 
     Loading a given ``miniforge3`` or ``python`` module twice in a single
     session is known to cause problems with detecting conda environments after activation.
@@ -451,7 +440,7 @@ Best Practices
     .. code-block:: bash
 
        conda create -p /ccs/proj/<project_id>/<user_id>/envs/frontier/baseclone-frontier --clone base
-       source activate /ccs/proj/<project_id>/<user_id>/envs/frontier/baseclone-frontier
+       conda activate /ccs/proj/<project_id>/<user_id>/envs/frontier/baseclone-frontier
 
 * **Cloning the "base environment" using venv**:
 
@@ -499,7 +488,7 @@ Best Practices
     environments stored in the ``frontier`` directory, instead of having to use the
     ``-p /ccs/proj/<project_id>/<user_id>/envs/frontier/env_name``
     flag and specifying the full path to the environment.  For example, you can do
-    ``source activate my_env`` instead of ``source activate
+    ``conda activate my_env`` instead of ``conda activate
     /ccs/proj/<project_id>/<user_id>/envs/frontier/my_env``.
 
 * **Make note of and clean your pip cache location**:
