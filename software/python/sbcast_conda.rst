@@ -56,7 +56,7 @@ First, let's load our modules and setup the environment:
    # Create your conda environment
    module load miniforge3/23.11.0-0
    conda create -p $MEMBERWORK/<PROJECT_ID>/torch_env python=3.10 -c conda-forge
-   source activate $MEMBERWORK/<PROJECT_ID>/torch_env
+   conda activate $MEMBERWORK/<PROJECT_ID>/torch_env
 
    # Install PyTorch w/ ROCm 6.2 support from pre-compiled binary
    pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.2
@@ -77,7 +77,7 @@ Finally, let's run a compute job:
 
 .. code-block:: bash
 
-   sbatch --export=NONE submit.sbatch
+   sbatch submit.sbatch
 
 Below is an example batch script that uses ``sbcast``, unpacks our environment, and runs an example Python script across 8 nodes:
 
@@ -93,10 +93,6 @@ Below is an example batch script that uses ``sbcast``, unpacks our environment, 
 
    date
    cd $SLURM_SUBMIT_DIR
-
-   # Only necessary if submitting like: sbatch --export=NONE ... (recommended)
-   # Do NOT include this line when submitting without --export=NONE
-   unset SLURM_EXPORT_ENV
 
    # Setup modules
    module load PrgEnv-gnu/8.6.0
@@ -122,7 +118,7 @@ Below is an example batch script that uses ``sbcast``, unpacks our environment, 
    srun -N8 --ntasks-per-node 1 -c56 tar --use-compress-program=pigz -xf /mnt/bb/${USER}/torch_env.tar.gz -C  /mnt/bb/${USER}/torch_env
 
    # Unpack the env
-   source activate /mnt/bb/${USER}/torch_env
+   conda activate /mnt/bb/${USER}/torch_env
    srun -N8 --ntasks-per-node 1 conda-unpack
 
    ##### END OF SBCAST AND CONDA-UNPACK #####

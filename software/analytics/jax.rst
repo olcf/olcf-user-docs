@@ -50,7 +50,7 @@ Loading a python module puts you in a "base" environment, but you need to create
       .. code-block:: bash
 
          conda create -n jax_env-frontier python=3.11 numpy scipy -c conda-forge
-         source activate jax_env-frontier
+         conda activate jax_env-frontier
 
 .. note::
    NumPy and Scipy are installed ahead of time, but you can instead install those with ``pip`` later if desired.

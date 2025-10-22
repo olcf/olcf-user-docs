@@ -52,7 +52,7 @@ Next, create and activate a conda environment that we will install ``torch`` int
 .. code-block:: bash
 
    conda create -p /path/to/my_env python=3.12 -c conda-forge
-   source activate /path/to/my_env
+   conda activate /path/to/my_env
 
 Finally, install PyTorch:
 
@@ -456,10 +456,6 @@ To run the python scripts, an example batch script is given below:
        #SBATCH -p batch
        #SBATCH -N 2
 
-       # Only necessary if submitting like: sbatch --export=NONE ... (recommended)
-       # Do NOT include this line when submitting without --export=NONE
-       unset SLURM_EXPORT_ENV
-
        # Load modules
        module load PrgEnv-gnu/8.6.0
        module load rocm/6.4.1
@@ -467,7 +463,7 @@ To run the python scripts, an example batch script is given below:
        module load miniforge3/23.11.0-0
 
        # Activate your environment
-       source activate /path/to/my_env
+       conda activate /path/to/my_env
 
        # Get address of head node
        export MASTER_ADDR=$(hostname -i)
@@ -486,7 +482,7 @@ As mentioned on our :doc:`/software/python/index` page, submitting batch scripts
 
 .. code-block:: bash
 
-   sbatch --export=NONE batch_script.sl
+   sbatch batch_script.sl
 
 After running the script, you will have successfully used PyTorch to train on 16 different GPUs for 2000 epochs and save a training snapshot.
 Depending on how long PyTorch takes to initialize, the script should complete in 10-20 seconds.
@@ -659,7 +655,7 @@ Assuming you already have a working PyTorch installation (see above), install in
 .. code-block:: bash
 
    # Activate your virtual environment
-   source activate /path/to/my_env
+   conda activate /path/to/my_env
 
    # Install some build tools
    pip install ninja packaging
@@ -692,7 +688,7 @@ To install the ``flash-attn`` library on Frontier:
 .. code-block:: bash
 
    # Activate your virtual environment
-   source activate /path/to/my_env
+   conda activate /path/to/my_env
 
    # Install some build tools
    pip install ninja packaging

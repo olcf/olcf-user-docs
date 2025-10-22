@@ -25,7 +25,7 @@ First, let's load the relevant Python module along with the gnu compiler module 
       .. code-block:: bash
 
          module load gcc/9.3.0
-         module load miniforge3/23.11.0-0
+         module load miniforge3/24.11.3-2
 
    .. tab-item:: Frontier
       :sync: frontier
@@ -45,7 +45,7 @@ Next, create your environment and activate it:
       .. code-block:: bash
 
          conda create -p /path/to/your/jupyter_env_andes python=3.10
-         source activate /path/to/your/jupyter_env_andes
+         conda activate /path/to/your/jupyter_env_andes
 
    .. tab-item:: Frontier
       :sync: frontier
@@ -53,7 +53,7 @@ Next, create your environment and activate it:
       .. code-block:: bash
 
          conda create -p /path/to/your/jupyter_env_frontier python=3.10
-         source activate /path/to/your/jupyter_env_frontier
+         conda activate /path/to/your/jupyter_env_frontier
 
 .. note::
 
