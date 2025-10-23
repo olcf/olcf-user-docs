@@ -74,7 +74,8 @@ you will find a list of current frameworks natively supported in our
 +------------------------------------------------+-------------+
 | :ref:`Swift/T<workflows-swiftt>`               | Frontier    |
 +------------------------------------------------+-------------+
-
+| :ref:`Radical Pilot (RP)<workflows-rp>`        | Frontier    |
++------------------------------------------------+-------------+
 ---------
 
 ****************
@@ -87,6 +88,7 @@ Workflow Systems
    entk
    parsl
    swift_t
+   rp
 
 .. note:: 
     Only one workflow module may be loaded at a time as they are based on conda
