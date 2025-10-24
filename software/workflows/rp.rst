@@ -57,8 +57,8 @@ with instructions for the execution environment- by creating a virtual environme
 .. code-block:: console
 
     $ export PYTHONNOUSERSITE=True
-    $ module load cray−python
-    $ python3 −m venv ve . rp
+    $ module load cray−python/3.11.7
+    $ python3 −m venv ve.rp
     $ source ve.rp/bin/activate
 
 Subsequently, install RP in the activated corresponding virtual environment:
@@ -71,7 +71,7 @@ An alternate way to install RP manually is the following user-based installation
 
 .. code-block:: console
 
-    $ module load cray−python
+    $ module load cray−python/3.11.7
     $ python −m venv ve.rp
     $ source ve.rp/bin/activate
     $ pip install −U pip
@@ -84,9 +84,9 @@ new features. These versions are considered unstable and they are optional for u
 
 .. code-block:: console
 
-    $ pip install git + https://github.com/radical−cybertools/radical.utils.git@devel
-    $ pip install git +https://github.com/radical−cybertools/radical.gtod.git@devel
-    $ pip install git +https://github.com/radical−cybertools/radical.pilot.git@devel
+    $ pip install git+https://github.com/radical-cybertools/radical.utils.git@devel
+    $ pip install git+https://github.com/radical-cybertools/radical.gtod.git@devel
+    $ pip install git+https://github.com/radical-cybertools/radical.pilot.git@devel
 
 Run the command ``radical-stack`` to verify the success of the installation.
 RP application (i.e., Python application using RP as a pilot-based runtime system) can be launched as
@@ -100,7 +100,7 @@ batch system for a submission (this is pulled from the predefined configuration)
 
 .. code-block:: python3
 
-    import radical.pilotasrp
+    import radical.pilot as rp
     pd = rp.PilotDescription( {
 	    'resource' : 'ornl.frontier',
 	    'project' : 'XYZ000',
@@ -135,7 +135,7 @@ CHROMA
 
 .. code-block:: python3
 
-    #!/usr/bin/envpython3
+    #!/usr/bin/env python3
 
     __author__= 'Henry Monge−Camacho'
     __email__ = 'mongecamachj@ornl.gov'
@@ -147,7 +147,7 @@ CHROMA
     from setup_tasks_example import sys
 
     import queue
-    import *
+    # import *
     os.environ[ 'RADICAL_PROFILE' ]= 'TRUE'
     os.environ[ 'RADICAL_LOG_LVL' ]= 'DEBUG'
     tasks_finished_queue= queue.Queue()
@@ -198,8 +198,7 @@ CHROMA
                 pilot= pmgr.submit_pilots(rp.PilotDescription(PILOT_DESCRIPTION))
                 client_sandbox= ru.Url(pilot.client_sandbox).path+'/'+session.uid
                 pilot_sandbox= ru.Url(pilot.pilot_sandbox).path
-                print('clientprint('pilot sandbox: s'%client_sandbox)
-                sandbox: %s'%pilot_sandbox)
+                print('clientprint('pilot sandbox: s'%client_sandbox) sandbox: %s'%pilot_sandbox)
 
                 tmgr= rp.TaskManager(session=session)
                 pilot.wait(rp.PMGR_ACTIVE)
