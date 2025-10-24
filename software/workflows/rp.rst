@@ -10,29 +10,25 @@ Overview
 
 Scientific productivity can be enhanced through workflow management tools, relieving large High Performance
 Computing (HPC) system users from the tedious tasks of scheduling and designing the complex
-computational execution of scientific applications. This report presents a study on the usage of ensemble
-workflow tools to accelerate science using the Frontier supercomputing systems. This technical report
-aims to connect science domain simulations using Oak Ridge Leadership Computing Facility (OLCF) supercomputing
-platforms with ensemble workflow methods in order to accelerate HPC-enabled discovery
-and boost scientific impact. We present the coupling, porting and installation of Radical-Cybertools on
-two applications: Chroma and NAMD. https://www.osti.gov/biblio/2575304
+computational execution of scientific applications. This user documentation page presents several examples on 
+the usage of ensemble workflow tools to accelerate science using the Frontier supercomputing system. 
+This page presents the coupling, porting and installation of Radical-Cybertools on two applications: Chroma 
+and NAMD. The content of this page is adapated from a technical report where additional information and detail
+can be found: https://www.osti.gov/biblio/2575304
 
 Introduction
 =============
 
-This technical guide provides guidance for OLCF users implementing RP workflow tool on Frontier. As
-the guidelines and software matures and evolves, our team will deliver biannual updates to the policies and
-best practices. The document offers comprehensive technical and scientific guidelines for adopting and
-configuring RP on the Frontier supercomputer, complementing RP's platform-specific documentation. We
-include essential information on data management strategies and OLCF ensemble policies, while highlighting
-our solutions and multi-track capabilities for installation and usability.
+This guide provides summary guidance efor OLCF users implementing the RADICAL-Pilot (RP) workflow tool on Frontier.
+The source `techincal report <https://www.osti.gov/biblio/2575304>`__ offers additional comprehensive technical and scientific 
+guidelines for adopting and configuring RP on the Frontier supercomputer, complementing RP's platform-specific documentation.
+The report includes essential information on data management strategies and OLCF ensemble policies, while highlighting
+solutions and multi-track capabilities for installation and usability.
 
 RP is an ensemble tool that leverages Python-based scripts for efficient job launching, scheduling, error
 management, and resource allocation. Its application-agnostic design provides customizable workflows
 for domain-specific requirements. RP's multi-level metadata management system organizes execution data
-in structured directories. While workflow tools often struggle to adapt to specific production systems and
-facility policies this technical paper addresses platform heterogeneity by documenting our experience integrating,
-porting, and running RP on Frontier.
+in structured directories. 
 
 RP demonstrates exceptional error reporting capabilities, enabling rapid job relaunch and preventing execution
 hangs during ensemble operations. Its efficient restart options maintain minimal overhead across
@@ -40,47 +36,26 @@ our flagship applications detailed in this document. Previous publications on OL
 established portability as a versatile ensemble tool Titov et al. 2024; Titov et al. 2022; Merzky et al. 2021;
 Merzky, Turilli, and Jha 2022; Turilli et al. 2021.
 
-INSTALLATION OF THE RADICAL-PILOT TOOL
+Installation of the RADICAL-Pilot Tool
 ======================================
 
-Workflow management is a strategic approach that assists organizing and optimizing model runs on large
-heterogeneous High Performance Computing (HPC) systems. At OLCF we cater to these workflow needs
-and feature demands by providing complex workflow tools with state-of-the-art management capabilities.
-RADICAL-Pilot has showcased the ability to simplify the computational runs on Frontier and is widely
-used across platforms and scientific groups. The source materials from the developers reside here:
-https://radicalpilot.readthedocs.io/en/stable/supported/frontier.html
-
-A user's guide is provided to encapsulate directions and practices on installing the RADICAL-Cybertools
-stack (RCT) on Frontier with the pip install command. OLCF supports Python virtual environment usageincluded
-with instructions for the execution environment- by creating a virtual environment with venv:
+Frontier supports Python virtual environment usage:
 
 .. code-block:: console
 
     $ export PYTHONNOUSERSITE=True
-    $ module load cray−python/3.11.7
-    $ python3 −m venv ve.rp
+    $ module load cray-python
+    $ python3 -m venv ve.rp
     $ source ve.rp/bin/activate
 
-Subsequently, install RP in the activated corresponding virtual environment:
+Subsequently, install RP in the newly created and activated virtual environment:
 
 .. code-block:: console
 
     $ pip install radical.pilot
 
-An alternate way to install RP manually is the following user-based installation method for Frontier:
-
-.. code-block:: console
-
-    $ module load cray−python/3.11.7
-    $ python −m venv ve.rp
-    $ source ve.rp/bin/activate
-    $ pip install −U pip
-
-Use the pip install –user pip command if any errors appear. Passing the –user option to python
--m pip install will install a package just for the current user, rather than for all users of the system.
-
 The latest versions of RCT tools are within development branches, and include the latest fixes, updates and
-new features. These versions are considered unstable and they are optional for users.
+new features. These versions are considered unstable and they are optional for users, but could be installed if desired:
 
 .. code-block:: console
 
@@ -88,15 +63,17 @@ new features. These versions are considered unstable and they are optional for u
     $ pip install git+https://github.com/radical-cybertools/radical.gtod.git@devel
     $ pip install git+https://github.com/radical-cybertools/radical.pilot.git@devel
 
-Run the command ``radical-stack`` to verify the success of the installation.
-RP application (i.e., Python application using RP as a pilot-based runtime system) can be launched as
-a regular Python script: ``python rp_app.py`` (or ``./rp_app.py`` if it includes a corresponding shebang,
-e.g., #!/usr/bin/env python). To keep it running in the background the following command is recommended.
+Run the command ``radical-stack`` to verify the success of the installation. This should print the corresponding Python
+and RP versions that have been installed.
+
+Running Overview
+^^^^^^^^^^^^^^^^
+
+A RP application (i.e., Python application using RP as a pilot-based runtime system) can be launched as
+a regular Python script: ``python rp_app.py``. To keep it running in the background the following command is recommended.
 ``nohup python rp_app.py > OUTPUT 2>&1 </dev/null &``
 
-Example of a pilot description in the RP application is presented below. That information is used to make a
-job submission, thus it includes the amount of requested resources (i.e., node x hours) and the type of a
-batch system for a submission (this is pulled from the predefined configuration).
+This Frontier-compatible example pilot description describes the requested resources (e.g., nodes, runtime, allocation):
 
 .. code-block:: python3
 
@@ -105,7 +82,7 @@ batch system for a submission (this is pulled from the predefined configuration)
 	    'resource' : 'ornl.frontier',
 	    'project' : 'XYZ000',
 	    'nodes' : 1,
-	    # OR 'cores' (CPU slots) and 'gpus' (GPU slots) could be provided−
+	    # OR 'cores' (CPU slots) and 'gpus' (GPU slots) could be provided-
 	    # it is an old approach , and it still will be converted into nodes
 	    # 'cores' : 64,
 	    # 'gpus' : 8 ,
@@ -113,34 +90,35 @@ batch system for a submission (this is pulled from the predefined configuration)
 	    'queue' : 'debug'
     } )
 
-APPLICATIONS
+Applications
 ============
 
-An assortment of scientific applications is included in the following section with the RP tool coupling and
-Frontier establishment guidelines along with run-time examples. We showcase applications with and with-
-out dependencies on their execution path to cover the various instances of application coupling with di-
-verse needs. The dependencies' example is covered under the building guidelines for the Chroma Lattice-
-QCD code. The repository for this example can be reached here: https://github.com/henrymonge/chroma_rp.
-
-Each application example that follows entails a guide for the modules required and the tasks' setup. The
-RP setup reads through all the application specific details and the OLCF user will be required to edit the
-setup_tasks_example.py script to create the individual tasks.
-
-This technical recipe follows the work presented and published at the International Conference for High
+The following examples follow the work presented and published at the International Conference for High
 Performance Computing, Networking, Storage, and Analysis (SC24) with title “Ensemble Simulations on
 Leadership Computing Systems”, Georgiadou A. et al. DOI 10.1109/SCW63240.2024.00059 Georgiadou
 et al. 2024
 
 CHROMA
+------
 
-In order to run the following you should first
+The repository for this example can be reached here: https://github.com/henrymonge/chroma_rp.
 
 .. code-block:: console
 
     $ git clone https://github.com/henrymonge/chroma_rp.git
     $ cd chroma_rp
+    $ ./compile_chroma/build_stack.sh
 
-You can then make a new Python file, or edit ``chroma_rp.py`` to match the following:
+The user will be required to edit the ``setup_tasks_example.py`` and ``chroma_rp.py`` to your desired workflow
+as necessary.
+
+Then run:
+
+.. code-block:: console
+
+    $ python chroma_rp.py
+
+The necessary edits in ``chroma_rp.py`` from the repository are annotated below:
 
 .. code-block:: python3
 
@@ -164,7 +142,7 @@ You can then make a new Python file, or edit ``chroma_rp.py`` to match the follo
 
     def task_state_cb(task, state):
         if state not in rp.FINAL:
-            # ignore all non−finished state return
+            # ignore all non-finished state return
             tasks_finished_queue.put([
                 task.uid, # register call back that will track for repo rt=ru.Reporter(name='radical.pilot')
                 transitions,
@@ -243,13 +221,15 @@ You can then make a new Python file, or edit ``chroma_rp.py`` to match the follo
 
 
 NAMD
+----
 
-We use the example of calculating the free energy of charging an ion for illustrating the use of NAMD
-within Radical Pilot. We find the electrostatic contribution to the free energy of charging a Na+ ion in wa-
-ter. We use the SPC/E water model and the Na+ parameters from Hummer et al.Hummer, Pratt, and García
+This example calculates the free energy of charging an ion for illustrating the use of NAMD
+within Radical Pilot. The example finds the electrostatic contribution to the free energy of charging a Na+ ion in wa-
+ter. It will use the SPC/E water model and the Na+ parameters from Hummer et al.Hummer, Pratt, and García
 1996. The accompanying archive collects all the work necessary for running the ensemble calculation.
 
 Simulation task
+^^^^^^^^^^^^^^^
 
 For the free energy of charging, and solely to demonstrate running multiple simultaneous jobs, we use a
 7-point Gauss-Legendre quadrature. The ion charges are scaled to specify the appropriate sampling points
@@ -261,12 +241,15 @@ Setting up the job
 Run ``bash SetUpCharging.sh`` to set up the different cases of the ensemble.
 
 Running RADICAL-Pilot
+^^^^^^^^^^^^^^^^^^^^^
 
-The Python script rp_simulation_SMT1.py has the details to launch the RADICAL-Pilot (RP) runs. Notice
-that we are running RP with modifications to the default behavior, namely using one thread per core. (In
-general, running NAMD with only thread per core proves more efficient.) To use only one thread per core
-on Frontier, create in your $(HOME)/.radical/pilot/configsthe following "resource_ornl.json"
-file. Number of enabled threads per core is controlled by parameter smt(Simultaneous Multithreading).
+The Python script ``rp_simulation_SMT1.py`` has the details to launch the RADICAL-Pilot (RP) runs. Notice
+RP is running with with modifications to the default behavior, namely using one thread per core. (In
+general, running NAMD with only thread per core proves more efficient.) 
+
+To use only one thread per core
+on Frontier, create in your `$(HOME)/.radical/pilot/configs` directory the following `resource_ornl.json`
+file. Number of enabled threads per core is controlled by parameter `smt` (Simultaneous Multithreading).
 Also, RP follows the default setting of Frontier SLURM core specialization, which reserves one core from
 each L3 cache region, leaving 56 allocatable cores out of the available 64.
 
@@ -285,19 +268,24 @@ each L3 cache region, leaving 56 allocatable cores out of the available 64.
 The ensemble calculation can then be launched as ``python rp_simulation_SMT1.py``.
 
 Analysis
+^^^^^^^^
 
 The analysis uses a non-GPU version of the NAMD code, but the ensemble calculation follows the same
-logic. Simply do ``python rp_analysis_SMT1.py``.
+logic: ``python rp_analysis_SMT1.py``.
 
 Collecting the results
+^^^^^^^^^^^^^^^^^^^^^^
 
-The ``bash ProcessPair.sh`` should process all the pair . log files and print out the estimated free energy of
-charging. As a further check of the results, in the directory Reference we have provided the estimates from
-simulations that exclusively used the CPU (on a MacBook pro laptop). Running the ProcessPair .sh script
+The ``bash ProcessPair.sh`` should process all the pair ``.log`` files and print out the estimated free energy of
+charging.
+
+As a further check of the results, in the directory `Reference` estimates are provided from
+simulations that exclusively used the CPU (on a MacBook Pro laptop). Running the ``ProcessPair.sh`` script
 inside that Reference directory should print out the results obtained on the Mac.
 
 Expected result
+^^^^^^^^^^^^^^^
 
-If all the runs were successful, you should find that a hydration free energy value of about−95 kcal/mol.
+If all the runs were successful, you should find that a hydration free energy value of about-95 kcal/mol.
 The above procedure can be easily modified to launch other calculations that could benefit from ensemble
 computing.
