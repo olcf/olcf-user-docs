@@ -76,6 +76,7 @@ you will find a list of current frameworks natively supported in our
 +------------------------------------------------+-------------+
 | :ref:`Radical Pilot (RP)<workflows-rp>`        | Frontier    |
 +------------------------------------------------+-------------+
+
 ---------
 
 ****************
