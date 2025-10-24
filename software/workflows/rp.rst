@@ -133,23 +133,33 @@ et al. 2024
 
 CHROMA
 
+In order to run the following you should first
+
+.. code-block:: console
+
+    $ git clone https://github.com/henrymonge/chroma_rp.git
+    $ cd chroma_rp
+
+You can then make a new Python file, or edit ``chroma_rp.py`` to match the following:
+
 .. code-block:: python3
 
     #!/usr/bin/env python3
 
-    __author__= 'Henry Monge−Camacho'
-    __email__ = 'mongecamachj@ornl.gov'
+    __author__    = 'Henry Monge-Camacho'
+    __email__     = 'mongecamachj@ornl.gov'
 
     import os
-    import  radical.pilot as rp
+    import radical.pilot as rp
     import radical.utils as ru
-
-    from setup_tasks_example import sys
+    from setup_tasks_example import *
+    import sys
 
     import queue
-    # import *
-    os.environ[ 'RADICAL_PROFILE' ]= 'TRUE'
-    os.environ[ 'RADICAL_LOG_LVL' ]= 'DEBUG'
+
+    os.environ['RADICAL_PROFILE'] = 'TRUE'
+    os.environ['RADICAL_LOG_LVL'] = 'DEBUG'
+
     tasks_finished_queue= queue.Queue()
 
     def task_state_cb(task, state):
@@ -162,23 +172,27 @@ CHROMA
             ])
             # task states
 
-    report.title('Getting Started(RP version %s )' % rp.version)
-    N_NODES= 2
+    report = ru.Reporter(name='radical.pilot')
+    report.title('Getting Started (RP version %s)' % rp.version)
 
-    PILOT_DESCRIPTION= {
-        'resource': 'ornl.frontier',
-        'project': 'project',
-        'nodes': N_NODES,
-        'cores': 48*N_NODES,
-        'gpus' : 8*N_NODES,
-        'runtime' : 20,
+    N_NODES = 2
+
+    PILOT_DESCRIPTION = {
+        'resource' : 'ornl.frontier',
+        'project'  : 'project', #TODO: include your project ID here
+        'nodes'    : N_NODES,
+        'cores'    : 48*N_NODES,
+        'gpus'     : 8*N_NODES,
+        'runtime'  : 20,
     }
 
-    # Define paths
-    os.environ['RADICAL_SMT']= '1'
-    session= rp.Session()
 
-    # Create the tasks to run
+    # Define paths
+    os.environ['RADICAL_SMT'] = '1'
+    session = rp.Session()
+
+    #Create the tasks to run
+
     LattExtentInSpace=4
     LattExtentInTime=8
     Configurations=5
@@ -186,44 +200,47 @@ CHROMA
         LattExtentInSpace,
         LattExtentInTime,
         Configurations,
-        Session.uid,
-        '/path/to/test'
+        session.uid,
+        '/path/to/test' # TODO: include output file location here
     )
 
     def main():
-        if True:
-            try:
-                pmgr= rp.PilotManager(session= session)
+        try:
+            pmgr = rp.PilotManager(session=session)
 
-                pilot= pmgr.submit_pilots(rp.PilotDescription(PILOT_DESCRIPTION))
-                client_sandbox= ru.Url(pilot.client_sandbox).path+'/'+session.uid
-                pilot_sandbox= ru.Url(pilot.pilot_sandbox).path
-                print('clientprint('pilot sandbox: s'%client_sandbox) sandbox: %s'%pilot_sandbox)
+            pilot = pmgr.submit_pilots(rp.PilotDescription(PILOT_DESCRIPTION))
+            client_sandbox = ru.Url(pilot.client_sandbox).path + '/' + session.uid
+            pilot_sandbox  = ru.Url(pilot.pilot_sandbox).path
 
-                tmgr= rp.TaskManager(session=session)
-                pilot.wait(rp.PMGR_ACTIVE)
-                tmgr.add_pilots(pilot)
+            print('client sandbox: %s' % client_sandbox)
+            print('pilot  sandbox: %s' % pilot_sandbox)
 
-                #No dependencies? Turn #sub_tasks= on next 4 lines
-                tmgr.submit_tasks(tasks)
+            tmgr = rp.TaskManager(session=session)
+            pilot.wait(rp.PMGR_ACTIVE)
+            tmgr.add_pilots(pilot)
 
-                # tmgr.wait_tasks()
-                # for task in sub_tasks:
-                # print('% s : %s ' % (task.uid, task.state))
+            #No dependencies? Turn on next 4 lines
+            tmgr.submit_tasks(tasks)
+            #tmgr.wait_tasks()
+            #for task in sub_tasks:
+            #   print('%s: %s' % (task.uid, task.state))
+
+            #Dependencies Turn on next line
+            # Enable call for dependency runs
+            tmgr.register_callback(task_state_cb)
+            launch_tasks(tmgr, tasks)
+
+            report.progress_done()
+            report.header('finalize')
+
+        finally:
+            print(datetime.now().strftime("%H:%M:%S"))
+            session.close(download=True)
 
 
-                # Dependencies Turn on next two lines
-                # Enable call for dependency runs
-                tmgr.register_callback(task_state_cb)
-                launch_tasks(tmgr, tasks)
-                report.progress_done()
-                report.header('finalize')
-            finally:
-                print(datetime.now().strftime('%H:%M:%S'))
-                session.close(download=True)
-
-    if __name__== '__main__':
+    if __name__ == '__main__':
         main()
+
 
 NAMD
 
