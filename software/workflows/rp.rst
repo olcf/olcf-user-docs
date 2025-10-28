@@ -224,8 +224,8 @@ NAMD
 ----
 
 This example calculates the free energy of charging an ion for illustrating the use of NAMD
-within Radical Pilot. The example finds the electrostatic contribution to the free energy of charging a Na+ ion in wa-
-ter. It will use the SPC/E water model and the Na+ parameters from Hummer et al.Hummer, Pratt, and García
+within Radical Pilot. The example finds the electrostatic contribution to the free energy of charging a Na+ ion in 
+water. It will use the SPC/E water model and the Na+ parameters from Hummer et al.Hummer, Pratt, and García
 1996. The accompanying archive collects all the work necessary for running the ensemble calculation.
 
 Simulation task
