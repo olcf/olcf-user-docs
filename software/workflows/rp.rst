@@ -101,11 +101,11 @@ et al. 2024
 CHROMA
 ------
 
-The repository for this example can be reached here: https://github.com/henrymonge/chroma_rp.
+The repository for this example can be reached here: https://github.com/olcf/workflow-examples
 
 .. code-block:: console
 
-    $ git clone https://github.com/henrymonge/chroma_rp.git
+    $ git clone https://github.com/olcf/workflow-examples.git
     $ cd chroma_rp
     $ ./compile_chroma/build_stack.sh
 
@@ -276,12 +276,8 @@ logic: ``python rp_analysis_SMT1.py``.
 Collecting the results
 ^^^^^^^^^^^^^^^^^^^^^^
 
-The ``bash ProcessPair.sh`` should process all the pair ``.log`` files and print out the estimated free energy of
+The ``bash ProcessPair.sh`` scripts should process all the pair ``.log`` files and print out the estimated free energy of
 charging.
-
-As a further check of the results, in the directory `Reference` estimates are provided from
-simulations that exclusively used the CPU (on a MacBook Pro laptop). Running the ``ProcessPair.sh`` script
-inside that Reference directory should print out the results obtained on the Mac.
 
 Expected result
 ^^^^^^^^^^^^^^^
