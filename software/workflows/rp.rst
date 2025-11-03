@@ -106,10 +106,11 @@ The repository for this example can be reached here: https://github.com/olcf/wor
 .. code-block:: console
 
     $ git clone https://github.com/olcf/workflow-examples.git
-    $ cd chroma_rp
-    $ ./compile_chroma/build_stack.sh
+    $ cd workflow-examples
+    $ cd chroma_rp/compile_chroma/
+    $ ./build_stack.sh
 
-The user will be required to edit the ``setup_tasks_example.py`` and ``chroma_rp.py`` to your desired workflow
+The user will be required to edit the ``env.sh` to the current environment, ``setup_tasks_example.py`` and ``chroma_rp.py`` to your desired workflow
 as necessary.
 
 Then run:
