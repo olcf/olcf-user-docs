@@ -94,10 +94,14 @@ To start using Python, all you need to do is load the module:
 
          module load miniforge3/23.11.0-0
 
-      .. note::
-         Using the ``cray-python`` module on Frontier is also an option but is
-         not a conda installation. Due to the lack of flexibility of ``venv`` and
-         ``cray-python``, we recommend using ``miniforge3`` instead.
+The ``miniforge3`` module functions with ``bash``, ``zsh``, ``tcsh``, and ``csh``.
+Users encountering problems with other shell environments should reach out to help@olcf.ornl.gov for assistance.
+
+.. note::
+    When loading the default ``miniforge3`` module, you will be placed in the base environment.
+    If you have any conda environments already active, this will output ``Deactivating conda environments``
+    until you are deactivated to the base environment. This behavior is also seen when using ``module reset``
+    and ``module purge``.
 
 .. warning::
    When using the conda modules, do **NOT** run ``conda init``. This will end
@@ -299,6 +303,12 @@ running a serial application.
 .. code-block:: bash
 
    sbatch submit.sl
+
+.. warning::
+    When submitting a batch script or interactive job with the default ``miniforge3``
+    module previously loaded, you will be deactivated back to the base environment
+    at the start of your job. So, make sure to still activate your desired conda
+    environment during your job!
 
 .. note::
     As of October 2025, the usage of ``--export=NONE`` and ``unset SLURM_EXPORT_ENV`` 
