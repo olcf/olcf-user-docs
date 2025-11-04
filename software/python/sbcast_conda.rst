@@ -113,13 +113,13 @@ Below is an example batch script that uses ``sbcast``, unpacks our environment, 
    fi
 
    # Untar the environment file (only need 1 task per node to do this)
-   srun -N8 --ntasks-per-node 1 mkdir /mnt/bb/${USER}/torch_env
+   srun -N ${SLURM_NNODES} --ntasks-per-node 1 mkdir /mnt/bb/${USER}/torch_env
    echo "untaring torchenv"
-   srun -N8 --ntasks-per-node 1 -c56 tar --use-compress-program=pigz -xf /mnt/bb/${USER}/torch_env.tar.gz -C  /mnt/bb/${USER}/torch_env
+   srun -N ${SLURM_NNODES} --ntasks-per-node 1 -c56 tar --use-compress-program=pigz -xf /mnt/bb/${USER}/torch_env.tar.gz -C  /mnt/bb/${USER}/torch_env
 
    # Unpack the env
    conda activate /mnt/bb/${USER}/torch_env
-   srun -N8 --ntasks-per-node 1 conda-unpack
+   srun -N ${SLURM_NNODES} --ntasks-per-node 1 conda-unpack
 
    ##### END OF SBCAST AND CONDA-UNPACK #####
 
