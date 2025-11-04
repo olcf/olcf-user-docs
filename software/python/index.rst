@@ -306,9 +306,9 @@ running a serial application.
 
 .. warning::
     When submitting a batch script or interactive job with the default ``miniforge3``
-    module previously loaded, you will be deactivated back to the base environment
-    at the start of your job. So, make sure to still activate your desired conda
-    environment during your job!
+    module previously loaded, your environment will be deactivated and you will be
+    returned to the base environment at the start of your job. In order to run with
+    your prepared environment, be sure to ``conda activate`` it again in your job.
 
 .. note::
     As of October 2025, the usage of ``--export=NONE`` and ``unset SLURM_EXPORT_ENV`` 
