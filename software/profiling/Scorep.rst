@@ -339,9 +339,13 @@ measurement run, you must specify this in an environment variable called
    $ export SCOREP_FILTERING_FILE=scorep.filter
 
 This measurement will generate files of the form ``traces.otf``. The ``.otf2``
-file format can be analyzed by a tool called `Vampir
-<https://docs.olcf.ornl.gov/software/profiling/Vampir.html>`_ , that provides a
-visual GUI to analyze the ``.otf2`` trace file generated with Score-P.
+file format can be analyzed by the Vampir visualization tool that provides a
+visual GUI to analyze and understand large ``.otf2`` trace files generated with
+Score-P.  
+
+`OLCF Vampir Documentation
+<https://docs.olcf.ornl.gov/software/profiling/Vampir.html>`_ gives more details
+on how to use Vampir on OLCF systems.
 
 .. Note::
 
