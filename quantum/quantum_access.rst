@@ -197,24 +197,18 @@ Example Python scripts for each QCUP vendor are located at our new :doc:`/quantu
 IBM Quantum Computing
 ---------------------
 .. note::
-   Beginning July 1, IBM's Quantum Cloud Platform allocates QPU resources by region. OLCF users will
+   IBM's Quantum Cloud Platform allocates QPU resources by region. OLCF users will
    be granted access to the QPU's Washington DC (us-east) region, however, if you would like access to
    the QPU's in the Frankfurt (eu-de) region, please include this in your request.
 
-After submitting the OLCF quantum account application and receiving approval, create an IBMid at `<https://login.ibm.com/>`__.
-Use your IBMid to login to your IBM Cloud Account by proceeding to `<https://quantum.cloud.ibm.com/signin>`__, 
-enter your IBMid email which will be the email associated with your OLCF account,
-leave the region selected as "Washington DC (us-east)", and press continue. 
-If sign-in fails or if you're asked for credit card information, contact help@olcf.ornl.gov. Once logged
-in, users will have access to the IBM Quantum Cloud Platform, IBM’s online platform for
+After submitting the OLCF quantum account application and receiving approval, 
+you will receive an email inviting you to the ORNL IBM instance. The invitation will take
+users to an IBM Cloud Account creation page if you do not already have one or let you log in
+with existing IBM credentials if you do. If you have any trouble with account registration, please contact help@olcf.ornl.gov. 
+Once logged in, users will have access to the IBM Quantum Cloud Platform, IBM’s online platform for
 QPU access, viewing allocation details, accessing documention, etc. More information about using
 these IBM quantum resources can be found on the `IBM's Documentation <https://quantum.cloud.ibm.com/docs/>`__
 or our :doc:`OLCF IBM Quantum Guide </quantum/quantum_systems/ibm_quantum>`.
-
-.. warning::
-   When creating an account, DO NOT follow the "New to IBM Quantum? Create an
-   account on the upgraded IBM Quantum Platform" link.  Instead follow the
-   instructions as indicated above.
 
 Quantinuum 
 ----------
