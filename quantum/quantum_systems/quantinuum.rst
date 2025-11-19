@@ -11,12 +11,12 @@ For the complete set of currently available devices, qubit numbers, etc. see the
 This guide describes how to use the system once you have access.
 For instructions on how to gain access, see our :doc:`Quantum Access </quantum/quantum_access>` page instead.
 
-Quantinuum's documentation for both Nexus and the H-Series devices can be found here: https://docs.quantinuum.com/
+Quantinuum's documentation for both Nexus and the Quantinuum Systems can be found here: https://docs.quantinuum.com/
 
 Features
 --------
 
-The complete set of Quantinuum System Model H1 and Model H2 hardware specifications and operations, can be found in their `H-Series User Guide <https://docs.quantinuum.com/h-series/user_guide/hardware_user_guide/access.html>`__.
+The complete set of Quantinuum System Model H2 and Helios hardware specifications and operations, can be found in their `Quantinuum Systems User Guide <https://docs.quantinuum.com/systems/user_guide/hardware_user_guide/access.html>`__.
 
 Features include, but are not limited to:
 
@@ -24,13 +24,13 @@ Features include, but are not limited to:
 
 * Laser based quantum gates
 
-* Linear trap Quantum Charge-Coupled Device (QCCD) architecture with three or more parallel gate zones
+* Linear trap Quantum Charge-Coupled Device (QCCD) architecture with four or more parallel gate zones
 
 * Mid-circuit measurement conditioned circuit branching
 
 * Qubit reuse after mid-circuit measurement
 
-* Native gate set: single-qubit rotations, two-qubit ZZ-gates
+* Native gate set: single-qubit rotations, two-qubit ZZ-gates, parametrized angle ZZ gate
 
 
 Connecting
@@ -61,35 +61,34 @@ If you do not want to install Jupyter yourself, users can leverage `OLCF's Jupyt
 
 .. _quantinuum-local:
 
-Locally via pytket 
-------------------
+Locally
+-------
 
-Users are able to submit jobs that run remotely on Quantinuum's systems from a local python development environment.
-Directions for setting up the python environment and getting started in a notebook locally, as well as additional examples utilizing conditional logic and mid-circuit measurement, are found on the Quantinuum's H-Series `Getting Started page <https://docs.quantinuum.com/h-series/trainings/getting_started/getting_started_index.html>`__.
+Users can submit jobs that run remotely on Quantinuum's systems from a local python development environment.
+Directions for setting up the python environment and getting started in a notebook locally, as well as additional examples are found on the `Quantinuum Systems Getting Started page <https://docs.quantinuum.com/systems/trainings/helios/getting_started/index.html>`__, the `Nexus Getting Started page <https://docs.quantinuum.com/nexus/trainings/getting_started.html>`__, and the `Guppy Getting Started page <https://docs.quantinuum.com/guppy/getting_started.html>`__.
 
 .. _quantinuum-jobs:
 
 Running Jobs & Queue Policies
 =============================
 
-Information on submitting jobs to Quantinuum systems, system availability, checking job status, and tracking usage can be found in Quantinuum's `H-Series Workflow <https://docs.quantinuum.com/h-series/user_guide/hardware_user_guide/workflow.html>`__ and `Getting Started <https://docs.quantinuum.com/h-series/trainings/getting_started/getting_started_index.html>`__ pages.
+Information on submitting jobs to Quantinuum Systems, system availability, checking job status, and tracking usage can be found in Quantinuum's `Workflow page <https://docs.quantinuum.com/systems/user_guide/hardware_user_guide/workflow.html>`__.
 
-Users have access to the API validator to check program syntax, and to the Quantinuum System Model H1 and H2 emulators, which returns actual results back as if users submitted code to the real quantum hardware.
+Users have access to the Syntax Checkers (SC endpoints) to check program syntax, and to the Quantinuum System H2 and Helios emulators, which returns actual results back as if users submitted code to the real quantum hardware.
 
 .. note::
-   A recommended workflow for running on Quantinuum's quantum computers is to utilize the syntax checker first, run on the emulator, then run on one of the quantum computers.
+   A recommended workflow for running on Quantinuum's quantum computers is to utilize a syntax checker first, run on an emulator, then run on one of the quantum computers.
 
 .. _quantinuum-quotas:
 
 Default Quotas
 ==============
 
-Due to limited amount of resources, the default quotas are enforced:
+Due to limited resources, the default quotas are enforced:
 
-* ``H1-1SC``, ``H2-1SC`` : Unlimited
-* ``H1-1E`` : Unlimited
-* ``H1-1``, ``H2-1``, ``H2-2`` : 0
-* ``H2-1E``, ``H2-2E`` : 2000
+* ``H2-1SC``, ``H2-2SC``, ``Helios-1SC`` : Unlimited
+* ``H2-1``, ``H2-2``, ``Helios-1`` : 0
+* ``H2-1E``, ``H2-2E``, ``Helios-1E`` : Unlimited
 * **Nexus Simulation Time**: 6000 s
 * **Nexus Compilation Time**: 6000 s
 * **Nexus Storage**: 500 MB
@@ -107,8 +106,8 @@ To see your current usage or quotas in Quantinuum Nexus (e.g., how many HQC cred
 Allocation Policies & Credit Usage
 ==================================
 
-Running a job on Quantinuum's H-Series hardware requires Quantinuum Credits.
-Additional information on credit usage for H-Series devices can be found in the `H-Series User Guide <https://docs.quantinuum.com/h-series/user_guide/hardware_user_guide/system_operation.html#estimating-circuit-time>`__.
+Running a job on Quantinuum Systems hardware requires Quantinuum Hardware Quantum Credits (HQCs).
+Additional information on credit usage for Quantinuum endpoints can be found in the `System Workflow page <https://docs.quantinuum.com/systems/user_guide/hardware_user_guide/workflow.html#tracking-usage-with-hardware-quantum-credits-hqcs>`__ and the `System Operation page <https://docs.quantinuum.com/systems/user_guide/hardware_user_guide/operation.html>`__ in the Quantinuum Systems User Guide.
 
 * Any request for credits must be submitted by the project Principle Investigator (PI) by logging into `myOLCF <https://my.olcf.ornl.gov>`__, select your QCUP project under "My Projects" after login, and use the `Quantum Allocation Request form <https://my.olcf.ornl.gov/allocations/quantumAllocation>`__ under the "Allocations" section. Alternatively, you can send a request through our help ticket system (help@olcf.ornl.gov).
 
@@ -116,7 +115,7 @@ Additional information on credit usage for H-Series devices can be found in the 
 
 * Requests will be evaluated based on the provided technical justification, programmatic efficiency, and machine availability. The effective usage of prior allocations by the project will also be considered.
 
-* Allocations will be granted on a monthly basis to maximize the availability of the H-Series devices. Please note that allocations do not carry over to the next month and must be consumed in the month granted. **Credits reset on the first day of every month.**
+* Allocations will be granted on a monthly basis to maximize the availability of the Quantinuum devices. Please note that allocations do not carry over to the next month and must be consumed in the month granted. **Credits reset on the first day of every month.**
 
 * To ensure efficient utilization of our hardware resources, allocations will be considered for two phases:
 
@@ -124,24 +123,17 @@ Additional information on credit usage for H-Series devices can be found in the 
     #. The last week of the month (credits granted the last full week of the month): resource may become unavailable due to high demand, at which point request for time in future months is expected
 
 Allocation requests for the following month must be submitted no later than the 25th of the preceding month.
-The uptime schedule is available by navigating to a specific backend in Nexus (e.g., for H1-1: https://nexus.quantinuum.com/backends/Quantinuum/H1-1 ).
+The uptime schedule is available by navigating to a specific backend in Nexus (e.g., for H2-1: https://nexus.quantinuum.com/backends/Quantinuum/H2-1 ).
 
 Software
 ========
 
-The TKET framework is a software platform for the development and execution of gate-level quantum computation, providing state-of-the-art performance in circuit compilation.
-It was created and is maintained by Quantinuum.
-The toolset is designed to extract the most out of the available NISQ devices of today and is platform-agnostic.
-
-The ``pytket`` package is a python module for interfacing with tket (available for python 3.10+).
-The ``pytket-quantinuum`` package is a python client enabling access to Quantinuum Systems, which is an alternative job submission tool to ``qnexus`` -- the python client to Quantinuum Nexus.
+Guppy is a quantum-first programming language embedded in python. It provides state-of-the art features for utilizing the complete set of Helios features available.
 
 For more information, see the following links:
 
-* `pytket documentation <https://tket.quantinuum.com/api-docs/>`__
-* `pytket-quantinuum documentation <https://tket.quantinuum.com/extensions/pytket-quantinuum/>`__
+* `Guppy documentation <https://docs.quantinuum.com/guppy/getting_started.html>`__
 * `qnexus documentation <https://docs.quantinuum.com/nexus/>`__
-
 
 Additional Resources
 ====================
