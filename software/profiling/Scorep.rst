@@ -58,7 +58,8 @@ Some cases may, however, require some additional link options within the compile
       $ module unload darshan-runtime
 
 
-Get a list of available versions of Score-P and select the one you want to use.   
+Obtain a list of available Score-P versions using the ``module spider scorep``
+command and ``module load <scorep-version>`` the version you want to use.   
    
 .. code-block:: bash
 
