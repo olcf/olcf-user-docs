@@ -558,6 +558,14 @@ script:
     export https_proxy=http://proxy.ccs.ornl.gov:3128/
     export no_proxy='localhost,127.0.0.0/8,*.ccs.ornl.gov'
 
+.. note::
+    The ``socks`` proxy specification depends on implementation.
+    Packages that depend on ``httpx`` will need ``httpx[socks]`` and the following change:
+
+    .. code-block:: bash
+
+        # specify socks version
+        export all_proxy=socks5://proxy.ccs.ornl.gov:3128/
 
 To submit a batch script:
 
@@ -640,6 +648,14 @@ Below are example batch scripts for running on Andes and Frontier:
             #export PATH="/ccs/home/YOUR_USERNAME/rigetti/forest-sdk_2.23.0-linux-barebones:$PATH"
             #quilc -P -S > quilc.log 2>&1 & qvm -S > qvm.log 2>&1 & python3 script.py ; kill $(jobs -p)
 
+.. note::
+     The ``socks`` proxy specification depends on implementation.
+     Packages that depend on ``httpx`` will need ``httpx[socks]`` and the following change:
+
+     .. code-block:: bash
+
+         # specify socks version
+         export all_proxy=socks5://proxy.ccs.ornl.gov:3128/
 
 
 
