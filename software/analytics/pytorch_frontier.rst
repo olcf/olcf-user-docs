@@ -762,6 +762,16 @@ Set these environment variables in your batch script if needed:
    export https_proxy=http://proxy.ccs.ornl.gov:3128/
    export no_proxy='localhost,127.0.0.0/8,*.ccs.ornl.gov'
 
+.. note::
+    The ``socks`` proxy specification depends on implementation.
+    Packages that depend on ``httpx`` will need ``httpx[socks]`` and the following change:
+
+    .. code-block:: bash
+
+        # specify socks version
+        export all_proxy=socks5://proxy.ccs.ornl.gov:3128/
+
+
 c10d Socket Warnings
 --------------------
 

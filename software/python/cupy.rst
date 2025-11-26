@@ -164,6 +164,15 @@ To make sure that you are building from source, and not a pre-compiled binary, u
          on the GPU partition (even if you have the cuda module loaded).
          This allows CuPy to see the GPU properly when linking and building.
 
+      .. note::
+           The ``socks`` proxy specification depends on implementation.
+           Packages that depend on ``httpx`` will need ``httpx[socks]`` and the following change:
+
+           .. code-block:: bash
+
+               # specify socks version
+               export all_proxy=socks5://proxy.ccs.ornl.gov:3128/
+
 The ``CC`` and ``NVCC`` flags ensure that you are passing the correct wrappers, while the various flags for Frontier tell CuPy to build for AMD GPUs.
 This installation takes, on average, 10-20 minutes to complete (due to building everything from scratch), so don't panic if it looks like the install timed-out.
 Eventually you should see output similar to this (versions will vary):

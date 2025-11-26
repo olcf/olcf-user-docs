@@ -106,6 +106,15 @@ To test your ``jax`` install, try running their ``mnist_classifier`` example (on
    python3 -c 'import jax; print(jax.devices())' # verify that the GPU is accessible
    python3 mnist_classifier.py # run the example training
 
+.. note::
+     The ``socks`` proxy specification depends on implementation.
+     Packages that depend on ``httpx`` will need ``httpx[socks]`` and the following change:
+
+     .. code-block:: bash
+
+         # specify socks version
+         export all_proxy=socks5://proxy.ccs.ornl.gov:3128/
+
 Running that example, you should see something similar to:
 
 .. code-block:: text
