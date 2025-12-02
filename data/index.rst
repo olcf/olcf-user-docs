@@ -516,6 +516,18 @@ Project Quotas
 
 To help ensure available space for all Kronos projects, each project has a 200TB quota. All data stored in ``/nl/kronos/olcf/<projectID>`` will count toward the project’s quota. Please reach out to help@olcf.ornl.gov to request exemptions to the default quota.
 
+.. tip::
+   To find your project quota on Kronos you use ``mmlsquota -g <projectID> --block-size 1T kronos``, instead of the ``quota`` command.
+
+   .. code::
+
+        $ mmlsquota -g gen007 --block-size 1T kronos
+        Disk quotas for group gen007 (gid 22315):
+                                Block Limits                                               |     File Limits
+        Filesystem Fileset    type             TB      quota      limit   in_doubt    grace |    files   quota    limit in_doubt    grace  Remarks
+        kronos     fs_olcf    GRP               0        196        196          0     none |       33       0        0        0     none kronos.ccs.ornl.gov
+
+
 
 ==========================
 Kronos and HPSS Comparison
