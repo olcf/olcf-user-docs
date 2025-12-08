@@ -1365,7 +1365,7 @@ parameter, which all jobs in the bin receive.
 
 The ``batch`` partition (queue) is the default partition for production work on Frontier. Most work on Frontier is handled through this partition. The following policies are enforced for the ``batch`` partition:
 
-* Limit of four *eligible-to-run* jobs per user. (Jobs in excess of this number will be held, but will move to the eligible-to-run state and gain priority in the queue at the appropriate time.)
+* Limit of four *eligible-to-run* jobs per user. (Jobs in excess of this number will be held, but will move to the eligible-to-run state and accumulate priority in the queue at the appropriate time.)
 * Users may have only 100 jobs queued across all partitions at any time (this includes jobs in all states), i.e., jobs submitted in different partitions on Frontier are added up together to check if its within the 100 queued jobs limit. Additional jobs will be rejected at submit time.
 
 
