@@ -1029,7 +1029,7 @@ The following sections describe in detail how to create, submit, and manage jobs
 Login vs Compute Nodes
 ----------------------
 
-Recall from the System Overview that Frontier contains two node types: Login and Compute. When you connect to the system, you are placed on a *login* node. Login nodes are used for tasks such as code editing, compiling, etc. They are shared among all users of the system, so it is not appropriate to run tasks that are long/computationally intensive on login nodes. Users should also limit the number of simultaneous tasks on login nodes (e.g., concurrent tar commands, parallel make 
+Recall from the System Overview that Frontier contains two node types: Login and Compute. When you connect to the system, you are placed on a *login* node. Login nodes are used for tasks such as code editing, compiling, etc. They are shared among all users of the system, so it is not appropriate to run tasks that are long/computationally intensive on login nodes. Users should also limit the number of simultaneous tasks on login nodes (e.g., concurrent tar commands, parallel make). 
 
 Compute nodes are the appropriate place for long-running, computationally-intensive tasks. When you start a batch job, your batch script (or interactive shell for batch-interactive jobs) runs on one of your allocated compute nodes.
 
@@ -1195,8 +1195,9 @@ The table below summarizes options for submitted jobs. Unless otherwise noted, t
     | ``-N``                 | ``#SBATCH -N 1024``                        | Request 1024 nodes for the job                                                       |
     +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
     | ``-t``                 | ``#SBATCH -t 4:00:00``                     | Request a walltime of 4 hours.                                                       |
-    |                        |                                            | Walltime requests can be specified as minutes, hours:minutes, hours:minuts:seconds   |
-    |                        |                                            | days-hours, days-hours:minutes, or days-hours:minutes:seconds                        |
+    |                        |                                            | A walltime request is the maximum amount of time a job will run and can be specified |
+    |                        |                                            | as minutes, hours:minutes, hours:minutes:seconds, days-hours, days-hours:minutes, or |
+    |                        |                                            | days-hours:minutes:seconds                                                           |
     +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
     | ``--threads-per-core`` | ``#SBATCH --threads-per-core=2``           | | Number of active hardware threads per core. Can be 1 or 2 (1 is default)           |
     |                        |                                            | | **Must** be used if using ``--threads-per-core=2`` in your ``srun`` command.       |
@@ -1364,7 +1365,7 @@ parameter, which all jobs in the bin receive.
 
 The ``batch`` partition (queue) is the default partition for production work on Frontier. Most work on Frontier is handled through this partition. The following policies are enforced for the ``batch`` partition:
 
-* Limit of four *eligible-to-run* jobs per user. (Jobs in excess of this number will be held, but will move to the eligible-to-run state at the appropriate time.)
+* Limit of four *eligible-to-run* jobs per user. (Jobs in excess of this number will be held, but will move to the eligible-to-run state and accumulate priority in the queue at the appropriate time.)
 * Users may have only 100 jobs queued across all partitions at any time (this includes jobs in all states), i.e., jobs submitted in different partitions on Frontier are added up together to check if its within the 100 queued jobs limit. Additional jobs will be rejected at submit time.
 
 
