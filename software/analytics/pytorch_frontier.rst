@@ -512,14 +512,50 @@ There are different Master Ports you can use, but we typically recommend using p
 Setting the variables above are of utmost importance when using multiple nodes.
 
 
-Torchrun
---------
+Torchrun and Other Distributed PyTorch Launchers
+------------------------------------------------
 
-Use ``torchrun`` at your own risk.
-It is recommended to use ``srun`` to handle the task mapping instead, and to avoid ``torchrun`` completely.
-On Frontier, the use of ``torchrun`` can significantly impact the performance of some applications; however, if your application is strongly tied to ``torchrun``, you can try testing it with your application at your own risk.
+Distributed PyTorch launchers such as ``torchrun (DDP)`` often lack the flexibility to map tasks to GPUs as per the non-trivial NUMA domains of the :ref:`frontier-nodes`. Consequently, users have often reported subpar performance when using these tools.
+It is recommended to use ``srun`` to handle the task mapping instead, and to avoid such launchers if possible.
+On Frontier, the use of ``torchrun`` has been know to significantly impact the performance of some applications; however, if your application is strongly tied to ``torchrun``, you can try testing it with your application at your own risk. 
 Initial tests have shown that a script which normally runs on order of 10 seconds can take up to 10 minutes to run when using ``torchrun`` -- over an order of magnitude worse!
 Additionally, nesting ``torchrun`` within ``srun`` (i.e., ``srun torchrun ...``) does not help, as the two task managers will clash.
+
+In either scenario, it is useful for the user to know if their distributed learning program is making use of the node resources in the most optimal manner possible. This can be done using `numa_api <https://github.com/ashesh2512/numa_api>`_. This library is used to test process ID (PID) bindings within a Python program. Using the `numactl <https://github.com/numactl/numactl>`_ library, it determines the core affinity for every PID. Based on the cores, it then suggests the most optimal GPU based on the NUMA domains described in :ref:`frontier-nodes`. `numa_api's README <https://github.com/ashesh2512/numa_api/blob/main/README.md>`_ describes the installation and use.
+
+Running a Python script with the launch options ``srun -N1 -n8 -c7 --gpus-per-task=1 --gpu-bind=closest`` results in the following output. Note that this is consistent with the NUMA domains described in the :ref:`frontier-nodes`
+
+.. code-block:: bash
+
+   core affinity for PID 1132004: 1 2 3 4 5 6 7
+   Suggested GPU for PID 1132004: 4
+  
+   core affinity for PID 1132006: 17 18 19 20 21 22 23
+   Suggested GPU for PID 1132006: 2
+  
+   core affinity for PID 1132008: 33 34 35 36 37 38 39
+   Suggested GPU for PID 1132008: 6
+
+   core affinity for PID 1132009: 41 42 43 44 45 46 47
+   Suggested GPU for PID 1132009: 7
+
+In contrast, using ``srun --gpus-per-task=8 --gpu-bind=closest torchrun --nproc_per_node=8 --nnodes=1 --rdzv-id=$SLURM_JOBID --rdzv-backend=c10d --rdzv-endpoint=$MASTER_ADDR:3440`` results in the following output, i.e., here ``torchrun`` launches each task on the same core resulting in subpar performance. Note, the GPU suggestions printed by ``numa_api`` are based on the NUMA regions associated with the cores in :ref:`frontier-nodes`.
+
+.. code-block:: bash
+
+   core affinity for PID 884147: 1
+   Suggested GPU for PID 884147: 4
+
+   core affinity for PID 884145: 1
+   Suggested GPU for PID 884145: 4
+
+   core affinity for PID 884146: 1
+   Suggested GPU for PID 884146: 4
+
+   core affinity for PID 884141: 1
+   Suggested GPU for PID 884141: 4
+
+Note, the GPU suggestions reported by ``numa_api`` reflect the NUMA domains associated with those cores, as detailed in :ref:`frontier-nodes`. These suggestions are intended only for verification, helping the user confirm whether processes are using the most optimal GPUs relative to their NUMA domains. They should **not** be used as direct inputs to ``torch.cuda.set_device``, since they may further degrade performance based on the actual core affinities of the running tasks, as in the case above. In the case above, the correct approach would be to figure out how to launch the distributed Python launcher such that each PID is associated with a different NUMA domain. Or, use `srun`.
 
 Environment Location
 --------------------
