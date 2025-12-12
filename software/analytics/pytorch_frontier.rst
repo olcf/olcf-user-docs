@@ -521,7 +521,10 @@ On Frontier, the use of ``torchrun`` has been know to significantly impact the p
 Initial tests have shown that a script which normally runs on order of 10 seconds can take up to 10 minutes to run when using ``torchrun`` -- over an order of magnitude worse!
 Additionally, nesting ``torchrun`` within ``srun`` (i.e., ``srun torchrun ...``) does not help, as the two task managers will clash.
 
-In either scenario, it is useful for the user to know if their distributed learning program is making use of the node resources in the most optimal manner possible. This can be done using `numa_api <https://github.com/ashesh2512/numa_api>`_. This library is used to test process ID (PID) bindings within a Python program. Using the `numactl <https://github.com/numactl/numactl>`_ library, it determines the core affinity for every PID. Based on the cores, it then suggests the most optimal GPU based on the NUMA domains described in :ref:`frontier-nodes`. `numa_api's README <https://github.com/ashesh2512/numa_api/blob/main/README.md>`_ describes the installation and use.
+In either scenario, it is useful for the user to know if their distributed learning program is making use of the node resources in the most optimal manner possible. This can be done using `numa_api <https://github.com/ashesh2512/numa_api>`_.
+This library is used to test process ID (PID) bindings within a Python program.
+Using the `numactl <https://github.com/numactl/numactl>`_ library, it determines the core affinity for every PID. Based on the cores, it then suggests the most optimal GPU based on the NUMA domains described in :ref:`frontier-nodes`.
+For instructions on installation and use, you can refer to `numa_api's README <https://github.com/ashesh2512/numa_api/blob/main/README.md>`_.
 
 Running a Python script with the launch options ``srun -N1 -n8 -c7 --gpus-per-task=1 --gpu-bind=closest`` results in the following output. Note that this is consistent with the NUMA domains described in the :ref:`frontier-nodes`
 
