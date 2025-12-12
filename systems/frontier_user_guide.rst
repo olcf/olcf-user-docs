@@ -1244,6 +1244,32 @@ The table below summarizes options for submitted jobs. Unless otherwise noted, t
     | ``-q``                 | ``#SBATCH -q debug``                       | Request a "Quality of Service" (QOS) for the job. (default is ``normal``)            |
     +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
 
+.. _frontier-slurm-plugins:
+
+OLCF Custom Slurm Plugins
+-------------------------
+
+In addition to the common Slurm flags above, OLCF maintains several plugins to Slurm that provide additional options to the user.
+The following options are available as command-line parameters to ``sbatch`` or as ``#SBATCH`` pragmas in a job script:
+
+.. table::
+    :widths: 15 28 57
+
+    +------------------------+--------------------------------------------+---------------------------------------------------------------------------------------+
+    | Option                 | Example Usage                              | Description                                                                           |
+    +========================+============================================+=======================================================================================+
+    | ``--gpu-srange``       | ``#SBATCH --gpu-srange=800-1700``          | Sets the GPU sclk range in MHz (default: 500-1700)                                    |
+    +------------------------+--------------------------------------------+---------------------------------------------------------------------------------------+
+    | ``--gpu-power-cap``    | ``#SBATCH --gpu-power-cap=500``            | Sets the GPU power cap in Watts (default: 560)                                        |
+    +------------------------+--------------------------------------------+---------------------------------------------------------------------------------------+
+    | ``--gpu-counters``     | ``#SBATCH --gpu-counters=0``               | When set to 1 (default), enables a rocprofiler-based daemon that automatically samples|
+    |                        |                                            | GPU hardware counters from a subset of nodes in a compute job, when the job size is   |
+    |                        |                                            | greater than 1882 nodes. The resulting profiling data may be made available upon      |
+    |                        |                                            | request. Please provide the requested job ID to help@olcf.ornl.gov.                   |
+    |                        |                                            | Setting ``gpu-counters=0`` disables this feature.                                     |
+    |                        |                                            | This feature is not available for jobs <= 1882 nodes at this time.                    |
+    +------------------------+--------------------------------------------+---------------------------------------------------------------------------------------+
+
 
 Slurm Environment Variables
 ---------------------------
