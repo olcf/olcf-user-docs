@@ -558,7 +558,7 @@ In contrast, using ``srun --gpus-per-task=8 --gpu-bind=closest torchrun --nproc_
    core affinity for PID 884141: 1
    Suggested GPU for PID 884141: 4
 
-Note, the GPU suggestions reported by ``numa_api`` reflect the NUMA domains associated with those cores, as detailed in :ref:`frontier-nodes`. These suggestions are intended only for verification, helping the user confirm whether processes are using the most optimal GPUs relative to their NUMA domains. They should **not** be used as direct inputs to ``torch.cuda.set_device``, since they may further degrade performance based on the actual core affinities of the running tasks, as in the case above. In the case above, the correct approach would be to figure out how to launch the distributed Python launcher such that each PID is associated with a different NUMA domain. Or, use `srun`.
+Note, the GPU suggestions reported by ``numa_api`` reflect the NUMA domains associated with those cores, as detailed in :ref:`frontier-nodes`. These suggestions are intended only for verification, helping the user confirm whether processes are using the most optimal GPUs relative to their NUMA domains. They should **not** be used as direct inputs to ``torch.cuda.set_device``, since they may further degrade performance based on the actual core affinities of the running tasks, as in the case above. In the case above, the correct approach would be to figure out how to launch the distributed Python launcher such that each PID is associated with a different NUMA domain. Instead, OLCF recommends using `srun` for simplicity.
 
 Environment Location
 --------------------
