@@ -3594,7 +3594,39 @@ For example, to use rocprofiler-compute:
 As a rule of thumb, always load the ``rocprofiler-compute`` module last (especially after you load a ROCm module).
 If you load a new version of ROCm, you will need to re-load ``rocprofiler-compute``.
 
-----
+
+Omnistat - A lightweight ROCm system profiler
+---------------------------------------------
+
+Omnistat is an open-source data collection tool for system-level and job-level
+metrics in high-performance computing (HPC) clusters that use AMD Instinct GPUs
+using ROCm (v6.3.0 or newer). It is designed for scale-out system monitoring and
+detailed analysis. Users can use Omnistat to profile and monitor node-level
+metrics or ROCm GPU metrics while running their application.  GPU metrics
+include utilization, memory usage, power consumption, clock frequencies,
+temperatures, etc, on a per-GPU basis. See https://rocm.github.io/omnistat/ for
+documentation about Omnistat.
+
+The Omnistat developers have provided site-specific instructions on how to load
+and use Omnistat at ORNL.  This includes how to get access the Omnistat
+module, and how to run batch jobs on Frontier that collect Omnistat data.  See 
+https://rocm.github.io/omnistat/site.frontier.html for details.
+
+Omnistat provides a set of utilities to aid in aggregating scale-out system
+metrics using low-overhead sampling methods.  In user-mode, Omnistat data
+collection is managed entirely by a command-line utility.  The captured
+metrics can be downloaded and visualized in various ways.  Instructions in
+the Omnistat documentation provide guidance on using Graphana in a local Docker
+container to visualize the data, or the data can be exported to CSV files for
+analysis using tools such as Python Pandas.
+
+You can find an overview presentation on Omnistat in the :ref:`OLCF Training
+Archive, <training-archive>`
+
+.. csv-table::
+   :widths: 12 22 22 22 22
+
+    "2025-09-24", "Omnistat", "Karl Schulz and Jorda Polo (AMD)", `September 2025 OLCF User Conference Call <https://www.olcf.ornl.gov/calendar/userconcall-sep2025/>`__, (`recording <https://vimeo.com/1121958946>`__ | `slides <https://www.olcf.ornl.gov/wp-content/uploads/omnistat-overview-olcf-user-conference-sept-2025.pdf>`__ | `Q&A <https://www.olcf.ornl.gov/wp-content/uploads/Sep25_UserCall_Chat.txt>`__ | `tip <https://www.olcf.ornl.gov/wp-content/uploads/Sep2025_TOTM.pdf>`__ )
 
 
 .. _tips-and-tricks:
