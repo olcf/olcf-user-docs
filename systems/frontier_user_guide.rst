@@ -3600,8 +3600,8 @@ Omnistat - A lightweight ROCm system profiler
 
 Omnistat is an open-source data collection tool for system-level and job-level
 metrics in high-performance computing (HPC) clusters that use AMD Instinct GPUs
-using ROCm (v6.3.0 or newer). It is designed for scale-out system monitoring and
-detailed analysis. Users can use Omnistat to profile and monitor node-level
+using ROCm (v6.3.0 or newer). It is designed for large-scale system monitoring and
+detailed analysis, users can use Omnistat to profile and monitor node-level
 metrics or ROCm GPU metrics while running their application.  GPU metrics
 include utilization, memory usage, power consumption, clock frequencies,
 temperatures, etc, on a per-GPU basis. See https://rocm.github.io/omnistat/ for
@@ -3609,19 +3609,55 @@ documentation about Omnistat.
 
 The Omnistat developers have provided site-specific instructions on how to load
 and use Omnistat at ORNL.  This includes how to get access the Omnistat
-module, and how to run batch jobs on Frontier that collect Omnistat data.  See 
+module and how to run batch jobs on Frontier that collect Omnistat data.  See 
 https://rocm.github.io/omnistat/site.frontier.html for details.
 
-Omnistat provides a set of utilities to aid in aggregating scale-out system
-metrics using low-overhead sampling methods.  In user-mode, Omnistat data
-collection is managed entirely by a command-line utility.  The captured
-metrics can be downloaded and visualized in various ways.  Instructions in
-the Omnistat documentation provide guidance on using Graphana in a local Docker
-container to visualize the data, or the data can be exported to CSV files for
-analysis using tools such as Python Pandas.
+For a user to use Omnistat for their own code (user-mode), they start Omnistat
+data collection via the command line.  Then the user can start their own code in
+parallel via ``srun``.  Once the user's code has finished running, the user
+stops Omnistat data collection via the command line. The captured metrics can be
+queried on the command line or downloaded and visualized in various ways.  
 
-You can find an overview presentation on Omnistat in the :ref:`OLCF Training
-Archive, <training-archive>`
+The following code is taken almost directly from the above Omnistat
+documentation site for Frontier, with minor modifications for clarity.
+
+.. code-block:: bash
+
+    ## Get an interactive single node session on Frontier (or submit a batch job with the script below)
+    ## salloc -A <ACCOUNT> -J omnistat -N 1 -t 00:30:00 -S 0
+
+    # Setup the Omnistat module provided by AMD
+    module unload darshan-runtime
+    module use /sw/frontier/amdsw/modulefiles
+    module load omnistat-wrapper
+
+    # If you have any http_proxy setup, unset it (the proxy interferes with Omnistat's
+    # ability to communicate with its server component)
+    # e.g. unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY proxy no_proxy all_proxy ftp_proxy
+
+    # Launch Omnistat monitoring (wrapper version), store data in a local temporary directory
+    export OMNISTAT_VICTORIA_DATADIR=/tmp/omnistat/${SLURM_JOB_ID}
+    ${OMNISTAT_WRAPPER} usermode --start --interval 1.0
+
+    # Your GPU application goes here, we simply run sleep for demonstration
+    # srun ./your_gpu_application
+    srun -n1 -c1 --gpus-per-task=1 --gpu-bind=closest sleep 60
+
+    # Stop Omnistat data exporters and query Omnistat data
+    ${OMNISTAT_WRAPPER} usermode --stopexporters
+    ${OMNISTAT_WRAPPER} query --job ${SLURM_JOB_ID} --interval 1 --export
+    # ${OMNISTAT_WRAPPER} query --interval 1.0 --job ${SLURM_JOB_ID}
+    # ${OMNISTAT_WRAPPER} query --interval 1.0 --job ${SLURM_JOB_ID} --pdf omnistat.${SLURM_JOB_ID}.pdf
+
+    # Tear down Omnistat
+    ${OMNISTAT_WRAPPER} usermode --stopserver
+
+Instructions in the Omnistat documentation provide guidance on using Graphana in
+a local Docker container to visualize the data, or the data can be exported to
+CSV files for analysis using tools such as Python Pandas. 
+
+You can find an overview presentation and video on Omnistat in the :ref:`OLCF
+Training Archive, <training-archive>`.
 
 .. csv-table::
    :widths: 12 22 22 22 22
