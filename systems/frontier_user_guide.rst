@@ -3601,25 +3601,29 @@ Omnistat - A lightweight ROCm system profiler
 Omnistat is an open-source data collection tool for system-level and job-level
 metrics in high-performance computing (HPC) clusters that use AMD Instinct GPUs
 using ROCm (v6.3.0 or newer). It is designed for large-scale system monitoring and
-detailed analysis, users can use Omnistat to profile and monitor node-level
-metrics or ROCm GPU metrics while running their application.  GPU metrics
+detailed analysis.  Users can use Omnistat to profile and monitor node-level
+or ROCm GPU metrics while running their application.  GPU metrics
 include utilization, memory usage, power consumption, clock frequencies,
 temperatures, etc, on a per-GPU basis. See https://rocm.github.io/omnistat/ for
 documentation about Omnistat.
 
 The Omnistat developers have provided site-specific instructions on how to load
-and use Omnistat at ORNL.  This includes how to get access the Omnistat
+and use Omnistat at ORNL.  This includes how to access the Omnistat
 module and how to run batch jobs on Frontier that collect Omnistat data.  See 
 https://rocm.github.io/omnistat/site.frontier.html for details.
 
-For a user to use Omnistat for their own code (user-mode), they start Omnistat
-data collection via the command line.  Then the user can start their own code in
-parallel via ``srun``.  Once the user's code has finished running, the user
-stops Omnistat data collection via the command line. The captured metrics can be
-queried on the command line or downloaded and visualized in various ways.  
+A user wanting to use Omnistat to profile their own code (user-mode) needs to
+first start Omnistat data collection via the command line. Then the user can
+start their own code running at the same time as the Omnistat profiling. Once
+the user's code has finished running, Omnistat data collection needs to be
+terminated via the command line. The captured metrics can be queried on the
+command line or downloaded and visualized.  Instructions in the Omnistat
+documentation provide guidance on using Graphana in a local Docker container to
+visualize the data, or the data can be exported to CSV files for analysis using
+tools such as Python Pandas. 
 
-The following code is taken almost directly from the above Omnistat
-documentation site for Frontier, with minor modifications for clarity.
+The following simple example is taken directly from the above Omnistat
+documentation site for Frontier, with minor modifications for clarity.  
 
 .. code-block:: bash
 
@@ -3651,10 +3655,6 @@ documentation site for Frontier, with minor modifications for clarity.
 
     # Tear down Omnistat
     ${OMNISTAT_WRAPPER} usermode --stopserver
-
-Instructions in the Omnistat documentation provide guidance on using Graphana in
-a local Docker container to visualize the data, or the data can be exported to
-CSV files for analysis using tools such as Python Pandas. 
 
 You can find an overview presentation and video on Omnistat in the :ref:`OLCF
 Training Archive, <training-archive>`.
