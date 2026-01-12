@@ -3594,7 +3594,75 @@ For example, to use rocprofiler-compute:
 As a rule of thumb, always load the ``rocprofiler-compute`` module last (especially after you load a ROCm module).
 If you load a new version of ROCm, you will need to re-load ``rocprofiler-compute``.
 
-----
+
+Omnistat - A lightweight ROCm system profiler
+---------------------------------------------
+
+Omnistat is an open-source data collection tool for system-level and job-level
+metrics in high-performance computing (HPC) clusters that use AMD Instinct GPUs
+using ROCm (v6.3.0 or newer). It is designed for large-scale system monitoring and
+detailed analysis.  Users can use Omnistat to profile and monitor node-level
+or ROCm GPU metrics while running their application.  GPU metrics
+include utilization, memory usage, power consumption, clock frequencies,
+temperatures, etc, on a per-GPU basis. See https://rocm.github.io/omnistat/ for
+documentation about Omnistat.
+
+The Omnistat developers have provided site-specific instructions on how to load
+and use Omnistat at ORNL.  This includes how to access the Omnistat
+module and how to run batch jobs on Frontier that collect Omnistat data.  See 
+https://rocm.github.io/omnistat/site.frontier.html for details.
+
+A user wanting to use Omnistat to profile their own code (user-mode) needs to
+first start Omnistat data collection via the command line. Then the user can
+start their own code running at the same time as the Omnistat profiling. Once
+the user's code has finished running, Omnistat data collection needs to be
+terminated via the command line. The captured metrics can be queried on the
+command line or downloaded and visualized.  Instructions in the Omnistat
+documentation provide guidance on using Graphana in a local Docker container to
+visualize the data, or the data can be exported to CSV files for analysis using
+tools such as Python Pandas. 
+
+The following simple example is taken directly from the above Omnistat
+documentation site for Frontier, with minor modifications for clarity.  
+
+.. code-block:: bash
+
+    ## Get an interactive single node session on Frontier (or submit a batch job with the script below)
+    ## salloc -A <ACCOUNT> -J omnistat -N 1 -t 00:30:00 -S 0
+
+    # Setup the Omnistat module provided by AMD
+    module unload darshan-runtime
+    module use /sw/frontier/amdsw/modulefiles
+    module load omnistat-wrapper
+
+    # If you have any http_proxy setup, unset it (the proxy interferes with Omnistat's
+    # ability to communicate with its server component)
+    # e.g. unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY proxy no_proxy all_proxy ftp_proxy
+
+    # Launch Omnistat monitoring (wrapper version), store data in a local temporary directory
+    export OMNISTAT_VICTORIA_DATADIR=/tmp/omnistat/${SLURM_JOB_ID}
+    ${OMNISTAT_WRAPPER} usermode --start --interval 1.0
+
+    # Your GPU application goes here, we simply run sleep for demonstration
+    # srun ./your_gpu_application
+    srun -n1 -c1 --gpus-per-task=1 --gpu-bind=closest sleep 60
+
+    # Stop Omnistat data exporters and query Omnistat data
+    ${OMNISTAT_WRAPPER} usermode --stopexporters
+    ${OMNISTAT_WRAPPER} query --job ${SLURM_JOB_ID} --interval 1 --export
+    # ${OMNISTAT_WRAPPER} query --interval 1.0 --job ${SLURM_JOB_ID}
+    # ${OMNISTAT_WRAPPER} query --interval 1.0 --job ${SLURM_JOB_ID} --pdf omnistat.${SLURM_JOB_ID}.pdf
+
+    # Tear down Omnistat
+    ${OMNISTAT_WRAPPER} usermode --stopserver
+
+You can find an overview presentation and video on Omnistat in the :ref:`OLCF
+Training Archive, <training-archive>`.
+
+.. csv-table::
+   :widths: 12 22 22 22 22
+
+    "2025-09-24", "Omnistat", "Karl Schulz and Jorda Polo (AMD)", `September 2025 OLCF User Conference Call <https://www.olcf.ornl.gov/calendar/userconcall-sep2025/>`__, (`recording <https://vimeo.com/1121958946>`__ | `slides <https://www.olcf.ornl.gov/wp-content/uploads/omnistat-overview-olcf-user-conference-sept-2025.pdf>`__ | `Q&A <https://www.olcf.ornl.gov/wp-content/uploads/Sep25_UserCall_Chat.txt>`__ | `tip <https://www.olcf.ornl.gov/wp-content/uploads/Sep2025_TOTM.pdf>`__ )
 
 
 .. _tips-and-tricks:
