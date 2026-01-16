@@ -42,6 +42,7 @@ you catch issues with your requests, and make it easier to develop against S3M u
       **Prerequisites**
 
       * Python 3.9+
+      * **SSH Key Setup**: The Python module is hosted on a private ORNL GitLab instance (``code.ornl.gov``). You must have an SSH key pair configured on your machine and the public key registered in your `code.ornl.gov profile <https://code.ornl.gov/-/user_settings/ssh_keys>`_.
 
       **Installation**
 
@@ -93,9 +94,7 @@ you catch issues with your requests, and make it easier to develop against S3M u
       **Prerequisites**
 
       * Go 1.24+
-      * **SSH Key Setup**: The Go module is hosted on a private ORNL GitLab instance (``code.ornl.gov``). You must have
-      an SSH key pair configured on your machine and the public key registered in your
-      `code.ornl.gov profile <https://code.ornl.gov/-/user_settings/ssh_keys>`_.
+      * **SSH Key Setup**: The Go module is hosted on a private ORNL GitLab instance (``code.ornl.gov``). You must have an SSH key pair configured on your machine and the public key registered in your `code.ornl.gov profile <https://code.ornl.gov/-/user_settings/ssh_keys>`_.
 
       **Project Initialization**
 
