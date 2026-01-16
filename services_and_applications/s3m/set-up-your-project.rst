@@ -98,28 +98,24 @@ you catch issues with your requests, and make it easier to develop against S3M u
 
       **Project Initialization**
 
-      Create a new directory for your project and initialize the Go module:
-
-      .. code-block:: shell
-
-         mkdir my-s3m-project
-         cd my-s3m-project
-         go mod init my-s3m-project
-
-      **Installation**
-
       Because ``s3m.olcf.ornl.gov/apis`` is a private Go module stored on an ORNL GitLab instance at ``code.ornl.gov``,
       Go cannot discover it automatically via the public proxy. You must use a ``replace`` directive to tell Go
       specifically where to find the source code.
 
       .. code-block:: shell
 
-         # Point the module path to the private git repository
+         # Make a project folder
+         mkdir my-s3m-project
+         cd    my-s3m-project
+
+         # Define your project and point it to the ORNL-internal Go S3M module
+         go mod init my-s3m-project
          go mod edit -replace s3m.olcf.ornl.gov/apis=code.ornl.gov/s3m/s3m-apis.go.git@latest
 
-         # Download the module (GOPRIVATE makes Go use your SSH key for authentication)
-         GOPRIVATE=code.ornl.gov go get s3m.olcf.ornl.gov/apis
-         GOPRIVATE=code.ornl.gov go mod tidy
+         # Go should now download the module and save it in your repo. GOPRIVATE makes Go use your SSH key for authentication
+         export GOPRIVATE=code.ornl.gov
+         go mod tidy
+         go mod vendor
 
       **An example main.go file**
 
