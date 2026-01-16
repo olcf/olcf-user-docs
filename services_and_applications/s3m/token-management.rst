@@ -25,7 +25,7 @@ This can be accomplished in either of the following ways:
 
    .. code-block:: shell
 
-      $ curl -i -X DELETE -H "Authorization: $TOKEN" \
+      $ curl -i -X DELETE -H @.env \
           https://s3m.olcf.ornl.gov/olcf/v1/token/ctls/revoke
       HTTP/1.1 200 OK
 
@@ -57,25 +57,28 @@ Avoid Command-Line Arguments
 ---------------------------
 
 Depending on your system's configuration, providing secrets to an application via command-line arguments can expose
-them to other users or processes. For example, the full command a user has run can be easily observed by examining the
-processes found in ``/proc``:
+them to other users or processes, even when storing tokens in variables.
 
 .. code-block:: shell
 
-   $ ./example --token abc123
+   $ export TOKEN="eyJhbGc..."
+   $ curl -H "Authorization: $TOKEN" https://...
 
-   $ ps aux | grep token
-   user      123 pts/0    Sl+  11:32   0:00 ./example --token abc123
+   $ ps aux | grep eyJhbGc
+   user      456 pts/0    S+   11:33   0:00 curl -H Authorization: eyJhbGc... https://...
 
-Instead, loading secrets from environment variables or files is a safer
-option. For example, you can store your token in an env file and source it:
+The shell expands ``$TOKEN`` before executing the command, so the token value appears in the process listing just as if
+it were typed directly.
+
+**Instead**: Loading secrets from files is a safer option. Store the authorization header directly in a file and use
+curl's ``@`` syntax to read it:
 
 .. code-block:: shell
 
-   $ echo 'export S3M_TOKEN="eyJhbGc..."' > .env
+   $ echo "Authorization: eyJhbGc..." > .env
+   $ echo ".env" >> .gitignore
 
-   $ source .env && curl -H "Authorization: $S3M_TOKEN" \
-       https://s3m.olcf.ornl.gov/slurm/v0.0.43/defiant/ping
+   $ curl -H @.env https://s3m.olcf.ornl.gov/slurm/v0.0.43/defiant/ping
    {"meta":{"plugin":{"type":"openapi/slurmctld", "name":"Slurm OpenAPI slurmctld"...
 
 There are exceptions to these risks; however, it is always better to be safe
@@ -112,22 +115,23 @@ locations. Consider using secure storage solutions such as password managers,
 operating system keyrings, or dedicated secrets management tools. Avoid storing
 tokens in version control or in locations accessible to other users.
 
-Example: Using Environment Variables Securely
----------------------------------------------
+Example: Using Header Files Securely
+------------------------------------
 
-When using tokens in your workflow, export them as environment variables only
-for the duration of your session, and unset them when finished. For example:
+When using tokens in your workflow, store the authorization header in a file
+and use curl's ``@`` syntax to read it. This keeps tokens out of your shell
+history and environment:
 
 .. code-block:: shell
 
-   # Export the token for use in your session
-   export S3M_TOKEN="your_token_here"
+   # Create a header file with your token
+   echo "Authorization: your_token_here" > .env
 
-   # Run your application or script
-   python your_script.py
+   # Add to .gitignore to prevent accidental commits
+   echo ".env" >> .gitignore
 
-   # Unset the token when done
-   unset S3M_TOKEN
+   # Use the header file with curl
+   curl -H @.env https://s3m.olcf.ornl.gov/olcf/v1alpha/status
 
-This approach helps prevent accidental exposure of tokens and limits
-their availability to only the processes that need them.
+This approach helps prevent accidental exposure of tokens in shell history,
+process listings, and environment variable dumps.

@@ -29,7 +29,7 @@ Create a new RabbitMQ cluster. The cluster will not be immediately accessible—
 
       .. code-block:: shell
 
-         curl -X POST -H "Authorization: $S3M_TOKEN" \
+         curl -X POST -H @.env \
              -H "Content-Type: application/json" \
              https://s3m.olcf.ornl.gov/olcf/v1alpha/streaming/rabbitmq/provision_cluster \
              -d '{
@@ -96,7 +96,7 @@ List Clusters
 
       .. code-block:: shell
 
-         curl -H "Authorization: $S3M_TOKEN" \
+         curl -H @.env \
              https://s3m.olcf.ornl.gov/olcf/v1alpha/streaming/rabbitmq/list_clusters
 
    .. tab-item:: Python
@@ -134,7 +134,7 @@ Get Cluster
 
       .. code-block:: shell
 
-         curl -H "Authorization: $S3M_TOKEN" \
+         curl -H @.env \
              https://s3m.olcf.ornl.gov/olcf/v1alpha/streaming/rabbitmq/cluster/mycluster
 
    .. tab-item:: Python
@@ -174,7 +174,7 @@ Reset the cluster's lifetime to 7 days from now.
 
       .. code-block:: shell
 
-         curl -X POST -H "Authorization: $S3M_TOKEN" \
+         curl -X POST -H @.env \
              https://s3m.olcf.ornl.gov/olcf/v1alpha/streaming/rabbitmq/extend/mycluster
 
    .. tab-item:: Python
@@ -212,7 +212,7 @@ Delete Cluster
 
       .. code-block:: shell
 
-         curl -X DELETE -H "Authorization: $S3M_TOKEN" \
+         curl -X DELETE -H @.env \
              https://s3m.olcf.ornl.gov/olcf/v1alpha/streaming/rabbitmq/cluster/mycluster
 
    .. tab-item:: Python

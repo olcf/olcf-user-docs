@@ -34,7 +34,7 @@ Create a new Redis cluster. The cluster will not be immediately accessible—mon
 
       .. code-block:: shell
 
-         curl -X POST -H "Authorization: $S3M_TOKEN" \
+         curl -X POST -H @.env \
              -H "Content-Type: application/json" \
              https://s3m.olcf.ornl.gov/olcf/v1alpha/streaming/redis/provision_cluster \
              -d '{
@@ -99,7 +99,7 @@ List Clusters
 
       .. code-block:: shell
 
-         curl -H "Authorization: $S3M_TOKEN" \
+         curl -H @.env \
              https://s3m.olcf.ornl.gov/olcf/v1alpha/streaming/redis/list_clusters
 
    .. tab-item:: Python
@@ -137,7 +137,7 @@ Get Cluster
 
       .. code-block:: shell
 
-         curl -H "Authorization: $S3M_TOKEN" \
+         curl -H @.env \
              https://s3m.olcf.ornl.gov/olcf/v1alpha/streaming/redis/cluster/mycluster
 
    .. tab-item:: Python
@@ -177,7 +177,7 @@ Reset the cluster's lifetime to 7 days from now.
 
       .. code-block:: shell
 
-         curl -X POST -H "Authorization: $S3M_TOKEN" \
+         curl -X POST -H @.env \
              https://s3m.olcf.ornl.gov/olcf/v1alpha/streaming/redis/extend/mycluster
 
    .. tab-item:: Python
@@ -215,7 +215,7 @@ Delete Cluster
 
       .. code-block:: shell
 
-         curl -X DELETE -H "Authorization: $S3M_TOKEN" \
+         curl -X DELETE -H @.env \
              https://s3m.olcf.ornl.gov/olcf/v1alpha/streaming/redis/cluster/mycluster
 
    .. tab-item:: Python

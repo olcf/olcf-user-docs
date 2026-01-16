@@ -51,7 +51,7 @@ Discover available streaming backends and their resource options.
 
       .. code-block:: shell
 
-         curl -H "Authorization: $S3M_TOKEN" \
+         curl -H @.env \
              https://s3m.olcf.ornl.gov/olcf/v1alpha/streaming/list_backends
 
    .. tab-item:: Python

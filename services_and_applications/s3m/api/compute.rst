@@ -35,7 +35,7 @@ Check the health status of a compute resource.
 
       .. code-block:: shell
 
-         curl -H "Authorization: $S3M_TOKEN" \
+         curl -H @.env \
              https://s3m.olcf.ornl.gov/slurm/v0.0.43/defiant/ping
 
    .. tab-item:: Python
@@ -76,7 +76,7 @@ Get available partitions (queues) on a resource.
 
       .. code-block:: shell
 
-         curl -H "Authorization: $S3M_TOKEN" \
+         curl -H @.env \
              https://s3m.olcf.ornl.gov/slurm/v0.0.43/defiant/partitions
 
    .. tab-item:: Python
@@ -117,7 +117,7 @@ Submit a new batch job to the scheduler.
 
       .. code-block:: shell
 
-         curl -X POST -H "Authorization: $S3M_TOKEN" \
+         curl -X POST -H @.env \
              -H "Content-Type: application/json" \
              https://s3m.olcf.ornl.gov/slurm/v0.0.43/defiant/job/submit \
              -d '{
@@ -205,7 +205,7 @@ Retrieve details about a specific job.
 
       .. code-block:: shell
 
-         curl -H "Authorization: $S3M_TOKEN" \
+         curl -H @.env \
              https://s3m.olcf.ornl.gov/slurm/v0.0.43/defiant/job/12345
 
    .. tab-item:: Python
@@ -245,7 +245,7 @@ Retrieve all jobs visible to your project.
 
       .. code-block:: shell
 
-         curl -H "Authorization: $S3M_TOKEN" \
+         curl -H @.env \
              https://s3m.olcf.ornl.gov/slurm/v0.0.43/defiant/jobs
 
    .. tab-item:: Python
@@ -286,7 +286,7 @@ Cancel a running or pending job.
 
       .. code-block:: shell
 
-         curl -X DELETE -H "Authorization: $S3M_TOKEN" \
+         curl -X DELETE -H @.env \
              https://s3m.olcf.ornl.gov/slurm/v0.0.43/defiant/job/12345
 
    .. tab-item:: Python
@@ -331,7 +331,7 @@ Get information about compute nodes on a resource.
 
       .. code-block:: shell
 
-         curl -H "Authorization: $S3M_TOKEN" \
+         curl -H @.env \
              https://s3m.olcf.ornl.gov/slurm/v0.0.43/defiant/nodes
 
    .. tab-item:: Python
@@ -372,7 +372,7 @@ Get reservations on a resource.
 
       .. code-block:: shell
 
-         curl -H "Authorization: $S3M_TOKEN" \
+         curl -H @.env \
              https://s3m.olcf.ornl.gov/slurm/v0.0.43/defiant/reservations
 
    .. tab-item:: Python
@@ -413,7 +413,7 @@ Get diagnostic information about the SLURM scheduler.
 
       .. code-block:: shell
 
-         curl -H "Authorization: $S3M_TOKEN" \
+         curl -H @.env \
              https://s3m.olcf.ornl.gov/slurm/v0.0.43/defiant/diag
 
    .. tab-item:: Python

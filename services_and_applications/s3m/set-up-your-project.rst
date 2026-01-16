@@ -19,30 +19,22 @@ you catch issues with your requests, and make it easier to develop against S3M u
 
       **Authentication**
 
-      Most S3M endpoints require your token in the ``Authorization`` header:
+      Most S3M endpoints require your token in the ``Authorization`` header. Store your token in a header file for
+      secure, repeatable use:
 
       .. code-block:: shell
 
-         export S3M_TOKEN="your-token-here"
+         # Create a header file with your token (replace with your actual token)
+         echo "Authorization: your-token-here" > .env
 
-         curl -H "Authorization: $S3M_TOKEN" \
-             https://s3m.olcf.ornl.gov/olcf/v1alpha/status
+         # Add to .gitignore to prevent accidental commits
+         echo ".env" >> .gitignore
 
-      **Secure Token Handling**
+         # Use curl's @ syntax to read the header from the file
+         curl -H @.env https://s3m.olcf.ornl.gov/olcf/v1alpha/status
 
-      Avoid passing tokens directly on the command line, where they may appear in shell history or process listings.
-      Consider storing them in env files instead:
-
-      .. code-block:: shell
-
-         # Create an env file (add to .gitignore!)
-         echo 'export S3M_TOKEN="your-token-here"' > .env
-
-         # Source the file and use the variable
-         source .env && curl -H "Authorization: $S3M_TOKEN" \
-             https://s3m.olcf.ornl.gov/olcf/v1alpha/status
-
-      Please add such files to your ``.gitignore``! See :doc:`token-management` for more security best practices.
+      This approach keeps tokens out of your shell history and environment variables.
+      See :doc:`token-management` for more security best practices.
 
    .. tab-item:: Python
       :sync: python

@@ -26,7 +26,7 @@ Revoking a token invalidates it permanently. This is an irreversible action.
 
       .. code-block:: shell
 
-         curl -X DELETE -H "Authorization: $S3M_TOKEN" \
+         curl -X DELETE -H @.env \
              https://s3m.olcf.ornl.gov/olcf/v1/token/ctls/revoke
 
    .. tab-item:: Python
@@ -70,7 +70,7 @@ Retrieve details about the current token including its permissions, expiration, 
 
       .. code-block:: shell
 
-         curl -H "Authorization: $S3M_TOKEN" \
+         curl -H @.env \
              https://s3m.olcf.ornl.gov/olcf/v1/token/ctls/introspect
 
    .. tab-item:: Python
