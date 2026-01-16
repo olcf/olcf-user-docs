@@ -1,39 +1,59 @@
-.. _status_api:
+.. _s3m_status_api:
 
 ******
 Status
 ******
 
-The Status API is a series of unauthenticated endpoints that can be used to retrieve basic details on a number of resources and their potential upcoming downtimes. Please note that only resource-specific information related to the Facility API in the related security enclave is monitored.
+The Status API provides unauthenticated endpoints to retrieve resource status and scheduled downtimes. Only resource-specific information related to the Facility API in the related security enclave is monitored.
 
-**Required Permission:** None, all status endpoints are open.
+**Required Permission:** None—all status endpoints are open.
 
-GET Status for All Resources
----------------------------
+List All Resources
+------------------
 
-Obtain a list of all monitored resources, their status, and any upcoming downtimes: ``/olcf/v1alpha/status``
+Obtain a list of all monitored resources, their status, and any upcoming downtimes.
 
-.. code-block:: shell
+``GET /olcf/v1alpha/status``
 
-   curl https://s3m.olcf.ornl.gov/olcf/v1alpha/status
+.. tab-set::
 
-The ``downtimeScheduleAvailable`` field indicates if the associated resource has planned downtime scheduling available that will be reflected in the results. In most cases, testbed resources (e.g., Defiant) do plan for downtimes in advance due to their test-focused nature, and as such, ``upcomingDowntimes`` will likely be missing.
+   .. tab-item:: curl
+      :sync: curl
+
+      .. code-block:: shell
+
+         curl https://s3m.olcf.ornl.gov/olcf/v1alpha/status
+
+   .. tab-item:: Python
+      :sync: python
+
+      .. code-block:: python
+
+         from betterproto.lib.std.google.protobuf import Empty
+
+         client = factory.create_client(StatusStub)
+         resources = await client.list_resources(Empty())
+
+   .. tab-item:: Go
+      :sync: go
+
+      .. code-block:: go
+
+         import (
+             "context"
+             "google.golang.org/protobuf/types/known/emptypb"
+             statuspb "s3m.olcf.ornl.gov/apis/status/v1alpha"
+         )
+
+         client := statuspb.NewStatusClient(conn)
+         resources, err := client.ListResources(context.Background(), &emptypb.Empty{})
+
+**Response:**
 
 .. code-block:: json
 
    {
        "resources": [
-           {
-               "name": "olivine",
-               "description": "OpenShift cluster for testing Themis integration",
-               "systemType": "resource",
-               "securityEnclave": "open",
-               "organization": "olcf",
-               "status": "OPERATIONAL",
-               "annotations": {},
-               "downtimeScheduleAvailable": false,
-               "retrievedAt": "2024-04-19T13:45:01Z"
-           },
            {
                "name": "defiant",
                "description": "Defiant",
@@ -41,7 +61,6 @@ The ``downtimeScheduleAvailable`` field indicates if the associated resource has
                "securityEnclave": "open",
                "organization": "olcf",
                "status": "OPERATIONAL",
-               "annotations": {},
                "downtimeScheduleAvailable": true,
                "upcomingDowntimes": [
                    {
@@ -49,29 +68,15 @@ The ``downtimeScheduleAvailable`` field indicates if the associated resource has
                        "status": "UNAVAILABLE",
                        "start": "2024-04-20T11:40:00Z",
                        "end": "2024-04-21T11:40:00Z",
-                       "description": "Compute system hardware maintenance",
-                       "attributes": {
-                           "scheduled": true,
-                           "reboot": true
-                       },
-                       "updatedAt": "2024-04-19T13:40:29Z"
+                       "description": "Compute system hardware maintenance"
                    }
                ],
-               "retrievedAt": "2024-04-19T13:45:01Z"
-           },
-           {
-               "name": "wombat",
-               "description": "ARM86 Computational Resource",
-               "systemType": "resource",
-               "securityEnclave": "open",
-               "organization": "olcf",
-               "status": "UNAVAILABLE",
-               "annotations": {},
-               "downtimeScheduleAvailable": true,
                "retrievedAt": "2024-04-19T13:45:01Z"
            }
        ]
    }
+
+The ``downtimeScheduleAvailable`` field indicates if the resource has planned downtime scheduling. Testbed resources (e.g., Defiant) may not plan downtimes in advance, so ``upcomingDowntimes`` may be absent.
 
 .. list-table::
    :header-rows: 1
@@ -81,14 +86,46 @@ The ``downtimeScheduleAvailable`` field indicates if the associated resource has
    * - 15 minutes
      - None
 
-GET Status for Specific Resource
--------------------------------
+Get Specific Resource
+---------------------
 
-Obtain a list of a target resource (limited to a monitored resource), its status, and any upcoming downtimes: ``/olcf/v1alpha/status/{resourceName}``
+Obtain status for a single resource by name.
 
-.. code-block:: shell
+``GET /olcf/v1alpha/status/{resourceName}``
 
-   curl https://s3m.olcf.ornl.gov/olcf/v1alpha/status/defiant
+.. tab-set::
+
+   .. tab-item:: curl
+      :sync: curl
+
+      .. code-block:: shell
+
+         curl https://s3m.olcf.ornl.gov/olcf/v1alpha/status/defiant
+
+   .. tab-item:: Python
+      :sync: python
+
+      .. code-block:: python
+
+         from s3m_apis_betterproto.status.v1alpha import GetResourceRequest
+
+         client = factory.create_client(StatusStub)
+         resource = await client.get_resource(GetResourceRequest(resource_name="defiant"))
+
+   .. tab-item:: Go
+      :sync: go
+
+      .. code-block:: go
+
+         import (
+             "context"
+             statuspb "s3m.olcf.ornl.gov/apis/status/v1alpha"
+         )
+
+         client := statuspb.NewStatusClient(conn)
+         resource, err := client.GetResource(context.Background(), &statuspb.GetResourceRequest{ResourceName: "defiant"})
+
+**Response:**
 
 .. code-block:: json
 
@@ -99,7 +136,6 @@ Obtain a list of a target resource (limited to a monitored resource), its status
        "securityEnclave": "open",
        "organization": "olcf",
        "status": "OPERATIONAL",
-       "annotations": {},
        "downtimeScheduleAvailable": true,
        "upcomingDowntimes": [
            {
@@ -107,12 +143,7 @@ Obtain a list of a target resource (limited to a monitored resource), its status
                "status": "UNAVAILABLE",
                "start": "2024-04-20T11:40:00Z",
                "end": "2024-04-21T11:40:00Z",
-               "description": "Compute system hardware maintenance",
-               "attributes": {
-                   "scheduled": true,
-                   "reboot": true
-               },
-               "updatedAt": "2024-04-19T13:40:29Z"
+               "description": "Compute system hardware maintenance"
            }
        ],
        "retrievedAt": "2024-04-19T13:45:01Z"
@@ -126,14 +157,47 @@ Obtain a list of a target resource (limited to a monitored resource), its status
    * - 15 minutes
      - None
 
-GET Current Downtimes
----------------------
+List Current Downtimes
+----------------------
 
-Retrieve a list of all current downtimes for monitored resources: ``/olcf/v1alpha/status/downtimes``
+Retrieve all downtimes currently in effect.
 
-.. code-block:: shell
+``GET /olcf/v1alpha/status/downtimes``
 
-   curl https://s3m.olcf.ornl.gov/olcf/v1alpha/status/downtimes
+.. tab-set::
+
+   .. tab-item:: curl
+      :sync: curl
+
+      .. code-block:: shell
+
+         curl https://s3m.olcf.ornl.gov/olcf/v1alpha/status/downtimes
+
+   .. tab-item:: Python
+      :sync: python
+
+      .. code-block:: python
+
+         from betterproto.lib.std.google.protobuf import Empty
+
+         client = factory.create_client(StatusStub)
+         downtimes = await client.list_downtimes_current(Empty())
+
+   .. tab-item:: Go
+      :sync: go
+
+      .. code-block:: go
+
+         import (
+             "context"
+             "google.golang.org/protobuf/types/known/emptypb"
+             statuspb "s3m.olcf.ornl.gov/apis/status/v1alpha"
+         )
+
+         client := statuspb.NewStatusClient(conn)
+         downtimes, err := client.ListDowntimesCurrent(context.Background(), &emptypb.Empty{})
+
+**Response:**
 
 .. code-block:: json
 
@@ -162,14 +226,47 @@ Retrieve a list of all current downtimes for monitored resources: ``/olcf/v1alph
    * - 15 minutes
      - None
 
-GET Upcoming Downtimes
-----------------------
+List Upcoming Downtimes
+-----------------------
 
-Retrieve a list of all upcoming downtimes for monitored resources within the next 10 days: ``/olcf/v1alpha/status/downtimes/upcoming``
+Retrieve all scheduled downtimes within the next 10 days.
 
-.. code-block:: shell
+``GET /olcf/v1alpha/status/downtimes/upcoming``
 
-   curl https://s3m.olcf.ornl.gov/olcf/v1alpha/status/downtimes/upcoming
+.. tab-set::
+
+   .. tab-item:: curl
+      :sync: curl
+
+      .. code-block:: shell
+
+         curl https://s3m.olcf.ornl.gov/olcf/v1alpha/status/downtimes/upcoming
+
+   .. tab-item:: Python
+      :sync: python
+
+      .. code-block:: python
+
+         from betterproto.lib.std.google.protobuf import Empty
+
+         client = factory.create_client(StatusStub)
+         downtimes = await client.list_downtimes_upcoming(Empty())
+
+   .. tab-item:: Go
+      :sync: go
+
+      .. code-block:: go
+
+         import (
+             "context"
+             "google.golang.org/protobuf/types/known/emptypb"
+             statuspb "s3m.olcf.ornl.gov/apis/status/v1alpha"
+         )
+
+         client := statuspb.NewStatusClient(conn)
+         downtimes, err := client.ListDowntimesUpcoming(context.Background(), &emptypb.Empty{})
+
+**Response:**
 
 .. code-block:: json
 

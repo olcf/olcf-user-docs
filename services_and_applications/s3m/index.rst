@@ -6,5 +6,7 @@ S3M
    :maxdepth: 2
 
    overview
-   getting-started
+   get-a-token
+   set-up-your-project
+   api/index
    token-management

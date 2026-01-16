@@ -9,15 +9,14 @@ What is S3M (OLCF API)?
 
 .. note::
 
-    All elements of the OLCF Facility API in an
+    All elements of the OLCF Facility API are in an
     **early release** state and are subject to change without notification.
     As such these resources should only be used for the purposes of testing
     and should not be relied upon for any production workflows.
 
 The Secure Scientific Service Mesh (S3M) is an OLCF facility-managed gateway
-which aims to provide access to a wide range of API services. Y This is
-done via OLCF-Project level access tokens which can then be used with an
-OLCF-hosted API.
+which provides access to a range of API endpoints. The APIs are authenticated
+with OLCF Project Access Tokens.
 
 S3M Use Cases
 -------------

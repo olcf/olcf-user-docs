@@ -18,8 +18,8 @@ This can be accomplished in either of the following ways:
 
 1. Using the `myOLCF <https://s3m-myolcf.apps.olivine.ccs.ornl.gov/>`_ *Manage Tokens* interface:
 
-   .. image:: ../uploads/myolcf/revoke_token.png
-      :alt: myOLCF revoke token
+   .. image:: ../uploads/myolcf/Manage_Tokens.png
+      :alt: myOLCF Manage Tokens
 
 2. Using the token itself to request revocation:
 
@@ -50,13 +50,15 @@ always read tokens from environment variables when possible:
    }
 
    response = requests.get(
-       "https://s3m.olcf.ornl.gov/slurm/v0.0.42/defiant/ping",
+       "https://s3m.olcf.ornl.gov/slurm/v0.0.43/defiant/ping",
        headers=headers)
 
 Avoid Command-Line Arguments
 ---------------------------
 
-Depending on your system's configuration, providing secrets to an application via command-line arguments can expose them to other users or processes. For example, the full command a user has run can be easily observed by examining the processes found in ``/proc``:
+Depending on your system's configuration, providing secrets to an application via command-line arguments can expose
+them to other users or processes. For example, the full command a user has run can be easily observed by examining the
+processes found in ``/proc``:
 
 .. code-block:: shell
 
@@ -66,15 +68,14 @@ Depending on your system's configuration, providing secrets to an application vi
    user      123 pts/0    Sl+  11:32   0:00 ./example --token abc123
 
 Instead, loading secrets from environment variables or files is a safer
-option. For example, you can force `curl <https://www.man7.org/linux/man-pages/man1/curl.1.html>`_
-to read header files via *stdin* using the ``@`` symbol:
+option. For example, you can store your token in an env file and source it:
 
 .. code-block:: shell
 
-   $ cat header-file
-   AUTHORIZATION: eyJhbGc...
+   $ echo 'export S3M_TOKEN="eyJhbGc..."' > .env
 
-   $ curl -H @header-file https://s3m.olcf.ornl.gov/slurm/v0.0.42/defiant/ping
+   $ source .env && curl -H "Authorization: $S3M_TOKEN" \
+       https://s3m.olcf.ornl.gov/slurm/v0.0.43/defiant/ping
    {"meta":{"plugin":{"type":"openapi/slurmctld", "name":"Slurm OpenAPI slurmctld"...
 
 There are exceptions to these risks; however, it is always better to be safe
@@ -91,7 +92,6 @@ contain secrets are properly ignored. Some common files include:
 * `.helmignore <https://helm.sh/docs/chart_template_guide/helm_ignore_file/>`_
 
 There are other ways you can accidentally expose secrets, so take
-
 the time to examine your specific project's circumstances. Give extra care to
 any elements of the project that you are packaging for release.
 
