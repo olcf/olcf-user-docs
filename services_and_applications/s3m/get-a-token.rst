@@ -13,7 +13,7 @@ Get a Token
    - **Immediately revoke** exposed tokens (see :ref:`s3m_token_revocation`)
    - Use **minimum necessary permissions** for your workflow
 
-   For complete security guidance, see :doc:`token-management`.
+   For more on token security, see :doc:`token-management`.
 
 Access to the resources in the OLCF Facility API is restricted to your project via an access token. This means that
 when you generate a token using myOLCF it is always scoped to the project itself, not your user account. For example,

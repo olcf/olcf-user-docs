@@ -4,9 +4,9 @@
 Set Up Your Project
 ********************
 
-All S3M services are accessible via RESTful JSON APIs, so they're fully usable via ``curl`` or HTTP requests in your
-language. For more complex integrations, auto-generated Python and Go client libraries are available; these may help
-you catch issues with your requests, and make it easier to develop against S3M using an IDE with code assistance.
+All S3M services are accessible via RESTful JSON APIs, so you can use ``curl`` or HTTP requests in your language of
+choice. For more complex integrations, auto-generated Python and Go client libraries are available; these may help you
+catch issues with your requests and make it easier to develop against S3M using an IDE with code assistance.
 
 .. tab-set::
 

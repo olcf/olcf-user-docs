@@ -4,8 +4,7 @@
 Streaming
 *********
 
-The Streaming API enables on-demand provisioning of message queue clusters for high-throughput data streaming to OLCF
-compute resources.
+The Streaming API lets you provision message queue clusters for high-throughput data streaming to OLCF compute resources.
 
 **Required Permission:** ``data-streaming``
 

@@ -4,8 +4,8 @@
 API Reference
 *************
 
-All S3M APIs are accessible via REST. Use ``curl`` or any HTTP client to interact with them directly. Python and Go
-client libraries are also available for more complex integrations.
+All S3M services are accessible as RESTful APIs, via ``curl`` or any HTTP client. Python and Go client libraries are
+also available for more complex integrations.
 
 Most endpoints require authentication via the ``Authorization`` header with your S3M token. See :doc:`../get-a-token`
 to obtain one.

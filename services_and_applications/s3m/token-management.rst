@@ -4,9 +4,8 @@
 Token Management
 ****************
 
-Taking the time to properly manage tokens once they have been created is
-crucial to ensuring the security of your project's data and continued access
-to OLCF API resources. Here are a number of recommendations to assist you.
+A leaked token can expose your project's data and resources. This page covers
+how to avoid that.
 
 
 Immediately Revoke Tokens if Exposed!
@@ -102,25 +101,21 @@ any elements of the project that you are packaging for release.
 Principle of Least Privilege
 ---------------------------
 
-When generating tokens, always request the minimum permissions necessary for
-your workflow. Avoid using overly broad scopes or permissions. This reduces
-the potential impact if a token is ever compromised and helps enforce
-good security practices.
+Request only the permissions your workflow actually needs. If a token with
+limited scope gets compromised, the damage is limited too.
 
 Secure Storage of Tokens
 -----------------------
 
-Tokens should be stored securely and never in plaintext files or shared
-locations. Consider using secure storage solutions such as password managers,
-operating system keyrings, or dedicated secrets management tools. Avoid storing
-tokens in version control or in locations accessible to other users.
+Don't store tokens in plaintext files or shared locations. Password managers,
+OS keyrings, or secrets management tools are better options. Keep tokens out
+of version control and anywhere other users might see them.
 
 Example: Using Header Files Securely
 ------------------------------------
 
-When using tokens in your workflow, store the authorization header in a file
-and use curl's ``@`` syntax to read it. This keeps tokens out of your shell
-history and environment:
+Store the authorization header in a file and use curl's ``@`` syntax to read
+it. This keeps tokens out of your shell history:
 
 .. code-block:: shell
 
@@ -133,5 +128,5 @@ history and environment:
    # Use the header file with curl
    curl -H @.env https://s3m.olcf.ornl.gov/olcf/v1alpha/status
 
-This approach helps prevent accidental exposure of tokens in shell history,
-process listings, and environment variable dumps.
+This prevents tokens from showing up in shell history, process listings, and
+environment variable dumps.
