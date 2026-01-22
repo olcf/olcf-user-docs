@@ -1029,7 +1029,7 @@ The following sections describe in detail how to create, submit, and manage jobs
 Login vs Compute Nodes
 ----------------------
 
-Recall from the System Overview that Frontier contains two node types: Login and Compute. When you connect to the system, you are placed on a *login* node. Login nodes are used for tasks such as code editing, compiling, etc. They are shared among all users of the system, so it is not appropriate to run tasks that are long/computationally intensive on login nodes. Users should also limit the number of simultaneous tasks on login nodes (e.g., concurrent tar commands, parallel make 
+Recall from the System Overview that Frontier contains two node types: Login and Compute. When you connect to the system, you are placed on a *login* node. Login nodes are used for tasks such as code editing, compiling, etc. They are shared among all users of the system, so it is not appropriate to run tasks that are long/computationally intensive on login nodes. Users should also limit the number of simultaneous tasks on login nodes (e.g., concurrent tar commands, parallel make). 
 
 Compute nodes are the appropriate place for long-running, computationally-intensive tasks. When you start a batch job, your batch script (or interactive shell for batch-interactive jobs) runs on one of your allocated compute nodes.
 
@@ -1195,8 +1195,9 @@ The table below summarizes options for submitted jobs. Unless otherwise noted, t
     | ``-N``                 | ``#SBATCH -N 1024``                        | Request 1024 nodes for the job                                                       |
     +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
     | ``-t``                 | ``#SBATCH -t 4:00:00``                     | Request a walltime of 4 hours.                                                       |
-    |                        |                                            | Walltime requests can be specified as minutes, hours:minutes, hours:minuts:seconds   |
-    |                        |                                            | days-hours, days-hours:minutes, or days-hours:minutes:seconds                        |
+    |                        |                                            | A walltime request is the maximum amount of time a job will run and can be specified |
+    |                        |                                            | as minutes, hours:minutes, hours:minutes:seconds, days-hours, days-hours:minutes, or |
+    |                        |                                            | days-hours:minutes:seconds                                                           |
     +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
     | ``--threads-per-core`` | ``#SBATCH --threads-per-core=2``           | | Number of active hardware threads per core. Can be 1 or 2 (1 is default)           |
     |                        |                                            | | **Must** be used if using ``--threads-per-core=2`` in your ``srun`` command.       |
@@ -1364,7 +1365,7 @@ parameter, which all jobs in the bin receive.
 
 The ``batch`` partition (queue) is the default partition for production work on Frontier. Most work on Frontier is handled through this partition. The following policies are enforced for the ``batch`` partition:
 
-* Limit of four *eligible-to-run* jobs per user. (Jobs in excess of this number will be held, but will move to the eligible-to-run state at the appropriate time.)
+* Limit of four *eligible-to-run* jobs per user. (Jobs in excess of this number will be held, but will move to the eligible-to-run state and accumulate priority in the queue at the appropriate time.)
 * Users may have only 100 jobs queued across all partitions at any time (this includes jobs in all states), i.e., jobs submitted in different partitions on Frontier are added up together to check if its within the 100 queued jobs limit. Additional jobs will be rejected at submit time.
 
 
@@ -3593,7 +3594,75 @@ For example, to use rocprofiler-compute:
 As a rule of thumb, always load the ``rocprofiler-compute`` module last (especially after you load a ROCm module).
 If you load a new version of ROCm, you will need to re-load ``rocprofiler-compute``.
 
-----
+
+Omnistat - A lightweight ROCm system profiler
+---------------------------------------------
+
+Omnistat is an open-source data collection tool for system-level and job-level
+metrics in high-performance computing (HPC) clusters that use AMD Instinct GPUs
+using ROCm (v6.3.0 or newer). It is designed for large-scale system monitoring and
+detailed analysis.  Users can use Omnistat to profile and monitor node-level
+or ROCm GPU metrics while running their application.  GPU metrics
+include utilization, memory usage, power consumption, clock frequencies,
+temperatures, etc, on a per-GPU basis. See https://rocm.github.io/omnistat/ for
+documentation about Omnistat.
+
+The Omnistat developers have provided site-specific instructions on how to load
+and use Omnistat at ORNL.  This includes how to access the Omnistat
+module and how to run batch jobs on Frontier that collect Omnistat data.  See 
+https://rocm.github.io/omnistat/site.frontier.html for details.
+
+A user wanting to use Omnistat to profile their own code (user-mode) needs to
+first start Omnistat data collection via the command line. Then the user can
+start their own code running at the same time as the Omnistat profiling. Once
+the user's code has finished running, Omnistat data collection needs to be
+terminated via the command line. The captured metrics can be queried on the
+command line or downloaded and visualized.  Instructions in the Omnistat
+documentation provide guidance on using Graphana in a local Docker container to
+visualize the data, or the data can be exported to CSV files for analysis using
+tools such as Python Pandas. 
+
+The following simple example is taken directly from the above Omnistat
+documentation site for Frontier, with minor modifications for clarity.  
+
+.. code-block:: bash
+
+    ## Get an interactive single node session on Frontier (or submit a batch job with the script below)
+    ## salloc -A <ACCOUNT> -J omnistat -N 1 -t 00:30:00 -S 0
+
+    # Setup the Omnistat module provided by AMD
+    module unload darshan-runtime
+    module use /sw/frontier/amdsw/modulefiles
+    module load omnistat-wrapper
+
+    # If you have any http_proxy setup, unset it (the proxy interferes with Omnistat's
+    # ability to communicate with its server component)
+    # e.g. unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY proxy no_proxy all_proxy ftp_proxy
+
+    # Launch Omnistat monitoring (wrapper version), store data in a local temporary directory
+    export OMNISTAT_VICTORIA_DATADIR=/tmp/omnistat/${SLURM_JOB_ID}
+    ${OMNISTAT_WRAPPER} usermode --start --interval 1.0
+
+    # Your GPU application goes here, we simply run sleep for demonstration
+    # srun ./your_gpu_application
+    srun -n1 -c1 --gpus-per-task=1 --gpu-bind=closest sleep 60
+
+    # Stop Omnistat data exporters and query Omnistat data
+    ${OMNISTAT_WRAPPER} usermode --stopexporters
+    ${OMNISTAT_WRAPPER} query --job ${SLURM_JOB_ID} --interval 1 --export
+    # ${OMNISTAT_WRAPPER} query --interval 1.0 --job ${SLURM_JOB_ID}
+    # ${OMNISTAT_WRAPPER} query --interval 1.0 --job ${SLURM_JOB_ID} --pdf omnistat.${SLURM_JOB_ID}.pdf
+
+    # Tear down Omnistat
+    ${OMNISTAT_WRAPPER} usermode --stopserver
+
+You can find an overview presentation and video on Omnistat in the :ref:`OLCF
+Training Archive, <training-archive>`.
+
+.. csv-table::
+   :widths: 12 22 22 22 22
+
+    "2025-09-24", "Omnistat", "Karl Schulz and Jorda Polo (AMD)", `September 2025 OLCF User Conference Call <https://www.olcf.ornl.gov/calendar/userconcall-sep2025/>`__, (`recording <https://vimeo.com/1121958946>`__ | `slides <https://www.olcf.ornl.gov/wp-content/uploads/omnistat-overview-olcf-user-conference-sept-2025.pdf>`__ | `Q&A <https://www.olcf.ornl.gov/wp-content/uploads/Sep25_UserCall_Chat.txt>`__ | `tip <https://www.olcf.ornl.gov/wp-content/uploads/Sep2025_TOTM.pdf>`__ )
 
 
 .. _tips-and-tricks:
