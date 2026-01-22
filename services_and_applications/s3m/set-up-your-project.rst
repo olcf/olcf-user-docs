@@ -89,7 +89,7 @@ catch issues with your requests and make it easier to develop against S3M using 
 
          from s3m_apis_betterproto.status.v1alpha import StatusStub
          from s3m_apis_betterproto.slurm.v0043 import SlurmIndirectStub
-         from s3m_apis_betterproto.streaming.v1alpha import StreamingStub
+         from s3m_apis_betterproto.streaming.v1alpha import StreamingStub, RabbitMqStreamingStub, RedisStreamingStub
          from s3m_apis_betterproto.tms.v1 import TokenControlStub
 
    .. tab-item:: Go
