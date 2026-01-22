@@ -10,11 +10,6 @@ Overview
 This page contains example "Hello World!" scripts for each Quantum Computing User Program (QCUP) vendor.
 Although a given vendor may have various access options (see :doc:`/quantum/quantum_systems/index`), this page showcases how to run jobs in a local **scripting environment**.
 
-.. warning::
-   Installation instructions for the software packages needed to run each script are not provided here.
-   Example ``pip`` and ``conda`` syntax for each package can be found on our :doc:`Quantum Software on HPC Systems Page </quantum/quantum_software/hybrid_hpc>`.
-
-
 IBM Quantum 
 ===========
 
@@ -35,10 +30,10 @@ For more information please see:
      - ``qiskit``
      - ``qiskit-ibm-runtime``
      - ``qiskit-aer``
-   * - 3.12.0
-     - 2.1.2
-     - 0.41.1
-     - 0.17.1
+   * - 3.12.12
+     - 2.3.0
+     - 0.45.0
+     - 0.17.2
 
 .. note::
 
@@ -144,26 +139,21 @@ After running the above script(s), you should see something similar to:
 Quantinuum
 ==========
 
-.. note::
-    
-    The platform that ``pytket-quantinuum`` serves is being depreciated March 31, 2025 and will be replaced by Quantinuum Nexus.
-    ``pytket-quantinuum`` will continue to function, but won't be able to target new Quantinuum Nexus devices.
-
 The tket framework is a software platform for the development and execution of gate-level quantum computation, providing state-of-the-art performance in circuit compilation.
-`Pytket <https://tket.quantinuum.com/api-docs/>`__ is a python module for interfacing with tket, and installing the `Quantinuum pytket extension <https://cqcl.github.io/pytket-quantinuum/api/>`__ allows pytket circuits to be executed on Quantinuum's quantum devices.
 
 Quantinuum Nexus is a cloud-based quantum computing platform accessed via the ``qnexus`` Python package. Nexus offers users automated job and resource managment, as well as cloud storage and visibility of job resources.
 
+Guppy is a quantum programming language that is fully embedded into Python. It allows you to write high-level hybrid quantum programs with classical control flow and mid-circuit measurements using Pythonic syntax.
+
 For more information please see:
 
-* `<https://tket.quantinuum.com/api-docs/>`__
-* `<https://cqcl.github.io/pytket-quantinuum/api/>`__
-* `<https://tket.quantinuum.com/api-docs/getting_started.html>`__
-* `<https://docs.quantinuum.com/h-series/trainings/getting_started/pytket_quantinuum/pytket_quantinuum.html>`__
+* `Getting started with tket <https://docs.quantinuum.com/tket/user-guide/>`__
+* `Getting started with qnexus <https://docs.quantinuum.com/nexus/trainings/notebooks/basics/getting_started.html>`__
+* `Getting started with Guppy <https://docs.quantinuum.com/guppy/getting_started.html>`__
 
 .. tab-set::
 
-   .. tab-item:: Extensions
+   .. tab-item:: Model H2 (pytket)
 
         .. list-table:: Latest script tests
             :widths: 33 33 34
@@ -171,114 +161,31 @@ For more information please see:
 
             * - ``python``
               - ``pytket``
-              - ``pytket-quantinuum``
-            * - 3.11.9
-              - 1.31.1
-              - 0.37.0
-
-        .. code-block:: python
-
-            from pytket.circuit import Circuit
-            from pytket.extensions.quantinuum import QuantinuumBackend
-            from pytket.backends import ResultHandle
-            from pytket.backends.backendresult import BackendResult
-            import json
-            import time
-
-            # Build the circuit
-            circuit = Circuit(2, name="Bell Test")
-            circuit.H(0)
-            circuit.CX(0, 1)
-            circuit.measure_all()
-
-            # Choose your machine and login (e.g., H1-1E and CSC431 group)
-            machine = "H1-1E"
-            backend = QuantinuumBackend(device_name=machine, group="CSC431")
-            backend.login()
-
-            # Status of desired machine
-            print(machine, "status:", QuantinuumBackend.device_state(device_name=machine))
-
-            # List available devices
-            print([x.device_name for x in QuantinuumBackend.available_devices()])
-
-            # Compile circuit
-            compiled_circuit = backend.get_compiled_circuit(circuit, optimisation_level=0)
-            n_shots = 100
-
-            # Estimate the cost (H1-1SC, H2-1SC are syntax checkers for H1-1 and H2-1)
-            # Causes problems when on an HPC compute node w/ proxy settings -- advised to run separately on login node w/o proxy
-            #backend.cost(compiled_circuit, n_shots=n_shots, syntax_checker="H1-1SC")
-
-            # Run the circuit
-            handle = backend.process_circuit(compiled_circuit, n_shots=n_shots)
-            print(handle)
-
-            # Save your job handle
-            with open("pytket_example_job_handle.json", "w") as file:
-                json.dump(str(handle), file)
-
-            # Check status of job (loop is necessary on an HPC compute node w/ proxy settings or else timeouts occur)
-            while str( backend.circuit_status(handle).status ) != "StatusEnum.COMPLETED":
-                status = backend.circuit_status(handle)
-                print("Job status is", status.status )
-                time.sleep(10)
-            status = backend.circuit_status(handle)
-            print("Job status is", status )
-
-            # Retrieve and print results
-            with open("pytket_example_job_handle.json") as file:
-                handle_str = json.load(file)
-            handle = ResultHandle.from_str(handle_str)
-            result = backend.get_result(handle)
-            print(result.get_distribution())
-            print(result.get_counts())
-
-            # Save results
-            with open("pytket_example.json", "w") as file:
-                json.dump(result.to_dict(), file)
-
-            # Not necesary here, but including syntax
-            # Load results
-            with open("pytket_example.json") as file:
-                data = json.load(file)
-            result = BackendResult.from_dict(data)
-
-        After running the above script, you should see something similar to:
-
-        .. code-block::
-
-            {(0, 0): 0.57, (1, 1): 0.43}
-            Counter({(0, 0): 57, (1, 1): 43})
-    
-   .. tab-item:: Nexus
-        
-        .. list-table:: Latest script tests
-            :widths: 33 33 33
-            :header-rows: 1
-        
-            * - ``python``
-              - ``pytket``
               - ``qnexus``
-            * - 3.11.11
-              - 1.41.0
-              - 0.11.0
+            * - 3.12.12
+              - 2.11.0
+              - 0.39.0
 
         .. code-block:: python
 
-            from pytket.circuit import Circuit
+            from pytket import Circuit
             import qnexus as qnx
-            import datetime
-            import time
+            import uuid
 
-            # Choose your machine and login (e.g., H1-1E)
-            machine = "H1-1E"
+            ##### Nexus Details #####
 
-            # Login using username and password.
-            qnx.login_with_credentials()
+            # Select the backend here:
+            MACHINE = "H2-1E"
 
-            # Nexus contains all jobs in projects. Setup a new project called "Nexus-Test"
-            project = qnx.projects.get_or_create(name="Nexus-Test")
+            # Login to Nexus
+            # qnx.login() # interactive login via browser
+            qnx.login_with_credentials() # login via python prompt
+
+            # Setup a dummy suffix for this job
+            unique_suffix = uuid.uuid1()
+
+            # Nexus contains all jobs in projects. Setup a new project called "Hello-QCUP"
+            project = qnx.projects.get_or_create("Hello-QCUP")
             qnx.context.set_active_project(project)
 
             # Get simulator and emulator devices
@@ -287,87 +194,248 @@ For more information please see:
 
             # Get simulator and emulator devices specifically hosted on Nexus
             device_df = qnx.devices.get_all(nexus_hosted=True).df()
-            print("Available Nexus Devices:",[device for device in device_df['device_name'].tolist()])
+            print("Available Nexus Devices: \n", device_df)
 
-            # All job names must be unique within a Nexus project.
-            jobname_suffix = datetime.datetime.now().strftime("%Y_%m_%d-%H-%M-%S")
+            # Make and upload circuit
+            my_circuit_ref = qnx.circuits.upload(
+                name=f"Hello-QCUP-{unique_suffix}",
+                circuit=Circuit(2).H(0).CX(0, 1).measure_all(),
+                project=project,
+            )
 
-            # Create a configuration to target the desired machine with a specific group (e.g., STF007)
-            config = qnx.QuantinuumConfig(device_name=machine, user_group="STF007")
+            # Compile on Nexus
 
-            # Build the circuit
-            circuit = Circuit(2, name="Bell Test")
-            circuit.H(0)
-            circuit.CX(0, 1)
-            circuit.measure_all()
+            compile_job_ref = qnx.start_compile_job(
+                programs=[my_circuit_ref],
+                name=f"Hello-QCUP-compile-{unique_suffix}",
+                optimisation_level=1,
+                backend_config=qnx.QuantinuumConfig(device_name=f"{MACHINE}"),
+                project=project,
+                skip_intermediate_circuits=False,  # Store compiled circuits
+            )
 
+            # Block until the job is complete
+            qnx.jobs.wait_for(compile_job_ref)
 
-            # It is required that all circuits be uploaded to the nexus database
-            # before compilation/execution jobs can be used.
+            compiled_circuits = [item.get_output() for item in qnx.jobs.results(compile_job_ref)]
 
-            ref = qnx.circuits.upload(circuit=circuit, name=f"Bell-Test-{jobname_suffix}")
+            # Execute on Nexus
 
-            # Compile job
-            ref_compile_job = qnx.start_compile_job(
-                    circuits=[ref],
-                    backend_config=config,
-                    optimisation_level=2,
-                    name=f"Bell-compiliation-{jobname_suffix}"
-                    )
+            execute_job_ref = qnx.start_execute_job(
+                programs=compiled_circuits,
+                name=f"Hello-QCUP-execute-{unique_suffix}",
+                n_shots=[100] * len(compiled_circuits),
+                backend_config=qnx.QuantinuumConfig(device_name=f"{MACHINE}"),
+                project=project,
+            )
 
-            #Further operations must be blocked while a job is running.
-            print("Compile job status:", qnx.jobs.status(ref_compile_job).status)
-            qnx.jobs.wait_for(ref_compile_job,timeout=600.0)
-            print("Compile job status:", qnx.jobs.status(ref_compile_job).status)    
+            # Block until the job is complete
+            # Default timeout is 900 seconds
+            qnx.jobs.wait_for(execute_job_ref, timeout=900.0)
 
-            # Get the compiled circuit.
-            ref_compiled_circuit = qnx.jobs.results(ref_compile_job)[0].get_output()
-            compiled_circuit = ref_compiled_circuit.download_circuit()
+            # If you ever need to get `execute_job_ref` manually from Nexus (i.e., if your script timed out before the job completed)
+            # You can retrieve the job reference like so:
+            # execute_job_ref = qnx.client.jobs.get(id='PASTE JOB ID FROM NEXUS HERE')
 
-            # Execute the job.
-            ref_execute_job = qnx.start_execute_job(
-                    circuits=[ref_compiled_circuit],
-                    n_shots=[100],
-                    backend_config=config,
-                    name=f"Bell-execute-{jobname_suffix}"
-                    )
+            # Retrieve a ExecutionResultRef for every Circuit that was run
+            execute_job_result_refs = qnx.jobs.results(execute_job_ref, allow_incomplete=True)
 
-            # Get job status and halt further operations while job runs.
-
-            print("Execute job status:", qnx.jobs.status(ref_execute_job).status)
-            qnx.jobs.wait_for(ref_execute_job,timeout=600.0)[0]
-            print("Execute job status:", qnx.jobs.status(ref_execute_job).status)
-
-            # Get results.
-            ref_result = qnx.jobs.results(ref_execute_job)[0]
-            backend_results = ref_result.download_result()
-            print(backend_results.get_distribution())
-            print(backend_results.get_counts())
-
-            # Logout
-            qnx.client.auth.logout()
+            # Get the results of the execution
+            result = execute_job_result_refs[0].download_result()
+            result.get_counts()
 
         After running the above script, you should see something similar to:
 
         .. code-block::
 
-            {(0, 0): 0.57, (1, 1): 0.43}
             Counter({(0, 0): 57, (1, 1): 43})
+    
+   .. tab-item:: Helios (Guppy)
+        
+        .. list-table:: Latest script tests
+            :widths: 25 25 25 25
+            :header-rows: 1
+        
+            * - ``python``
+              - ``pytket``
+              - ``qnexus``
+              - ``guppylang``
+            * - 3.12.12
+              - 2.11.0
+              - 0.39.0
+              - 0.21.6
+
+        .. code-block:: python
+
+            from guppylang import guppy
+            from guppylang.std.builtins import owned, result
+            from guppylang.std.quantum import cx, h, measure, qubit, x, z
+
+            import qnexus as qnx
+            import uuid
+            import numpy as np
+
+            ##### Nexus Details #####
+
+            # Select the backend here:
+            # Options: "Helios-1", "Helios-1E", "Helios-1E-lite", "Selene", "SelenePlus"
+            MACHINE = "Helios-1E"
+
+            # Login to Nexus
+            # qnx.login() # interactive login via browser
+            qnx.login_with_credentials() # login via python prompt
+
+            # Setup a dummy suffix for this job
+            unique_suffix = uuid.uuid1()
+
+            # Nexus contains all jobs in projects. Setup a new project called "Hello-QCUP"
+            project = qnx.projects.get_or_create("Hello-QCUP")
+            qnx.context.set_active_project(project)
+
+            # Get simulator and emulator devices
+            device_df = qnx.devices.get_all(nexus_hosted=False).df()
+            print("Available Quantinuum Devices:",[device for device in device_df['device_name'].tolist()])
+
+            # Get simulator and emulator devices specifically hosted on Nexus
+            device_df = qnx.devices.get_all(nexus_hosted=True).df()
+            print("Available Nexus Devices: \n", device_df)
+
+            ##### Circuit Definition #####
+            @guppy
+            def teleport(src: qubit @owned, tgt: qubit) -> None:
+                """Teleports the state in `src` to `tgt`."""
+                # Create ancilla and entangle it with src and tgt
+                tmp = qubit()
+                h(tmp)
+                cx(tmp, tgt)
+                cx(src, tmp)
+
+                # Apply classical corrections
+                h(src)
+                if measure(src):
+                    z(tgt)
+                if measure(tmp):
+                    x(tgt)
+
+            ##### Define Function to Call Circuit #####
+            @guppy
+            def teleport_one_state() -> None:
+                src = qubit()
+                tgt = qubit()
+
+                # Let's teleport the |1> state
+                x(src)
+                teleport(src, tgt)
+
+                result("teleported", measure(tgt))
+
+            ##### Running Locally on Emulator #####
+            sim_result = teleport_one_state.emulator(n_qubits=3).stabilizer_sim().with_seed(2).run()
+            print('Local Results: \n', list(sim_result.results))
+
+            ##### Compile and Upload to Nexus #####
+
+            # HUGR programs only for Helios devices
+            hugr_binary = teleport_one_state.compile()
+
+
+            ref_hugr = qnx.hugr.upload(
+                hugr_binary, 
+                name=f"repeat-until-success-{unique_suffix}"
+            )
+
+            # checks against syntax checker Helios-1SC
+            prediction = qnx.hugr.cost(
+                programs=[ref_hugr], 
+                n_shots=[10]
+            )
+
+            ##### System Configurations #####
+            match MACHINE:
+                case "Helios-1":
+                    # Quantinuum Device (measured via HQCs)
+                    config = qnx.QuantinuumConfig(
+                        device_name="Helios-1",
+                        max_cost=np.ceil(prediction),
+                        compiler_options={'max-qubits': 3}
+                    )
+
+                case "Helios-1E":
+                    # Quantinuum Device (measured via HQCs)
+                    config = qnx.QuantinuumConfig(
+                        device_name="Helios-1E",
+                        max_cost=np.ceil(prediction),
+                        compiler_options={'max-qubits': 3}
+                    )
+
+                case "Helios-1E-lite":
+                    # Nexus Device (measured via execution time)
+                    config = qnx.models.HeliosConfig(
+                        system_name="Helios-1E-lite",
+                        emulator_config=qnx.models.HeliosEmulatorConfig(n_qubits=3)
+                    )
+
+                case "Selene":
+                    # Nexus Device (measured via execution time)
+                    # Selene Simulators Options: StatevectorSimulator, StabilizerSimulator, CoinflipSimulator, ClassicalReplaySimulator
+                    # Selene Runtime Options: SimpleRuntime
+                    # Selene Error Model Options: NoErrorModel, DepolarizingErrorModel
+                    # SEED IS OPTIONAL
+                    config = qnx.SeleneConfig(
+                        n_qubits=3,
+                        runtime={"type": "SimpleRuntime", "seed": "42"},
+                        error_model={"type": "NoErrorModel", "seed": "42"},
+                        simulator={"type": "StabilizerSimulator", "seed": "42"}
+                    )
+
+                case "SelenePlus":
+                    # Nexus Device (measured via execution time)
+                    # SelenePlus Simulators Options: StatevectorSimulator, StabilizerSimulator, MatrixProductStateSimulator, CoinflipSimulator, ClassicalReplaySimulator
+                    # SelenePlus Runtime Options: SimpleRuntime, HeliosRuntime
+                    # SelenePlus Error Model Options: NoErrorModel, DepolarizingErrorModel, QSystemErrorModel, HeliosCustomErrorModel
+                    # SEED IS OPTIONAL
+                    config = qnx.SelenePlusConfig(
+                        n_qubits=3,
+                        runtime={"type": "HeliosRuntime", "seed": "42"},
+                        error_model={"type": "HeliosCustomErrorModel", "seed": "42"},
+                        simulator={"type": "StatevectorSimulator", "seed": "42"}
+                    )
+
+                case _:
+                    raise ValueError(f"Unsupported MACHINE selection: {MACHINE}")
+
+            ##### Running the Job Remotely #####
+
+            result_ref = qnx.start_execute_job(
+                programs=[ref_hugr],
+                n_shots=[10],
+                backend_config=config,
+                name=f"Hello-QCUP-{unique_suffix}"
+            )
+
+            qnx.jobs.wait_for(result_ref)
+            print(result_ref)
+            job_result = qnx.jobs.results(result_ref)[0].download_result()
+            print('Remote Results: \n', job_result)
+
+        After running the above script, you should see something similar to:
+
+        .. code-block::
+
+            QsysResult(results=[QsysShot(entries=[['teleported', 1]])
 
 IonQ
 ====
 
 IonQ has many pathways to accessing their quantum backends.
-Although the script below uses the `Qiskit IonQ Provider <https://docs.ionq.com/guides/sdks/qiskit>`__ , details on how to use Cirq, PennyLane, XACC, and more can be found in the `IonQ Documentation <https://docs.ionq.com/introduction>`__ .
-One useful resource that showcases multiple access pathways is their `Hello Many Worlds <https://ionq.com/resources/anthology/developers/hello-many-worlds-in-7-quantum-languages>`__ tutorial.
+Although the script below uses the `Qiskit IonQ Provider <https://docs.ionq.com/sdks/qiskit>`__ , details on how to use Cirq, PennyLane, XACC, and more can be found in the `IonQ Documentation <https://docs.ionq.com>`__ .
 
 For more information please see:
 
 * `<https://docs.ionq.com/>`__
 * `<https://ionq.com/resources>`__
-* `<https://ionq.com/resources/anthology/developers/hello-many-worlds-in-7-quantum-languages>`__
 * `<https://docs.ionq.com/guides/managing-api-keys>`__
-* `<https://docs.ionq.com/guides/sdks/qiskit>`__
+* `<https://docs.ionq.com/sdks/qiskit>`__
 
 .. list-table:: Latest script tests
    :widths: 33 33 34
@@ -376,9 +444,9 @@ For more information please see:
    * - ``python``
      - ``qiskit``
      - ``qiskit-ionq``
-   * - 3.11.9
-     - 1.2.0
-     - 0.5.4
+   * - 3.12.12
+     - 2.3.0
+     - 1.0.2
 
 .. code-block:: python
 
@@ -393,8 +461,9 @@ For more information please see:
     provider = IonQProvider()
     print(provider.backends())
 
-    # Run on "ionq_simulator", "ionq_qpu", "simulator", "qpu.harmony", "qpu.aria-1", "qpu.aria-2"
+    # Run on "simulator", "qpu.aria-1", "qpu.forte-1", "qpu.forte-enterprise-1"
     backend = provider.get_backend("simulator")
+    #backend.set_options(noise_model="forte-1") # Optional: set a noise model for a simulator
 
     # Create a basic Bell State circuit:
     qc = QuantumCircuit(2, 2)
@@ -425,7 +494,7 @@ An IQM+Qiskit plugin provides access to IQM backends.
 
 For more information please see:
 
-* `<https://iqm-finland.github.io/qiskit-on-iqm/user_guide.html>`__
+* `<https://docs.meetiqm.com/iqm-client/user_guide_qiskit.html>`__
 
 .. note::
 
@@ -437,21 +506,22 @@ For more information please see:
 
    * - ``python``
      - ``qiskit``
-     - ``qiskit-iqm``
-   * - 3.11.11
-     - 1.1.2
-     - 15.5
+     - ``iqm-client``
+   * - 3.12.12
+     - 2.1.2
+     - 33.0.3
 
 .. code-block:: python
 
     from iqm.qiskit_iqm import IQMProvider, transpile_to_IQM
     from qiskit import QuantumCircuit
 
-    # Backend to connect to (e.g., Garnet's algorithm checker)
-    server_url = "https://cocos.resonance.meetiqm.com/garnet:mock"
 
     # Authentication token (alternatively can set the IQM_TOKEN environment variable)
     api_token = "PUT TOKEN HERE"
+
+    # Backend to connect to (e.g., Emerald's algorithm checker)
+    provider = IQMProvider("https://resonance.meetiqm.com/", quantum_computer="emerald:mock", token=api_token)
 
     SHOTS = 100
 
@@ -466,7 +536,7 @@ For more information please see:
     qc.measure_all()
 
     # Initialize backend
-    backend = IQMProvider(server_url, token=api_token).get_backend()
+    backend = provider.get_backend()
 
     # Transpile circuit
     qc_transpiled = transpile_to_IQM(qc, backend)
