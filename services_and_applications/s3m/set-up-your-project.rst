@@ -39,6 +39,10 @@ catch issues with your requests and make it easier to develop against S3M using 
    .. tab-item:: Python
       :sync: python
 
+      .. note::
+
+         The gRPC API specs, Python client package, and Go client package are not yet publicly available. ORNL-internal users may request access on a case-by-case basis by contacting the S3M team: `olcf-s3m@email.ornl.gov <mailto:olcf-s3m@email.ornl.gov>`__.
+
       **Prerequisites**
 
       * Python 3.9+
@@ -90,6 +94,10 @@ catch issues with your requests and make it easier to develop against S3M using 
 
    .. tab-item:: Go
       :sync: go
+
+      .. note::
+
+         The gRPC API specs, Python client package, and Go client package are not yet publicly available. ORNL-internal users may request access on a case-by-case basis by contacting the S3M team: `olcf-s3m@email.ornl.gov <mailto:olcf-s3m@email.ornl.gov>`__
 
       **Prerequisites**
 
