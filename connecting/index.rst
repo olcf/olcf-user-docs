@@ -76,7 +76,7 @@ Activating a new SecurID fob
 #. When prompted for a PASSCODE, enter the 6-digit code shown on the
    fob.
 #. You will be asked if you are ready to set your PIN. Answer with "Y".
-#. You will be prompted to enter a PIN. Enter a (4) to (6) digit number
+#. You will be prompted to enter a PIN. Enter a (4) to (8) digit number
    you can remember. You will then be prompted to re-enter your PIN.
 #. Allow the 6-digit code to change (codes regenerate every 30 seconds).
    Once the (6) digits on your fob change, enter your PIN followed by
