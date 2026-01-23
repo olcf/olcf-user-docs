@@ -53,7 +53,7 @@ always read tokens from environment variables when possible:
        headers=headers)
 
 Avoid Command-Line Arguments
----------------------------
+----------------------------
 
 Depending on your system's configuration, providing secrets to an application via command-line arguments can expose
 them to other users or processes, even when storing tokens in variables.
@@ -99,13 +99,13 @@ any elements of the project that you are packaging for release.
 
 
 Principle of Least Privilege
----------------------------
+----------------------------
 
 Request only the permissions your workflow actually needs. If a token with
 limited scope gets compromised, the damage is limited too.
 
 Secure Storage of Tokens
------------------------
+------------------------
 
 Don't store tokens in plaintext files or shared locations. Password managers,
 OS keyrings, or secrets management tools are better options. Keep tokens out
