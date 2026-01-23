@@ -8,6 +8,13 @@ All S3M services are accessible via RESTful JSON APIs, so you can use ``curl`` o
 choice. For more complex integrations, auto-generated Python and Go client libraries are available; these may help you
 catch issues with your requests and make it easier to develop against S3M using an IDE with code assistance.
 
+.. note::
+
+   The following OpenAPI v3 spec is not publicly available.
+   ORNL-internal users may request access by contacting the S3M team: `olcf-s3m@email.ornl.gov <mailto:olcf-s3m@email.ornl.gov>`__.
+
+You can obtain the S3M API's OpenAPI v3 specs `here <https://code.ornl.gov/s3m/s3m-apis.specs/-/blob/main/openapi3/openapi.yaml?ref_type=heads>`__.
+
 .. tab-set::
 
    .. tab-item:: curl (REST)
@@ -16,13 +23,6 @@ catch issues with your requests and make it easier to develop against S3M using 
       **No Setup Required**
 
       Use ``curl`` or any HTTP client to call the REST API directly.
-
-      .. note::
-
-         The following OpenAPI v3 spec is not publicly available.
-         ORNL-internal users may request access by contacting the S3M team: `olcf-s3m@email.ornl.gov <mailto:olcf-s3m@email.ornl.gov>`__.
-
-      You can obtain the S3M OpenAPI v3 specs `here <https://code.ornl.gov/s3m/s3m-apis.specs/-/blob/main/openapi3/openapi.yaml?ref_type=heads>`__.
 
       **Authentication**
 
