@@ -11,7 +11,7 @@ The Status API provides unauthenticated endpoints to retrieve resource status an
 .. note::
 
    The Python and Go examples on this page use gRPC client packages that are not yet publicly available.
-   ORNL-internal users may request access on a case-by-case basis by contacting the S3M team: `olcf-s3m@email.ornl.gov <mailto:olcf-s3m@email.ornl.gov>`__.
+   ORNL-internal users may request access by contacting the S3M team: `olcf-s3m@email.ornl.gov <mailto:olcf-s3m@email.ornl.gov>`__.
    The REST API (via curl or otherwise) is available to all users.
 
 List All Resources
