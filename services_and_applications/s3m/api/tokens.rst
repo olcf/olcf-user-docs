@@ -115,7 +115,7 @@ Retrieve details about the current token including its permissions, expiration, 
        "description": "docs-example-01",
        "oneTimeToken": false,
        "delayedStart": false,
-       "delayDuration": ""
+       "delayDate": ""
      }
    }
 
@@ -176,5 +176,5 @@ OLCF Project Access Tokens are JWTs. The payload conveys basic metadata, but the
      - If true, token can only be used once
    * - ``delayedStart``
      - If true, token activation was delayed
-   * - ``delayDuration``
-     - How long the activation was delayed
+   * - ``delayDate``
+     - When the delayed activation will begin (ISO 8601)
