@@ -10,12 +10,19 @@ catch issues with your requests and make it easier to develop against S3M using 
 
 .. tab-set::
 
-   .. tab-item:: curl
+   .. tab-item:: curl (REST)
       :sync: curl
 
       **No Setup Required**
 
       Use ``curl`` or any HTTP client to call the REST API directly.
+
+      .. note::
+
+         The following OpenAPI v3 spec is not publicly available.
+         ORNL-internal users may request access on a case-by-case basis by contacting the S3M team: `olcf-s3m@email.ornl.gov <mailto:olcf-s3m@email.ornl.gov>`__.
+
+      You can obtain the S3M OpenAPI v3 specs `here <https://code.ornl.gov/s3m/s3m-apis.specs/-/blob/main/openapi3/openapi.yaml?ref_type=heads>`__.
 
       **Authentication**
 
