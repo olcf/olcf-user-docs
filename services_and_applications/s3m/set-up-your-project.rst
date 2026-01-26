@@ -174,3 +174,46 @@ You can obtain the S3M API's OpenAPI v3 spec `here <https://code.ornl.gov/s3m/s3
              streamingpb "s3m.olcf.ornl.gov/apis/streaming/v1alpha"
              tmspb "s3m.olcf.ornl.gov/apis/tms/v1"
          )
+
+   .. tab-item:: Python (``requests``)
+        :sync: python-requests
+
+        **Prerequisites**
+
+        * Python 3.9+
+        * ``requests`` Python library
+        * a ``.env`` file with ``S3M_TOKEN=<your token>``
+
+        **Setup**
+
+        .. code-block:: bash
+
+            source .env
+            pip install requests
+
+        **Authentication and Usage**
+
+        .. code-block:: python
+
+            import os
+            import requests
+
+            S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/olcf/v1alpha"
+            S3M_TOKEN = os.getenv("S3M_TOKEN")
+
+            # This sets the Authorization header like the curl example
+            headers = {
+                "Authorization": S3M_TOKEN,
+            }
+
+            response = requests.get(
+                S3M_BASE_PATH + "/status", # to target the "status" service
+                headers=headers,
+            )
+
+            if response.ok:
+                status_response = response.json()
+                print(status_response)
+
+            else:
+                raise ValueError("Request to S3M failed")
