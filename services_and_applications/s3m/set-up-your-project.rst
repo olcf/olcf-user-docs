@@ -184,6 +184,8 @@ You can obtain the S3M API's OpenAPI v3 spec `here <https://code.ornl.gov/s3m/s3
         * ``requests`` Python library
         * a ``.env`` file with ``S3M_TOKEN=<your token>``
 
+        You can read more about the Python ``requests`` library here: https://requests.readthedocs.io/en/latest/user/quickstart/
+
         **Setup**
 
         .. code-block:: bash

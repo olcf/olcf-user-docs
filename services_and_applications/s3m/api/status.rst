@@ -54,6 +54,26 @@ Obtain a list of all monitored resources, their status, and any upcoming downtim
          client := statuspb.NewStatusClient(conn)
          resources, err := client.ListResources(context.Background(), &emptypb.Empty{})
 
+   .. tab-item:: Python (``requests``)
+        :sync: python-requests
+
+        .. code-block:: python
+
+            import requests
+
+            S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/olcf/v1alpha"
+
+            response = requests.get(
+                S3M_BASE_PATH + "/status",
+            )
+
+            if response.ok:
+                status_response = response.json()
+                print(status_response)
+
+            else:
+                raise ValueError("Request to S3M failed")
+
 **Response:**
 
 .. code-block:: json
@@ -131,6 +151,26 @@ Obtain status for a single resource by name.
          client := statuspb.NewStatusClient(conn)
          resource, err := client.GetResource(context.Background(), &statuspb.GetResourceRequest{ResourceName: "defiant"})
 
+   .. tab-item:: Python (``requests``)
+        :sync: python-requests
+
+        .. code-block:: python
+
+            import requests
+
+            S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/olcf/v1alpha"
+
+            response = requests.get(
+                S3M_BASE_PATH + "/status/defiant",
+            )
+
+            if response.ok:
+                status_response = response.json()
+                print(status_response)
+
+            else:
+                raise ValueError("Request to S3M failed")
+
 **Response:**
 
 .. code-block:: json
@@ -203,6 +243,27 @@ Retrieve all downtimes currently in effect.
          client := statuspb.NewStatusClient(conn)
          downtimes, err := client.ListDowntimesCurrent(context.Background(), &emptypb.Empty{})
 
+   .. tab-item:: Python (``requests``)
+        :sync: python-requests
+
+        .. code-block:: python
+
+            import requests
+
+            S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/olcf/v1alpha"
+
+            response = requests.get(
+                S3M_BASE_PATH + "/status/downtimes",
+            )
+
+            if response.ok:
+                status_response = response.json()
+                print(status_response)
+
+            else:
+                raise ValueError("Request to S3M failed")
+
+
 **Response:**
 
 .. code-block:: json
@@ -271,6 +332,27 @@ Retrieve all scheduled downtimes within the next 10 days.
 
          client := statuspb.NewStatusClient(conn)
          downtimes, err := client.ListDowntimesUpcoming(context.Background(), &emptypb.Empty{})
+
+   .. tab-item:: Python (``requests``)
+        :sync: python-requests
+
+        .. code-block:: python
+
+            import requests
+
+            S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/olcf/v1alpha"
+
+            response = requests.get(
+                S3M_BASE_PATH + "/downtimes/upcoming",
+            )
+
+            if response.ok:
+                status_response = response.json()
+                print(status_response)
+
+            else:
+                raise ValueError("Request to S3M failed")
+
 
 **Response:**
 
