@@ -92,7 +92,7 @@ Check the health status of a compute resource.
 
                 if response.ok:
                     compute_response = response.json()
-                    print(token_response)
+                    print(compute_response)
 
                 else:
                     raise ValueError("Request to S3M failed")
@@ -163,7 +163,7 @@ Get available partitions (queues) on a resource.
 
                 if response.ok:
                     compute_response = response.json()
-                    print(token_response)
+                    print(compute_response)
 
                 else:
                     raise ValueError("Request to S3M failed")
@@ -288,7 +288,7 @@ Submit a new batch job to the scheduler.
 
                 if response.ok:
                     compute_response = response.json()
-                    print(token_response)
+                    print(compute_response)
 
                 else:
                     raise ValueError("Request to S3M failed")
@@ -368,7 +368,7 @@ Retrieve details about a specific job.
 
                 if response.ok:
                     compute_response = response.json()
-                    print(token_response)
+                    print(compute_response)
 
                 else:
                     raise ValueError("Request to S3M failed")
@@ -439,7 +439,7 @@ Retrieve all jobs visible to your project.
 
                 if response.ok:
                     compute_response = response.json()
-                    print(token_response)
+                    print(compute_response)
 
                 else:
                     raise ValueError("Request to S3M failed")
@@ -510,7 +510,7 @@ Cancel a running or pending job.
 
                 if response.ok:
                     compute_response = response.json()
-                    print(token_response)
+                    print(compute_response)
 
                 else:
                     raise ValueError("Request to S3M failed")
@@ -586,7 +586,7 @@ Get information about compute nodes on a resource.
 
                 if response.ok:
                     compute_response = response.json()
-                    print(token_response)
+                    print(compute_response)
 
                 else:
                     raise ValueError("Request to S3M failed")
@@ -657,7 +657,7 @@ Get reservations on a resource.
 
                 if response.ok:
                     compute_response = response.json()
-                    print(token_response)
+                    print(compute_response)
 
                 else:
                     raise ValueError("Request to S3M failed")
@@ -728,7 +728,7 @@ Get diagnostic information about the SLURM scheduler.
 
                 if response.ok:
                     compute_response = response.json()
-                    print(token_response)
+                    print(compute_response)
 
                 else:
                     raise ValueError("Request to S3M failed")
