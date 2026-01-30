@@ -68,6 +68,36 @@ Check the health status of a compute resource.
          client := slurmv0043pb.NewSlurmIndirectClient(conn)
          pong, err := client.Ping(context.Background(), &emptypb.Empty{})
 
+   .. tab-item:: Python (``requests``)
+    :sync: python-requests
+
+        .. code-block:: python
+
+                import os
+                import requests
+
+                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/slurm/v0.0.43"
+                S3M_TOKEN = os.getenv("S3M_TOKEN")
+                resource = "defiant"
+
+                # This sets the Authorization header like the curl example
+                headers = {
+                    "Authorization": S3M_TOKEN,
+                }
+
+                response = requests.get(
+                    f"{S3M_BASE_PATH}/{resource}/ping",
+                    headers=headers,
+                )
+
+                if response.ok:
+                    compute_response = response.json()
+                    print(token_response)
+
+                else:
+                    raise ValueError("Request to S3M failed")
+
+
 List Partitions
 ---------------
 
@@ -109,6 +139,36 @@ Get available partitions (queues) on a resource.
          client := slurmv0043pb.NewSlurmIndirectClient(conn)
          partitions, err := client.GetPartitions(context.Background(), &emptypb.Empty{})
 
+   .. tab-item:: Python (``requests``)
+    :sync: python-requests
+
+        .. code-block:: python
+
+                import os
+                import requests
+
+                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/slurm/v0.0.43"
+                S3M_TOKEN = os.getenv("S3M_TOKEN")
+                resource = "defiant"
+
+                # This sets the Authorization header like the curl example
+                headers = {
+                    "Authorization": S3M_TOKEN,
+                }
+
+                response = requests.get(
+                    f"{S3M_BASE_PATH}/{resource}/partitions",
+                    headers=headers,
+                )
+
+                if response.ok:
+                    compute_response = response.json()
+                    print(token_response)
+
+                else:
+                    raise ValueError("Request to S3M failed")
+
+
 Submit a Job
 ------------
 
@@ -130,11 +190,11 @@ Submit a new batch job to the scheduler.
                "job": {
                  "name": "my-job",
                  "account": "STF040",
-                 "partition": "batch",
+                 "partition": "batch-cpu",
                  "minimum_nodes": 1,
                  "tasks": 1,
                  "time_limit": {"number": 60, "set": true},
-                 "current_working_directory": "/lustre/orion/stf040/scratch/user",
+                 "current_working_directory": "/lustre/polis/stf040/scratch/user",
                  "environment": ["PATH=/usr/bin"],
                  "script": "#!/bin/bash\necho Hello World"
                }
@@ -152,11 +212,11 @@ Submit a new batch job to the scheduler.
              job=JobSubmitReqJobDescription(
                  name="my-job",
                  account="STF040",
-                 partition="batch",
+                 partition="batch-cpu",
                  minimum_nodes=1,
                  tasks=1,
                  time_limit=Uint32NoVal(number=60, set=True),
-                 current_working_directory="/lustre/orion/stf040/scratch/user",
+                 current_working_directory="/lustre/polis/stf040/scratch/user",
                  environment=["PATH=/usr/bin"],
                  script="#!/bin/bash\necho Hello World"
              )
@@ -178,15 +238,61 @@ Submit a new batch job to the scheduler.
              Job: &slurmv0043pb.JobSubmitReq_JobDescription{
                  Name:                    "my-job",
                  Account:                 "STF040",
-                 Partition:               "batch",
+                 Partition:               "batch-cpu",
                  MinimumNodes:            proto.Int32(1),
                  Tasks:                   proto.Int32(1),
                  TimeLimit:               &slurmv0043pb.Uint32NoVal{Number: 60, Set: true},
-                 CurrentWorkingDirectory: "/lustre/orion/stf040/scratch/user",
+                 CurrentWorkingDirectory: "/lustre/polis/stf040/scratch/user",
                  Environment:             []string{"PATH=/usr/bin"},
                  Script:                  "#!/bin/bash\necho Hello World",
              },
          })
+
+   .. tab-item:: Python (``requests``)
+    :sync: python-requests
+
+        .. code-block:: python
+
+                import os
+                import requests
+
+                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/slurm/v0.0.43"
+                S3M_TOKEN = os.getenv("S3M_TOKEN")
+                resource = "defiant"
+
+                headers = {
+                    "Authorization": S3M_TOKEN,
+                    "Content-Type: application/json"
+                }
+
+                # This section defines the job to submit
+                payload = {
+                    "job": {
+                        "name": "my-job",
+                        "account": "STF040",
+                        "partition": "batch-cpu",
+                        "minimum_nodes": 1,
+                        "tasks": 1,
+                        "time_limit": {"number": 60, "set": true},
+                        "current_working_directory": "/lustre/polis/stf040/scratch/user",
+                        "environment": ["PATH=/usr/bin"],
+                        "script": "#!/bin/bash\necho Hello World"
+                    }
+                }
+
+                response = requests.post(
+                    f"{S3M_BASE_PATH}/{resource}/job/submit",
+                    headers=headers,
+                    data=payload,
+                )
+
+                if response.ok:
+                    compute_response = response.json()
+                    print(token_response)
+
+                else:
+                    raise ValueError("Request to S3M failed")
+
 
 **Response:**
 
@@ -237,6 +343,37 @@ Retrieve details about a specific job.
          client := slurmv0043pb.NewSlurmIndirectClient(conn)
          job, err := client.GetJob(context.Background(), &slurmv0043pb.JobIdReq{JobId: "12345"})
 
+   .. tab-item:: Python (``requests``)
+    :sync: python-requests
+
+        .. code-block:: python
+
+                import os
+                import requests
+
+                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/slurm/v0.0.43"
+                S3M_TOKEN = os.getenv("S3M_TOKEN")
+                resource = "defiant"
+                job_id="12345"
+
+                # This sets the Authorization header like the curl example
+                headers = {
+                    "Authorization": S3M_TOKEN,
+                }
+
+                response = requests.get(
+                    f"{S3M_BASE_PATH}/{resource}/job/{job_id}",
+                    headers=headers,
+                )
+
+                if response.ok:
+                    compute_response = response.json()
+                    print(token_response)
+
+                else:
+                    raise ValueError("Request to S3M failed")
+
+
 List All Jobs
 -------------
 
@@ -278,6 +415,36 @@ Retrieve all jobs visible to your project.
          client := slurmv0043pb.NewSlurmIndirectClient(conn)
          jobs, err := client.GetJobs(context.Background(), &emptypb.Empty{})
 
+   .. tab-item:: Python (``requests``)
+    :sync: python-requests
+
+        .. code-block:: python
+
+                import os
+                import requests
+
+                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/slurm/v0.0.43"
+                S3M_TOKEN = os.getenv("S3M_TOKEN")
+                resource = "defiant"
+
+                # This sets the Authorization header like the curl example
+                headers = {
+                    "Authorization": S3M_TOKEN,
+                }
+
+                response = requests.get(
+                    f"{S3M_BASE_PATH}/{resource}/jobs",
+                    headers=headers,
+                )
+
+                if response.ok:
+                    compute_response = response.json()
+                    print(token_response)
+
+                else:
+                    raise ValueError("Request to S3M failed")
+
+
 Cancel a Job
 ------------
 
@@ -317,6 +484,37 @@ Cancel a running or pending job.
 
          client := slurmv0043pb.NewSlurmIndirectClient(conn)
          _, err := client.DeleteJob(context.Background(), &slurmv0043pb.DeleteJobReq{JobId: "12345"})
+
+   .. tab-item:: Python (``requests``)
+    :sync: python-requests
+
+        .. code-block:: python
+
+                import os
+                import requests
+
+                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/slurm/v0.0.43"
+                S3M_TOKEN = os.getenv("S3M_TOKEN")
+                resource = "defiant"
+                job_id="12345"
+
+                # This sets the Authorization header like the curl example
+                headers = {
+                    "Authorization": S3M_TOKEN,
+                }
+
+                response = requests.delete(
+                    f"{S3M_BASE_PATH}/{resource}/job/{job_id}",
+                    headers=headers,
+                )
+
+                if response.ok:
+                    compute_response = response.json()
+                    print(token_response)
+
+                else:
+                    raise ValueError("Request to S3M failed")
+
 
 **Optional Parameters:**
 
@@ -364,6 +562,36 @@ Get information about compute nodes on a resource.
          client := slurmv0043pb.NewSlurmIndirectClient(conn)
          nodes, err := client.GetNodes(context.Background(), &emptypb.Empty{})
 
+   .. tab-item:: Python (``requests``)
+    :sync: python-requests
+
+        .. code-block:: python
+
+                import os
+                import requests
+
+                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/slurm/v0.0.43"
+                S3M_TOKEN = os.getenv("S3M_TOKEN")
+                resource = "defiant"
+
+                # This sets the Authorization header like the curl example
+                headers = {
+                    "Authorization": S3M_TOKEN,
+                }
+
+                response = requests.get(
+                    f"{S3M_BASE_PATH}/{resource}/nodes",
+                    headers=headers,
+                )
+
+                if response.ok:
+                    compute_response = response.json()
+                    print(token_response)
+
+                else:
+                    raise ValueError("Request to S3M failed")
+
+
 List Reservations
 -----------------
 
@@ -405,6 +633,36 @@ Get reservations on a resource.
          client := slurmv0043pb.NewSlurmIndirectClient(conn)
          reservations, err := client.GetReservations(context.Background(), &emptypb.Empty{})
 
+   .. tab-item:: Python (``requests``)
+    :sync: python-requests
+
+        .. code-block:: python
+
+                import os
+                import requests
+
+                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/slurm/v0.0.43"
+                S3M_TOKEN = os.getenv("S3M_TOKEN")
+                resource = "defiant"
+
+                # This sets the Authorization header like the curl example
+                headers = {
+                    "Authorization": S3M_TOKEN,
+                }
+
+                response = requests.get(
+                    f"{S3M_BASE_PATH}/{resource}/reservations",
+                    headers=headers,
+                )
+
+                if response.ok:
+                    compute_response = response.json()
+                    print(token_response)
+
+                else:
+                    raise ValueError("Request to S3M failed")
+
+
 Scheduler Diagnostics
 ---------------------
 
@@ -445,5 +703,34 @@ Get diagnostic information about the SLURM scheduler.
 
          client := slurmv0043pb.NewSlurmIndirectClient(conn)
          diag, err := client.GetDiag(context.Background(), &emptypb.Empty{})
+
+   .. tab-item:: Python (``requests``)
+    :sync: python-requests
+
+        .. code-block:: python
+
+                import os
+                import requests
+
+                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/slurm/v0.0.43"
+                S3M_TOKEN = os.getenv("S3M_TOKEN")
+                resource = "defiant"
+
+                # This sets the Authorization header like the curl example
+                headers = {
+                    "Authorization": S3M_TOKEN,
+                }
+
+                response = requests.get(
+                    f"{S3M_BASE_PATH}/{resource}/diag",
+                    headers=headers,
+                )
+
+                if response.ok:
+                    compute_response = response.json()
+                    print(token_response)
+
+                else:
+                    raise ValueError("Request to S3M failed")
 
 For full request/response details, see the `SLURM REST API documentation <https://slurm.schedmd.com/rest_api.html>`_.
