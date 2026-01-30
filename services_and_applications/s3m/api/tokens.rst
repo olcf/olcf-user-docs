@@ -58,6 +58,34 @@ Revoking a token invalidates it permanently. This is an irreversible action.
          client := tmspb.NewTokenControlClient(conn)
          _, err := client.RevokeAuthToken(context.Background(), &tmspb.RevokeAuthTokenRequest{})
 
+   .. tab-item:: Python (``requests``)
+    :sync: python-requests
+
+        .. code-block:: python
+
+                import os
+                import requests
+
+                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/olcf/v1/token/ctls"
+                S3M_TOKEN = os.getenv("S3M_TOKEN")
+
+                # This sets the Authorization header like the curl example
+                headers = {
+                    "Authorization": S3M_TOKEN,
+                }
+
+                response = requests.delete(
+                    S3M_BASE_PATH + "/revoke",
+                    headers=headers,
+                )
+
+                if response.ok:
+                    token_response = response.json()
+                    print(token_response)
+
+                else:
+                    raise ValueError("Request to S3M failed")
+
 **Response:** HTTP 200 with empty body ``{}``
 
 You can also revoke tokens via the `myOLCF Manage Tokens <https://my.olcf.ornl.gov>`_ interface.
@@ -101,6 +129,34 @@ Retrieve details about the current token including its permissions, expiration, 
 
          client := tmspb.NewTokenControlClient(conn)
          info, err := client.IntrospectAuthToken(context.Background(), &tmspb.IntrospectAuthTokenRequest{})
+
+   .. tab-item:: Python (``requests``)
+    :sync: python-requests
+
+        .. code-block:: python
+
+                import os
+                import requests
+
+                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/olcf/v1/token/ctls"
+                S3M_TOKEN = os.getenv("S3M_TOKEN")
+
+                # This sets the Authorization header like the curl example
+                headers = {
+                    "Authorization": S3M_TOKEN,
+                }
+
+                response = requests.get(
+                    S3M_BASE_PATH + "/introspect",
+                    headers=headers,
+                )
+
+                if response.ok:
+                    token_response = response.json()
+                    print(token_response)
+
+                else:
+                    raise ValueError("Request to S3M failed")
 
 **Response:**
 
