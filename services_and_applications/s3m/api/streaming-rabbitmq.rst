@@ -79,6 +79,45 @@ Create a new RabbitMQ cluster. The cluster will not be immediately accessible—
              ResourceSettings: map[string]int32{"cpus": 2, "ram-gbs": 4, "nodes": 2},
          })
 
+   .. tab-item:: Python (``requests``)
+    :sync: python-requests
+
+        .. code-block:: python
+
+                import os
+                import requests
+
+                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/olcf/v1alpha/streaming"
+                S3M_TOKEN = os.getenv("S3M_TOKEN")
+                resource = "rabbitmq"
+
+                headers = {
+                    "Authorization": S3M_TOKEN,
+                }
+
+                payload = {
+                    "kind": "general",
+                    "name": "mycluster",
+                    "resourceSettings": {
+                        "cpus": 2,
+                        "ram-gbs": 4,
+                        "nodes": 2
+                    }
+                }
+
+                response = requests.post(
+                    f"{S3M_BASE_PATH}/{resource}/provision_cluster",
+                    headers=headers,
+                    json=payload
+                )
+
+                if response.ok:
+                    rabbitmq_response = response.json()
+                    print(rabbitmq_response)
+
+                else:
+                    raise ValueError("Request to S3M failed")
+
 **Response:**
 
 .. code-block:: json
@@ -128,6 +167,34 @@ List Clusters
          client := streamingpb.NewRabbitMQStreamingClient(conn)
          clusters, err := client.ListRabbitMQClusters(context.Background(), &streamingpb.ListRabbitMQClustersRequest{})
 
+   .. tab-item:: Python (``requests``)
+    :sync: python-requests
+
+        .. code-block:: python
+
+                import os
+                import requests
+
+                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/olcf/v1alpha/streaming"
+                S3M_TOKEN = os.getenv("S3M_TOKEN")
+                resource = "rabbitmq"
+
+                headers = {
+                    "Authorization": S3M_TOKEN,
+                }
+
+                response = requests.get(
+                    f"{S3M_BASE_PATH}/{resource}/list_clusters",
+                    headers=headers,
+                )
+
+                if response.ok:
+                    rabbitmq_response = response.json()
+                    print(rabbitmq_response)
+
+                else:
+                    raise ValueError("Request to S3M failed")
+
 Get Cluster
 -----------
 
@@ -165,6 +232,35 @@ Get Cluster
 
          client := streamingpb.NewRabbitMQStreamingClient(conn)
          cluster, err := client.GetRabbitMQCluster(context.Background(), &streamingpb.GetRabbitMQClusterRequest{Name: "mycluster"})
+
+   .. tab-item:: Python (``requests``)
+    :sync: python-requests
+
+        .. code-block:: python
+
+                import os
+                import requests
+
+                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/olcf/v1alpha/streaming"
+                S3M_TOKEN = os.getenv("S3M_TOKEN")
+                resource = "rabbitmq"
+                cluster_name = "mycluster"
+
+                headers = {
+                    "Authorization": S3M_TOKEN,
+                }
+
+                response = requests.get(
+                    f"{S3M_BASE_PATH}/{resource}/cluster/{cluster_name}",
+                    headers=headers,
+                )
+
+                if response.ok:
+                    rabbitmq_response = response.json()
+                    print(rabbitmq_response)
+
+                else:
+                    raise ValueError("Request to S3M failed")
 
 Extend Cluster
 --------------
@@ -206,6 +302,35 @@ Reset the cluster's lifetime to 7 days from now.
          client := streamingpb.NewRabbitMQStreamingClient(conn)
          result, err := client.ExtendRabbitMQClusterLife(context.Background(), &streamingpb.ExtendRabbitMQClusterLifeRequest{Name: "mycluster"})
 
+   .. tab-item:: Python (``requests``)
+    :sync: python-requests
+
+        .. code-block:: python
+
+                import os
+                import requests
+
+                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/olcf/v1alpha/streaming"
+                S3M_TOKEN = os.getenv("S3M_TOKEN")
+                resource = "rabbitmq"
+                cluster_name = "mycluster"
+
+                headers = {
+                    "Authorization": S3M_TOKEN,
+                }
+
+                response = requests.post(
+                    f"{S3M_BASE_PATH}/{resource}/extend/{cluster_name}",
+                    headers=headers,
+                )
+
+                if response.ok:
+                    rabbitmq_response = response.json()
+                    print(rabbitmq_response)
+
+                else:
+                    raise ValueError("Request to S3M failed")
+
 Delete Cluster
 --------------
 
@@ -243,3 +368,32 @@ Delete Cluster
 
          client := streamingpb.NewRabbitMQStreamingClient(conn)
          _, err := client.DeleteRabbitMQCluster(context.Background(), &streamingpb.DeleteRabbitMQClusterRequest{Name: "mycluster"})
+
+   .. tab-item:: Python (``requests``)
+    :sync: python-requests
+
+        .. code-block:: python
+
+                import os
+                import requests
+
+                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/olcf/v1alpha/streaming"
+                S3M_TOKEN = os.getenv("S3M_TOKEN")
+                resource = "rabbitmq"
+                cluster_name = "mycluster"
+
+                headers = {
+                    "Authorization": S3M_TOKEN,
+                }
+
+                response = requests.delete(
+                    f"{S3M_BASE_PATH}/{resource}/cluster/{cluster_name}",
+                    headers=headers,
+                )
+
+                if response.ok:
+                    rabbitmq_response = response.json()
+                    print(rabbitmq_response)
+
+                else:
+                    raise ValueError("Request to S3M failed")
