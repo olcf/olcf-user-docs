@@ -83,6 +83,44 @@ Create a new Redis cluster. The cluster will not be immediately accessible—mon
              ResourceSettings: map[string]int32{"cpus": 2, "ram-gbs": 4},
          })
 
+   .. tab-item:: Python (``requests``)
+    :sync: python-requests
+
+        .. code-block:: python
+
+                import os
+                import requests
+
+                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/olcf/v1alpha/streaming"
+                S3M_TOKEN = os.getenv("S3M_TOKEN")
+                resource = "redis"
+
+                headers = {
+                    "Authorization": S3M_TOKEN,
+                }
+
+                payload = {
+                    "kind": "dragonfly-general",
+                    "name": "mycluster",
+                    "resourceSettings": {
+                        "cpus": 2,
+                        "ram-gbs": 4
+                    }
+                }
+
+                response = requests.post(
+                    f"{S3M_BASE_PATH}/{resource}/provision_cluster",
+                    headers=headers,
+                    json=payload
+                )
+
+                if response.ok:
+                    redis_response = response.json()
+                    print(redis_response)
+
+                else:
+                    raise ValueError("Request to S3M failed")
+
 **Response:**
 
 .. code-block:: json
@@ -131,6 +169,34 @@ List Clusters
          client := streamingpb.NewRedisStreamingClient(conn)
          clusters, err := client.ListRedisClusters(context.Background(), &streamingpb.ListRedisClustersRequest{})
 
+   .. tab-item:: Python (``requests``)
+    :sync: python-requests
+
+        .. code-block:: python
+
+                import os
+                import requests
+
+                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/olcf/v1alpha/streaming"
+                S3M_TOKEN = os.getenv("S3M_TOKEN")
+                resource = "redis"
+
+                headers = {
+                    "Authorization": S3M_TOKEN,
+                }
+
+                response = requests.get(
+                    f"{S3M_BASE_PATH}/{resource}/list_clusters",
+                    headers=headers,
+                )
+
+                if response.ok:
+                    redis_response = response.json()
+                    print(redis_response)
+
+                else:
+                    raise ValueError("Request to S3M failed")
+
 Get Cluster
 -----------
 
@@ -168,6 +234,35 @@ Get Cluster
 
          client := streamingpb.NewRedisStreamingClient(conn)
          cluster, err := client.GetRedisCluster(context.Background(), &streamingpb.GetRedisClusterRequest{Name: "mycluster"})
+
+   .. tab-item:: Python (``requests``)
+    :sync: python-requests
+
+        .. code-block:: python
+
+                import os
+                import requests
+
+                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/olcf/v1alpha/streaming"
+                S3M_TOKEN = os.getenv("S3M_TOKEN")
+                resource = "redis"
+                cluster_name = "mycluster"
+
+                headers = {
+                    "Authorization": S3M_TOKEN,
+                }
+
+                response = requests.get(
+                    f"{S3M_BASE_PATH}/{resource}/cluster/{cluster_name}",
+                    headers=headers,
+                )
+
+                if response.ok:
+                    redis_response = response.json()
+                    print(redis_response)
+
+                else:
+                    raise ValueError("Request to S3M failed")
 
 Extend Cluster
 --------------
@@ -209,6 +304,35 @@ Reset the cluster's lifetime to 7 days from now.
          client := streamingpb.NewRedisStreamingClient(conn)
          result, err := client.ExtendRedisClusterLife(context.Background(), &streamingpb.ExtendRedisClusterLifeRequest{Name: "mycluster"})
 
+   .. tab-item:: Python (``requests``)
+    :sync: python-requests
+
+        .. code-block:: python
+
+                import os
+                import requests
+
+                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/olcf/v1alpha/streaming"
+                S3M_TOKEN = os.getenv("S3M_TOKEN")
+                resource = "redis"
+                cluster_name = "mycluster"
+
+                headers = {
+                    "Authorization": S3M_TOKEN,
+                }
+
+                response = requests.post(
+                    f"{S3M_BASE_PATH}/{resource}/extend/{cluster_name}",
+                    headers=headers,
+                )
+
+                if response.ok:
+                    redis_response = response.json()
+                    print(redis_response)
+
+                else:
+                    raise ValueError("Request to S3M failed")
+
 Delete Cluster
 --------------
 
@@ -246,3 +370,32 @@ Delete Cluster
 
          client := streamingpb.NewRedisStreamingClient(conn)
          _, err := client.DeleteRedisCluster(context.Background(), &streamingpb.DeleteRedisClusterRequest{Name: "mycluster"})
+
+   .. tab-item:: Python (``requests``)
+    :sync: python-requests
+
+        .. code-block:: python
+
+                import os
+                import requests
+
+                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/olcf/v1alpha/streaming"
+                S3M_TOKEN = os.getenv("S3M_TOKEN")
+                resource = "redis"
+                cluster_name = "mycluster"
+
+                headers = {
+                    "Authorization": S3M_TOKEN,
+                }
+
+                response = requests.delete(
+                    f"{S3M_BASE_PATH}/{resource}/cluster/{cluster_name}",
+                    headers=headers,
+                )
+
+                if response.ok:
+                    redis_response = response.json()
+                    print(redis_response)
+
+                else:
+                    raise ValueError("Request to S3M failed")
