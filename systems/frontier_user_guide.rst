@@ -2748,6 +2748,10 @@ It took 2 minutes to submit the 500 jobs to Flux.
     It is advised to ``unset CUDA_VISIBLE_DEVICES`` in order to run GPU workloads across multiple GPUs.
 
 
+When working with GPUs in Flux, it is good practice to specify ``--gpus-per-task=N`` in conjunction with ``[-o, --setopt=] gpu-affinity=per-task``, which helps to evenly (and closely) divide tasks by NUMA domains.
+This will set the ``CUDA_VISIBLE_DEVICES`` environment variable to the **index** of the nearest GPU to the NUMA domain according to ``hwloc``.
+You can read more about Flux shell options `here <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man1/flux-shell.html#shell-options>`__ and how Flux finds resources `here <https://flux-framework.readthedocs.io/en/latest/faqs.html?h=hwloc#why-is-flux-ignoring-my-nvidia-gpus>`__.
+
 For explicit GPU binding with Flux in an ``srun``, you can follow this example:
 
 .. dropdown:: Launching Flux inside Slurm with GPU Binding
@@ -2763,10 +2767,26 @@ For explicit GPU binding with Flux in an ``srun``, you can follow this example:
         module load hwloc/2.9.1-gpu # Flux requires a GPU-enabled hwloc to see the GPUs
         module load flux/0.60.0 # Guide tested on 0.60.0
 
+        # A few Flux commands to note:
+        #   flux start -- starts the Flux server daemons
+        #   flux resource list -- lists the resources available to Flux
+        #   flux submit -- submits & detaches from a Flux job. Returns a hash string identifying the submitted job
+        #   flux jobs -- synonymous to `squeue`, displays the Flux queue
+        #   flux run -- submits & runs a Flux job (does not return prompt until command is complete)
+        #   flux queue drain -- similar to `wait`, blocks until Flux queue is empty
+
+        # Flux flags:
+        #   -N 1 -- 1 node
+        #   -n 8 -- 8 tasks
+        #   -c 7 -- 7 cores per task
+        #   --gpus-per-task=1 -- binds 1 GPU per task - this works by setting `CUDA_VISIBLE_DEVICES` to an appropriate device index for a particular NUMA domain using hwloc
+        # We launch one Flux process per node, with all available CPUs and GPUs allocated to it
+        # Flux understands that it was launched in a Slurm allocation, and only the Flux daemon on the first node is listening to commands
+
         srun -N $SLURM_NNODES -n $SLURM_NNODES -c 56 --gpus-per-node=8 flux start \
             "flux resource list;
             # assigns one task per GPU
-            for task in \$(seq 1 $(($SLURM_NNODES * 8)) ); do
+            for task in \$(seq 1 $(($SLURM_NNODES * 8 * 2)) ); do
                 flux submit -N 1 -n 1 -c 7 --gpus-per-task=1 -o gpu-affinity=per-task -o cpu-affinity=per-task --output=${SLURM_JOB_ID}_flux_task_\$task.log bash -c '
                         # Set the correct GPU for this task
                         export ROCR_VISIBLE_DEVICES=\$CUDA_VISIBLE_DEVICES
@@ -2777,6 +2797,11 @@ For explicit GPU binding with Flux in an ``srun``, you can follow this example:
             flux jobs -a;
             flux queue drain;
             "
+
+    In the above example we set up 2 nodes to work with Flux, and then submit twice as many jobs as there are GPUs between the nodes ``$(($SLURM_NNODES * 8 * 2))``.
+    Flux will start as many jobs as possible, doing its best to assign tasks evenly and with resources "close" to each other.
+    When the resources are full, remaining jobs will be queued.
+
 
 
 Tips for Launching at Scale
