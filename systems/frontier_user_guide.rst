@@ -2798,9 +2798,9 @@ For explicit GPU binding with Flux in an ``srun``, you can follow this example:
             flux queue drain;
             "
 
-    In the above example we set up 2 nodes to work with Flux, and then submit twice as many jobs as there are GPUs between the nodes ``$(($SLURM_NNODES * 8 * 2))``.
-    Flux will start as many jobs as possible, doing its best to assign tasks evenly and with resources "close" to each other.
-    When the resources are full, remaining jobs will be queued.
+In the above example we set up 2 nodes to work with Flux, and then submit twice as many jobs as there are GPUs between the nodes ``$(($SLURM_NNODES * 8 * 2))``.
+Flux will start as many jobs as possible, doing its best to assign tasks evenly and with resources "close" to each other.
+When the resources are full, remaining jobs will be queued.
 
 
 
