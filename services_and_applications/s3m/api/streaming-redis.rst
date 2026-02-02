@@ -33,6 +33,13 @@ Create a new Redis cluster. The cluster will not be immediately accessible—mon
 
 ``POST /olcf/v1alpha/streaming/redis/provision_cluster``
 
+.. important::
+
+        Examples for Redis clusters list a "kind" that is meant to be more familiar to users strictly for example purposes.
+        These are not necessarily valid for the "kind" field.
+
+        Please specify your cluster "kind" as one of the valid options from the :ref:`streaming-backends` example endpoint.
+
 .. tab-set::
 
    .. tab-item:: curl
