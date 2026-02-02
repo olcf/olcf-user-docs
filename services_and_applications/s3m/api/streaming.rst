@@ -42,6 +42,8 @@ extension endpoint.
 
 When the countdown reaches 0, clusters are deleted and cannot be restored.
 
+.. _streaming-backends:
+
 List Available Backends
 -----------------------
 
@@ -81,6 +83,34 @@ Discover available streaming backends and their resource options.
 
          client := streamingpb.NewStreamingClient(conn)
          backends, err := client.ListBackends(context.Background(), &streamingpb.ListBackendsRequest{})
+
+   .. tab-item:: Python (``requests``)
+    :sync: python-requests
+
+        .. code-block:: python
+
+                import os
+                import requests
+
+                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/olcf/v1alpha/streaming"
+                S3M_TOKEN = os.getenv("S3M_TOKEN")
+
+                headers = {
+                    "Authorization": S3M_TOKEN,
+                }
+
+                response = requests.get(
+                    f"{S3M_BASE_PATH}/list_backends",
+                    headers=headers,
+                )
+
+                if response.ok:
+                    streaming_response = response.json()
+                    print(streaming_response)
+
+                else:
+                    raise ValueError("Request to S3M failed")
+
 
 .. toctree::
    :hidden:
