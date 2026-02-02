@@ -15,7 +15,7 @@ If for any reason your token has been exposed externally or you suspect it
 has been stolen by malicious actors, revoke access to that token right away.
 This can be accomplished in either of the following ways:
 
-1. Using the `myOLCF <https://s3m-myolcf.apps.olivine.ccs.ornl.gov/>`_ *Manage Tokens* interface:
+1. Using the `myOLCF <https://my.olcf.ornl.gov/>`_ *Manage Tokens* interface:
 
    .. image:: ../uploads/myolcf/Manage_Tokens.png
       :alt: myOLCF Manage Tokens
@@ -28,7 +28,7 @@ This can be accomplished in either of the following ways:
           https://s3m.olcf.ornl.gov/olcf/v1/token/ctls/revoke
       HTTP/1.1 200 OK
 
-If you suspect the token has been misused, please contact us
+If you suspect the token has been misused, please contact OLCF Support <help@olcf.ornl.gov>
 right away for further assistance.
 
 Never Save Token Directly in Code

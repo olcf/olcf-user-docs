@@ -28,6 +28,10 @@ S3M Use Cases
 Token Policy
 ------------
 
+.. important::
+
+    Please see :ref:`s3m_token_management` for token best practices.
+
 **Draft** - *Last updated 8/15/2025*
 
 OLCF-issued API tokens, known as Project Access Tokens, are explicitly

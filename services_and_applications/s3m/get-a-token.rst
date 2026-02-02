@@ -33,7 +33,7 @@ Generate a Token
 
    .. note::
        If your required project doesn't have an "S3M Access" option in the sidebar, S3M likely isn't enabled for it yet;
-       please contact us for help.
+       please contact S3M support at <olcf-s3m@email.ornl.gov> for help.
 
    .. image:: ../uploads/myolcf/Select_Project.png
       :alt: Select Project
