@@ -11,3 +11,4 @@ Services and Applications
    myolcf/index.rst
    jupyter/index.rst
    constellation/index.rst
+   s3m/index.rst
