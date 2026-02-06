@@ -4000,16 +4000,25 @@ If it is necessary to have bit-wise reproducible results from these libraries, i
 System Updates 
 ============== 
 
+2026-02-10
+----------
+On Tuesday, February 10, 2026, Frontier's system software will be upgraded.
+The following changes will take place:
+
+- Upgrade to AMD GPU 6.16.13 device driver (ROCm 7.2.0 release).
+- ROCm/7.1.1 and 7.2.0 will be made available as non-default via the ``rocm/7.1.1`` and ``rocm/7.2.0`` modules. Please note that GPU-aware MPI is not yet available for ROCm/7.x versions.
+
+
 2025-10-21
 ----------
-On Tuesday, October 21, 2025, Frontier's system software will be upgraded.
-The following changes will take place:
+On Tuesday, October 21, 2025, Frontier's system software was upgraded.
+The following changes took place:
 
 - Upgrade to AMD GPU 6.14.14 device driver (ROCm 7.0.2 release).
 - Upgrade to Slingshot 2.3.1
-- HPE/Cray Programming Environment (CPE) 25.09 will be made available via the ``cpe/25.09`` module. Please make sure to set ``export LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH`` if using this non-default CPE version. This includes CCE/20.0.0 and cray-mpich/9.0.1, with a recommended ROCm version of ROCm/6.4.2.
-- ROCm/7.0.2 will be made available as non-default via the ``rocm/7.0.2`` module.
-- ROCm/6.4.2 will be made available as non-default via the ``rocm/6.4.2`` module. This is the preferred ROCm version for CPE/25.09.
+- HPE/Cray Programming Environment (CPE) 25.09 was made available via the ``cpe/25.09`` module. Please make sure to set ``export LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH`` if using this non-default CPE version. This includes CCE/20.0.0 and cray-mpich/9.0.1, with a recommended ROCm version of ROCm/6.4.2.
+- ROCm/7.0.2 was made available as non-default via the ``rocm/7.0.2`` module.
+- ROCm/6.4.2 was made available as non-default via the ``rocm/6.4.2`` module. This is the preferred ROCm version for CPE/25.09.
 - Modify miniforge modules to gracefully handle nested "module load miniforge" commands. Enables conda activate capability.
 
 .. note::
