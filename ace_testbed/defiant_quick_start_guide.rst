@@ -133,11 +133,11 @@ NFS Filesystem
      - ``/ccsopen/home/[userid]``
      - NFS
      - User set
-     - 50 GB
+     - None
      - Yes
      - No
      - 90 days
-     - yes
+     - Yes
 
 
 .. note::
@@ -163,29 +163,29 @@ Lustre Filesystem (Polis)
      - ``/lustre/polis/[projid]/scratch/[userid]``
      - Lustre HPE ClusterStor
      - 700
-     - 50 TB
+     - None
      - No
-     - 90 days
+     - No
      - N/A
-     - yes
+     - Yes
    * - Project Work
      - ``/lustre/polis/[projid]/proj-shared``
      - Lustre HPE ClusterStor
      - 770
-     - 50 TB
+     - None
      - No
-     - 90 days
+     - No
      - N/A
-     - yes
+     - Yes
    * - World Work
      - ``/lustre/polis/[projid]/world-shared``
      - Lustre HPE ClusterStor
      - 770
-     - 50 TB
+     - None
      - No
-     - 90 days
+     - No
      - N/A
-     - yes
+     - Yes
 
 
 Programming Environment
