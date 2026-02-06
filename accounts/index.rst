@@ -11,6 +11,7 @@ Accounts and Projects
    frequently_asked_questions
    documents_and_forms
    olcf_policy_guide
+   afw_data_policy_guide
    glossary
 
 Additional Resources
