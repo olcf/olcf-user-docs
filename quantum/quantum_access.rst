@@ -133,13 +133,12 @@ subsequent 6 month intervals. Projects can be renewed by filling out a renewal
 form (:download:`Accounts Renewal Form <Quantum-Renewal-Form.docx>`) and
 emailing it to accounts@ccs.ornl.gov.
 
-Closeout and Quarterly Reports
-------------------------------
+Closeout Reports
+----------------
 
-All QCUP projects are required to submit 
-`quarterly reports <https://www.olcf.ornl.gov/wp-content/uploads/industry_quarterly_report.doc>`__ and a
+All QCUP projects are required to submit a
 `closeout report <https://www.olcf.ornl.gov/wp-content/uploads/Closeout_Template.doc>`__.
-These forms may be emailed to accounts@ccs.ornl.gov.
+This form may be emailed to accounts@ccs.ornl.gov.
 
 .. _quantum-user:
 
@@ -249,6 +248,20 @@ workflow is possible, but does not yield sensible results), via the cloud. From
 the dashboard, users can view system status and upcoming system availability,
 as well as monitor batch submissions and job history.  More information about
 using IQM resources can be found on our :doc:`OLCF IQM Guide </quantum/quantum_systems/iqm>`.
+
+Data Retention Policy
+=====================
+
+When your project has ended, the project will lose compute access and the project will enter "Data Only" mode for 30 days. Projects in Data Only mode will only have login access to QCUP vendor resources to retrieve data stored on their platform.
+
+By default, there is no lifetime retention for any data stored on QCUP resources. Please begin making arrangements to copy data to an offsite location of your choosing before your **project or user account** ends. When your **project or user account** has ended, the OLCF will delete any data left on QCUP systems on a timeframe specified by data retention policy for a given QCUP vendor. Below are the current QCUP vendor policies *which are subject to change*:
+
+* IQM: 1 year
+* IBM: Lifetime
+* IonQ: Lifetime
+* Quantinuum: 40 days
+
+Regardless of retention period, once Data Only mode ends, all login and data access will be removed.
 
 Publication Citations
 =====================
