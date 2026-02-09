@@ -83,19 +83,19 @@ All OLCF users have access to the "premium" (>=20 qubits) devices in the Washing
 Allocations & Usage Limits
 --------------------------
 
-* **Project allocations have a default limit of 100 minutes during a moving 28-day window**.
+* **Project allocations have a default limit of 200 minutes during a moving 28-day window**.
 * Minutes are shared across all users on a given project and across all backends.
-* Usage greater than 10 minutes will see a slight priority reduction in the queue, but will still be able to use up to 100 minutes by default. If you notice the queue reduction after 10 minutes being an issue, reach out to help@olcf.ornl.gov with justification for the higher-throughput need.
-* Once a project reaches the 100 minute usage limit, no jobs will be able to run until minutes are freed up on the project (see :ref:`example <ibm-window>`  below).
-* **A higher usage limit greater than 100 minutes is possible (see information below)**
+* Usage greater than 10 minutes will see a slight priority reduction in the queue, but will still be able to use up to 200 minutes by default. If you notice the queue reduction after 10 minutes being an issue, reach out to help@olcf.ornl.gov with justification for the higher-throughput need.
+* Once a project reaches the 200 minute usage limit, no jobs will be able to run until minutes are freed up on the project (see :ref:`example <ibm-window>`  below).
+* **A higher usage limit greater than 200 minutes is possible (see information below)**
 
-If you are planning to use a large allocation (over 100 minutes), please send a usage request to our Quantum Resource Utilization Council (QRUC) by logging into `myOLCF <https://my.olcf.ornl.gov>`__, select your QCUP project under "My Projects" after login, and use the `Quantum Allocation Request form <https://my.olcf.ornl.gov/allocations/quantumAllocation>`__ under the "Allocations" section.
+If you are planning to use a large allocation (over 200 minutes), please send a usage request to our Quantum Resource Utilization Council (QRUC) by logging into `myOLCF <https://my.olcf.ornl.gov>`__, select your QCUP project under "My Projects" after login, and use the `Quantum Allocation Request form <https://my.olcf.ornl.gov/allocations/quantumAllocation>`__ under the "Allocations" section.
 Alternatively, you can send a request through our help ticket system (help@olcf.ornl.gov).
 **Special requests must be submitted by a project PI with sufficient computational and scientific justification.**
 QRUC will evaluate the merit of your request, and if approved, can get you the additional time you need for your work.
 
 .. note::
-   Approved usage over 100 minutes won't see the same priority reduction seen in the 10-100 minute range.
+   Approved usage over 200 minutes won't see the same priority reduction seen in the 10-200 minute range.
 
 For more information on how job priority is affected based on your limit, please see `<https://quantum.cloud.ibm.com/docs/guides/fair-share-scheduler#fair-share-scheduler>`__.
 
