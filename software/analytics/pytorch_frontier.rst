@@ -578,11 +578,11 @@ AWS-OFI-RCCL Plugin
 The `AWS-OFI-RCCL plugin <https://github.com/ROCm/aws-ofi-rccl>`__ enables using libfabric as a network provider while running AMD's RCCL based applications.
 This plugin can be built and used by common ML/DL libraries like PyTorch to increase performance when running on AMD GPUs.
 
-To build the plugin on Frontier (using ROCm 6.2.4 as an example):
+To build the plugin on Frontier (using ROCm 6.4.1 as an example):
 
 .. code-block:: bash
 
-   rocm_version=6.2.4
+   rocm_version=6.4.1
 
    # Load modules
    module load PrgEnv-gnu/8.6.0
@@ -699,22 +699,8 @@ Assuming you already have a working PyTorch installation (see above), install in
    # Install some build tools
    pip install ninja packaging
 
-   # Install PyG libraries (latest version tests in comments)
-   MAX_JOBS=16 pip install torch-geometric # v2.6.1
-   MAX_JOBS=16 pip install torch-cluster # v1.6.3
-   MAX_JOBS=16 pip install torch-spline-conv # v1.2.2
-
-   git clone --recursive https://github.com/rusty1s/pytorch_sparse # v0.6.18
-   cd pytorch_sparse
-   CC=gcc CXX=g++ MAX_JOBS=16 python3 setup.py bdist_wheel
-   pip install dist/*.whl
-   cd ..
-
-   git clone --recursive https://github.com/rusty1s/pytorch_scatter # v2.1.2
-   cd pytorch_scatter
-   CC=gcc CXX=g++ MAX_JOBS=16 python3 setup.py bdist_wheel
-   pip install dist/*.whl
-   cd ..
+   # Install PyG libraries (example for Torch 2.8)
+   pip install torch_geometric pyg_lib torch_scatter torch_sparse torch_cluster torch_spline_conv -f https://data.pyg.org/whl/torch-2.8.0+cpu.html
 
 .. _flash-attn:
 
