@@ -4002,12 +4002,12 @@ System Updates
 
 2026-02-10
 ----------
-On Tuesday, February 10, 2026, Frontier's system software will be upgraded.
-The following changes will take place:
+On Tuesday, February 10, 2026, Frontier's system software was upgraded.
+The following changes took place:
 
 - Upgrade to AMD GPU 6.16.13 device driver (ROCm 7.2.0 release).
-- ROCm/7.1.1 and 7.2.0 will be made available as non-default via the ``rocm/7.1.1`` and ``rocm/7.2.0`` modules. Please note that GPU-aware MPI is not yet available for ROCm/7.x versions.
-- CCE/20.0.2 will be made available as non-default via the ``cce/20.0.2`` module. This is compatible with the the CPE/25.09 release of the HPE/Cray Programming Environment. CCE/20.0.0 remains the default compiler for CPE/25.09.
+- ROCm/7.1.1 and 7.2.0 were made available as non-default via the ``rocm/7.1.1`` and ``rocm/7.2.0`` modules. Please note that GPU-aware MPI is not yet available for ROCm/7.x versions.
+- CCE/20.0.2 was made available as non-default via the ``cce/20.0.2`` module. This is compatible with the CPE/25.09 release of the HPE/Cray Programming Environment. CCE/20.0.0 remains the default compiler for CPE/25.09.
 
 
 2025-10-21
