@@ -3997,6 +3997,109 @@ If it is necessary to have bit-wise reproducible results from these libraries, i
 
 ------
 
+.. _mpi-tuning:
+
+Useful MPI Environment Variables
+-----------------------------------
+
+Cray MPICH contains many useful features and customizations that can be controlled through environment variables. 
+A detailed list is available at the `Cray MPICH User Guide <https://cpe.ext.hpe.com/docs/latest/mpt/mpich/index.html>`_ or by running ``man intro_mpi`` on Frontier.
+Below are a few environment variables that are more commonly used on Frontier.
+
+.. I wouldn't hate dividing these into "Everyday Best Practices", "Communication Model Specific", and "Debugging"
+.. Should these not be red monospace? Not sure it's needed and it's pretty ugly...
+
+``MPICH_VERSION_DISPLAY``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Setting this environment variable to ``1`` will print out the version and build date of Cray MPICH in use from rank 0 at the start of an MPI job.
+This output provides useful provenance for debugging and performance tuning, and is highly recommended.
+
+``MPICH_ENV_DISPLAY``
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+Setting this environment variable to ``1`` will print out the values of all MPI-related environment variables from rank 0 at the start of an MPI job.
+This output provides useful provenance for debugging and performance tuning, and is highly recommended.
+
+``MPICH_ABORT_ON_ERROR``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Most users assume MPI will cause their code to exit if an error occurs.
+Setting this environment variable to ``1`` will cause MPI to abort and produce a core dump when an error occurs, which may help with debugging but will consume significant disk space at scale.
+
+Although often ignored, every MPI call returns an instructive error code and one can often recover descriptive error messages from checks.
+Setting ``MPICH_ABORT_ON_ERROR=0``, checking return codes, and outputting descriptive error messages is an extremely valuable practice for debugging MPI applications.
+
+``MPICH_GPU_SUPPORT_ENABLED``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Setting this environment variable to ``1`` will enable GPU-aware MPI support in Cray MPICH, and is required to pass GPU buffers directly to MPI calls.
+The library `libmpi_gtl_hsa.so` must also be linked in, otherwise Cray MPICH will print an error message and exit immediately. 
+See :ref:`exposing-the-rocm-toolchain-to-your-programming-environment`  for more details.
+
+Using GPU-aware MPI is highly recommended on Frontier because the HPE Slingshot NICs are attached directly to the AMD MI250X accelerators.
+There is a small but measurable latency impact for enabling GPU-aware MPI with CPU buffers.
+Applications that do not use GPU buffers in MPI calls may want to leave this variable unset or set to ``0``, especially if they are sensitive to small message latency.
+
+``MPICH_ASYNC_PROGRESS``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Setting this environment variable to ``1`` will spawn a thread dedicated to making progress on outstanding MPI communication and automatically increase the MPI thread level to ``MPI_THREAD_MULTIPLE``.
+Applications that use one-sided MPI (eg, ``MPI_Put``, ``MPI_Get``) or non-blocking collectives (eg, ``MPI_Ialltoall``) will likely benefit from enabling this feature.
+Users of multi-threaded applications should consider having one fewer compute thread to leave a core free for this MPI progress thread.
+
+This feature is not typically beneficial for traditional two-sided communication patterns (eg, ``MPI_Send``, ``MPI_Recv``) and blocking collectives (eg, ``MPI_Alltoall``), and the requirement to use ``MPI_THREAD_MULTIPLE`` may introduce unnecessary overhead.
+
+``MPICH_RANK_REORDER_METHOD``, ``MPICH_RANK_REORDER_DISPLAY``, and ``MPICH_RANK_REORDER_FILE``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Rather than relying on the default rank-to-node placement, Cray MPICH provides a flexible mechanism to customize the placement of MPI ranks on nodes.
+Three methods are implemented in Cray MPICH itself: 0 - round-robin, 1 -  packed, and 2 - folded. These methods are explained in detail in the `Cray MPICH User Guide <https://cpe.ext.hpe.com/docs/latest/mpt/mpich/index.html>`_, but briefly described as:
+
+- Round-robin (``0``): Ranks are placed on nodes one at a time such that rank 0 is placed on the first node, rank 1 on the second, and so forth. At the end of node list the (N-1)th rank is placed on the Nth node, then we return to the start of the nodelist and place the Nth rank on the first node.
+- Packed (``1``): Called "SMP" in the documentation. Each node is fully filled with ranks before moving on.
+- Folded (``2``): Similar to round-robin, except we reverse direction on either end of the node list rather than looping. That is to say, rank 0 on the first node, rank N-1 on the Nth node, then rank N on the Nth node, rank N+1 on the (N-1)th node, and so forth.
+
+Which of these three methods is best for a given application depends on the communication pattern of the application. Users are encouraged to experiment with these methods if communication is a significant portion of their application runtime. The HPE Cray Performance Analysis tools can also profile MPI communication and suggest the optimal rank reordering.
+
+Setting ``MPICH_RANK_REORDER_METHOD=3`` and specifying a file with ``MPICH_RANK_REORDER_FILE`` allows users to specify their own rank reordering. 
+
+HPE's CPE also provides the tool `grid_order <https://cpe.ext.hpe.com/docs/latest/performance-tools/man1/grid_order.html#grid-order>`_ to help generate rank reordering files based on space filling curves for Cartesian nearest neighbor communication patterns.
+
+When experimenting with different rank reorderings, it is highly recommended to also set ``MPICH_RANK_REORDER_DISPLAY=1`` to print out the rank-to-node mapping at the start of the job.
+
+``MPICH_COLL_SYNC``
+^^^^^^^^^^^^^^^^^^^^^
+
+Setting this environment variable to ``1`` performs an ``MPI_Barrier`` before each collective operation. Alternatively, it can take a comma-separated list of collectives to synchronize, such as ``MPI_Barrier,MPI_Alltoall``.
+This deceptively simple check is a useful profiling and debugging tool.
+It can help diagnose load imbalance by forcing synchronization before collective starts and can help identify race conditions prior to collectives.
+
+``MPICH_OFI_CXI_COUNTER_REPORT``, ``MPICH_OFI_CXI_COUNTER_REPORT_FILE``, ``MPICH_OFI_CXI_COUNTER_FILE``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The HPE Slingshot NIC has many hardware counters that can help diagnose performance issues.
+Cray MPICH can read these counters and report their values at the end of an MPI job. What counters it reports, and how it reports them, are controlled by these three environment variables.
+
+The default value of ``MPICH_OFI_CXI_COUNTER_REPORT=1`` will report a single line at ``MPI_Finalize`` reporting how many network timeouts were encountered. If no timeouts were encountered then no output is produced.
+
+Network timeouts are not necessarily a concern; on a machine as large as Frontier they happen occasionally. If a single job has a performance anomaly and the timeout count is nonzero, then the performance problem may have been due to a network timeout.
+Users typically don't need to report such an event to the OLCF help desk as the network health is tracked by system administrators.
+If users consistently see large network timeout counts it is worth investigating further. There are certain communication patterns that can provoke network timeouts.
+
+Setting ``MPICH_OFI_CXI_COUNTER_REPORT=0`` will suppress all counter reporting.
+
+Setting ``MPICH_OFI_CXI_COUNTER_REPORT=2`` will print a table at ``MPI_Finalize`` with statistics for any counter that had a non-zero value on any rank. `HPE's documentation <https://cpe.ext.hpe.com/docs/latest/getting_started/HPE-Cassini-Performance-Counters.html>`_ has detailed counter information.
+
+If setting ``MPICH_OFI_CXI_COUNTER_REPORT`` to ``3`` or higher we recommend also setting ``MPICH_OFI_CXI_COUNTER_REPORT_FILE`` to a filename. At level ``3`` data will be outputted for any NIC that sees a timeout, and level ``4`` will output data for all NICs if any NIC sees a timeout. 
+Level ``5`` will output all collected counters for all NICs regardless of whether any timeouts were seen. Any of these options will produce a lot of output, and having it routed to ``stdout`` is likely to be confusing.
+Setting ``MPICH_OFI_CXI_COUNTER_REPORT_FILE`` will cause the output to be written to one file per node, which is much easier to analyze.
+
+Expert users who wish to change what counters are collected can point ``MPICH_OFI_CXI_COUNTER_FILE`` to a list of counters.
+
+Understanding the network counters can be challenging. If you are encountering network performance issues or are interested in using network counters to better understand your application consider scheduling an OLCF Office Hour to talk with the Center of Excellence team.
+
+
 System Updates 
 ============== 
 
