@@ -8,6 +8,16 @@ most recent changes are listed first.
 
 ----
 
+Frontier: hardware counter daemon (July 29, 2025)
+------------------------------------------------
+
+On July 29, 2025, a ROCm Profiler (``rocprofiler``) based daemon that automatically samples GPU hardware counters from a subset of compute nodes will be enabled by default for all jobs > 1800 nodes.
+This can be explicitly enabled/disabled via the ``--gpu-counters`` flag to ``sbatch``.
+To explicitly enable the rocprofiler-based counter collection daemon, set ``--gpu-counters=1``.
+To explicitly disable to daemon, set ``--gpu-counters=0``.
+See :ref:`frontier-slurm-plugins` for more information.
+
+
 Frontier: Core Module (March 18, 2025)
 ------------------------------------------------
 
