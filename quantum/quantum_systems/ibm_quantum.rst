@@ -83,11 +83,11 @@ All OLCF users have access to the "premium" (>=20 qubits) devices in the Washing
 Allocations & Usage Limits
 --------------------------
 
-* **Project allocations have a default limit of 200 minutes during a moving 28-day window**.
+* **Project allocations have a default limit of 200 minutes during a moving 28-day cycle**.
 * Minutes are shared across all users on a given project and across all backends.
 * Usage greater than 10 minutes will see a slight priority reduction in the queue, but will still be able to use up to 200 minutes by default. If you notice the queue reduction after 10 minutes being an issue, reach out to help@olcf.ornl.gov with justification for the higher-throughput need.
 * Once a project reaches the 200 minute usage limit, no jobs will be able to run until minutes are freed up on the project (see :ref:`example <ibm-window>`  below).
-* **A higher usage limit greater than 200 minutes is possible (see information below)**
+* **A higher usage limit greater than 200 minutes is possible (see information below)**.
 
 If you are planning to use a large allocation (over 200 minutes), please send a usage request to our Quantum Resource Utilization Council (QRUC) by logging into `myOLCF <https://my.olcf.ornl.gov>`__, select your QCUP project under "My Projects" after login, and use the `Quantum Allocation Request form <https://my.olcf.ornl.gov/allocations/quantumAllocation>`__ under the "Allocations" section.
 Alternatively, you can send a request through our help ticket system (help@olcf.ornl.gov).
@@ -101,21 +101,24 @@ For more information on how job priority is affected based on your limit, please
 
 .. _ibm-window:
 
-The 28-day rolling window
+The 28-day rolling cycle
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The new 28-day rolling window only considers usage in a given 28 days.
-Every new day, the window "rolls" by 1 day, which effectively erases usage run on the specific day 29 days ago.
-Any past usage that has fallen out of the new window is no longer accounted for, thus freeing up usage on the project.
-If no past usage falls out of the new window (i.e., no jobs were run specifically 29 days ago), then no minutes get freed up.
+IBM's quantum cloud platform displays the current 28-day cycle on the `Instances page <https://quantum.cloud.ibm.com/instances>`__ in UTC time. 
+QPU minutes are renewed to your account when they fall outside of the "Current Cycle" window. 
+For example, every new day the current cycle "rolls" by 1 day, which effectively erases usage run on the specific day 29 days ago.
+Any past usage that has fallen out of the new cycle is no longer accounted for, thus freeing up usage on the project.
+If no past usage falls out of the new cycle (i.e., no jobs were run specifically 29 days ago), then no minutes get freed up.
+To better understand instance usage in a given cycle and estimate when minutes will be renewed to your instance, IBM provides usage
+analytics that can be filtered by the last 28 days on their `Analytics page <https://quantum.cloud.ibm.com/analytics?intervalType=last-28-days>`__. 
 
-Example window
+Example cycle
 """"""""""""""
 
-Example for a project that has a 1000 minute limit in the ``10/18-11/15`` window.
+Example for a project that has a 1000 minute limit in the ``10/18-11/15`` cycle.
 For simplicity, let's just say in this example that they aren't running any new jobs right now, and have only run jobs in the past.
 
-The "current" ``10/18-11/15`` window:
+The "current" ``10/18-11/15`` cycle:
 
 * 100 minutes used on 10/18
 * 10 minutes used on 10/22
@@ -123,22 +126,22 @@ The "current" ``10/18-11/15`` window:
 
 A total of 610 minutes out of 1000 limit.
 
-Tomorrow's window ``10/19-11/16``:
+Tomorrow's cycle ``10/19-11/16``:
 
 * 10 minutes used on 10/22
 * 500 minutes used on 10/24
 
-A total of 510 minutes out of 1000 limit (100 minutes "freed" up because they fell out of the rolling window).
+A total of 510 minutes out of 1000 limit (100 minutes "freed" up because they fell out of the rolling cycle).
 
-The next window ``10/20-11/17``:
+The next cycle ``10/20-11/17``:
 
 * 10 minutes used on 10/22
 * 500 minutes used on 10/24
 
-Still 510 minutes accounted for since no "new" past usage rolled out of the window.
+Still 510 minutes accounted for since no "new" past usage rolled out of the cycle.
 
 The takeaway is that if I run a job on Day XYZ, then I won't get those minutes back until 29 days from Day XYZ.
-Until then, they will be accounted for in a given window and count toward the minute limit for a project.
+Until then, they will be accounted for in a given cycle and count toward the minute limit for a project.
 
 
 Submitting Jobs
