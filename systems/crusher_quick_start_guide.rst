@@ -1819,7 +1819,7 @@ Achieved FLOPS/s
 
 We calculate the achieved performance at the desired level (here, double-precision floating point, FP64), by summing each metric count and weighting the FMA metric by 2, since a fused multiply-add is considered 2 floating point operations.
 Also note that these ``SQ_INSTS_VALU_<ADD,MUL,TRANS>`` metrics are reported as per-simd, so we mutliply by the wavefront size as well.
-The ``SQ_INSTS_VALU_MFMA_MOPS_*`` instructions should be multiplied by the ``Flops/Cycle/CU`` value listed above.
+The ``SQ_INSTS_VALU_MFMA_MOPS_*`` instructions should be multiplied by 512.
 We use this equation to calculate the number of double-precision FLOPS:
 
 .. math::
@@ -1828,7 +1828,7 @@ We use this equation to calculate the number of double-precision FLOPS:
                          &+ SQ\_INSTS\_VALU\_MUL\_F64       \\\\
                          &+ SQ\_INSTS\_VALU\_TRANS\_F64     \\\\
                          &+ 2 * SQ\_INSTS\_VALU\_FMA\_F64)  \\\\
-                  + 256 *&(SQ\_INSTS\_VALU\_MFMA\_MOPS\_F64)
+                  + 512 *&(SQ\_INSTS\_VALU\_MFMA\_MOPS\_F64)
 
 
 When ``SQ_INSTS_VALU_MFMA_MOPS_*_F64`` instructions are used, then 47.8 TF/s is considered the theoretical maximum FLOPS/s.
@@ -1857,10 +1857,10 @@ The above formula can be adapted to compute the total FLOPS across all floating-
                          &+ SQ\_INSTS\_VALU\_MUL\_F64       \\\\
                          &+ SQ\_INSTS\_VALU\_TRANS\_F64     \\\\
                          &+ 2 * SQ\_INSTS\_VALU\_FMA\_F64)  \\\\
-                  + 1024 &*(SQ\_INSTS\_VALU\_MFMA\_MOPS\_F16) \\\\
-                  + 1024 &*(SQ\_INSTS\_VALU\_MFMA\_MOPS\_BF16) \\\\
-                  + 256 *&(SQ\_INSTS\_VALU\_MFMA\_MOPS\_F32) \\\\
-                  + 256 *&(SQ\_INSTS\_VALU\_MFMA\_MOPS\_F64) \\\\
+                  + 512 &*(SQ\_INSTS\_VALU\_MFMA\_MOPS\_F16) \\\\
+                  + 512 &*(SQ\_INSTS\_VALU\_MFMA\_MOPS\_BF16) \\\\
+                  + 512 *&(SQ\_INSTS\_VALU\_MFMA\_MOPS\_F32) \\\\
+                  + 512 *&(SQ\_INSTS\_VALU\_MFMA\_MOPS\_F64) \\\\
 
 
 Arithmetic Intensity
