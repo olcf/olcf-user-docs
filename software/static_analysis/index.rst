@@ -28,11 +28,11 @@ Clang-tidy (for C++)
 Using the Clang tools
 ===========
 
-To utilize clang-format or clang-tidy, you will need to load the module:
+To utilize clang-format or clang-tidy, you will need to load the modules:
 
 .. code-block:: bash
 
-    $ module load rocm-llvm-toolchain
+    $ module load rocm rocm-llvm-toolchain
 
 Codee Formatter (for Fortran)
 ===============
