@@ -84,32 +84,83 @@ Users have access to the Syntax Checkers (SC endpoints) to check program syntax,
 Default Quotas
 ==============
 
-Due to limited resources, the default quotas are enforced:
+Using a Nexus-hosted device charges against the Nexus "Simulation Time" quota, while using a Quantinuum-hosted device charges HQCs.
+Compilation jobs charge against Nexus "Compilation Time" across all devices. See table below for device-specific quotas:
 
-* ``H2-1SC``, ``H2-2SC``, ``Helios-1SC`` : Unlimited HQCs
-* ``H2-1``, ``H2-2``, ``Helios-1`` : 0 HQCs
-* ``H2-1E``, ``H2-2E``, ``Helios-1E`` : Unlimited HQCs
-* **Nexus Simulation Time**: 6000 s
+.. list-table:: Example Devices. See the *Backends* tab on `Nexus <https://nexus.quantinuum.com/backends>`__ for all devices.
+   :widths: 25 25 25 25
+   :header-rows: 1
+
+   * - Device
+     - Device Host
+     - Credit Type
+     - Default Quota
+   * - ``H2-1SC``
+     - Quantinuum
+     - HQCs
+     - Unlimited
+   * - ``H2-2SC``
+     - Quantinuum
+     - HQCs
+     - Unlimited
+   * - ``Helios-1SC``
+     - Quantinuum
+     - HQCs
+     - Unlimited
+   * - ``H2-1E``
+     - Quantinuum
+     - HQCs
+     - Unlimited
+   * - ``H2-2E``
+     - Quantinuum
+     - HQCs
+     - Unlimited
+   * - ``Helios-1E``
+     - Quantinuum
+     - HQCs
+     - Unlimited
+   * - ``H2-1``
+     - Quantinuum
+     - HQCs
+     - 0 HQCs [#qf1]_
+   * - ``H2-2``
+     - Quantinuum
+     - HQCs
+     - 0 HQCs [#qf1]_
+   * - ``Helios-1``
+     - Quantinuum
+     - HQCs
+     - 0 HQCs [#qf1]_
+   * - ``H2-1LE``
+     - Nexus
+     - Simulation Time
+     - 6000s [#qf2]_
+   * - ``H2-Emulator``
+     - Nexus
+     - Simulation Time
+     - 6000s [#qf2]_
+   * - ``Selene``
+     - Nexus
+     - Simulation Time
+     - 6000s [#qf2]_
+   * - ``SelenePlus``
+     - Nexus
+     - Simulation Time
+     - 6000s [#qf2]_
+.. [#qf1] ``H2-1``, ``H2-2``, and ``Helios-1`` share the same HQC quota.
+.. [#qf2] All Nexus-hosted devices share the same "Simulation Time" quota.
+
+Additionally, the following default quotas are enforced:
+
 * **Nexus Compilation Time**: 6000 s
 * **Nexus Storage**: 500 MB
 * **Nexus Lab**: First come, first served (total 500 hours shared among all QCUP users)
 
-Using a "Nexus Device" charges against the Nexus "Simulation Time" quota, while using a "Quantinuum Device" charges HQCs.
-All compile jobs charge against Nexus "Compilation Time" across all devices. 
-
-**Example Quantinuum Devices (charges HQCs):**
-
-* ``H2-1E``, ``H2-2E``, ``Helios-1E``, ``H2-1SC``, ``H2-2SC``, ``Helios-1SC``, ``H2-1``, ``H2-2``, ``Helios-1``
-
-**Example Nexus Devices (charges Nexus "Simulation Time"):**
-
-* ``H1-1LE``, ``H2-1LE``, ``H1-Emulator``, ``H2-Emulator``, ``Selene``, ``SelenePlus``
-
 As noted :ref:`below<quantinuum-alloc>`, quotas can be raised by sending a request to help@olcf.ornl.gov with sufficient justification.
-To see your current usage or quotas in Quantinuum Nexus (e.g., how many HQC credits you have available), navigate to the `Organization section of your Account Settings <https://nexus.quantinuum.com/settings/organization>`__.
+To see your current usage or quotas in Quantinuum Nexus (e.g., how many HQC credits you have available), navigate to your User Profile on Nexus (``https://nexus.quantinuum.com/users/your_username``).
 
 .. warning::
-   For resources that have "Unlimited" quota, the dashboard may make it seem like you have a specific amount of usage remaining; however, you still have unlimited usage. If you have problems accessing those resources, please reach out to help@olcf.ornl.gov.
+   For resources that have "Unlimited" quota, the dashboard may make it seem like you have a specific amount of usage remaining; however, you do. If you have problems accessing those resources, please reach out to help@olcf.ornl.gov.
 
 
 .. _quantinuum-alloc:
