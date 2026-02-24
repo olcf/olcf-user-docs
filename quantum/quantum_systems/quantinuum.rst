@@ -86,19 +86,30 @@ Default Quotas
 
 Due to limited resources, the default quotas are enforced:
 
-* ``H2-1SC``, ``H2-2SC``, ``Helios-1SC`` : Unlimited
-* ``H2-1``, ``H2-2``, ``Helios-1`` : 0
-* ``H2-1E``, ``H2-2E``, ``Helios-1E`` : Unlimited
+* ``H2-1SC``, ``H2-2SC``, ``Helios-1SC`` : Unlimited HQCs
+* ``H2-1``, ``H2-2``, ``Helios-1`` : 0 HQCs
+* ``H2-1E``, ``H2-2E``, ``Helios-1E`` : Unlimited HQCs
 * **Nexus Simulation Time**: 6000 s
 * **Nexus Compilation Time**: 6000 s
 * **Nexus Storage**: 500 MB
 * **Nexus Lab**: First come, first served (total 500 hours shared among all QCUP users)
 
+Using a "Nexus Device" charges against the Nexus "Simulation Time" quota, while using a "Quantinuum Device" charges HQCs.
+All compile jobs charge against Nexus "Compilation Time" across all devices. 
+
+**Example Quantinuum Devices (charges HQCs):**
+
+* ``H2-1E``, ``H2-2E``, ``Helios-1E``, ``H2-1SC``, ``H2-2SC``, ``Helios-1SC``, ``H2-1``, ``H2-2``, ``Helios-1``
+
+**Example Nexus Devices (charges Nexus "Simulation Time"):**
+
+* ``H1-1LE``, ``H2-1LE``, ``H1-Emulator``, ``H2-Emulator``, ``Selene``, ``SelenePlus``
+
 As noted :ref:`below<quantinuum-alloc>`, quotas can be raised by sending a request to help@olcf.ornl.gov with sufficient justification.
 To see your current usage or quotas in Quantinuum Nexus (e.g., how many HQC credits you have available), navigate to the `Organization section of your Account Settings <https://nexus.quantinuum.com/settings/organization>`__.
 
-.. note::
-   For resources that have "Unlimited" quota, the dashboard may make it seem like you do not have access to those resources; however, you do. If you have problems accessing those resources, please reach out to help@olcf.ornl.gov.
+.. warning::
+   For resources that have "Unlimited" quota, the dashboard may make it seem like you have a specific amount of usage remaining; however, you do. If you have problems accessing those resources, please reach out to help@olcf.ornl.gov.
 
 
 .. _quantinuum-alloc:
@@ -111,7 +122,7 @@ Additional information on credit usage for Quantinuum endpoints can be found in 
 
 * Any request for credits must be submitted by the project Principle Investigator (PI) by logging into `myOLCF <https://my.olcf.ornl.gov>`__, select your QCUP project under "My Projects" after login, and use the `Quantum Allocation Request form <https://my.olcf.ornl.gov/allocations/quantumAllocation>`__ under the "Allocations" section. Alternatively, you can send a request through our help ticket system (help@olcf.ornl.gov).
 
-* Requests for machine credits must be justified using results from the emulator to determine the appropriate amount needed. Requests without emulator-based justifications will be denied.
+* Requests for machine credits must be justified using results from an emulator (e.g., ``H2-1E``, ``H2-2E``, ``Helios-1E``) to determine the appropriate amount of HQCs needed. Requests without emulator-based justifications will be denied.
 
 * Requests will be evaluated based on the provided technical justification, programmatic efficiency, and machine availability. The effective usage of prior allocations by the project will also be considered.
 
@@ -139,4 +150,3 @@ Additional Resources
 ====================
 
 * `Nexus Status Page <https://nexus-status.quantinuum.com/>`__ : Where you can automatically receive future maintenance announcements, reminders, incidents, and unplanned outage notifications.
- 
