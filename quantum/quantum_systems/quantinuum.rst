@@ -109,7 +109,7 @@ As noted :ref:`below<quantinuum-alloc>`, quotas can be raised by sending a reque
 To see your current usage or quotas in Quantinuum Nexus (e.g., how many HQC credits you have available), navigate to the `Organization section of your Account Settings <https://nexus.quantinuum.com/settings/organization>`__.
 
 .. warning::
-   For resources that have "Unlimited" quota, the dashboard may make it seem like you have a specific amount of usage remaining; however, you do. If you have problems accessing those resources, please reach out to help@olcf.ornl.gov.
+   For resources that have "Unlimited" quota, the dashboard may make it seem like you have a specific amount of usage remaining; however, you still have unlimited usage. If you have problems accessing those resources, please reach out to help@olcf.ornl.gov.
 
 
 .. _quantinuum-alloc:
