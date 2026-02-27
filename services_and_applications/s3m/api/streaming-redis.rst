@@ -31,7 +31,7 @@ Provision Cluster
 
 Create a new Redis cluster. The cluster will not be immediately accessible—monitor status with list or get endpoints.
 
-``POST /olcf/v1alpha/streaming/redis/provision_cluster``
+``POST /olcf/open/v1alpha/streaming/redis/provision_cluster``
 
 .. important::
 
@@ -49,7 +49,7 @@ Create a new Redis cluster. The cluster will not be immediately accessible—mon
 
          curl -X POST -H @.env \
              -H "Content-Type: application/json" \
-             https://s3m.olcf.ornl.gov/olcf/v1alpha/streaming/redis/provision_cluster \
+             https://s3m.olcf.ornl.gov/olcf/open/v1alpha/streaming/redis/provision_cluster \
              -d '{
                "kind": "dragonfly-general",
                "name": "mycluster",
@@ -98,7 +98,7 @@ Create a new Redis cluster. The cluster will not be immediately accessible—mon
                 import os
                 import requests
 
-                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/olcf/v1alpha/streaming"
+                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/olcf/open/v1alpha/streaming"
                 S3M_TOKEN = os.getenv("S3M_TOKEN")
                 resource = "redis"
 
@@ -141,7 +141,7 @@ Create a new Redis cluster. The cluster will not be immediately accessible—mon
 List Clusters
 -------------
 
-``GET /olcf/v1alpha/streaming/redis/list_clusters``
+``GET /olcf/open/v1alpha/streaming/redis/list_clusters``
 
 .. tab-set::
 
@@ -151,7 +151,7 @@ List Clusters
       .. code-block:: shell
 
          curl -H @.env \
-             https://s3m.olcf.ornl.gov/olcf/v1alpha/streaming/redis/list_clusters
+             https://s3m.olcf.ornl.gov/olcf/open/v1alpha/streaming/redis/list_clusters
 
    .. tab-item:: Python
       :sync: python
@@ -184,7 +184,7 @@ List Clusters
                 import os
                 import requests
 
-                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/olcf/v1alpha/streaming"
+                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/olcf/open/v1alpha/streaming"
                 S3M_TOKEN = os.getenv("S3M_TOKEN")
                 resource = "redis"
 
@@ -207,7 +207,7 @@ List Clusters
 Get Cluster
 -----------
 
-``GET /olcf/v1alpha/streaming/redis/cluster/{name}``
+``GET /olcf/open/v1alpha/streaming/redis/cluster/{name}``
 
 .. tab-set::
 
@@ -217,7 +217,7 @@ Get Cluster
       .. code-block:: shell
 
          curl -H @.env \
-             https://s3m.olcf.ornl.gov/olcf/v1alpha/streaming/redis/cluster/mycluster
+             https://s3m.olcf.ornl.gov/olcf/open/v1alpha/streaming/redis/cluster/mycluster
 
    .. tab-item:: Python
       :sync: python
@@ -250,7 +250,7 @@ Get Cluster
                 import os
                 import requests
 
-                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/olcf/v1alpha/streaming"
+                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/olcf/open/v1alpha/streaming"
                 S3M_TOKEN = os.getenv("S3M_TOKEN")
                 resource = "redis"
                 cluster_name = "mycluster"
@@ -276,7 +276,7 @@ Extend Cluster
 
 Reset the cluster's lifetime to 7 days from now.
 
-``POST /olcf/v1alpha/streaming/redis/extend/{name}``
+``POST /olcf/open/v1alpha/streaming/redis/extend/{name}``
 
 .. tab-set::
 
@@ -286,7 +286,7 @@ Reset the cluster's lifetime to 7 days from now.
       .. code-block:: shell
 
          curl -X POST -H @.env \
-             https://s3m.olcf.ornl.gov/olcf/v1alpha/streaming/redis/extend/mycluster
+             https://s3m.olcf.ornl.gov/olcf/open/v1alpha/streaming/redis/extend/mycluster
 
    .. tab-item:: Python
       :sync: python
@@ -319,7 +319,7 @@ Reset the cluster's lifetime to 7 days from now.
                 import os
                 import requests
 
-                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/olcf/v1alpha/streaming"
+                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/olcf/open/v1alpha/streaming"
                 S3M_TOKEN = os.getenv("S3M_TOKEN")
                 resource = "redis"
                 cluster_name = "mycluster"
@@ -343,7 +343,7 @@ Reset the cluster's lifetime to 7 days from now.
 Delete Cluster
 --------------
 
-``DELETE /olcf/v1alpha/streaming/redis/cluster/{name}``
+``DELETE /olcf/open/v1alpha/streaming/redis/cluster/{name}``
 
 .. tab-set::
 
@@ -353,7 +353,7 @@ Delete Cluster
       .. code-block:: shell
 
          curl -X DELETE -H @.env \
-             https://s3m.olcf.ornl.gov/olcf/v1alpha/streaming/redis/cluster/mycluster
+             https://s3m.olcf.ornl.gov/olcf/open/v1alpha/streaming/redis/cluster/mycluster
 
    .. tab-item:: Python
       :sync: python
@@ -386,7 +386,7 @@ Delete Cluster
                 import os
                 import requests
 
-                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/olcf/v1alpha/streaming"
+                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/olcf/open/v1alpha/streaming"
                 S3M_TOKEN = os.getenv("S3M_TOKEN")
                 resource = "redis"
                 cluster_name = "mycluster"

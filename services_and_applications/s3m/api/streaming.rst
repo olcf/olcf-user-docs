@@ -49,7 +49,7 @@ List Available Backends
 
 Discover available streaming backends and their resource options.
 
-``GET /olcf/v1alpha/streaming/list_backends``
+``GET /olcf/open/v1alpha/streaming/list_backends``
 
 .. tab-set::
 
@@ -59,7 +59,7 @@ Discover available streaming backends and their resource options.
       .. code-block:: shell
 
          curl -H @.env \
-             https://s3m.olcf.ornl.gov/olcf/v1alpha/streaming/list_backends
+             https://s3m.olcf.ornl.gov/olcf/open/v1alpha/streaming/list_backends
 
    .. tab-item:: Python
       :sync: python
@@ -92,7 +92,7 @@ Discover available streaming backends and their resource options.
                 import os
                 import requests
 
-                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/olcf/v1alpha/streaming"
+                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/olcf/open/v1alpha/streaming"
                 S3M_TOKEN = os.getenv("S3M_TOKEN")
 
                 headers = {
