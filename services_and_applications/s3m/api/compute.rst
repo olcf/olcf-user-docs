@@ -32,7 +32,7 @@ Ping Resource
 
 Check the health status of a compute resource.
 
-``GET /slurm/v0.0.43/{resource}/ping``
+``GET /slurm/open/v0.0.43/{resource}/ping``
 
 .. tab-set::
 
@@ -42,7 +42,7 @@ Check the health status of a compute resource.
       .. code-block:: shell
 
          curl -H @.env \
-             https://s3m.olcf.ornl.gov/slurm/v0.0.43/defiant/ping
+             https://s3m.olcf.ornl.gov/slurm/open/v0.0.43/defiant/ping
 
    .. tab-item:: Python
       :sync: python
@@ -76,7 +76,7 @@ Check the health status of a compute resource.
                 import os
                 import requests
 
-                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/slurm/v0.0.43"
+                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/slurm/open/v0.0.43"
                 S3M_TOKEN = os.getenv("S3M_TOKEN")
                 resource = "defiant"
 
@@ -103,7 +103,7 @@ List Partitions
 
 Get available partitions (queues) on a resource.
 
-``GET /slurm/v0.0.43/{resource}/partitions``
+``GET /slurm/open/v0.0.43/{resource}/partitions``
 
 .. tab-set::
 
@@ -113,7 +113,7 @@ Get available partitions (queues) on a resource.
       .. code-block:: shell
 
          curl -H @.env \
-             https://s3m.olcf.ornl.gov/slurm/v0.0.43/defiant/partitions
+             https://s3m.olcf.ornl.gov/slurm/open/v0.0.43/defiant/partitions
 
    .. tab-item:: Python
       :sync: python
@@ -147,7 +147,7 @@ Get available partitions (queues) on a resource.
                 import os
                 import requests
 
-                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/slurm/v0.0.43"
+                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/slurm/open/v0.0.43"
                 S3M_TOKEN = os.getenv("S3M_TOKEN")
                 resource = "defiant"
 
@@ -174,7 +174,7 @@ Submit a Job
 
 Submit a new batch job to the scheduler.
 
-``POST /slurm/v0.0.43/{resource}/job/submit``
+``POST /slurm/open/v0.0.43/{resource}/job/submit``
 
 .. tab-set::
 
@@ -185,7 +185,7 @@ Submit a new batch job to the scheduler.
 
          curl -X POST -H @.env \
              -H "Content-Type: application/json" \
-             https://s3m.olcf.ornl.gov/slurm/v0.0.43/defiant/job/submit \
+             https://s3m.olcf.ornl.gov/slurm/open/v0.0.43/defiant/job/submit \
              -d '{
                "job": {
                  "name": "my-job",
@@ -256,7 +256,7 @@ Submit a new batch job to the scheduler.
                 import os
                 import requests
 
-                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/slurm/v0.0.43"
+                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/slurm/open/v0.0.43"
                 S3M_TOKEN = os.getenv("S3M_TOKEN")
                 resource = "defiant"
 
@@ -308,7 +308,7 @@ Get Job Status
 
 Retrieve details about a specific job.
 
-``GET /slurm/v0.0.43/{resource}/job/{job_id}``
+``GET /slurm/open/v0.0.43/{resource}/job/{job_id}``
 
 .. tab-set::
 
@@ -318,7 +318,7 @@ Retrieve details about a specific job.
       .. code-block:: shell
 
          curl -H @.env \
-             https://s3m.olcf.ornl.gov/slurm/v0.0.43/defiant/job/12345
+             https://s3m.olcf.ornl.gov/slurm/open/v0.0.43/defiant/job/12345
 
    .. tab-item:: Python
       :sync: python
@@ -351,7 +351,7 @@ Retrieve details about a specific job.
                 import os
                 import requests
 
-                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/slurm/v0.0.43"
+                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/slurm/open/v0.0.43"
                 S3M_TOKEN = os.getenv("S3M_TOKEN")
                 resource = "defiant"
                 job_id="12345"
@@ -379,7 +379,7 @@ List All Jobs
 
 Retrieve all jobs visible to your project.
 
-``GET /slurm/v0.0.43/{resource}/jobs``
+``GET /slurm/open/v0.0.43/{resource}/jobs``
 
 .. tab-set::
 
@@ -389,7 +389,7 @@ Retrieve all jobs visible to your project.
       .. code-block:: shell
 
          curl -H @.env \
-             https://s3m.olcf.ornl.gov/slurm/v0.0.43/defiant/jobs
+             https://s3m.olcf.ornl.gov/slurm/open/v0.0.43/defiant/jobs
 
    .. tab-item:: Python
       :sync: python
@@ -423,7 +423,7 @@ Retrieve all jobs visible to your project.
                 import os
                 import requests
 
-                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/slurm/v0.0.43"
+                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/slurm/open/v0.0.43"
                 S3M_TOKEN = os.getenv("S3M_TOKEN")
                 resource = "defiant"
 
@@ -450,7 +450,7 @@ Cancel a Job
 
 Cancel a running or pending job.
 
-``DELETE /slurm/v0.0.43/{resource}/job/{job_id}``
+``DELETE /slurm/open/v0.0.43/{resource}/job/{job_id}``
 
 .. tab-set::
 
@@ -460,7 +460,7 @@ Cancel a running or pending job.
       .. code-block:: shell
 
          curl -X DELETE -H @.env \
-             https://s3m.olcf.ornl.gov/slurm/v0.0.43/defiant/job/12345
+             https://s3m.olcf.ornl.gov/slurm/open/v0.0.43/defiant/job/12345
 
    .. tab-item:: Python
       :sync: python
@@ -493,7 +493,7 @@ Cancel a running or pending job.
                 import os
                 import requests
 
-                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/slurm/v0.0.43"
+                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/slurm/open/v0.0.43"
                 S3M_TOKEN = os.getenv("S3M_TOKEN")
                 resource = "defiant"
                 job_id="12345"
@@ -526,7 +526,7 @@ List Nodes
 
 Get information about compute nodes on a resource.
 
-``GET /slurm/v0.0.43/{resource}/nodes``
+``GET /slurm/open/v0.0.43/{resource}/nodes``
 
 .. tab-set::
 
@@ -536,7 +536,7 @@ Get information about compute nodes on a resource.
       .. code-block:: shell
 
          curl -H @.env \
-             https://s3m.olcf.ornl.gov/slurm/v0.0.43/defiant/nodes
+             https://s3m.olcf.ornl.gov/slurm/open/v0.0.43/defiant/nodes
 
    .. tab-item:: Python
       :sync: python
@@ -570,7 +570,7 @@ Get information about compute nodes on a resource.
                 import os
                 import requests
 
-                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/slurm/v0.0.43"
+                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/slurm/open/v0.0.43"
                 S3M_TOKEN = os.getenv("S3M_TOKEN")
                 resource = "defiant"
 
@@ -597,7 +597,7 @@ List Reservations
 
 Get reservations on a resource.
 
-``GET /slurm/v0.0.43/{resource}/reservations``
+``GET /slurm/open/v0.0.43/{resource}/reservations``
 
 .. tab-set::
 
@@ -607,7 +607,7 @@ Get reservations on a resource.
       .. code-block:: shell
 
          curl -H @.env \
-             https://s3m.olcf.ornl.gov/slurm/v0.0.43/defiant/reservations
+             https://s3m.olcf.ornl.gov/slurm/open/v0.0.43/defiant/reservations
 
    .. tab-item:: Python
       :sync: python
@@ -641,7 +641,7 @@ Get reservations on a resource.
                 import os
                 import requests
 
-                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/slurm/v0.0.43"
+                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/slurm/open/v0.0.43"
                 S3M_TOKEN = os.getenv("S3M_TOKEN")
                 resource = "defiant"
 
@@ -668,7 +668,7 @@ Scheduler Diagnostics
 
 Get diagnostic information about the SLURM scheduler.
 
-``GET /slurm/v0.0.43/{resource}/diag``
+``GET /slurm/open/v0.0.43/{resource}/diag``
 
 .. tab-set::
 
@@ -678,7 +678,7 @@ Get diagnostic information about the SLURM scheduler.
       .. code-block:: shell
 
          curl -H @.env \
-             https://s3m.olcf.ornl.gov/slurm/v0.0.43/defiant/diag
+             https://s3m.olcf.ornl.gov/slurm/open/v0.0.43/defiant/diag
 
    .. tab-item:: Python
       :sync: python
@@ -712,7 +712,7 @@ Get diagnostic information about the SLURM scheduler.
                 import os
                 import requests
 
-                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/slurm/v0.0.43"
+                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/slurm/open/v0.0.43"
                 S3M_TOKEN = os.getenv("S3M_TOKEN")
                 resource = "defiant"
 

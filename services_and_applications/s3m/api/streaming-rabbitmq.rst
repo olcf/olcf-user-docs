@@ -26,7 +26,7 @@ Provision Cluster
 
 Create a new RabbitMQ cluster. The cluster will not be immediately accessible—monitor status with list or get endpoints.
 
-``POST /olcf/v1alpha/streaming/rabbitmq/provision_cluster``
+``POST /olcf/open/v1alpha/streaming/rabbitmq/provision_cluster``
 
 .. tab-set::
 
@@ -37,7 +37,7 @@ Create a new RabbitMQ cluster. The cluster will not be immediately accessible—
 
          curl -X POST -H @.env \
              -H "Content-Type: application/json" \
-             https://s3m.olcf.ornl.gov/olcf/v1alpha/streaming/rabbitmq/provision_cluster \
+             https://s3m.olcf.ornl.gov/olcf/open/v1alpha/streaming/rabbitmq/provision_cluster \
              -d '{
                "kind": "general",
                "name": "mycluster",
@@ -87,7 +87,7 @@ Create a new RabbitMQ cluster. The cluster will not be immediately accessible—
                 import os
                 import requests
 
-                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/olcf/v1alpha/streaming"
+                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/olcf/open/v1alpha/streaming"
                 S3M_TOKEN = os.getenv("S3M_TOKEN")
                 resource = "rabbitmq"
 
@@ -132,7 +132,7 @@ Create a new RabbitMQ cluster. The cluster will not be immediately accessible—
 List Clusters
 -------------
 
-``GET /olcf/v1alpha/streaming/rabbitmq/list_clusters``
+``GET /olcf/open/v1alpha/streaming/rabbitmq/list_clusters``
 
 .. tab-set::
 
@@ -142,7 +142,7 @@ List Clusters
       .. code-block:: shell
 
          curl -H @.env \
-             https://s3m.olcf.ornl.gov/olcf/v1alpha/streaming/rabbitmq/list_clusters
+             https://s3m.olcf.ornl.gov/olcf/open/v1alpha/streaming/rabbitmq/list_clusters
 
    .. tab-item:: Python
       :sync: python
@@ -175,7 +175,7 @@ List Clusters
                 import os
                 import requests
 
-                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/olcf/v1alpha/streaming"
+                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/olcf/open/v1alpha/streaming"
                 S3M_TOKEN = os.getenv("S3M_TOKEN")
                 resource = "rabbitmq"
 
@@ -198,7 +198,7 @@ List Clusters
 Get Cluster
 -----------
 
-``GET /olcf/v1alpha/streaming/rabbitmq/cluster/{name}``
+``GET /olcf/open/v1alpha/streaming/rabbitmq/cluster/{name}``
 
 .. tab-set::
 
@@ -208,7 +208,7 @@ Get Cluster
       .. code-block:: shell
 
          curl -H @.env \
-             https://s3m.olcf.ornl.gov/olcf/v1alpha/streaming/rabbitmq/cluster/mycluster
+             https://s3m.olcf.ornl.gov/olcf/open/v1alpha/streaming/rabbitmq/cluster/mycluster
 
    .. tab-item:: Python
       :sync: python
@@ -241,7 +241,7 @@ Get Cluster
                 import os
                 import requests
 
-                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/olcf/v1alpha/streaming"
+                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/olcf/open/v1alpha/streaming"
                 S3M_TOKEN = os.getenv("S3M_TOKEN")
                 resource = "rabbitmq"
                 cluster_name = "mycluster"
@@ -267,7 +267,7 @@ Extend Cluster
 
 Reset the cluster's lifetime to 7 days from now.
 
-``POST /olcf/v1alpha/streaming/rabbitmq/extend/{name}``
+``POST /olcf/open/v1alpha/streaming/rabbitmq/extend/{name}``
 
 .. tab-set::
 
@@ -277,7 +277,7 @@ Reset the cluster's lifetime to 7 days from now.
       .. code-block:: shell
 
          curl -X POST -H @.env \
-             https://s3m.olcf.ornl.gov/olcf/v1alpha/streaming/rabbitmq/extend/mycluster
+             https://s3m.olcf.ornl.gov/olcf/open/v1alpha/streaming/rabbitmq/extend/mycluster
 
    .. tab-item:: Python
       :sync: python
@@ -310,7 +310,7 @@ Reset the cluster's lifetime to 7 days from now.
                 import os
                 import requests
 
-                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/olcf/v1alpha/streaming"
+                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/olcf/open/v1alpha/streaming"
                 S3M_TOKEN = os.getenv("S3M_TOKEN")
                 resource = "rabbitmq"
                 cluster_name = "mycluster"
@@ -334,7 +334,7 @@ Reset the cluster's lifetime to 7 days from now.
 Delete Cluster
 --------------
 
-``DELETE /olcf/v1alpha/streaming/rabbitmq/cluster/{name}``
+``DELETE /olcf/open/v1alpha/streaming/rabbitmq/cluster/{name}``
 
 .. tab-set::
 
@@ -344,7 +344,7 @@ Delete Cluster
       .. code-block:: shell
 
          curl -X DELETE -H @.env \
-             https://s3m.olcf.ornl.gov/olcf/v1alpha/streaming/rabbitmq/cluster/mycluster
+             https://s3m.olcf.ornl.gov/olcf/open/v1alpha/streaming/rabbitmq/cluster/mycluster
 
    .. tab-item:: Python
       :sync: python
@@ -377,7 +377,7 @@ Delete Cluster
                 import os
                 import requests
 
-                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/olcf/v1alpha/streaming"
+                S3M_BASE_PATH = "https://s3m.olcf.ornl.gov/olcf/open/v1alpha/streaming"
                 S3M_TOKEN = os.getenv("S3M_TOKEN")
                 resource = "rabbitmq"
                 cluster_name = "mycluster"
