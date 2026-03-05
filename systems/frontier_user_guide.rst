@@ -3282,52 +3282,72 @@ Copper
 
 Copper is a lightweight library designed to address the I/O bottleneck caused by all compute nodes loading the same files simultaneously. To reduce file system contention and improve efficiency, Copper enables a single designated process to load data from the file system and transfer to other ranks through high-speed interconnects. This approach significantly reduces redundant file access and improves scalability in distributed training and simulation workloads. Copper is a read-only cooperative caching layer designed to enable scalable data loading across massive numbers of compute nodes. It aims to avoid I/O bottlenecks, network contention, and interference with the storage network, file system, and compute network, thereby allowing more effective use of the compute network for data movement—both for your job and for other jobs running on the system. The current intended use of Copper is to improve the performance of Python imports - dynamic shared library loading on Aurora. However, Copper can be used to improve the performance of any type of redundant data loading (Note: this is for the case where all the processes are loading the same files) on a supercomputer.
 
-module load ums ums046 copper 
-launch_copper.sh -d /lustre/orion/gen008/proj-shared/khana-copper/
+.. code:: 
 
-PYTHONPATH=/tmp/${USER}/copper/lustre/orion/gen008/gpt_exp/custom_torch/lus_custom_pip_env/:$PYTHONPATH
+      module load ums ums046 copper 
+
+.. code:: 
+
+      launch_copper.sh -d /lustre/orion/gen008/proj-shared/khana-copper/
+
+.. code:: 
+
+      PYTHONPATH=/tmp/${USER}/copper/lustre/orion/gen008/gpt_exp/custom_torch/lus_custom_pip_env/:$PYTHONPATH
 
 If you want your I/O to go through Copper, add /tmp/${USER}/copper/ to the beginning of your PYTHONPATH. Here, only the root compute node will do the I/O directly with the Lustre file system.
-If /tmp/${USER}/copper/ is not added to the beginning of your paths, then all compute nodes would do I/O directly to the Lustre file system.
 
+If /tmp/${USER}/copper/ is not added to the beginning of your paths, then all compute nodes would do I/O directly to the Lustre file system.
 
 Example
 
-#!/bin/bash -x
-#SBATCH -A PROJECT
-#SBATCH -J copper_spindle
-#SBATCH -o %x-%j.out
-#SBATCH -t 02:00:00
-#SBATCH -p batch
-#SBATCH -N 1024
-#SBATCH --network=single_node_vni,job_vni,def_tles=0
-#SBATCH --threads-per-core=2  
+.. code::
 
-# sbatch ./simple_with_copper.sh
-# salloc -A GEN008 -J copper_spindle -t 00:30:00 -q debug -N 2 
-# salloc --network=single_node_vni,job_vni,def_tles=0 --threads-per-core=2   --exclusive   -A GEN008 -J copper_spindle -t 00:30:00 -q debug -N 2
-# This example shows loading python modules from a lustre directory with using copper.
+      #!/bin/bash -x
+      #SBATCH -A PROJECT
+      #SBATCH -J copper_spindle
+      #SBATCH -o %x-%j.out
+      #SBATCH -t 02:00:00
+      #SBATCH -p batch
+      #SBATCH -N 1024
+      #SBATCH --network=single_node_vni,job_vni,def_tles=0
+      #SBATCH --threads-per-core=2  
 
-cd $SLURM_SUBMIT_DIR
-echo Jobid: $SLURM_JOBID
-echo Running on nodes $SLURM_NODELIST
-RANKS_PER_NODE=12
-echo "App running on NUM_OF_NODES=${SLURM_JOB_NUM_NODES}  RANKS_PER_NODE=${RANKS_PER_NODE} "
+.. code::
 
-module load ums ums046 copper 
-module load cray-python
+      # sbatch ./simple_with_copper.sh
+      # salloc -A GEN008 -J copper_spindle -t 00:30:00 -q debug -N 2 
+      # salloc --network=single_node_vni,job_vni,def_tles=0 --threads-per-core=2   --exclusive   -A GEN008 -J copper_spindle -t 00:30:00 -q debug -N 2
+      # This example shows loading python modules from a lustre directory with using copper.
 
-# The below 2 lines are only for the first-time setup to install a package in a custom dir. Do not use in this job script
-# pip install --target=/lustre/orion/gen008/gpt_exp/custom_torch/lus_custom_pip_env/ torch 
+.. code::
 
+      cd $SLURM_SUBMIT_DIR
+      echo Jobid: $SLURM_JOBID
+      echo Running on nodes $SLURM_NODELIST
+      RANKS_PER_NODE=12
+      echo "App running on NUM_OF_NODES=${SLURM_JOB_NUM_NODES}  RANKS_PER_NODE=${RANKS_PER_NODE} "
 
-time srun -N $SLURM_JOB_NUM_NODES --ntasks-per-node=$RANKS_PER_NODE --cpus-per-task=1  --threads-per-core=1 --network=single_node_vni,job_vni    python3 -c "import torch; print(torch.__file__)"
+.. code::
 
-launch_copper.sh -d /lustre/orion/gen008/proj-shared/khana-copper/
-export PYTHONPATH=/tmp/kaushikv/copper/lustre/orion/gen008/gpt_exp/custom_torch/lus_custom_pip_env:$PYTHONPATH
-time srun -N $SLURM_JOB_NUM_NODES --ntasks-per-node=$RANKS_PER_NODE --cpus-per-task=1  --threads-per-core=1 --network=single_node_vni,job_vni    python3 -c "import torch; print(torch.__file__)"
+   module load ums ums046 copper 
+   module load cray-python
 
-sh stop_copper.sh  
+   # The below 2 lines are only for the first-time setup to install a package in a custom dir. Do not use in this job script
+   # pip install --target=/lustre/orion/gen008/gpt_exp/custom_torch/lus_custom_pip_env/ torch 
+
+.. code::
+
+   time srun -N $SLURM_JOB_NUM_NODES --ntasks-per-node=$RANKS_PER_NODE --cpus-per-task=1  --threads-per-core=1 --network=single_node_vni,job_vni    python3 -c "import torch; print(torch.__file__)"
+
+.. code::
+
+   launch_copper.sh -d /lustre/orion/gen008/proj-shared/khana-copper/
+   export PYTHONPATH=/tmp/kaushikv/copper/lustre/orion/gen008/gpt_exp/custom_torch/lus_custom_pip_env:$PYTHONPATH
+   time srun -N $SLURM_JOB_NUM_NODES --ntasks-per-node=$RANKS_PER_NODE --cpus-per-task=1  --threads-per-core=1 --network=single_node_vni,job_vni    python3 -c "import torch; print(torch.__file__)"
+
+.. code::
+
+   sh stop_copper.sh  
 
 Reference: 
 https://docs.alcf.anl.gov/aurora/data-management/daos/daos-overview/
