@@ -52,6 +52,9 @@ always read tokens from environment variables when possible:
        "https://s3m.olcf.ornl.gov/slurm/v0.0.43/defiant/ping",
        headers=headers)
 
+
+.. _s3m_command_line_safety:
+
 Avoid Command-Line Arguments
 ----------------------------
 

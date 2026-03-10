@@ -19,6 +19,8 @@ Access to the resources in the OLCF Facility API is restricted to your project v
 when you generate a token using myOLCF it is always scoped to the project itself, not your user account. For example,
 if using the compute resource to submit a job via Slurm it will run under your project ``_auser`` account.
 
+.. _s3m_generate_token:
+
 Generate a Token
 ----------------
 
