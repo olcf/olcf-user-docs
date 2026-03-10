@@ -181,4 +181,8 @@ Additionally, you can verify that Jupyter notebook is seeing all GPUs on a Front
       else:
          print("ROCm is not available.")
 
-
+.. note::
+   If you notice old or non-functioning kerenls, they could be residual from Jupyter on Marble or insufficient 
+   clean up after removing a conda environment (e.g., `conda env remove --name pytorch_env`). To remove these from
+   Jupyter on Frontier, you may need to manually delete it's associated directory 
+   in `/ccs/home/{userid}/.local/share/jupyter/kernels`.
