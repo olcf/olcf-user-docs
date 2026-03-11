@@ -41,6 +41,7 @@ Currently, the service supports the following models:
 
 * ``gpt-oss-120b``
 * ``nemotron-nano-fp8``
+* ``apriel-1.6-15b-thinker``
 
 Usage Examples
 --------------
@@ -158,6 +159,84 @@ Usage Examples
             print(response.choices[0].message.content)
 
 
+**Example 3: Image Recognition**
+
+.. note::
+
+    Image recognition is only available with multi-modal models.
+    Please see the ``/model/info`` endpoint for models that have ``supports_vision`` property set.
+
+.. tab-set::
+    .. tab-item:: cURL
+        :sync: curl
+
+        .. code-block:: bash
+
+            jq -n --arg content "$(base64 < frontier.jpg)" '{
+              "model": "apriel-1.6-15b-thinker",
+              "messages": [
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": "Describe the image"},
+                        {
+                            "type": "image_url",
+                            "image_url": {"url": ("data:image/jpeg;base64," + $content)}
+                        }
+                    ]
+                }
+              ]
+            }' | curl -N -s -X POST "https://testing.s3m.olcf.ornl.gov/olcf/open/v1alpha/inference/chat/completions" \
+                 -H @.env \
+                 -H "Content-Type: application/json" \
+                 -d @-
+
+
+    .. tab-item:: Python (OpenAI)
+        :sync: openai
+
+        .. code-block::
+
+            import base64
+            import os
+            from openai import OpenAI
+
+            client = OpenAI(
+                base_url="https://testing.s3m.olcf.ornl.gov/olcf/open/v1alpha/inference",
+                api_key=os.environ.get("S3M_TOKEN")
+            )
+
+            # Function to encode the image
+            def encode_image(image_path):
+                with open(image_path, "rb") as image_file:
+                    return base64.b64encode(image_file.read()).decode("utf-8")
+
+
+            # Path to your image
+            image_path = "frontier.jpg"
+
+            # Getting the Base64 string
+            base64_image = encode_image(image_path)
+
+            response = client.responses.create(
+                model="apriel-1.6-15b-thinker",
+                input=[
+                    {
+                        "role": "user",
+                        "content": [
+                            { "type": "input_text", "text": "Describe this image" },
+                            {
+                                "type": "input_image",
+                                "image_url": f"data:image/jpeg;base64,{base64_image}",
+                            },
+                        ],
+                    }
+                ],
+            )
+
+            print(response.output[0].content[0].text)
+
+
 Core API Endpoints
 ------------------
 
@@ -171,12 +250,6 @@ Because the service uses a vLLM backend, the API routing and request bodies are 
 **Endpoint:** ``/chat/completions``
 
 Used for conversational interactions and instruction-following models.
-
-
-.. tab-set::
-
-    .. tab-item:: cURL
-    :sync: curl
 
 .. code-block:: bash
 
@@ -195,11 +268,6 @@ Used for conversational interactions and instruction-following models.
 **Endpoint:** ``/completions``
 
 Used for traditional text continuation (base models rather than instruction-tuned chat models).
-
-.. tab-set::
-
-    .. tab-item:: cURL
-    :sync: curl
 
 .. code-block:: bash
 
@@ -300,11 +368,6 @@ This will return a richer JSON payload containing the backend parameters and cap
 **Endpoint:** ``/embeddings``
 
 Generates vector embeddings for a given text. *(Note: Requires an embedding-specific model to be loaded on the server).*
-
-.. tab-set::
-
-    .. tab-item:: cURL
-    :sync: curl
 
 .. code-block:: bash
 
