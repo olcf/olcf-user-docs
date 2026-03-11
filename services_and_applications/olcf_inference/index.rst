@@ -11,7 +11,7 @@ OLCF Inference Service Documentation
 
 
 .. important::
-    Currently, the OLCF Inference Service is in a preview state and is currently only available by invitation
+    Currently, the OLCF Inference Service is in a preview state and is currently **only available by invitation**
 
 Welcome to the documentation for the OLCF Inference Service. This service provides access to powerful Large Language Models (LLMs) running on a highly optimized **vLLM runtime**, offering OpenAI-compatible API endpoints.
 
@@ -42,76 +42,128 @@ Currently, the service supports the following models:
 * ``gpt-oss-120b``
 * ``nemotron-nano-fp8``
 
-Usage Examples (cURL)
----------------------
+Usage Examples
+--------------
 
-.. note::
-    When using cURL, wget, or other command line programs please follow the best practices described in the S3M documentation :ref:`s3m_command_line_safety`
+.. tab-set::
 
-    You can follow the examples below by simply running
+    .. tab-item:: cURL
+        :sync: curl
 
-    .. code-block:: bash
+        .. note::
 
-        echo "Authorization: ${S3M_TOKEN}" > .env
-        echo ".env" >> .gitignore
+            When using cURL, wget, or other command line programs please follow the best practices described in the S3M documentation :ref:`s3m_command_line_safety`
 
-Because the service uses a vLLM backend, the request body is compatible with the standard OpenAI Chat Completions API format.
+            You can follow the examples below by simply running
+
+            .. code-block:: bash
+
+                echo "Authorization: ${S3M_TOKEN}" > .env
+                echo ".env" >> .gitignore
+
+        Because the service uses a vLLM backend, the request body is compatible with the standard OpenAI Chat Completions API format.
+
+    .. tab-item:: Python (OpenAI)
+        :sync: openai
+
+        .. note::
+
+            In order to use the OpenAI Python library, you must first install it or activate an envrionment with it installed.
+            You can install via pip with ``pip install openai``
+
+        Since the API is OpenAI-compatible, you can easily use the standard Python ``openai`` library. Simply override the base URL and pass your token.
+
 
 **Example 1: Querying gpt-oss-120b**
 
-.. code-block:: bash
 
-   curl -N -s -X POST "https://testing.s3m.olcf.ornl.gov/olcf/open/v1alpha/inference/chat/completions" \
-        -H @.env \
-        -H "Content-Type: application/json" \
-        -d '{
-              "model": "gpt-oss-120b",
-              "messages": [{"role": "user", "content": "Your prompt here."}],
-              "stream": false
-            }'
+.. tab-set::
+
+    .. tab-item:: cURL
+        :sync: curl
+
+        .. code-block:: bash
+
+           curl -N -s -X POST "https://testing.s3m.olcf.ornl.gov/olcf/open/v1alpha/inference/chat/completions" \
+                -H @.env \
+                -H "Content-Type: application/json" \
+                -d '{
+                      "model": "gpt-oss-120b",
+                      "messages": [{"role": "user", "content": "Your prompt here."}],
+                      "stream": false
+                    }'
+
+    .. tab-item:: Python (OpenAI)
+        :sync: openai
+
+        .. code-block:: python
+
+            from openai import OpenAI
+            import os
+
+            client = OpenAI(
+                base_url="https://testing.s3m.olcf.ornl.gov/olcf/open/v1alpha/inference",
+                api_key=os.environ.get("S3M_TOKEN")
+            )
+
+            response = client.chat.completions.create(
+                model="gpt-oss-120b",
+                messages=[
+                    {"role": "user", "content": "Your prompt here"}
+                ],
+                stream=False
+            )
+
+            print(response.choices[0].message.content)
 
 **Example 2: Querying nemotron-nano-fp8**
 
-.. code-block:: bash
+.. tab-set::
 
-   curl -N -s -X POST "https://testing.s3m.olcf.ornl.gov/olcf/open/v1alpha/inference/chat/completions" \
-        -H @.env \
-        -H "Content-Type: application/json" \
-        -d '{
-              "model": "nemotron-nano-fp8",
-              "messages": [{"role": "user", "content": "Your prompt here."}],
-              "stream": false
-            }'
+    .. tab-item:: cURL
+        :sync: curl
 
-Python Usage (OpenAI Client)
-----------------------------
+        .. code-block:: bash
 
-Since the API is OpenAI-compatible, you can easily use the standard Python ``openai`` library. Simply override the base URL and pass your token.
+           curl -N -s -X POST "https://testing.s3m.olcf.ornl.gov/olcf/open/v1alpha/inference/chat/completions" \
+                -H @.env \
+                -H "Content-Type: application/json" \
+                -d '{
+                      "model": "nemotron-nano-fp8",
+                      "messages": [{"role": "user", "content": "Your prompt here."}],
+                      "stream": false
+                    }'
 
-.. code-block:: python
+    .. tab-item:: Python (OpenAI)
+        :sync: openai
 
-   from openai import OpenAI
-   import os
+        .. code-block:: python
 
-   client = OpenAI(
-       base_url="https://testing.s3m.olcf.ornl.gov/olcf/open/v1alpha/inference",
-       api_key=os.environ.get("S3M_TOKEN")
-   )
+            from openai import OpenAI
+            import os
 
-   response = client.chat.completions.create(
-       model="gpt-oss-120b",
-       messages=[
-           {"role": "user", "content": "Explain quantum computing in one sentence."}
-       ],
-       stream=False
-   )
+            client = OpenAI(
+                base_url="https://testing.s3m.olcf.ornl.gov/olcf/open/v1alpha/inference",
+                api_key=os.environ.get("S3M_TOKEN")
+            )
 
-   print(response.choices[0].message.content)
+            response = client.chat.completions.create(
+                model="nemotron-nano-fp8",
+                messages=[
+                    {"role": "user", "content": "Your prompt here"}
+                ],
+                stream=False
+            )
+
+            print(response.choices[0].message.content)
+
 
 Core API Endpoints
 ------------------
 
 Because the service uses a vLLM backend, the API routing and request bodies are compatible with standard OpenAI API formats.
+
+**The API has a base URL located at: ``https://testing.s3m.olcf.ornl.gov/olcf/open/v1alpha/inference``**
 
 1. Chat Completions
 ^^^^^^^^^^^^^^^^^^^
@@ -119,6 +171,12 @@ Because the service uses a vLLM backend, the API routing and request bodies are 
 **Endpoint:** ``/chat/completions``
 
 Used for conversational interactions and instruction-following models.
+
+
+.. tab-set::
+
+    .. tab-item:: cURL
+    :sync: curl
 
 .. code-block:: bash
 
@@ -137,6 +195,11 @@ Used for conversational interactions and instruction-following models.
 **Endpoint:** ``/completions``
 
 Used for traditional text continuation (base models rather than instruction-tuned chat models).
+
+.. tab-set::
+
+    .. tab-item:: cURL
+    :sync: curl
 
 .. code-block:: bash
 
@@ -164,6 +227,7 @@ If you need deeper configuration specs—such as maximum context length, support
 .. tab-set::
 
     .. tab-item:: **REST API (cURL):**
+        :sync: curl
 
         .. code-block:: bash
 
@@ -171,6 +235,7 @@ If you need deeper configuration specs—such as maximum context length, support
                 -H @.env
 
     .. tab-item:: **Python (Requests Library):**
+        :sync: requests
 
         .. code-block:: python
 
@@ -235,6 +300,11 @@ This will return a richer JSON payload containing the backend parameters and cap
 **Endpoint:** ``/embeddings``
 
 Generates vector embeddings for a given text. *(Note: Requires an embedding-specific model to be loaded on the server).*
+
+.. tab-set::
+
+    .. tab-item:: cURL
+    :sync: curl
 
 .. code-block:: bash
 
