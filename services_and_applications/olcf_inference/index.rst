@@ -39,9 +39,28 @@ Available Models
 
 Currently, the service supports the following models:
 
-* ``gpt-oss-120b``
-* ``nemotron-nano-fp8``
-* ``apriel-1.6-15b-thinker``
+.. list-table:: Supported Models
+    :widths: 25 25 25
+    :header-rows: 1
+
+    * - Model
+      - Aliases
+      - Features
+    * - `gpt-oss-120b <https://huggingface.co/openai/gpt-oss-120b>`__
+      - ``gpt-oss-120b``, ``gpt-oss``
+      - Text, Reasoning
+    * - `nemotron-nano-fp8 <https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-FP8>`__
+      - ``nemotron-nano-fp8``, ``nemotron-nano``
+      - Text, Reasoning
+    * - `apriel-1.6-15b-thinker <https://huggingface.co/ServiceNow-AI/Apriel-1.6-15b-Thinker>`__
+      - ``apriel-1.6-15b-thinker``, ``apriel-15b-thinker``
+      - Text, Reasoning, Vision
+    * - `nomic-embed-text-v2-moe <https://huggingface.co/nomic-ai/nomic-embed-text-v2-moe>`__
+      - ``nomic-embed-text-v2-moe``, ``nomic-embed-v2``
+      - Text Embedding
+
+.. note::
+    This list is not exhaustive. To see a complete list, please see :ref:`info_endpoint`
 
 Usage Examples
 --------------
@@ -159,12 +178,17 @@ Usage Examples
             print(response.choices[0].message.content)
 
 
-**Example 3: Image Recognition**
+**Example 3: Computer Vision**
+
+.. TODO: this note is inaccurate. how do users know which recipe works?
+    .. note::
+
+        Image recognition is only available with multi-modal models.
+        Please see the ``/model/info`` endpoint for models that have ``supports_vision`` property set.
 
 .. note::
 
-    Image recognition is only available with multi-modal models.
-    Please see the ``/model/info`` endpoint for models that have ``supports_vision`` property set.
+    Computer vision and image recognition is currently only supported with the ``apriel-1.6-15b-thinker`` model.
 
 .. tab-set::
     .. tab-item:: cURL
@@ -178,7 +202,7 @@ Usage Examples
                 {
                     "role": "user",
                     "content": [
-                        {"type": "text", "text": "Describe the image"},
+                        {"type": "text", "text": "Describe the image."},
                         {
                             "type": "image_url",
                             "image_url": {"url": ("data:image/jpeg;base64," + $content)}
@@ -191,9 +215,51 @@ Usage Examples
                  -H "Content-Type: application/json" \
                  -d @-
 
-
     .. tab-item:: Python (OpenAI)
         :sync: openai
+
+        .. code-block::
+
+            import base64
+            import os
+            from openai import OpenAI
+
+            client = OpenAI(
+                base_url="https://testing.s3m.olcf.ornl.gov/olcf/open/v1alpha/inference",
+                api_key=os.environ.get("S3M_TOKEN")
+            )
+
+            # Function to encode the image
+            def encode_image(image_path):
+                with open(image_path, "rb") as image_file:
+                    return base64.b64encode(image_file.read()).decode("utf-8")
+
+
+            # Path to your image
+            image_path = "frontier.jpg"
+
+            # Getting the Base64 string
+            base64_image = encode_image(image_path)
+
+            response = client.chat.completions.create(
+                model="apriel-1.6-15b-thinker",
+                messages=[
+                    {
+                        "role": "user",
+                        "content": [
+                            { "type": "text", "text": "Describe the image." },
+                            {
+                                "type": "image_url",
+                                "image_url": { "url": f"data:image/jpeg;base64,{base64_image}" },
+                            },
+                        ],
+                    },
+                ],
+            )
+
+            print(response.choices[0].message.content)
+
+    .. tab-item:: Python (OpenAI - Responses)
 
         .. code-block::
 
@@ -224,13 +290,13 @@ Usage Examples
                     {
                         "role": "user",
                         "content": [
-                            { "type": "input_text", "text": "Describe this image" },
+                            { "type": "input_text", "text": "Describe this image." },
                             {
                                 "type": "input_image",
                                 "image_url": f"data:image/jpeg;base64,{base64_image}",
                             },
                         ],
-                    }
+                    },
                 ],
             )
 
@@ -280,6 +346,8 @@ Used for traditional text continuation (base models rather than instruction-tune
               "max_tokens": 50,
               "temperature": 0.7
             }'
+
+.. _info_endpoint:
 
 3. List Models
 ^^^^^^^^^^^^^^
@@ -375,6 +443,6 @@ Generates vector embeddings for a given text. *(Note: Requires an embedding-spec
         -H @.env \
         -H "Content-Type: application/json" \
         -d '{
-              "model": "your-embedding-model-name",
+              "model": "nomic-embed-text-v2-moe",
               "input": "Text to vectorize."
             }'
