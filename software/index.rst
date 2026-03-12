@@ -14,6 +14,7 @@ Software
    analytics/index
    python/index
    profiling/index
+   static_analysis/index
    UMS/index
    workflows/index
    viz_tools/index
