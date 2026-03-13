@@ -317,7 +317,7 @@ Simple Text Files
 ^^^^^^^^^^^^^^^^^
 
 The ``file`` data type is not currently supported by any models on the OLCF Inference Service.
-You will need to send the full text file as long context to the service.
+You will need to send the full text file as a ``string`` of long context to the service.
 
 .. tab-set::
 
@@ -511,7 +511,11 @@ Embeddings
 
 **Endpoint:** ``/embeddings``
 
-Generates vector embeddings for a given text. *(Note: Requires an embedding-specific model to be loaded on the server).*
+Generates vector embeddings for a given text.
+
+.. note::
+
+    Embeddings require the use of an embedding-specific model. Check :ref:`available_models` and :ref:`info_endpoint` for embedding models.
 
 .. code-block:: bash
 
