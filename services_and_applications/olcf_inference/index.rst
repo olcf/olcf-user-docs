@@ -13,14 +13,16 @@ OLCF Inference Service Documentation
 .. important::
     Currently, the OLCF Inference Service is in a preview state and is currently **only available by invitation**
 
-Welcome to the documentation for the OLCF Inference Service. This service provides access to powerful Large Language Models (LLMs) running on a highly optimized **vLLM runtime**, offering OpenAI-compatible API endpoints.
+Welcome to the documentation for the OLCF Inference Service.
+This service flexes the :doc:`Secure Scientific Service Mesh (S3M) </services_and_applications/s3m/overview>` to provide access to powerful Large Language Models (LLMs) running on a highly optimized **vLLM runtime**, offering OpenAI-compatible API endpoints.
+
 
 Authentication
 --------------
 
 To use the inference service, you must authenticate your requests using a Bearer token.
 
-1. **Mint your token:** Tokens must be minted via myOLCF. More information can be found here :ref:`s3m_generate_token`
+1. **Mint your token:** Tokens must be minted via :doc:`S3M </services_and_applications/s3m/overview>` on myOLCF. More information can be found in the :ref:`S3M documentation here <s3m_generate_token>`.
 2. **Set your environment variable:** Once you have your token, we recommend exporting it securely in your terminal environment to prevent hardcoding it in your scripts.
 
 .. code-block:: bash
