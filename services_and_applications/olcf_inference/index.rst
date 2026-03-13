@@ -34,8 +34,13 @@ The primary base endpoint for chat completions is:
 
 ``https://testing.s3m.olcf.ornl.gov/olcf/open/v1alpha/inference/chat/completions``
 
+.. _available_models:
+
 Available Models
 ----------------
+
+.. note::
+    This list is not exhaustive. To see a complete list, please see :ref:`info_endpoint`
 
 Currently, the service supports the following models:
 
@@ -59,8 +64,15 @@ Currently, the service supports the following models:
       - ``nomic-embed-text-v2-moe``, ``nomic-embed-v2``
       - Text Embedding
 
-.. note::
-    This list is not exhaustive. To see a complete list, please see :ref:`info_endpoint`
+Multi-Modal Inputs
+------------------
+
+For a working multimodal example, you can refer to :ref:`computer_vision`
+
+For additional multimodal examples please see https://docs.vllm.ai/en/stable/features/multimodal_inputs/?h=multimodal#online-serving
+
+OpenAI's file uploads are not supported on OLCF Inference Service, and the Service will not accept URL data pointing to web addresses.
+
 
 Usage Examples
 --------------
@@ -94,8 +106,8 @@ Usage Examples
         Since the API is OpenAI-compatible, you can easily use the standard Python ``openai`` library. Simply override the base URL and pass your token.
 
 
-**Example 1: Querying gpt-oss-120b**
-
+Querying gpt-oss-120b
+^^^^^^^^^^^^^^^^^^^^^
 
 .. tab-set::
 
@@ -136,7 +148,8 @@ Usage Examples
 
             print(response.choices[0].message.content)
 
-**Example 2: Querying nemotron-nano-fp8**
+Querying nemotron-nano-fp8
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. tab-set::
 
@@ -178,17 +191,14 @@ Usage Examples
             print(response.choices[0].message.content)
 
 
-**Example 3: Computer Vision**
+.. _computer_vision:
 
-.. TODO: this note is inaccurate. how do users know which recipe works?
-    .. note::
-
-        Image recognition is only available with multi-modal models.
-        Please see the ``/model/info`` endpoint for models that have ``supports_vision`` property set.
+Computer Vision
+^^^^^^^^^^^^^^^
 
 .. note::
 
-    Computer vision and image recognition is currently only supported with the ``apriel-1.6-15b-thinker`` model.
+    Computer vision is not supported by every model. Please see :ref:`available_models` and :ref:`info_endpoint` for details on which models support vision.
 
 .. tab-set::
     .. tab-item:: cURL
@@ -218,7 +228,7 @@ Usage Examples
     .. tab-item:: Python (OpenAI)
         :sync: openai
 
-        .. code-block::
+        .. code-block:: python
 
             import base64
             import os
@@ -261,7 +271,7 @@ Usage Examples
 
     .. tab-item:: Python (OpenAI - Responses)
 
-        .. code-block::
+        .. code-block:: python
 
             import base64
             import os
@@ -303,6 +313,72 @@ Usage Examples
             print(response.output[0].content[0].text)
 
 
+Simple Text Files
+^^^^^^^^^^^^^^^^^
+
+The ``file`` data type is not currently supported by any models on the OLCF Inference Service.
+You will need to send the full text file as long context to the service.
+
+.. tab-set::
+
+    .. tab-item:: cURL
+        :sync: curl
+
+        .. code-block:: bash
+
+            jq -n --arg content "$(< <your simple text file>)" '{
+                "model": "gpt-oss-120b",
+                "messages": [
+                    {
+                        "role": "user",
+                        "content": ("Process this text.\n\n" + $content)
+                    }
+                ]
+            }' | curl -N -s -X POST "https://testing.s3m.olcf.ornl.gov/olcf/open/v1alpha/inference/chat/completions" \
+                 -H @.env \
+                 -H "Content-Type: application/json" \
+                 -d @-
+
+    .. tab-item:: Python (OpenAI)
+        :sync: openai
+
+        .. code-block:: python
+
+            from openai import OpenAI
+            import os
+
+            client = OpenAI(
+                base_url="https://testing.s3m.olcf.ornl.gov/olcf/open/v1alpha/inference",
+                api_key=os.environ.get("S3M_TOKEN")
+            )
+
+
+            with open("<your simple text file>", "rb") as f:
+                data = f.read()
+
+            response = client.chat.completions.create(
+                model="nemotron-nano-fp8",
+                messages=[
+                    {
+                        "role": "user",
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": "Process this text."
+                            },
+                            {
+                                "type": "text",
+                                "text": f"{data}"
+                            },
+                        ],
+                    },
+                ],
+                stream=False
+            )
+
+            print(response.choices[0].message.content)
+
+
 Core API Endpoints
 ------------------
 
@@ -310,8 +386,8 @@ Because the service uses a vLLM backend, the API routing and request bodies are 
 
 **The API has a base URL located at: ``https://testing.s3m.olcf.ornl.gov/olcf/open/v1alpha/inference``**
 
-1. Chat Completions
-^^^^^^^^^^^^^^^^^^^
+Chat Completions
+^^^^^^^^^^^^^^^^
 
 **Endpoint:** ``/chat/completions``
 
@@ -328,8 +404,8 @@ Used for conversational interactions and instruction-following models.
               "stream": false
             }'
 
-2. Standard Completions
-^^^^^^^^^^^^^^^^^^^^^^^
+Standard Completions
+^^^^^^^^^^^^^^^^^^^^
 
 **Endpoint:** ``/completions``
 
@@ -349,8 +425,8 @@ Used for traditional text continuation (base models rather than instruction-tune
 
 .. _info_endpoint:
 
-3. List Models
-^^^^^^^^^^^^^^
+List Models
+^^^^^^^^^^^
 
 **Endpoint:** ``/model/info``
 
@@ -430,8 +506,8 @@ This will return a richer JSON payload containing the backend parameters and cap
      ]
    }
 
-4. Embeddings
-^^^^^^^^^^^^^
+Embeddings
+^^^^^^^^^^
 
 **Endpoint:** ``/embeddings``
 
@@ -446,3 +522,40 @@ Generates vector embeddings for a given text. *(Note: Requires an embedding-spec
               "model": "nomic-embed-text-v2-moe",
               "input": "Text to vectorize."
             }'
+
+
+Responses
+^^^^^^^^^
+
+**Endpoint:** ``/responses``
+
+A newer OpenAI API endpoint. Includes performance benefits and some additional features over chat completions.
+
+Read more on OpenAI's Docs: https://developers.openai.com/api/docs/guides/migrate-to-responses
+
+.. code-block:: bash
+
+    curl -s -X POST "https://testing.s3m.olcf.ornl.gov/olcf/open/v1alpha/inference/responses" \
+        -H @.env \
+        -H "Content-Type: application/json" \
+        -d '{
+                "model": "gpt-oss-120b",
+                "input": [
+                    {
+                        "role": "user",
+                        "content": [
+                            { "type": "input_text", "text": "What is an AI agent?" },
+                            { "type": "input_text", "text": "Which agentic framework should I use for gpt-oss-120b?" }
+                        ]
+                    }
+                ]
+            }'
+
+Additional Resources
+--------------------
+
+You can refer to both vLLM's API reference and OpenAI's API reference documentation for additional examples and instructions.
+
+vLLM: https://docs.vllm.ai/en/stable/serving/openai_compatible_server/
+
+OpenAI Chat Completions: https://developers.openai.com/api/reference/chat-completions/overview
