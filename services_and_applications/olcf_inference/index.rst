@@ -122,9 +122,12 @@ Querying gpt-oss-120b
                 -H @.env \
                 -H "Content-Type: application/json" \
                 -d '{
-                      "model": "gpt-oss-120b",
-                      "messages": [{"role": "user", "content": "Your prompt here."}],
-                      "stream": false
+                        "model": "gpt-oss-120b",
+                        "messages": [
+                            {"role": "user", "content": "Your prompt here."},
+                            {"role": "user", "content": "We can be 120b(s)."}
+                        ],
+                        "stream": false
                     }'
 
     .. tab-item:: Python (OpenAI)
@@ -143,7 +146,8 @@ Querying gpt-oss-120b
             response = client.chat.completions.create(
                 model="gpt-oss-120b",
                 messages=[
-                    {"role": "user", "content": "Your prompt here"}
+                    {"role": "user", "content": "Your prompt here"},
+                    {"role": "user", "content": "We can be 120b(s)."}
                 ],
                 stream=False
             )
@@ -302,7 +306,7 @@ Computer Vision
                     {
                         "role": "user",
                         "content": [
-                            { "type": "input_text", "text": "Describe this image." },
+                            { "type": "input_text", "text": "Describe the image." },
                             {
                                 "type": "input_image",
                                 "image_url": f"data:image/jpeg;base64,{base64_image}",
@@ -526,7 +530,7 @@ Generates vector embeddings for a given text.
         -H "Content-Type: application/json" \
         -d '{
               "model": "nomic-embed-text-v2-moe",
-              "input": "Text to vectorize."
+              "input": "This is good news."
             }'
 
 
