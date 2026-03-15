@@ -87,7 +87,14 @@ Currently Available User-Managed Software
            | Website:           https://spiral-software.github.io/fftx/
            | Issue Tracker:     https://github.com/spiral-software/fftx/issues
            | Source:            https://github.com/spiral-software/fftx
-
+       * - ums046
+         - Copper
+         - Kaushik Velusamy (kaushik.v@anl.gov)
+         - | Copper: Co-operative caching layer for scalable parallel data movement in Exascale Supercomputers
+           | To use: ``module load ums ums046 copper``
+           | Then run: ``launch_copper.sh``
+           | Append ``/tmp/$USER/copper/`` to your conda activate setup, ``PYTHONPATH``, etc.
+           | Source: https://github.com/argonne-lcf/copper/tree/frontier
 
 Usage
 -----
