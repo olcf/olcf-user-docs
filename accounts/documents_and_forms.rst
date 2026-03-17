@@ -92,11 +92,19 @@ report.
 
 --------------
 
-`ALCC Closeout Report Template <https://www.olcf.ornl.gov/wp-content/uploads/2025-26-ALCC-Closeout-Report-Template.docx>`_
-Use this template if you have an ALCC project to submit a quarterly report. 
-
 `ALCC Quarterly Report Template <https://www.olcf.ornl.gov/wp-content/uploads/ALCC-2025-26-Quarterly-Report-Template.docx>`_
 Use this template if you have an ALCC project to submit a quarterly report.
+
+`ALCC Closeout Report Template <https://www.olcf.ornl.gov/wp-content/uploads/2025-26-ALCC-Closeout-Report-Template.docx>`_
+Use this template if you have an ALCC project to submit a closeout report. 
+
+--------------
+
+`INCITE Quarterly Report Template <https://www.olcf.ornl.gov/wp-content/uploads/2026-INCITE-Quarterly-Report-Template.docx>`_
+Use this template if you have an INCITE project to submit a quarterly report. 
+
+`INCITE Closeout Report Template <https://www.olcf.ornl.gov/wp-content/uploads/2026-INCITE-Closeout-Report-Template.docx>`_
+Use this template if you have an INCITE project to submit a closeout report. 
 
 --------------
 
