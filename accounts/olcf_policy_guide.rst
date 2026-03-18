@@ -6,12 +6,8 @@ OLCF Acknowledgement
 ====================
 
 Users should acknowledge the OLCF in all publications and presentations
-that speak to work performed on OLCF resources:
-
-    This research used resources of the Oak Ridge Leadership Computing
-    Facility at the Oak Ridge National Laboratory, which is supported by the
-    Office of Science of the U.S. Department of Energy under Contract No.
-    DE-AC05-00OR22725.
+that speak to work performed on OLCF resources.  For the current acknowledgment please see: 
+https://www.olcf.ornl.gov/about-olcf/media-assets/
 
 ********
 
