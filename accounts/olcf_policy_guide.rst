@@ -5,13 +5,8 @@ OLCF Policy Guides
 OLCF Acknowledgement
 ====================
 
-Users should acknowledge the OLCF in all publications and presentations
-that speak to work performed on OLCF resources:
+Users should acknowledge the OLCF in all publications and presentations that speak to work performed on OLCF resources. The current acknowledgement can be found on the OLCF website here: https://www.olcf.ornl.gov/about-olcf/media-assets/
 
-    This research used resources of the Oak Ridge Leadership Computing
-    Facility at the Oak Ridge National Laboratory, which is supported by the
-    Office of Science of the U.S. Department of Energy under Contract No.
-    DE-AC05-00OR22725.
 
 ********
 
