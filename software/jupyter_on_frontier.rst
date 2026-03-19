@@ -10,11 +10,9 @@ textual descriptions in a single, shareable document. Currently, Jupyter on Fron
 additional kernels are needed, please contact the OLCF User Assistance Center at help@olcf.ornl.gov or see the instructions
 for creating and exposing a custom environment in :doc:`Jupyter Visibility </software/python/jupyter_envs>`.
 
-
-.. note::
-    If you are a moderate user accustomed to using :ref:`Jupyter on Marble <jupyter_overview>` then using Jupyter on Frontier will feel familiar to you.
-    The primary difference will be how to request a Jupyter session and you will now use Frontier compute resources instead of Marble.
-
+.. warning::
+   Jupyter on Frontier is currently experimental and you will need to be on the ORNL network to use it. 
+   If you try to connect to Jupyter on Frontier off-network, you will experience connection timeouts.
 
 Access
 -------
@@ -60,10 +58,21 @@ described in :doc:`Jupyter Visibility </software/python/jupyter_envs>`.
 
 \
 
-.. tip::
-    You can only navigate directories realitve to `/ccs/home/user/` using `File -> Open from Path...`. If you would like to access files in other
-    storage areas (e.g., `/lustre/orion/`), you will need to create a symbolic link to those directories first.
+Accessing Files on Orion
+^^^^^^^^^^^^^^^^^^^^^^^^
+When using Jupyter on Frontier users can only navigate directories realitve to `/ccs/home/user/` using `File -> Open from Path`. If you would like to access files in other
+storage areas (e.g., `/lustre/orion/`), you will need to create a symbolic link to those directories first. To do this from the Jupyter session, follow
+these steps:
 
+1. From the **Launcher** tab, open a **Terminal** window.
+2. In the terminal window, create a symbolic link to your desired dircetory. We will use the member work directory in this example:
+
+.. code::
+
+   ln -s $MEMBERWORK $HOME/lustre_link
+
+3. Click `File -> Open from Path...` and input the name of your linked directory. In this example we would use `lustre_link`.
+4. Congrats! You now have access to files on Orion.
 
 Closing a Notebook
 ^^^^^^^^^^^^^^^^^^
