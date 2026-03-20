@@ -8,4 +8,3 @@ _build
 [#]*[#]
 .github/ #ignore workflow files
 
-.env
