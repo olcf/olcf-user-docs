@@ -49,7 +49,7 @@ valid OLCF accounts are authorized to interact with the project’s API tokens;
 individuals without an OLCF account, even if associated with the project,
 are prohibited from using or accessing the token. In the event of token
 misuse, malicious activity, or a compromised token, users must promptly
-notify OLCF staff at <help@olcf.ornl.gov> to mitigate risks and take
+notify OLCF staff at `help@olcf.ornl.gov <mailto:help@olcf.ornl.gov>`__ to mitigate risks and take
 corrective measures, including revoking the compromised token and ensuring
 the security of associated accounts and projects.
 
@@ -58,4 +58,4 @@ Contact Us
 
 As we continue to develop the OLCF API services we
 are eager to hear about your questions, challenges, or
-general feedback. Please reach out: ``olcf-s3m@email.ornl.gov``
+general feedback. Please reach out to OLCF Support: `help@olcf.ornl.gov <mailto:help@olcf.ornl.gov>`__

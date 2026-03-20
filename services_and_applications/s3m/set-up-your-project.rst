@@ -11,7 +11,7 @@ catch issues with your requests and make it easier to develop against S3M using 
 .. note::
 
    The following OpenAPI v3 spec is not publicly available.
-   ORNL-internal users may request access by contacting the S3M team: `olcf-s3m@email.ornl.gov <mailto:olcf-s3m@email.ornl.gov>`__.
+   ORNL-internal users may request access by contacting OLCF Support: `help@olcf.ornl.gov <mailto:help@olcf.ornl.gov>`__.
 
 You can obtain the S3M API's OpenAPI v3 spec `here <https://code.ornl.gov/s3m/s3m-apis.specs/-/blob/main/openapi3/openapi.yaml?ref_type=heads>`__.
 
@@ -48,7 +48,7 @@ You can obtain the S3M API's OpenAPI v3 spec `here <https://code.ornl.gov/s3m/s3
 
       .. note::
 
-         The gRPC API specs, Python client package, and Go client package are not yet publicly available. ORNL-internal users may request access by contacting the S3M team: `olcf-s3m@email.ornl.gov <mailto:olcf-s3m@email.ornl.gov>`__.
+         The gRPC API specs, Python client package, and Go client package are not yet publicly available. ORNL-internal users may request access by contacting the OLCF Support: `help@olcf.ornl.gov <mailto:help@olcf.ornl.gov>`__.
 
       **Prerequisites**
 
@@ -104,7 +104,7 @@ You can obtain the S3M API's OpenAPI v3 spec `here <https://code.ornl.gov/s3m/s3
 
       .. note::
 
-         The gRPC API specs, Python client package, and Go client package are not yet publicly available. ORNL-internal users may request access by contacting the S3M team: `olcf-s3m@email.ornl.gov <mailto:olcf-s3m@email.ornl.gov>`__
+         The gRPC API specs, Python client package, and Go client package are not yet publicly available. ORNL-internal users may request access by contacting OLCF Support: `help@olcf.ornl.gov <mailto:help@olcf.ornl.gov>`__
 
       **Prerequisites**
 
