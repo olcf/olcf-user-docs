@@ -619,6 +619,9 @@ Below is a summary of the steps for data transfer using Globus:
 
 2.	Once you are logged in, Globus will open the “File Manager” page. Click the left side “Collection” text field in the File Manager and type “OLCF DTN (Globus 5)”.
 
+.. image:: /images/globus_olcf_endpoint_search.gif
+    :alt: Endpoint search on Globus
+
 3.	When prompted, authenticate into the OLCF DTN (Globus 5) collection using your OLCF username and PIN followed by your RSA passcode.
 
 4.	Click in the left side “Path” box in the File Manager and enter the path to your data on Orion. For example, `/lustre/orion/stf007/proj-shared/my_orion_data`. You should see a list of your files and folders under the left “Path” Box.
