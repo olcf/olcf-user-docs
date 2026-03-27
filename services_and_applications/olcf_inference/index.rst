@@ -12,7 +12,10 @@ OLCF Inference Service Documentation
 
 .. important::
 
-    If you are interested in using the OLCF Inference Service, please email OLCF Support <help@olcf.ornl.gov> and tell us your project's use case.
+    If you are interested in using the OLCF Inference Service, please email OLCF Support `help@olcf.ornl.gov <mailto:help@olcf.ornl.gov>`__ and include the following information:
+
+    * Your project ID
+    * Your project's use case - Please explain how your project will use the OLCF inference service in your workflow.
 
 Welcome to the documentation for the OLCF Inference Service.
 This service flexes the :doc:`Secure Scientific Service Mesh (S3M) </services_and_applications/s3m/overview>` to provide access to powerful Large Language Models (LLMs) running on a highly optimized **vLLM runtime**, offering OpenAI-compatible API endpoints.
