@@ -13,6 +13,7 @@ The table below lists presentations given at previous OLCF training events. For 
    :header: "Date", "Title", "Speaker", "Event", "Presentation"
    :widths: 12 22 22 22 22
 
+    "2026-03-25", "Data Visualization Pathways", "Dave Pugmire and Ken Moreland (ORNL)", `March 2026 OLCF User Conference Call <https://www.olcf.ornl.gov/calendar/userconcall-mar2026/>`__, (`recording <https://vimeo.com/1177377546>`__ | `slides <https://www.olcf.ornl.gov/wp-content/uploads/OLCF-VizUserCall-March25.pdf>`__  )
     "2026-02-25", "ChatHPC", "Pedro Valero Lara (ORNL)", `February 2026 OLCF User Conference Call <https://www.olcf.ornl.gov/calendar/userconcall-feb2026/>`__, (`tip <https://www.olcf.ornl.gov/wp-content/uploads/Feb2026_TOTM.pdf>`__ | `recording <https://vimeo.com/1168602640>`__ | `slides <https://www.olcf.ornl.gov/wp-content/uploads/ChatHPC-SC25.pdf>`__  )
     "2026-02-02", "Profiler Training Series Part 1: Novice", "Alessandro Fanfarillo (AMD)", `Profiler Training Series Part 1 <https://www.olcf.ornl.gov/calendar/feb-2026-profiler-training-series-part-1/>`__, (`recording <https://vimeo.com/1162287616>`__ | `slides <https://www.olcf.ornl.gov/wp-content/uploads/Profiling_novice.pdf>`__ )
     "2026-01-28", "ROCm 7 AI Updates", "Anshul Gupta (AMD)", `January 2026 OLCF User Conference Call <https://www.olcf.ornl.gov/calendar/userconcall-jan2026/>`__, (`tip <https://www.olcf.ornl.gov/wp-content/uploads/Jan2026_TOTM.pdf>`__ )
