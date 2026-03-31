@@ -34,7 +34,7 @@ Endpoint URL
 
 The primary base endpoint for chat completions is:
 
-``https://s3m.olcf.ornl.gov/olcf/open/v1/inference//chat/completions``
+``https://s3m.olcf.ornl.gov/olcf/open/v1/inference/chat/completions``
 
 .. _available_models:
 
@@ -118,7 +118,7 @@ Querying gpt-oss-120b
 
         .. code-block:: bash
 
-           curl -N -s -X POST "https://s3m.olcf.ornl.gov/olcf/open/v1/inference//chat/completions" \
+           curl -N -s -X POST "https://s3m.olcf.ornl.gov/olcf/open/v1/inference/chat/completions" \
                 -H @.env \
                 -H "Content-Type: application/json" \
                 -d '{
@@ -139,7 +139,7 @@ Querying gpt-oss-120b
             import os
 
             client = OpenAI(
-                base_url="https://s3m.olcf.ornl.gov/olcf/open/v1/inference/",
+                base_url="https://s3m.olcf.ornl.gov/olcf/open/v1/inference",
                 api_key=os.environ.get("S3M_TOKEN")
             )
 
@@ -164,7 +164,7 @@ Querying nemotron-nano-fp8
 
         .. code-block:: bash
 
-           curl -N -s -X POST "https://s3m.olcf.ornl.gov/olcf/open/v1/inference//chat/completions" \
+           curl -N -s -X POST "https://s3m.olcf.ornl.gov/olcf/open/v1/inference/chat/completions" \
                 -H @.env \
                 -H "Content-Type: application/json" \
                 -d '{
@@ -182,7 +182,7 @@ Querying nemotron-nano-fp8
             import os
 
             client = OpenAI(
-                base_url="https://s3m.olcf.ornl.gov/olcf/open/v1/inference/",
+                base_url="https://s3m.olcf.ornl.gov/olcf/open/v1/inference",
                 api_key=os.environ.get("S3M_TOKEN")
             )
 
@@ -226,7 +226,7 @@ Computer Vision
                     ]
                 }
               ]
-            }' | curl -N -s -X POST "https://s3m.olcf.ornl.gov/olcf/open/v1/inference//chat/completions" \
+            }' | curl -N -s -X POST "https://s3m.olcf.ornl.gov/olcf/open/v1/inference/chat/completions" \
                  -H @.env \
                  -H "Content-Type: application/json" \
                  -d @-
@@ -241,7 +241,7 @@ Computer Vision
             from openai import OpenAI
 
             client = OpenAI(
-                base_url="https://s3m.olcf.ornl.gov/olcf/open/v1/inference/",
+                base_url="https://s3m.olcf.ornl.gov/olcf/open/v1/inference",
                 api_key=os.environ.get("S3M_TOKEN")
             )
 
@@ -284,7 +284,7 @@ Computer Vision
             from openai import OpenAI
 
             client = OpenAI(
-                base_url="https://s3m.olcf.ornl.gov/olcf/open/v1/inference/",
+                base_url="https://s3m.olcf.ornl.gov/olcf/open/v1/inference",
                 api_key=os.environ.get("S3M_TOKEN")
             )
 
@@ -340,7 +340,7 @@ You will need to send the full text file as a ``string`` of long context to the 
                         "content": ("Process this text.\n\n" + $content)
                     }
                 ]
-            }' | curl -N -s -X POST "https://s3m.olcf.ornl.gov/olcf/open/v1/inference//chat/completions" \
+            }' | curl -N -s -X POST "https://s3m.olcf.ornl.gov/olcf/open/v1/inference/chat/completions" \
                  -H @.env \
                  -H "Content-Type: application/json" \
                  -d @-
@@ -354,7 +354,7 @@ You will need to send the full text file as a ``string`` of long context to the 
             import os
 
             client = OpenAI(
-                base_url="https://s3m.olcf.ornl.gov/olcf/open/v1/inference/",
+                base_url="https://s3m.olcf.ornl.gov/olcf/open/v1/inference",
                 api_key=os.environ.get("S3M_TOKEN")
             )
 
@@ -390,7 +390,7 @@ Core API Endpoints
 
 Because the service uses a vLLM backend, the API routing and request bodies are compatible with standard OpenAI API formats.
 
-**The API has a base URL located at: ``https://s3m.olcf.ornl.gov/olcf/open/v1/inference/``**
+**The API has a base URL located at: ``https://s3m.olcf.ornl.gov/olcf/open/v1/inference``**
 
 Chat Completions
 ^^^^^^^^^^^^^^^^
@@ -401,7 +401,7 @@ Used for conversational interactions and instruction-following models.
 
 .. code-block:: bash
 
-   curl -N -s -X POST "https://s3m.olcf.ornl.gov/olcf/open/v1/inference//chat/completions" \
+   curl -N -s -X POST "https://s3m.olcf.ornl.gov/olcf/open/v1/inference/chat/completions" \
         -H @.env \
         -H "Content-Type: application/json" \
         -d '{
@@ -419,7 +419,7 @@ Used for traditional text continuation (base models rather than instruction-tune
 
 .. code-block:: bash
 
-   curl -N -s -X POST "https://s3m.olcf.ornl.gov/olcf/open/v1/inference//completions" \
+   curl -N -s -X POST "https://s3m.olcf.ornl.gov/olcf/open/v1/inference/completions" \
         -H @.env \
         -H "Content-Type: application/json" \
         -d '{
@@ -449,7 +449,7 @@ If you need deeper configuration specs—such as maximum context length, support
 
         .. code-block:: bash
 
-           curl -s -X GET "https://s3m.olcf.ornl.gov/olcf/open/v1/inference//model/info" \
+           curl -s -X GET "https://s3m.olcf.ornl.gov/olcf/open/v1/inference/model/info" \
                 -H @.env
 
     .. tab-item:: **Python (Requests Library):**
@@ -460,7 +460,7 @@ If you need deeper configuration specs—such as maximum context length, support
            import os
            import requests
 
-           url = "https://s3m.olcf.ornl.gov/olcf/open/v1/inference//model/info"
+           url = "https://s3m.olcf.ornl.gov/olcf/open/v1/inference/model/info"
            headers = {
                "Authorization": f"Bearer {os.environ.get('S3M_TOKEN')}"
            }
@@ -525,7 +525,7 @@ Generates vector embeddings for a given text.
 
 .. code-block:: bash
 
-   curl -s -X POST "https://s3m.olcf.ornl.gov/olcf/open/v1/inference//embeddings" \
+   curl -s -X POST "https://s3m.olcf.ornl.gov/olcf/open/v1/inference/embeddings" \
         -H @.env \
         -H "Content-Type: application/json" \
         -d '{
@@ -545,7 +545,7 @@ Read more on OpenAI's Docs: https://developers.openai.com/api/docs/guides/migrat
 
 .. code-block:: bash
 
-    curl -s -X POST "https://s3m.olcf.ornl.gov/olcf/open/v1/inference//responses" \
+    curl -s -X POST "https://s3m.olcf.ornl.gov/olcf/open/v1/inference/responses" \
         -H @.env \
         -H "Content-Type: application/json" \
         -d '{
