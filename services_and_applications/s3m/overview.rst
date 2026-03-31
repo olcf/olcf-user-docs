@@ -73,6 +73,8 @@ Access to the resources in the OLCF Facility API is restricted to your project v
 when you generate a token using myOLCF it is always scoped to the project itself, not your user account. For example,
 if using the compute resource to submit a job via Slurm it will run under your project ``_auser`` account.
 
+.. _s3m_generate_token:
+
 Generate a Token
 ----------------
 
@@ -158,6 +160,8 @@ always read tokens from environment variables when possible:
    response = requests.get(
        "https://s3m.olcf.ornl.gov/slurm/v0.0.43/defiant/ping",
        headers=headers)
+
+.. _s3m_command_line_safety:
 
 Avoid Command-Line Arguments
 ----------------------------
