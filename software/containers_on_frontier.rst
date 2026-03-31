@@ -358,7 +358,7 @@ We highlight the process of building and running AMD DockerHub PyTorch, Tensorfl
          apptainer pull jax_latest.sif docker://rocm/jax-community:latest
 
 
-The `olcf_container_examples <https://github.com/olcf/olcf_containers_examples>`__ repository has
+The `olcf_containers_examples <https://github.com/olcf/olcf_containers_examples>`__ repository has
 examples demonstrating how to use these containers on Frontier. You can see an example for AMD
 Pytorch container `here <https://github.com/olcf/olcf_containers_examples/tree/main/frontier/sample_apps/pytorch/amdrocmregistry>`__
 , AMD Tensorflow container `here <https://github.com/olcf/olcf_containers_examples/tree/main/frontier/sample_apps/tensorflow>`__, AMD Jax container `here <https://github.com/olcf/olcf_containers_examples/tree/main/frontier/sample_apps/jax>`__ and the AMD vLLM container `here <https://github.com/olcf/olcf_containers_examples/tree/main/frontier/sample_apps/vllm>`__ .
@@ -367,6 +367,81 @@ Pytorch container `here <https://github.com/olcf/olcf_containers_examples/tree/m
 .. important::
 
     While OLCF demonstrates the build and usage of these container images on Frontier, the images and their content are managed by AMD on their dockerhub repository.
+
+
+Debugging Applications Running in Apptainer
+-------------------------------------------
+
+
+Debugging an MPI application running in a container is a bit more complex than debugging regular
+application. You can't directly launch a container running an MPI application directly with a debugging tool like `gdb4hpc <https://cpe.ext.hpe.com/docs/latest/debugging-tools/gdb4hpc/guides/getting-started.html>`__ or with `Linaro Forge <https://docs.olcf.ornl.gov/software/debugging/index.html#linaro-forge-ddt>`__. This is because
+the tool will start a debug session of the Apptainer runtime itself rather than the MPI application it is
+running. 
+
+There are two ways around this - using gdbserver to launch one MPI task (while the rest are launched
+normally), or attaching to the already running MPI tasks with Linaro after the application is launched. 
+
+For the instructions below, we will be using the debugging example in the `olcf_containers_examples
+<https://github.com/olcf/olcf_containers_examples>`__ repository. Make sure you clone the repository and
+navigate to the ``frontier/containers_on_frontier_docs/debugging`` directory. Build the container
+image with ``apptainer build bcastandlammps.sif bcastandlammps.def``.
+
+
+
+Using gdbserver to debug a single MPI task
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+In this method, we are launching an MPI application with multiple MPI ranks, but one of the ranks is
+started with a tool called ``gdbserver``. This sets up a debugging server that ``gdb`` can connect
+to and step through that particular rank. All the other ranks will progress as normal until they are
+blocked by communication to the rank being debugged, or an MPI barrier affecting all ranks. Once
+that is crossed, the other ranks will continue on again.
+
+This method lets you use a familiar tool `gdb` to inspect a single rank. The disadvantage is that
+this not as fully featured as a special purpose HPC debugger like Linaro Forge or gdb4hpc. You will
+not be able to switch between different ranks of your program on the fly.
+
+The below example uses a 2 node job, but it generalizes to larger jobs.
+
+1. Start a 2-node interactive job. Make note of the node list. You will be sshing into the node
+   running rank 0 later.
+   nodes later.
+2. Load the container modules
+   
+   ::
+
+     module load olcf-container-tools
+     module load apptainer-enable-mpi
+     module load apptainer-enable-gpu
+
+3. Modify ``launchapp.sh`` to your needs. In this example you can either debug the simple
+   ``mpi_bcast`` program or LAMMPS. Comment out the lines with the program you don't want to run and
+   uncomment the lines for the program you do want to run. 
+   a. ``launchapp.sh`` launches the MPI program by starting the rank 0 with gdbserver and the rest
+   of the ranks normally. 
+4. Launch the MPI program with srun in a container
+
+   ::
+       
+     srun -N2 -n16 --gpus-per-task=1 --gpu-bind=closest --unbuffered apptainer exec bcastandlammps.sif ./launchapp.sh
+
+   You should see a message like ``Listening on port 2345``. The gdbserver is listening to that port
+   on the first node in your allocation.
+
+5. In a new terminal, SSH into the first node in the nodelist and navigate to your work directory.
+6. In the new terminal, Start an apptainer shell with the container image with ``apptainer shell bcastandlammps.sif``.
+   
+   ::
+
+     apptainer shell bcastcontainer.sif
+     Apptainer> gdb
+     (gdb) target remote 0.0.0.0:2345
+
+   This is connecting to the gdbserver instance that was started. You should now be able to use
+   regular gdb commands to step through your code.
+
+
+
+
 
 Some Restrictions and Tips
 --------------------------
