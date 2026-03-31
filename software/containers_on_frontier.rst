@@ -402,11 +402,11 @@ not be able to switch between different ranks of your program on the fly.
 
 The below example uses a 2 node job, but it generalizes to larger jobs.
 
-1. Start a 2-node interactive job. Make note of the node list. You will be sshing into the node
-   running rank 0 later.
-   nodes later.
+1. Start a 2-node interactive job e.g. ``salloc -t 00:50:00 -A gen107 -N2 -qdebug``. Make note of
+   the nodelist (run ``srun hostname | sort`` to print the list in the terminal). You will be sshing into
+   the node running rank 0 later, which is usually the first node on the list.
 2. Load the container modules
-   
+
    ::
 
      module load olcf-container-tools
@@ -421,23 +421,138 @@ The below example uses a 2 node job, but it generalizes to larger jobs.
 4. Launch the MPI program with srun in a container
 
    ::
-       
+
      srun -N2 -n16 --gpus-per-task=1 --gpu-bind=closest --unbuffered apptainer exec bcastandlammps.sif ./launchapp.sh
 
    You should see a message like ``Listening on port 2345``. The gdbserver is listening to that port
    on the first node in your allocation.
 
 5. In a new terminal, SSH into the first node in the nodelist and navigate to your work directory.
-6. In the new terminal, Start an apptainer shell with the container image with ``apptainer shell bcastandlammps.sif``.
+6. In the new terminal, Start an apptainer shell with the container image with ``apptainer shell bcastandlammps.sif``, and run gdb within
+   this container that we can then connect to the gdbserver.
    
    ::
 
-     apptainer shell bcastcontainer.sif
+     apptainer shell bcastandlammps.sif
      Apptainer> gdb
      (gdb) target remote 0.0.0.0:2345
 
    This is connecting to the gdbserver instance that was started. You should now be able to use
    regular gdb commands to step through your code.
+
+
+
+Using Linaro Forge to attach to an already running MPI application running from containers
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+`OLCF supports Linaro Forge on Frontier
+<https://docs.olcf.ornl.gov/software/debugging/index.html#linaro-forge-ddt>`__ . Forge's reverse
+connect feature is what is recommended for debugging regular MPI applications. However, reverse connect
+cannot be applied for a containerized MPI application. 
+
+Instead, we can use Linaro Forge to attach to the running containerized MPI ranks after the job is
+started. A process running in Apptainer is not isolated and is visible as a regular process.
+
+.. warning::
+
+  Any application you want to debug must be present in the host filesystem i.e. you need to
+  start a shell with ``apptainer shell`` with your container, navigate to where your source code is
+  located on Lustre or in your home directory, and compile it there. Your source and application
+  cannot be built as part of your container image build and stored in your image if you wish to debug it with Forge.
+
+Initial Setup
+"""""""""""""
+
+.. note::
+   
+   If you wish to use the ROCm debugging feature of DDT, you need to load a rocm module in your
+   ``.bashrc``. This is because DDT relies on the presence of ``rocgdb`` in your PATH. ``rocgdb`` is
+   made available in your PATH when the rocm module is loaded. When Forge connects to Frontier with
+   Remote Launch, it runs your ``.bashrc`` file. So loading the rocm module in ``.bashrc`` will make
+   sure that ``rocgdb`` is now available for Forge DDT to use.
+
+
+Follow the steps from our `Linaro Forge DDT documentation
+<https://docs.olcf.ornl.gov/software/debugging/index.html#linaro-forge-ddt>`__ upto but not
+including the last 'Reverse Connect' section.
+
+In your terminal logged into Frontier:
+
+1. Navigate to the ``debugging`` directory in the ``olcf_containers_examples`` repository you cloned
+2. Start a 2 node interactive job e.g. ``salloc -t 00:50:00 -A gen107 -N2 -qdebug``
+3. Run the following commands to to set up modules and create a ``hostlist`` file (this will create a file with the list of hosts in your allocation. We will be making use of this in the Forge client application).
+
+   ::
+     
+     module reset
+     module load olcf-container-tools
+     module load apptainer-enable-mpi
+     module load apptainer-enable-gpu
+     module load linaro-forge
+     
+     export ALLINEA_CONFIG_DIR=<some directory>
+     export ALLINEA_REVERSE_CONNECT_DIR=<some directory>
+     
+     srun hostname > hostlist
+
+The values for ``ALLINEA_CONFIG_DIR`` and ``ALLINEA_REVERSE_CONNECT_DIR`` should be the same as what
+you set when following the initial setup steps.
+
+4. Start an apptainer shell with ``apptainer shell -e bcastandlammps.sif`` (The ``-e`` flag will
+   make sure the host's environment is not inherited into the running container. The application needs to be compiled and linked
+   with only the container's own environment to emulate how it would be compiled within a container
+   build).
+5. In the apptainer shell, compile the ``mpi_bcast.c`` file in the current directory with ``mpicc -g -O0 -o mpi_bcast
+   mpi_bcast.c`` (remember that we need to do this because the source and the application needs to
+   exist on the host's filesystem even if the container is running it).
+6. Exit the apptainer shell.
+
+
+Debugging the application
+"""""""""""""""""""""""""
+
+1. Make sure you have Linaro Forge client open on your workstation and connected to Frontier through
+the Remote Launch dropdown.
+2. In your terminal running the interactive job
+
+   ::
+
+     srun --unbuffered -N2 -n4 apptainer exec bcastandlammps.sif ./mpi_bcast
+
+This will run the ``mpi_bcast`` executable from the current directory, but it is running within the
+container with access to the container environment.
+
+3. Switch to your Linaro Forge desktop client. Make sure you are connected to Frontier through the
+   Remote Launch option.
+4. Click on 'ATTACH' in the desktop client.
+5. In the window that opens, click on the 'Change MPI...' button. This will open the System Settings
+   window. From the MPI/UPC Implementation dropdown, select 'none' . Click on OK.
+6. Click on the "Choose Hosts..." button. In the window that opens, click on the "Import..." button.
+   This will open a directory picker where you can navigate Frontier's directory tree. Navigate to
+   your current working directory (i.e. the directory from where you ran ``srun``). Select the
+   ``hostlist`` file you created earlier and click "Open". This will populate the list of hosts.
+7. Select the checkboxes for all the hosts, then click on OK.
+8. Click on the tab named "list of all processes" (The "Automatically-detected jobs" tab will detect the
+   apptainer runtime running under srun, which is not what we want. We actually want the MPI program that is running under
+   the container).
+9. In the "Filter for process names containing:" textbox, type in "bcast" to list only the
+   ``mpi_bcast`` processes. Select the items whose "Process name" or "Executable" is the name of the
+   ``mpi_bcast`` executable. Do not select anything that references ``srun`` or ``apptainer``.
+
+.. figure:: /images/forge_container_process_select.png
+    :align: center
+    :width: 800
+
+10. Click on "Attach to Selected Processes". Forge will now start connecting to the processes. The
+    execution of the application will pause once Forge is connected.
+11. You will now get the main Linaro DDT window. You may see a message here saying "Missing
+    debugging information". This is not an issue.
+12. In the navigation tree on the left, click on "Sources", find the source file you want to examine
+    and set breakpoints where you want to. Then click on the "Play" button (the green triangle
+    button) on the toolbar at the top of the window. DDT will now progress the application across
+    all processes till it hits the breakpoint.
+13. You should now be able to use DDT to debug your application.
+
 
 
 
