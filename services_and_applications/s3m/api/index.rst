@@ -69,7 +69,7 @@ to obtain one.
    * - :doc:`compute`
      - SLURM job submission and management
      - Required (``compute-ace`` scope)
-     - ``GET https://s3m.olcf.ornl.gov/olcf/v1/slurm/open/v0.0.43/defiant/ping``
+     - ``GET https://s3m.olcf.ornl.gov/slurm/open/v0.0.43/defiant/ping``
 
        **Response:** See `SLURM REST API <https://slurm.schedmd.com/rest_api.html>`_
 
