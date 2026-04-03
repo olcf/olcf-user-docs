@@ -4,8 +4,8 @@
 Connecting to the NVFlare Server
 ********************************
 
-.. toc-tree::
-    :max-depth: 2
+.. toctree::
+    :maxdepth: 2
     
     topic1
     topic2

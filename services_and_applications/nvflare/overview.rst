@@ -13,15 +13,13 @@ How NVFlare Works
 
 NVFlare overcomes the limitations of traditional centralized training by bringing the model to the data, rather than the data to the model:
 
-* **Localized Training**: Raw data remains strictly local and private to each participant (client). The central server sends the model architecture 
-to these clients, where training occurs on-site.
+* **Localized Training**: Raw data remains strictly local and private to each participant (client). The central server sends the model architecture to these clients, where training occurs on-site.
 
 * **Secure Aggregation**: Instead of sharing data, clients send only their model weight updates back to the server.
 
-* **Global Intelligence**: The server securely aggregates these local updates into a "global model". This allows the final model to learn from a 
-diverse, multi-institutional dataset without the sensitive information ever leaving its original source.
+* **Global Intelligence**: The server securely aggregates these local updates into a "global model". This allows the final model to learn from a diverse, multi-institutional dataset without the sensitive information ever leaving its original source.
 
-NVFlare at the OLCF
--------------------
+Getting Started
+---------------
 
 The OLCF offers users a simple means of deploying and managing NVFlare campaigns via `myOLCF <https://my.olcf.ornl.gov/>`_.
