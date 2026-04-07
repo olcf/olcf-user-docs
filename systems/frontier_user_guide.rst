@@ -749,6 +749,8 @@ The following table shows the recommended ROCm version for each CCE version, alo
 +-------------+-------+---------------------------+
 |   20.0.0    | 25.09 | 6.4.2                     |
 +-------------+-------+---------------------------+
+|   21.0.0    | 26.03 | 7.0.2                     |
++-------------+-------+---------------------------+
 
 .. note::
 
@@ -801,11 +803,13 @@ An asterisk indicates the latest officially supported version of ROCm for each `
 +------------+-------+--------------------------------------------------+
 |   9.0.1    | 25.09 | 6.4*, 6.3, 6.2, 6.1, 6.0                         |
 +------------+-------+--------------------------------------------------+
+|   9.1.0    | 26.03 | 7.2, 7.1, 7.0*                                   |
++------------+-------+--------------------------------------------------+
 
 .. note::
 
     OLCF recommends using the officially supported ROCm version (with asterisk) for each ``cray-mpich`` version.
-    Newer versions were tested using a sample of MPI operations and there may be undiscovered incompatibility.
+    Newer versions were tested using a sample of MPI applications and there may be undiscovered incompatibility.
 
 Compatibility with other CrayPE-provided Software
 """""""""""""""""""""""""""""""""""""""""""""""""
@@ -816,16 +820,15 @@ For example, the ``craype`` module provides the ``cc``, ``CC``, and ``ftn`` Cray
 These drivers are written to link to specific libraries (e.g., the ``ftn`` wrapper in September 2023 PE links to ``libtcmalloc_minimal.so``),
 which may not be needed by compiler versions other than the one they were released with.
 
-For the full compatibility of your loaded CrayPE environment, we strongly recommended loading the ``cpe`` module of your desired CrayPE release (version is the last two digits of the year and the two-digit month, e.g., December 2024 is version 24.11).
-For example, to load the December 2024 PE (CCE 17.0.1, Cray MPICH 8.1.31, ROCm 6.2.4 compatibility), 
+For the full compatibility of your loaded CrayPE environment, we strongly recommended loading the ``cpe`` module of your desired CrayPE release (version is the last two digits of the year and the two-digit month, e.g., March 2026 is version 26.03).
+For example, to load the March 2026 PE (CCE 21.0.0, Cray MPICH 9.1.0, ROCm 7.0.2 compatibility), 
 you would run the following commands:
 
 .. code:: bash
 
     module load PrgEnv-cray
-    # Load the cpe module after your desired PrgEnv, but before rocm -- cpe may attempt to load a rocm version other than what you want
-    module load cpe/24.11
-    module load rocm/6.2.4
+    module load cpe/26.03
+    module load rocm/7.0.2
 
     # Since these modules are not default, make sure to prepend CRAY_LD_LIBRARY_PATH to LD_LIBRARY_PATH
     export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
@@ -4109,6 +4112,22 @@ Understanding the network counters can be challenging. If you are encountering n
 
 System Updates 
 ============== 
+
+2026-04-07
+----------
+On Tuesday, April 7, 2026, Frontier's system software was upgraded.
+The following changes took place:
+
+- Upgraded Slurm to version 25.11.4, and enabled the Slurm step manager feature. This feature enables managing the job steps (e.g., `srun`'s) using the first node in the Slurm allocation instead of the shared system-wide Slurm controller. The `--network=single_node_vni` flag must now be provided at job allocation time, e.g., via `sbatch --network=single_node_vni`, in addition to an individual `srun` job step.
+- Added HPE/Cray Programming Environment (CPE) 26.03 as non-default. CPE/26.03 officially supports GPU-aware MPI with ROCm/7.0, but has been shown to work in most cases with ROCm/7.1.1 and 7.2.0. Please review the `Frontier Known Issues table <https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#known-issues>`_ for new known issues and the `ROCm/7.0 release notes <https://rocm.docs.amd.com/en/docs-7.0.0/about/release-notes.html>`_ for important ROCm/7.x API changes.
+- A patch was applied to the software modules to properly display MPI-enabled modules for PrgEnv-gnu.
+
+.. note::
+
+    **Recommended User Action**:
+
+    All users are recommended trying CPE/26.03 + ROCm/7.0.2 (optionally with 7.2.0 for additional known performance improvements) and report any bugs to OLCF Help Desk by emailing help@olcf.ornl.gov.
+    If you are using ROCm/5.x and/or CPE 22.x or 23.x (CCE < 17.x), please update to a newer CPE. Recommended CPE/ROCm combinations include CPE/25.09 + ROCm/6.4.2 and CPE/26.03 + ROCm/7.x. ROCm 5.x and CPE <= 23.x will be removed in a future outage. If you encounter issues, please report them to help@olcf.ornl.gov.
 
 2026-02-10
 ----------
