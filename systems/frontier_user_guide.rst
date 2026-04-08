@@ -4118,7 +4118,7 @@ System Updates
 On Tuesday, April 7, 2026, Frontier's system software was upgraded.
 The following changes took place:
 
-- Upgraded Slurm to version 25.11.4, and enabled the Slurm step manager feature. This feature enables managing the job steps (e.g., `srun`'s) using the first node in the Slurm allocation instead of the shared system-wide Slurm controller. The `--network=single_node_vni` flag must now be provided at job allocation time, e.g., via `sbatch --network=single_node_vni`, in addition to an individual `srun` job step.
+- Upgraded Slurm to version 25.11.4.
 - Added HPE/Cray Programming Environment (CPE) 26.03 as non-default. CPE/26.03 officially supports GPU-aware MPI with ROCm/7.0, but has been shown to work in most cases with ROCm/7.1.1 and 7.2.0. Please review the `Frontier Known Issues table <https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#known-issues>`_ for new known issues and the `ROCm/7.0 release notes <https://rocm.docs.amd.com/en/docs-7.0.0/about/release-notes.html>`_ for important ROCm/7.x API changes.
 - A patch was applied to the software modules to properly display MPI-enabled modules for PrgEnv-gnu.
 
