@@ -3,8 +3,8 @@ NVFlare
 *******
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
 
     overview
-    connecting/index
-    campaign_management/index
+    connecting
+    campaign_management
