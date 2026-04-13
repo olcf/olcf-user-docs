@@ -41,7 +41,7 @@ First, load the correct modules:
          module load rocm/7.0.2
          module load craype-accel-amd-gfx90a
 
-         # Because using a non-default CPE module
+         # Because using a non-default CPE module (set this when building and running)
          export LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH
 
 
