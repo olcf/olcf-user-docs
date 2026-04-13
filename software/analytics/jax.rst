@@ -54,8 +54,8 @@ Loading a python module puts you in a "base" environment, but you need to create
 
       .. code-block:: bash
 
-         conda create -n jax_env-frontier python=3.12 numpy scipy -c conda-forge
-         conda activate jax_env-frontier
+         conda create -p /path/to/jax_env-frontier python=3.12 numpy scipy -c conda-forge
+         conda activate /path/to/jax_env-frontier
 
 .. note::
    NumPy and Scipy are installed ahead of time, but you can instead install those with ``pip`` later if desired.
@@ -104,7 +104,7 @@ To test your ``jax`` install, try running their ``mnist_classifier`` example (on
    # Because using a non-default CPE module (set this when building and running)
    export LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH
 
-   conda activate jax_env-frontier
+   conda activate /path/to/jax_env-frontier
 
    # Enable the proxy server (allows compute node to download datasets)
    export all_proxy=socks://proxy.ccs.ornl.gov:3128/

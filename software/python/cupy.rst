@@ -86,14 +86,14 @@ Loading a python module puts you in a "base" environment, but you need to create
 
       .. code-block:: bash
 
-         conda create -n cupy-frontier python=3.12 numpy scipy -c conda-forge
+         conda create -p /path/to/cupy-frontier python=3.12 numpy scipy -c conda-forge
 
    .. tab-item:: Andes
       :sync: andes
 
       .. code-block:: bash
 
-         conda create -n cupy-andes python=3.12 numpy scipy -c conda-forge
+         conda create -p /path/to/cupy-andes python=3.12 numpy scipy -c conda-forge
 
 After following the prompts for creating your new environment, you can now activate it:
 
@@ -104,14 +104,14 @@ After following the prompts for creating your new environment, you can now activ
 
       .. code-block:: bash
 
-         conda activate cupy-frontier
+         conda activate /path/to/cupy-frontier
 
    .. tab-item:: Andes
       :sync: andes
 
       .. code-block:: bash
 
-         conda activate cupy-andes
+         conda activate /path/to/cupy-andes
 
 Finally, install CuPy into your environment:
 
