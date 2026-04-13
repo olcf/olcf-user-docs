@@ -36,6 +36,7 @@ Installing PyTorch
 
 In general, installing either the "stable" or "nightly" wheels of PyTorch>=2.1.0 listed on `Pytorch's Website <https://pytorch.org/get-started/locally/>`__ works on Frontier; however, more recent PyTorch versions typically have better ROCm integration and support.
 When navigating the install instructions on PyTorch's website, make sure to indicate "Linux", "Pip", and "ROCm" for accurate install instructions.
+
 Let's follow those instructions to install a stable wheel of torch 2.10.0 with ROCm 7.1.1.
 This combination is the current recommendation on Frontier because it is capable of supporting PyTorch, PyTorch Geometric, and Flash Attention within the same virtual environment and ROCm version; however, for PyTorch-only users, versions of Pytorch that are compatible with ROCm 7.0.2 and 7.2.0 are also recommended. 
 
