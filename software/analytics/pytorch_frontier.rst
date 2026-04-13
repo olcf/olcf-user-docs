@@ -36,16 +36,21 @@ Installing PyTorch
 
 In general, installing either the "stable" or "nightly" wheels of PyTorch>=2.1.0 listed on `Pytorch's Website <https://pytorch.org/get-started/locally/>`__ works on Frontier; however, more recent PyTorch versions typically have better ROCm integration and support.
 When navigating the install instructions on PyTorch's website, make sure to indicate "Linux", "Pip", and "ROCm" for accurate install instructions.
-Let's follow those instructions to install a stable wheel of torch 2.8.0 with ROCm 6.4.1 (the current recommended version on Frontier).
+Let's follow those instructions to install a stable wheel of torch 2.10.0 with ROCm 7.1.1.
+This combination is the current recommendation on Frontier because it is capable of supporting PyTorch, PyTorch Geometric, and Flash Attention within the same virtual environment and ROCm version; however, for PyTorch-only users, versions of Pytorch that are compatible with ROCm 7.0.2 and 7.2.0 are also recommended. 
 
 First, load your modules:
 
 .. code-block:: bash
 
-   module load PrgEnv-gnu/8.6.0
+   module load PrgEnv-gnu/8.7.0
+   module load cpe/26.03
    module load miniforge3/23.11.0-0
-   module load rocm/6.4.1
+   module load rocm/7.1.1
    module load craype-accel-amd-gfx90a
+
+   # Because using a non-default CPE
+   export LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH
  
 Next, create and activate a conda environment that we will install ``torch`` into:
 
@@ -58,8 +63,8 @@ Finally, install PyTorch:
 
 .. code-block:: bash
 
-   pip install torch==2.8.0 torchvision==0.23.0 torchaudio==2.8.0 --index-url https://download.pytorch.org/whl/rocm6.4
-   
+   pip install torch==2.10.0 torchvision==0.25.0 torchaudio==2.10.0 --index-url https://download.pytorch.org/whl/rocm7.1
+
 You should now be ready to use PyTorch on Frontier!
 
 For older or more specific wheels to install, take a look at these links:
@@ -81,13 +86,19 @@ Optional: Install mpi4py
 Although ``mpi4py`` isn't required in general (you can accomplish the same task using system environment variables), it acts as a nice convenience when needing to set various MPI parameters when using PyTorch for distributed training.
 This is taken from our :doc:`/software/python/parallel_h5py` guide:
 
+.. warning::
+   As described in the above section, make sure to ``export LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH`` before building ``mpi4py`` if using non-default Cray modules.
+
 .. code-block:: bash
 
+   # If **not** interested in GPU-aware MPICH (otherwise, having these modules is fine):
    # Unloading ROCm before building mpi4py prevents potential library linking issues
    # When running, and after building mpi4py, you CAN have the ROCm module loaded
    module unload rocm
+   module unload craype-accel-amd-gfx90a
 
    MPICC="cc -shared" pip install --no-cache-dir --no-binary=mpi4py mpi4py
+
 
 .. note::
    The below example uses ``mpi4py``
@@ -457,10 +468,14 @@ To run the python scripts, an example batch script is given below:
        #SBATCH -N 2
 
        # Load modules
-       module load PrgEnv-gnu/8.6.0
-       module load rocm/6.4.1
-       module load craype-accel-amd-gfx90a
+       module load PrgEnv-gnu/8.7.0
+       module load cpe/26.03
        module load miniforge3/23.11.0-0
+       module load rocm/7.1.1
+       module load craype-accel-amd-gfx90a
+
+       # Because using a non-default CPE
+       export LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH
 
        # Activate your environment
        conda activate /path/to/my_env
@@ -578,18 +593,18 @@ AWS-OFI-RCCL Plugin
 The `AWS-OFI-RCCL plugin <https://github.com/ROCm/aws-ofi-rccl>`__ enables using libfabric as a network provider while running AMD's RCCL based applications.
 This plugin can be built and used by common ML/DL libraries like PyTorch to increase performance when running on AMD GPUs.
 
-To build the plugin on Frontier (using ROCm 6.4.1 as an example):
+To build the plugin on Frontier (using ROCm 7.1.1 as an example):
 
 .. code-block:: bash
 
-   rocm_version=6.4.1
+   rocm_version=7.1.1
 
    # Load modules
-   module load PrgEnv-gnu/8.6.0
+   module load PrgEnv-gnu/8.7.0
    module load rocm/$rocm_version
    module load craype-accel-amd-gfx90a
-   module load gcc-native/13.2
-   module load cray-mpich/8.1.31
+   module load gcc-native/14.2
+   module load cray-mpich/9.1.0
    libfabric_path=/opt/cray/libfabric/1.22.0
 
    # Download the plugin repo
@@ -598,12 +613,11 @@ To build the plugin on Frontier (using ROCm 6.4.1 as an example):
 
    # Build the plugin
    ./autogen.sh
-   export LD_LIBRARY_PATH=/opt/rocm-$rocm_version/hip/lib:$LD_LIBRARY_PATH
    PLUG_PREFIX=$PWD
 
    CC=hipcc CFLAGS=-I/opt/rocm-$rocm_version/include ./configure \
    --with-libfabric=$libfabric_path --with-rccl=/opt/rocm-$rocm_version --enable-trace \
-   --prefix=$PLUG_PREFIX --with-hip=/opt/rocm-$rocm_version/hip --with-mpi=$MPICH_DIR
+   --prefix=$PLUG_PREFIX --with-hip=/opt/rocm-$rocm_version --with-mpi=$MPICH_DIR
 
    make
    make install
@@ -693,14 +707,24 @@ Assuming you already have a working PyTorch installation (see above), install in
 
 .. code-block:: bash
 
+   # Load modules
+   module load PrgEnv-gnu/8.7.0
+   module load cpe/26.03
+   module load miniforge3/23.11.0-0
+   module load rocm/7.1.1
+   module load craype-accel-amd-gfx90a
+
+   # Because using a non-default CPE
+   export LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH
+
    # Activate your virtual environment
    conda activate /path/to/my_env
 
-   # Install some build tools
-   pip install ninja packaging
+   # Install some pre-reqs
+   pip install ninja packaging scipy
 
-   # Install PyG libraries (example for Torch 2.8)
-   pip install torch_geometric pyg_lib torch_scatter torch_sparse torch_cluster torch_spline_conv -f https://data.pyg.org/whl/torch-2.8.0+cpu.html
+   # Install PyG libraries (example for Torch 2.10+ROCm7.1.1)
+   pip install torch-geometric torch-sparse-rocm torch-spline-conv-rocm torch-scatter-rocm torch-cluster-rocm pyg-lib-rocm
 
 .. _flash-attn:
 
@@ -712,6 +736,16 @@ To install the ``flash-attn`` library on Frontier:
 
 .. code-block:: bash
 
+   # Load modules
+   module load PrgEnv-gnu/8.7.0
+   module load cpe/26.03
+   module load miniforge3/23.11.0-0
+   module load rocm/7.1.1
+   module load craype-accel-amd-gfx90a
+
+   # Because using a non-default CPE
+   export LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH
+
    # Activate your virtual environment
    conda activate /path/to/my_env
 
@@ -721,15 +755,21 @@ To install the ``flash-attn`` library on Frontier:
    # Retrieve the FA repo
    git clone https://github.com/ROCm/flash-attention
    cd flash-attention/
-   git checkout v2.7.4-cktile
+   git checkout v2.8.4.1-cktile
    git submodule init
    git submodule update
 
    # Build the flash-attn wheel
-   python3 setup.py bdist_wheel
+   # Option 1 (Triton Backend):
+   FLASH_ATTENTION_TRITON_AMD_ENABLE="TRUE" python3 setup.py bdist_wheel
+   # Option 2 (Composable Kernel Backend):
+   FLASH_ATTENTION_TRITON_AMD_ENABLE="FALSE" python3 setup.py bdist_wheel
 
    # Install flash-attn
    pip install dist/*.whl
+
+.. note::
+   For details on the differences between the Triton and CK backends, please see the README of the `Flash Attention ROCm fork <https://github.com/ROCm/flash-attention>`__.
 
 To test if your installation was successful, you can run this small script:
 
