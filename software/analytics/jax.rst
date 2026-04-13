@@ -15,7 +15,7 @@ OLCF Systems this guide applies to:
 +------------+-------------------------+
 | ``python`` | .. centered:: ``jax``   |
 +============+=========================+
-|  3.11.11   |  0.4.35                 |
+|  3.12.13   |  0.7.1                  |
 +------------+-------------------------+
 
 
@@ -35,10 +35,15 @@ First, load the correct modules:
 
       .. code-block:: bash
 
-         module load PrgEnv-gnu/8.6.0
-         module load rocm/6.2.4 # may work with ROCm 6.0.0 and 6.1.x
-         module load craype-accel-amd-gfx90a
+         module load PrgEnv-gnu/8.7.0
+         module load cpe/26.03
          module load miniforge3/23.11.0-0
+         module load rocm/7.2.0
+         module load craype-accel-amd-gfx90a
+
+         # Because using a non-default CPE module (set this when building and running)
+         export LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH
+
 
 Loading a python module puts you in a "base" environment, but you need to create a new environment using the ``conda create`` command:
 
@@ -49,8 +54,8 @@ Loading a python module puts you in a "base" environment, but you need to create
 
       .. code-block:: bash
 
-         conda create -n jax_env-frontier python=3.11 numpy scipy -c conda-forge
-         conda activate jax_env-frontier
+         conda create -p /path/to/jax_env-frontier python=3.12 numpy scipy -c conda-forge
+         conda activate /path/to/jax_env-frontier
 
 .. note::
    NumPy and Scipy are installed ahead of time, but you can instead install those with ``pip`` later if desired.
@@ -73,10 +78,10 @@ Now that you have a fresh environment, we will install things into your new envi
       .. code-block:: bash
 
          # Install the ROCm plugins
-         pip install jax-rocm60-pjrt==0.4.35 jax-rocm60-plugin==0.4.35 --no-cache-dir
+         pip install jax-rocm7-pjrt==0.7.1 jax-rocm7-plugin==0.7.1 --no-cache-dir
 
          # Install JAX (will also install jaxlib)
-         pip install jax==0.4.35 --no-cache-dir
+         pip install jax==0.7.1 --no-cache-dir
 
 
 Testing JAX
@@ -88,6 +93,18 @@ To test your ``jax`` install, try running their ``mnist_classifier`` example (on
 
    # Start an interactive job
    salloc -A PROJECT_ID -N1 -t 10
+
+   # Once in the interactive job, make sure you have the correct modules and conda env loaded
+   module load PrgEnv-gnu/8.7.0
+   module load cpe/26.03
+   module load miniforge3/23.11.0-0
+   module load rocm/7.2.0
+   module load craype-accel-amd-gfx90a
+
+   # Because using a non-default CPE module (set this when building and running)
+   export LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH
+
+   conda activate /path/to/jax_env-frontier
 
    # Enable the proxy server (allows compute node to download datasets)
    export all_proxy=socks://proxy.ccs.ornl.gov:3128/
@@ -108,7 +125,7 @@ To test your ``jax`` install, try running their ``mnist_classifier`` example (on
 
 .. note::
      The ``socks`` proxy specification depends on implementation.
-     Packages that depend on ``httpx`` will need ``httpx[socks]`` and the following change:
+     Packages that depend on ``httpx`` will need to install the ``httpx[socks]`` package and the following change:
 
      .. code-block:: bash
 

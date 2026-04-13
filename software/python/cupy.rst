@@ -23,10 +23,8 @@ OLCF Systems this guide applies to:
 +------------+-------------------------+
 | ``python`` | .. centered:: ``cupy``  |
 +============+=========================+
-|  3.11.11   |  13.3.0*, 12.3.0        |   
+|  3.12.13   |  13.5.1                 |
 +------------+-------------------------+
-
-:sup:`* Version 13.x.y does not work on Frontier properly`
 
 .. note::
    Working installations are **not** limited to what is shown above.
@@ -43,30 +41,16 @@ CuPy is a library that implements NumPy arrays on NVIDIA GPUs by utilizing CUDA 
 Although optimized NumPy is a significant step up from Python in terms of speed, performance is still limited by the CPU (especially at larger data sizes) -- this is where CuPy comes in.
 Because CuPy's interface is nearly a mirror of NumPy, it acts as a replacement to run existing NumPy/SciPy code on NVIDIA CUDA platforms, which helps speed up calculations further.
 CuPy supports most of the array operations that NumPy provides, including array indexing, math, and transformations.
-Most operations provide an immediate speed-up out of the box, and some operations are sped up by over a factor of 100 (see CuPy benchmark timings below, from the `Single-GPU CuPy Speedups <https://medium.com/rapids-ai/single-gpu-cupy-speedups-ea99cbbb0cbb>`__ article).
-
-.. image:: /images/python_cupy_1.png
-   :align: center
-   :width: 50%
 
 Compute nodes equipped with NVIDIA GPUs will be able to take full advantage of CuPy's capabilities on the system, providing significant speedups over NumPy-written code.
-**CuPy with AMD GPUs is still being explored, and the same performance is not guaranteed (especially with larger data sizes).**
-**Instructions for Frontier are available in this guide, but users must note that the CuPy developers have labeled this method as** `experimental <https://docs.cupy.dev/en/stable/install.html#using-cupy-on-amd-gpu-experimental>`__ **and has** `limitations <https://docs.cupy.dev/en/stable/install.html#limitations>`__.
+**Instructions for Frontier are available in this guide, but users must note that the CuPy developers have labeled AMD GPU support as** `experimental <https://docs.cupy.dev/en/stable/install.html#using-cupy-on-amd-gpu-experimental>`__ **and has** `limitations <https://docs.cupy.dev/en/stable/install.html#limitations>`__.
 
 .. _cupy-envs:
 
 Installing CuPy
 ===============
 
-.. warning::
-   Before setting up your environment, you must exit and log back in so that you have a fresh login shell.
-   This is to ensure that no previously activated environments exist in your ``$PATH`` environment variable.
-   Additionally, you should execute ``module reset``.
-
-Building CuPy from source is highly sensitive to the current environment variables set in your profile.
-Because of this, it is extremely important that all the modules and environments you plan to load are done in the correct order, so that all the environment variables are set correctly.
-
-First, load the gnu compiler module (most Python packages assume GCC), relevant GPU module (necessary for CuPy), and the python module (allows you to create a new environment):
+First, load the correct modules:
 
 .. tab-set::
 
@@ -75,10 +59,14 @@ First, load the gnu compiler module (most Python packages assume GCC), relevant 
 
       .. code-block:: bash
 
-         module load PrgEnv-gnu/8.6.0
-         module load rocm/5.7.1 # may work with other ROCm versions
-         module load craype-accel-amd-gfx90a
+         module load PrgEnv-gnu/8.7.0
+         module load cpe/26.03
          module load miniforge3/23.11.0-0
+         module load rocm/7.0.2
+         module load craype-accel-amd-gfx90a
+
+         # Because using a non-default CPE module (set this when building and running)
+         export LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH
 
    .. tab-item:: Andes
       :sync: andes
@@ -98,14 +86,14 @@ Loading a python module puts you in a "base" environment, but you need to create
 
       .. code-block:: bash
 
-         conda create -n cupy-frontier python=3.10 numpy=1.26.4 scipy -c conda-forge
+         conda create -p /path/to/cupy-frontier python=3.12 numpy scipy -c conda-forge
 
    .. tab-item:: Andes
       :sync: andes
 
       .. code-block:: bash
 
-         conda create -n cupy-andes python=3.11 numpy scipy -c conda-forge
+         conda create -p /path/to/cupy-andes python=3.12 numpy scipy -c conda-forge
 
 After following the prompts for creating your new environment, you can now activate it:
 
@@ -116,23 +104,16 @@ After following the prompts for creating your new environment, you can now activ
 
       .. code-block:: bash
 
-         conda activate cupy-frontier
+         conda activate /path/to/cupy-frontier
 
    .. tab-item:: Andes
       :sync: andes
 
       .. code-block:: bash
 
-         conda activate cupy-andes
+         conda activate /path/to/cupy-andes
 
-Finally, install CuPy from source into your environment.
-To make sure that you are building from source, and not a pre-compiled binary, use ``pip``:
-
-.. warning::
-    CuPy v13.0.0 removed support for CUDA 10.2, 11.0, and 11.1.
-    Please try installing CuPy<13.0.0 if you run into issues with older CUDA versions.
-    See `CuPy Release Notes <https://github.com/cupy/cupy/releases>`__ for more details
-    and other compatibility changes.
+Finally, install CuPy into your environment:
 
 .. tab-set::
 
@@ -141,10 +122,11 @@ To make sure that you are building from source, and not a pre-compiled binary, u
 
       .. code-block:: bash
 
-         export CUPY_INSTALL_USE_HIP=1
          export ROCM_HOME=${ROCM_PATH}
-         export HCC_AMDGPU_TARGET=gfx90a
-         CC=gcc CXX=g++ pip install --no-cache-dir --no-binary=cupy cupy==12.3.0
+         pip install amd-cupy --extra-index-url https://pypi.amd.com/rocm-7.0.2/simple
+
+      .. warning::
+         Setting ``ROCM_HOME`` is also necessary on Frontier during runtime.
 
    .. tab-item:: Andes
       :sync: andes
@@ -157,7 +139,7 @@ To make sure that you are building from source, and not a pre-compiled binary, u
          export http_proxy=http://proxy.ccs.ornl.gov:3128/
          export https_proxy=http://proxy.ccs.ornl.gov:3128/
          export no_proxy='localhost,127.0.0.0/8,*.ccs.ornl.gov'
-         CC=gcc NVCC=nvcc pip install --no-cache-dir --no-binary=cupy cupy==13.3.0
+         CC=gcc NVCC=nvcc pip install --no-cache-dir --no-binary=cupy cupy==13.5.1
 
       .. note::
          To be able to build CuPy on Andes, you must be within a compute job
@@ -166,20 +148,18 @@ To make sure that you are building from source, and not a pre-compiled binary, u
 
       .. note::
            The ``socks`` proxy specification depends on implementation.
-           Packages that depend on ``httpx`` will need ``httpx[socks]`` and the following change:
+           Packages that depend on ``httpx`` will need to install the ``httpx[socks]`` package and the following change:
 
            .. code-block:: bash
 
                # specify socks version
                export all_proxy=socks5://proxy.ccs.ornl.gov:3128/
 
-The ``CC`` and ``NVCC`` flags ensure that you are passing the correct wrappers, while the various flags for Frontier tell CuPy to build for AMD GPUs.
-This installation takes, on average, 10-20 minutes to complete (due to building everything from scratch), so don't panic if it looks like the install timed-out.
 Eventually you should see output similar to this (versions will vary):
 
 .. code-block::
 
-   Successfully installed cupy-13.3.0 fastrlock-0.8.2
+   Successfully installed cupy-13.5.1 fastrlock-0.8.3
 
 
 Getting Started With CuPy
@@ -288,10 +268,7 @@ Similarly, you can temporarily switch to a device using the ``with`` context:
 Trying to perform operations on an array stored on a different GPU will result in an error:
 
 .. warning::
-   The below code block should **not** be run on Frontier, as it causes problems for the
-   subsequent code blocks further below. With recent updates to CuPy, peer access is
-   enabled by default, which "passes" the below error. This causes problems with
-   AMD GPUs, resulting in inaccurate data.
+   With recent updates to CuPy, peer access is enabled by default, which "passes" the below error.
 
 .. code-block:: python
 
