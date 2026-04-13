@@ -94,6 +94,18 @@ To test your ``jax`` install, try running their ``mnist_classifier`` example (on
    # Start an interactive job
    salloc -A PROJECT_ID -N1 -t 10
 
+   # Once in the interactive job, make sure you have the correct modules and conda env loaded
+   module load PrgEnv-gnu/8.7.0
+   module load cpe/26.03
+   module load miniforge3/23.11.0-0
+   module load rocm/7.0.2
+   module load craype-accel-amd-gfx90a
+
+   # Because using a non-default CPE module (set this when building and running)
+   export LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH
+
+   conda activate jax_env-frontier
+
    # Enable the proxy server (allows compute node to download datasets)
    export all_proxy=socks://proxy.ccs.ornl.gov:3128/
    export ftp_proxy=ftp://proxy.ccs.ornl.gov:3128/
