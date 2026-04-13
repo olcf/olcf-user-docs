@@ -373,13 +373,17 @@ Debugging Applications Running in Apptainer
 -------------------------------------------
 
 
-Debugging an MPI application running in a container is a bit more complex than debugging regular
-application. You can't directly launch a container running an MPI application directly with a debugging tool like `gdb4hpc <https://cpe.ext.hpe.com/docs/latest/debugging-tools/gdb4hpc/guides/getting-started.html>`__ or with `Linaro Forge <https://docs.olcf.ornl.gov/software/debugging/index.html#linaro-forge-ddt>`__. This is because
-the tool will start a debug session of the Apptainer runtime itself rather than the MPI application it is
-running. 
+Debugging an MPI application running in a container is a bit more complex than debugging a regular
+application. You can't directly launch a container running an MPI application with a
+debugging tool like `gdb4hpc
+<https://cpe.ext.hpe.com/docs/latest/debugging-tools/gdb4hpc/guides/getting-started.html>`__ or with
+`Linaro Forge <https://docs.olcf.ornl.gov/software/debugging/index.html#linaro-forge-ddt>`__. This
+is because the tool will start a debug session of the Apptainer runtime itself rather than the MPI
+application it is running. 
 
-There are two ways around this - using gdbserver to launch one MPI task (while the rest are launched
-normally), or attaching to the already running MPI tasks with Linaro after the application is launched. 
+There are two ways around this - using gdbserver from within the container to launch one MPI task
+(while the rest are launched normally), or attaching to the already running MPI tasks with Linaro
+Forge after the application is launched. 
 
 For the instructions below, we will be using the debugging example in the `olcf_containers_examples
 <https://github.com/olcf/olcf_containers_examples>`__ repository. Make sure you clone the repository and
@@ -390,15 +394,16 @@ image with ``apptainer build bcastandlammps.sif bcastandlammps.def``.
 
 Using gdbserver to debug a single MPI task
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-In this method, we are launching an MPI application with multiple MPI ranks, but one of the ranks is
-started with a tool called ``gdbserver``. This sets up a debugging server that ``gdb`` can connect
-to and step through that particular rank. All the other ranks will progress as normal until they are
-blocked by communication to the rank being debugged, or an MPI barrier affecting all ranks. Once
-that is crossed, the other ranks will continue on again.
+In this method, we are launching an containerized MPI application with multiple MPI ranks, but one
+of the ranks is started with a tool called ``gdbserver``. This sets up a debugging server that
+``gdb`` can connect to and step through that particular rank. All the other ranks will progress as
+normal until they are blocked by communication to the rank being debugged, or an MPI barrier
+affecting all ranks. Once that is crossed, the other ranks will continue on again.
 
-This method lets you use a familiar tool `gdb` to inspect a single rank. The disadvantage is that
-this not as fully featured as a special purpose HPC debugger like Linaro Forge or gdb4hpc. You will
-not be able to switch between different ranks of your program on the fly.
+The disadvantage here is that
+this is not as fully featured as a special purpose HPC debugger like Linaro Forge or gdb4hpc. You will
+not be able to switch between different ranks of your program on the fly to debug them. You can only
+debug the rank you launched with gdbserver.
 
 The below example uses a 2 node job, but it generalizes to larger jobs.
 
@@ -416,8 +421,11 @@ The below example uses a 2 node job, but it generalizes to larger jobs.
 3. Modify ``launchapp.sh`` to your needs. In this example you can either debug the simple
    ``mpi_bcast`` program or LAMMPS. Comment out the lines with the program you don't want to run and
    uncomment the lines for the program you do want to run. 
-   a. ``launchapp.sh`` launches the MPI program by starting the rank 0 with gdbserver and the rest
-   of the ranks normally. 
+
+   * ``launchapp.sh`` starts rank 0 with gdbserver and the rest of the ranks normally. You can
+     change which rank is being debugged by changing the value of 0 in ``$SLURM_PROCID -eq 0`` in
+     ``launchapp.sh``.
+
 4. Launch the MPI program with srun in a container
 
    ::
@@ -428,8 +436,9 @@ The below example uses a 2 node job, but it generalizes to larger jobs.
    on the first node in your allocation.
 
 5. In a new terminal, SSH into the first node in the nodelist and navigate to your work directory.
-6. In the new terminal, Start an apptainer shell with the container image with ``apptainer shell bcastandlammps.sif``, and run gdb within
-   this container that we can then connect to the gdbserver.
+6. In the new terminal, Start an apptainer shell with the container image with ``apptainer shell
+   bcastandlammps.sif``, and run gdb within this container that we can then connect to the
+   gdbserver.
    
    ::
 
@@ -463,18 +472,32 @@ started. A process running in Apptainer is not isolated and is visible as a regu
 Initial Setup
 """""""""""""
 
-.. note::
-   
-   If you wish to use the ROCm debugging feature of DDT, you need to load a rocm module in your
-   ``.bashrc``. This is because DDT relies on the presence of ``rocgdb`` in your PATH. ``rocgdb`` is
-   made available in your PATH when the rocm module is loaded. When Forge connects to Frontier with
-   Remote Launch, it runs your ``.bashrc`` file. So loading the rocm module in ``.bashrc`` will make
-   sure that ``rocgdb`` is now available for Forge DDT to use.
 
 
 Follow the steps from our `Linaro Forge DDT documentation
 <https://docs.olcf.ornl.gov/software/debugging/index.html#linaro-forge-ddt>`__ upto but not
 including the last 'Reverse Connect' section.
+
+.. note::
+   
+   If you wish to use the ROCm debugging feature of DDT, you need to load a rocm module in your
+   ``linaro.bsh`` file. This is the file you created when you were following the steps earlier on
+   the Linaro Forge documentation page for setting up Linaro Forge usage, where you set the
+   ALLINEA_CONFIG_DIR and ALLINEA_REVERSE_CONNECT_DIR environment variables. So you should now have
+   a file in your home directory named ``/ccs/home/<user>/linaro.bsh`` with the below contents.    
+
+   :: 
+     
+     module load rocm
+     export ALLINEA_CONFIG_DIR=<Somewhere on the Filesystem that can be accessed by the compute nodes i.e. /lustre/orion/<project>>
+     export ALLINEA_REVERSE_CONNECT_DIR=<Somewhere on the Filesystem that can be accessed by the compute nodes i.e. /lustre/orion/<project>>
+
+   This is necessary because DDT relies on the presence of ``rocgdb`` in your PATH. ``rocgdb`` is
+   made available in your PATH when the rocm module is loaded. When Forge connects to Frontier with
+   Remote Launch, it runs your ``linaro.bsh`` file (provided its path was specified in the Remote
+   Script box in the Remote Launch Settings when you first configured Linaro Forge to connect to Frontier). So
+   loading the rocm module in ``linaro.bsh`` will make sure that ``rocgdb`` is now available for Forge
+   DDT to use.
 
 In your terminal logged into Frontier:
 
@@ -511,16 +534,15 @@ you set when following the initial setup steps.
 Debugging the application
 """""""""""""""""""""""""
 
-1. Make sure you have Linaro Forge client open on your workstation and connected to Frontier through
-the Remote Launch dropdown.
+1. Make sure you have Linaro Forge client open on your workstation and connected to Frontier through the Remote Launch dropdown.
 2. In your terminal running the interactive job
 
    ::
 
      srun --unbuffered -N2 -n4 apptainer exec bcastandlammps.sif ./mpi_bcast
 
-This will run the ``mpi_bcast`` executable from the current directory, but it is running within the
-container with access to the container environment.
+   This will run the ``mpi_bcast`` executable from the current directory, but it is running within the
+   container with access to the container environment.
 
 3. Switch to your Linaro Forge desktop client. Make sure you are connected to Frontier through the
    Remote Launch option.
@@ -535,28 +557,30 @@ container with access to the container environment.
 8. Click on the tab named "list of all processes" (The "Automatically-detected jobs" tab will detect the
    apptainer runtime running under srun, which is not what we want. We actually want the MPI program that is running under
    the container).
-9. In the "Filter for process names containing:" textbox, type in "bcast" to list only the
-   ``mpi_bcast`` processes. Select the items whose "Process name" or "Executable" is the name of the
-   ``mpi_bcast`` executable. Do not select anything that references ``srun`` or ``apptainer``.
+9. Select "ROCm" under the "debug GPU" option selection if you need to do GPU debugging (make sure you have ``module load rocm``
+   in your ``/ccs/home/<user>/linaro.bsh`` file. If that wasn't already set before you connected to Frontier with
+   Remote Launch, you will need to close Linaro Forge and reconnect).
+10. In the "Filter for process names containing:" textbox, type in "bcast" to list only the ``mpi_bcast`` processes. Select the items whose "Process name" or "Executable" is the name of the ``mpi_bcast`` executable. Do not select anything that references ``srun`` or ``apptainer``.
 
-.. figure:: /images/forge_container_process_select.png
-    :align: center
-    :width: 800
+   .. figure:: /images/forge_container_process_select.png
+       :align: center
+       :width: 800
 
-10. Click on "Attach to Selected Processes". Forge will now start connecting to the processes. The
+11. Click on "Attach to Selected Processes". Forge will now start connecting to the processes. The
     execution of the application will pause once Forge is connected.
-11. You will now get the main Linaro DDT window. You may see a message here saying "Missing
+12. You will now get the main Linaro DDT window. You may see a message here saying "Missing
     debugging information". This is not an issue.
-12. In the navigation tree on the left, click on "Sources", find the source file you want to examine
+13. In the navigation tree on the left, click on "Sources", find the source file you want to examine
     and set breakpoints where you want to. Then click on the "Play" button (the green triangle
     button) on the toolbar at the top of the window. DDT will now progress the application across
     all processes till it hits the breakpoint.
-13. You should now be able to use DDT to debug your application.
+14. You should now be able to use DDT to debug your application.
 
 
+.. note::
 
-
-
+   If you encounter errors along the way, the best thing is to close Linaro Forge and retry. That
+   usually lets things proceed.
 
 Some Restrictions and Tips
 --------------------------
