@@ -38,7 +38,7 @@ First, load the correct modules:
          module load PrgEnv-gnu/8.7.0
          module load cpe/26.03
          module load miniforge3/23.11.0-0
-         module load rocm/7.0.2
+         module load rocm/7.2.0
          module load craype-accel-amd-gfx90a
 
          # Because using a non-default CPE module (set this when building and running)
@@ -98,7 +98,7 @@ To test your ``jax`` install, try running their ``mnist_classifier`` example (on
    module load PrgEnv-gnu/8.7.0
    module load cpe/26.03
    module load miniforge3/23.11.0-0
-   module load rocm/7.0.2
+   module load rocm/7.2.0
    module load craype-accel-amd-gfx90a
 
    # Because using a non-default CPE module (set this when building and running)
