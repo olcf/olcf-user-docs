@@ -38,7 +38,18 @@ Once opted-in you will see 3 additional subtabs:
 Project Campaigns
 -----------------
 
-Describe project campaigns
+The `Project Campaign(s)` page is the dedicated portal for managing the campaigns you own or have joined.
+If you have created a campaign, you may view and edit the details, approve or decline join requests, and deploy or
+conclude your campaign from this page. If a reservation on Frontier is required for coordinated deployment and training of your
+model, you may make a reservation request using the `Request Reservation` button. The `Request Reservation` will
+submit a templated ticket to the OLCF help desk on your behalf and will initiate the approval process from the OLCF 
+Resource Utilization Council (RUC). After the RUC approves of the reservation, the reservation details including the 
+reservation name, time and resource allotment will be displayed in the `Frontier Reservations` subsection. Once a campaign
+has been deployed, all participating projects - including campaign managers - can download the necessary startup files and
+scripts from the `Projects Participating` subsection. For more details on getting started after campaign deployment, please
+see :ref:`nvflare_connect`.
+
+.. image:: /images/nvflare/campaign_details.heic
 
 .. _campaign_create:
 
@@ -49,7 +60,7 @@ The `FL Campaign Create` page is where you provide the details and Python packag
 Your campaign description should be informative and specific, so that others may discover your campaign on the
 :ref:`campaign_market` and contribute to your campaign goals. The `Campaign Python Packages` will be utilized during the
 deployment build process to create your campaign environment. Here you may optionally choose to advertise your campaign
-on the :ref:`campaign_market` at creation time. After creation, campaign managers can change wheter or not their campaign is adverstised
+on the :ref:`campaign_market` at creation time. After creation, campaign managers can change whether or not their campaign is adverstised
 any time on the :ref:`campaigns` page.
 
 .. warning::
@@ -63,6 +74,10 @@ any time on the :ref:`campaigns` page.
 FL Campaign Market
 ------------------
 
-describe the market
+The `FL Campaign Market` is where you can find campaigns advertised by other projects. The `Request to Join` button will send
+an approval request to the manager of the campaign. A greyed out `Already Sent Request` button will appear for campaigns you
+own, have already joined, or have a pending request.
+
+.. image:: /images/nvflare/campaign_market.heic
 
 
