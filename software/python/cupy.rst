@@ -11,20 +11,24 @@ In this guide, you will:
 
 * Learn how to install CuPy
 * Learn the basics of CuPy
-* Compare speeds to NumPy
 
 OLCF Systems this guide applies to:
 
 * :doc:`Frontier </systems/frontier_user_guide>`
 * :doc:`Andes </systems/andes_user_guide>`
 
-**Guide last tested with:**
+.. list-table:: Latest Guide Tests
+   :widths: 25 25 25 25
+   :header-rows: 1
 
-+------------+-------------------------+
-| ``python`` | .. centered:: ``cupy``  |
-+============+=========================+
-|  3.12.13   |  13.5.1                 |
-+------------+-------------------------+
+   * - ``python``
+     - ``cupy``
+     - ``CUDA (Andes)``
+     - ``ROCm (Frontier)``
+   * - 3.12.13
+     - 13.5.1
+     - 11.2.2
+     - 7.0.2, 7.2.0
 
 .. note::
    Working installations are **not** limited to what is shown above.
@@ -42,8 +46,7 @@ Although optimized NumPy is a significant step up from Python in terms of speed,
 Because CuPy's interface is nearly a mirror of NumPy, it acts as a replacement to run existing NumPy/SciPy code on NVIDIA CUDA platforms, which helps speed up calculations further.
 CuPy supports most of the array operations that NumPy provides, including array indexing, math, and transformations.
 
-Compute nodes equipped with NVIDIA GPUs will be able to take full advantage of CuPy's capabilities on the system, providing significant speedups over NumPy-written code.
-**Instructions for Frontier are available in this guide, but users must note that the CuPy developers have labeled AMD GPU support as** `experimental <https://docs.cupy.dev/en/stable/install.html#using-cupy-on-amd-gpu-experimental>`__ **and has** `limitations <https://docs.cupy.dev/en/stable/install.html#limitations>`__.
+**Instructions for Frontier are available in this guide, but users must note that the CuPy developers have labeled AMD GPU support as** `experimental <https://docs.cupy.dev/en/stable/install.html#using-cupy-on-amd-gpu-experimental>`__ **and has** `limitations <https://docs.cupy.dev/en/stable/install.html#limitations>`__. For more CuPy on AMD GPU details, please see `AMD's blog post <https://rocm.blogs.amd.com/artificial-intelligence/cupy-v13/README.html>`__.
 
 .. _cupy-envs:
 
