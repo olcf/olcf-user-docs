@@ -89,3 +89,17 @@ E.g. ``Critical - 6`` from the screenshot above.
 
 You can see the affected packages and their related CVE's on this page, along with potential version suggestions.
 
+
+Making Reservations on OLCF Machines
+====================================
+
+myOLCF gives project PIs the ability request reservations on Frontier for synchronous federated learning to make the most
+of your campaigns.
+
+.. image:: /images/nvflare/campaign_reservation.png
+	:alt: A screenshot showing a snippet of the Campaign Reservations screen with an "Add" button highlighted
+
+A project PI can request a reservation for any number of nodes required for each participating project via the UI, and for
+a specific timeslot so that the campaign can be synchronized across projects.
+This request will be submitted to the OLCF Helpdesk help@olcf.ornl.gov where OLCF User Assistance will collect any necessary
+additional information and communicate when a decision is made on the reservation request.
