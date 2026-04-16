@@ -83,9 +83,9 @@ directly below your dependency list, as shown in the following image.
 You can view the list of discovered vulnerabilities from this screen by clicking on one of the severity labels.
 E.g. ``Critical - 6`` from the screenshot above.
 
-.. image:: /image/nvflare/vulnerability_report.png
+.. image:: /images/nvflare/vulnerability_report.png
 	:alt: A screenshot showing a snippet of the "Vulnerability Details" screen with vulnerabilities displayed by severity and CVE
 	:width: 50%
 
 You can see the affected packages and their related CVE's on this page, along with potential version suggestions.
-If you cannot find a version suggestion that works for you, you can look up the CVE for mitigation strategies here:
+
