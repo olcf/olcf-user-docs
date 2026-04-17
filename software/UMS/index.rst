@@ -91,9 +91,9 @@ Currently Available User-Managed Software
          - Copper
          - Kaushik Velusamy (kaushik.v@anl.gov)
          - | Copper: Co-operative caching layer for scalable parallel data movement in Exascale Supercomputers
-           | To use: ``module load ums ums046 copper``
-           | Then run: ``launch_copper.sh -d $LOGDIR -v /mnt/bb/$USER/copper_mount``
+           | To start copper service : ``module load ums ums046 copper`` and ``launch_copper_frontier.sh -d $LOGDIR -v /mnt/bb/$USER/copper_mount``
            | Append ``/mnt/bb/$USER/copper_mount`` to your conda activate setup, ``PYTHONPATH``, etc.
+           | Run ``srun --overlap -N ${SLURM_NNODES} -n $((SLURM_NNODES*8)) --ntasks-per-node=8 --cpu-bind="verbose,map_cpu:9,17,25,33,41,49,57,73" python3 -c "import torch"``
            | Source: https://github.com/argonne-lcf/copper/
 
 Usage
