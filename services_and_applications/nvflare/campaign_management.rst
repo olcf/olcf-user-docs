@@ -120,3 +120,22 @@ as:
 .. image:: /images/nvflare/frontier_reservations.png
 	:alt: A screenshot showing a snippet of the Frontier Reservations screen with described information fields.
 	:width: 50%
+
+Deploying The Campaign
+======================
+
+Before running any code in your campaign, the lead project will need to deploy the management service.
+This is managed in the "Campaign Deployment Status" box.
+Before your campaign, and the management service, is deployed you will see a green "Deploy Campaign" button along with
+some statistics, such as the number of current deployment statuses, number of deployments, and
+cumulative duration of the deployments.
+
+When the "Deploy Campaign" button is clicked, it will start a service on Slate for managing your campaign.
+The service deployment may take a few minutes.
+
+When the service is up, all member projects of the campaign will have the ability to download requisite files to connect
+to the management service for federated learning processes.
+
+.. image:: /images/nvflare/deploy_campaign.png
+	:alt: A screenshot showing a snippet of the Campaign Deployment Status screen with information on deployments, and a highlighted "Deploy Campaign" button.
+	:width: 50%
