@@ -282,6 +282,7 @@ And here is the output from the script:
     ***********************
 
   
+.. _globus_transfer:
 
 Using Globus to Move Data to and from Orion 
 ===========================================

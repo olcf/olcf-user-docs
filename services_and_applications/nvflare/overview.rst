@@ -25,7 +25,7 @@ Getting Started
 The OLCF offers users a simple means of deploying and managing NVFlare campaigns via `myOLCF <https://my.olcf.ornl.gov/>`_.
 Firstly, you will need to opt into the service by navigating to the `Federated Learning >> Opt In/Out` tab and change your status to "Yes".
 
-.. image:: /images/nvflare/opt_in.heic
+.. image:: /images/nvflare/opt_in.png
 
 Once opted-in you will see 3 additional subtabs:
 
@@ -49,7 +49,7 @@ has been deployed, all participating projects - including campaign managers - ca
 scripts from the `Projects Participating` subsection. For more details on getting started after campaign deployment, please
 see :ref:`nvflare_connect`.
 
-.. image:: /images/nvflare/campaign_details.heic
+.. image:: /images/nvflare/campaign_details.png
 
 .. _campaign_create:
 
@@ -67,7 +67,7 @@ any time on the :ref:`campaigns` page.
     If any listed Python package in `Campaign Python Packages` are known to have high or critical vulnerabilites, the campaign will be prohibited 
     from deploying and a banner will display warning you of the insecure packages.
 
-.. image:: /images/nvflare/campaign_create.heic
+.. image:: /images/nvflare/campaign_create.png
 
 .. _campaign_market:
 
@@ -78,6 +78,6 @@ The `FL Campaign Market` is where you can find campaigns advertised by other pro
 an approval request to the manager of the campaign. A greyed out `Already Sent Request` button will appear for campaigns you
 own, have already joined, or have a pending request.
 
-.. image:: /images/nvflare/campaign_market.heic
+.. image:: /images/nvflare/campaign_market.png
 
 
