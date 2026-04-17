@@ -59,7 +59,7 @@ Environment dependencies can be modified after campaign creation discussed in :r
 In order to modify your campaign's dependencies, click on the "Edit Campaign" button under "FL Campaign Details"
 and add/update your dependencies
 
-.. image:: /images/nvflare/campaign_details.png
+.. image:: /images/nvflare/fl_campaign_details.png
 	:alt: A screenshot showing a snippet of the "FL Campaign Details" box with an active "Edit Campaign" button.
 	:width: 50%
 
@@ -67,6 +67,7 @@ You can enter your dependencies similarly to a Python "requirements.txt", with o
 
 .. image:: /images/nvflare/requirements_spec.png
 	:alt: A screenshot showing a snippet of the Campaign Edit screen, with a few Python dependencies listed.
+	:width: 50%
 
 When you are finished you can choose "Submit"
 
@@ -93,13 +94,29 @@ You can see the affected packages and their related CVE's on this page, along wi
 Making Reservations on OLCF Machines
 ====================================
 
-myOLCF gives project PIs the ability request reservations on Frontier for synchronous federated learning to make the most
+myOLCF gives lead projects the ability request reservations on Frontier for synchronous federated learning to make the most
 of your campaigns.
 
-.. image:: /images/nvflare/campaign_reservation.png
-	:alt: A screenshot showing a snippet of the Campaign Reservations screen with an "Add" button highlighted
+The lead project of a campaign can find the "Request Reservation" button under "FL Campaign Details"
 
-A project PI can request a reservation for any number of nodes required for each participating project via the UI, and for
+A lead project can request a reservation for any number of nodes required for each participating project via the UI, and for
 a specific timeslot so that the campaign can be synchronized across projects.
 This request will be submitted to the OLCF Helpdesk help@olcf.ornl.gov where OLCF User Assistance will collect any necessary
-additional information and communicate when a decision is made on the reservation request.
+additional information, namely PI approvals, and communicate when a decision is made on the reservation request.
+
+.. image:: /images/nvflare/campaign_reservation.png
+	:alt: A screenshot showing a snippet of the Campaign Reservations screen with populated "Start," "End,"
+		"Node Count," and a "Submit" button highlighted.
+	:width: 50%
+
+After making a reservation request, you can see details around the reservation on the "Frontier Reservations" box such
+as:
+
+* Approval status
+* Reservation name
+* Specific start and end times
+* Number of nodes requested per project
+
+.. image:: /images/nvflare/frontier_reservations.png
+	:alt: A screenshot showing a snippet of the Frontier Reservations screen with described information fields.
+	:width: 50%
