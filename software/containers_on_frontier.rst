@@ -280,6 +280,26 @@ When users are ready to run their containers on Frontier they can bind in CPE an
       - ``25.03_clang_opensuse``
       - ``25.03_clang_rockylinux``
 
+   .. tab-item:: CPE/25.09
+      :sync: cpe_25_09
+
+      **Contents:**
+
+      +---------------------------------------------------+----------------------------------------------------+
+      | GNU                                               | CLANG                                              |
+      +===================================================+====================================================+
+      | **gcc@14.2.0** + **mpich@4.1.3** + **rocm@6.4.2** | **llvm@20.1.8** + **mpich@4.1.3** + **rocm@6.4.2** |
+      +---------------------------------------------------+----------------------------------------------------+
+
+      **Tags:**
+
+      - ``25.09_gnu_ubuntu``
+      - ``25.09_gnu_opensuse``
+      - ``25.09_gnu_rockylinux``
+      - ``25.09_clang_ubuntu``
+      - ``25.09_clang_opensuse``
+      - ``25.09_clang_rockylinux``
+
 Apptainer Modules
 ^^^^^^^^^^^^^^^^^
 .. warning::
