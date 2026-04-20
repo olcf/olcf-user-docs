@@ -5,6 +5,7 @@ Campaign Management
 *******************
 
 Managing your campaign involves steps such as:
+
 * Allowing projects onto your campaign
 * Managing projects on your campaign
 * Joining options for your campaign
@@ -44,12 +45,26 @@ Projects may need to be removed from your campaign. If that is the case, you can
 	:alt: A screenshot showing a snippet of the "Projects Participating" box with an active "Remove" button.
 	:width: 50%
 
-This section also gives you the ability to download your campaign's run files, and the run files of other participating
-projects in your campaign.
+This section also gives you the ability to download your campaign's run files.
 
 
-Campaign Dependencies
-=====================
+Campaign Details
+================
+
+Advertising a Campaign
+----------------------
+
+A campaign can be optionally placed on the :ref:`campaign_market` for discovery, which can help recruit other projects.
+
+In order to modify your campaign's appearance on the *Campaign Market*, click on the "Edit Campaign" button under "FL Campaign Details"
+and add/update your dependencies.
+
+.. image:: /images/nvflare/fl_campaign_details.png
+	:alt: A screenshot showing a snippet of the "FL Campaign Details" box with an active "Edit Campaign" button.
+	:height: 30em
+
+At the bottom of the edit page, there is a toggle "Advertise your campaign?" which can be used to display the campaign on
+the market.
 
 Modifying Dependencies
 ----------------------
@@ -57,11 +72,7 @@ Modifying Dependencies
 Environment dependencies can be modified after campaign creation discussed in :ref:`campaign_create`.
 
 In order to modify your campaign's dependencies, click on the "Edit Campaign" button under "FL Campaign Details"
-and add/update your dependencies
-
-.. image:: /images/nvflare/fl_campaign_details.png
-	:alt: A screenshot showing a snippet of the "FL Campaign Details" box with an active "Edit Campaign" button.
-	:width: 50%
+and add/update your dependencies in the "Campaign Python Packages" section.
 
 You can enter your dependencies similarly to a Python "requirements.txt", with or without version specifications (``==, <=, >=``):
 
@@ -69,7 +80,7 @@ You can enter your dependencies similarly to a Python "requirements.txt", with o
 	:alt: A screenshot showing a snippet of the Campaign Edit screen, with a few Python dependencies listed.
 	:width: 50%
 
-When you are finished you can choose "Submit"
+When you are finished you can choose "Submit" to update your campaign requirements.
 
 Vulnerabilities
 ---------------
@@ -79,7 +90,7 @@ directly below your dependency list, as shown in the following image.
 
 .. image:: /images/nvflare/vulnerability_overview.png
 	:alt: A screenshot showing a snippet of the "FL Campaign Details" box with an vulnerabilities highlighted
-	:width: 50%
+	:height: 30em
 
 You can view the list of discovered vulnerabilities from this screen by clicking on one of the severity labels.
 E.g. ``Critical - 6`` from the screenshot above.
@@ -124,18 +135,26 @@ as:
 Deploying The Campaign
 ======================
 
-Before running any code in your campaign, the lead project will need to deploy the management service.
+Before running any campaign code, the lead project will need to deploy the management service.
 This is managed in the "Campaign Deployment Status" box.
-Before your campaign, and the management service, is deployed you will see a green "Deploy Campaign" button along with
+Before your campaign and its management service are deployed you will see a green "Deploy Campaign" button along with
 some statistics, such as the number of current deployment statuses, number of deployments, and
 cumulative duration of the deployments.
 
 When the "Deploy Campaign" button is clicked, it will start a service on Slate for managing your campaign.
 The service deployment may take a few minutes.
 
-When the service is up, all member projects of the campaign will have the ability to download requisite files to connect
-to the management service for federated learning processes.
+When the service is up and the campaign is deployed, all member projects of the campaign will have the ability to
+download requisite files to connect to the management service for federated learning processes.
+You can read more about running code in your campaign in the :ref:`nvflare_connect` section.
 
 .. image:: /images/nvflare/deploy_campaign.png
 	:alt: A screenshot showing a snippet of the Campaign Deployment Status screen with information on deployments, and a highlighted "Deploy Campaign" button.
 	:width: 50%
+
+When your run is finished, you can click on the "Conclude Campaign" button in the same box to stop the service.
+
+.. warning::
+
+	Stopping the service with the "Conclude Campaign" button will interrupt all NVFlare work in the campaign, even that
+	being run on other projects.
