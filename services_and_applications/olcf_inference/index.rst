@@ -399,16 +399,43 @@ Chat Completions
 
 Used for conversational interactions and instruction-following models.
 
-.. code-block:: bash
+.. tab-set::
 
-   curl -N -s -X POST "https://s3m.olcf.ornl.gov/olcf/open/v1/inference/chat/completions" \
-        -H @.env \
-        -H "Content-Type: application/json" \
-        -d '{
-              "model": "gpt-oss-120b",
-              "messages": [{"role": "user", "content": "Explain quantum computing."}],
-              "stream": false
-            }'
+	.. tab-item:: **REST API (cURL):**
+		:sync: curl
+
+		.. code-block:: bash
+
+		   curl -N -s -X POST "https://s3m.olcf.ornl.gov/olcf/open/v1/inference/chat/completions" \
+				-H @.env \
+				-H "Content-Type: application/json" \
+				-d '{
+					  "model": "gpt-oss-120b",
+					  "messages": [{"role": "user", "content": "Explain quantum computing."}],
+					  "stream": false
+					}'
+
+	.. tab-item:: Python (OpenAI)
+		:sync: openai
+
+		.. code-block:: python
+
+			from openai import OpenAI
+			import os
+
+			client = OpenAI(
+				base_url="https://s3m.olcf.ornl.gov/olcf/open/v1/inference",
+				api_key=os.environ.get("S3M_TOKEN")
+			)
+
+			response = client.chat.completions.create(
+				model="gpt-oss-120b",
+				messages=[
+					{"role": "user", "content": "When was the first straw hat made?"}
+				],
+				stream=False
+			)
+
 
 Standard Completions
 ^^^^^^^^^^^^^^^^^^^^
@@ -417,17 +444,42 @@ Standard Completions
 
 Used for traditional text continuation (base models rather than instruction-tuned chat models).
 
-.. code-block:: bash
+.. tab-set::
 
-   curl -N -s -X POST "https://s3m.olcf.ornl.gov/olcf/open/v1/inference/completions" \
-        -H @.env \
-        -H "Content-Type: application/json" \
-        -d '{
-              "model": "nemotron-nano-fp8",
-              "prompt": "The future of high-performance computing is",
-              "max_tokens": 50,
-              "temperature": 0.7
-            }'
+	.. tab-item:: **REST API (cURL):**
+		:sync: curl
+
+		.. code-block:: bash
+
+			curl -N -s -X POST "https://s3m.olcf.ornl.gov/olcf/open/v1/inference/completions" \
+				-H @.env \
+				-H "Content-Type: application/json" \
+				-d '{
+					  "model": "nemotron-nano-fp8",
+					  "prompt": "The future of high-performance computing is",
+					  "max_tokens": 50,
+					  "temperature": 0.7
+					}'
+
+	.. tab-item:: Python (OpenAI)
+		:sync: openai
+
+		.. code-block:: python
+
+			from openai import OpenAI
+			import os
+
+			client = OpenAI(
+				base_url="https://s3m.olcf.ornl.gov/olcf/open/v1/inference",
+				api_key=os.environ.get("S3M_TOKEN")
+			)
+
+			response = client.completions.create(
+				model="gpt-oss-120b",
+				prompt="You see, you're not dealing with the average AI user anymore..."
+			)
+
+			#print(response.choices[0].text)
 
 .. _info_endpoint:
 
@@ -523,16 +575,41 @@ Generates vector embeddings for a given text.
 
     Embeddings require the use of an embedding-specific model. Check :ref:`available_models` and :ref:`info_endpoint` for embedding models.
 
-.. code-block:: bash
 
-   curl -s -X POST "https://s3m.olcf.ornl.gov/olcf/open/v1/inference/embeddings" \
-        -H @.env \
-        -H "Content-Type: application/json" \
-        -d '{
-              "model": "nomic-embed-text-v2-moe",
-              "input": "This is good news."
-            }'
+.. tab-set::
 
+	.. tab-item:: **REST API (cURL):**
+		:sync: curl
+
+		.. code-block:: bash
+
+			curl -s -X POST "https://s3m.olcf.ornl.gov/olcf/open/v1/inference/embeddings" \
+				-H @.env \
+				-H "Content-Type: application/json" \
+				-d '{
+					  "model": "nomic-embed-text-v2-moe",
+					  "input": "This is good news."
+					}'
+
+
+	.. tab-item:: Python (OpenAI)
+		:sync: openai
+
+		.. code-block:: python
+
+			import os
+			from openai import OpenAI
+
+			client = OpenAI(
+				base_url="https://s3m.olcf.ornl.gov/olcf/open/v1/inference",
+				api_key=os.environ.get("S3M_TOKEN")
+			)
+
+			embed_response = client.embeddings.create(
+				model="nomic-embed-text-v2-moe",
+				input="Are you sure?",
+				encoding_format="base64",
+			)
 
 Responses
 ^^^^^^^^^
@@ -543,23 +620,54 @@ A newer OpenAI API endpoint. Includes performance benefits and some additional f
 
 Read more on OpenAI's Docs: https://developers.openai.com/api/docs/guides/migrate-to-responses
 
-.. code-block:: bash
+.. tab-set::
 
-    curl -s -X POST "https://s3m.olcf.ornl.gov/olcf/open/v1/inference/responses" \
-        -H @.env \
-        -H "Content-Type: application/json" \
-        -d '{
-                "model": "gpt-oss-120b",
-                "input": [
-                    {
-                        "role": "user",
-                        "content": [
-                            { "type": "input_text", "text": "What is an AI agent?" },
-                            { "type": "input_text", "text": "Which agentic framework should I use for gpt-oss-120b?" }
-                        ]
-                    }
-                ]
-            }'
+	.. tab-item:: **REST API (cURL):**
+		:sync: curl
+
+		.. code-block:: bash
+
+			curl -s -X POST "https://s3m.olcf.ornl.gov/olcf/open/v1/inference/responses" \
+			    -H @.env \
+			    -H "Content-Type: application/json" \
+			    -d '{
+			    "model": "gpt-oss-120b",
+			        "input": [
+			            {
+			                 "role": "user",
+			                 "content": [
+			                      { "type": "input_text", "text": "What is an AI agent?" },
+			                      { "type": "input_text", "text": "Which agentic framework should I use for gpt-oss-120b?" }
+			                 ]
+			            }
+			        ]
+			    }'
+
+	.. tab-item:: Python (OpenAI)
+		:sync: openai
+
+		.. code-block:: python
+
+			import os
+			from openai import OpenAI
+
+			client = OpenAI(
+				base_url="https://s3m.olcf.ornl.gov/olcf/open/v1/inference",
+				api_key=os.environ.get("S3M_TOKEN")
+			)
+
+			response = client.responses.create(
+				model="gpt-oss-120b",
+				input=[
+					{
+						"role": "user",
+						"content": [
+							{ "type": "input_text", "text": "I'm using Python. Believe it!" },
+						],
+					},
+				],
+			)
+
 
 Additional Resources
 --------------------
