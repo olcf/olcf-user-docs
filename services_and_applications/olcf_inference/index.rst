@@ -436,6 +436,9 @@ Used for conversational interactions and instruction-following models.
                 stream=False
             )
 
+            # Access with:
+            #response.choices[0].message.content
+
 
 Standard Completions
 ^^^^^^^^^^^^^^^^^^^^
@@ -479,7 +482,8 @@ Used for traditional text continuation (base models rather than instruction-tune
                 prompt="You see, you're not dealing with the average AI user anymore..."
             )
 
-            #print(response.choices[0].text)
+            # Access with:
+            #response.choices[0].text
 
 .. _info_endpoint:
 
@@ -611,6 +615,9 @@ Generates vector embeddings for a given text.
                 encoding_format="base64",
             )
 
+            # Access with:
+            # embed_response.data[0].embedding
+
 Responses
 ^^^^^^^^^
 
@@ -667,6 +674,9 @@ Read more on OpenAI's Docs: https://developers.openai.com/api/docs/guides/migrat
                     },
                 ],
             )
+
+            # Access with:
+            #response.output[0].content[0].text
 
 
 Additional Resources
