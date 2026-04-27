@@ -755,6 +755,7 @@ apply to sensitive data:
 
 -  Only store sensitive data in designated locations. Do not store
    sensitive data in your User Home directory.
+-  Do not include sensitive or controlled information in file or directory names, application names, job names or submission scripts, environment variables, or any other unencrypted text.
 -  Never allow access to your sensitive data to anyone outside of your
    group.
 -  Transfer of sensitive data must be through the use encrypted methods

@@ -23,6 +23,9 @@ Each user has a User Home area on NFS. Each project has a Project Home area on N
 - **Project Archive:** Long-term project data for archival access that's shared with other project members.
 - **World Archive:** Long-term project data for archival access that's shared with users outside your project.
 
+.. important::
+   Filenames, application names, job names, environment variables, batch job scripts, or any other unencrypted text must never contain sensitive or controlled information.
+
 .. _data-filesystem-summary:
 
 +--------------------------------+---------------------------------------------+---------+------------------------+-------------+-----------+---------+---------+------------+-----------------------------------------+
