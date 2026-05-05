@@ -27,6 +27,7 @@ OLCF resources. VisIt for your local computer can be obtained here:
 Recommended VisIt versions on our systems:
 
 * Andes: VisIt 3.3.3, 3.4.1, 3.4.2
+* Riker: VisIt <<<PLACE VERSIONS HERE>>>
 * Frontier: VisIt 3.3.3
 
 .. warning::
@@ -42,9 +43,7 @@ directory:
 * macOS: ``/path/to/VisIt.app/Contents/Resources/data``
 * Windows: ``C:\path\to\LLNL\VisIt x.y.z\data``
 
-Additionally, check out our beginner friendly
-`OLCF VisIt Tutorial <https://github.com/olcf/dva-training-series/tree/main/visit>`__
-which uses Andes to visualize example datasets.
+Additionally, check out our beginner friendly `OLCF VisIt Tutorial <https://github.com/olcf/dva-training-series/tree/main/visit>`__ which uses Andes to visualize example datasets.
 
 .. _visit-host-profiles:
 
@@ -110,6 +109,53 @@ Restart VisIt, and go to Options→Host Profiles. Select “New Host”
           the number of processors if memory is not an issue. See the
           :ref:`visit-modify-host` section below for how to add a ``gpu`` partition
           launch profile on Andes.
+
+  .. tab-item:: Riker
+
+      **For Riker:**
+
+      - **Host nickname**: ``Riker`` (this is arbitrary)
+      - **Remote hostname**: ``riker.olcf.ornl.gov`` (required)
+      - **Host name aliases**: ``riker-login#g`` (required)
+      - **Maximum Nodes**: Unchecked
+      - **Maximum processors**: Unchecked (arbitrary)
+      - **Path to VisIt Installation**: ``/sw/riker/visit`` (required)
+      - **Username**: Your OLCF Username (required)
+      - **Tunnel data connections through SSH**: Checked (required)
+
+      Under the “Launch Profiles” tab create a launch profile. Most of these values
+      are arbitrary
+
+      - **Profile Name**: ``batch`` (arbitrary)
+      - **Timeout**: 480 (arbitrary)
+      - **Number of threads per task**: 0 (arbitrary, but not tested
+        with OMP/pthread support)
+      - **Additional arguments**: blank (arbitrary)
+
+      Under the “Parallel” Tab:
+
+      - **Launch parallel engine**: Checked (required)
+      - Launch Tab:
+
+          - **Parallel launch method**:
+            ``sbatch/srun`` (required)
+          - **Partition/Pool/Queue**: ``batch`` (required)
+          - **Number of processors**: 1 (arbitrary, but
+            high number may lead to OOM errors) (max for ``batch`` queue is 128)
+          - **Number of nodes**: 1 (arbitrary)
+          - **Bank/Account**: Your OLCF project to use (required)
+          - **Time Limit**: 1:00:00 (arbitrary, ``HH:MM:SS``)
+          - **Machine file**: Unchecked (required – Lets VisIt get
+            the nodelist from the scheduler)
+          - **Constraints**: Unchecked
+      - Advanced tab – All boxes unchecked
+      - GPU Acceleration
+
+          - **Use cluster’s graphics cards**: Unchecked (even if using the ``gpu`` partition)
+
+      Click “Apply” and make sure to save the settings (Options/Save Settings).
+      Exit and re-launch VisIt.
+
 
   .. tab-item:: Frontier
 
@@ -263,7 +309,7 @@ performance using VisIt's CLI in a batch job. An example for doing this on
 OLCF systems is provided below.
 
 
-**For Andes/Frontier (Slurm Script):**
+**For Andes/Riker/Frontier (Slurm Script):**
 
 .. tab-set::
 
@@ -278,6 +324,27 @@ OLCF systems is provided below.
         #SBATCH -N 1
         #SBATCH -p gpu
         #SBATCH -t 0:05:00
+
+        cd $SLURM_SUBMIT_DIR
+        date
+
+        module load visit
+
+        visit -nowin -cli -v 3.4.2 -l srun -np 28 -nn 1 -s visit_example.py
+
+  .. tab-item:: Riker
+
+      .. code-block:: bash
+        :linenos:
+
+        #!/bin/bash
+        #SBATCH -A XXXYYY
+        #SBATCH -J visit_test
+        #SBATCH -N 1
+        #SBATCH -p gpu
+        #SBATCH -t 0:05:00
+        #SBATCH -c 4
+        #SBATCH --mem=92GB
 
         cd $SLURM_SUBMIT_DIR
         date
@@ -309,7 +376,7 @@ OLCF systems is provided below.
         visit -nowin -cli -v 3.3.3 -l srun -np 28 -nn 1 -s visit_example.py
 
 Following one of the methods above will submit a batch job for five minutes to
-either Andes or Frontier.  Once the batch job makes its way through
+either Andes, Riker, or Frontier.  Once the batch job makes its way through
 the queue, the script will launch VisIt version X.Y.Z (specified with the
 **-v** flag, required on Andes) and execute a python script called
 ``visit_example.py`` (specified with the **-s** flag, required if using a
