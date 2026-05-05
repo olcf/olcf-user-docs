@@ -8,6 +8,23 @@ most recent changes are listed first.
 
 ----
 
+Frontier: ROCm/5.x removal notice (April 7, 2026)
+------------------------------------------------
+
+In a future outage, all ROCm/5.x modules and associated HPE/Cray Programming Environment (CPE) versions are scheduled to be removed. Please migrate to a newer CPE+ROCm combination, and report any blocking issues to the OLCF Help Desk by emailing help@olcf.ornl.gov. The recommended CPE+ROCm combinations are CPE/26.03 + ROCm/7.x or CPE/25.09 + ROCm/6.4.2. Recall that for any non-default PE, you must use ``export LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH``.
+
+A list of the compiler, ROCm, Cray MPICH, and Cray Libsci modules to be removed can be found below. CPE has many less-common modules that are not listed here for brevity. If you are unsure if you will be impacted by this, please contact the OLCF Help Desk.
+
+.. csv-table::
+    :header: "Component", "Versions to be removed"
+
+    "cce", "15.0.0, 15.0.1, 16.0.0, 16.0.1, 17.0.0"
+    "cpe", "22.12, 23.03, 23.05, 23.09, 23.12"
+    "cray-libsci", "22.12.x, 23.03.x, 23.05.x, 23.09.x, 23.12.x"
+    "cray-mpich", "8.1.23, 8.1.25, 8.1.26, 8.1.27, 8.1.28"
+    "amd/amd-mixed/rocm", "5.3.0, 5.4.0, 5.4.3, 5.5.1, 5.6.0, 5.7.0, 5.7.1"
+
+
 Frontier: Core Module (March 18, 2025)
 ------------------------------------------------
 

@@ -12,3 +12,4 @@ Services and Applications
    jupyter/index.rst
    constellation/index.rst
    s3m/index.rst
+   olcf_inference/index.rst
