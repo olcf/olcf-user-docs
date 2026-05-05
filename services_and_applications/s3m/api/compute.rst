@@ -1,5 +1,17 @@
 .. _s3m_compute_api:
 
+.. Custom styling to remove multiple line breaks in nested tab groups sections.
+
+.. raw:: html
+
+   <style>
+     /* Nested tab-sets (version → language) double up bottom borders.
+        Drop the inner tab-content underline; the outer one frames the block. */
+     .sd-tab-content > .sd-tab-set > .sd-tab-content {
+       box-shadow: 0 -0.0625rem var(--sd-color-tabs-overline);
+     }
+   </style>
+
 *******
 Compute
 *******
