@@ -158,7 +158,7 @@ always read tokens from environment variables when possible:
    }
 
    response = requests.get(
-       "https://s3m.olcf.ornl.gov/slurm/v0.0.43/defiant/ping",
+       "https://s3m.olcf.ornl.gov/slurm/open/v0.0.43/defiant/ping",
        headers=headers)
 
 .. _s3m_command_line_safety:
@@ -188,7 +188,7 @@ curl's ``@`` syntax to read it:
    $ echo "Authorization: eyJhbGc..." > .env
    $ echo ".env" >> .gitignore
 
-   $ curl -H @.env https://s3m.olcf.ornl.gov/slurm/v0.0.43/defiant/ping
+   $ curl -H @.env https://s3m.olcf.ornl.gov/slurm/open/v0.0.43/defiant/ping
    {"meta":{"plugin":{"type":"openapi/slurmctld", "name":"Slurm OpenAPI slurmctld"...
 
 There are exceptions to these risks; however, it is always better to be safe
