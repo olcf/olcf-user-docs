@@ -519,7 +519,7 @@ command can be used:
 
 .. code-block:: bash
    
-   $ salloc -A <project_id> -J <job_name> -t 00:05:00 -p <partition> -N 2 -c 4 --mem=72GB
+   $ salloc -A <project_id> -p <partition> -t 00:10:00  -N 2 -c 4 --mem=72GB
    salloc: Granted job allocation 4258
    salloc: Waiting for resource configuration
    salloc: Nodes riker[35-36] are ready for job
@@ -636,7 +636,7 @@ In this sub-section, a simple MPI+OpenMP "Hello, World" program
 (`hello_mpi_omp <https://code.ornl.gov/olcf/hello_mpi_omp>`__) will be used to
 clarify the mappings. Slurm's :ref:`riker-interactive` method was used to request an
 allocation of 1 compute node for these examples: 
-``salloc -A <project_id> -t 30 -p batch -N 1 -c 128 --mem=2321847M``
+``salloc -A <project_id> -p batch -t 00:30:00 -N 1 -c 4 --mem=72GB``
 
 The ``srun`` options used in this section are (see ``man srun`` for more information):
 
@@ -672,8 +672,8 @@ of MPI ranks launched, the ``srun`` flag ``-n`` can be used.
 
     MPI 000 - OMP 000 - HWT 000 - Node riker35
     MPI 000 - OMP 001 - HWT 001 - Node riker35
-    MPI 001 - OMP 000 - HWT 065 - Node riker35
-    MPI 001 - OMP 001 - HWT 064 - Node riker35
+    MPI 001 - OMP 000 - HWT 003 - Node riker35
+    MPI 001 - OMP 001 - HWT 002 - Node riker35
 
 
 The output shows that each OpenMP thread ran on its own physical CPU core. 
@@ -697,6 +697,16 @@ GPU Mapping
 ^^^^^^^^^^^
 
 In this sub-section, an MPI+OpenMP+CUDA "Hello, World" program, ``hello_jobstep.cpp``, will be used to clarify the GPU mappings. 
+
+Modules to load:
+
+.. code-block:: bash
+    :linenos:
+
+    module load gcc
+    module load cuda
+    module load mpich
+
 
 .. code-block:: c
    :linenos:
@@ -843,11 +853,11 @@ Makefile
 
 
 
-Again, Slurm's :ref:`riker-interactive` method was used to
-request an allocation of 2 compute node for these examples:
-``salloc -A <project_id> -t 30 -p gpu -N 2 --exclusive``. The CPU mapping part of
-this example is very similar to the example used above in the CPU Mapping 
-sub-section, so the focus here will be on the GPU mapping part.
+Again, Slurm's :ref:`riker-interactive` method was used to request an allocation of 2 compute node for these examples:
+
+``salloc -A <project_id> -p gpu -t 00:30:00 -N 2 --exclusive``
+
+The CPU mapping part of this example is very similar to the example used above in the CPU Mapping  sub-section, so the focus here will be on the GPU mapping part.
 
 The following ``srun`` options will be used in the examples below. See 
 ``man srun`` for a complete list of options and more information.
@@ -1174,7 +1184,7 @@ Step 2 (terminal 1)
 From an Riker connection launch a batch job and execute the below matlab-vnc.sh script to start the vncserver and run matlab within:
 
 #. localsytem: ``ssh -X username@riker.olcf.ornl.gov``
-#. riker: ``salloc -A abc123 -N 1 -t 1:00:00 --x11=batch``
+#. riker: ``salloc -A <project_id> -p gpu -t 1:00:00 -N 1 -c 4 --mem=72GB --x11=batch``
 #. riker: ``./matlab-vnc.sh``
 
 .. code::
@@ -1275,7 +1285,7 @@ From an Riker connection launch a batch job and execute the below vmd-vgl.sh
 script to start the vncserver and run vmd within:
 
 #. localsytem: ``ssh -X username@riker.olcf.ornl.gov``
-#. riker: ``salloc -A abc123 -N 1 -c 4 -t 1:00:00 -p gpu --x11=batch``
+#. riker: ``salloc -A <project_id> -p gpu -t 1:00:00 -N 1 -c 4 --mem=72GB --x11=batch``
 #. riker: ``./vmd-vgl.sh``
 
 .. code::
@@ -1414,7 +1424,7 @@ vmd-vgl.sh (GPU rendering)
 .. .. code::
 
 ..      localsytem: ssh username@andes.olcf.ornl.gov
-..      andes: salloc -A PROJECT_ID -p gpu -N 1 -t 60:00 -M andes --constraint=DCV
+..      andes: salloc -A <project_id> -p gpu -t 60:00 -N 1 --exclusive -M andes --constraint=DCV
 
 .. Run the following commands:
 
@@ -1508,14 +1518,15 @@ As a simple example, we will run ``hostname`` with the Apptainer container.
   ::
 
      #!/bin/bash
-     #SBATCH -t00:10:00
      #SBATCH -A stf007
-     #BATCH -P batch
+     #SBATCH -p batch
      #SBATCH -J logs/simple_container_job
      #SBATCH -o %x_%j.out
      #SBATCH -e %x_%j.out
+     #SBATCH -t 00:10:00
      #SBATCH -N 2
      #SBATCH -c 1
+     #SBATCH --mem=18GB
 
      srun  -N2 --ntasks-per-node=1 apptainer exec  simple.sif hostname
 
