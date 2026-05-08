@@ -453,6 +453,54 @@ their use can be found in the related subsections.
 |            | | (see Single Command section below)                                                                                                                                         |
 +------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+ 
 
+Queues on Riker
+---------------------
+
+The compute nodes on Riker are separated into two partitions the "batch partition"
+and the "GPU partition" as described in the :ref:`riker-nodes` section. The scheduling
+policies for the individual partitions are as follows:
+
+Batch Partition Policy (default)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Jobs that do not specify a partition will run in the 128 node batch partition:
+
+
++-----+----------------+------------+-------------------------------------------+
+| Bin | Node Count     | Duration   | Policy                                    |
++=====+================+============+===========================================+
+| A   | 1 - 16 Nodes   | 0 - 48 hr  |                                           |
++-----+----------------+------------+  max 4 jobs running and 4 jobs eligible   |
+| B   | 17 - 64 Nodes  | 0 - 36 hr  |  **per user**                             |
++-----+----------------+------------+  in bins A, B, and C                      |
+| C   | 65 - 128 Nodes | 0 - 3 hr   |                                           |
++-----+----------------+------------+-------------------------------------------+
+
+GPU Partition Policy
+^^^^^^^^^^^^^^^^^^^^
+
+To access the 8 node GPU Partition batch job submissions should request ``-p
+gpu``
+
++-----+---------------+------------+--------------------------------+
+| Bin | Node Count    | Duration   | Policy                         |    
++=====+===============+============+================================+
+| A   | 1 - 2 Nodes   | 0 - 48 hrs |                                |
++-----+---------------+------------+ max 1 job running **per user** |
+| B   | 3 - 8 Nodes   | 0 - 6 hrs  |                                |
++-----+---------------+------------+--------------------------------+
+
+.. note::
+    The queue structure was designed based on user feedback and
+    analysis of batch jobs over the recent years. However, we understand that
+    the structure may not meet the needs of all users. **If this structure
+    limits your use of the system, please let us know.** We want Riker to be a
+    useful OLCF resource and will work with you providing exceptions or even
+    changing the queue structure if necessary.
+
+If your jobs require resources outside these queue policies such as higher priority or longer walltimes, please contact help@olcf.ornl.gov.
+
+
 Batch Scripts
 """""""""""""
 
