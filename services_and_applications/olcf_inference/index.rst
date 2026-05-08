@@ -490,13 +490,9 @@ Used for traditional text continuation (base models rather than instruction-tune
 List Models
 ^^^^^^^^^^^
 
-**Endpoint:** ``/model/info``
+**Endpoint:** ``/models``
 
-If you need deeper configuration specs—such as maximum context length, supported modalities (e.g., vision/audio), or max output tokens—LiteLLM exposes a custom ``/model/info`` endpoint.
-
-.. important::
-
-    Because ``/model/info`` is a custom LiteLLM proxy route rather than a standard OpenAI route, you will use the standard Python ``requests`` library to fetch this data instead of the OpenAI SDK.
+To view a list of available models use the ``/models`` endpoint.
 
 .. tab-set::
 
@@ -505,7 +501,7 @@ If you need deeper configuration specs—such as maximum context length, support
 
         .. code-block:: bash
 
-           curl -s -X GET "https://s3m.olcf.ornl.gov/olcf/open/v1/inference/model/info" \
+           curl -s -X GET "https://s3m.olcf.ornl.gov/olcf/open/v1/inference/models" \
                 -H @.env
 
     .. tab-item:: **Python (Requests Library):**
@@ -516,7 +512,7 @@ If you need deeper configuration specs—such as maximum context length, support
            import os
            import requests
 
-           url = "https://s3m.olcf.ornl.gov/olcf/open/v1/inference/model/info"
+           url = "https://s3m.olcf.ornl.gov/olcf/open/v1/inference/models"
            headers = {
                "Authorization": f"Bearer {os.environ.get('S3M_TOKEN')}"
            }
@@ -526,47 +522,31 @@ If you need deeper configuration specs—such as maximum context length, support
            if response.status_code == 200:
                specs = response.json()
                for model in specs.get("data", []):
-                   name = model.get("model_name")
-                   info = model.get("model_info", {})
+                   name = model.get("id")
                    print(f"Model: {name}")
-                   print(f"  - Max Input Tokens: {info.get('max_input_tokens', 'Unknown')}")
-                   print(f"  - Max Output Tokens: {info.get('max_tokens', 'Unknown')}\n")
            else:
                print(f"Failed to fetch specs: {response.status_code}")
 
-
 **Expected JSON Response:**
-
-This will return a richer JSON payload containing the backend parameters and capabilities for each model on the server.
 
 .. code-block:: json
 
    {
-     "data": [
-       {
-         "model_name": "gpt-oss-120b",
-         "litellm_params": {
-           "model": "vllm/gpt-oss-120b"
-         },
-         "model_info": {
-           "max_tokens": 8192,
-           "max_input_tokens": 128000,
-           "mode": "chat"
-         }
-       },
-       {
-         "model_name": "nemotron-nano-fp8",
-         "litellm_params": {
-           "model": "vllm/nemotron-nano-fp8"
-         },
-         "model_info": {
-           "max_tokens": 4096,
-           "max_input_tokens": 32768,
-           "mode": "chat"
-         }
-       }
-     ]
-   }
+  "data": [
+    {
+      "id": "nemotron-nano-fp8",
+      "object": "model",
+      "created": 1677610602,
+      "owned_by": "openai"
+    },
+    {
+      "id": "gpt-oss-120b",
+      "object": "model",
+      "created": 1677610602,
+      "owned_by": "openai"
+    },
+    ...
+    ...
 
 Embeddings
 ^^^^^^^^^^
