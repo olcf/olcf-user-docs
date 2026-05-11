@@ -8,8 +8,60 @@ most recent changes are listed first.
 
 ----
 
-Frontier: ROCm/5.x removal notice (April 7, 2026)
+Frontier: Core Module (May 11, 2026)
 ------------------------------------------------
+
+On May 11, 2026, a new version of the ``Core`` module, ``Core/26.05``, was provided for testing on Frontier.
+Please test this module and report any issues to help@olcf.ornl.gov.
+
+The table below summarizes the main version changes.
+
+.. csv-table::
+    :header: "Component", "Old Version", "New Version"
+
+    "bazel", "7.0.2", "7.7.1"
+    "bear", "3.1.3", "3.1.6"
+    "ccache", "4.10.2", "4.12.1"
+    "cmake", "3.30.5", "3.31.11"
+    "cmake", "4.1.0", "4.1.5"
+    "darshan-util", "3.4.6", "3.4.7"
+    "emacs", "29.4", "30.2"
+    "gdb", "15.2", "17.1"
+    "git-lfs", "3.5.1", "3.7.1"
+    "git", "2.47.0", "2.53.0"
+    "gnupg", "2.4.5", "2.5.17"
+    "go", "1.23.2", "1.26.1"
+    "googletest", "1.14.0", "1.17.0"
+    "hpctoolkit", "2025.0.1", "2025.1.2"
+    "htop", "3.3.0", "3.4.1"
+    "hwloc", "2.11.1", "2.13.0"
+    "julia", "1.11.0", "1.12.5"
+    "libjpeg-turbo", "3.0.3", "3.1.3"
+    "libpng", "1.6.39", "1.6.55"
+    "linaro-forge", "24.0.6", "25.1.2"
+    "mercurial", "6.7.3", "7.1.2"
+    "nano", "8.2", "8.7"
+    "ninja", "1.12.1", "1.13.2"
+    "openblas", "0.3.28", "0.3.30"
+    "papi", "7.1.0", "7.2.0"
+    "pkgconf", "2.2.0", "2.5.1"
+    "python", "3.13.0", "3.14.3"
+    "r", "4.4.1", "4.5.2"
+    "screen", "4.9.1", "5.0.1"
+    "subversion", "1.14.2", "1.14.5"
+    "tmux", "3.4", "3.6a"
+    "tau", "2.34", "2.35.1"
+    "vim", "9.1.0437", "9.2.0000"
+    "wget", "1.24.5", "1.25.0"
+    "zlib", "1.3.1", "1.3.2"
+
+Other packages provided by ``Core/26.05`` are ``autoconf``, ``exuberant-ctags``, ``gmake``, ``gnuplot``, 
+``gsl``, ``imagemagick``, ``libzmq``, and ``parallel``.
+These packages' versions have not changed from the previous ``Core`` version: ``Core/25.03``.
+If you use a package not listed here, and it was provided by ``Core/25.03``, please contact help@olcf.ornl.gov.
+
+Frontier: ROCm/5.x removal notice (April 7, 2026)
+-------------------------------------------------
 
 In a future outage, all ROCm/5.x modules and associated HPE/Cray Programming Environment (CPE) versions are scheduled to be removed. Please migrate to a newer CPE+ROCm combination, and report any blocking issues to the OLCF Help Desk by emailing help@olcf.ornl.gov. The recommended CPE+ROCm combinations are CPE/26.03 + ROCm/7.x or CPE/25.09 + ROCm/6.4.2. Recall that for any non-default PE, you must use ``export LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH``.
 
