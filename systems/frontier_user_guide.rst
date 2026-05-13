@@ -4134,7 +4134,7 @@ The following changes are scheduled to take place:
 
     **Recommended User Action**:
 
-    All ROCm/5.x modules and HPE/Cray Programming Environment (CPE) < 24.03 (including `CCE <= 17.0.0`` and `cray-mpich <= 8.1.28`) will be removed on **July 1, 2026**. Please upgrade to a newer CPE (recommended CPE/25.09 + ROCm/6.4.2 or CPE/26.03 + ROCm/7.2.0) and contact the OLCF Help Desk at help@olcf.ornl.gov if you encounter any problems. See `OLCF Software News <https://docs.olcf.ornl.gov/software/software-news.html>`_ for further information.
+    All ROCm/5.x modules and HPE/Cray Programming Environment (CPE) < 24.03 (including `CCE <= 17.0.0` and `cray-mpich <= 8.1.28`) will be removed on **July 1, 2026**. Please upgrade to a newer CPE (recommended CPE/25.09 + ROCm/6.4.2 or CPE/26.03 + ROCm/7.2.0) and contact the OLCF Help Desk at help@olcf.ornl.gov if you encounter any problems. See `OLCF Software News <https://docs.olcf.ornl.gov/software/software-news.html>`_ for further information.
 
 2026-04-07
 ----------
