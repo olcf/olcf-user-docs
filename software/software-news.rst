@@ -8,6 +8,28 @@ most recent changes are listed first.
 
 ----
 
+Frontier: ROCm/5.x removal date announced (May 13, 2026)
+--------------------------------------------------------
+
+All ROCm/5.x versions and accompanying HPE/Cray Programming Environments (CPE) will be **removed** on July 1, 2026.
+Please see the table below for the list of compilers, cray-mpich, and ROCm versions to be removed.
+
+.. csv-table::
+    :header: "Module", "Removed Versions", "Recommended Versions"
+
+    "rocm/amd/amd-mixed", "5.3.0, 5.4.0, 5.4.3, 5.5.1, 5.6.0, 5.7.0, 5.7.1", "6.4.2 or 7.x"
+    "cpe", "22.12, 23.03, 23.05, 23.09, 23.12", "25.09 or 26.03"
+    "cce", "15.0.0, 15.0.1, 16.0.0, 16.0.1, 17.0.0", "20.0.2 or 21.0.0"
+    "gcc", "10.3.0, 11.2.0, 12.2.0", "gcc-native/14.2"
+    "gcc-native", "12.3", "14.2"
+    "cray-mpich", "8.1.23, 8.1.25, 8.1.26, 8.1.27, 8.1.28", "9.0.1 or 9.1.0 (for CPE 25.09 or 26.03, respectively)"
+
+There are other software components within these CPEs, but they are only available for the compilers listed above, and will likewise be removed.
+
+.. note::
+
+    "CPE" is a meta-module that loads compatible versions of the HPE/Cray Programming Environment. See the `Frontier User Guide <https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#compatible-compiler-rocm-toolchain-versions>`_ for more information about CPE, and contact help@olcf.ornl.gov with any questions.
+
 Frontier: Core Module (May 11, 2026)
 ------------------------------------------------
 

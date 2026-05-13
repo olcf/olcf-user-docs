@@ -4121,6 +4121,21 @@ Understanding the network counters can be challenging. If you are encountering n
 System Updates 
 ============== 
 
+2026-05-26
+----------
+On Tuesday, May 26, 2026, Frontier's system software will be upgraded.
+The following changes are scheduled to take place:
+
+- Upgrade OS to SLES15 SP7
+- Upgrade Slingshot Host Software to 14.0.0. `libfabric/1.20` will be left for compatibility with `cray-mpich <= 8.1.27`.
+- Upgrade to HPE/Cray User Services Software (USS) 1.5
+
+.. note::
+
+    **Recommended User Action**:
+
+    All ROCm/5.x modules and HPE/Cray Programming Environment (CPE) < 24.03 (including `CCE <= 17.0.0`` and `cray-mpich <= 8.1.28`) will be removed on **July 1, 2026**. Please upgrade to a newer CPE (recommended CPE/25.09 + ROCm/6.4.2 or CPE/26.03 + ROCm/7.2.0) and contact the OLCF Help Desk at help@olcf.ornl.gov if you encounter any problems. See `OLCF Software News <https://docs.olcf.ornl.gov/software/software-news.html>`_ for further information.
+
 2026-04-07
 ----------
 On Tuesday, April 7, 2026, Frontier's system software was upgraded.
