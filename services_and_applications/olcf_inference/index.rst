@@ -530,23 +530,26 @@ To view a list of available models use the ``/models`` endpoint.
 **Expected JSON Response:**
 
 .. code-block:: json
+    :force:
 
-   {
-  "data": [
     {
-      "id": "nemotron-nano-fp8",
-      "object": "model",
-      "created": 1677610602,
-      "owned_by": "openai"
-    },
-    {
-      "id": "gpt-oss-120b",
-      "object": "model",
-      "created": 1677610602,
-      "owned_by": "openai"
-    },
-    ...
-    ...
+        "data": [
+            {
+                "id": "nemotron-nano-fp8",
+                "object": "model",
+                "created": 1677610602,
+                "owned_by": "openai"
+            },
+            {
+                "id": "gpt-oss-120b",
+                "object": "model",
+                "created": 1677610602,
+                "owned_by": "openai"
+            },
+            ...,
+            ...
+        ]
+    }
 
 Embeddings
 ^^^^^^^^^^
