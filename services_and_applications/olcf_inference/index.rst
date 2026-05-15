@@ -529,7 +529,7 @@ To view a list of available models use the ``/models`` endpoint.
 
 **Expected JSON Response:**
 
-.. code-block:: json
+.. code-block::
 
    {
   "data": [
