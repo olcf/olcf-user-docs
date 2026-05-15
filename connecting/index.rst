@@ -169,7 +169,6 @@ Systems Available to All Projects
 
 * :ref:`home-user-guide`
 * :ref:`dtn-user-guide`
-* :ref:`hpss-user-guide` (Subject to Export Control restrictions)
 
 *****************************
 OLCF System Hostnames

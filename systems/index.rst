@@ -12,7 +12,4 @@ Systems
    andes_user_guide
    home_user_guide
    dtn_user_guide
-   hpss_user_guide
    odo_user_guide 
-   spock_quick_start_guide
-   crusher_quick_start_guide
