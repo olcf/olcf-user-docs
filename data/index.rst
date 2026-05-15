@@ -23,6 +23,15 @@ Each user has a User Home area on NFS. Each project has a Project Home area on N
 - **Project Archive:** Long-term project data for archival access that's shared with other project members.
 - **World Archive:** Long-term project data for archival access that's shared with users outside your project.
 
+.. warning::
+   **Proprietary/Sensitive/Controlled Information Notice**
+
+   Portions of data and/or software used in your project may require extra protections due to requirements for proprietary, sensitive, or controlled information. It is imperative that filenames, application names, job names, environment variables, batch job scripts, or any other unencrypted text must never contain sensitive or controlled information.
+
+   If you have HIPAA or ITAR data, you will need to use our SPI resources. More information about SPI can be found 'here <https://docs.olcf.ornl.gov/spi/index.html#scalable-protected-infrastructure-spi>'__.
+   
+   If you have security related questions, contact us via email at: security-admins@ccs.ornl.gov. Other questions can be sent to help@olcf.ornl.gov.
+
 .. _data-filesystem-summary:
 
 +--------------------------------+---------------------------------------------+---------+------------------------+-------------+-----------+---------+---------+------------+-----------------------------------------+
@@ -618,6 +627,9 @@ Below is a summary of the steps for data transfer using Globus:
 `Generate a globusID <https://www.globusid.org/create?viewlocale=en_US>`_. 
 
 2.	Once you are logged in, Globus will open the “File Manager” page. Click the left side “Collection” text field in the File Manager and type “OLCF DTN (Globus 5)”.
+
+.. image:: /images/globus_olcf_endpoint_search.gif
+    :alt: Endpoint search on Globus
 
 3.	When prompted, authenticate into the OLCF DTN (Globus 5) collection using your OLCF username and PIN followed by your RSA passcode.
 
