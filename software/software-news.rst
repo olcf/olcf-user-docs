@@ -48,7 +48,9 @@ The table below summarizes the main version changes.
     "cmake", "4.1.0", "4.1.5"
     "darshan-util", "3.4.6", "3.4.7"
     "emacs", "29.4", "30.2"
+    "gdal", "3.10.0", "3.12.2"
     "gdb", "15.2", "17.1"
+    "ghostscript", "10.03.1", "10.06.0"
     "git-lfs", "3.5.1", "3.7.1"
     "git", "2.47.0", "2.53.0"
     "gnupg", "2.4.5", "2.5.17"
@@ -76,9 +78,10 @@ The table below summarizes the main version changes.
     "vim", "9.1.0437", "9.2.0000"
     "wget", "1.24.5", "1.25.0"
     "zlib", "1.3.1", "1.3.2"
+    "zstd", "1.5.6", "1.5.7"
 
 Other packages provided by ``Core/26.05`` are ``autoconf``, ``exuberant-ctags``, ``gmake``, ``gnuplot``, 
-``gsl``, ``imagemagick``, ``libzmq``, and ``parallel``.
+``gsl``, ``imagemagick``, ``libzmq``, ``parallel``, and ``xclip``.
 These packages' versions have not changed from the previous ``Core`` version: ``Core/25.03``.
 If you use a package not listed here, and it was provided by ``Core/25.03``, please contact help@olcf.ornl.gov.
 
