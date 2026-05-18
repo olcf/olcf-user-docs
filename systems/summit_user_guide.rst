@@ -1,23 +1,14 @@
+:no-search:
 .. _summit-user-guide:
 
 ******************
 Summit User Guide
 ******************
 
-.. note::
+.. warning::
 
-  Notable changes to Summit for 2024 allocations:
-
-  Alpine Decomissioned (Jan 01, 2024)
-    Summit's previous scratch filesystem, Alpine, was decommissioned on January 01, 2024.
-
-  New Scratch Filesystem Available (Alpine2)
-    Alpine2, Summit's new GPFS scratch filesystem is now available to replace the previous scratch filesystem.  The new filesystem is mounted on Summit, Andes, and the DTNs.  Returning users will need to transfer data onto Apline2 since data on the previous scratch filesystem is no longer available.
-
-  Software Updates
-    Summit's software has been updated.  Returning users should recompile prior to running.  A list of default software updates can be found on https://docs.olcf.ornl.gov/software/software-news.html . Please note the previous software stack remains available and can be accessed by loading the DefApps-2023 modulefile. For convenience, a DefApps-2024 is also provide to restore the most recent version of packages.
-
-
+  This system was decommissioned on November 15, 2024 and is no longer online.
+  Information here is presented as an archive and is no longer updated.
 
 .. _summit-documentation-resources:
 

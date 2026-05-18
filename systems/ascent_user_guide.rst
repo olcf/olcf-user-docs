@@ -1,8 +1,14 @@
+:no-search:
 .. _ascent-user-guide:
 
-******
-Ascent
-******
+*****************
+Ascent User Guide
+*****************
+
+.. warning::
+
+  This system was decommissioned on November 15, 2024 and is no longer online.
+  Information here is presented as an archive and is no longer updated.
 
 System Overview
 ===============
