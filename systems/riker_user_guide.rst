@@ -27,7 +27,7 @@ The system consists of 128 CPU nodes and 8 GPU nodes.
 GPU Compute Nodes
 ^^^^^^^^^^^^^^^^^
 
-Each Riker GPU compute node consists of [1x] 64-core AMD EPYC 9575F CPU with 2 hardware threads per physical core.
+Each Riker GPU compute node consists of [1x] 64-core AMD EPYC 9575F CPU.
 The CPU has access to 1.5TB of memory and [2x] 48GB NVIDIA L40S GPUs.
 
 .. image:: /images/Riker_GPU.png
@@ -44,10 +44,10 @@ The CPU has access to 1.5TB of memory and [2x] 48GB NVIDIA L40S GPUs.
 CPU Compute Nodes
 ^^^^^^^^^^^^^^^^^
 
-Each Riker CPU compute node consists of [2x] 64-core AMD EPYC 9534 CPU with 2 hardware threads per physical core. 
+Each Riker CPU compute node consists of [2x] 64-core AMD EPYC 9534 CPUs. 
 Both CPUs have access to 2.2TB of memory.
 
-.. image:: /images/Riker_CPU.png
+.. image:: /images/Riker_CPU_node.png
    :align: center
    :width: 100%
    :alt: Riker node architecture diagram
@@ -64,7 +64,7 @@ Both CPUs have access to 2.2TB of memory.
 Login Node
 ^^^^^^^^^^
 
-The Riker login node consists of [2x] 64-core AMD EPYC 9534 CPU with 2 hardware threads per physical core with access to 2.2TB of memory.
+The Riker login node consists of [2x] 64-core AMD EPYC 9534 CPUs with access to 2.2TB of memory.
 This is the place to write/edit/compile your code, manage data, submit jobs, etc. You should never launch parallel jobs from a login node nor should you run threaded jobs on a login node. Login nodes are shared resources that are in use by many users simultaneously.
 
 System Interconnect
