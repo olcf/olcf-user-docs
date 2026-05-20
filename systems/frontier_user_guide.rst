@@ -670,10 +670,15 @@ To use GPU-aware Cray MPICH with Frontier's PrgEnv modules, users must set the f
     module load craype-accel-amd-gfx90a
     module load rocm
     
-    export MPICH_GPU_SUPPORT_ENABLED=1    
-
+    export MPICH_GPU_SUPPORT_ENABLED=1
+    export MPICH_GPU_IPC_ENABLED=1 # enabled by default if MPICH_GPU_SUPPORT_ENABLED=1
+    export GTL_ENABLE_HSA_IPC_SIGNAL_CACHE=1
+    export HSA_ENABLE_IPC_MODE_LEGACY=1 # Cray MPICH 9.1.0 onwards
+    export HSA_DISABLE_IPC_MODE_LEGACY=0 # Cray MPICH 9.0.1 and before
 
 .. note::
+  
+    For known issues with IPC enabled and suggested workarounds, please see :ref:`gpu-ipc-tips-tricks`.
 
     There are extra steps needed to enable GPU-aware MPI on Frontier, which depend on the compiler that is used (see 1. and 2. below).
     
@@ -4015,6 +4020,21 @@ If it is necessary to have bit-wise reproducible results from these libraries, i
 
 ------
 
+.. _gpu-ipc-tips-tricks:
+
+GPU inter-process communication (IPC) considerations
+----------------------------------------------------
+
+Cray MPICH uses IPC by default for intra-node inter-process MPI data movement operations that involve GPU buffers, i.e., enabling GPU-aware MPI (``MPICH_GPU_SUPPORT_ENABLED=1``) also sets ``MPICH_GPU_IPC_ENABLED=1``. Disabling IPC is known to noticeably impact intra-node MPI performance.
+
+Prior to Cray MPICH 8.1.33, a memory leak was observed in edge cases involving repeated creation and freeing of GPU-buffers used in MPI communication. This issue was prevelant when GPU buffers continuously increased in size or occupied new memory regions (e.g., due to defragmentation). The root cause was traced to IPC cache handles not being properly released. AMD addressed this by introducing an API that allows remote processes to free IPC cache handles. For Cray MPICH 9.0.1 and prior, the updated IPC mechanism is enabled by setting ``GTL_ENABLE_HSA_IPC_SIGNAL_CACHE=1`` and ``HSA_DISABLE_IPC_MODE_LEGACY=0``. Starting with Cray MPICH 9.1.0, the latter variable was renamed to ``HSA_ENABLE_IPC_MODE_LEGACY=1`` for improved clarity.
+
+A separate issue remains where enabling IPC can still lead to memory leaks for message sizes less than or equal to 1 MB. A workaround is to set ``HSA_ENABLE_IPC_MODE_LEGACY=0`` and ``GTL_HSA_VSMSG_CUTOFF_SIZE=0``. When message sizes fall at or below ``GTL_HSA_VSMSG_CUTOFF_SIZE``, the GPU Transport Layer (GTL) uses a blocking memory copy driven by the CPU instead of an HSA memcpy. For context, disabling legacy IPC mode (``HSA_ENABLE_IPC_MODE_LEGACY=0``) switches to AMD's newer IPC implementation based on the Linux dma_buf mechanism. 
+
+Another enhancement in GPU-Aware MPI that relates to IPC, has to do with multiple messages in flight. Prior to Cray MPICH 8.1.33, if the maximum messages in flight at any given time exceeded ``MPICH_GPU_IPC_CACHE_MAX_SIZE``, the program would abort immediately. This has been resolved, and IPC cache handles are evicted as the number of messages in flight increase beyond ``MPICH_GPU_IPC_CACHE_MAX_SIZE``. However, a new issue exists where memory leaks can occur if GPU buffers are repeatedly created and destroyed while the number of messages in flight exceed ``MPICH_GPU_IPC_CACHE_MAX_SIZE``. To mitigate this, it is recommended to set ``MPICH_GPU_IPC_CACHE_MAX_SIZE`` to a value larger than the maximum anticipated messages in flight. The default value is ``50``. If setting ``MPICH_GPU_IPC_CACHE_MAX_SIZE > 50``, the following parameters should be adjusted accordingly to maintain a decreasing order of magnitude, i.e., ``GTL_MAX_SIG_HANDLER_LEN`` >  ``GTL_IPC_SIGNAL_POOL_TABLE_LEN`` >= ``MPICH_GPU_IPC_CACHE_MAX_SIZE``. 
+
+Environment variables of primary interest to GPU-aware MPI have been described in :ref:`mpi-tuning`. For a detailed list, please refer to the `Cray MPICH User Guide <https://cpe.ext.hpe.com/docs/latest/mpt/mpich/index.html>`_.
+
 .. _mpi-tuning:
 
 Useful MPI Environment Variables
@@ -4058,6 +4078,30 @@ See :ref:`exposing-the-rocm-toolchain-to-your-programming-environment`  for more
 Using GPU-aware MPI is highly recommended on Frontier because the HPE Slingshot NICs are attached directly to the AMD MI250X accelerators.
 There is a small but measurable latency impact for enabling GPU-aware MPI with CPU buffers.
 Applications that do not use GPU buffers in MPI calls may want to leave this variable unset or set to ``0``, especially if they are sensitive to small message latency.
+
+``MPICH_GPU_IPC_ENABLED``
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Set to ``1`` by default if ``MPICH_GPU_SUPPORT_ENABLED=1``. This enables GPU IPC support for intra-node GPU-GPU communication operations. This variable has no effect if MPICH_GPU_SUPPORT_ENABLED is set to 0. Disabling IPC is known to noticeably impact intra-node MPI performance. For known issues with IPC enabled and suggested workarounds, please see :ref:`gpu-ipc-tips-tricks`.
+
+``GTL_ENABLE_HSA_IPC_SIGNAL_CACHE``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This option is unset by default, and is advised to be set to ``GTL_ENABLE_HSA_IPC_SIGNAL_CACHE=1`` when ``MPICH_GPU_IPC_ENABLED=1``. 
+
+Registering and unregistering GPU buffers for inter-process communication takes a relatively long time to do. The MPI library caches remote buffer attachments in order to reuse them, instead of detaching after every transfer. One limitation has been that when a process stops using a GPU buffer, there was no easy way to let the processes that are caching attachments know about this, and so they continued to cache the buffer. This consumes some of the limited GPU memory. A new feature since ROCM 6.4 enables the MPI library to alert the other processes through a signalling mechanism. If this environment variable is set, then this feature will be used to help reduce the amount of memory that the cache is consuming. This may help prevent out of memory situations. When enabling this feature, we do not recommend using the memhooks ``FI_MR_CACHE_MONITOR``, as it has been shown to hang in certain situations. 
+
+``HSA_ENABLE_IPC_MODE_LEGACY``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This specifies AMD's IPC implementation, and should be set to ``1`` when ``MPICH_GPU_IPC_ENABLED=1``. Cray MPICH 9.0.1 and before should use ``HSA_DISABLE_IPC_MODE_LEGACY=0``.
+
+AMD has a newer version that uses the Linux dma-buf subsytem which can be accessed by setting ``HSA_ENABLE_IPC_MODE_LEGACY=0``. However, the newer version is not natively supported by Cray MPICH. For workaround with ``HSA_ENABLE_IPC_MODE_LEGACY=0``, please see :ref:`gpu-ipc-tips-tricks`.
+
+``MPICH_GPU_IPC_CACHE_MAX_SIZE``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Specifies the maximum number of GPU IPC cache handles a process can retain in its IPC cache at a given point. This value currently defaults to 50. If a process has more entries in its IPC cache than ``MPICH_GPU_IPC_CACHE_MAX_SIZE``, the oldest entry is evicted. Frequent cache evection hurts performance. For known issues with number of messages in flight relative to ``MPICH_GPU_IPC_CACHE_MAX_SIZE``, please see :ref:`gpu-ipc-tips-tricks`.
 
 ``MPICH_ASYNC_PROGRESS``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
