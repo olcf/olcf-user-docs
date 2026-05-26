@@ -4124,10 +4124,10 @@ System Updates
 2026-05-26
 ----------
 On Tuesday, May 26, 2026, Frontier's system software was upgraded.
-The following changes are scheduled to take place:
+The following changes took place:
 
 - Upgrade OS to SLES15 SP7
-- Upgrade Slingshot Host Software to 14.0.0, which includes `libfabric/2.3.1`. `libfabric/1.20` will be left for compatibility with `cray-mpich <= 8.1.27`, but 1.22 will be removed. Users should not generally load a specific `libfabric` module. Please note that `a previous libfabric regression<https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#olcfdev-1811-libfabric-1-20-1-cpu-buffer-performance-regression>`_ that required many users to load an older `libfabric` module was fixed in January 2025.
+- Upgrade Slingshot Host Software to 14.0.0, which includes `libfabric/2.3.1`. `libfabric/1.20` remains for compatibility with `cray-mpich <= 8.1.27`, but 1.22 was removed. Users should not generally load a specific `libfabric` module. Please note that `a previous libfabric regression<https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#olcfdev-1811-libfabric-1-20-1-cpu-buffer-performance-regression>`_ that required many users to load an older `libfabric` module was fixed in January 2025.
 - Upgrade to HPE/Cray User Services Software (USS) 1.5
 
 .. note::
