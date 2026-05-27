@@ -28,7 +28,7 @@ Each user has a User Home area on NFS. Each project has a Project Home area on N
 
    Portions of data and/or software used in your project may require extra protections due to requirements for proprietary, sensitive, or controlled information. It is imperative that filenames, application names, job names, environment variables, batch job scripts, or any other unencrypted text must never contain sensitive or controlled information.
 
-   If you have HIPAA or ITAR data, you will need to use our SPI resources. More information about SPI can be found 'here <https://docs.olcf.ornl.gov/spi/index.html#scalable-protected-infrastructure-spi>'_.
+   If you have HIPAA or ITAR data, you will need to use our SPI resources. More information about SPI can be found `here <https://docs.olcf.ornl.gov/spi/index.html#scalable-protected-infrastructure-spi>`_.
    
    If you have security related questions, contact us via email at: security-admins@ccs.ornl.gov. Other questions can be sent to help@olcf.ornl.gov.
 
