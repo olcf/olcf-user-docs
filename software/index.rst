@@ -21,4 +21,4 @@ Software
    jupyter_on_frontier
    containers_on_frontier
    debugging/index
-   quantum_espresso/index
+   chem/index
