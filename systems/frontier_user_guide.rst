@@ -905,6 +905,12 @@ C and C++ support for OpenACC is provided by `clacc <https://impact.ornl.gov/en/
 compiler with added support for OpenACC. It can be obtained by loading the UMS modules
 ``ums``, ``ums025``, and ``clacc``. 
 
+
+.. note::
+
+    Make sure the ``craype-accel-amd-gfx90a`` module is loaded when using the Cray compiler to
+    compile Fortran OpenACC code. 
+
 +--------+-------------------+-----------+----------------------------------+-------------------+-------------------------------------+
 | Vendor | Module            | Language  | Compiler                         | Flags             | Support                             |
 +========+===================+===========+==================================+===================+=====================================+
