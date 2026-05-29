@@ -258,18 +258,18 @@ General information of how to install and use PennyLane can be found here:
             At runtime, you'll need to have these environment variables set: ``MPICH_GPU_SUPPORT_ENABLED=1`` and ``HSA_ENABLE_PEER_SDMA=0``
 
 
-Pytket
-======
+Guppy
+=====
 
-The tket framework is a software platform for the development and execution of gate-level quantum computation, providing state-of-the-art performance in circuit compilation.
-`Pytket <https://tket.quantinuum.com/api-docs/>`__ is a python module for interfacing with tket, and installing the `Quantinuum pytket extension <https://cqcl.github.io/pytket-quantinuum/api/>`__ allows pytket circuits to be executed on Quantinuum's quantum devices.
+`Guppy <https://docs.quantinuum.com/guppy/>`__ is a quantum-first programming language built to maximize the capabilities of advanced quantum computers developed at Quantinuum. 
+It integrates seamlessly into Python, offering a familiar syntax for developers while delivering advanced abstractions and 
+compile-time safety that surpass traditional circuit builders like Qiskit or pytket. 
+Starting with Helios, Guppy will be the sole programming paradigm for compiling and running circuits on Quantinuum's systems.
 
-For more information please see:
-
-* `<https://tket.quantinuum.com/api-docs/>`__
-* `<https://cqcl.github.io/pytket-quantinuum/api/>`__
-* `<https://tket.quantinuum.com/api-docs/getting_started.html>`__
-* `<https://docs.quantinuum.com/h-series/trainings/getting_started/pytket_quantinuum/pytket_quantinuum.html>`__
+* `<https://docs.quantinuum.com/guppy/migration_guide.html>`__
+* `<https://docs.quantinuum.com/guppy/getting_started.html>`__
+* `<https://github.com/quantinuum/guppylang>`__
+* `<https://github.com/Quantinuum/guppylang/tree/main/examples>`__
 
 .. tab-set::
 
@@ -282,7 +282,7 @@ For more information please see:
             module load miniforge3/24.11.3-2
             conda create -n ENV_NAME python=3.11 numpy=1.26.4 -c conda-forge
             conda activate ENV_NAME
-            pip install pytket==1.31.1 pytket-quantinuum==0.37.0 scipy --no-cache-dir
+            pip install qnexus==0.39.0 guppylang==0.21.6 --no-cache-dir
 
     .. tab-item:: Frontier
        :sync: frontier
@@ -293,9 +293,7 @@ For more information please see:
             module load miniforge3/23.11.0-0
             conda create -n ENV_NAME python=3.11 -c conda-forge
             conda activate ENV_NAME
-            pip install pytket==1.41.0 qnexus==0.11.0 --no-cache-dir
-
-
+            pip install qnexus==0.39.0 guppylang==0.21.6 --no-cache-dir
 
 Batch Jobs
 ==========
