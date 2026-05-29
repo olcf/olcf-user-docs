@@ -12,7 +12,8 @@ The table below lists presentations given at previous OLCF training events. For 
 .. csv-table::
    :header: "Date", "Title", "Speaker", "Event", "Presentation"
    :widths: 12 22 22 22 22
-   
+
+    "2026-05-27", "Constellation", "Meghan Berry (OLCF)", `May 2026 OLCF User Conference Call <https://www.olcf.ornl.gov/calendar/userconcall-may2026/>`__, (`recording <https://vimeo.com/1196733062>`__ | `slides <https://www.olcf.ornl.gov/wp-content/uploads/Constellation-OLCF-User-Call-05_2026.pdf>`__ )
     "2026-05-19", "Using Darshan to Profile I/O on Frontier", "Jordan Winetrout (OLCF)", `How to use Darshan on Frontier <https://www.olcf.ornl.gov/calendar/using-darshan-to-profile-io-on-frontier-may-2026/>`__, (`recording <https://vimeo.com/1193732406?share=copy&fl=sv&fe=ci>`__ | `slides <https://www.olcf.ornl.gov/wp-content/uploads/Darshan_training.pptx>`__ )
     "2026-04-29", "User Town Hall 2026", "OLCF User Group Executive Board", `April 2026 OLCF User Conference Call <https://www.olcf.ornl.gov/calendar/userconcall-apr2026/>`__, (`tip <https://www.olcf.ornl.gov/wp-content/uploads/Apr2026_TOTM.pdf>`__  )
     "2026-03-25", "Data Visualization Pathways", "Dave Pugmire and Ken Moreland (ORNL)", `March 2026 OLCF User Conference Call <https://www.olcf.ornl.gov/calendar/userconcall-mar2026/>`__, (`recording <https://vimeo.com/1177377546>`__ | `slides <https://www.olcf.ornl.gov/wp-content/uploads/OLCF-VizUserCall-March25.pdf>`__  )
