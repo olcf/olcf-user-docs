@@ -494,11 +494,11 @@ An IQM+Qiskit plugin provides access to IQM backends.
 
 For more information please see:
 
-* `<https://docs.meetiqm.com/iqm-client/user_guide_qiskit.html>`__
+* `<https://docs.iqm.tech/iqm-client/user_guide_qiskit.html>`__
 
 .. note::
 
-   Your IQM API Token is listed on your IQM Resonance dashboard at `<https://resonance.meetiqm.com/>`__.
+   Your IQM API Token is listed on your IQM Resonance dashboard at `<https://resonance.iqm.tech/>`__.
 
 .. list-table:: Latest script tests
    :widths: 33 33 34
@@ -521,7 +521,7 @@ For more information please see:
     api_token = "PUT TOKEN HERE"
 
     # Backend to connect to (e.g., Emerald's algorithm checker)
-    provider = IQMProvider("https://resonance.meetiqm.com/", quantum_computer="emerald:mock", token=api_token)
+    provider = IQMProvider("https://resonance.iqm.tech/", quantum_computer="emerald:mock", token=api_token)
 
     SHOTS = 100
 

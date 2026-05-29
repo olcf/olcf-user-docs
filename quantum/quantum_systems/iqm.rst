@@ -29,7 +29,7 @@ Connecting
 
 Users can access information about IQM's systems, view upcoming queue
 availability, view job history, and access training resources on their Resonance dashboard at
-`<https://resonance.meetiqm.com/>`__. 
+`<https://resonance.iqm.tech/>`__. 
 
 
 .. _iqm-jobs:
@@ -69,8 +69,7 @@ project is assigned the ``Scheduler`` role, while all other members are given th
 See :ref:`iqm-alloc` for details on how to receive credits for your Team.
 
 For more details on the capabilities of roles on a Team, please refer to the
-"User Roles" subsection in the "Organization Management" section at
-https://resonance.meetiqm.com/docs
+"Account Management" section at https://resonance.iqm.tech/docs
 
 
 .. _iqm-alloc:
@@ -89,7 +88,7 @@ credits, the following allocation policy is in effect:
 IQM API
 --------
 
-To prepare jobs for submission, see the guide `How to run my first algorithm <https://resonance.meetiqm.com/docs>`__
+To prepare jobs for submission, see the guide `How do I run my first algorithm <https://resonance.iqm.tech/docs>`__
 and the video tutorial for this on `<https://www.iqmacademy.com/tutorials/resonance/>`__ 
 to walk through this process in detail.
 
@@ -102,10 +101,10 @@ API Keys
 --------
 
 Submitting jobs to IQM's hardware backends requires an IQM API key, which can be
-generated from on their Resonance dashboard at `<https://resonance.meetiqm.com/>`__.
+generated from on their Resonance dashboard at `<https://resonance.iqm.tech/>`__.
 IQM API keys can only be viewed when they are generated, and IQM recommends storing
 each API key locally in an environment variable. Instructions for generating and
-storing IQM API keys can be found `here <https://resonance.meetiqm.com/docs>`__.
+storing IQM API keys can be found `here <https://resonance.iqm.tech/docs>`__.
 
 Submitting Jobs
 ---------------
@@ -116,30 +115,31 @@ Usage pricing, circuit limits, and shot limits for each of the available
 computers is listed on the resonance dashboard when you click on either of the
 backends in the "Quantum Computers" section.
 
-With your IQM API key, users submit job to a given backend's URL: e.g. for garnet: 
+With your IQM API key, users submit job to IQM's server URL and ``quantum_computer`` argument.
+For example, for IQM Garnet: 
 
-* General URL: ``https://cocos.resonance.meetiqm.com/garnet`` (can only be used for pay-as-you-go)
-* Timeslot URL: ``https://cocos.resonance.meetiqm.com/garnet:timeslot`` (can only be used for timeslots)
-* Mock URL: ``https://cocos.resonance.meetiqm.com/garnet:mock`` (syntax checker -- if available)
+* General URL: ``https://resonance.iqm.tech`` with ``quantum_computer=garnet`` (can only be used for pay-as-you-go)
+* Timeslot URL: ``https://resonance.iqm.tech`` with ``quantum_computer=garnet:timeslot``, or ``quantum_computer=garnet`` paired with ``use_timeslot=True`` (can only be used for timeslots)
+* Mock URL: ``https://resonance.iqm.tech`` with ``quantum_computer=garnet:mock`` (syntax checker -- if available)
 
 .. note::
    
-   The mock system is only for testing your algorithm. It will compile your code for the instruments of an IQM quantum computer. However, as no actual instruments are connected to the Mock environment, it will only yield random results – this is not a simulator. See `fake and facade backends <https://docs.meetiqm.com/iqm-client/user_guide_qiskit.html#simulation>`__ for an alternative option.
+   The mock system is only for testing your algorithm. It will compile your code for the instruments of an IQM quantum computer. However, as no actual instruments are connected to the Mock environment, it will only yield random results – this is not a simulator. See `fake and facade backends <https://docs.iqm.tech/iqm-client/user_guide_qiskit.html#simulation>`__ for an alternative option.
 
 
 Checking System Availability
 ============================
 
 Current status listing and scheduled maintenance for IQM's quantum resources can be found under the 
-availability tab `here <https://resonance.meetiqm.com/>`__.
+availability tab `here <https://resonance.iqm.tech/>`__.
 
 .. _iqm-soft:
 
 Software
 ========
 
-* `IQM Client Documentation <https://docs.meetiqm.com/iqm-client/index.html>`__
-* `IQM's Qiskit-on-IQM  Documentation <https://docs.meetiqm.com/iqm-client/user_guide_qiskit.html>`__
+* `IQM Client Documentation <https://docs.iqm.tech/iqm-client/>`__
+* `IQM's Qiskit-on-IQM  Documentation <https://docs.iqm.tech/iqm-client/user_guide_qiskit.html>`__
 
 
 Additional Resources
