@@ -201,7 +201,7 @@ Lustre Filesystem
 
    Portions of data and/or software used in your project may require extra protections due to requirements for proprietary, sensitive, or controlled information. It is imperative that filenames, application names, job names, environment variables, batch job scripts, or any other unencrypted text must never contain sensitive or controlled information.
 
-   If you have HIPAA or ITAR data, you will need to use our SPI resources. More information about SPI can be found 'here <https://docs.olcf.ornl.gov/spi/index.html#scalable-protected-infrastructure-spi>'__.
+   If you have HIPAA or ITAR data, you will need to use our SPI resources. More information about SPI can be found `here <https://docs.olcf.ornl.gov/spi/index.html#scalable-protected-infrastructure-spi>`__.
    
    If you have security related questions, contact us via email at: security-admins@ccs.ornl.gov. Other questions can be sent to help@olcf.ornl.gov.
 
@@ -4133,7 +4133,7 @@ On Tuesday, May 26, 2026, Frontier's system software was upgraded.
 The following changes took place:
 
 - Upgrade OS to SLES15 SP7
-- Upgrade Slingshot Host Software to 14.0.0, which includes `libfabric/2.3.1`. `libfabric/1.20` remains for compatibility with `cray-mpich <= 8.1.27`, but 1.22 was removed. Users should not generally load a specific `libfabric` module. Please note that `a previous libfabric regression<https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#olcfdev-1811-libfabric-1-20-1-cpu-buffer-performance-regression>`_ that required many users to load an older `libfabric` module was fixed in January 2025.
+- Upgrade Slingshot Host Software to 14.0.0, which includes `libfabric/2.3.1`. `libfabric/1.20` remains for compatibility with `cray-mpich <= 8.1.27`, but 1.22 was removed. Users should not generally load a specific `libfabric` module. Please note that `a previous libfabric regression <https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#olcfdev-1811-libfabric-1-20-1-cpu-buffer-performance-regression>`_ that required many users to load an older `libfabric` module was fixed in January 2025.
 - Upgrade to HPE/Cray User Services Software (USS) 1.5
 
 .. note::
