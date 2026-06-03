@@ -640,6 +640,13 @@ Once the plugin is installed, you must include it in your ``LD_LIBRARY_PATH`` wh
 
    export LD_LIBRARY_PATH=${PATH TO THE PLUGIN}/lib/:${LD_LIBRARY_PATH}
 
+You also need to set the below environment variable in your runs to make sure that the ROCm RCCL library
+correctly identifies and loads the ``librccl-net.so`` library from the aws-ofi-rccl build. Otherwise the
+performance will worse than expected because aws-ofi-rccl is not actually being used. 
+
+.. code-block:: bash
+
+   export NCCL_NET_PLUGIN="librccl-net.so"
 
 To avoid a possible deadlock between RCCL and the default libfabric memory registration cache monitor (`memhooks`), before running you should set either
 
@@ -671,7 +678,7 @@ When running with the NCCL (RCCL) backend, there are many environment variables 
 
    NCCL_NET_GDR_LEVEL=3           # Typically improves performance, but remove this setting if you encounter a hang/crash.
    NCCL_CROSS_NIC=1               # On large systems, this NCCL setting has been found to improve performance
-   NCCL_SOCKET_IFNAME=hsn0        # NCCL/RCCL will use the high speed network to coordinate startup.
+   NCCL_SOCKET_IFNAME=hsn0,hsn1,hsn2,hsn3        # NCCL/RCCL will use the high speed network to coordinate startup.
 
 RCCL and NCCL are highly configurable with environment variables. Some other variables to try are:
 
@@ -679,6 +686,7 @@ RCCL and NCCL are highly configurable with environment variables. Some other var
 
    NCCL_ALGO=TREE or RING # May see performance difference with either setting. (should not need to use this, but can try)
    NCCL_DEBUG=info        # For debugging only (warning: generates a large amount of messages)
+
 
 Alternative Rendezvous Protocol
 ---------------------------------
