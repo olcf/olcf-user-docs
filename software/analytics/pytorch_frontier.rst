@@ -678,6 +678,12 @@ When running with the NCCL (RCCL) backend, there are many environment variables 
    NCCL_CROSS_NIC=1               # On large systems, this NCCL setting has been found to improve performance
    NCCL_SOCKET_IFNAME=hsn0,hsn1,hsn2,hsn3        # NCCL/RCCL will use the high speed network to coordinate startup.
 
+
+.. note::
+   If you happen to encounter hangs with the above settings, try changing the ``NCCL_SOCKET_IFNAME``
+   value to ``NCCL_SOCKET_IFNAME=hsn0`` i.e. only setting ``hsn0``.
+
+
 RCCL and NCCL are highly configurable with environment variables. Some other variables to try are:
 
 .. code-block:: bash
