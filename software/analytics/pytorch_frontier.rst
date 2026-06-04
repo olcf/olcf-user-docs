@@ -640,9 +640,7 @@ Once the plugin is installed, you must include it in your ``LD_LIBRARY_PATH`` wh
 
    export LD_LIBRARY_PATH=${PATH TO THE PLUGIN}/lib/:${LD_LIBRARY_PATH}
 
-You also need to set the below environment variable in your runs to make sure that the ROCm RCCL library
-correctly identifies and loads the ``librccl-net.so`` library from the aws-ofi-rccl build. Otherwise the
-performance will worse than expected because aws-ofi-rccl is not actually being used. 
+You also need to set the below environment variable in your runs to make sure that the ROCm RCCL library correctly identifies and loads the ``librccl-net.so`` library from the aws-ofi-rccl build. Otherwise the performance will be worse than expected because aws-ofi-rccl is not actually being used. 
 
 .. code-block:: bash
 
