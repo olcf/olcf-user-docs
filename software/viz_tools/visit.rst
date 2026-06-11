@@ -2,8 +2,6 @@
 VisIt
 *****
 
-.. note:: VisIt 3.4.2 is now available on Andes.
-
 Overview
 ========
 
@@ -27,7 +25,7 @@ OLCF resources. VisIt for your local computer can be obtained here:
 Recommended VisIt versions on our systems:
 
 * Andes: VisIt 3.3.3, 3.4.1, 3.4.2
-* Riker: VisIt <<<PLACE VERSIONS HERE>>>
+* Riker: VisIt 3.5.0
 * Frontier: VisIt 3.3.3
 
 .. warning::
@@ -149,6 +147,9 @@ Restart VisIt, and go to Options→Host Profiles. Select “New Host”
             the nodelist from the scheduler)
           - **Constraints**: Unchecked
       - Advanced tab – All boxes unchecked
+
+          - **Launcher arguments**:
+            ``--cpus-per-task=1`` (Riker is a node-shared machine, we will need to set the resource request with sbatch/srun. )
       - GPU Acceleration
 
           - **Use cluster’s graphics cards**: Unchecked (even if using the ``gpu`` partition)
