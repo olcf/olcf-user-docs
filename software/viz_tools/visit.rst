@@ -345,7 +345,6 @@ OLCF systems is provided below.
         #SBATCH -p gpu
         #SBATCH -t 0:05:00
         #SBATCH -c 4
-        #SBATCH --mem=92GB
 
         cd $SLURM_SUBMIT_DIR
         date

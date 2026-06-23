@@ -304,7 +304,6 @@ batch scripts, along with a working Python example, are provided below.
         #SBATCH -t 0:05:00
         #SBATCH -N #
         #SBATCH -c #
-        #SBATCH --mem=###
 
         cd $SLURM_SUBMIT_DIR
         date

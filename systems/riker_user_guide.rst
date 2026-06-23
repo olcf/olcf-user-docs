@@ -30,15 +30,16 @@ GPU Compute Nodes
 Each Riker GPU compute node consists of [1x] 64-core AMD EPYC 9575F CPU.
 The CPU has access to 1.5TB of memory and [2x] 48GB NVIDIA L40S GPUs.
 
-.. image:: /images/Riker_GPU.png
+.. image:: /images/Riker_GPU_node.png
    :align: center
    :width: 100%
    :alt: Riker node architecture diagram
 
 .. note::
-    There is 1 NUMA domain per node, that are defined as follows:
+    There is 2 NUMA domain per node, that are defined as follows:
 
-    * NUMA 0: CPU(s) 0-63
+    * NUMA 0: CPU(s) 0-31
+    * NUMA 1: CPU(s) 32-63
 
 
 CPU Compute Nodes
@@ -105,7 +106,7 @@ or direct connect to a specific login node (login1p for example):
 
 .. code-block:: bash
     
-    $ ssh username@riker-login1p.olcf.ornl.gov
+    $ ssh username@riker-login5.olcf.ornl.gov
 
 ----
 
@@ -520,7 +521,6 @@ script:
    #SBATCH -p <partition> 
    #SBATCH -N #
    #SBATCH -c #
-   #SBATCH --mem=###
  
    srun -n4 --ntasks-per-node=2 ./a.out 
 
@@ -567,7 +567,7 @@ command can be used:
 
 .. code-block:: bash
    
-   $ salloc -A <project_id> -p <partition> -t 00:10:00  -N 2 -c 4 --mem=72GB
+   $ salloc -A <project_id> -p <partition> -t 00:10:00  -N 2 -c 4
    salloc: Granted job allocation 4258
    salloc: Waiting for resource configuration
    salloc: Nodes riker[35-36] are ready for job
@@ -590,7 +590,7 @@ Single Command (non-interactive)
 
 .. code-block:: bash
 
-   $ srun -A <project_id> -t 00:05:00 -p <partition> -N 2 -n 4 -c 4 --mem=72GB --ntasks-per-node=2 ./a.out
+   $ srun -A <project_id> -t 00:05:00 -p <partition> -N 2 -n 4 -c 4 --ntasks-per-node=2 ./a.out
    <output printed to terminal>
 
 The job name and output options have been removed since stdout/stderr are
@@ -684,7 +684,7 @@ In this sub-section, a simple MPI+OpenMP "Hello, World" program
 (`hello_mpi_omp <https://code.ornl.gov/olcf/hello_mpi_omp>`__) will be used to
 clarify the mappings. Slurm's :ref:`riker-interactive` method was used to request an
 allocation of 1 compute node for these examples: 
-``salloc -A <project_id> -p batch -t 00:30:00 -N 1 -c 4 --mem=72GB``
+``salloc -A <project_id> -p batch -t 00:30:00 -N 1 -c 4``
 
 The ``srun`` options used in this section are (see ``man srun`` for more information):
 
