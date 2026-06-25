@@ -622,12 +622,8 @@ For more information on this alternative protocal and HPE's recommendations for 
 Environment Variables
 ---------------------
 
-RCCL and NCCL are highly configurable with environment variables. Some other variables to try are:
-
-.. code-block:: bash
-
-   NCCL_ALGO=TREE or RING # May see performance difference with either setting. (should not need to use this, but can try)
-   NCCL_DEBUG=info        # For debugging only (warning: generates a large amount of messages)
+RCCL and NCCL are highly configurable with environment variables.
+See `the RCCL documentation <https://rocm.docs.amd.com/projects/rccl/en/develop/api-reference/env-variables.html>`__ for more information.
 
 
 Manual RCCL Network Plugin Configuration (Not Recommended)
