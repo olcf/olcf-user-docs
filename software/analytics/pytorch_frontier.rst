@@ -622,8 +622,10 @@ For more information on this alternative protocal and HPE's recommendations for 
 Environment Variables
 ---------------------
 
-RCCL and NCCL are highly configurable with environment variables.
-See `the RCCL documentation <https://rocm.docs.amd.com/projects/rccl/en/develop/api-reference/env-variables.html>`__ for more information.
+RCCL and NCCL are highly configurable with environment variables, the most useful of which are described in `the RCCL documentation <https://rocm.docs.amd.com/projects/rccl/en/develop/api-reference/env-variables.html>`__.
+Note, however, that RCCL's default settings and internal tuner will likely select the best protocol, algorithm, and number of channels for your collectives.
+The environment variables most likely to improve performance are included in the ``rccl-net-plugin`` module and also listed below.
+
 
 
 Manual RCCL Network Plugin Configuration (Not Recommended)
