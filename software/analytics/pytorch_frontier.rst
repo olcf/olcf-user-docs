@@ -593,7 +593,7 @@ In a nutshell: NVMe > Orion >> NFS.
 RCCL Network Plugin
 -------------------
 
-RCCL internally only supports inter-node communication using TCP/IP Sockets, which does not scale to the large job sizes on Frontier.
+RCCL defaults to inter-node communication using TCP/IP Sockets, which does not scale to the large job sizes on Frontier.
 In order to use the high-speed Slingshot network RCCL requires a network plugin that is dynamically loaded during RCCL initialization.
 The recommended way to use this plugin is to load the ``rccl-net-plugin`` module after having loaded ``rocm``.
 This module will configure the environment to use the plugin and will also set some recommended environment variables for the Slingshot network stack.
