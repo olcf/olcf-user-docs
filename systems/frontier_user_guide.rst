@@ -4127,6 +4127,19 @@ Understanding the network counters can be challenging. If you are encountering n
 System Updates 
 ============== 
 
+2026-07-01
+----------
+At 10:00am EST on Wednesday, July 1, 2026, Frontier's programming environment was modified.
+The following changes took place:
+
+- Remove HPE/Cray Programming Environments (CPE) 22.12, 23.03, 23.05, and 23.12. See `OLCF Software News <https://docs.olcf.ornl.gov/software/software-news.html>`_ for further information.
+- Add CCE/21.0.2, for use with CPE/26.03.
+- Add `rccl-net-plugin/1.0`, which provides `aws-ofi-nccl` and best-practice environment variables for using AMD RCCL on HPE Slingshot networks.
+- Add ROCm/7.13.0, a pre-release of AMD's new deployment mechanism, TheRock.
+
+All changes are detailed further in `OLCF Software News <https://docs.olcf.ornl.gov/software/software-news.html>`_.
+
+
 2026-05-26
 ----------
 On Tuesday, May 26, 2026, Frontier's system software was upgraded.
