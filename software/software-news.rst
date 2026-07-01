@@ -8,6 +8,33 @@ most recent changes are listed first.
 
 ----
 
+Frontier: Software Changes (July 1, 2026)
+--------------------------------------------------------
+
+On July 1, 2026, older versions of ROCm, CCE, and the HPE/Cray Programming Environment (CPE) were removed.
+At the same time, a new module named `rccl-net-plugin` and new versions of ROCm and CCE were added.
+See below for more details about the removals and additions.
+
+The following software was removed:
+
+.. csv-table::
+    :header: "Module", "Removed Versions", "Recommended Versions"
+
+    "rocm/amd/amd-mixed", "5.3.0, 5.4.0, 5.4.3, 5.5.1, 5.7.0, 5.7.1", "6.4.2 or 7.x"
+    "cpe", "22.12, 23.03, 23.05, 23.12", "25.09 or 26.03"
+    "cce", "15.0.0, 15.0.1, 16.0.0, 17.0.0", "20.0.2 or 21.0.0"
+    "cray-mpich", "8.1.23, 8.1.25, 8.1.26, 8.1.28", "9.0.1 or 9.1.0 (for CPE 25.09 or 26.03, respectively)"
+    "cray-python", "3.9.13.1, 3.11.5", "3.12.12"
+
+All CPE-provided software that was exclusively for these compilers and MPI have likewise been removed (e.g., accompanying `cray-libsci`, `cray-hdf5` versions).
+
+The follow software was added:
+
+- `cce/21.0.2` -- the latest CCE release, to be used with CPE/26.03
+- `rocm/7.13.0` -- a pre-release of AMD's new deployment mechanism, TheRock. 7.14 will be the production release, and will be the successor to ROCm/7.2.
+- `rccl-net-plugin/1.0` -- a new module that provides `aws-ofi-nccl` and the best-practice environment variables for running AMD RCCL on HPE Slingshot networks. This module is recommended for all PyTorch users.
+
+
 Frontier: ROCm/5.x removal date announced (May 13, 2026)
 --------------------------------------------------------
 
