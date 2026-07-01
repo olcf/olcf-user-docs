@@ -126,6 +126,12 @@ they are prompted for a PASSCODE but in reality only enter a tokencode. This is
 because during this initial setup procedure a PIN does not exist. Since there is
 no PIN, the PASSCODE is the same as the tokencode in this rare case.
 
+.. note::
+
+    Internal ORNL users who use the RSA App to sign in to OLCF resources do not need to input a ``PIN`` when entering a ``PASSCODE``.
+
+    Instead, please use the **8-digit code** provided by the RSA App in place of any ``PASSCODE``.
+
 ***************
 X11 Forwarding
 ***************
