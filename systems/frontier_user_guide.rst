@@ -4094,7 +4094,7 @@ Registering and unregistering GPU buffers for inter-process communication takes 
 ``HSA_ENABLE_IPC_MODE_LEGACY``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-This specifies AMD's IPC implementation, and should be set to ``1`` when ``MPICH_GPU_IPC_ENABLED=1``. Cray MPICH 9.0.1 and before should use ``HSA_DISABLE_IPC_MODE_LEGACY=0``.
+This specifies AMD's IPC implementation, and is set to ``1`` by default when ``MPICH_GPU_IPC_ENABLED=1``.
 
 AMD has a newer version that uses the Linux dma-buf subsytem which can be accessed by setting ``HSA_ENABLE_IPC_MODE_LEGACY=0``. However, the newer version is not natively supported by Cray MPICH. For workaround with ``HSA_ENABLE_IPC_MODE_LEGACY=0``, please see :ref:`gpu-ipc-tips-tricks`.
 
