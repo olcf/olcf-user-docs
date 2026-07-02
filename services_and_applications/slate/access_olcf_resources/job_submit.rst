@@ -28,7 +28,7 @@ the OLCF shared filesystems so that annotation is also included.
       ccs.ornl.gov/fs: orion
 
 
-Example Deployment
+Deployment Example
 ==================
 
 Full example of a deployment using a base image provided by OLCF.
