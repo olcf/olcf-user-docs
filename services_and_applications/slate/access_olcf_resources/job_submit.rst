@@ -62,7 +62,8 @@ Marble
       spec:
         containers:
         - name: test-jobsubmit
-          image: "image-registry.openshift-image-registry.svc:5000/openshift/ccs-rhel7-base-amd64:latest"
+          # this image was chosen because it has openSSH installed, please build your own image with openSSH for production use
+          image: "linuxserver/openssh-server:latest"
           args:
           - cat
           stdin: true
@@ -92,7 +93,8 @@ Onyx
       spec:
         containers:
         - name: test-jobsubmit
-          image: "image-registry.openshift-image-registry.svc:5000/openshift/ccs-rhel7-base-amd64:latest"
+          # this image was chosen because it has openSSH installed, please build your own image with openSSH for production use
+          image: "linuxserver/openssh-server:latest"
           args:
           - cat
           stdin: true
