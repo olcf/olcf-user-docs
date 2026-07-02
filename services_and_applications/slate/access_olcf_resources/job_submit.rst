@@ -64,10 +64,11 @@ Marble
         - name: test-jobsubmit
           # this image was chosen because it has openSSH installed, please build your own image with openSSH for production use
           image: "linuxserver/openssh-server:latest"
+          command: ["/bin/sh","-c"]
           args:
           - cat
+          tty: true
           stdin: true
-          stdinOnce: true
 
 Onyx
 ----
@@ -95,10 +96,11 @@ Onyx
         - name: test-jobsubmit
           # this image was chosen because it has openSSH installed, please build your own image with openSSH for production use
           image: "linuxserver/openssh-server:latest"
+          command: ["/bin/sh","-c"]
           args:
           - cat
+          tty: true
           stdin: true
-          stdinOnce: true
 
 
 Additional Information
