@@ -558,6 +558,17 @@ MPI
 
 The MPI implementation available on Frontier is Cray's MPICH, which is "GPU-aware" so GPU buffers can be passed directly to MPI calls.
 
+RCCL
+----
+
+The ROCm Collective Communication Library (RCCL) is installed with ROCm and can be accessed by loading a ``rocm`` module.
+RCCL requires an external network plugin and some addition environment configuration to correctly use the high-speed network on Frontier.
+Load the ``rccl-net-plugin`` module to configure your environment to use the external network plugin and tune the Slingshot network stack for RCCL.
+
+.. note::
+    RCCL and MPI have different communication patterns and benefit from different network configurations, so some settings in this module may change MPI performance.
+    It is recommended to load the ``rccl-net-plugin`` whenever you are using RCCL multi-node, even if using MPI in the same job, as some settings are critical for RCCL correctness and performance on Slingshot.
+
 ----
 
 

@@ -266,7 +266,7 @@ Both scripts below use ``DistributedDataParallel`` and can run across multiple n
            os.environ['LOCAL_RANK'] = str(local_rank)
            os.environ['MASTER_ADDR'] = str(args.master_addr)
            os.environ['MASTER_PORT'] = str(args.master_port)
-           os.environ['NCCL_SOCKET_IFNAME'] = 'hsn0'
+           os.environ['NCCL_SOCKET_IFNAME'] = 'hsn0,hsn1,hsn2,hsn3' # if you see hangs, try using only hsn0
 
            dist.init_process_group(
                backend="nccl",
@@ -433,7 +433,7 @@ Both scripts below use ``DistributedDataParallel`` and can run across multiple n
             os.environ['LOCAL_RANK'] = str(local_rank)
             os.environ['MASTER_ADDR'] = str(args.master_addr)
             os.environ['MASTER_PORT'] = str(args.master_port)
-            os.environ['NCCL_SOCKET_IFNAME'] = 'hsn0'
+            os.environ['NCCL_SOCKET_IFNAME'] = 'hsn0,hsn1,hsn2,hsn3' # if you see hangs, try using only hsn0
 
             torch.distributed.init_process_group(
                 backend="nccl",
@@ -467,12 +467,14 @@ To run the python scripts, an example batch script is given below:
        #SBATCH -t 00:05:00
        #SBATCH -p batch
        #SBATCH -N 2
+       #SBATCH --network=disable_rdzv_get
 
        # Load modules
        module load PrgEnv-gnu/8.7.0
        module load cpe/26.03
        module load miniforge3/23.11.0-0
        module load rocm/7.1.1
+       module load rccl-net-plugin
        module load craype-accel-amd-gfx90a
 
        # Because using a non-default CPE
@@ -517,7 +519,7 @@ We highly recommend setting ``MASTER_ADDR`` and ``NCCL_SOCKET_IFNAME`` when assi
 .. code-block:: bash
 
    export MASTER_ADDR=$(hostname -i)
-   export NCCL_SOCKET_IFNAME=hsn0
+   export NCCL_SOCKET_IFNAME=hsn0,hsn1,hsn2,hsn3 # if you see hangs, try using only hsn0
 
 There are different Master Ports you can use, but we typically recommend using port 3442 for ``MASTER_PORT``:
 
@@ -588,11 +590,46 @@ More information on how to use ``sbcast`` and ``conda-pack`` to move your enviro
 
 In a nutshell: NVMe > Orion >> NFS.
 
-AWS-OFI-RCCL Plugin
+RCCL Network Plugin
 -------------------
 
-The `AWS-OFI-RCCL plugin <https://github.com/ROCm/aws-ofi-rccl>`__ enables using libfabric as a network provider while running AMD's RCCL based applications.
-This plugin can be built and used by common ML/DL libraries like PyTorch to increase performance when running on AMD GPUs.
+RCCL defaults to inter-node communication using TCP/IP Sockets, which does not scale to the large job sizes on Frontier.
+In order to use the high-speed Slingshot network RCCL requires a network plugin that is dynamically loaded during RCCL initialization.
+The recommended way to use this plugin is to load the ``rccl-net-plugin`` module after having loaded ``rocm``.
+This module will configure the environment to use the plugin and will also set some recommended environment variables for the Slingshot network stack.
+
+If you prefer to build the plugin and manage your environment yourself the build process and recommended environment variables are described below.
+
+Alternative Rendezvous Protocol
+---------------------------------
+
+On Frontier it is possible to configure the network to use a different protocol for rendezvous messages that improves RCCL performance at large scales. 
+This alternative protocol may negatively impact MPI performance, so it is best used for jobs that mostly use RCCL for communication.
+
+To use the alternative protocol you need to both add the flag ``--network=disable_rdzv_get`` to your Slurm allocation request and set the environment variable ``FI_CXI_RDZV_PROTO=alt_read``.
+The ``rccl-net-plugin`` module will automatically set ``FI_CXI_RDZV_PROTO=alt_read`` for you when you load it, but you will still need to add the Slurm flag to your allocation request.
+
+You can add these to your batch scripts for your jobs:
+
+.. code-block:: bash
+
+   #SBATCH --network=disable_rdzv_get
+
+   export FI_CXI_RDZV_PROTO=alt_read
+
+For more information on this alternative protocal and HPE's recommendations for running RCCL on Slingshot networks, see `here <https://cdn.support.hpe.com/hpesc/public/docDisplay?docId=dp00007643en_us&page=user/rccl.html>`__.
+
+RCCL Environment Variables
+--------------------------
+
+RCCL and NCCL are highly configurable with environment variables, the most useful of which are described in `the RCCL documentation <https://rocm.docs.amd.com/projects/rccl/en/develop/api-reference/env-variables.html>`__.
+Note, however, that RCCL's default settings and internal tuner will likely select the best protocol, algorithm, and number of channels for your collectives.
+The environment variables most likely to improve performance are included in the ``rccl-net-plugin`` module (view them via ``module show rccl-net-plugin``) and also listed further below.
+
+
+
+Manual RCCL Network Plugin Configuration (Not Recommended)
+----------------------------------------------------------
 
 To build the plugin on Frontier (using ROCm 7.1.1 as an example):
 
@@ -606,27 +643,30 @@ To build the plugin on Frontier (using ROCm 7.1.1 as an example):
    module load craype-accel-amd-gfx90a
    module load gcc-native/14.2
    module load cray-mpich/9.1.0
-   libfabric_path=/opt/cray/libfabric/1.22.0
+   libfabric_path=/opt/cray/libfabric/2.3.1
 
    # Download the plugin repo
-   git clone --recursive https://github.com/ROCmSoftwarePlatform/aws-ofi-rccl
-   cd aws-ofi-rccl
+   wget https://github.com/aws/aws-ofi-nccl/releases/download/v1.19.2/aws-ofi-nccl-1.19.2.tar.gz
+   tar zxvf aws-ofi-nccl-1.19.2.tar.gz
+   cd aws-ofi-nccl-1.19.2
 
    # Build the plugin
-   ./autogen.sh
    PLUG_PREFIX=$PWD
 
-   CC=hipcc CFLAGS=-I/opt/rocm-$rocm_version/include ./configure \
-   --with-libfabric=$libfabric_path --with-rccl=/opt/rocm-$rocm_version --enable-trace \
-   --prefix=$PLUG_PREFIX --with-hip=/opt/rocm-$rocm_version --with-mpi=$MPICH_DIR
+   CC=gcc ./configure \
+   --with-libfabric=$libfabric_path --with-rocm=${ROCM_PATH} \
+   --prefix=$PLUG_PREFIX
 
    make
    make install
 
-   # Reminder to export the plugin to your path
+   # Fix up a symlink that some versions of RCCL need to find the plugin
+   ln -s $PLUG_PREFIX/lib/librccl-net.so $PLUG_PREFIX/lib/libnccl-net.so
+
+   # Reminder to configure RCCL to use the plugin
    echo $PLUG_PREFIX
-   echo "Add the following line in the environment to use the AWS OFI RCCL plugin"
-   echo "export LD_LIBRARY_PATH="$PLUG_PREFIX"/lib:$""LD_LIBRARY_PATH"
+   echo "Add the following line in the environment to use the OFI RCCL Net plugin"
+   echo "export NCCL_NET_PLUGIN="$PLUG_PREFIX"/lib/librccl-net.so"
 
 .. warning::
    RCCL library location varies based on ROCm version.
@@ -634,80 +674,66 @@ To build the plugin on Frontier (using ROCm 7.1.1 as an example):
    * Before 6.0.0: ``/opt/rocm-${version}/rccl/lib`` or ``/opt/rocm-${version}/rccl/include``
    * After 6.0.0: ``/opt/rocm-${version}/lib`` or ``/opt/rocm-${version}/include``
 
-Once the plugin is installed, you must include it in your ``LD_LIBRARY_PATH`` when running applications to use it:
+Once the plugin is installed, you must either set ``NCCL_NET_PLUGIN`` or include it in your ``LD_LIBRARY_PATH`` when running applications to use it:
 
 .. code-block:: bash
 
+   # Preferred
+   export NCCL_NET_PLUGIN=${PATH TO THE PLUGIN}/lib/librccl-net.so
+   # Alternative
    export LD_LIBRARY_PATH=${PATH TO THE PLUGIN}/lib/:${LD_LIBRARY_PATH}
 
-You also need to set the below environment variable in your runs to make sure that the ROCm RCCL library correctly identifies and loads the ``librccl-net.so`` library from the aws-ofi-rccl build. Otherwise the performance will be worse than expected because aws-ofi-rccl is not actually being used. 
+If you are concerned that the plugin isn't being used, you can force RCCL to exit if the plugin isn't initialized by setting ``NCCL_NET``.
+On Frontier, however, the network is not configured for single node jobs and the plugin will not initialize, so this setting is only recommended for multi-node jobs.
+If you want force the check, we recommend conditionally setting this variable based on the number of nodes in your job:
 
 .. code-block:: bash
 
-   export NCCL_NET_PLUGIN="librccl-net.so"
-
-To avoid a possible deadlock between RCCL and the default libfabric memory registration cache monitor (`memhooks`), before running you should set either
-
-.. code-block:: bash
-
-   export FI_MR_CACHE_MONITOR=kdreg2
-
-or
-
-.. code-block:: bash
-
-   export FI_MR_CACHE_MONITOR=userfaultfd
+    if (( $SLURM_JOB_NUM_NODES == 1 )); then
+        export NCCL_NET="Socket"
+    else
+        export NCCL_NET="OFI"
+    fi
 
 
-More information about RCCL, the plugin, and profiling its effect on Frontier applications can be found `here <https://www.olcf.ornl.gov/wp-content/uploads/OLCF_AI_Training_0417_2024.pdf>`__.
+The default libfabric memory registration cache monitor on Frontier (``kdreg2``) is safe to use with the RCCL plugin, as is the non-default ``userfaultfd`` monitor.
+Do not use the ``memhooks`` monitor as this can cause deadlocks with the plugin.
 
-
-Environment Variables
----------------------
-
-When running with the NCCL (RCCL) backend, there are many environment variables that can affect your application's performance. These environment variables are recommended by HPE and AMD on Frontier for best performance at scale:
+When running with the RCCL Libfabric plugin, there are many environment variables that can affect your application's performance.
+These environment variables are strongly recommended by HPE and AMD on Frontier for both correctness and best performance at scale:
 
 .. code-block:: bash
 
-   FI_MR_CACHE_MONITOR=kdreg2     # Required to avoid a deadlock.
-   FI_CXI_DEFAULT_CQ_SIZE=131072  # Ask the network stack to allocate additional space to process message completions.
-   FI_CXI_DEFAULT_TX_SIZE=2048    # Ask the network stack to allocate additional space to hold pending outgoing messages.
-   FI_CXI_RX_MATCH_MODE=hybrid    # Allow the network stack to transition to software mode if necessary. 
+   # Configure RCCL to use the plugin you built
+   # IMPORTANT! Without this the plugin will not be used! 
+   NCCL_NET_PLUGIN=${PATH TO THE PLUGIN}/lib/librccl-net.so
 
-   NCCL_NET_GDR_LEVEL=3           # Typically improves performance, but remove this setting if you encounter a hang/crash.
-   NCCL_CROSS_NIC=1               # On large systems, this NCCL setting has been found to improve performance
-   NCCL_SOCKET_IFNAME=hsn0,hsn1,hsn2,hsn3        # NCCL/RCCL will use the high speed network to coordinate startup.
+   # Configure RCCL for Frontier
+   NCCL_CROSS_NIC=1
+   NCCL_NET_GDR_LEVEL=PHB
+   NCCL_SOCKET_IFNAME=hsn0,hsn1,hsn2,hsn3
+
+   # Configure libfabric for RCCL
+   HSA_FORCE_FINE_GRAIN_PCIE=1
+   FI_MR_CACHE_MONITOR=kdreg2
+   FI_CXI_DISABLE_HOST_REGISTER=1
+   FI_CXI_DEFAULT_CQ_SIZE=131072
+   FI_CXI_RDZV_PROTO=alt_read
+   FI_CXI_RDZV_EAGER_SIZE=0
+   FI_CXI_RDZV_THRESHOLD=0
+   FI_CXI_RDZV_GET_MIN=0
+   FI_CXI_DEFAULT_TX_SIZE=2048
+   FI_CXI_RX_MATCH_MODE=hybrid
 
 
 .. note::
    If you happen to encounter hangs with the above settings, try changing the ``NCCL_SOCKET_IFNAME``
    value to ``NCCL_SOCKET_IFNAME=hsn0`` i.e. only setting ``hsn0``.
 
+For more information about HPE's recommendations for running RCCL on Slingshot networks, see `here <https://github.com/HewlettPackard/shs-ccl-docs>`__.
 
-RCCL and NCCL are highly configurable with environment variables. Some other variables to try are:
+More information about RCCL, the plugin, and profiling its effect on Frontier applications can be found `here <https://www.olcf.ornl.gov/wp-content/uploads/OLCF_AI_Training_0417_2024.pdf>`__.
 
-.. code-block:: bash
-
-   NCCL_ALGO=TREE or RING # May see performance difference with either setting. (should not need to use this, but can try)
-   NCCL_DEBUG=info        # For debugging only (warning: generates a large amount of messages)
-
-
-Alternative Rendezvous Protocol
----------------------------------
-
-On Frontier it is possible to configure the network to use a different protocol for rendezvous messages that improves RCCL performance at large scales. 
-This alternative protocol may negatively impact MPI performance, so it is best used for jobs that mostly use RCCL for communication.
-
-To use the alternative protocol you need to both add the flag ``--network=disable_rdzv_get`` to your Slurm allocation request and set the environment variable ``FI_CXI_RDZV_PROTO=alt_read``.
-You can add these to your batch scripts for your jobs:
-
-.. code-block:: bash
-
-   #SBATCH --network=disable_rdzv_get
-
-   export FI_CXI_RDZV_PROTO=alt_read
-
-For more information on this alternative protocal and HPE's recommendations for running RCCL on Slingshot networks, see `here <https://support.hpe.com/hpesc/public/docDisplay?docId=dp00004854en_us&docLocale=en_US>`__.
 
 
 .. _torch-geo:
