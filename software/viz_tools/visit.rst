@@ -24,7 +24,7 @@ OLCF resources. VisIt for your local computer can be obtained here:
 
 Recommended VisIt versions on our systems:
 
-* Andes: VisIt 3.3.3, 3.4.1, 3.4.2, 3.5.0
+* Andes: VisIt 3.3.3, 3.5.0
 * Frontier: VisIt 3.3.3, 3.4.1
 
 .. warning::
@@ -284,7 +284,7 @@ OLCF systems is provided below.
 
         module load visit
 
-        visit -nowin -cli -v 3.4.2 -l srun -np 28 -nn 1 -s visit_example.py
+        visit -nowin -cli -v 3.5.0 -l srun -np 28 -nn 1 -s visit_example.py
 
   .. tab-item:: Frontier
 
