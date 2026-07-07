@@ -266,7 +266,7 @@ Both scripts below use ``DistributedDataParallel`` and can run across multiple n
            os.environ['LOCAL_RANK'] = str(local_rank)
            os.environ['MASTER_ADDR'] = str(args.master_addr)
            os.environ['MASTER_PORT'] = str(args.master_port)
-           os.environ['NCCL_SOCKET_IFNAME'] = 'hsn0'
+           os.environ['NCCL_SOCKET_IFNAME'] = 'hsn0,hsn1,hsn2,hsn3' # if you see hangs, try using only hsn0
 
            dist.init_process_group(
                backend="nccl",
@@ -433,7 +433,7 @@ Both scripts below use ``DistributedDataParallel`` and can run across multiple n
             os.environ['LOCAL_RANK'] = str(local_rank)
             os.environ['MASTER_ADDR'] = str(args.master_addr)
             os.environ['MASTER_PORT'] = str(args.master_port)
-            os.environ['NCCL_SOCKET_IFNAME'] = 'hsn0'
+            os.environ['NCCL_SOCKET_IFNAME'] = 'hsn0,hsn1,hsn2,hsn3' # if you see hangs, try using only hsn0
 
             torch.distributed.init_process_group(
                 backend="nccl",
@@ -519,7 +519,7 @@ We highly recommend setting ``MASTER_ADDR`` and ``NCCL_SOCKET_IFNAME`` when assi
 .. code-block:: bash
 
    export MASTER_ADDR=$(hostname -i)
-   export NCCL_SOCKET_IFNAME=hsn0
+   export NCCL_SOCKET_IFNAME=hsn0,hsn1,hsn2,hsn3 # if you see hangs, try using only hsn0
 
 There are different Master Ports you can use, but we typically recommend using port 3442 for ``MASTER_PORT``:
 
@@ -619,17 +619,17 @@ You can add these to your batch scripts for your jobs:
 
 For more information on this alternative protocal and HPE's recommendations for running RCCL on Slingshot networks, see `here <https://cdn.support.hpe.com/hpesc/public/docDisplay?docId=dp00007643en_us&page=user/rccl.html>`__.
 
-Environment Variables
----------------------
+RCCL Environment Variables
+--------------------------
 
 RCCL and NCCL are highly configurable with environment variables, the most useful of which are described in `the RCCL documentation <https://rocm.docs.amd.com/projects/rccl/en/develop/api-reference/env-variables.html>`__.
 Note, however, that RCCL's default settings and internal tuner will likely select the best protocol, algorithm, and number of channels for your collectives.
-The environment variables most likely to improve performance are included in the ``rccl-net-plugin`` module and also listed below.
+The environment variables most likely to improve performance are included in the ``rccl-net-plugin`` module (view them via ``module show rccl-net-plugin``) and also listed further below.
 
 
 
 Manual RCCL Network Plugin Configuration (Not Recommended)
--------------------------------
+----------------------------------------------------------
 
 To build the plugin on Frontier (using ROCm 7.1.1 as an example):
 
@@ -677,6 +677,7 @@ To build the plugin on Frontier (using ROCm 7.1.1 as an example):
 Once the plugin is installed, you must either set ``NCCL_NET_PLUGIN`` or include it in your ``LD_LIBRARY_PATH`` when running applications to use it:
 
 .. code-block:: bash
+
    # Preferred
    export NCCL_NET_PLUGIN=${PATH TO THE PLUGIN}/lib/librccl-net.so
    # Alternative
