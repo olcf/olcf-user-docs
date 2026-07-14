@@ -124,6 +124,10 @@ Running a job on IonQ hardware requires IonQ Credits. In order to request an Ion
 
 * Requests will be evaluated based on the provided technical justification, programmatic efficiency, and machine availability. The effective usage of prior allocations by the project will also be considered.
 
+* If the request was approved, **credits (i.e., the raised IonQ "budget") will expire after 2 months by default.**
+
+    * For example, if project ABC123 was granted credits on January 1, then they will forfeit all un-used credits on March 1. An extension to this period can be requested by contacting help@olcf.ornl.gov.
+
 Users can obtain additional information about their allocation and credit usage by contacting help@olcf.ornl.gov.
 
 

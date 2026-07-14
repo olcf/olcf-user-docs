@@ -85,6 +85,8 @@ credits, the following allocation policy is in effect:
 
 * Requests will be evaluated based on the provided technical justification, programmatic efficiency, and machine availability. The effective usage of prior allocations by the project will also be considered.
 
+* By default, new QCUP projects will receive 400 credits to help navigate resource estimation on actual hardware.
+
 IQM API
 --------
 
