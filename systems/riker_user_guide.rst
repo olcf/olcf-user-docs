@@ -27,7 +27,7 @@ The system consists of 128 CPU nodes and 8 GPU nodes.
 GPU Compute Nodes
 ^^^^^^^^^^^^^^^^^
 
-Each Riker GPU compute node consists of [1x] 64-core AMD EPYC 9575F CPU.
+Each Riker GPU node consists of [1x] 64-core AMD EPYC 9575F CPU.
 The CPU has access to 1.5TB of memory and [2x] 48GB NVIDIA L40S GPUs.
 
 .. image:: /images/Riker_GPU_node.png
@@ -45,7 +45,7 @@ The CPU has access to 1.5TB of memory and [2x] 48GB NVIDIA L40S GPUs.
 CPU Compute Nodes
 ^^^^^^^^^^^^^^^^^
 
-Each Riker CPU compute node consists of [2x] 64-core AMD EPYC 9534 CPUs. 
+Each Riker CPU node consists of [2x] 64-core AMD EPYC 9534 CPUs. 
 Both CPUs have access to 2.2TB of memory.
 
 .. image:: /images/Riker_CPU_node.png
@@ -102,11 +102,11 @@ To connect to Riker, `ssh` into the load-balancer `riker.olcf.ornl.gov`:
 
     $ ssh username@riker.olcf.ornl.gov
 
-or direct connect to a specific login node (login1p for example):
+or direct connect to a specific login node (login1 for example):
 
 .. code-block:: bash
     
-    $ ssh username@riker-login5.olcf.ornl.gov
+    $ ssh username@riker-login1.olcf.ornl.gov
 
 ----
 
@@ -311,7 +311,7 @@ This section covers how to compile for different programming models using the di
 Compilers
 ---------
 
-AOCC, CUDA, Intel, and GCC compilers are provided through modules on Riker. The system GCC (version 11.5.0) compiler is also located in
+AOCC, CUDA, Intel, GCC, and LLVM compilers are provided through modules on Riker. The system GCC (version 11.5.0) compiler is also located in
 ``/usr/bin``. The table below lists details about each of the module-provided compilers.
 
     
@@ -325,10 +325,10 @@ AOCC, CUDA, Intel, and GCC compilers are provided through modules on Riker. The 
 |        |                 |   Fortran | ``flang``                  |
 +--------+-----------------+-----------+----------------------------+
 | NVIDIA | | ``cuda``      |   C       | ``nvcc``                   |
+|        | | ``nvhpvc``    +-----------+----------------------------+
+|        |                 |   C++     | ``nvcc`` ``nvc++``         |
 |        |                 +-----------+----------------------------+
-|        |                 |   C++     | ``nvcc``                   |
-|        |                 +-----------+----------------------------+
-|        |                 |   Fortran | ``N/A``                    |
+|        |                 |   Fortran | ``nvfortan``               |
 +--------+-----------------+-----------+----------------------------+
 | Intel  | | ``oneapi``    |   C       | ``icx``                    |
 |        |                 +-----------+----------------------------+
@@ -342,6 +342,12 @@ AOCC, CUDA, Intel, and GCC compilers are provided through modules on Riker. The 
 |        |                 +-----------+----------------------------+
 |        |                 |   Fortran | ``$GCC_PATH/bin/gfortran`` |
 +--------+-----------------+-----------+----------------------------+
+| LLVM   | | ``llvm``      |   C       | ``clang``                  |
+|        |                 +-----------+----------------------------+
+|        |                 |   C++     | ``clang++``                |
+|        |                 +-----------+----------------------------+
+|        |                 |   Fortran | ``flang``                  |
++--------+-----------------+-----------+----------------------------+
 
 
 
@@ -350,14 +356,51 @@ MPI
 
 The MPI implementation available on Riker is MPICH. 
 
-+----------------+---------------------+-----------------------------------------------------+-------------------------------------------------------------------------------+
-| Implementation | Module              | Compiler                                            | Header Files & Linking                                                        | 
-+================+=====================+=====================================================+===============================================================================+
-| MPICH          | ``mpich/4.3.2-gpu`` | ``mpicc``, ``mpicxx``, ``mpifort``                  |                                                                               |
-|                |                     +-----------------------------------------------------+-------------------------------------------------------------------------------+
-|                |                     | ``nvcc``                                            | | ``-I$(MPICH_DIR)/include``                                                  |
-|                |                     |                                                     | | ``-L$(MPICH_DIR)/lib`` ``-lmpi``                                            |
-+----------------+---------------------+-----------------------------------------------------+-------------------------------------------------------------------------------+
++----------------+-----------------------+-----------------------------------------------------+-------------------------------------------------------------------------------+
+| Implementation | Module                | Compiler                                            | Header Files & Linking                                                        | 
++================+=======================+=====================================================+===============================================================================+
+| MPICH          | | ``mpich/5.0.1``     | ``mpicc``, ``mpicxx``, ``mpifort``                  |                                                                               |
+|                | | ``mpich/5.0.1-gpu`` +-----------------------------------------------------+-------------------------------------------------------------------------------+
+|                |                       | ``nvcc``                                            | | ``-I$(MPICH_DIR)/include``                                                  |
+|                |                       |                                                     | | ``-L$(MPICH_DIR)/lib`` ``-lmpi``                                            |
++----------------+-----------------------+-----------------------------------------------------+-------------------------------------------------------------------------------+
+
+
+GPU-Aware MPI
+^^^^^^^^^^^^^
+
+To use GPU-aware MPI, users must load specific modules, set some environment variables, and include appropriate headers and libraries. 
+The following modules and environment variables must be set:
+
+.. code:: bash
+
+    # Load CUDA13 before GPU-Enabled MPI
+    module load cuda/13.3.0
+    module load mpich/5.0.1-gpu
+
+    # Export this variable
+    export MPIR_CVAR_ENABLE_GPU=1
+
+
+
+In addition, the following header files and libraries must be included:
+
+For ``mpicc`` / ``mpicxx``:
+
+.. code:: bash
+
+    -I${CUDA_PATH}/include
+    -L${CUDA_PATH}/lib64 -lcudart
+
+
+For ``nvcc``:
+
+.. code:: bash
+
+    -I${MPICH_DIR}/include
+    -L${MPICH_DIR}/lib -lmpi
+
+where the include path implies that ``#include <cuda.h>`` and ``#include <cuda_runtime_api.h>`` is included in the source file.
 
 
 OpenMP
@@ -376,8 +419,8 @@ covered above.
 |        |            |           |                                           | |  ``-fopenmp`` (alias)             |
 +--------+------------+-----------+-------------------------------------------+-------------------------------------+
 | NVIDIA | ``cuda``   | | C       | | ``nvcc``                                | ``-Xcompiler -fopenmp``             |
-|        |            | | C++     | | ``nvcc``                                |                                     |
-|        |            | | Fortran | | ``N/A``                                 |                                     |
+|        |            | | C++     | | ``nvc++``                               |                                     |
+|        |            | | Fortran | | ``nvfortan``                            |                                     |
 +--------+------------+-----------+-------------------------------------------+-------------------------------------+
 | Intel  | ``intel``  | | C       | | ``icx``                                 | ``-qopenmp``                        |
 |        |            | | C++     | | ``icpx``                                |                                     |
@@ -386,6 +429,12 @@ covered above.
 | GCC    | ``gcc``    | | C       | | ``$GCC_PATH/bin/gcc``                   | ``-fopenmp``                        |
 |        |            | | C++     | | ``$GCC_PATH/bin/g++``                   |                                     |
 |        |            | | Fortran | | ``$GCC_PATH/bin/gfortran``              |                                     |
++--------+------------+-----------+-------------------------------------------+-------------------------------------+
+| LLVM   | ``llvm``   | | C       | | ``clang``                               | ``-fopenmp``                        |
+|        |            | | C\+\+   | | ``clang++``                             |                                     |
+|        |            +-----------+-------------------------------------------+-------------------------------------+
+|        |            | Fortran   | ``flang``                                 | |  ``-homp``                        | 
+|        |            |           |                                           | |  ``-fopenmp`` (alias)             |
 +--------+------------+-----------+-------------------------------------------+-------------------------------------+
 
 .. OpenMP GPU Offload
@@ -466,7 +515,8 @@ When constructing a job on Riker, please be aware of the two-phase resource allo
 | Phase      | Location   | Description                                                                                 |
 +============+============+=======================================================+=====================================+
 | Allocation | Login      | Request resources with sbatch, salloc, or srun (from login node).                           | 
-|            |            | This is where you should request what you need: -c, --mem, and --gpus.                      |
+|            |            | This is where you should request what you need: -c, --mem (CPU Jobs)                        |
+|            |            | or --cpus-per-gpu, --mem-per-gpu (GPU Jobs)                                                 |
 +------------+------------+---------------------------------------------------------------------------------------------+
 | Delegation | Compute    | Launch work with srun inside the allocation.                                                |
 |            |            | This is where you “hand out” the resources you already requested to the actual processes    |
@@ -495,7 +545,7 @@ Example script:
    #SBATCH -o %x-%j.out
    #SBATCH -t 00:05:00
    #SBATCH -p batch
-   #SBATCH -N #
+   #SBATCH -N 1
    #SBATCH -c 16
  
    ## RUNTIME RESOURCE DELEGATION ##
@@ -507,7 +557,7 @@ GPU nodes
 Each GPU node has 64 Cores that can be allocated on a 1-Core basis and come with an equal share of memory (~24GB per core); however, 
 32 Cores (16 per GPU) are reserved for the GPUs and can only allocated if you also allocate the bound GPU. 
 
-The reserved cores are automatic allocated when a GPU is requested ``--gpu``.  All other cores on the GPU nodes operate as "Flex / Shared" cores that can be allocated
+The reserved cores are automatic allocated when a GPU is requested ``--gpus``.  All other cores on the GPU nodes operate as "Flex / Shared" cores that can be allocated
 by GPU-enabled workloads & CPU-Only workloads allowing users to fill unused CPUs on GPU nodes or GPU jobs to increase beyond the default 16 Cores. 
 
 Example script:
@@ -522,19 +572,14 @@ Example script:
    #SBATCH -o %x-%j.out
    #SBATCH -t 00:05:00
    #SBATCH -p gpu
-   #SBATCH -N #
+   #SBATCH -N 1
    #SBATCH --gpus=2
-   #SBATCH -c48
+   #SBATCH --cpus-per-gpu=24
  
    ## RUNTIME RESOURCE DELEGATION ##
    srun -n2 --cpus-per-task=24 --gpus-per-task=1 ./a.out 
 
-.. code-block:: bash
-    :linenos:
-
     
-
-
 .. note::
     Riker should support the majority of Slurm job structures. If you find that your job structure does not work as expected, please reach out to help@olcf.ornl.gov.
 
@@ -677,12 +722,12 @@ script:
    #SBATCH -o %x-%j.out
    #SBATCH -t 00:05:00
    #SBATCH -p gpu
-   #SBATCH -N #
+   #SBATCH -N 1
    #SBATCH --gpus=1
    #SBATCH -c 16
  
    ## RUNTIME RESOURCE DELEGATION ##
-   srun -n8 --cpus-per-task=2 --gpus=1 ./a.out 
+   srun -n8 --cpus-per-task=2 --gpus-per-task=1 ./a.out 
 
 The Slurm submission options are preceded by ``#SBATCH``, making them appear as
 comments to a shell (since comments begin with ``#``). Slurm will look for
@@ -875,13 +920,6 @@ The output shows that each OpenMP thread ran on its own physical CPU core.
     There are many different ways users might choose to perform these mappings,
     so users are encouraged to clone the ``hello_mpi_omp`` program and test
     whether or not processes and threads are running where intended.
-
-
-
-
-
-
-
 
 
 
