@@ -454,6 +454,91 @@ their use can be found in the related subsections.
 |            | | (see Single Command section below)                                                                                                                                         |
 +------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+ 
 
+Node-sharing on Riker
+---------------------
+
+Riker is a node-shared Slurm cluster: multiple users may run on the same physical node at the same time, as long as their allocated resources do not overlap. 
+Node sharing on Riker is enforced through Slurm allocations of CPU cores, memory, and (on GPU nodes) GPUs, with additional site policies that reserve CPU cores for GPU work.
+
+When constructing a job on Riker, please be aware of the two-phase resource allocation steps within Slurm.
+
++------------+------------+---------------------------------------------------------------------------------------------+
+| Phase      | Location   | Description                                                                                 |
++============+============+=======================================================+=====================================+
+| Allocation | Login      | Request resources with sbatch, salloc, or srun (from login node).                           | 
+|            |            | This is where you should request what you need: -c, --mem, and --gpus.                      |
++------------+------------+---------------------------------------------------------------------------------------------+
+| Delegation | Compute    | Launch work with srun inside the allocation.                                                |
+|            |            | This is where you “hand out” the resources you already requested to the actual processes    |
+|            |            | (potentially with multiple srun steps and different layouts).                               |
++------------+------------+---------------------------------------------------------------------------------------------+
+
+Riker enforces memory as a per-core share. CPU cores and memory are coupled on all nodes. Users can request cores or memory, but the system ties them together as equal shares and will round accordingly.
+
+
+Batch (CPU) nodes
+^^^^^^^^^^^^^^^^^
+
+Each Batch node has 128 Cores that can be allocated on a 1-Core basis and come with an equal share of memory (~17GB per core). 
+
+Users can allocate using ``-c`` for cores or ``--mem`` for memory. Your request will round accordingly. 
+
+Example script: 
+
+.. code-block:: bash
+   :linenos:
+
+   #!/bin/bash
+   ## ALLOCATION TIME RESOURCE REQUESTS ##
+   #SBATCH -A <project_id>
+   #SBATCH -J <job_name>
+   #SBATCH -o %x-%j.out
+   #SBATCH -t 00:05:00
+   #SBATCH -p batch
+   #SBATCH -N #
+   #SBATCH -c 16
+ 
+   ## RUNTIME RESOURCE DELEGATION ##
+   srun -n8 --cpus-per-task=2 ./a.out 
+
+GPU nodes
+^^^^^^^^^^
+
+Each GPU node has 64 Cores that can be allocated on a 1-Core basis and come with an equal share of memory (~24GB per core); however, 
+32 Cores (16 per GPU) are reserved for the GPUs and can only allocated if you also allocate the bound GPU. 
+
+The reserved cores are automatic allocated when a GPU is requested ``--gpu``.  All other cores on the GPU nodes operate as "Flex / Shared" cores that can be allocated
+by GPU-enabled workloads & CPU-Only workloads allowing users to fill unused CPUs on GPU nodes or GPU jobs to increase beyond the default 16 Cores. 
+
+Example script:
+
+.. code-block:: bash
+   :linenos:
+
+   #!/bin/bash
+   ## ALLOCATION TIME RESOURCE REQUESTS ##
+   #SBATCH -A <project_id>
+   #SBATCH -J <job_name>
+   #SBATCH -o %x-%j.out
+   #SBATCH -t 00:05:00
+   #SBATCH -p gpu
+   #SBATCH -N #
+   #SBATCH --gpus=2
+   #SBATCH -c48
+ 
+   ## RUNTIME RESOURCE DELEGATION ##
+   srun -n2 --cpus-per-task=24 --gpus-per-task=1 ./a.out 
+
+.. code-block:: bash
+    :linenos:
+
+    
+
+
+.. note::
+    Riker should support the majority of Slurm job structures. If you find that your job structure does not work as expected, please reach out to help@olcf.ornl.gov.
+
+
 Queues on Riker
 ---------------------
 
@@ -502,8 +587,23 @@ gpu``
 If your jobs require resources outside these queue policies such as higher priority or longer walltimes, please contact help@olcf.ornl.gov.
 
 
-Batch Scripts
-"""""""""""""
+Slurm Compute Node Partitions
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Riker's compute nodes are separated into 2 Slurm partitions (queues): 1 for CPU jobs and 1 for GPU. Please see the tables below for details.
+
++-----------+--------------------------+
+| PARTITION | NODELIST                 |
++===========+==========================+
+| batch     | riker[1-128]             |
++-----------+--------------------------+
+| gpu       | riker-gpu[1-8]           |
++-----------+--------------------------+
+
+
+
+Batch Node Scripts
+""""""""""""""""""
 
 A batch script can be used to submit a job to run on the compute nodes at a
 later time. In this case, stdout and stderr will be written to a file(s) that
@@ -514,14 +614,16 @@ script:
    :linenos:
 
    #!/bin/bash
+   ## ALLOCATION TIME RESOURCE REQUESTS ##
    #SBATCH -A <project_id>
    #SBATCH -J <job_name>
    #SBATCH -o %x-%j.out
    #SBATCH -t 00:05:00
-   #SBATCH -p <partition> 
+   #SBATCH -p batch
    #SBATCH -N #
    #SBATCH -c #
  
+   ## RUNTIME RESOURCE DELEGATION ##
    srun -n4 --ntasks-per-node=2 ./a.out 
 
 The Slurm submission options are preceded by ``#SBATCH``, making them appear as
@@ -549,12 +651,71 @@ In the example script, the lines are:
 +------+-------------------------------------------------------------------------------+ 
 | 8    | Number of cores requested on each node                                        |
 +------+-------------------------------------------------------------------------------+ 
-| 9    | Amount of memory requested on each node                                       |
+| 9    | Blank line                                                                    |
++------+-------------------------------------------------------------------------------+
+| 10   | ``srun`` command to launch parallel job (requesting 4 processes - 2 per node) | 
++------+-------------------------------------------------------------------------------+
+
+
+.. _riker-gpu-nodes:
+
+GPU Node Scripts
+""""""""""""""""
+
+A batch script can be used to submit a job to run on the compute nodes at a
+later time. In this case, stdout and stderr will be written to a file(s) that
+can be opened after the job completes. Here is an example of a simple batch
+script:
+
+.. code-block:: bash
+   :linenos:
+
+   #!/bin/bash
+   ## ALLOCATION TIME RESOURCE REQUESTS ##
+   #SBATCH -A <project_id>
+   #SBATCH -J <job_name>
+   #SBATCH -o %x-%j.out
+   #SBATCH -t 00:05:00
+   #SBATCH -p gpu
+   #SBATCH -N #
+   #SBATCH --gpus=1
+   #SBATCH -c 16
+ 
+   ## RUNTIME RESOURCE DELEGATION ##
+   srun -n8 --cpus-per-task=2 --gpus=1 ./a.out 
+
+The Slurm submission options are preceded by ``#SBATCH``, making them appear as
+comments to a shell (since comments begin with ``#``). Slurm will look for
+submission options from the first line through the first non-comment line.
+Options encountered after the first non-comment line will not be read by Slurm.
+In the example script, the lines are:
+
++------+-------------------------------------------------------------------------------+
+| Line | Description                                                                   |
++======+===============================================================================+ 
+| 1    | [Optional] shell interpreter line                                             |
++------+-------------------------------------------------------------------------------+ 
+| 2    | OLCF project to charge                                                        |
++------+-------------------------------------------------------------------------------+ 
+| 3    | Job name                                                                      |
++------+-------------------------------------------------------------------------------+ 
+| 4    | stdout file name ( ``%x`` represents job name, ``%j`` represents job id)      |
++------+-------------------------------------------------------------------------------+ 
+| 5    | Walltime requested (``HH:MM:SS``)                                             |
++------+-------------------------------------------------------------------------------+ 
+| 6    | Batch queue                                                                   |
++------+-------------------------------------------------------------------------------+ 
+| 7    | Number of compute nodes requested                                             |
++------+-------------------------------------------------------------------------------+ 
+| 8    | Number of GPUs requested on each node                                         |
++------+-------------------------------------------------------------------------------+ 
+| 9    | Number of CPUs requested on each node (Minimum of 16 per GPU)                 |
 +------+-------------------------------------------------------------------------------+ 
 | 10   | Blank line                                                                    |
 +------+-------------------------------------------------------------------------------+
-| 11   | ``srun`` command to launch parallel job (requesting 4 processes - 2 per node) | 
+| 11   | ``srun`` command to launch parallel job (requesting 8 processes)              | 
 +------+-------------------------------------------------------------------------------+
+
 
 .. _riker-interactive:
 
@@ -655,19 +816,6 @@ The table below summarizes commonly-used Slurm commands:
 
 ----
 
-Slurm Compute Node Partitions
------------------------------
-
-Riker's compute nodes are separated into 2 Slurm partitions (queues): 1 for CPU jobs and 1 for GPU. Please see the tables below for details.
-
-+-----------+--------------------------+
-| PARTITION | NODELIST                 |
-+===========+==========================+
-| batch     | riker[1-128]             |
-+-----------+--------------------------+
-| gpu       | riker-gpu[1-8]           |
-+-----------+--------------------------+
-
 
 Process and Thread Mapping
 --------------------------
@@ -690,17 +838,13 @@ The ``srun`` options used in this section are (see ``man srun`` for more informa
 
 +----------------------------------+-------------------------------------------------------------------------------------------------------+
 | ``-c, --cpus-per-task=<ncpus>``  | | Request that ``ncpus`` be allocated per process (default is 1).                                     |
-|                                  | | (``ncpus`` refers to hardware threads)                                                              |
+|                                  | | (``ncpus`` refers to cores)                                                                         |
 +----------------------------------+-------------------------------------------------------------------------------------------------------+
-|  ``--cpu-bind=threads``          | | Bind tasks to CPUs.                                                                                 |
-|                                  | | ``threads`` - Automatically generate masks binding tasks to threads.                                |
-|                                  | | (Although this option is not explicitly used in these examples, it is the default CPU binding.)     |
-+----------------------------------+-------------------------------------------------------------------------------------------------------+
+.. |  ``--cpu-bind=threads``          | | Bind tasks to CPUs.                                                                                 |
+.. |                                  | | ``threads`` - Automatically generate masks binding tasks to threads.                                |
+.. |                                  | | (Although this option is not explicitly used in these examples, it is the default CPU binding.)     |
+.. +----------------------------------+-------------------------------------------------------------------------------------------------------+
 
-.. note::
-
-    In the ``srun`` man page (and so the table above), threads refers 
-    to hardware threads.
 
 2 MPI ranks - each with 2 OpenMP threads
 """"""""""""""""""""""""""""""""""""""""
@@ -903,12 +1047,11 @@ Makefile
 
 Again, Slurm's :ref:`riker-interactive` method was used to request an allocation of 2 compute node for these examples:
 
-``salloc -A <project_id> -p gpu -t 00:30:00 -N 2 --exclusive``
+``salloc -A <project_id> -p gpu -t 00:30:00 -N 2 --gpus=4``
 
-The CPU mapping part of this example is very similar to the example used above in the CPU Mapping  sub-section, so the focus here will be on the GPU mapping part.
+The CPU mapping part of this example is very similar to the example used above in the CPU Mapping  sub-section, so the focus here will be on the GPU mapping part. 
 
-The following ``srun`` options will be used in the examples below. See 
-``man srun`` for a complete list of options and more information.
+The following ``srun`` options will be used in the examples below. See ``man srun`` for a complete list of options and more information. 
 
 +------------------------------------------------+--------------------------------------------------------------------------------------------------------------+
 | ``--gpus-per-task``                            | Specify the number of GPUs required for the job on each task to be spawned in the job's resource allocation. |
@@ -968,8 +1111,8 @@ accomplish the GPU mapping, one new ``srun`` options will be used:
 
     MPI 000 - OMP 000 - HWT 000 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
     MPI 000 - OMP 001 - HWT 001 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 001 - OMP 000 - HWT 003 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID C1
-    MPI 001 - OMP 001 - HWT 002 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID C1
+    MPI 001 - OMP 000 - HWT 033 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
+    MPI 001 - OMP 001 - HWT 032 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
 
 
 The output contains different IDs associated with the GPUs so it is important to
@@ -1007,12 +1150,13 @@ the number of MPI ranks to 8 (``-n4``).
 
     MPI 000 - OMP 000 - HWT 000 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
     MPI 000 - OMP 001 - HWT 001 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 001 - OMP 000 - HWT 003 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID C1
-    MPI 001 - OMP 001 - HWT 002 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID C1
-    MPI 002 - OMP 000 - HWT 000 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 002 - OMP 001 - HWT 001 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 003 - OMP 000 - HWT 002 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID C1
-    MPI 003 - OMP 001 - HWT 003 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID C1
+    MPI 001 - OMP 000 - HWT 033 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
+    MPI 001 - OMP 001 - HWT 032 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
+    MPI 002 - OMP 000 - HWT 001 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
+    MPI 002 - OMP 001 - HWT 000 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
+    MPI 003 - OMP 000 - HWT 032 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
+    MPI 003 - OMP 001 - HWT 033 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
+
 
 
 
@@ -1040,13 +1184,13 @@ by 2 MPI ranks. To accomplish this GPU mapping, a new ``srun`` option will be us
     $ srun -N1 -n8 -c1  --ntasks-per-gpu=4 --gpu-bind=map_gpu:0,1 ./hello_jobstep | sort
 
     MPI 000 - OMP 000 - HWT 000 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 001 - OMP 000 - HWT 001 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID C1
-    MPI 002 - OMP 000 - HWT 002 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 003 - OMP 000 - HWT 003 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID C1
-    MPI 004 - OMP 000 - HWT 004 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 005 - OMP 000 - HWT 005 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID C1
-    MPI 006 - OMP 000 - HWT 006 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 007 - OMP 000 - HWT 007 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID C1
+    MPI 001 - OMP 000 - HWT 032 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
+    MPI 002 - OMP 000 - HWT 001 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
+    MPI 003 - OMP 000 - HWT 033 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
+    MPI 004 - OMP 000 - HWT 002 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
+    MPI 005 - OMP 000 - HWT 034 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
+    MPI 006 - OMP 000 - HWT 003 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
+    MPI 007 - OMP 000 - HWT 035 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
 
 
 
@@ -1058,21 +1202,21 @@ by 2 MPI ranks. To accomplish this GPU mapping, a new ``srun`` option will be us
     $ srun -N2 -n16 -c1 --ntasks-per-gpu=4 ./hello_jobstep | sort
 
     MPI 000 - OMP 000 - HWT 000 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 001 - OMP 000 - HWT 001 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 002 - OMP 000 - HWT 002 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 003 - OMP 000 - HWT 003 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 004 - OMP 000 - HWT 004 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID C1
-    MPI 005 - OMP 000 - HWT 005 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID C1
-    MPI 006 - OMP 000 - HWT 006 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID C1
-    MPI 007 - OMP 000 - HWT 007 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID C1
+    MPI 001 - OMP 000 - HWT 032 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
+    MPI 002 - OMP 000 - HWT 001 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
+    MPI 003 - OMP 000 - HWT 033 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
+    MPI 004 - OMP 000 - HWT 002 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
+    MPI 005 - OMP 000 - HWT 034 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
+    MPI 006 - OMP 000 - HWT 003 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
+    MPI 007 - OMP 000 - HWT 035 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
     MPI 008 - OMP 000 - HWT 000 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 009 - OMP 000 - HWT 001 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 010 - OMP 000 - HWT 002 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 011 - OMP 000 - HWT 003 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 012 - OMP 000 - HWT 004 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID C1
-    MPI 013 - OMP 000 - HWT 005 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID C1
-    MPI 014 - OMP 000 - HWT 006 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID C1
-    MPI 015 - OMP 000 - HWT 007 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID C1
+    MPI 009 - OMP 000 - HWT 032 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
+    MPI 010 - OMP 000 - HWT 001 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
+    MPI 011 - OMP 000 - HWT 033 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
+    MPI 012 - OMP 000 - HWT 002 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
+    MPI 013 - OMP 000 - HWT 034 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
+    MPI 014 - OMP 000 - HWT 003 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
+    MPI 015 - OMP 000 - HWT 035 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
 
 
 **Example: 8 MPI ranks - where 4 ranks share a GPU (packed, single-node)**
@@ -1089,14 +1233,14 @@ the distribution flag does impact the CPU/Thread binding.
     $ export OMP_NUM_THREADS=1
     $ srun -N1 -n8 -c4 --ntasks-per-gpu=4 --distribution=block:block ./hello_jobstep | sort
 
-    MPI 000 - OMP 000 - HWT 000 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 001 - OMP 000 - HWT 004 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 002 - OMP 000 - HWT 008 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 003 - OMP 000 - HWT 012 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 004 - OMP 000 - HWT 016 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID C1
-    MPI 005 - OMP 000 - HWT 020 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID C1
-    MPI 006 - OMP 000 - HWT 024 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID C1
-    MPI 007 - OMP 000 - HWT 031 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID C1
+    MPI 000 - OMP 000 - HWT 000 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
+    MPI 001 - OMP 000 - HWT 004 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
+    MPI 002 - OMP 000 - HWT 008 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
+    MPI 003 - OMP 000 - HWT 012 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
+    MPI 004 - OMP 000 - HWT 032 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
+    MPI 005 - OMP 000 - HWT 036 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
+    MPI 006 - OMP 000 - HWT 041 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
+    MPI 007 - OMP 000 - HWT 047 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
 
 
 **Example: 16 MPI ranks - where 2 ranks share a GPU (packed, multi-node)**
@@ -1108,24 +1252,24 @@ changes put in place in Example 7, it is a straightforward exercise to change to
 .. code:: bash
 
     $ export OMP_NUM_THREADS=1
-    $ srun -N2 -n16 -c8 --ntasks-per-gpu=4 --distribution=*:block ./hello_jobstep | sort
+    $ srun -N2 -n16 -c2 --ntasks-per-gpu=4 --distribution=*:block ./hello_jobstep | sort
 
     MPI 000 - OMP 000 - HWT 000 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 001 - OMP 000 - HWT 008 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 002 - OMP 000 - HWT 016 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 003 - OMP 000 - HWT 024 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 004 - OMP 000 - HWT 032 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID C1
-    MPI 005 - OMP 000 - HWT 040 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID C1
-    MPI 006 - OMP 000 - HWT 049 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID C1
-    MPI 007 - OMP 000 - HWT 063 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID C1
+    MPI 001 - OMP 000 - HWT 002 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
+    MPI 002 - OMP 000 - HWT 004 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
+    MPI 003 - OMP 000 - HWT 006 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
+    MPI 004 - OMP 000 - HWT 008 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
+    MPI 005 - OMP 000 - HWT 010 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
+    MPI 006 - OMP 000 - HWT 012 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
+    MPI 007 - OMP 000 - HWT 014 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
     MPI 008 - OMP 000 - HWT 000 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 009 - OMP 000 - HWT 010 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 010 - OMP 000 - HWT 016 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 011 - OMP 000 - HWT 024 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 012 - OMP 000 - HWT 032 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID C1
-    MPI 013 - OMP 000 - HWT 040 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID C1
-    MPI 014 - OMP 000 - HWT 048 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID C1
-    MPI 015 - OMP 000 - HWT 063 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 1 - Bus_ID C1
+    MPI 009 - OMP 000 - HWT 002 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
+    MPI 010 - OMP 000 - HWT 004 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
+    MPI 011 - OMP 000 - HWT 006 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
+    MPI 012 - OMP 000 - HWT 008 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
+    MPI 013 - OMP 000 - HWT 010 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
+    MPI 014 - OMP 000 - HWT 012 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
+    MPI 015 - OMP 000 - HWT 015 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
 
 
 
