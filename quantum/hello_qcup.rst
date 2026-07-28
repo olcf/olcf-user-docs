@@ -424,6 +424,8 @@ For more information please see:
 
             QsysResult(results=[QsysShot(entries=[['teleported', 1]])
 
+.. _hello-ionq:
+
 IonQ
 ====
 
@@ -436,54 +438,123 @@ For more information please see:
 * `<https://ionq.com/resources>`__
 * `<https://docs.ionq.com/guides/managing-api-keys>`__
 * `<https://docs.ionq.com/sdks/qiskit>`__
+* `<https://docs.ionq.com/guides/job-cost-and-usage>`__
 
-.. list-table:: Latest script tests
-   :widths: 33 33 34
-   :header-rows: 1
+.. tab-set::
 
-   * - ``python``
-     - ``qiskit``
-     - ``qiskit-ionq``
-   * - 3.12.12
-     - 2.3.0
-     - 1.0.2
+   .. tab-item:: Running Jobs
 
-.. code-block:: python
+        .. list-table:: Latest script tests
+            :widths: 33 33 34
+            :header-rows: 1
 
-    from qiskit import QuantumCircuit
-    from qiskit_ionq import IonQProvider
-    import os
+            * - ``python``
+              - ``qiskit``
+              - ``qiskit-ionq``
+            * - 3.12.12
+              - 2.3.0
+              - 1.0.2
 
-    # Set your credentials (can also set this externally)
-    os.environ["IONQ_API_KEY"] = "API KEY GOES HERE"
+        .. code-block:: python
 
-    # Load your IonQ credentials and list backends
-    provider = IonQProvider()
-    print(provider.backends())
+            from qiskit import QuantumCircuit
+            from qiskit_ionq import IonQProvider
+            import os
 
-    # Run on "simulator", "qpu.aria-1", "qpu.forte-1", "qpu.forte-enterprise-1"
-    backend = provider.get_backend("simulator")
-    #backend.set_options(noise_model="forte-1") # Optional: set a noise model for a simulator
+            # Set your credentials (can also set this externally)
+            os.environ["IONQ_API_KEY"] = "API KEY GOES HERE"
 
-    # Create a basic Bell State circuit:
-    qc = QuantumCircuit(2, 2)
-    qc.h(0)
-    qc.cx(0, 1)
-    qc.measure([0, 1], [0, 1])
+            # Load your IonQ credentials and list backends
+            provider = IonQProvider()
+            print(provider.backends())
 
-    # Run the circuit on IonQ's platform:
-    job = backend.run(qc, shots=10000)
+            # Run on "simulator", "qpu.forte-1", "qpu.forte-enterprise-1"
+            backend = provider.get_backend("simulator")
+            #backend.set_options(noise_model="forte-1") # Optional: set a noise model for a simulator
 
-    # Print results
-    print(job.get_counts())
-    print(job.get_probabilities())
+            # Create a basic Bell State circuit:
+            qc = QuantumCircuit(2, 2)
+            qc.h(0)
+            qc.cx(0, 1)
+            qc.measure([0, 1], [0, 1])
 
-After running the above script, you should see something similar to:
+            # Run the circuit on IonQ's platform:
+            job = backend.run(qc, shots=10000)
 
-.. code-block::
+            # Print results
+            print(job.get_counts())
+            print(job.get_probabilities())
 
-    {'00': 4933, '11': 5067}
-    {'00': 0.5, '11': 0.5}
+        After running the above script, you should see something similar to:
+
+        .. code-block::
+
+            {'00': 4933, '11': 5067}
+            {'00': 0.5, '11': 0.5}
+
+   .. tab-item:: Estimating Cost
+
+        .. list-table:: Latest script tests
+            :widths: 33 33 34
+            :header-rows: 1
+
+            * - ``python``
+              - ``qiskit``
+              - ``qiskit-ionq``
+            * - 3.12.13
+              - 2.5.0
+              - 1.1.1
+
+        .. code-block:: python
+
+            from qiskit import QuantumCircuit
+            from qiskit_ionq import IonQProvider
+            import os, requests, time
+
+            # Set your credentials (can also set this externally)
+            os.environ["IONQ_API_KEY"] = "API KEY GOES HERE"
+
+            # Load your IonQ credentials
+            provider = IonQProvider()
+
+            # Run on "simulator", "qpu.forte-1", "qpu.forte-enterprise-1"
+            backend = provider.get_backend("qpu.forte-1")
+
+            # Create a basic Bell State circuit:
+            qc = QuantumCircuit(2, 2)
+            qc.h(0)
+            qc.cx(0, 1)
+            qc.measure([0, 1], [0, 1])
+
+            # Execute "dry-run" of the circuit on IonQ's platform:
+            job = backend.run(qc, shots=1000, dry_run=True)
+
+            # Wait for job to complete
+            while str(job.status()) != "JobStatus.DONE":
+                print("Job status is", job.status() )
+                time.sleep(5)
+            print("Job status is", job.status() )
+
+            # Take the job ID from your completed dry-run job
+            job_id = str(job.job_id())
+
+            # Set up authentication for API request
+            headers = {"Authorization": f"apiKey {os.getenv('IONQ_API_KEY')}"}
+
+            # Submit the cost estimate request
+            response = requests.get(
+                url=f"https://api.ionq.co/v0.4/jobs/{job_id}/cost",
+                headers=headers
+            )
+
+            # Print the response
+            print(response.json())
+
+        After running the above script, you should see a predicted credit cost for your job similar to:
+
+        .. code-block::
+
+            {'dry_run': True, 'estimated_cost': {'unit': 'credits', 'value': 2.479641}}
 
 
 
