@@ -13,7 +13,7 @@ instructions on how to gain access, see our :doc:`Quantum Access
 
 IonQ systems
 ============
-Currently accessible IonQ trapped-ion systems include Aria (#AQ 25) and Forte (#AQ 36).
+Currently accessible IonQ trapped-ion systems include Forte (#AQ 36) and Forte Enterprise 1 (#AQ 36).
 
 IonQ measures overall system size and performance using application-based benchmarking to determine the number of 
 `algorithmic qubits, or #AQ <https://ionq.com/resources/algorithmic-qubits-a-better-single-number-metric>`__. 
@@ -27,7 +27,7 @@ This information is also available `via the IonQ API <https://docs.ionq.com/user
 More information is also available on IonQ's website `here <https://ionq.com/quantum-systems/compare>`__.
 
 IonQ also provides access to a cloud-based simulator, which can be used with 
-`noise models based on Aria and Forte <https://docs.ionq.com/guides/simulation-with-noise-models>`__. 
+`noise models based on Aria (retired) and Forte <https://docs.ionq.com/guides/simulation-with-noise-models>`__. 
 The simulator can be accessed and used in the same way as IonQ’s trapped-ion hardware systems.
 
 Connecting
@@ -152,7 +152,7 @@ case studies, on topics including:
 * `Best practices for using IonQ's fully-connected trapped-ion hardware <https://ionq.com/docs/best-practices-for-using-ionq-hardware>`__
 * `Debiasing and sharpening (IonQ's default error mitigation technique) <https://ionq.com/resources/debiasing-and-sharpening>`__
 * `Getting started with hardware noise model simulation <https://ionq.com/docs/get-started-with-hardware-noise-model-simulation>`__
-* `Using IonQ's hardware-native gate set <https://ionq.com/docs/getting-started-with-native-gates>`__,
+* `Using IonQ's hardware-native gate set <https://docs.ionq.com/features/getting-started-with-native-gates>`__,
   including with `Qiskit <https://ionq.com/docs/using-native-gates-with-qiskit>`__,
   `Cirq <https://ionq.com/docs/using-native-gates-with-cirq>`__,
   and `Pennylane <https://ionq.com/docs/using-native-gates-with-pennylane>`__
