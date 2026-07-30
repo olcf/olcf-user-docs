@@ -79,10 +79,10 @@ Currently, the service supports the following models:
       - Code, Text (Loaded on-demand)
     * - `nomic-embed-text-v2-moe <https://huggingface.co/nomic-ai/nomic-embed-text-v2-moe>`__
       - ``nomic-embed-text-v2-moe``, ``nomic-embed-v2``
-      - Text Embedding (Always On)
+      - Text Embedding (Always On - CPU)
     * - `embeddinggemma-300m <https://huggingface.co/google/embedding-gemma-300m>`__
       - ``embeddinggemma-300m``, ``embedding-gemma``
-      - Text Embedding (Always On)
+      - Text Embedding (Always On - CPU)
     * - `mxbai-rerank-large-v2 <https://huggingface.co/mixedbread-ai/mxbai-rerank-large-v2>`__
       - ``mxbai-rerank-large-v2``, ``mxbai-rerank``
       - Reranking (Always On)
