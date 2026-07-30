@@ -56,7 +56,7 @@ Currently, the service supports the following models:
     * - `gpt-oss-120b <https://huggingface.co/openai/gpt-oss-120b>`__
       - ``gpt-oss-120b``, ``gpt-oss``
       - Text, Reasoning (Always On)
-    * - `llama-4-maverick <https://huggingface.co/meta-llama/Llama-4-Maverick-17B-128E>`__
+    * - `llama-4-maverick <https://huggingface.co/meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8>`__
       - ``llama-4-maverick``, ``llama-4``
       - Text, Reasoning (Always On)
     * - `gemma-4-31b <https://huggingface.co/google/gemma-4-31b>`__
