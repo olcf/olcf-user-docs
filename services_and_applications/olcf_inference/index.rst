@@ -55,16 +55,37 @@ Currently, the service supports the following models:
       - Features
     * - `gpt-oss-120b <https://huggingface.co/openai/gpt-oss-120b>`__
       - ``gpt-oss-120b``, ``gpt-oss``
-      - Text, Reasoning
-    * - `nemotron-nano-fp8 <https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-FP8>`__
-      - ``nemotron-nano-fp8``, ``nemotron-nano``
-      - Text, Reasoning
+      - Text, Reasoning (Always On)
+    * - `llama-4-maverick <https://huggingface.co/meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8>`__
+      - ``llama-4-maverick``, ``llama-4``
+      - Text, Reasoning (Always On)
+    * - `gemma-4-31b <https://huggingface.co/google/gemma-4-31b>`__
+      - ``gemma-4-31b``, ``gemma-4``
+      - Text, Reasoning (Always On)
+    * - `olmo-3.1-32b-instruct <https://huggingface.co/allenai/olmo-3.1-32b-instruct>`__
+      - ``olmo-3.1-32b-instruct``, ``olmo-3``
+      - Text, Reasoning (Always On)
+    * - `nemotron-3-nano-30b-a3b-bf16 <https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-BF16>`__
+      - ``nemotron-3-nano-30b-a3b-bf16``, ``nemotron-nano``
+      - Text, Reasoning (Loaded on-demand)
     * - `apriel-1.6-15b-thinker <https://huggingface.co/ServiceNow-AI/Apriel-1.6-15b-Thinker>`__
       - ``apriel-1.6-15b-thinker``, ``apriel-15b-thinker``
-      - Text, Reasoning, Vision
+      - Text, Reasoning, Vision (Loaded on-demand)
+    * - `llama-3.1-70b-instruct <https://huggingface.co/meta-llama/llama-3.1-70b-instruct>`__
+      - ``llama-3.1-70b-instruct``, ``llama-3.1-70b``
+      - Text, Reasoning (Loaded on-demand)
+    * - `starcoder2-15b-instruct <https://huggingface.co/bigcode/starcoder2-15b>`__
+      - ``starcoder2-15b-instruct``, ``starcoder2``
+      - Code, Text (Loaded on-demand)
     * - `nomic-embed-text-v2-moe <https://huggingface.co/nomic-ai/nomic-embed-text-v2-moe>`__
       - ``nomic-embed-text-v2-moe``, ``nomic-embed-v2``
-      - Text Embedding
+      - Text Embedding (Always On - CPU)
+    * - `embeddinggemma-300m <https://huggingface.co/google/embeddinggemma-300m>`__
+      - ``embeddinggemma-300m``, ``embedding-gemma``
+      - Text Embedding (Always On - CPU)
+    * - `mxbai-rerank-large-v2 <https://huggingface.co/mixedbread-ai/mxbai-rerank-large-v2>`__
+      - ``mxbai-rerank-large-v2``, ``mxbai-rerank``
+      - Reranking (Always On)
 
 Multi-Modal Inputs
 ------------------
