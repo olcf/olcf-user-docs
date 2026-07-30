@@ -56,7 +56,7 @@ Currently, the service supports the following models:
     * - `gpt-oss-120b <https://huggingface.co/openai/gpt-oss-120b>`__
       - ``gpt-oss-120b``, ``gpt-oss``
       - Text, Reasoning (Always On)
-    * - `llama-4-maverick <https://huggingface.co/meta-llama/llama-4-maverick>`__
+    * - `llama-4-maverick <https://huggingface.co/meta-llama/Llama-4-Maverick-17B-128E>`__
       - ``llama-4-maverick``, ``llama-4``
       - Text, Reasoning (Always On)
     * - `gemma-4-31b <https://huggingface.co/google/gemma-4-31b>`__
@@ -80,7 +80,7 @@ Currently, the service supports the following models:
     * - `nomic-embed-text-v2-moe <https://huggingface.co/nomic-ai/nomic-embed-text-v2-moe>`__
       - ``nomic-embed-text-v2-moe``, ``nomic-embed-v2``
       - Text Embedding (Always On - CPU)
-    * - `embeddinggemma-300m <https://huggingface.co/google/embedding-gemma-300m>`__
+    * - `embeddinggemma-300m <https://huggingface.co/google/embeddinggemma-300m>`__
       - ``embeddinggemma-300m``, ``embedding-gemma``
       - Text Embedding (Always On - CPU)
     * - `mxbai-rerank-large-v2 <https://huggingface.co/mixedbread-ai/mxbai-rerank-large-v2>`__
