@@ -506,8 +506,8 @@ their use can be found in the related subsections.
 Node-sharing on Riker
 ---------------------
 
-Riker is a node-shared Slurm cluster: multiple users may run on the same physical node at the same time, as long as their allocated resources do not overlap. 
-Node sharing on Riker is enforced through Slurm allocations of CPU cores, memory, and (on GPU nodes) GPUs, with additional site policies that reserve CPU cores for GPU work.
+Riker is a node-shared Slurm cluster: multiple users may run on the same physical node at the same time, as long as their resource requests do not overlap. 
+Node sharing on Riker is facilitated through Slurm allocations of CPU cores, memory, and (on GPU nodes) GPUs, with additional site policies that reserve CPU cores for GPU work on GPU nodes.
 
 When constructing a job on Riker, please be aware of the two-phase resource allocation steps within Slurm.
 
@@ -582,6 +582,72 @@ Example script:
     
 .. note::
     Riker should support the majority of Slurm job structures. If you find that your job structure does not work as expected, please reach out to help@olcf.ornl.gov.
+
+Node-sharing Visualizations
+^^^^^^^^^^^^^^^^^^^^^
+
+CPU Example
+"""""""""""
+
+Yellow requests 64 Cores on a Riker38
+
+.. code-block:: bash
+
+    salloc  -A <account> -p batch -N1 -t 10 -c 64 –w riker38
+
+Blue requests 33 Cores on Riker38
+
+.. code-block:: bash
+
+    salloc -A <account> -p batch -N1 -t 10 -c 33 –w riker38
+
+Purple requests 200GB of memory on Riker38
+
+.. code-block:: bash
+
+    salloc -A <account> -p batch -N1 -t 10 --mem=200GB –w riker38
+
+The remaining cores and left unallocated.
+
+.. image:: /images/riker_batch_share.png
+   :align: center
+   :width: 100%
+   :alt: Riker node share gpu
+
+
+GPU Example
+"""""""""""
+
+Pink running a job across 3 GPUs
+
+.. code-block:: bash
+
+    salloc -A <account> -N2 -t10 -p gpu --gpus=3 
+
+Red requests that remaining GPU and 20 cores on riker-gpu2
+
+.. code-block:: bash
+
+    salloc -A <account> -N1 -t10 -p gpu --gpus=1 --cpus-per-gpu=20 -w riker-gpu2 
+
+Green requests the remaining cores on riker-gpu1 for a CPU-Only Workload
+
+.. code-block:: bash
+
+    salloc -A <account> -N1 -t60 -p gpu -c 32 -w riker-gpu1 
+
+Purple requests the remaining cores on riker-gpu2 for CPU-Only Workload
+
+.. code-block:: bash
+
+    salloc -A <account> -N1 -t60 -p gpu -c 28 -w riker-gpu2
+
+.. image:: /images/riker_gpu_share.png
+   :align: center
+   :width: 100%
+   :alt: Riker node share gpu
+
+
 
 
 Queues on Riker
