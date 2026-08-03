@@ -119,13 +119,15 @@ A VASP calculation requires four input files: ``INCAR``, ``POSCAR``, ``POTCAR``,
 *********************************
 
 A VASP calculation requires a ``POTCAR`` file, which is a concatenation of pseudopotential
-files for each atomic species in the order they appear in ``POSCAR``. Pseudopotentials are
-distributed with your VASP license and are not provided by OLCF. For the silicon example,
+files for each atomic species in the order they appear in ``POSCAR``. Pseudopotentials distributed
+with VASP are located in ``$VASP_POTENTIALS_DIR/<functional>/<element>`` where ``<functional>``
+can be ``LDA`` or ``PBE``. Each directory contains element directories containing the corresponding 
+``POTCAR`` file. For the silicon example,
 concatenate the silicon pseudopotential into a file named ``POTCAR`` in the working directory:
 
 .. code-block:: bash
 
-    cat /path/to/potpaw_PBE/Si/POTCAR > POTCAR
+    cat $VASP_POTENTIALS_DIR/PBE/Si/POTCAR > POTCAR
 
 If your system has multiple species, concatenate their ``POTCAR`` files in the same order the
 species appear in ``POSCAR``.
