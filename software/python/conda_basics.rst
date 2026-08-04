@@ -26,7 +26,7 @@ First, load the python module and the gnu compiler module (most Python packages 
       .. code-block:: bash
 
          $ module load gcc/9.3.0
-         $ module load miniforge3/23.11.0-0
+         $ module load miniforge3/24.11.3-2
 
    .. tab-item:: Frontier
       :sync: frontier
@@ -46,7 +46,7 @@ To see a list of environments, use the command ``conda env list``:
 
    # conda environments:
    #
-   base                  *  /sw/frontier/miniforge3/24.3.0-0
+   base                  *  /sw/frontier/miniforge3/23.11.0-0
 
 This also is a great way to keep track of the locations and names of all other environments that have been created.
 The current environment is indicated by ``*``.
@@ -57,7 +57,7 @@ To see what packages are installed in the active environment, use ``conda list``
 
    $ conda list
 
-   # packages in environment at /sw/frontier/miniforge3/24.3.0-0:
+   # packages in environment at /sw/frontier/miniforge3/23.11.0-0:
    #
    # Name                    Version                   Build  Channel
    _libgcc_mutex             0.1                 conda_forge    conda-forge
@@ -118,12 +118,11 @@ Downloads of the fresh packages will start and eventually you should see somethi
    #
    #     $ conda deactivate
 
-Due to the specific nature of conda at OLCF (multiple systems where conda installations can clash), you must use ``source activate`` and ``source deactivate`` instead of ``conda activate`` and ``conda deactivate``.
 Let's activate the new environment:
 
 .. code-block:: bash
 
-   $ source activate /ccs/proj/<project_id>/<username>/envs/frontier/py311-frontier
+   $ conda activate /ccs/proj/<project_id>/<username>/envs/frontier/py311-frontier
 
 The path to the environment should now be displayed in "( )" at the beginning of your terminal lines, which indicate that you are currently using that specific conda environment.
 And if you check with ``conda env list`` again, you should see that the ``*`` marker has moved to your newly activated environment:
@@ -224,7 +223,7 @@ Additional Tips
     .. code-block:: bash
 
        $ conda create -p /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/envs/frontier/baseclone-frontier --clone base
-       $ source activate /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/envs/frontier/baseclone-frontier
+       $ conda activate /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/envs/frontier/baseclone-frontier
 
 * **Adding known environment locations**:
 
@@ -246,7 +245,7 @@ Additional Tips
 
     This will create a ``.condarc`` file in your ``$HOME`` directory if you do not have one already, which will now contain this new envs_dirs location.
     This will now enable you to use the ``--name env_name`` flag when using conda commands for environments stored in the ``frontier`` directory, instead of having to use the ``-p /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/envs/frontier/env_name`` flag and specifying the full path to the environment.
-    For example, you can do ``source activate py3711-frontier`` instead of ``source activate /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/envs/frontier/py3711-frontier``.
+    For example, you can do ``conda activate py3711-frontier`` instead of ``conda activate /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/envs/frontier/py3711-frontier``.
 
 * **Exporting (sharing) an environment**:
 
@@ -258,7 +257,7 @@ Additional Tips
     
     .. code-block:: bash
 
-       $ source activate my_env
+       $ conda activate my_env
        $ conda env export > environment.yml
     
     You can then email or otherwise provide the ``environment.yml`` file to the desired person.
@@ -332,8 +331,8 @@ Quick-Reference Commands
 
     .. code-block:: bash
 
-       $ source activate my_env
-       $ source deactivate # deactivates the current environment
+       $ conda activate my_env
+       $ conda deactivate # deactivates the current environment
 
 * Installing/Uninstalling packages:
 

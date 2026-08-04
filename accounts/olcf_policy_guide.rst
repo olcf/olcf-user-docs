@@ -5,13 +5,8 @@ OLCF Policy Guides
 OLCF Acknowledgement
 ====================
 
-Users should acknowledge the OLCF in all publications and presentations
-that speak to work performed on OLCF resources:
+Users should acknowledge the OLCF in all publications and presentations that speak to work performed on OLCF resources. The current acknowledgement can be found on the OLCF website here: https://www.olcf.ornl.gov/about-olcf/media-assets/
 
-    This research used resources of the Oak Ridge Leadership Computing
-    Facility at the Oak Ridge National Laboratory, which is supported by the
-    Office of Science of the U.S. Department of Energy under Contract No.
-    DE-AC05-00OR22725.
 
 ********
 
@@ -760,6 +755,7 @@ apply to sensitive data:
 
 -  Only store sensitive data in designated locations. Do not store
    sensitive data in your User Home directory.
+-  Do not include sensitive or controlled information in file or directory names, application names, job names or submission scripts, environment variables, or any other unencrypted text.
 -  Never allow access to your sensitive data to anyone outside of your
    group.
 -  Transfer of sensitive data must be through the use encrypted methods

@@ -13,7 +13,7 @@ instructions on how to gain access, see our :doc:`Quantum Access
 
 IonQ systems
 ============
-Currently accessible IonQ trapped-ion systems include Aria (#AQ 25) and Forte (#AQ 36).
+Currently accessible IonQ trapped-ion systems include Forte (#AQ 36) and Forte Enterprise 1 (#AQ 36).
 
 IonQ measures overall system size and performance using application-based benchmarking to determine the number of 
 `algorithmic qubits, or #AQ <https://ionq.com/resources/algorithmic-qubits-a-better-single-number-metric>`__. 
@@ -27,7 +27,7 @@ This information is also available `via the IonQ API <https://docs.ionq.com/user
 More information is also available on IonQ's website `here <https://ionq.com/quantum-systems/compare>`__.
 
 IonQ also provides access to a cloud-based simulator, which can be used with 
-`noise models based on Aria and Forte <https://docs.ionq.com/guides/simulation-with-noise-models>`__. 
+`noise models based on Aria (retired) and Forte <https://docs.ionq.com/guides/simulation-with-noise-models>`__. 
 The simulator can be accessed and used in the same way as IonQ’s trapped-ion hardware systems.
 
 Connecting
@@ -57,7 +57,7 @@ IonQ API
 IonQ's systems can be accessed directly via their IonQ Cloud Platform API,
 using ``curl`` to submit requests formatted in their language-agnostic JSON
 circuit representation.  The complete API documentation is located at
-`docs.ionq.com <https://docs.ionq.com/api-reference/v0.3/introduction>`__.
+`docs.ionq.com <https://docs.ionq.com/api-reference/v0.4/introduction>`__.
 
 .. _ionq-sdks:
 
@@ -66,15 +66,13 @@ Quantum SDKs
 
 IonQ supports several different quantum software development kits, including:
 
-* `Qiskit <https://ionq.com/docs/get-started-with-qiskit>`__
-* `Cirq <https://ionq.com/docs/get-started-with-cirq>`__
-* `ProjectQ <https://ionq.com/docs/get-started-with-projectq-on-ionq-hardware>`__
+* `Qiskit <https://docs.ionq.com/sdks/qiskit/index>`__
+* `Cirq <https://docs.ionq.com/sdks/cirq/index>`__
 * `PennyLane <https://docs.ionq.com/sdks/pennylane/index>`__
 * `qBraid <https://docs.ionq.com/sdks/qbraid/index>`__
-* `Pytket <https://ionq.com/resources/hello-many-worlds-in-7-quantum-languages#hello-pytket>`__
-* `XACC <https://ionq.com/resources/hello-many-worlds-in-7-quantum-languages#hello-xacc>`__
+* `CUDA-Q <https://docs.ionq.com/sdks/cuda-q>`__
 
-IonQ's guides for getting started with each of these frameworks are linked in this list.
+IonQ's guides for getting started with each of these frameworks can be found `here <https://docs.ionq.com/sdks>`__.
 Additionally, example Jupyter notebooks can be found in their
 `getting-started GitHub repository <https://github.com/ionq-samples/getting-started>`__.
 
@@ -104,14 +102,13 @@ of the SDKs listed above. Each approach has a slightly different syntax for conn
 to the IonQ Cloud Platform and specifying which system to use, as described in the
 guides and documentation linked above.
 
-.. note::
-    A recommended workflow for running on IonQ's quantum computers is to
-    utilize the simulator first, then run on one of the quantum computers. This is highlighted in the examples.
-
 .. _ionq-alloc:
 
 Allocations & Credit Usage
 ==========================
+
+.. note::
+    See `IonQ's Job Cost Guide <https://docs.ionq.com/guides/job-cost-and-usage>`__ and :ref:`our dry-run "Estimating Cost" example <hello-ionq>` to estimate credit need.
 
 Usage of IonQ’s trapped-ion hardware systems is recorded in 2-qubit gate equivalents. Usage of IonQ’s cloud simulator,
 including with hardware-based noise models, is unlimited and requires no credits to use.
@@ -120,12 +117,15 @@ Running a job on IonQ hardware requires IonQ Credits. In order to request an Ion
 
 * Any request for credits must be submitted by the project Principle Investigator (PI) by logging into `myOLCF <https://my.olcf.ornl.gov>`__, select your QCUP project under "My Projects" after login, and use the `Quantum Allocation Request form <https://my.olcf.ornl.gov/allocations/quantumAllocation>`__ under the "Allocations" section. Alternatively, you can send a request through our help ticket system (help@olcf.ornl.gov).
 
-* Requests for machine credits must be justified using results from the appropriate simulator to determine the appropriate amount needed. Requests without simulator-based justifications will be denied. Using `IonQ's Resource Estimator <https://ionq.com/programs/research-credits/resource-estimator>`__ is also highly recommended.
+* Requests for machine credits must be justified using results from the appropriate simulator to determine the appropriate amount needed. Requests without simulator or "dry run"-based justifications will be denied.
 
 * Requests will be evaluated based on the provided technical justification, programmatic efficiency, and machine availability. The effective usage of prior allocations by the project will also be considered.
 
-Users can obtain additional information about their allocation and credit usage by contacting help@olcf.ornl.gov.
+* If the request was approved, **credits (i.e., the raised IonQ "budget") will expire after 2 months by default.**
 
+    * For example, if project ABC123 was granted credits on January 1, then they will forfeit all un-used credits on March 1. An extension to this period can be requested by contacting help@olcf.ornl.gov.
+
+Users can obtain additional information about their allocation and credit usage by contacting help@olcf.ornl.gov.
 
 .. _ionq-systems:
 
@@ -152,7 +152,7 @@ case studies, on topics including:
 * `Best practices for using IonQ's fully-connected trapped-ion hardware <https://ionq.com/docs/best-practices-for-using-ionq-hardware>`__
 * `Debiasing and sharpening (IonQ's default error mitigation technique) <https://ionq.com/resources/debiasing-and-sharpening>`__
 * `Getting started with hardware noise model simulation <https://ionq.com/docs/get-started-with-hardware-noise-model-simulation>`__
-* `Using IonQ's hardware-native gate set <https://ionq.com/docs/getting-started-with-native-gates>`__,
+* `Using IonQ's hardware-native gate set <https://docs.ionq.com/features/getting-started-with-native-gates>`__,
   including with `Qiskit <https://ionq.com/docs/using-native-gates-with-qiskit>`__,
   `Cirq <https://ionq.com/docs/using-native-gates-with-cirq>`__,
   and `Pennylane <https://ionq.com/docs/using-native-gates-with-pennylane>`__

@@ -126,7 +126,8 @@ def copy_sw_file(app, exception):
     src = '/tmp/software_list_group.json'
     dest = os.path.join(app.builder.outdir, 'software/software_list/', 'software_list_group.json')
 
-    shutil.copy(src, dest)
+    if os.path.exists(src):
+        shutil.copy(src, dest)
 
 def setup(app):
     '''Function to setup sphinx customizations.'''

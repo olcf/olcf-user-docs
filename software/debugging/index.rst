@@ -24,11 +24,11 @@ Download
 
 **Andes**
 
-    You can download the remote client (version 23.1) from the `Linaro Forge <https://www.linaroforge.com/downloadForge/>`_ page.
+    You can download the remote client (version 25.0) from the `Linaro Forge <https://www.linaroforge.com/downloadForge/>`_ page.
 
 **Frontier**
 
-    You can download the remote client (version 23.1) from the `Linaro Forge <https://www.linaroforge.com/downloadForge/>`_ page.
+    You can download the remote client (version 25.1) from the `Linaro Forge <https://www.linaroforge.com/downloadForge/>`_ page.
 
 Installation
 ============
@@ -50,7 +50,7 @@ Configuration
         The following section will outline how to configure the Linaro Forge client for **Andes**.
         
         .. note::
-           Andes has Forge/23.1 installed. So make sure to download the corresponding remote client version from  `Linaro Forge <https://www.linaroforge.com/downloadForge/>`_ page.
+           Andes has linaro_forge/25.0.1 installed (see ``module spider forge`` for older versions). So make sure to download the corresponding remote client version from  `Linaro Forge <https://www.linaroforge.com/downloadForge/>`_ page.
 
 
         **Reverse Connect Setup Instructions**
@@ -87,12 +87,12 @@ Configuration
 
                 * If the host you wish to connect to requires connecting through a gateway machine, you can enter ``user@hostname1`` ``user@hostname2`` (where ``hostname1`` is the gateway and ``hostname2`` is the final destination).
 
-            * In the ``Remote Installation Directory`` box, enter the remote path to the Linaro Forge installation (To find the path for a version of Forge, load the forge/23.1 module file in a terminal and run ``echo $DDT_HOME``)
+            * In the ``Remote Installation Directory`` box, enter the remote path to the Linaro Forge installation (To find the path for a version of Forge, load the linaro_forge/25.0.1 module file in a terminal and run ``echo $DDT_HOME``)
 
 
             * For the remaining fields, the default values will work for the vast majority of setups. See the `Linaro Forge documentation <https://www.linaroforge.com/documentation/>`_ for more information on these fields.
 
-        .. figure:: /images/ddt_config_andes.png
+        .. figure:: /images/linaro_andes_config.png
             :align: center
             :width: 800
 
@@ -108,11 +108,11 @@ Configuration
 
         **Reverse Connect**
     
-        #. In a separate terminal where you are logged into Andes, load the ``forge/23.1`` module, and run a ``ddt --connect`` command via the batch system (e.g., by editing and running a job script, or running with an interactive shell).
+        #. In a separate terminal where you are logged into Andes, load the ``linaro_forge/25.0.1`` module, and run a ``ddt --connect`` command via the batch system (e.g., by editing and running a job script, or running with an interactive shell).
 
             .. code-block:: bash
 
-                module load forge/23.1
+                module load linaro_forge/25.0.1
                 ddt --connect srun -n 8 ./mpi_openmp_hello
 
         #. The remote client will notify you of a new connection.
@@ -136,10 +136,12 @@ Configuration
 
         The following section will outline how to configure the Linaro Forge client for **Frontier**.
 
+        .. note::
+            Frontier has linaro-forge/25.1 installed (see ``module spider forge`` or ``module spider linaro-forge`` for older versions). So make sure to download the corresponding remote client version from  `Linaro Forge <https://www.linaroforge.com/downloadForge/>`_ page.
 
         **Reverse Connect Setup Instructions**
         
-        Prior to launching the reverse connect you will need to set a couple of environment variables so the connection request gets routed correctly. The following ``export`` vars will need to be sourced in your batch script prior to srun or you can just source them prior to obtaining your node allocation.
+        Prior to launching the reverse connect you will need to set a couple of environment variables so the connection request gets routed correctly. The following ``export`` vars will need to be sourced in your batch script prior to ``srun`` or you can just source them prior to obtaining your node allocation.
         
 
         .. code-block:: bash
@@ -163,7 +165,7 @@ Configuration
         
         #. In the Forge Remote Launch setup window:
 
-            * In the ``Remote Script`` box, Enter the path to the file you created earlier ``/ccs/home/<user>/forge_remote_connect_vars.sh``. 
+            * In the ``Remote Script`` box, Enter the path to the file you created earlier ``/ccs/home/<user>/linaro.bsh``. 
 
             * (Optionally) In the ``Connection Name`` box, enter a name for your remote connection (otherwise the host name will be used)
 
@@ -171,12 +173,12 @@ Configuration
 
                 * If the host you wish to connect to requires connecting through a gateway machine, you can enter ``user@hostname1`` ``user@hostname2`` (where ``hostname1`` is the gateway and ``hostname2`` is the final destination).
 
-            * In the ``Remote Installation Directory`` box, enter the remote path to the Linaro Forge installation (To find the path for a version of Forge, load the forge/23.1 module file in a terminal and run ``echo $DDT_HOME``)
+            * In the ``Remote Installation Directory`` box, enter the remote path to the Linaro Forge installation (To find the path for a version of Forge, load the linaro-forge/25.1 module file in a terminal and run ``echo $OLCF_LINARO_FORGE_ROOT``)
 
 
             * For the remaining fields, the default values will work for the vast majority of setups. See the `Linaro Forge documentation <https://www.linaroforge.com/documentation/>`_ for more information on these fields.
 
-        .. figure:: /images/ddt_remote_script.png
+        .. figure:: /images/linaro_frontier_config.png
             :align: center
             :width: 800
 
@@ -192,11 +194,11 @@ Configuration
 
         **Reverse Connect**
     
-        #. In a separate terminal where you are logged into Frontier, load the ``forge/23.1`` module, and run a ``ddt --connect`` command via the batch system (e.g., by editing and running a job script, or running with an interactive shell).
+        #. In a separate terminal where you are logged into Frontier, load the ``linaro-forge/25.1`` module, and run a ``ddt --connect`` command via the batch system (e.g., by editing and running a job script, or running with an interactive shell).
 
             .. code-block:: bash
 
-                module load forge/23.1
+                module load linaro-forge/25.1
                 ddt --connect srun -n 8 ./hello_mpi_omp
 
         #. The remote client will notify you of a new connection.

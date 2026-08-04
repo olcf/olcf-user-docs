@@ -39,3 +39,8 @@ body > div > nav > div > div.wy-side-nav-search > a > a:visited{
       overflow: auto !important;
    }
 }
+
+.add-border img {
+   border: 1px solid black;
+}
+

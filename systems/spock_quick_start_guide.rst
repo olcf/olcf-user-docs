@@ -1,3 +1,4 @@
+:no-search:
 .. _spock-quick-start-guide:
 
 ***********************
@@ -5,11 +6,9 @@ Spock Quick-Start Guide
 ***********************
 
 .. warning::
-    **The Spock Early Access System was decommissioned on March 15, 2023.** The
-    file systems that were available on Spock are still accessible from the Home 
-    server and the Data Transfer Nodes (DTN), so all your data will remain accessible. 
-    If you do not have access to other OLCF systems, your project will move to data-only
-    for 30-days. If you have any questions, please contact help@olcf.ornl.gov.
+
+  This system was decommissioned on March 15, 2023 and is no longer online.
+  Information here is presented as an archive and is no longer updated.
 
 .. _spock-system-overview:
 

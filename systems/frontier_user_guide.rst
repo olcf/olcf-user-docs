@@ -196,6 +196,14 @@ Lustre Filesystem
 | World Work          | ``/lustre/orion/[projid]/world-shared``      | Lustre HPE ClusterStor | 775         |  50 TB | No      | 90 days | N/A        | Yes              |
 +---------------------+----------------------------------------------+------------------------+-------------+--------+---------+---------+------------+------------------+
 
+.. warning::
+   **Proprietary/Sensitive/Controlled Information Notice**
+
+   Portions of data and/or software used in your project may require extra protections due to requirements for proprietary, sensitive, or controlled information. It is imperative that filenames, application names, job names, environment variables, batch job scripts, or any other unencrypted text must never contain sensitive or controlled information.
+
+   If you have HIPAA or ITAR data, you will need to use our SPI resources. More information about SPI can be found `here <https://docs.olcf.ornl.gov/spi/index.html#scalable-protected-infrastructure-spi>`__.
+   
+   If you have security related questions, contact us via email at: security-admins@ccs.ornl.gov. Other questions can be sent to help@olcf.ornl.gov.
 
 
 Kronos Archival Storage
@@ -550,6 +558,17 @@ MPI
 
 The MPI implementation available on Frontier is Cray's MPICH, which is "GPU-aware" so GPU buffers can be passed directly to MPI calls.
 
+RCCL
+----
+
+The ROCm Collective Communication Library (RCCL) is installed with ROCm and can be accessed by loading a ``rocm`` module.
+RCCL requires an external network plugin and some addition environment configuration to correctly use the high-speed network on Frontier.
+Load the ``rccl-net-plugin`` module to configure your environment to use the external network plugin and tune the Slingshot network stack for RCCL.
+
+.. note::
+    RCCL and MPI have different communication patterns and benefit from different network configurations, so some settings in this module may change MPI performance.
+    It is recommended to load the ``rccl-net-plugin`` whenever you are using RCCL multi-node, even if using MPI in the same job, as some settings are critical for RCCL correctness and performance on Slingshot.
+
 ----
 
 
@@ -747,6 +766,10 @@ The following table shows the recommended ROCm version for each CCE version, alo
 +-------------+-------+---------------------------+
 |   19.0.0    | 25.03 | 6.2.4                     |
 +-------------+-------+---------------------------+
+|   20.0.0    | 25.09 | 6.4.2                     |
++-------------+-------+---------------------------+
+|   21.0.0    | 26.03 | 7.0.2                     |
++-------------+-------+---------------------------+
 
 .. note::
 
@@ -797,11 +820,15 @@ An asterisk indicates the latest officially supported version of ROCm for each `
 +------------+-------+--------------------------------------------------+
 |   8.1.32   | 25.03 | 6.3.1, 6.2.4, 6.2.0*, 6.1.3, 6.0.0               |
 +------------+-------+--------------------------------------------------+
+|   9.0.1    | 25.09 | 6.4*, 6.3, 6.2, 6.1, 6.0                         |
++------------+-------+--------------------------------------------------+
+|   9.1.0    | 26.03 | 7.2, 7.1, 7.0*                                   |
++------------+-------+--------------------------------------------------+
 
 .. note::
 
     OLCF recommends using the officially supported ROCm version (with asterisk) for each ``cray-mpich`` version.
-    Newer versions were tested using a sample of MPI operations and there may be undiscovered incompatibility.
+    Newer versions were tested using a sample of MPI applications and there may be undiscovered incompatibility.
 
 Compatibility with other CrayPE-provided Software
 """""""""""""""""""""""""""""""""""""""""""""""""
@@ -812,16 +839,15 @@ For example, the ``craype`` module provides the ``cc``, ``CC``, and ``ftn`` Cray
 These drivers are written to link to specific libraries (e.g., the ``ftn`` wrapper in September 2023 PE links to ``libtcmalloc_minimal.so``),
 which may not be needed by compiler versions other than the one they were released with.
 
-For the full compatibility of your loaded CrayPE environment, we strongly recommended loading the ``cpe`` module of your desired CrayPE release (version is the last two digits of the year and the two-digit month, e.g., December 2024 is version 24.11).
-For example, to load the December 2024 PE (CCE 17.0.1, Cray MPICH 8.1.31, ROCm 6.2.4 compatibility), 
+For the full compatibility of your loaded CrayPE environment, we strongly recommended loading the ``cpe`` module of your desired CrayPE release (version is the last two digits of the year and the two-digit month, e.g., March 2026 is version 26.03).
+For example, to load the March 2026 PE (CCE 21.0.0, Cray MPICH 9.1.0, ROCm 7.0.2 compatibility), 
 you would run the following commands:
 
 .. code:: bash
 
     module load PrgEnv-cray
-    # Load the cpe module after your desired PrgEnv, but before rocm -- cpe may attempt to load a rocm version other than what you want
-    module load cpe/24.11
-    module load rocm/6.2.4
+    module load cpe/26.03
+    module load rocm/7.0.2
 
     # Since these modules are not default, make sure to prepend CRAY_LD_LIBRARY_PATH to LD_LIBRARY_PATH
     export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
@@ -889,6 +915,12 @@ GNU programming environments do not support OpenACC at all.
 C and C++ support for OpenACC is provided by `clacc <https://impact.ornl.gov/en/publications/clacc-openacc-for-cc-in-clang>`_ which maintains a fork of the LLVM
 compiler with added support for OpenACC. It can be obtained by loading the UMS modules
 ``ums``, ``ums025``, and ``clacc``. 
+
+
+.. note::
+
+    Make sure the ``craype-accel-amd-gfx90a`` module is loaded when using the Cray compiler to
+    compile Fortran OpenACC code. 
 
 +--------+-------------------+-----------+----------------------------------+-------------------+-------------------------------------+
 | Vendor | Module            | Language  | Compiler                         | Flags             | Support                             |
@@ -1025,7 +1057,7 @@ The following sections describe in detail how to create, submit, and manage jobs
 Login vs Compute Nodes
 ----------------------
 
-Recall from the System Overview that Frontier contains two node types: Login and Compute. When you connect to the system, you are placed on a *login* node. Login nodes are used for tasks such as code editing, compiling, etc. They are shared among all users of the system, so it is not appropriate to run tasks that are long/computationally intensive on login nodes. Users should also limit the number of simultaneous tasks on login nodes (e.g., concurrent tar commands, parallel make 
+Recall from the System Overview that Frontier contains two node types: Login and Compute. When you connect to the system, you are placed on a *login* node. Login nodes are used for tasks such as code editing, compiling, etc. They are shared among all users of the system, so it is not appropriate to run tasks that are long/computationally intensive on login nodes. Users should also limit the number of simultaneous tasks on login nodes (e.g., concurrent tar commands, parallel make). 
 
 Compute nodes are the appropriate place for long-running, computationally-intensive tasks. When you start a batch job, your batch script (or interactive shell for batch-interactive jobs) runs on one of your allocated compute nodes.
 
@@ -1191,8 +1223,9 @@ The table below summarizes options for submitted jobs. Unless otherwise noted, t
     | ``-N``                 | ``#SBATCH -N 1024``                        | Request 1024 nodes for the job                                                       |
     +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
     | ``-t``                 | ``#SBATCH -t 4:00:00``                     | Request a walltime of 4 hours.                                                       |
-    |                        |                                            | Walltime requests can be specified as minutes, hours:minutes, hours:minuts:seconds   |
-    |                        |                                            | days-hours, days-hours:minutes, or days-hours:minutes:seconds                        |
+    |                        |                                            | A walltime request is the maximum amount of time a job will run and can be specified |
+    |                        |                                            | as minutes, hours:minutes, hours:minutes:seconds, days-hours, days-hours:minutes, or |
+    |                        |                                            | days-hours:minutes:seconds                                                           |
     +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
     | ``--threads-per-core`` | ``#SBATCH --threads-per-core=2``           | | Number of active hardware threads per core. Can be 1 or 2 (1 is default)           |
     |                        |                                            | | **Must** be used if using ``--threads-per-core=2`` in your ``srun`` command.       |
@@ -1253,16 +1286,14 @@ The following options are available as command-line parameters to ``sbatch`` or 
     +------------------------+--------------------------------------------+---------------------------------------------------------------------------------------+
     | Option                 | Example Usage                              | Description                                                                           |
     +========================+============================================+=======================================================================================+
-    | ``--gpu-srange``       | ``#SBATCH --gpu-srange=800-1700``          | Sets the GPU sclk range in MHz (default: 500-1700)                                    |
+    | ``--gpu-srange``       | ``#SBATCH --gpu-srange=800-1700``          | Sets the GPU sclk (system clock) range in MHz (default: 500-1700)                     |
     +------------------------+--------------------------------------------+---------------------------------------------------------------------------------------+
     | ``--gpu-power-cap``    | ``#SBATCH --gpu-power-cap=500``            | Sets the GPU power cap in Watts (default: 560)                                        |
     +------------------------+--------------------------------------------+---------------------------------------------------------------------------------------+
-    | ``--gpu-counters``     | ``#SBATCH --gpu-counters=0``               | When set to 1 (default), enables a rocprofiler-based daemon that automatically samples|
-    |                        |                                            | GPU hardware counters from a subset of nodes in a compute job, when the job size is   |
-    |                        |                                            | greater than 1882 nodes. The resulting profiling data may be made available upon      |
-    |                        |                                            | request. Please provide the requested job ID to help@olcf.ornl.gov.                   |
+    | ``--gpu-counters``     | ``#SBATCH --gpu-counters=0``               | When set to 1 (default if >500 nodes), enables a rocprofiler-based daemon that samples|
+    |                        |                                            | GPU hardware counters from a subset of nodes in a compute job.                        |
+    |                        |                                            | Users may request the collected data from specific jobs by emailing help@olcf.ornl.gov|
     |                        |                                            | Setting ``gpu-counters=0`` disables this feature.                                     |
-    |                        |                                            | This feature is not available for jobs <= 1882 nodes at this time.                    |
     +------------------------+--------------------------------------------+---------------------------------------------------------------------------------------+
 
 
@@ -1342,6 +1373,7 @@ In addition to state codes, jobs that are pending will have a "reason code" to e
 
 Many other states and job reason codes exist. For a more complete description, see the ``squeue`` man page (either on the system or online).
 
+.. _frontier-scheduling:
 
 Scheduling Policy
 -----------------
@@ -1386,7 +1418,7 @@ parameter, which all jobs in the bin receive.
 
 The ``batch`` partition (queue) is the default partition for production work on Frontier. Most work on Frontier is handled through this partition. The following policies are enforced for the ``batch`` partition:
 
-* Limit of four *eligible-to-run* jobs per user. (Jobs in excess of this number will be held, but will move to the eligible-to-run state at the appropriate time.)
+* Limit of four *eligible-to-run* jobs per user. (Jobs in excess of this number will be held, but will move to the eligible-to-run state and accumulate priority in the queue at the appropriate time.)
 * Users may have only 100 jobs queued across all partitions at any time (this includes jobs in all states), i.e., jobs submitted in different partitions on Frontier are added up together to check if its within the 100 queued jobs limit. Additional jobs will be rejected at submit time.
 
 
@@ -1404,7 +1436,8 @@ The ``extended`` partition (queue) is designated for smaller long-running jobs o
 ``debug`` Quality of Service Class
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The ``debug`` quality of service (QOS) class can be used to access Frontier's compute resources for short non-production debug tasks. The QOS provides a higher priority compare to jobs of the same job size bin in production partitions. Production work and job chaining using the ``debug`` QOS is prohibited. Each user is limited to one job in any state at any one point. Attempts to submit multiple jobs to this QOS will be rejected upon job submission.
+The ``debug`` quality of service (QOS) class can be used to access Frontier's compute resources for short non-production debug tasks. The QOS provides a higher priority compare to jobs of the same job size bin in production partitions. Production work and job chaining using the ``debug`` QOS is prohibited. Each user is limited to one job in any state at any one point. Attempts to submit multiple jobs to this QOS will be rejected upon job submission. Submitted jobs in this QOS cannot have a walltime greater than 2 hours. Jobs that request a longer walltime will be rejected.
+
 
 To submit a job to the ``debug`` QOS, add the `-q debug` option to your ``sbatch`` or ``salloc`` command or ``#SBATCH -q debug`` to your job script.
 
@@ -1648,7 +1681,7 @@ The job name and output options have been removed since stdout/stderr are typica
     +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
     | ``--gpus-per-node``                                    | Specify the number of GPUs per node required for the job.                                                      |
     +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
-    | ``--gpu-bind=closest``                                 | Binds each task to the GPU which is on the same NUMA domain as the CPU core the MPI rank is running on.        |
+    | ``--gpu-bind=closest``                                 | Binds each task to the GPU which is on the same L3 cache as the CPU core the MPI rank is running on.           |
     +--------------------------------------------------------+----------------------------------------------------------------------------------------------------------------+
     | ``--gpu-bind=map_gpu:<list>``                          | Bind tasks to specific GPUs by setting GPU masks on tasks (or ranks) as specified where                        |
     |                                                        | ``<list>`` is ``<gpu_id_for_task_0>,<gpu_id_for_task_1>,...``. If the number of tasks (or                      |
@@ -2719,37 +2752,39 @@ Flux can more readily load-balance workloads across nodes inside a Slurm job all
 
 The following code is an example of how to launch an ensemble where each job step is run on one node using Flux:
 
-.. code:: bash
+.. dropdown:: Launching Flux Inside Slurm
 
-    #SBATCH -A <proj>
-    #SBATCH -t <timelimit>
-    #SBATCH -N 8
+    .. code:: bash
 
-    module load rocm
-    module load hwloc/2.9.1-gpu # Flux requires a GPU-enabled hwloc to see the GPUs
-    module load flux
+        #SBATCH -A <proj>
+        #SBATCH -t <timelimit>
+        #SBATCH -N 8
 
-    # A few Flux commands to note:
-    #   flux start -- starts the Flux server daemons
-    #   flux resource list -- lists the resources available to Flux
-    #   flux submit -- submits & detaches from a Flux job. Returns a hash string identifying the submitted job
-    #   flux jobs -- synonymous to `squeue`, displays the Flux queue
-    #   flux run -- submits & runs a Flux job (does not return prompt until command is complete)
-    #   flux queue drain -- similar to `wait`, blocks until Flux queue is empty
+        module load rocm
+        module load hwloc/2.9.1-gpu # Flux requires a GPU-enabled hwloc to see the GPUs
+        module load flux
 
-    # Flux flags:
-    #   -N 1 -- 1 node
-    #   -n 8 -- 8 tasks
-    #   -c 7 -- 7 cores per task
-    #   --gpus-per-task=1 -- binds 1 GPU per task (DOES NOT WORK currently)
-    # We launch one Flux process per node, with all available CPUs and GPUs allocated to it
-    # Flux understands that it was launched in a Slurm allocation, and only the Flux daemon on the first node is listening to commands
-    srun -N $SLURM_NNODES -n $SLURM_NNODES -c 56 --gpus-per-node=8 flux start \
-        "flux resource list;
-        for i in \$(seq 1 $SLURM_NNODES); do
-            flux submit -N 1 -n 8 -c 7 -x --gpus-per-task=1 --output=output.\$i.txt bash -c 'hostname; env | grep VISIBLE; /usr/bin/time ./vadd';
-        done;
-        flux queue drain;"
+        # A few Flux commands to note:
+        #   flux start -- starts the Flux server daemons
+        #   flux resource list -- lists the resources available to Flux
+        #   flux submit -- submits & detaches from a Flux job. Returns a hash string identifying the submitted job
+        #   flux jobs -- synonymous to `squeue`, displays the Flux queue
+        #   flux run -- submits & runs a Flux job (does not return prompt until command is complete)
+        #   flux queue drain -- similar to `wait`, blocks until Flux queue is empty
+
+        # Flux flags:
+        #   -N 1 -- 1 node
+        #   -n 8 -- 8 tasks
+        #   -c 7 -- 7 cores per task
+        #   --gpus-per-task=1 -- binds 1 GPU per task (DOES NOT WORK currently)
+        # We launch one Flux process per node, with all available CPUs and GPUs allocated to it
+        # Flux understands that it was launched in a Slurm allocation, and only the Flux daemon on the first node is listening to commands
+        srun -N $SLURM_NNODES -n $SLURM_NNODES -c 56 --gpus-per-node=8 flux start \
+            "flux resource list;
+            for i in \$(seq 1 $SLURM_NNODES); do
+                flux submit -N 1 -n 8 -c 7 -x --gpus-per-task=1 --output=output.\$i.txt bash -c 'hostname; env | grep VISIBLE; /usr/bin/time ./vadd';
+            done;
+            flux queue drain;"
 
 
 This approach is slightly slower than using background ``srun``'s, but is much more reliable and flexible.
@@ -2762,6 +2797,64 @@ It took 2 minutes to submit the 500 jobs to Flux.
 
     The Flux ``--gpus-per-task=1`` flag does not currently work as expected. With this flag, all 8 GPUs on a node will be seen by each rank.
     Users should either explicitly set ``ROCR_VISIBLE_DEVICES`` for each rank to a different GPU, or provide information to the application about how to bind to a single GPU.
+    Additionally, with ``--gpus-per-task=N`` Flux will set the environment variable ``CUDA_VISIBLE_DEVICES``, which will interfere with any set ``ROCR_VISIBLE_DEVICES``.
+    It is advised to ``unset CUDA_VISIBLE_DEVICES`` in order to run GPU workloads across multiple GPUs.
+
+
+When working with GPUs in Flux, it is good practice to specify ``--gpus-per-task=N`` in conjunction with ``[-o, --setopt=] gpu-affinity=per-task``, which helps to evenly (and closely) divide tasks by NUMA domains.
+This will set the ``CUDA_VISIBLE_DEVICES`` environment variable to the **index** of the nearest GPU to the NUMA domain according to ``hwloc``.
+You can read more about Flux shell options `here <https://flux-framework.readthedocs.io/projects/flux-core/en/latest/man1/flux-shell.html#shell-options>`__ and how Flux finds resources `here <https://flux-framework.readthedocs.io/en/latest/faqs.html?h=hwloc#why-is-flux-ignoring-my-nvidia-gpus>`__.
+
+For explicit GPU binding with Flux in an ``srun``, you can follow this example:
+
+.. dropdown:: Launching Flux inside Slurm with GPU Binding
+
+    .. code:: bash
+
+        #!/bin/bash
+        #SBATCH -A <proj>
+        #SBATCH -N 2
+        #SBATCH -t <time>
+
+        module load rocm
+        module load hwloc/2.9.1-gpu # Flux requires a GPU-enabled hwloc to see the GPUs
+        module load flux/0.60.0 # Guide tested on 0.60.0
+
+        # A few Flux commands to note:
+        #   flux start -- starts the Flux server daemons
+        #   flux resource list -- lists the resources available to Flux
+        #   flux submit -- submits & detaches from a Flux job. Returns a hash string identifying the submitted job
+        #   flux jobs -- synonymous to `squeue`, displays the Flux queue
+        #   flux run -- submits & runs a Flux job (does not return prompt until command is complete)
+        #   flux queue drain -- similar to `wait`, blocks until Flux queue is empty
+
+        # Flux flags:
+        #   -N 1 -- 1 node
+        #   -n 8 -- 8 tasks
+        #   -c 7 -- 7 cores per task
+        #   --gpus-per-task=1 -- binds 1 GPU per task - this works by setting `CUDA_VISIBLE_DEVICES` to an appropriate device index for a particular NUMA domain using hwloc
+        # We launch one Flux process per node, with all available CPUs and GPUs allocated to it
+        # Flux understands that it was launched in a Slurm allocation, and only the Flux daemon on the first node is listening to commands
+
+        srun -N $SLURM_NNODES -n $SLURM_NNODES -c 56 --gpus-per-node=8 flux start \
+            "flux resource list;
+            # assigns one task per GPU
+            for task in \$(seq 1 $(($SLURM_NNODES * 8 * 2)) ); do
+                flux submit -N 1 -n 1 -c 7 --gpus-per-task=1 -o gpu-affinity=per-task -o cpu-affinity=per-task --output=${SLURM_JOB_ID}_flux_task_\$task.log bash -c '
+                        # Set the correct GPU for this task
+                        export ROCR_VISIBLE_DEVICES=\$CUDA_VISIBLE_DEVICES
+                        unset CUDA_VISIBLE_DEVICES
+                        ./Matrix_Multiply
+                        '
+            done;
+            flux jobs -a;
+            flux queue drain;
+            "
+
+In the above example we set up 2 nodes to work with Flux, and then submit twice as many jobs as there are GPUs between the nodes ``$(($SLURM_NNODES * 8 * 2))``.
+Flux will start as many jobs as possible, doing its best to assign tasks evenly and with resources "close" to each other.
+When the resources are full, remaining jobs will be queued.
+
 
 
 Tips for Launching at Scale
@@ -3135,8 +3228,11 @@ A job script for the previous example, modified for sending all libraries is sho
     export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:$(pkg-config --variable=libdir libfabric)"
 
     # cray-mpich dlopen's libhsa-runtime64.so and libamdhip64.so (non-versioned), so symlink on each node:
+    # also, some part of ROCm 6.4.x is dlopen'ing libamd_comgr.so (non-versioned), so symlink it too:
     srun -N ${SLURM_NNODES} -n ${SLURM_NNODES} --ntasks-per-node=1 --label -D /mnt/bb/$USER/${exe}_libs \
         bash -c "if [ -f libhsa-runtime64.so.1 ]; then ln -s libhsa-runtime64.so.1 libhsa-runtime64.so; fi;
+        if [ -f libamd_comgr.so.2 ]; then ln -s libamd_comgr.so.2 libamd_comgr.so; fi;
+        elif [ -f libamd_comgr.so.3 ]; then ln -s libamd_comgr.so.3 libamd_comgr.so; fi;
         if [ -f libamdhip64.so.5 ]; then ln -s libamdhip64.so.5 libamdhip64.so; fi;
         elif [ -f libamdhip64.so.6 ]; then ln -s libamdhip64.so.6 libamdhip64.so; fi"
 
@@ -3175,6 +3271,12 @@ Containers
 ==========
 
 Frontier uses `Apptainer <https://apptainer.org/docs/user/latest/>`__ as its container builder and runtime. You can read more on how to use containers on Frontier in the :doc:`Containers on Frontier </software/containers_on_frontier>` section in the OLCF User Documentation.
+
+Jupyter
+==========
+
+OLCF operates a JupyterHub server that enables users to run single or multinode Jupyter notebooks on Frontier. 
+The JupyterHub server can be accessed at https://jupyter.frontier.olcf.ornl.gov and more information on using Jupyter notebooks can be found at :doc:`Jupyter on Frontier </software/jupyter_on_frontier>`.
 
 Debugging
 ============
@@ -3611,7 +3713,75 @@ For example, to use rocprofiler-compute:
 As a rule of thumb, always load the ``rocprofiler-compute`` module last (especially after you load a ROCm module).
 If you load a new version of ROCm, you will need to re-load ``rocprofiler-compute``.
 
-----
+
+Omnistat - A lightweight ROCm system profiler
+---------------------------------------------
+
+Omnistat is an open-source data collection tool for system-level and job-level
+metrics in high-performance computing (HPC) clusters that use AMD Instinct GPUs
+using ROCm (v6.3.0 or newer). It is designed for large-scale system monitoring and
+detailed analysis.  Users can use Omnistat to profile and monitor node-level
+or ROCm GPU metrics while running their application.  GPU metrics
+include utilization, memory usage, power consumption, clock frequencies,
+temperatures, etc, on a per-GPU basis. See https://rocm.github.io/omnistat/ for
+documentation about Omnistat.
+
+The Omnistat developers have provided site-specific instructions on how to load
+and use Omnistat at ORNL.  This includes how to access the Omnistat
+module and how to run batch jobs on Frontier that collect Omnistat data.  See 
+https://rocm.github.io/omnistat/site.frontier.html for details.
+
+A user wanting to use Omnistat to profile their own code (user-mode) needs to
+first start Omnistat data collection via the command line. Then the user can
+start their own code running at the same time as the Omnistat profiling. Once
+the user's code has finished running, Omnistat data collection needs to be
+terminated via the command line. The captured metrics can be queried on the
+command line or downloaded and visualized.  Instructions in the Omnistat
+documentation provide guidance on using Graphana in a local Docker container to
+visualize the data, or the data can be exported to CSV files for analysis using
+tools such as Python Pandas. 
+
+The following simple example is taken directly from the above Omnistat
+documentation site for Frontier, with minor modifications for clarity.  
+
+.. code-block:: bash
+
+    ## Get an interactive single node session on Frontier (or submit a batch job with the script below)
+    ## salloc -A <ACCOUNT> -J omnistat -N 1 -t 00:30:00 -S 0
+
+    # Setup the Omnistat module provided by AMD
+    module unload darshan-runtime
+    module use /sw/frontier/amdsw/modulefiles
+    module load omnistat-wrapper
+
+    # If you have any http_proxy setup, unset it (the proxy interferes with Omnistat's
+    # ability to communicate with its server component)
+    # e.g. unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY proxy no_proxy all_proxy ftp_proxy
+
+    # Launch Omnistat monitoring (wrapper version), store data in a local temporary directory
+    export OMNISTAT_VICTORIA_DATADIR=/tmp/omnistat/${SLURM_JOB_ID}
+    ${OMNISTAT_WRAPPER} usermode --start --interval 1.0
+
+    # Your GPU application goes here, we simply run sleep for demonstration
+    # srun ./your_gpu_application
+    srun -n1 -c1 --gpus-per-task=1 --gpu-bind=closest sleep 60
+
+    # Stop Omnistat data exporters and query Omnistat data
+    ${OMNISTAT_WRAPPER} usermode --stopexporters
+    ${OMNISTAT_WRAPPER} query --job ${SLURM_JOB_ID} --interval 1 --export
+    # ${OMNISTAT_WRAPPER} query --interval 1.0 --job ${SLURM_JOB_ID}
+    # ${OMNISTAT_WRAPPER} query --interval 1.0 --job ${SLURM_JOB_ID} --pdf omnistat.${SLURM_JOB_ID}.pdf
+
+    # Tear down Omnistat
+    ${OMNISTAT_WRAPPER} usermode --stopserver
+
+You can find an overview presentation and video on Omnistat in the :ref:`OLCF
+Training Archive, <training-archive>`.
+
+.. csv-table::
+   :widths: 12 22 22 22 22
+
+    "2025-09-24", "Omnistat", "Karl Schulz and Jorda Polo (AMD)", `September 2025 OLCF User Conference Call <https://www.olcf.ornl.gov/calendar/userconcall-sep2025/>`__, (`recording <https://vimeo.com/1121958946>`__ | `slides <https://www.olcf.ornl.gov/wp-content/uploads/omnistat-overview-olcf-user-conference-sept-2025.pdf>`__ | `Q&A <https://www.olcf.ornl.gov/wp-content/uploads/Sep25_UserCall_Chat.txt>`__ | `tip <https://www.olcf.ornl.gov/wp-content/uploads/Sep2025_TOTM.pdf>`__ )
 
 
 .. _tips-and-tricks:
@@ -3886,8 +4056,188 @@ If it is necessary to have bit-wise reproducible results from these libraries, i
 
 ------
 
+.. _mpi-tuning:
+
+Useful MPI Environment Variables
+-----------------------------------
+
+Cray MPICH contains many useful features and customizations that can be controlled through environment variables. 
+A detailed list is available at the `Cray MPICH User Guide <https://cpe.ext.hpe.com/docs/latest/mpt/mpich/index.html>`_ or by running ``man intro_mpi`` on Frontier.
+Below are a few environment variables that are more commonly used on Frontier.
+
+.. I wouldn't hate dividing these into "Everyday Best Practices", "Communication Model Specific", and "Debugging"
+.. Should these not be red monospace? Not sure it's needed and it's pretty ugly...
+
+``MPICH_VERSION_DISPLAY``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Setting this environment variable to ``1`` will print out the version and build date of Cray MPICH in use from rank 0 at the start of an MPI job.
+This output provides useful provenance for debugging and performance tuning, and is highly recommended.
+
+``MPICH_ENV_DISPLAY``
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+Setting this environment variable to ``1`` will print out the values of all MPI-related environment variables from rank 0 at the start of an MPI job.
+This output provides useful provenance for debugging and performance tuning, and is highly recommended.
+
+``MPICH_ABORT_ON_ERROR``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Most users assume MPI will cause their code to exit if an error occurs.
+Setting this environment variable to ``1`` will cause MPI to abort and produce a core dump when an error occurs, which may help with debugging but will consume significant disk space at scale.
+
+Although often ignored, every MPI call returns an instructive error code and one can often recover descriptive error messages from checks.
+Setting ``MPICH_ABORT_ON_ERROR=0``, checking return codes, and outputting descriptive error messages is an extremely valuable practice for debugging MPI applications.
+
+``MPICH_GPU_SUPPORT_ENABLED``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Setting this environment variable to ``1`` will enable GPU-aware MPI support in Cray MPICH, and is required to pass GPU buffers directly to MPI calls.
+The library `libmpi_gtl_hsa.so` must also be linked in, otherwise Cray MPICH will print an error message and exit immediately. 
+See :ref:`exposing-the-rocm-toolchain-to-your-programming-environment`  for more details.
+
+Using GPU-aware MPI is highly recommended on Frontier because the HPE Slingshot NICs are attached directly to the AMD MI250X accelerators.
+There is a small but measurable latency impact for enabling GPU-aware MPI with CPU buffers.
+Applications that do not use GPU buffers in MPI calls may want to leave this variable unset or set to ``0``, especially if they are sensitive to small message latency.
+
+``MPICH_ASYNC_PROGRESS``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Setting this environment variable to ``1`` will spawn a thread dedicated to making progress on outstanding MPI communication and automatically increase the MPI thread level to ``MPI_THREAD_MULTIPLE``.
+Applications that use one-sided MPI (eg, ``MPI_Put``, ``MPI_Get``) or non-blocking collectives (eg, ``MPI_Ialltoall``) will likely benefit from enabling this feature.
+Users of multi-threaded applications should consider having one fewer compute thread to leave a core free for this MPI progress thread.
+
+This feature is not typically beneficial for traditional two-sided communication patterns (eg, ``MPI_Send``, ``MPI_Recv``) and blocking collectives (eg, ``MPI_Alltoall``), and the requirement to use ``MPI_THREAD_MULTIPLE`` may introduce unnecessary overhead.
+
+``MPICH_RANK_REORDER_METHOD``, ``MPICH_RANK_REORDER_DISPLAY``, and ``MPICH_RANK_REORDER_FILE``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Rather than relying on the default rank-to-node placement, Cray MPICH provides a flexible mechanism to customize the placement of MPI ranks on nodes.
+Three methods are implemented in Cray MPICH itself: 0 - round-robin, 1 -  packed, and 2 - folded. These methods are explained in detail in the `Cray MPICH User Guide <https://cpe.ext.hpe.com/docs/latest/mpt/mpich/index.html>`_, but briefly described as:
+
+- Round-robin (``0``): Ranks are placed on nodes one at a time such that rank 0 is placed on the first node, rank 1 on the second, and so forth. At the end of node list the (N-1)th rank is placed on the Nth node, then we return to the start of the nodelist and place the Nth rank on the first node.
+- Packed (``1``): Called "SMP" in the documentation. Each node is fully filled with ranks before moving on.
+- Folded (``2``): Similar to round-robin, except we reverse direction on either end of the node list rather than looping. That is to say, rank 0 on the first node, rank N-1 on the Nth node, then rank N on the Nth node, rank N+1 on the (N-1)th node, and so forth.
+
+Which of these three methods is best for a given application depends on the communication pattern of the application. Users are encouraged to experiment with these methods if communication is a significant portion of their application runtime. The HPE Cray Performance Analysis tools can also profile MPI communication and suggest the optimal rank reordering.
+
+Setting ``MPICH_RANK_REORDER_METHOD=3`` and specifying a file with ``MPICH_RANK_REORDER_FILE`` allows users to specify their own rank reordering. 
+
+HPE's CPE also provides the tool `grid_order <https://cpe.ext.hpe.com/docs/latest/performance-tools/man1/grid_order.html#grid-order>`_ to help generate rank reordering files based on space filling curves for Cartesian nearest neighbor communication patterns.
+
+When experimenting with different rank reorderings, it is highly recommended to also set ``MPICH_RANK_REORDER_DISPLAY=1`` to print out the rank-to-node mapping at the start of the job.
+
+``MPICH_COLL_SYNC``
+^^^^^^^^^^^^^^^^^^^^^
+
+Setting this environment variable to ``1`` performs an ``MPI_Barrier`` before each collective operation. Alternatively, it can take a comma-separated list of collectives to synchronize, such as ``MPI_Barrier,MPI_Alltoall``.
+This deceptively simple check is a useful profiling and debugging tool.
+It can help diagnose load imbalance by forcing synchronization before collective starts and can help identify race conditions prior to collectives.
+
+``MPICH_OFI_CXI_COUNTER_REPORT``, ``MPICH_OFI_CXI_COUNTER_REPORT_FILE``, ``MPICH_OFI_CXI_COUNTER_FILE``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The HPE Slingshot NIC has many hardware counters that can help diagnose performance issues.
+Cray MPICH can read these counters and report their values at the end of an MPI job. What counters it reports, and how it reports them, are controlled by these three environment variables.
+
+The default value of ``MPICH_OFI_CXI_COUNTER_REPORT=1`` will report a single line at ``MPI_Finalize`` reporting how many network timeouts were encountered. If no timeouts were encountered then no output is produced.
+
+Network timeouts are not necessarily a concern; on a machine as large as Frontier they happen occasionally. If a single job has a performance anomaly and the timeout count is nonzero, then the performance problem may have been due to a network timeout.
+Users typically don't need to report such an event to the OLCF help desk as the network health is tracked by system administrators.
+If users consistently see large network timeout counts it is worth investigating further. There are certain communication patterns that can provoke network timeouts.
+
+Setting ``MPICH_OFI_CXI_COUNTER_REPORT=0`` will suppress all counter reporting.
+
+Setting ``MPICH_OFI_CXI_COUNTER_REPORT=2`` will print a table at ``MPI_Finalize`` with statistics for any counter that had a non-zero value on any rank. `HPE's documentation <https://cpe.ext.hpe.com/docs/latest/getting_started/HPE-Cassini-Performance-Counters.html>`_ has detailed counter information.
+
+If setting ``MPICH_OFI_CXI_COUNTER_REPORT`` to ``3`` or higher we recommend also setting ``MPICH_OFI_CXI_COUNTER_REPORT_FILE`` to a filename. At level ``3`` data will be outputted for any NIC that sees a timeout, and level ``4`` will output data for all NICs if any NIC sees a timeout. 
+Level ``5`` will output all collected counters for all NICs regardless of whether any timeouts were seen. Any of these options will produce a lot of output, and having it routed to ``stdout`` is likely to be confusing.
+Setting ``MPICH_OFI_CXI_COUNTER_REPORT_FILE`` will cause the output to be written to one file per node, which is much easier to analyze.
+
+Expert users who wish to change what counters are collected can point ``MPICH_OFI_CXI_COUNTER_FILE`` to a list of counters.
+
+Understanding the network counters can be challenging. If you are encountering network performance issues or are interested in using network counters to better understand your application consider scheduling an OLCF Office Hour to talk with the Center of Excellence team.
+
+
 System Updates 
 ============== 
+
+2026-07-01
+----------
+At 10:00am EST on Wednesday, July 1, 2026, Frontier's programming environment was modified.
+The following changes took place:
+
+- Remove HPE/Cray Programming Environments (CPE) 22.12, 23.03, 23.05, and 23.12. See `OLCF Software News <https://docs.olcf.ornl.gov/software/software-news.html>`_ for further information.
+- Add CCE/21.0.2, for use with CPE/26.03.
+- Add `rccl-net-plugin/1.0`, which provides `aws-ofi-nccl` and best-practice environment variables for using AMD RCCL on HPE Slingshot networks.
+- Add ROCm/7.13.0, a pre-release of AMD's new deployment mechanism, TheRock.
+
+All changes are detailed further in `OLCF Software News <https://docs.olcf.ornl.gov/software/software-news.html>`_.
+
+
+2026-05-26
+----------
+On Tuesday, May 26, 2026, Frontier's system software was upgraded.
+The following changes took place:
+
+- Upgrade OS to SLES15 SP7
+- Upgrade Slingshot Host Software to 14.0.0, which includes `libfabric/2.3.1`. `libfabric/1.20` remains for compatibility with `cray-mpich <= 8.1.27`, but 1.22 was removed. Users should not generally load a specific `libfabric` module. Please note that `a previous libfabric regression <https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#olcfdev-1811-libfabric-1-20-1-cpu-buffer-performance-regression>`_ that required many users to load an older `libfabric` module was fixed in January 2025.
+- Upgrade to HPE/Cray User Services Software (USS) 1.5
+
+.. note::
+
+    **Recommended User Action**:
+
+    All ROCm/5.x modules and HPE/Cray Programming Environment (CPE) < 24.03 (including `CCE <= 17.0.0` and `cray-mpich <= 8.1.28`) will be removed on **July 1, 2026**. Please upgrade to a newer CPE (recommended CPE/25.09 + ROCm/6.4.2 or CPE/26.03 + ROCm/7.2.0) and contact the OLCF Help Desk at help@olcf.ornl.gov if you encounter any problems. See `OLCF Software News <https://docs.olcf.ornl.gov/software/software-news.html>`_ for further information.
+
+2026-04-07
+----------
+On Tuesday, April 7, 2026, Frontier's system software was upgraded.
+The following changes took place:
+
+- Upgraded Slurm to version 25.11.4.
+- Added HPE/Cray Programming Environment (CPE) 26.03 as non-default. CPE/26.03 officially supports GPU-aware MPI with ROCm/7.0, but has been shown to work in most cases with ROCm/7.1.1 and 7.2.0. Please review the `Frontier Known Issues table <https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#known-issues>`_ for new known issues and the `ROCm/7.0 release notes <https://rocm.docs.amd.com/en/docs-7.0.0/about/release-notes.html>`_ for important ROCm/7.x API changes.
+- A patch was applied to the software modules to properly display MPI-enabled modules for PrgEnv-gnu.
+
+.. note::
+
+    **Recommended User Action**:
+
+    All users are recommended trying CPE/26.03 + ROCm/7.0.2 (optionally with 7.2.0 for additional known performance improvements) and report any bugs to OLCF Help Desk by emailing help@olcf.ornl.gov.
+    If you are using ROCm/5.x and/or CPE 22.x or 23.x (CCE < 17.x), please update to a newer CPE. Recommended CPE/ROCm combinations include CPE/25.09 + ROCm/6.4.2 and CPE/26.03 + ROCm/7.x. ROCm 5.x and CPE <= 23.x will be removed in a future outage. If you encounter issues, please report them to help@olcf.ornl.gov.
+
+2026-02-10
+----------
+On Tuesday, February 10, 2026, Frontier's system software was upgraded.
+The following changes took place:
+
+- Upgrade to AMD GPU 6.16.13 device driver (ROCm 7.2.0 release).
+- ROCm/7.1.1 and 7.2.0 were made available as non-default via the ``rocm/7.1.1`` and ``rocm/7.2.0`` modules. Please note that GPU-aware MPI is not yet available for ROCm/7.x versions.
+- CCE/20.0.2 was made available as non-default via the ``cce/20.0.2`` module. This is compatible with the CPE/25.09 release of the HPE/Cray Programming Environment. CCE/20.0.0 remains the default compiler for CPE/25.09.
+
+
+2025-10-21
+----------
+On Tuesday, October 21, 2025, Frontier's system software was upgraded.
+The following changes took place:
+
+- Upgrade to AMD GPU 6.14.14 device driver (ROCm 7.0.2 release).
+- Upgrade to Slingshot 2.3.1
+- HPE/Cray Programming Environment (CPE) 25.09 was made available via the ``cpe/25.09`` module. Please make sure to set ``export LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH`` if using this non-default CPE version. This includes CCE/20.0.0 and cray-mpich/9.0.1, with a recommended ROCm version of ROCm/6.4.2.
+- ROCm/7.0.2 was made available as non-default via the ``rocm/7.0.2`` module.
+- ROCm/6.4.2 was made available as non-default via the ``rocm/6.4.2`` module. This is the preferred ROCm version for CPE/25.09.
+- Modify miniforge modules to gracefully handle nested "module load miniforge" commands. Enables conda activate capability.
+
+.. note::
+
+    **Recommended User Action**:
+
+    With the addition of ROCm 7, users still relying on ROCm 5 should consider updating to newer ROCm/CPE versions (default ROCm/6.2.4 with CPE/24.11 or newer preferred), as backwards compatibility of the ROCm driver is not guaranteed. If you have software issues preventing updating, please report these to help@olcf.ornl.gov.
+
+
+2025-07-29
+----------
+On Tuesday, July 29, 2025, Frontier's Slingshot Host Software 12.0.1 was patched to adjust a parameter known to contribute to a recent regression in the performance of ``MPI_Alltoall`` at full-system scale (>8K nodes).
 
 2025-06-17
 ----------

@@ -86,11 +86,11 @@ function format(d) {
         '<dl>' +
             '<dt>Software Package:</dt>' +
             '<dd>' +
-                'Name: ' + d.name + '<br />' +
-                'Systems: ' + d.systems + '<br />' +
-                (d.description != 'None' && d.description != null ? 'Description: ' + escapeHTML(d.description) + '<br />' : '') +
-                (isValidURL(d.homepage) ? 'Homepage: ' + '<a href=\"'+escapeHTML(d.homepage)+'\" target=\"_blank\">'+escapeHTML(d.homepage)+'</a>' + '<br />' : '') +
-                (d.tags != 'None' && d.tags != null ? 'Tags: ' + d.tags + '<br />' : '') +
+                '<b>Name:</b> ' + d.name + '<br />' +
+                '<b>Systems:</b> ' + d.systems + '<br />' +
+                (d.description != 'None' && d.description != null ? '<b>Description:</b> ' + escapeHTML(d.description) + '<br />' : '') +
+                (isValidURL(d.homepage) ? '<b>Homepage:</b> ' + '<a href=\"'+escapeHTML(d.homepage)+'\" target=\"_blank\">'+escapeHTML(d.homepage)+'</a>' + '<br />' : '') +
+                (d.tags != 'None' && d.tags != null ? '<b>Tags:</b> ' + d.tags + '<br />' : '') +
             '</dd>' + 
             '<dt>Available versions:</dt>';
 

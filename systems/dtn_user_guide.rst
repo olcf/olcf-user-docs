@@ -59,7 +59,7 @@ Queue Policy
 
 Submitting jobs to Frontier
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Submitting to the Frontier batch queue is supported from the moderate DTNs using the ``-M`` flag; however, we will need to ensure that the programming environment is not inheritied from the DTNs. The ``--export=NONE`` sbatch submission flag in combination with the ``SLURM_EXPORT_ENV`` environment variable should prevent the DTN environment from copying to the job, but does not wipe the environment on the compute nodes.  
+Submitting to the Frontier batch queue is supported from the moderate DTNs using the ``-M`` flag; however, we will need to ensure that the programming environment is not inherited from the DTNs. The ``--export=NONE`` sbatch submission flag in combination with the ``SLURM_EXPORT_ENV`` environment variable should prevent the DTN environment from copying to the job, but does not wipe the environment on the compute nodes.  
 
 +--------------------------------------+
 | Submission Line                      |

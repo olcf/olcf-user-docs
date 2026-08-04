@@ -57,11 +57,11 @@ GPFS Directories
 
 Users also have access to a (GPFS) parallel file system, called wolf2,
 which is where data should be written when running on Odo's compute
-nodes. Under ``/gpfs/wolf2/[projid]``, there are 3 directories:
+nodes. Under ``/gpfs/wolf2/olcf/[projid]``, there are 3 directories:
 
 ::
 
-    $ ls /gpfs/wolf2/[projid]
+    $ ls /gpfs/wolf2/olcf/[projid]
     proj-shared  scratch  world-shared
 
 -  ``proj-shared`` can be accessed by all members of a project.

@@ -76,7 +76,7 @@ Activating a new SecurID fob
 #. When prompted for a PASSCODE, enter the 6-digit code shown on the
    fob.
 #. You will be asked if you are ready to set your PIN. Answer with "Y".
-#. You will be prompted to enter a PIN. Enter a (4) to (6) digit number
+#. You will be prompted to enter a PIN. Enter a (4) to (8) digit number
    you can remember. You will then be prompted to re-enter your PIN.
 #. Allow the 6-digit code to change (codes regenerate every 30 seconds).
    Once the (6) digits on your fob change, enter your PIN followed by
@@ -126,6 +126,12 @@ they are prompted for a PASSCODE but in reality only enter a tokencode. This is
 because during this initial setup procedure a PIN does not exist. Since there is
 no PIN, the PASSCODE is the same as the tokencode in this rare case.
 
+.. note::
+
+    Internal ORNL users who use the RSA App to sign in to OLCF resources do not need to input a ``PIN`` when entering a ``PASSCODE``.
+
+    Instead, please use the **8-digit code** provided by the RSA App in place of any ``PASSCODE``.
+
 ***************
 X11 Forwarding
 ***************
@@ -169,7 +175,6 @@ Systems Available to All Projects
 
 * :ref:`home-user-guide`
 * :ref:`dtn-user-guide`
-* :ref:`hpss-user-guide` (Subject to Export Control restrictions)
 
 *****************************
 OLCF System Hostnames

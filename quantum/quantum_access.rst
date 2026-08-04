@@ -90,6 +90,40 @@ along with the 6-character OLCF QCUP Project ID and resources allocation
 details. At this time project participants may proceed with applying for their
 individual user accounts. 
 
+After a project is approved, a PI can then ask for specific allocation amounts
+following the :ref:`quantum-req` instructions.
+
+.. _quantum-req:
+
+Credit Allocation Requests
+--------------------------
+
+Running jobs on quantum hardware through QCUP requires vendor-specific credits
+or time-based allocation, depending on the system. To ensure the efficient use
+of resources, the following allocation policy is in effect:
+
+* All credit or time requests must be submitted by the project's Principal
+  Investigator (PI). Requests can be made through the Quantum Allocation
+  Request form available under the "Allocations" section in
+  `myOLCF <https://my.olcf.ornl.gov/login>`__ (select your QCUP project under
+  "My Projects" after login). Alternatively, you may submit a request via the
+  OLCF Help Ticket System at help@olcf.ornl.gov.
+
+* Requests must include a technical justification that demonstrates an
+  understanding of the resource requirements for the proposed quantum workload.
+  Users must simulate their workloads using the appropriate simulator,
+  emulator, or resource estimation tools provided by the vendor to estimate
+  circuit depth, qubit usage, execution time, and other relevant metrics.
+
+* Below are links to each vendor-specific instructions and policies:
+
+  * :ref:`IBM Allocation Instructions <ibm-alloc>`
+  * :ref:`Quantinuum Allocation Instructions <quantinuum-alloc>`
+  * :ref:`IonQ Allocation Instructions <ionq-alloc>`
+  * :ref:`IQM Allocation Instructions <iqm-alloc>`
+
+For questions or assistance with preparing a request, contact help@olcf.ornl.gov.
+
 Project Renewals 
 ----------------
 
@@ -99,13 +133,12 @@ subsequent 6 month intervals. Projects can be renewed by filling out a renewal
 form (:download:`Accounts Renewal Form <Quantum-Renewal-Form.docx>`) and
 emailing it to accounts@ccs.ornl.gov.
 
-Closeout and Quarterly Reports
-------------------------------
+Closeout Reports
+----------------
 
-All QCUP projects are required to submit 
-`quarterly reports <https://www.olcf.ornl.gov/wp-content/uploads/industry_quarterly_report.doc>`__ and a
+All QCUP projects are required to submit a
 `closeout report <https://www.olcf.ornl.gov/wp-content/uploads/Closeout_Template.doc>`__.
-These forms may be emailed to accounts@ccs.ornl.gov.
+This form may be emailed to accounts@ccs.ornl.gov.
 
 .. _quantum-user:
 
@@ -163,24 +196,18 @@ Example Python scripts for each QCUP vendor are located at our new :doc:`/quantu
 IBM Quantum Computing
 ---------------------
 .. note::
-   Beginning July 1, IBM's Quantum Cloud Platform allocates QPU resources by region. OLCF users will
+   IBM's Quantum Cloud Platform allocates QPU resources by region. OLCF users will
    be granted access to the QPU's Washington DC (us-east) region, however, if you would like access to
    the QPU's in the Frankfurt (eu-de) region, please include this in your request.
 
-After submitting the OLCF quantum account application and receiving approval, create an IBMid at `<https://login.ibm.com/>`__.
-Use your IBMid to login to your IBM Cloud Account by proceeding to `<https://quantum.cloud.ibm.com/signin>`__, 
-enter your IBMid email which will be the email associated with your OLCF account,
-leave the region selected as "Washington DC (us-east)", and press continue. 
-If sign-in fails or if you're asked for credit card information, contact help@olcf.ornl.gov. Once logged
-in, users will have access to the IBM Quantum Cloud Platform, IBM’s online platform for
+After submitting the OLCF quantum account application and receiving approval, 
+you will receive an email inviting you to the ORNL IBM instance. The invitation will take
+users to an IBM Cloud Account creation page if you do not already have one or let you log in
+with existing IBM credentials if you do. If you have any trouble with account registration, please contact help@olcf.ornl.gov. 
+Once logged in, users will have access to the IBM Quantum Cloud Platform, IBM’s online platform for
 QPU access, viewing allocation details, accessing documention, etc. More information about using
 these IBM quantum resources can be found on the `IBM's Documentation <https://quantum.cloud.ibm.com/docs/>`__
 or our :doc:`OLCF IBM Quantum Guide </quantum/quantum_systems/ibm_quantum>`.
-
-.. warning::
-   When creating an account, DO NOT follow the "New to IBM Quantum? Create an
-   account on the upgraded IBM Quantum Platform" link.  Instead follow the
-   instructions as indicated above.
 
 Quantinuum 
 ----------
@@ -214,13 +241,27 @@ IQM
 After submitting the OLCF quantum account application and receiving approval,
 you will receive an email from IQM inviting you to create your quantum
 account. Once logged in, users will have access to IQM's User Interface,
-`<https://resonance.meetiqm.com>`__, their online dashboard for managing jobs and
+`<https://resonance.iqm.tech/>`__, their online dashboard for managing jobs and
 accessing the available quantum systems. Users will gain access to IQM hardware,
 as well as the quantum algorithm checker (which verifies that the execution of
 workflow is possible, but does not yield sensible results), via the cloud. From
 the dashboard, users can view system status and upcoming system availability,
 as well as monitor batch submissions and job history.  More information about
 using IQM resources can be found on our :doc:`OLCF IQM Guide </quantum/quantum_systems/iqm>`.
+
+Data Retention Policy
+=====================
+
+When your project has ended, the project will lose compute access and the project will enter "Data Only" mode for 30 days. Projects in Data Only mode will only have login access to QCUP vendor resources to retrieve data stored on their platform.
+
+By default, there is no lifetime retention for any data stored on QCUP resources. Please begin making arrangements to copy data to an offsite location of your choosing before your **project or user account** ends. When your **project or user account** has ended, the OLCF will delete any data left on QCUP systems on a timeframe specified by data retention policy for a given QCUP vendor. Below are the current QCUP vendor policies *which are subject to change*:
+
+* IQM: 1 year
+* IBM: Lifetime
+* IonQ: Lifetime
+* Quantinuum: 40 days
+
+Regardless of retention period, once Data Only mode ends, all login and data access will be removed.
 
 Publication Citations
 =====================

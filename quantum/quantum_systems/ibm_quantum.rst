@@ -75,42 +75,47 @@ When jobs are submitted on IBM Quantum backends, the jobs enter into the
 order so as to provide fair sharing among all users of the device, to prevent
 individual projects or users from monopolizing a given backend.  
 
-All OLCF users have access to the "premium" (>=20 qubits) devices in the Washington DC region.
+All OLCF users have access to the "premium" (>=20 qubits) devices in the Washington DC (us-east) region.
 
+
+.. _ibm-alloc:
 
 Allocations & Usage Limits
 --------------------------
 
-* **Project allocations have a default limit of 10 minutes during a moving 28-day window**.
+* **Project allocations have a default limit of 400 minutes during a moving 28-day cycle**.
 * Minutes are shared across all users on a given project and across all backends.
-* Once a project reaches the usage limit, no jobs will be able to run until minutes are freed up on the project (see example below).
+* Priority levels of allocations are optimized using `IBM's Qauvern tool <https://github.com/IBM/qauvern>`__, but projects (IBM instances) will still be able to use up to 400 minutes regardless of priority.
+* Once a project reaches the 400 minute usage limit, no jobs will be able to run until minutes are freed up on the project (see :ref:`example <ibm-window>`  below).
+* **A higher usage limit greater than 400 minutes is possible (see information below)**.
 
-For more information on how job priority is affected based on your limit, please see `<https://quantum.cloud.ibm.com/docs/guides/fair-share-scheduler#fair-share-scheduler>`__.
-
-If you are planning to use a medium (up to 100 minutes) or large allocation (over 100 minutes), please send a usage request to our Quantum Resource Utilization Council (QRUC) by logging into `myOLCF <https://my.olcf.ornl.gov>`__, select your QCUP project under "My Projects" after login, and use the `Quantum Allocation Request form <https://my.olcf.ornl.gov/allocations/quantumAllocation>`__ under the "Allocations" section.
+If you are planning to use a large allocation (over 400 minutes), please send a usage request to our Quantum Resource Utilization Council (QRUC) by logging into `myOLCF <https://my.olcf.ornl.gov>`__, select your QCUP project under "My Projects" after login, and use the `Quantum Allocation Request form <https://my.olcf.ornl.gov/allocations/quantumAllocation>`__ under the "Allocations" section.
 Alternatively, you can send a request through our help ticket system (help@olcf.ornl.gov).
 **Special requests must be submitted by a project PI with sufficient computational and scientific justification.**
 QRUC will evaluate the merit of your request, and if approved, can get you the additional time you need for your work.
 
-.. note::
-  Special requests for medium allocations (up to 100 minutes) do not require as much computational/scientific justification as a request for large allocations (over 100 minutes), 
-  but still must be submitted by a project PI and are not guaranteed to be approved.
+For more information on how job priority is affected based on your limit, please see `<https://quantum.cloud.ibm.com/docs/guides/fair-share-scheduler#fair-share-scheduler>`__.
 
-The 28-day rolling window
+.. _ibm-window:
+
+The 28-day rolling cycle
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The new 28-day rolling window only considers usage in a given 28 days.
-Every new day, the window "rolls" by 1 day, which effectively erases usage run on the specific day 29 days ago.
-Any past usage that has fallen out of the new window is no longer accounted for, thus freeing up usage on the project.
-If no past usage falls out of the new window (i.e., no jobs were run specifically 29 days ago), then no minutes get freed up.
+IBM's quantum cloud platform displays the current 28-day cycle on the `Instances page <https://quantum.cloud.ibm.com/instances>`__ in UTC time. 
+QPU minutes are renewed to your account when they fall outside of the "Current Cycle" window. 
+For example, every new day the current cycle "rolls" by 1 day, which effectively erases usage run on the specific day 29 days ago.
+Any past usage that has fallen out of the new cycle is no longer accounted for, thus freeing up usage on the project.
+If no past usage falls out of the new cycle (i.e., no jobs were run specifically 29 days ago), then no minutes get freed up.
+To better understand instance usage in a given cycle and estimate when minutes will be renewed to your instance, IBM provides usage
+analytics that can be filtered by the last 28 days on their `Analytics page <https://quantum.cloud.ibm.com/analytics?intervalType=last-28-days>`__. 
 
-Example window
+Example cycle
 """"""""""""""
 
-Example for a project that has a 1000 minute limit in the ``10/18-11/15`` window.
+Example for a project that has a 1000 minute limit in the ``10/18-11/15`` cycle.
 For simplicity, let's just say in this example that they aren't running any new jobs right now, and have only run jobs in the past.
 
-The "current" ``10/18-11/15`` window:
+The "current" ``10/18-11/15`` cycle:
 
 * 100 minutes used on 10/18
 * 10 minutes used on 10/22
@@ -118,22 +123,22 @@ The "current" ``10/18-11/15`` window:
 
 A total of 610 minutes out of 1000 limit.
 
-Tomorrow's window ``10/19-11/16``:
+Tomorrow's cycle ``10/19-11/16``:
 
 * 10 minutes used on 10/22
 * 500 minutes used on 10/24
 
-A total of 510 minutes out of 1000 limit (100 minutes "freed" up because they fell out of the rolling window).
+A total of 510 minutes out of 1000 limit (100 minutes "freed" up because they fell out of the rolling cycle).
 
-The next window ``10/20-11/17``:
+The next cycle ``10/20-11/17``:
 
 * 10 minutes used on 10/22
 * 500 minutes used on 10/24
 
-Still 510 minutes accounted for since no "new" past usage rolled out of the window.
+Still 510 minutes accounted for since no "new" past usage rolled out of the cycle.
 
 The takeaway is that if I run a job on Day XYZ, then I won't get those minutes back until 29 days from Day XYZ.
-Until then, they will be accounted for in a given window and count toward the minute limit for a project.
+Until then, they will be accounted for in a given cycle and count toward the minute limit for a project.
 
 
 Submitting Jobs
@@ -167,7 +172,7 @@ Quantum's quantum resources can be found here:
 `<https://quantum.cloud.ibm.com/computers>`__
 
 .. note::
-    The IBM Quantum cloud platform allocates OLCF users all QPUs in the Washington DC region.
+    The IBM Quantum cloud platform allocates OLCF users all QPUs in the Washington DC (us-east) region.
     If you would like access to QPUs in the Frankfurt region, please submit a help ticket to help@olcf.ornl.gov.
 
 

@@ -52,3 +52,35 @@ I applied to a quantum computing resource via the vendor website, but don’t ha
 Making an account on the vendor website does not enable access to OLCF
 projects; Access requires an account through an OLCF-affiliated website, and
 applying for an OLCF quantum account (see above).
+
+It says I have 0 credits, how do I get credits to run on the actual quantum hardware?
+=====================================================================================
+
+For most vendors, QCUP requires you to run on a simulator or emulator first to
+verify expected usage for your experiment(s).  After verifying how many credits
+you need through mock, simulation, or emulation runs, your project can then
+request credits on the hardware.
+
+To ensure the efficient use of resources, the following allocation policy is in effect:
+
+* All credit or time requests must be submitted by the project's Principal
+  Investigator (PI). Requests can be made through the Quantum Allocation
+  Request form available under the "Allocations" section in
+  `myOLCF <https://my.olcf.ornl.gov/login>`__ (select your QCUP project under
+  "My Projects" after login). Alternatively, you may submit a request via the
+  OLCF Help Ticket System at help@olcf.ornl.gov.
+
+* Requests must include a technical justification that demonstrates an
+  understanding of the resource requirements for the proposed quantum workload.
+  Users must simulate their workloads using the appropriate simulator,
+  emulator, or resource estimation tools provided by the vendor to estimate
+  circuit depth, qubit usage, execution time, and other relevant metrics.
+
+* Below are links to each vendor-specific instructions and policies:
+
+  * :ref:`IBM Allocation Instructions <ibm-alloc>`
+  * :ref:`Quantinuum Allocation Instructions <quantinuum-alloc>`
+  * :ref:`IonQ Allocation Instructions <ionq-alloc>`
+  * :ref:`IQM Allocation Instructions <iqm-alloc>`
+
+For questions or assistance with preparing a request, contact help@olcf.ornl.gov.

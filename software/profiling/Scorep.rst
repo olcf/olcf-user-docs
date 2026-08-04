@@ -1,16 +1,10 @@
 .. _Scorep_v1:
 
 .. image:: /images/Scorep_logo.png
-   :align: left
    :width: 200px
    :height: 100px
 
 |
-|
-|
-|
-|
-
 
 Score-P
 *******
@@ -19,19 +13,27 @@ Score-P
 Overview
 ========
 
-The `Score-P  <https://www.vi-hps.org/projects/score-p>`__ measurement infrastructure is a highly
-scalable and easy-to-use tool suite for profiling, event tracing, and online analysis of HPC
-applications. Score-P supports analyzing C, C++ and Fortran applications that make use of multi
-processing (MPI, SHMEM), thread parallelism (OpenMP, PThreads) and accelerators (CUDA, OpenCL,
-OpenACC) and combinations. It works in combination with Periscope, Scalasca, Vampir, and Tau.
+The goal of `Score-P <https://www.vi-hps.org/projects/score-p>`__ is to simplify
+the analysis of high performance computing software and enable developers to
+find performance problems.  The Score-P measurement infrastructure is a highly
+scalable and easy-to-use tool suite for profiling, event tracing, and online
+analysis of HPC applications. Score-P supports analyzing C, C++ and Fortran
+applications that make use of multi-processing (MPI, SHMEM), thread parallelism
+(OpenMP, PThreads) and accelerators (HIP, CUDA, OpenCL, OpenACC, OpenMP-offload)
+and combinations of these. It works in combination with Scalasca, Vampir, TAU
+and Periscope, generating traces in OTF2 format (Vampir, Scalasca, TAU) and
+profiles in CUBE4 and TAU formats.
 
+See https://www.vi-hps.org/projects/score-p/ for details about Score-P.  
 
 Usage
 =====
 
-Steps in a typical Score-P workflow to run on Summit:
+Steps in a typical Score-P workflow to run on an OLCF machine (e.g. Frontier or
+Andes). (`More info about OLCF Systems
+<https://docs.olcf.ornl.gov/systems/index.html>`_). 
 
-1. Login to :ref:`Summit <connecting-to-olcf>`: ``ssh <user_id>@summit.olcf.ornl.gov``
+1. :ref:`Connect to an OLCF system <connecting-to-olcf>`: ``ssh <user_id><machine>.olcf.ornl.gov``
 2. Instrument your code with Score-P
 3. Perform a measurement run with profiling enabled
 4. Perform a profile analysis with CUBE or cube_stat
@@ -42,240 +44,162 @@ Steps in a typical Score-P workflow to run on Summit:
 Instrumentation
 ===============
 
-
-To instrument your code, you need to compile the code using the Score-P instrumentation command (``scorep``), which is added as a prefix to your compile statement.
+To instrument your code, you need to re-compile the code using the Score-P instrumentation command (``scorep``) added as a prefix to your compile statement.
 In most cases the Score-P instrumentor is able to automatically detect the programming paradigm from the set of compile and link options given to the compiler.
-Some cases will, however, require some additional link options within the compile statement e.g. CUDA instrumentation.
-
-Below are some basic examples of the different instrumentation scenarios:
+Some cases may, however, require some additional link options within the compile statement e.g. ROCm HIP or CUDA instrumentation.
 
 .. Note::
 
-   You will need to unload the ``darshan-runtime`` module. In `some` instances you may need to unload the ``xalt`` and ``xl`` modules.
+   You will need to unload the ``darshan-runtime`` module if it is loaded. 
+   In `some` instances you may need to unload the ``xalt`` and ``xl`` modules.   
 
-   .. code::
+   .. code-block:: bash
 
       $ module unload darshan-runtime
 
-.. dropdown:: Serial
 
-    .. tab-set::
+Get a list of available versions of Score-P and select the one you want to use.   
+   
+.. code-block:: bash
 
-        .. tab-item:: C
+   # Find available scorep modules 
+   $ module spider scorep
+   ...
+   # Returned choices on Frontier: scorep-gcc-amd, scorep-amd, scorep-amdclang, scorep-cray
 
-            .. code-block:: bash
+   # Unload the darshan-runtime module if it is loaded
+   $ module unload darshan-runtime
 
-                $ module unload darshan-runtime
-                $ module load scorep
-                $ module load gcc
-                $ scorep gcc -c test.c
-                $ scorep gcc -o test test.o
+   # Load the desired version, e.g.: Score-P with GNU compiler
+   $ module load scorep-gcc-amd
 
-        .. tab-item:: C++
+   # If you want to see how scorep was configured
+   # module show scorep-gcc-amd
 
-            .. code-block:: bash
+   # Getting information on scorep flags
+   $ scorep --help
 
-                $ module unload darshan-runtime
-                $ module load scorep
-                $ module load gcc
-                $ scorep g++ -c test.cpp main.cpp
-                $ scorep g++ -o test test.o main.o
+   # Info about compiler wappers (e.g. scorep-amdclang, scorep-mpicc, etc)
+   $ scorep-wrapper --help 
 
-        .. tab-item:: Fortran
+Below are some basic examples of the different ways to instrument your code with Score-P. The examples below are for the GNU compiler, but the same principles apply to other compilers (e.g. Intel, Cray, etc).
 
-            .. code-block:: bash
+.. code-block:: bash
 
-                $ module unload darshan-runtime
-                $ module load scorep
-                $ module load gcc
-                $ scorep gfortran -c test_def.f90 test.f90 main.f90
-                $ scorep gfortran -o test test_def.o test.o main.o
+   # Prepend compile and link commands with scorep
+   # scorep <COMPILER/LINKER> mytestcode.ext
+   # scorep <scorep-options> <COMPILER/LINKER> <options> mytestcode.ext
 
+   # For C (similar for C++, Fortran)
+   $ scorep gcc -c test.c
+   $ scorep gcc -o test test.o
 
+   # For Fortran
+   $ scorep gfortran -c test.f90
+   $ scorep gfortran -o test test.o
 
-.. dropdown:: MPI
+   # For MPI (using mpicc, mpiCC, mpifort as needed)
+   $ module load <mpi-module>
+   $ scorep mpicc -c test.c   # Use -fopenmp and -pthread as needed
+   $ scorep mpicc -o test test.o
 
-    .. tab-set::
-
-        .. tab-item:: C
-
-            .. code-block:: bash
-
-                  $ module unload darshan-runtime
-                  $ module load scorep
-                  $ module load spectrum-mpi
-                  $ module load gcc
-                  $ scorep mpicc -c test.c main.c
-                  $ scorep mpicc -o test test.o main.o
-
-        .. tab-item:: C++
-
-            .. code-block:: bash
-
-                  $ module unload darshan-runtime
-                  $ module load scorep
-                  $ module load spectrum-mpi
-                  $ module load gcc
-                  $ scorep mpiCC -c test.cpp main.cpp
-                  $ scorep mpiCC -o test test.o main.o
-
-        .. tab-item:: Fortran
-
-            .. code-block:: bash
-
-                $ module unload darshan-runtime
-                $ module load gcc
-                $ module load Scorep
-                $ scorep mpifort -c test.f90
-                $ scorep mpifort -o test test.o
+   # For GPU code (ROCM, CUDA, etc)
+   # The scorep wrapper will usually autodetect the GPU compiler, 
+   # but you can force it with --hip, --cuda, etc
+   # Using ROCm HIP
+   $ scorep --hip hipcc -L${OLCF_CUDA_ROOT}/lib64 -c test.c
+   # Using CUDA
+   $ scorep --cuda --user nvc++ -cuda -L${OLCF_CUDA_ROOT}/lib64 -c test.c
 
 
-.. dropdown:: MPI + OpenMP
+CMake / Autotools Instrumentation
+---------------------------------
 
-    .. tab-set::
+CMake and Autotools based build systems run a number of small
+configuration-tests to probe the system, and these configuration-tests will
+often fail if scorep is used as above.  To get around this, use the provided
+``scorep-wrapper`` scripts (e.g. ``scorep-gcc``, ``scorep-mpicc``) together with the
+variable ``SCOREP_WRAPPER=off``. This switches the scorep-wrapper off during the
+configuration time, but ``scorep`` still gets used at application build time.
+For more detailed information on using Score-P with CMake or Autotools visit
+`Score-P
+<https://scorepci.pages.jsc.fz-juelich.de/scorep-pipelines/docs/scorep-4.1/html/scorepwrapper.html>`_
 
-        .. tab-item:: C
+For CMake and Autotools based builds, run configure in the following way:
 
-            .. code-block:: bash
+.. code-block:: bash
 
-                  $ module unload darshan-runtime
-                  $ module load scorep
-                  $ module load gcc
-                  $ scorep mpicc -fopenmp -c test.c main.c
-                  $ scorep mpicc -fopenmp -o test test.o main.o
+   # Get information on the scorep-wrapper scripts
+   $ scorep-wrapper --help
 
-        .. tab-item:: C++
+   # Example for CMake build generation with GNU compiler-wrappers
+   $ SCOREP_WRAPPER=off cmake .. 
+        -DCMAKE_C_COMPILER=scorep-gcc \
+        -DCMAKE_CXX_COMPILER=scorep-g++ \
+        -DCMAKE_Fortran_COMPILER=scorep-ftn
 
-            .. code-block:: bash
-
-                  $ module unload darshan-runtime
-                  $ module load scorep
-                  $ module load gcc
-                  $ scorep mpiCC -fopenmp -c test.cpp main.cpp
-                  $ scorep mpiCC -fopenmp -o test test.o main.o
-
-        .. tab-item:: Fortran
-
-            .. code-block:: bash
-
-                  $ module unload darshan-runtime
-                  $ module load scorep
-                  $ module load gcc
-                  $ scorep mpifort -pthread -fopenmp -c test.f90
-                  $ scorep mpifort -pthread -fopenmp -o test test.o
-
-.. dropdown:: CUDA
-
-    In some cases e.g. **CUDA** applications, Score-P needs to be made aware of the programming paradigm in order to do the correct instrumentation.
-
-    .. code-block:: bash
-
-        $ module unload darshan-runtime xl
-        $ module load nvhpc
-        $ module load cuda
-        $ module load scorep/<version-number>-papi
-        $ scorep --cuda --user nvc++ -cuda -L${OLCF_CUDA_ROOT}/lib64 -c test.c
-        $ scorep --cuda --user nvc++ -cuda -L${OLCF_CUDA_ROOT}/lib64 -o test test.o
+   # Example for autotools with GNU compiler-wrappers
+   $ SCOREP_WRAPPER=off ../configure \
+        CC=scorep-gcc \
+        CXX=scorep-g++ \
+        FC=scorep-ftn \
+        --disable-dependency-tracking
 
 
-Makefiles
----------
+Makefile Instrumentation
+------------------------
 
-Setting ``PREP = scorep`` variable within a Makefile will allow for instrumentation control while using
-``make``
+Setting a flag variable, such as ``PREP = scorep`` variable within a Makefile
+will simplify enabling and disabling instrumentation control while using
+``make``.  Additionally, one can add other Score-P options within the ``PREP``
+variable e.g. ``--hip``.  To disable the instrumentation, simply set the
+``PREP`` variable to an empty string.  Below is an example of a Makefile that
+uses Score-P with ROCm HIP.
 
-Additionaly, one can add other Score-P options within the ``PREP`` variable e.g. ``--cuda``
+.. code-block:: makefile
 
-.. code::
+   ## Makefile for Score-P with ROCm HIP
 
-   ##Sample Makefile:
-
-   CCOMP  = nvc++
+   CC = hipcc
    CFLAGS =
-   PREP = scorep --cuda
+   PREP = scorep --hip
 
-   INCLUDES  = -I<Path to Includes>/include ##If needed
-   LIBRARIES = -L<Path to Libraries>/lib64 ##If needed
+   INCLUDES  = -I<Path to Includes>/include # if needed
+   LIBRARIES = -L<Path to Libraries>/lib64 # if needed
 
    test: test.o
-      $(PREP) $(CCOMP) $(CFLAGS) $(LIBRARIES) test.o -o test
+      $(PREP) $(CC) $(CFLAGS) $(LIBRARIES) test.o -o test
 
    test.o: test.c
-      $(PREP) $(CCOMP) $(CFLAGS) $(INCLUDES) -c test.c
+      $(PREP) $(CC) $(CFLAGS) $(INCLUDES) -c test.c
 
    .PHONY: clean
 
    clean:
       rm -f test *.o
 
-CMake / Autotools
------------------
-
-For CMake and Autotools based build systems, it is recommended to use the scorep-wrapper script
-instances. The intended usage of the wrapper instances is to replace the application's compiler and
-linker with the corresponding wrapper at configuration time so that they will be used at build time.
-As the Score-P instrumentation during the CMake or configure steps is likely to fail, the wrapper script allows for disabling the instrumentation by setting the variable ``SCOREP_WRAPPER=off``.
-
-
-For CMake and Autotools based builds it is recommended to configure in the following way(s):
-
-.. code::
-
-   #Example for CMake
-
-   $ SCOREP_WRAPPER=off cmake .. \
-        -DCMAKE_C_COMPILER=scorep-gcc \
-        -DCMAKE_CXX_COMPILER=scorep-g++ \
-        -DCMAKE_Fortran_COMPILER=scorep-ftn
-
-.. code::
-
-   #Example for autotools
-
-   $ SCOREP_WRAPPER=off  ../configure \
-        CC=scorep-gcc \
-        CXX=scorep-g++ \
-        FC=scorep--ftn \
-        --disable-dependency-tracking
-
-.. Note::
-
-   ``SCOREP_WRAPPER=off`` disables the instrumentation only in the environment of the ``configure`` or ``cmake`` command. Subsequent calls to ``make`` are not affected and will instrument the application as expected.
-
-For more detailed information on using Score-P with CMake or Autotools visit `Score-P <https://scorepci.pages.jsc.fz-juelich.de/scorep-pipelines/docs/scorep-4.1/html/scorepwrapper.html>`_
-
-
-.. Note::
-
-  To see all available options for instrumentation:
-
-  .. code::
-
-     $ scorep --help
-
-|
 
 Measurement
 ===========
 
-Once the code has been instrumented, it is time to begin the measurement run of the newly compiled code. The measurement calls will gather information during the runtime of the code where this information will be stored for later analysis.
+Once the code has been instrumented, it is time to begin the measurement runs.
+The measurement calls will gather information during the execution and store for
+later analysis.
 
-By default Score-P is configured to run with profiling set to **true** and tracing set to **false**. Measurement types are configured via environment variables.
+By default Score-P is configured to run with profiling set to **true** and
+tracing set to **false**. Measurement types are configured via environment
+variables and the default values can be checked using the ``scorep-info``
+command. The environment variables can be set in your batch script or
+interactively.
 
-.. code::
+.. code-block:: bash
 
-   ##Environment variable setup examples
+   # Environment variable examples
+   $ export SCOREP_ENABLE_TRACING=true
 
-   export SCOREP_ENABLE_TRACING=true
-
-You can check what current Score-P environment variables are set:
-
-.. code::
-
+   # Check what current Score-P environment variables are set:
    $ scorep-info config-vars --full
-
-   #Output
-
+   # Output of scorep-info config-vars
    SCOREP_ENABLE_PROFILING
    Description: Enable profiling
          Type: Boolean
@@ -290,70 +214,79 @@ You can check what current Score-P environment variables are set:
    Description: Be verbose
          Type: Boolean
          Default: false
-
     .....
 
 
 Profiling
-=========
+---------
 
-To generate a profile run of your instrumented code on Summit, you will first need to get a node allocation
-using a batch script or an interactive job; Additionaly you will need to load modules ``otf2`` and ``cubew``:
+To generate a profile run of your instrumented code on a compute node, you will
+first need to get a node allocation using a batch script or an interactive job.
+Additionally you will need to load the ``otf2`` and ``cubew`` modules.
 
-.. code::
+.. code-block:: bash
 
    $ module load otf2
    $ module load cubew
 
-.. Admonition:: Example Batch Script
+For more information on launching batch jobs on Frontier, please see the
+`Running Jobs section of the Frontier User Guide
+<https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#running-jobs>`_.
+Here is an example batch script to run a profiling measurement on Frontier:
 
-  .. code::
+.. Admonition:: Example Batch Script for Frontier
 
-     #!/bin/bash
-     # Begin LFS Directives
-     #BSUB -P ABC123        #Project Account
-     #BSUB -W 3:00          #Walltime
-     #BSUB -nnodes 1        #Number of Nodes
-     #BSUB -J RunSim123     #Job Name
-     #BSUB -o RunSim123.%J  #Job System Out
-     #BSUB -e RunSim123.%J  #Job System Error Out
+   .. code-block:: bash
 
-     cd <path to instrumented code>
+      #!/bin/bash
+      #SBATCH -A ABC123       # Project account
+      #SBATCH -t 1:00:00      # Walltime
+      #SBATCH -p batch        # Queue
+      #SBATCH -N 1            # Number of nodes
+      #SBATCH -J MyJobName    # Job Name
+      #SBATCH -o %x-%j.out    # Job output file
 
-     jsrun -n 1 ./<binary to run>
+      cd <path to my ScoreP instrumented executable>
 
-For more information on launching jobs on Summit, please see the Running Jobs section of the Summit User Guide.
+      export SCOREP_ENABLE_PROFILING=true
+      export SCOREP_ENABLE_TRACING=false
+      export SCOREP_EXPERIMENT_DIRECTORY=executable_scorep_outdir
 
-The output files generated when the profile measurement runs are successful will be placed in a folder uniquely named:
+      srun -n 1 ./<executable>
 
-.. code::
 
-   $ scorep-yyyymmdd_hhmm_<Unique ID created>
+By default, the output files generated when the profile measurement runs are
+successful will be placed in a folder named ``scorep-yyyymmdd_hhmm_uniqueid``. A
+preferred folder name can be set using the ``SCOREP_EXPERIMENT_DIRECTORY`` env
+variable. After the profile run, the folder will contain a file with the name
+``profile.cubex``. The ``.cubex`` file can be analyzed using a presentation tool
+called `Cube
+<http://apps.fz-juelich.de/scalasca/releases/cube/4.3/docs/CubeGuide.pdf>`_
+developed by Scalasca. 
 
-A file will be placed within the above mentioned folder with the name ``profile.cubex``. This type of file can be analyzed using a tool called `Cube <http://apps.fz-juelich.de/scalasca/releases/cube/4.3/docs/CubeGuide.pdf>`_ developed by Scalasca.
-
-For a more detailed description of profiling measurements with Score-P, please visit the `ScorepP_Profiling <https://scorepci.pages.jsc.fz-juelich.de/scorep-pipelines/docs/scorep-4.1/html/measurement.html>`_ homepage.
+For a more detailed description of profiling measurements with Score-P, please
+visit the `ScorepP_Profiling
+<https://scorepci.pages.jsc.fz-juelich.de/scorep-pipelines/docs/scorep-4.1/html/measurement.html>`_
+homepage.
 
 
 Tracing
-=======
+-------
 
-To run a tracing measurement, we will need to enable this through the environment variable ``SCOREP_ENABLE_TRACING``:
+Since tracing measurements acquire significantly more output data than
+profiling, we need to design a filter to remove some of the most visited calls
+within your instrumented code. There is a tool developed by Score-P,
+``scorep-score`` that allows us to estimate the size of the trace file (OTF2)
+based on information attained from the profiling generated ``cubex`` file.
 
-.. code::
+To gather the needed information to design a filter file, first run
+``scorep-score`` on the generated profile file:
 
-   $ export SCOREP_ENABLE_TRACING=true
-
-
-Since tracing measurements acquire significantly more output data than profiling, we need to design a filter to remove some of the most visited calls within your instrumented code. There is a tool developed by Score-P that allows us to estimate the size of the trace file (OTF2) based on information attained from the profiling generated cube file.
-
-To gather the needed information to design a filter file, first run ``scorep-score``:
-
-.. code::
+.. code-block:: bash
 
    $ scorep-score -r <profile cube dir>/profile.cubex
 
-.. Admonition:: Output scorep-score generated Example:
+.. Admonition:: Output scorep-score generated example:
 
   .. code::
 
@@ -378,7 +311,7 @@ The first line of the output gives an estimation of the total size of the trace,
 
 In addition to the trace, Score-P requires some additional memory to maintain internal data structures. Thus, it provides also an estimation for the total amount of required memory on each process. The memory size per process that Score-P reserves is set via the environment variable ``SCOREP_TOTAL_MEMORY``. In the given example the per process memory is about 10GB. When defining a filter, it is recommended to exclude short, frequently called functions from measurement since they require a lot of buffer space (represented by a high value under ``max_tbc``) but incur a high measurement overhead. MPI functions and OpenMP constructs cannot be filtered. Thus, it is usually a good approach to exclude regions of type USR starting at the top of the list until you reduced the trace to your needs. The example below excludes the functions ``matmul_sub`` and ``matvec_sub`` from the trace:
 
-.. code::
+.. code-block:: bash
 
    $ cat scorep.filter
    SCOREP_REGION_NAMES_BEGIN
@@ -387,69 +320,81 @@ In addition to the trace, Score-P requires some additional memory to maintain in
       matvec_sub
    SCOREP_REGION_NAMES_END
 
-One can check the effects of the filter by re-running the ``scorep-score`` command:
+One can check the effects of the filter by re-running the ``scorep-score``
+command with the new filter file.
 
-.. code::
+.. code-block:: bash
 
    $ scorep-score <profile cube dir>/profile.cubex -f scorep.filter
 
-To apply the filter to your measurement run, you must specify this in an environment variable called
-``SCOREP_FILTERING_FILE``:
+Now you are ready to submit a batch request with your instrumented code to run
+with tracing enabled. To run a tracing measurement, we will need to enable the
+environment variable ``SCOREP_ENABLE_TRACING``.   To apply the filter to your
+measurement run, you must specify this in an environment variable called
+``SCOREP_FILTERING_FILE``.
 
-.. code::
+.. code-block:: bash
 
+   $ export SCOREP_ENABLE_TRACING=true
    $ export SCOREP_FILTERING_FILE=scorep.filter
 
-Now you are ready to submit your instrumented code to run with tracing enabled. This measurement will generate files of the form ``traces.otf``.
-The ``.otf2`` file format can be analyzed by a tool called `Vampir <https://docs.olcf.ornl.gov/software/profiling/Vampir.html>`_ .
+This measurement will generate files of the form ``traces.otf``. The ``.otf2``
+file format can be analyzed by the Vampir visualization tool that provides a
+visual GUI to analyze and understand large ``.otf2`` trace files generated with
+Score-P.  
 
-`Vampir <https://docs.olcf.ornl.gov/software/profiling/Vampir.html>`_ provides a visual GUI to
-analyze the ``.otf2`` trace file generated with Score-P.
+`OLCF Vampir Documentation
+<https://docs.olcf.ornl.gov/software/profiling/Vampir.html>`_ gives more details
+on how to use Vampir on OLCF systems.
 
 .. Note::
 
-   Small trace files can be viewed locally on your machine if you have the Vampir client downloaded,
-   otherwise they can be viewed locally on Summit. For large trace files, it is strongly recommended to run
-   ``vampirserver`` reverse-connected to a local copy of the Vampir client. See the :ref:`vamptunnel` section for more details.
+   Small trace files can be downloaded and viewed locally on your machine if you
+   have the Vampir client downloaded, or they can be viewed on your local
+   machine using a remote X-display from the OLCF machine. 
+   
+   For large trace files, it is strongly recommended to run ``vampirserver`` on
+   the OLCF machine, reverse-connected to a Vampir client on your local machine.
+   See the :ref:`vamptunnel` section for more details.
 
 Manual Instrumentation
 ======================
 
 In addition to automatically profiling and tracing functions, there is also a way to manually instrument a specific region in the source code. To do this, you will need to add the ``--user`` flag to the ``scorep`` command when compiling:
 
-.. code::
+.. code-block:: bash
 
    $ scorep --user gcc -c test.c
    $ scorep --user gcc -o test test.o
 
-Now you can manually instrument Score-P to the source code as seen below:
+Now you can manually instrument Score-P within the source code as seen below:
 
 .. tab-set::
 
-   .. tab-item:: C,C++
+   .. tab-item:: C/C++
 
-      .. code::
+      .. code-block:: c
          
          #include <scorep/SCOREP_User.h>
 
          void foo() {
             SCOREP_USER_REGION_DEFINE(my_region)
             SCOREP_USER_REGION_BEGIN(my_region, "foo", SCOREP_USER_REGION_TYPE_COMMON)
-         // do something
-         SCOREP_USER_REGION_END(my_region)
+            // do the work of foo here
+            SCOREP_USER_REGION_END(my_region)
          }
 
 
    .. tab-item:: Fortran
 
-      .. code::
+      .. code-block:: fortran
          
          #include <scorep/SCOREP_User.inc>
 
          subroutine foo
             SCOREP_USER_REGION_DEFINE(my_region)
             SCOREP_USER_REGION_BEGIN(my_region, "foo", SCOREP_USER_REGION_TYPE_COMMON)
-            ! do something
+            ! do the work of foo here
             SCOREP_USER_REGION_END(my_region)
          end subroutine foo
 
@@ -458,7 +403,7 @@ In this case, "my_region" is the handle name of the region which has to be defin
 
 Below are some examples of manually instrumented regions using phase and loop types: 
 
-.. code::
+.. code-block:: c
    
    #include <scorep/SCOREP_User.h>
    
@@ -472,7 +417,7 @@ Below are some examples of manually instrumented regions using phase and loop ty
    }
    SCOREP_USER_REGION_END(sum_hdl)
 
-.. code::
+.. code-block:: c
 
    #include <scorep/SCOREP_User.h>
    
@@ -486,15 +431,29 @@ Below are some examples of manually instrumented regions using phase and loop ty
 
 The regions "sum" and "my_calculations" in the above examples would then be included in the profiling and tracing runs and can be analysed with Vampir. For more details, refer to the Advanced Score-P training in the :ref:`training-archive`.
 
-Score-P Demo Video
-==================
+Score-P and Vampir Demo
+=======================
 
-Please see the provided video below to watch a brief demo of using Score-P provided by TU-Dresden and presented by Ronny Brendel.
+Please see the 30-minute video below on `2023 Trace-Based Performance Analysis with
+Score-P + Vampir <https://vimeo.com/858484450>`_ to get a brief introduction to
+Vampir and Score-P. This recording is taken from the Frontier Training Workshop
+(August 2023), Friday, August 25th, 2023, presented by Bill Williams,
+TU-Dresden.
+
+You can watch the video here: https://vimeo.com/858484450
 
 .. raw:: html
 
-   <div style="padding:56.25% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/285908215?h=26f33f1775" style="position:absolute;top:0;left:0;width:100%;height:100%;" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>
+   <div style="padding:56.25% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/858484450?h=26f33f1775" style="position:absolute;top:0;left:0;width:100%;height:100%;" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>
+   <p><a href="https://vimeo.com/858484450">2023 Trace-Based Performance Analysis with Score-P + Vampir</a> from <a href="https://vimeo.com/olcf">OLCF</a> on <a href="https://vimeo.com">Vimeo</a>.</p>
 
-   <p><a href="https://vimeo.com/285908215">2018 Score-P / Vampir Workshop</a> from <a href="https://vimeo.com/olcf">OLCF</a> on <a href="https://vimeo.com">Vimeo</a>.</p>
 
-This recording is from the 2018 Score-P / Vampir workshop that took place at ORNL on August 17, 2018. In the video, Ronny Brendel gives an introduction to the Score-P and Vampir tools, which are often used together to collect performance profiles/traces from an application and visualize the results.
+.. .. raw:: html
+
+.. .. raw:: html
+
+..    <div style="padding:56.25% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/285908215?h=26f33f1775" style="position:absolute;top:0;left:0;width:100%;height:100%;" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>
+
+..    <p><a href="https://vimeo.com/285908215">2018 Score-P / Vampir Workshop</a> from <a href="https://vimeo.com/olcf">OLCF</a> on <a href="https://vimeo.com">Vimeo</a>.</p>
+
+.. This recording is from the 2018 Score-P / Vampir workshop that took place at ORNL on August 17, 2018. In the video, Ronny Brendel gives an introduction to the Score-P and Vampir tools, which are often used together to collect performance profiles/traces from an application and visualize the results.
