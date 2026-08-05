@@ -4086,9 +4086,9 @@ Set to ``1`` by default if ``MPICH_GPU_SUPPORT_ENABLED=1``. This enables GPU IPC
 ``GTL_ENABLE_HSA_IPC_SIGNAL_CACHE``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-This option is unset by default, and is advised to be set to ``GTL_ENABLE_HSA_IPC_SIGNAL_CACHE=1`` when ``MPICH_GPU_IPC_ENABLED=1``. 
+This option is set to ``0`` by default, and is advised to be set to ``GTL_ENABLE_HSA_IPC_SIGNAL_CACHE=1`` when ``MPICH_GPU_IPC_ENABLED=1``. For Cray MPICH 9.0.1 and prior, set ``GTL_DISABLE_HSA_IPC_SIGNAL_CACHE=0`` which is set to ``1`` by default.
 
-Registering and unregistering GPU buffers for inter-process communication takes a relatively long time to do. The MPI library caches remote buffer attachments in order to reuse them, instead of detaching after every transfer. One limitation has been that when a process stops using a GPU buffer, there was no easy way to let the processes that are caching attachments know about this, and so they continued to cache the buffer. This consumes some of the limited GPU memory. A new feature since ROCM 6.4 enables the MPI library to alert the other processes through a signalling mechanism. If this environment variable is set, then this feature will be used to help reduce the amount of memory that the cache is consuming. This may help prevent out of memory situations. For Cray MPICH 9.0.1 and prior, set ``GTL_DISABLE_HSA_IPC_SIGNAL_CACHE=0``.
+Registering and unregistering GPU buffers for inter-process communication takes a relatively long time to do. The MPI library caches remote buffer attachments in order to reuse them, instead of detaching after every transfer. One limitation has been that when a process stops using a GPU buffer, there was no easy way to let the processes that are caching attachments know about this, and so they continued to cache the buffer. This consumes some of the limited GPU memory. A new feature since ROCM 6.4 enables the MPI library to alert the other processes through a signalling mechanism. If this environment variable is set, then this feature will be used to help reduce the amount of memory that the cache is consuming. This may help prevent out of memory situations.
 
 ``HSA_ENABLE_IPC_MODE_LEGACY``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
