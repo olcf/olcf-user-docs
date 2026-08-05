@@ -2,6 +2,8 @@
 ParaView
 ********
 
+.. warning::
+    July 7, 2026: The UMS installations on Frontier are currently upgrading dependencies and are not usable at this time.
 
 Overview
 ========
@@ -46,12 +48,12 @@ from `Kitware <https://www.paraview.org/download/>`__.
 Recommended ParaView versions on our systems:
 
 * **Andes**:
-    * OLCF Installation: ParaView 5.9.1, 5.10.0, 5.11.0, 5.12.1, 5.13.1, 5.13.3
+    * OLCF Installation: ParaView 5.9.1, 5.10.0, 5.11.0, 5.12.1, 5.13.1, 5.13.3, 6.0.0
 * **Riker**:
     * OLCF Installation: ParaView 5.13.3
 * **Frontier**:
     * UMS032 Installation: ParaView 5.11.2, 5.12.1, 5.13.1
-    * OLCF Installation: ParaView 5.12.0, 5.13.1, 5.13.2
+    * OLCF Installation: ParaView 5.13.1, 5.13.2, 5.13.3
 
 .. warning::
     Using a different version than what is listed above is not guaranteed to work properly.
@@ -90,6 +92,11 @@ connected to. For example, to see these modules on specific OLCF systems:
          paraview/5.13.3-osmesa
          paraview/6.0.0-egl-osmesa
          paraview/6.0.0
+
+      .. note::
+          The EGL mode seems to work better with larger datasets and is generally
+          recommended over OSMesa on our systems. However, we encourage users to try both
+          options and see which version works best for their data.
 
    .. tab-item:: Riker
       :sync: riker
@@ -130,7 +137,7 @@ connected to. For example, to see these modules on specific OLCF systems:
 
             .. code-block:: bash
              
-               $ module load PrgEnv-gnu
+               $ module load PrgEnv-gnu/8.6.0
                $ module load gcc-native/13.2
                $ module load rocm # needed to see the GPU-enabled modules
                $ module -t avail paraview
@@ -144,10 +151,8 @@ connected to. For example, to see these modules on specific OLCF systems:
                paraview/5.13.1-mpi
                paraview/5.13.2-mpi
 
-.. note::
-    The EGL mode seems to work better with larger datasets and is generally
-    recommended over OSMesa on our systems. However, we encourage users to try both
-    options and see which version works best for their data.
+            .. note::
+                ParaView 5.13.3 depends on ``cpe/25.09`` and ``gcc-native/14.2`` so does not show in the above list.
 
 After installing, you must give ParaView the relevant server information to be
 able to connect to OLCF systems (comparable to VisIt's system of host

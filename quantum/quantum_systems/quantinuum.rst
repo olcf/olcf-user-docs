@@ -157,7 +157,7 @@ Additionally, the following default quotas are enforced:
 * **Nexus Lab**: First come, first served (total 500 hours shared among all QCUP users)
 
 As noted :ref:`below<quantinuum-alloc>`, quotas can be raised by sending a request to help@olcf.ornl.gov with sufficient justification.
-To see your current usage or quotas in Quantinuum Nexus (e.g., how many HQC credits you have available), navigate to your User Profile on Nexus (``https://nexus.quantinuum.com/users/your_username``).
+To see your current usage or quotas in Quantinuum Nexus (e.g., how many HQC credits you have available), navigate to the Nexus homepage (``https://nexus.quantinuum.com/``) and view the "Usage" panel on the left. For a more detailed view, and to view usage across multiple groups, navigate to your User Profile on Nexus (``https://nexus.quantinuum.com/users/your_username``).
 
 .. warning::
    For resources that have "Unlimited" quota, the dashboard may make it seem like you have a specific amount of usage remaining; however, you still have unlimited usage. If you have problems accessing those resources, please reach out to help@olcf.ornl.gov.

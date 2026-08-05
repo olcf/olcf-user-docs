@@ -36,16 +36,22 @@ Installing PyTorch
 
 In general, installing either the "stable" or "nightly" wheels of PyTorch>=2.1.0 listed on `Pytorch's Website <https://pytorch.org/get-started/locally/>`__ works on Frontier; however, more recent PyTorch versions typically have better ROCm integration and support.
 When navigating the install instructions on PyTorch's website, make sure to indicate "Linux", "Pip", and "ROCm" for accurate install instructions.
-Let's follow those instructions to install a stable wheel of torch 2.8.0 with ROCm 6.4.1 (the current recommended version on Frontier).
+
+Let's follow those instructions to install a stable wheel of torch 2.10.0 with ROCm 7.1.1.
+This combination is the current recommendation on Frontier because it is capable of supporting PyTorch, PyTorch Geometric, and Flash Attention within the same virtual environment and ROCm version; however, for PyTorch-only users, versions of Pytorch that are compatible with ROCm 7.0.2 and 7.2.0 are also recommended. 
 
 First, load your modules:
 
 .. code-block:: bash
 
-   module load PrgEnv-gnu/8.6.0
+   module load PrgEnv-gnu/8.7.0
+   module load cpe/26.03
    module load miniforge3/23.11.0-0
-   module load rocm/6.4.1
+   module load rocm/7.1.1
    module load craype-accel-amd-gfx90a
+
+   # Because using a non-default CPE
+   export LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH
  
 Next, create and activate a conda environment that we will install ``torch`` into:
 
@@ -58,8 +64,8 @@ Finally, install PyTorch:
 
 .. code-block:: bash
 
-   pip install torch==2.8.0 torchvision==0.23.0 torchaudio==2.8.0 --index-url https://download.pytorch.org/whl/rocm6.4
-   
+   pip install torch==2.10.0 torchvision==0.25.0 torchaudio==2.10.0 --index-url https://download.pytorch.org/whl/rocm7.1
+
 You should now be ready to use PyTorch on Frontier!
 
 For older or more specific wheels to install, take a look at these links:
@@ -81,13 +87,19 @@ Optional: Install mpi4py
 Although ``mpi4py`` isn't required in general (you can accomplish the same task using system environment variables), it acts as a nice convenience when needing to set various MPI parameters when using PyTorch for distributed training.
 This is taken from our :doc:`/software/python/parallel_h5py` guide:
 
+.. warning::
+   As described in the above section, make sure to ``export LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH`` before building ``mpi4py`` if using non-default Cray modules.
+
 .. code-block:: bash
 
+   # If **not** interested in GPU-aware MPICH (otherwise, having these modules is fine):
    # Unloading ROCm before building mpi4py prevents potential library linking issues
    # When running, and after building mpi4py, you CAN have the ROCm module loaded
    module unload rocm
+   module unload craype-accel-amd-gfx90a
 
    MPICC="cc -shared" pip install --no-cache-dir --no-binary=mpi4py mpi4py
+
 
 .. note::
    The below example uses ``mpi4py``
@@ -254,7 +266,7 @@ Both scripts below use ``DistributedDataParallel`` and can run across multiple n
            os.environ['LOCAL_RANK'] = str(local_rank)
            os.environ['MASTER_ADDR'] = str(args.master_addr)
            os.environ['MASTER_PORT'] = str(args.master_port)
-           os.environ['NCCL_SOCKET_IFNAME'] = 'hsn0'
+           os.environ['NCCL_SOCKET_IFNAME'] = 'hsn0,hsn1,hsn2,hsn3' # if you see hangs, try using only hsn0
 
            dist.init_process_group(
                backend="nccl",
@@ -421,7 +433,7 @@ Both scripts below use ``DistributedDataParallel`` and can run across multiple n
             os.environ['LOCAL_RANK'] = str(local_rank)
             os.environ['MASTER_ADDR'] = str(args.master_addr)
             os.environ['MASTER_PORT'] = str(args.master_port)
-            os.environ['NCCL_SOCKET_IFNAME'] = 'hsn0'
+            os.environ['NCCL_SOCKET_IFNAME'] = 'hsn0,hsn1,hsn2,hsn3' # if you see hangs, try using only hsn0
 
             torch.distributed.init_process_group(
                 backend="nccl",
@@ -455,12 +467,18 @@ To run the python scripts, an example batch script is given below:
        #SBATCH -t 00:05:00
        #SBATCH -p batch
        #SBATCH -N 2
+       #SBATCH --network=disable_rdzv_get
 
        # Load modules
-       module load PrgEnv-gnu/8.6.0
-       module load rocm/6.4.1
-       module load craype-accel-amd-gfx90a
+       module load PrgEnv-gnu/8.7.0
+       module load cpe/26.03
        module load miniforge3/23.11.0-0
+       module load rocm/7.1.1
+       module load rccl-net-plugin
+       module load craype-accel-amd-gfx90a
+
+       # Because using a non-default CPE
+       export LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH
 
        # Activate your environment
        conda activate /path/to/my_env
@@ -501,7 +519,7 @@ We highly recommend setting ``MASTER_ADDR`` and ``NCCL_SOCKET_IFNAME`` when assi
 .. code-block:: bash
 
    export MASTER_ADDR=$(hostname -i)
-   export NCCL_SOCKET_IFNAME=hsn0
+   export NCCL_SOCKET_IFNAME=hsn0,hsn1,hsn2,hsn3 # if you see hangs, try using only hsn0
 
 There are different Master Ports you can use, but we typically recommend using port 3442 for ``MASTER_PORT``:
 
@@ -572,98 +590,15 @@ More information on how to use ``sbcast`` and ``conda-pack`` to move your enviro
 
 In a nutshell: NVMe > Orion >> NFS.
 
-AWS-OFI-RCCL Plugin
+RCCL Network Plugin
 -------------------
 
-The `AWS-OFI-RCCL plugin <https://github.com/ROCm/aws-ofi-rccl>`__ enables using libfabric as a network provider while running AMD's RCCL based applications.
-This plugin can be built and used by common ML/DL libraries like PyTorch to increase performance when running on AMD GPUs.
+RCCL defaults to inter-node communication using TCP/IP Sockets, which does not scale to the large job sizes on Frontier.
+In order to use the high-speed Slingshot network RCCL requires a network plugin that is dynamically loaded during RCCL initialization.
+The recommended way to use this plugin is to load the ``rccl-net-plugin`` module after having loaded ``rocm``.
+This module will configure the environment to use the plugin and will also set some recommended environment variables for the Slingshot network stack.
 
-To build the plugin on Frontier (using ROCm 6.4.1 as an example):
-
-.. code-block:: bash
-
-   rocm_version=6.4.1
-
-   # Load modules
-   module load PrgEnv-gnu/8.6.0
-   module load rocm/$rocm_version
-   module load craype-accel-amd-gfx90a
-   module load gcc-native/13.2
-   module load cray-mpich/8.1.31
-   libfabric_path=/opt/cray/libfabric/1.22.0
-
-   # Download the plugin repo
-   git clone --recursive https://github.com/ROCmSoftwarePlatform/aws-ofi-rccl
-   cd aws-ofi-rccl
-
-   # Build the plugin
-   ./autogen.sh
-   export LD_LIBRARY_PATH=/opt/rocm-$rocm_version/hip/lib:$LD_LIBRARY_PATH
-   PLUG_PREFIX=$PWD
-
-   CC=hipcc CFLAGS=-I/opt/rocm-$rocm_version/include ./configure \
-   --with-libfabric=$libfabric_path --with-rccl=/opt/rocm-$rocm_version --enable-trace \
-   --prefix=$PLUG_PREFIX --with-hip=/opt/rocm-$rocm_version/hip --with-mpi=$MPICH_DIR
-
-   make
-   make install
-
-   # Reminder to export the plugin to your path
-   echo $PLUG_PREFIX
-   echo "Add the following line in the environment to use the AWS OFI RCCL plugin"
-   echo "export LD_LIBRARY_PATH="$PLUG_PREFIX"/lib:$""LD_LIBRARY_PATH"
-
-.. warning::
-   RCCL library location varies based on ROCm version.
-
-   * Before 6.0.0: ``/opt/rocm-${version}/rccl/lib`` or ``/opt/rocm-${version}/rccl/include``
-   * After 6.0.0: ``/opt/rocm-${version}/lib`` or ``/opt/rocm-${version}/include``
-
-Once the plugin is installed, you must include it in your ``LD_LIBRARY_PATH`` when running applications to use it:
-
-.. code-block:: bash
-
-   export LD_LIBRARY_PATH=${PATH TO THE PLUGIN}/lib/:${LD_LIBRARY_PATH}
-
-
-To avoid a possible deadlock between RCCL and the default libfabric memory registration cache monitor (`memhooks`), before running you should set either
-
-.. code-block:: bash
-
-   export FI_MR_CACHE_MONITOR=kdreg2
-
-or
-
-.. code-block:: bash
-
-   export FI_MR_CACHE_MONITOR=userfaultfd
-
-
-More information about RCCL, the plugin, and profiling its effect on Frontier applications can be found `here <https://www.olcf.ornl.gov/wp-content/uploads/OLCF_AI_Training_0417_2024.pdf>`__.
-
-
-Environment Variables
----------------------
-
-When running with the NCCL (RCCL) backend, there are many environment variables that can affect your application's performance. These environment variables are recommended by HPE and AMD on Frontier for best performance at scale:
-
-.. code-block:: bash
-
-   FI_MR_CACHE_MONITOR=kdreg2     # Required to avoid a deadlock.
-   FI_CXI_DEFAULT_CQ_SIZE=131072  # Ask the network stack to allocate additional space to process message completions.
-   FI_CXI_DEFAULT_TX_SIZE=2048    # Ask the network stack to allocate additional space to hold pending outgoing messages.
-   FI_CXI_RX_MATCH_MODE=hybrid    # Allow the network stack to transition to software mode if necessary. 
-
-   NCCL_NET_GDR_LEVEL=3           # Typically improves performance, but remove this setting if you encounter a hang/crash.
-   NCCL_CROSS_NIC=1               # On large systems, this NCCL setting has been found to improve performance
-   NCCL_SOCKET_IFNAME=hsn0        # NCCL/RCCL will use the high speed network to coordinate startup.
-
-RCCL and NCCL are highly configurable with environment variables. Some other variables to try are:
-
-.. code-block:: bash
-
-   NCCL_ALGO=TREE or RING # May see performance difference with either setting. (should not need to use this, but can try)
-   NCCL_DEBUG=info        # For debugging only (warning: generates a large amount of messages)
+If you prefer to build the plugin and manage your environment yourself the build process and recommended environment variables are described below.
 
 Alternative Rendezvous Protocol
 ---------------------------------
@@ -672,6 +607,8 @@ On Frontier it is possible to configure the network to use a different protocol 
 This alternative protocol may negatively impact MPI performance, so it is best used for jobs that mostly use RCCL for communication.
 
 To use the alternative protocol you need to both add the flag ``--network=disable_rdzv_get`` to your Slurm allocation request and set the environment variable ``FI_CXI_RDZV_PROTO=alt_read``.
+The ``rccl-net-plugin`` module will automatically set ``FI_CXI_RDZV_PROTO=alt_read`` for you when you load it, but you will still need to add the Slurm flag to your allocation request.
+
 You can add these to your batch scripts for your jobs:
 
 .. code-block:: bash
@@ -680,7 +617,123 @@ You can add these to your batch scripts for your jobs:
 
    export FI_CXI_RDZV_PROTO=alt_read
 
-For more information on this alternative protocal and HPE's recommendations for running RCCL on Slingshot networks, see `here <https://support.hpe.com/hpesc/public/docDisplay?docId=dp00004854en_us&docLocale=en_US>`__.
+For more information on this alternative protocal and HPE's recommendations for running RCCL on Slingshot networks, see `here <https://cdn.support.hpe.com/hpesc/public/docDisplay?docId=dp00007643en_us&page=user/rccl.html>`__.
+
+RCCL Environment Variables
+--------------------------
+
+RCCL and NCCL are highly configurable with environment variables, the most useful of which are described in `the RCCL documentation <https://rocm.docs.amd.com/projects/rccl/en/develop/api-reference/env-variables.html>`__.
+Note, however, that RCCL's default settings and internal tuner will likely select the best protocol, algorithm, and number of channels for your collectives.
+The environment variables most likely to improve performance are included in the ``rccl-net-plugin`` module (view them via ``module show rccl-net-plugin``) and also listed further below.
+
+
+
+Manual RCCL Network Plugin Configuration (Not Recommended)
+----------------------------------------------------------
+
+To build the plugin on Frontier (using ROCm 7.1.1 as an example):
+
+.. code-block:: bash
+
+   rocm_version=7.1.1
+
+   # Load modules
+   module load PrgEnv-gnu/8.7.0
+   module load rocm/$rocm_version
+   module load craype-accel-amd-gfx90a
+   module load gcc-native/14.2
+   module load cray-mpich/9.1.0
+   libfabric_path=/opt/cray/libfabric/2.3.1
+
+   # Download the plugin repo
+   wget https://github.com/aws/aws-ofi-nccl/releases/download/v1.19.2/aws-ofi-nccl-1.19.2.tar.gz
+   tar zxvf aws-ofi-nccl-1.19.2.tar.gz
+   cd aws-ofi-nccl-1.19.2
+
+   # Build the plugin
+   PLUG_PREFIX=$PWD
+
+   CC=gcc ./configure \
+   --with-libfabric=$libfabric_path --with-rocm=${ROCM_PATH} \
+   --prefix=$PLUG_PREFIX
+
+   make
+   make install
+
+   # Fix up a symlink that some versions of RCCL need to find the plugin
+   ln -s $PLUG_PREFIX/lib/librccl-net.so $PLUG_PREFIX/lib/libnccl-net.so
+
+   # Reminder to configure RCCL to use the plugin
+   echo $PLUG_PREFIX
+   echo "Add the following line in the environment to use the OFI RCCL Net plugin"
+   echo "export NCCL_NET_PLUGIN="$PLUG_PREFIX"/lib/librccl-net.so"
+
+.. warning::
+   RCCL library location varies based on ROCm version.
+
+   * Before 6.0.0: ``/opt/rocm-${version}/rccl/lib`` or ``/opt/rocm-${version}/rccl/include``
+   * After 6.0.0: ``/opt/rocm-${version}/lib`` or ``/opt/rocm-${version}/include``
+
+Once the plugin is installed, you must either set ``NCCL_NET_PLUGIN`` or include it in your ``LD_LIBRARY_PATH`` when running applications to use it:
+
+.. code-block:: bash
+
+   # Preferred
+   export NCCL_NET_PLUGIN=${PATH TO THE PLUGIN}/lib/librccl-net.so
+   # Alternative
+   export LD_LIBRARY_PATH=${PATH TO THE PLUGIN}/lib/:${LD_LIBRARY_PATH}
+
+If you are concerned that the plugin isn't being used, you can force RCCL to exit if the plugin isn't initialized by setting ``NCCL_NET``.
+On Frontier, however, the network is not configured for single node jobs and the plugin will not initialize, so this setting is only recommended for multi-node jobs.
+If you want force the check, we recommend conditionally setting this variable based on the number of nodes in your job:
+
+.. code-block:: bash
+
+    if (( $SLURM_JOB_NUM_NODES == 1 )); then
+        export NCCL_NET="Socket"
+    else
+        export NCCL_NET="OFI"
+    fi
+
+
+The default libfabric memory registration cache monitor on Frontier (``kdreg2``) is safe to use with the RCCL plugin, as is the non-default ``userfaultfd`` monitor.
+Do not use the ``memhooks`` monitor as this can cause deadlocks with the plugin.
+
+When running with the RCCL Libfabric plugin, there are many environment variables that can affect your application's performance.
+These environment variables are strongly recommended by HPE and AMD on Frontier for both correctness and best performance at scale:
+
+.. code-block:: bash
+
+   # Configure RCCL to use the plugin you built
+   # IMPORTANT! Without this the plugin will not be used! 
+   NCCL_NET_PLUGIN=${PATH TO THE PLUGIN}/lib/librccl-net.so
+
+   # Configure RCCL for Frontier
+   NCCL_CROSS_NIC=1
+   NCCL_NET_GDR_LEVEL=PHB
+   NCCL_SOCKET_IFNAME=hsn0,hsn1,hsn2,hsn3
+
+   # Configure libfabric for RCCL
+   HSA_FORCE_FINE_GRAIN_PCIE=1
+   FI_MR_CACHE_MONITOR=kdreg2
+   FI_CXI_DISABLE_HOST_REGISTER=1
+   FI_CXI_DEFAULT_CQ_SIZE=131072
+   FI_CXI_RDZV_PROTO=alt_read
+   FI_CXI_RDZV_EAGER_SIZE=0
+   FI_CXI_RDZV_THRESHOLD=0
+   FI_CXI_RDZV_GET_MIN=0
+   FI_CXI_DEFAULT_TX_SIZE=2048
+   FI_CXI_RX_MATCH_MODE=hybrid
+
+
+.. note::
+   If you happen to encounter hangs with the above settings, try changing the ``NCCL_SOCKET_IFNAME``
+   value to ``NCCL_SOCKET_IFNAME=hsn0`` i.e. only setting ``hsn0``.
+
+For more information about HPE's recommendations for running RCCL on Slingshot networks, see `here <https://github.com/HewlettPackard/shs-ccl-docs>`__.
+
+More information about RCCL, the plugin, and profiling its effect on Frontier applications can be found `here <https://www.olcf.ornl.gov/wp-content/uploads/OLCF_AI_Training_0417_2024.pdf>`__.
+
 
 
 .. _torch-geo:
@@ -693,14 +746,24 @@ Assuming you already have a working PyTorch installation (see above), install in
 
 .. code-block:: bash
 
+   # Load modules
+   module load PrgEnv-gnu/8.7.0
+   module load cpe/26.03
+   module load miniforge3/23.11.0-0
+   module load rocm/7.1.1
+   module load craype-accel-amd-gfx90a
+
+   # Because using a non-default CPE
+   export LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH
+
    # Activate your virtual environment
    conda activate /path/to/my_env
 
-   # Install some build tools
-   pip install ninja packaging
+   # Install some pre-reqs
+   pip install ninja packaging scipy
 
-   # Install PyG libraries (example for Torch 2.8)
-   pip install torch_geometric pyg_lib torch_scatter torch_sparse torch_cluster torch_spline_conv -f https://data.pyg.org/whl/torch-2.8.0+cpu.html
+   # Install PyG libraries (example for Torch 2.10+ROCm7.1.1)
+   pip install torch-geometric torch-sparse-rocm torch-spline-conv-rocm torch-scatter-rocm torch-cluster-rocm pyg-lib-rocm
 
 .. _flash-attn:
 
@@ -712,6 +775,16 @@ To install the ``flash-attn`` library on Frontier:
 
 .. code-block:: bash
 
+   # Load modules
+   module load PrgEnv-gnu/8.7.0
+   module load cpe/26.03
+   module load miniforge3/23.11.0-0
+   module load rocm/7.1.1
+   module load craype-accel-amd-gfx90a
+
+   # Because using a non-default CPE
+   export LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH
+
    # Activate your virtual environment
    conda activate /path/to/my_env
 
@@ -721,15 +794,21 @@ To install the ``flash-attn`` library on Frontier:
    # Retrieve the FA repo
    git clone https://github.com/ROCm/flash-attention
    cd flash-attention/
-   git checkout v2.7.4-cktile
+   git checkout v2.8.4.1-cktile
    git submodule init
    git submodule update
 
    # Build the flash-attn wheel
-   python3 setup.py bdist_wheel
+   # Option 1 (Triton Backend):
+   FLASH_ATTENTION_TRITON_AMD_ENABLE="TRUE" python3 setup.py bdist_wheel
+   # Option 2 (Composable Kernel Backend):
+   FLASH_ATTENTION_TRITON_AMD_ENABLE="FALSE" python3 setup.py bdist_wheel
 
    # Install flash-attn
    pip install dist/*.whl
+
+.. note::
+   For details on the differences between the Triton and CK backends, please see the README of the `Flash Attention ROCm fork <https://github.com/ROCm/flash-attention>`__.
 
 To test if your installation was successful, you can run this small script:
 

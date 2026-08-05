@@ -1,3 +1,4 @@
+:no-search:
 .. _crusher-quick-start-guide:
 
 *************************
@@ -5,11 +6,9 @@ Crusher Quick-Start Guide
 *************************
 
 .. warning::
-    **The Crusher Test and Development System will be decommissioned on April 12th, 2024.** The
-    file systems that were available on Crusher are still accessible from the Home
-    server and the Data Transfer Nodes (DTNs), so all your data will remain accessible.
-    If you do not have access to other OLCF systems, your project will move to data-only
-    for 30-days. If you have any questions, please contact help@olcf.ornl.gov.
+
+  This system was decommissioned on April 12, 2024 and is no longer online.
+  Information here is presented as an archive and is no longer updated.
 
 .. _crusher-system-overview:
 

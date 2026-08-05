@@ -32,6 +32,8 @@ Each Defiant GPU compute node consists of [2x] 32-core INTEL(R) XEON(R) PLATINUM
 Both CPUs have access to 4TB of DDR5 memory and [8x] 144GB NVIDIA H200 GPUs. The GPU nodes have [8x] 400g Infiniband interconnects.
 Additionally, there are [2x] 100g connections for Data Streaming. Each node also contains [4x] 3.5TB NVME devices (SSDs).
 
+.. _node_diagram:
+
 .. image:: /images/Defiant_GPU_node.png
    :align: center
    :width: 100%
@@ -625,6 +627,38 @@ CPU jobs and 1 for GPU. Please see the tables below for details.
 | batch-gpu | defiant-nv[01-02]        |
 +-----------+--------------------------+
 
+GPU Partition
+-------------
+
+Defiant's GPU partition consists of 2 nodes with 8 NVIDIA H200 GPUs each and
+these nodes can be shared by multiple users, provided that the resources are
+available. Therefore, users are required to specify the number of GPUs needed
+for their job using the ``--gpus=<int>`` or ``--gres=gpu:<int>`` Slurm
+submission options when submitting to the GPU partition. For example, the
+submit script below requests 4 GPUs and launches 4 MPI ranks with 1 GPU each
+
+.. code-block:: bash
+   :linenos:
+
+   #!/bin/bash
+   #SBATCH -A <project_id>
+   #SBATCH -J <job_name>
+   #SBATCH -o %x-%j.out
+   #SBATCH -t 00:05:00
+   #SBATCH -p batch-gpu
+   #SBATCH -N 1
+   #SBATCH --gpus=4
+ 
+   srun -n 4 --gpus-per-task=1 --gpu-bind=closest ./a.out 
+
+Specifically, the GPU partition is requested by ``#SBATCH -p batch-gpu`` and 
+the number of GPUs is specified by ``#SBATCH --gpus=4``. The ``srun`` flag 
+``--gpus-per-task=1`` specifies that each MPI rank should be allocated 1 GPU, 
+and the ``--gpu-bind=closest`` flag is used to bind each MPI rank to the 
+closest GPU available to that rank. Please refer to the 
+:ref:`node diagram <node_diagram>` for more information about GPU locations
+on the node. More information on the GPU-related ``srun`` flags can be found
+in the :ref:`GPU Mapping <gpu_mapping>` section.
 
 Process and Thread Mapping
 --------------------------
@@ -739,6 +773,8 @@ thread 001 of MPI rank 001 ran on hardware thread 033 (i.e., physical CPU core
     There are many different ways users might choose to perform these mappings,
     so users are encouraged to clone the ``hello_mpi_omp`` program and test
     whether or not processes and threads are running where intended.
+
+.. _gpu_mapping:
 
 GPU Mapping
 ^^^^^^^^^^^
