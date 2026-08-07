@@ -84,3 +84,10 @@ To ensure the efficient use of resources, the following allocation policy is in 
   * :ref:`IQM Allocation Instructions <iqm-alloc>`
 
 For questions or assistance with preparing a request, contact help@olcf.ornl.gov.
+
+How should I acknowledge OLCF quantum computing resources in a publication?
+===========================================================================
+
+Publications resulting from work using OLCF’s QCUP resources should include the following acknowledgement:
+
+*"This research used resources of the Oak Ridge Leadership Computing Facility, which is a DOE Office of Science User Facility supported under Contract DE-AC05-00OR22725."*
