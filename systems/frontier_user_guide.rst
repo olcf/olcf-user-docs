@@ -4083,7 +4083,7 @@ Applications that do not use GPU buffers in MPI calls may want to leave this var
 
 Set to ``1`` by default if ``MPICH_GPU_SUPPORT_ENABLED=1``. This enables GPU IPC support for intra-node GPU-GPU communication operations. This variable has no effect if MPICH_GPU_SUPPORT_ENABLED is set to 0. Disabling IPC is known to noticeably impact intra-node MPI performance. For known issues with IPC enabled and suggested workarounds, please see :ref:`gpu-ipc-tips-tricks`.
 
-``GTL_ENABLE_HSA_IPC_SIGNAL_CACHE``
+``GTL_ENABLE_HSA_IPC_SIGNAL_CACHE`` (previously ``GTL_DISABLE_HSA_IPC_SIGNAL_CACHE``)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 This option is set to ``0`` by default, and is advised to be set to ``GTL_ENABLE_HSA_IPC_SIGNAL_CACHE=1`` when ``MPICH_GPU_IPC_ENABLED=1``. For Cray MPICH 9.0.1 and prior, set ``GTL_DISABLE_HSA_IPC_SIGNAL_CACHE=0`` which is set to ``1`` by default.
