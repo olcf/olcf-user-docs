@@ -155,9 +155,9 @@ For more information on connecting to OLCF resources, see :ref:`connecting-to-ol
 .. todo: the below should be true once we have a LB
 .. By default, connecting to Lux will automatically place the user on a random login node. If you need to access a specific login node, you will ``ssh`` to that node after your initial connection to Lux.
 
-.. code-block:: bash
+    .. code-block:: bash
 
-    [<username>@login1.lux ~]$ ssh <username>@login2.lux.olcf.ornl.gov
+        [<username>@login1.lux ~]$ ssh <username>@login2.lux.olcf.ornl.gov
 
 .. todo: need to know how many Lux login nodes are available
 .. Users can connect to any of the 17 Lux login nodes by replacing ``login01`` with their login node of choice.
@@ -381,7 +381,7 @@ Below is a summary of the steps for data transfer using Globus:
 
 
 
-.. _amd-gpus:
+.. _lux-amd-gpus:
 
 AMD GPUs
 ========
@@ -443,7 +443,7 @@ on how the accelerators are connected to each other, to the CPU, and to the netw
 
 .. todo: has any of the AMD terminology below changed?
 
-.. _amd-nvidia-terminology:
+.. _lux-amd-nvidia-terminology:
 
 AMD vs NVIDIA Terminology
 -------------------------
@@ -513,7 +513,7 @@ wavefronts and also maintains 256 registers where each register is 64 4-byte wid
 entries. 
 
 
-.. _amd-hip:
+.. _lux-amd-hip:
 
 HIP
 ---
