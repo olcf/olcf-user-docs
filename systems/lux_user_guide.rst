@@ -1301,6 +1301,7 @@ The following can run ``hello_jobstep``:
 
 .. code-block:: bash
 
+    #!/bin/bash
     #SBATCH --account stf007
     #SBATCH --nodes 1
     #SBATCH --gpus 8
