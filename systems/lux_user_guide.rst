@@ -169,8 +169,14 @@ For more information on connecting to OLCF resources, see :ref:`connecting-to-ol
 Data and Storage
 ================
 
-Transition from Alpine to Orion
--------------------------------
+Orion
+-----
+
+.. todo: remove warning
+
+.. warning::
+
+    FOR UA: Orion may not be available on compute nodes in early testing days
 
 * Lux mounts Orion, a parallel filesystem based on Lustre and HPE ClusterStor, with a 679 PB usable namespace (/lustre/orion/). In addition to Lux, Orion is available on the OLCF's data transfer nodes.
 * Orion uses a feature called Progressive File Layout (PFL) that changes the striping of files as they grow. Because of this, we ask users not to manually adjust the file striping. If you feel the default striping behavior of Orion is not meeting your needs, please contact help@olcf.ornl.gov.
@@ -404,6 +410,7 @@ A command processor in each GPU receives API commands and transforms them into c
 
 .. todo: fact check the following
 
+NEEDS REVIEW:
 Compute tasks are managed by the 4 asynchronous compute engines, which dispatch wavefronts to compute units.
 All wavefronts from a single workgroup are assigned to the same CU.
 In CUDA terminology, workgroups are "blocks", wavefronts are "warps", and work-items are "threads".
@@ -481,7 +488,7 @@ kernel, indexed along the X, Y, and Z dimensions.
 Each block (or workgroup) of threads is assigned to a single Compute Unit, i.e., a single
 block won’t be split across multiple CUs. The threads in a block are scheduled in units of
 64 threads called wavefronts (similar to warps in CUDA, but warps only have 32 threads
-instead of 64). When launching a kernel, up to 64KB of block level shared memory called
+instead of 64). When launching a kernel, up to 160KB of block level shared memory called
 the Local Data Store (LDS) can be statically or dynamically allocated. This shared memory
 between the threads in a block allows the threads to access block local data with much
 lower latency compared to using the HBM since the data is in the compute unit itself.
@@ -495,7 +502,6 @@ The Compute Unit
    :align: center
    :alt: Block diagram of the AMD Instinct CDNA3 Compute Unit
 
-.. todo: fact check
 
 Each CU has 4 Matrix Core Units (the equivalent of NVIDIA's Tensor core units) and 4
 16-wide SIMD units. For a vector instruction that uses the SIMD units, each wavefront
@@ -524,10 +530,23 @@ of tutorials on programming with HIP and also converting existing CUDA code to H
 
 Things To Remember When Programming for AMD GPUs
 ------------------------------------------------
-* The MI355X has different denormal handling for FP16 and BF16 datatypes, which is relevant for ML training. It is recommended using BF16 over the FP16 datatype for ML models as you are more likely to encounter denormal values with FP16 (which get flushed to zero, causing failure in convergence for some ML models). See more in :ref:`using-reduced-precision`.
-* Memory can be automatically migrated to GPU from CPU on a page fault if XNACK operating mode is set.  No need to explicitly migrate data or provide managed memory. This is useful if you're migrating code from a programming model that relied on 'unified' or 'managed' memory. See more in :ref:`enabling-gpu-page-migration`. Information about how memory is accessed based on the allocator used and the XNACK mode can be found in :ref:`migration-of-memory-allocator-xnack`.
-* HIP has two kinds of memory allocations, coarse grained and fine grained, with tradeoffs between performance and coherence. Particularly relevant if you want to ues the hardware FP atomic instructions. See more in :ref:`fp-atomic-ops-coarse-fine-allocations`.
-* FP32 atomicAdd operations on Local Data Store (i.e., block shared memory) can be slower than the equivalent FP64 operations. See more in :ref:`performance-lds-atomicadd`.
+
+.. todo: check these sections
+
+    * The MI355X has different denormal handling for FP16 and BF16 datatypes, which is relevant for ML training.
+      It is recommended using BF16 over the FP16 datatype for ML models as you are more likely to encounter denormal values with FP16 (which get flushed to zero, causing failure in convergence for some ML models).
+      See more in :ref:`lux-using-reduced-precision`.
+    * Memory can be automatically migrated to GPU from CPU on a page fault if XNACK operating mode is set.
+      No need to explicitly migrate data or provide managed memory.
+      This is useful if you're migrating code from a programming model that relied on 'unified' or 'managed' memory.
+      See more in :ref:`lux-enabling-gpu-page-migration`.
+      Information about how memory is accessed based on the allocator used and the XNACK mode can be found in :ref:`migration-of-memory-allocator-xnack`.
+
+* HIP has two kinds of memory allocations, coarse grained and fine grained, with tradeoffs between performance and coherence.
+  Particularly relevant if you want to ues the hardware FP atomic instructions.
+  See more in :ref:`lux-fp-atomic-ops-coarse-fine-allocations`.
+* FP32 atomicAdd operations on Local Data Store (i.e., block shared memory) can be slower than the equivalent FP64 operations.
+  See more in :ref:`lux-performance-lds-atomicadd`.
 
 
 
@@ -603,80 +622,83 @@ AMD and GCC compilers are provided through modules on Lux.
 The AMD compilers are both based on LLVM/Clang.
 There is also a system/OS versions of GCC available in ``/usr/bin``.
 The table below lists details about each of the module-provided compilers.
-Please see the following :ref:`lux-compilers` section for more detailed inforation on how to compile using these modules.
+Please see the following :ref:`lux-compilers` section for more detailed information on how to compile using these modules.
 
-.. todo: review
+.. todo: review, add comments on new libsci etc paths
 
     Cray Programming Environment and Compiler Wrappers
     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-    Cray provides ``PrgEnv-<compiler>`` modules (e.g., ``PrgEnv-cray``) that load compatible components of a specific compiler toolchain. The components include the specified compiler as well as MPI, LibSci, and other libraries. Loading the ``PrgEnv-<compiler>`` modules also defines a set of compiler wrappers for that compiler toolchain that automatically add include paths and link in libraries for Cray software. Compiler wrappers are provided for C (``cc``), C++ (``CC``), and Fortran (``ftn``).
+    The components include the specified compiler as well as MPI, LibSci, and other libraries.
+    Loading the ``PrgEnv-<compiler>`` modules also defines a set of compiler wrappers for that compiler toolchain that automatically add include paths and link in libraries for Cray software.
 
-    .. note::
-       Use the ``-craype-verbose`` flag to display the full include and link information used by the Cray compiler wrappers. This must be called on a file to see the full output (e.g., ``CC -craype-verbose test.cpp``).
+MPI
+---
 
-    MPI
-    ---
+The MPI implementation available on Lux is MPICH, which is "GPU-aware" so GPU buffers can be passed directly to MPI calls.
 
-    The MPI implementation available on Lux is MPICH, which is "GPU-aware" so GPU buffers can be passed directly to MPI calls.
+Lux is primarily a RCCL-centric machine utilizing AMD Pollara 400GbE NICs on each compute node.
+MPI is not yet officially verified.
 
-    RCCL
+RCCL
+----
+
+The ROCm Collective Communication Library (RCCL) is installed with ROCm and can be accessed by loading a ``rocm`` module.
+
+.. todo: do we need a plugin or module? RCCL over Slingshot is not necessary.
+
+.. todo: fill in more RCCL information
+
     ----
 
-    The ROCm Collective Communication Library (RCCL) is installed with ROCm and can be accessed by loading a ``rocm`` module.
-    RCCL requires an external network plugin and some addition environment configuration to correctly use the high-speed network on Frontier.
-    Load the ``rccl-net-plugin`` module to configure your environment to use the external network plugin and tune the Slingshot network stack for RCCL.
-
-    .. note::
-        RCCL and MPI have different communication patterns and benefit from different network configurations, so some settings in this module may change MPI performance.
-        It is recommended to load the ``rccl-net-plugin`` whenever you are using RCCL multi-node, even if using MPI in the same job, as some settings are critical for RCCL correctness and performance on Slingshot.
-
-    ----
 
 
+.. _lux-compilers:
 
-    .. _frontier-compilers:
+Compiling
+=========
 
-    Compiling
-    =========
+Compilers
+---------
 
-    Compilers
-    ---------
+AMD and GCC compilers are provided through modules on Lux.
+The AMD compilers are based on LLVM/Clang.
+There is also a system/OS versions of GCC available in ``/usr/bin``.
+The table below lists details about each of the module-provided compilers.
 
-    Cray, AMD, and GCC compilers are provided through modules on Frontier. The Cray and AMD compilers are both based on LLVM/Clang. There is also a system/OS versions of GCC available in ``/usr/bin``. The table below lists details about each of the module-provided compilers.
+.. todo: rework table
 
-    .. note::
++--------+-------------------------+-----------------+----------+-------------------+----------------------------+
+| Vendor | Programming Environment | Compiler Module | Language | Compiler Wrapper  | Compiler                   |
++========+=========================+=================+==========+===================+============================+
+| AMD    | N/A                     | ``amd-vllm``    | C        | ``NA``            | ``amdclang``               |
+|        |                         |                 +----------+-------------------+----------------------------+
+|        |                         |                 | C++      | ``NA``            | ``amdclang++``             |
+|        |                         |                 +----------+-------------------+----------------------------+
+|        |                         |                 | Fortran  | ``NA``            | ``amdflang``               |
++--------+-------------------------+-----------------+----------+-------------------+----------------------------+
+| GCC    | ``PrgEnv-gnu``          | ``gcc``         | C        | ``NA``            | ``gcc``                    |
+|        |                         |                 +----------+-------------------+----------------------------+
+|        |                         |                 | C++      | ``NA``            | ``g++``                    |
+|        |                         |                 +----------+-------------------+----------------------------+
+|        |                         |                 | Fortran  | ``NA``            | ``gfortran``               |
++--------+-------------------------+-----------------+----------+-------------------+----------------------------+
 
-        It is highly recommended to use the Cray compiler wrappers (``cc``, ``CC``, and ``ftn``) whenever possible. See the next section for more details.
 
+MPI
+---
 
-    +--------+-------------------------+-----------------+----------+-------------------+----------------------------+
-    | Vendor | Programming Environment | Compiler Module | Language | Compiler Wrapper  | Compiler                   |
-    +========+=========================+=================+==========+===================+============================+
-    | Cray   | ``PrgEnv-cray``         | ``cce``         | C        | ``cc``            | ``craycc``                 |
-    |        |                         |                 +----------+-------------------+----------------------------+
-    |        |                         |                 | C++      | ``CC``            | ``craycxx`` or ``crayCC``  |
-    |        |                         |                 +----------+-------------------+----------------------------+
-    |        |                         |                 | Fortran  | ``ftn``           | ``crayftn``                |
-    +--------+-------------------------+-----------------+----------+-------------------+----------------------------+
-    | AMD    | ``PrgEnv-amd``          | ``amd``         | C        | ``cc``            | ``amdclang``               |
-    |        |                         |                 +----------+-------------------+----------------------------+
-    |        |                         |                 | C++      | ``CC``            | ``amdclang++``             |
-    |        |                         |                 +----------+-------------------+----------------------------+
-    |        |                         |                 | Fortran  | ``ftn``           | ``amdflang``               |
-    +--------+-------------------------+-----------------+----------+-------------------+----------------------------+
-    | GCC    | ``PrgEnv-gnu``          | ``gcc-native``  | C        | ``cc``            | ``gcc``                    |
-    |        |                         | or              +----------+-------------------+----------------------------+
-    |        |                         | ``gcc`` (<12.3) | C++      | ``CC``            | ``g++``                    |
-    |        |                         |                 +----------+-------------------+----------------------------+
-    |        |                         |                 | Fortran  | ``ftn``           | ``gfortran``               |
-    +--------+-------------------------+-----------------+----------+-------------------+----------------------------+
+Users can compile GPU-aware MPI programs like follows:
 
-    .. note::
+.. code:: bash
 
-        The ``gcc-native`` compiler module was introduced in the December 2023 release of the HPE/Cray Programming Environment (CrayPE) and replaces ``gcc``.
-        ``gcc`` provides GCC installations that were packaged within CrayPE, while ``gcc-native`` provides GCC installations outside of CrayPE.
+    module load rocm
+    module load mpich
 
+    hipcc -std=c++11 -fopenmp --offload-arch=gfx950  -I${ROCM_PATH}/include -I${MPICH_DIR}/include -c hello_jobstep.cpp
+    hipcc -fopenmp --L${ROCM_PATH}/lib -lamdhip64 -L${MPICH_DIR}/lib -lmpi hello_jobstep.o -o hello_jobstep
+
+.. todo: continue here
 
     Cray Programming Environment and Compiler Wrappers
     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1274,6 +1296,25 @@ In the script, Slurm directives are preceded by ``#SBATCH``, making them appear 
 +------+-------------------------------------------------------------------------------------------------+
 |   14 | Copy the output file to an appropriate location.                                                |
 +------+-------------------------------------------------------------------------------------------------+
+
+The following can run ``hello_jobstep``:
+
+.. code-block:: bash
+
+    #SBATCH --account stf007
+    #SBATCH --nodes 1
+    #SBATCH --gpus 8
+    #SBATCH --time 05:00
+    #SBATCH --job-name hello_jobstep
+    #SBATCH --output %j-%x.out
+    #SBATCH --error %j-%x.err
+
+    module load rocm
+    module load mpich
+
+    OMP_NUM_THREADS=1 srun -N1 -n4 -c32 -G8 --gpu-bind=closest ./hello_jobstep
+
+
 
 .. todo: stopped here
 
