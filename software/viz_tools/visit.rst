@@ -110,52 +110,109 @@ Restart VisIt, and go to Options→Host Profiles. Select “New Host”
 
   .. tab-item:: Riker
 
-      **For Riker:**
+    .. tab-set:: 
 
-      - **Host nickname**: ``Riker`` (this is arbitrary)
-      - **Remote hostname**: ``riker.olcf.ornl.gov`` (required)
-      - **Host name aliases**: ``riker-login#g`` (required)
-      - **Maximum Nodes**: Unchecked
-      - **Maximum processors**: Unchecked (arbitrary)
-      - **Path to VisIt Installation**: ``/sw/riker/visit`` (required)
-      - **Username**: Your OLCF Username (required)
-      - **Tunnel data connections through SSH**: Checked (required)
+      .. tab-item:: CPU Jobs
 
-      Under the “Launch Profiles” tab create a launch profile. Most of these values
-      are arbitrary
+        **For Riker CPU jobs:**
 
-      - **Profile Name**: ``batch`` (arbitrary)
-      - **Timeout**: 480 (arbitrary)
-      - **Number of threads per task**: 0 (arbitrary, but not tested
-        with OMP/pthread support)
-      - **Additional arguments**: blank (arbitrary)
+        - **Host nickname**: ``Riker`` (this is arbitrary)
+        - **Remote hostname**: ``riker.olcf.ornl.gov`` (required)
+        - **Host name aliases**: ``riker-login#g`` (required)
+        - **Maximum Nodes**: Unchecked
+        - **Maximum processors**: Unchecked (arbitrary)
+        - **Path to VisIt Installation**: ``/sw/riker/visit`` (required)
+        - **Username**: Your OLCF Username (required)
+        - **Tunnel data connections through SSH**: Checked (required)
 
-      Under the “Parallel” Tab:
+        Under the “Launch Profiles” tab create a launch profile. Most of these values
+        are arbitrary
 
-      - **Launch parallel engine**: Checked (required)
-      - Launch Tab:
+        - **Profile Name**: ``batch`` (arbitrary)
+        - **Timeout**: 480 (arbitrary)
+        - **Number of threads per task**: 0 (arbitrary, but not tested
+          with OMP/pthread support)
+        - **Additional arguments**: blank (arbitrary)
 
-          - **Parallel launch method**:
-            ``sbatch/srun`` (required)
-          - **Partition/Pool/Queue**: ``batch`` (required)
-          - **Number of processors**: 1 (arbitrary, but
-            high number may lead to OOM errors) (max for ``batch`` queue is 128)
-          - **Number of nodes**: 1 (arbitrary)
-          - **Bank/Account**: Your OLCF project to use (required)
-          - **Time Limit**: 1:00:00 (arbitrary, ``HH:MM:SS``)
-          - **Machine file**: Unchecked (required – Lets VisIt get
-            the nodelist from the scheduler)
-          - **Constraints**: Unchecked
-      - Advanced tab – All boxes unchecked
+        Under the “Parallel” Tab:
 
-          - **Launcher arguments**:
-            ``--cpus-per-task=1`` (Riker is a node-shared machine, we will need to set the resource request with sbatch/srun. )
-      - GPU Acceleration
+        - **Launch parallel engine**: Checked (required)
+        - Launch Tab:
 
-          - **Use cluster’s graphics cards**: Unchecked (even if using the ``gpu`` partition)
+            - **Parallel launch method**:
+              ``sbatch/srun`` (required)
+            - **Partition/Pool/Queue**: ``batch`` (required)
+            - **Number of processors**: 1 (max for ``batch`` queue is 128)
+            - **Number of nodes**: 1 (arbitrary)
+            - **Bank/Account**: Your OLCF project to use (required)
+            - **Time Limit**: 1:00:00 (arbitrary, ``HH:MM:SS``)
+            - **Machine file**: Unchecked (required – Lets VisIt get the nodelist from the scheduler)
+            - **Constraints**: Unchecked
+        - Advanced tab – All boxes unchecked
 
-      Click “Apply” and make sure to save the settings (Options/Save Settings).
-      Exit and re-launch VisIt.
+            - **Launcher arguments**:
+              ``--cpus-per-task=1`` (Riker is a node-shared machine, we will need to set the resource request with sbatch/srun. )
+        - GPU Acceleration
+
+            - **Use cluster’s graphics cards**: Unchecked (even if using the ``gpu`` partition)
+
+        Click “Apply” and make sure to save the settings (Options/Save Settings).
+        Exit and re-launch VisIt.
+      
+      .. tab-item:: GPU Jobs
+
+        **For Riker GPU jobs:**
+
+        - **Host nickname**: ``Riker`` (this is arbitrary)
+        - **Remote hostname**: ``riker.olcf.ornl.gov`` (required)
+        - **Host name aliases**: ``riker-login#g`` (required)
+        - **Maximum Nodes**: Unchecked
+        - **Maximum processors**: Unchecked (arbitrary)
+        - **Path to VisIt Installation**: ``/sw/riker/visit`` (required)
+        - **Username**: Your OLCF Username (required)
+        - **Tunnel data connections through SSH**: Checked (required)
+
+        Under the “Launch Profiles” tab create a launch profile. Most of these values
+        are arbitrary
+
+        - **Profile Name**: ``gpu`` (arbitrary)
+        - **Timeout**: 480 (arbitrary)
+        - **Number of threads per task**: 0 (arbitrary, but not tested
+          with OMP/pthread support)
+        - **Additional arguments**: blank (arbitrary)
+
+        Under the “Parallel” Tab:
+
+        - **Launch parallel engine**: Checked (required)
+        - Launch Tab:
+
+            - **Parallel launch method**:
+              ``sbatch/srun`` (required)
+            - **Partition/Pool/Queue**: ``gpu`` (required)
+            - **Number of processors**: 1 
+            - **Number of nodes**: 1 (arbitrary)
+            - **Bank/Account**: Your OLCF project to use (required)
+            - **Time Limit**: 1:00:00 (arbitrary, ``HH:MM:SS``)
+            - **Machine file**: Unchecked (required – Lets VisIt get the nodelist from the scheduler)
+            - **Constraints**: Unchecked
+        - Advanced tab – All boxes unchecked
+
+            - **Launcher arguments**:
+              ``--gpus=1`` (Riker is a node-shared machine, we will need to set the resource request with sbatch/srun. )
+        - GPU Acceleration
+
+            - **Use cluster’s graphics cards**: Unchecked (even if using the ``gpu`` partition)
+
+        Click “Apply” and make sure to save the settings (Options/Save Settings).
+        Exit and re-launch VisIt.
+
+      .. tab-item:: Node-exclusive CPU jobs
+
+        test
+
+      .. tab-item:: Node-exclusive GPU jobs
+
+        test
 
 
   .. tab-item:: Frontier

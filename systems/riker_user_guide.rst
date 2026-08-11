@@ -525,6 +525,7 @@ When constructing a job on Riker, please be aware of the two-phase resource allo
 
 Riker enforces memory as a per-core share. CPU cores and memory are coupled on all nodes. Users can request cores or memory, but the system ties them together as equal shares and will round accordingly.
 
+If a job requires all the resources on a node, users can use the ``--exclusive`` flag to disable node-sharing functionality and give the job sole access to the nodes in that allocation.
 
 Batch (CPU) nodes
 ^^^^^^^^^^^^^^^^^
@@ -551,8 +552,10 @@ Example script:
    ## RUNTIME RESOURCE DELEGATION ##
    srun -n8 --cpus-per-task=2 ./a.out 
 
+
+
 GPU nodes
-^^^^^^^^^^
+^^^^^^^^^
 
 Each GPU node has 64 Cores that can be allocated on a 1-Core basis and come with an equal share of memory (~24GB per core); however, 
 32 Cores (16 per GPU) are reserved for the GPUs and can only allocated if you also allocate the bound GPU. 
@@ -584,7 +587,7 @@ Example script:
     Riker should support the majority of Slurm job structures. If you find that your job structure does not work as expected, please reach out to help@olcf.ornl.gov.
 
 Node-sharing Visualizations
-^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 CPU Example
 """""""""""
