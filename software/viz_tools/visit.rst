@@ -110,7 +110,7 @@ Restart VisIt, and go to Options→Host Profiles. Select “New Host”
 
   .. tab-item:: Riker
 
-    .. tab-set:: 
+    .. tab-set::
 
       .. tab-item:: CPU Jobs
 
@@ -158,7 +158,7 @@ Restart VisIt, and go to Options→Host Profiles. Select “New Host”
 
         Click “Apply” and make sure to save the settings (Options/Save Settings).
         Exit and re-launch VisIt.
-      
+
       .. tab-item:: GPU Jobs
 
         **For Riker GPU jobs:**
@@ -189,7 +189,7 @@ Restart VisIt, and go to Options→Host Profiles. Select “New Host”
             - **Parallel launch method**:
               ``sbatch/srun`` (required)
             - **Partition/Pool/Queue**: ``gpu`` (required)
-            - **Number of processors**: 1 
+            - **Number of processors**: 1
             - **Number of nodes**: 1 (arbitrary)
             - **Bank/Account**: Your OLCF project to use (required)
             - **Time Limit**: 1:00:00 (arbitrary, ``HH:MM:SS``)

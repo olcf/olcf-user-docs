@@ -14,6 +14,7 @@ Systems
    home_user_guide
    dtn_user_guide
    odo_user_guide
+   lux_user_guide
 
 Legacy Systems
 ==============

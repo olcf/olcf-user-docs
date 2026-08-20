@@ -1854,27 +1854,27 @@ matches the MPICH version on Riker. See below for an example
 
       Bootstrap: docker
       From: docker.io/rockylinux/rockylinux:9.6-ubi
-      
+
       %environment
           # Point to MPICH binaries, libraries man pages
           export MPICH_DIR=/opt/mpich
           export PATH="$MPICH_DIR/bin:$PATH"
           export LD_LIBRARY_PATH="$MPICH_DIR/lib:$LD_LIBRARY_PATH"
           export MANPATH=$MPICH_DIR/share/man:$MANPATH
-      
-      
+
+
       %post
-      
+
       echo "Installing required packages..."
       export DEBIAN_FRONTEND=noninteractive
       dnf install -y wget sudo git  gzip gcc-c++ libatomic hwloc-devel
-      
-      
+
+
       # Information about the version of MPICH to use
       export MPICH_VERSION=5.0.1
       export MPICH_URL="http://www.mpich.org/static/downloads/$MPICH_VERSION/mpich-$MPICH_VERSION.tar.gz"
       export MPICH_DIR=/opt/mpich
-      
+
       echo "Installing MPICH..."
       mkdir -p /mpich
       mkdir -p /opt
@@ -1883,16 +1883,16 @@ matches the MPICH version on Riker. See below for an example
       # Compile and install
       cd /mpich/mpich-$MPICH_VERSION && ./configure --disable-fortran --with-device=ch4:ucx --prefix=$MPICH_DIR && make -j32 install
       rm -rf /mpich
-      
-      
+
+
       # Set env variables so we can compile our application
       export PATH=$MPICH_DIR/bin:$PATH
       export LD_LIBRARY_PATH=$MPICH_DIR/lib:$LD_LIBRARY_PATH
-      
+
       echo "Compiling the MPI application..."
       cd /
       curl -o osubenchmarks-7.5.2.tar.gz https://mvapich.cse.ohio-state.edu/download/mvapich/osu-micro-benchmarks-7.5.2.tar.gz && tar -xzf osubenchmarks-7.5.2.tar.gz --no-same-owner
-      cd osu-micro-benchmarks-7.5.2 && ./configure CC=mpicc CXX=mpicxx && make  && rm ../osubenchmarks-7.5.2.tar.gz 
+      cd osu-micro-benchmarks-7.5.2 && ./configure CC=mpicc CXX=mpicxx && make  && rm ../osubenchmarks-7.5.2.tar.gz
 
 - Build the container with ``apptainer build mpicontainer.sif mpicontainer.def``.
 
@@ -1904,7 +1904,7 @@ of them in a batch job to demonstrate MPI functionality with containers.
 
 - Copy the following into a file called ``submit.sl``.
   ::
-      
+
         #!/bin/bash
         #SBATCH -t00:20:00
         #SBATCH -p batch
@@ -1915,16 +1915,16 @@ of them in a batch job to demonstrate MPI functionality with containers.
         #SBATCH -J gaea_mpi_test
         #SBATCH -o logs/%x_%j.out
         #SBATCH -e logs/%x_%j.out
-        
+
         # below is necessary to avoid ucx permission denied warning messages
         # see https://ciq.com/blog/workaround-for-communication-issue-with-mpi-apps-apptainer-without-setuid
         export UCX_POSIX_USE_PROC_LINK=n
-        
+
         # These exports are required so that the necessary MPI and Slurm pieces from the host are visible in
         # the container and can be used by the application running in the container
         export APPTAINER_BIND=/sw,/usr/share/libdrm,/var/spool/slurm,${PWD},${HOME}
         export APPTAINERENV_LD_LIBRARY_PATH=$OLCF_MPICH_ROOT/lib:\$LD_LIBRARY_PATH
-        
+
         srun  -N4 -n16 --tasks-per-node 4 apptainer exec ./mpicontainer.sif  /osu-micro-benchmarks-7.5.2/c/mpi/collective/blocking/osu_allgather
 
 - Submit the job with ``sbatch submit.sl``. You should get an output like the below
