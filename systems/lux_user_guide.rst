@@ -443,55 +443,56 @@ on how the accelerators are connected to each other, to the CPU, and to the netw
 
 .. todo: has any of the AMD terminology below changed?
 
-.. _lux-amd-nvidia-terminology:
+.. todo: fact check and re-enable
+    .. _lux-amd-nvidia-terminology:
 
-AMD vs NVIDIA Terminology
--------------------------
+    AMD vs NVIDIA Terminology
+    -------------------------
 
-+-------------------------+--------------+
-| AMD                     | NVIDIA       |
-+=========================+==============+
-| Work-items or Threads   | Threads      |
-+-------------------------+--------------+
-| Workgroup               | Block        |
-+-------------------------+--------------+
-| Wavefront               | Warp         |
-+-------------------------+--------------+
-| Grid                    | Grid         |
-+-------------------------+--------------+
+    +-------------------------+--------------+
+    | AMD                     | NVIDIA       |
+    +=========================+==============+
+    | Work-items or Threads   | Threads      |
+    +-------------------------+--------------+
+    | Workgroup               | Block        |
+    +-------------------------+--------------+
+    | Wavefront               | Warp         |
+    +-------------------------+--------------+
+    | Grid                    | Grid         |
+    +-------------------------+--------------+
 
-We will be using these terms interchangeably as they refer to the same concepts in GPU
-programming, with the exception that we will only be using "wavefront" (which refers to a
-unit of 64 threads) instead of "warp" (which refers to a unit of 32 threads) as they mean
-different things.
-  
-Blocks (workgroups), Threads (work items), Grids, Wavefronts
-------------------------------------------------------------
+    We will be using these terms interchangeably as they refer to the same concepts in GPU
+    programming, with the exception that we will only be using "wavefront" (which refers to a
+    unit of 64 threads) instead of "warp" (which refers to a unit of 32 threads) as they mean
+    different things.
 
-  
+    Blocks (workgroups), Threads (work items), Grids, Wavefronts
+    ------------------------------------------------------------
 
-When kernels are launched on a GPU, a "grid" of thread blocks are created, where the
-number of thread blocks in the grid and the number of threads within each block are
-defined by the programmer. The number of blocks in the grid (grid size) and the number of
-threads within each block (block size) can be specified in one, two, or three dimensions
-during the kernel launch. Each thread can be identified with a unique id within the
-kernel, indexed along the X, Y, and Z dimensions.
 
-- Number of blocks that can be specified along each dimension in a grid: (2147483647, 65536, 65536)
-- Max number of threads that can be specified along each dimension in a block: (1024, 1024, 1024)
 
-  - However, the total of number of threads in a block has an upper limit of 1024
-    [i.e., (size of x dimension * size of y dimension * size of z dimension) cannot exceed
-    1024].
-  - And the total number of threads in a kernel launch has an upper limit of 2147483647.
+    When kernels are launched on a GPU, a "grid" of thread blocks are created, where the
+    number of thread blocks in the grid and the number of threads within each block are
+    defined by the programmer. The number of blocks in the grid (grid size) and the number of
+    threads within each block (block size) can be specified in one, two, or three dimensions
+    during the kernel launch. Each thread can be identified with a unique id within the
+    kernel, indexed along the X, Y, and Z dimensions.
 
-Each block (or workgroup) of threads is assigned to a single Compute Unit, i.e., a single
-block won’t be split across multiple CUs. The threads in a block are scheduled in units of
-64 threads called wavefronts (similar to warps in CUDA, but warps only have 32 threads
-instead of 64). When launching a kernel, up to 160KB of block level shared memory called
-the Local Data Store (LDS) can be statically or dynamically allocated. This shared memory
-between the threads in a block allows the threads to access block local data with much
-lower latency compared to using the HBM since the data is in the compute unit itself.
+    - Number of blocks that can be specified along each dimension in a grid: (2147483647, 65536, 65536)
+    - Max number of threads that can be specified along each dimension in a block: (1024, 1024, 1024)
+
+      - However, the total of number of threads in a block has an upper limit of 1024
+        [i.e., (size of x dimension * size of y dimension * size of z dimension) cannot exceed
+        1024].
+      - And the total number of threads in a kernel launch has an upper limit of 2147483647.
+
+    Each block (or workgroup) of threads is assigned to a single Compute Unit, i.e., a single
+    block won’t be split across multiple CUs. The threads in a block are scheduled in units of
+    64 threads called wavefronts (similar to warps in CUDA, but warps only have 32 threads
+    instead of 64). When launching a kernel, up to 160KB of block level shared memory called
+    the Local Data Store (LDS) can be statically or dynamically allocated. This shared memory
+    between the threads in a block allows the threads to access block local data with much
+    lower latency compared to using the HBM since the data is in the compute unit itself.
 
 
 
@@ -801,7 +802,7 @@ Users can compile GPU-aware MPI programs like follows:
           ${CRAY_XPMEM_POST_LINK_OPTS} -lxpmem \
           ${PE_MPICH_GTL_DIR_amd_gfx90a} ${PE_MPICH_GTL_LIBS_amd_gfx90a}
 
-        HIPFLAGS = --offload-arch=gfx90a
+        HIPFLAGS = --offload-arch=gfx950
 
 
     .. _understanding-the-compatibility-of-compilers-rocm-and-cray-mpich:
@@ -1035,14 +1036,14 @@ Users can compile GPU-aware MPI programs like follows:
     +-------------------+--------------------------------------------------------------------------------------------------------------------------+
     | Compiler          | Compile/Link Flags, Header Files, and Libraries                                                                          |
     +===================+==========================================================================================================================+
-    | | ``CC``          | | ``CFLAGS = -std=c++11 -D__HIP_ROCclr__ -D__HIP_ARCH_GFX90A__=1 --rocm-path=${ROCM_PATH} --offload-arch=gfx90a -x hip`` |
+    | | ``CC``          | | ``CFLAGS = -std=c++11 -D__HIP_ROCclr__ -D__HIP_ARCH_GFX90A__=1 --rocm-path=${ROCM_PATH} --offload-arch=gfx950 -x hip`` |
     | | Only with       | | ``LFLAGS = --rocm-path=${ROCM_PATH}``                                                                                  |
     | | ``PrgEnv-cray`` | | ``-L${ROCM_PATH}/lib -lamdhip64``                                                                                      |
     | | ``PrgEnv-amd``  |                                                                                                                          |
     +-------------------+--------------------------------------------------------------------------------------------------------------------------+
     | ``hipcc``         | | Can be used directly to compile HIP source files.                                                                      |
     |                   | | To see what is being invoked within this compiler driver, issue the command, ``hipcc --verbose``                       |
-    |                   | | To explicitly target AMD MI355X, use ``--offload-arch=gfx90a``                                                         |
+    |                   | | To explicitly target AMD MI355X, use ``--offload-arch=gfx950``                                                         |
     +-------------------+--------------------------------------------------------------------------------------------------------------------------+
 
     .. note::
@@ -1065,12 +1066,12 @@ Users can compile GPU-aware MPI programs like follows:
     +----------+-----------+-----------------------------------------------------------------------------------------------------------------------------------+
     | Vendor   | Compiler  | Compile/Link Flags, Header Files, and Libraries                                                                                   |
     +==========+===========+===================================================================================================================================+
-    | AMD/Cray | ``CC``    | | ``CFLAGS = -std=c++11 -D__HIP_ROCclr__ -D__HIP_ARCH_GFX90A__=1 --rocm-path=${ROCM_PATH} --offload-arch=gfx90a -x hip -fopenmp`` |
+    | AMD/Cray | ``CC``    | | ``CFLAGS = -std=c++11 -D__HIP_ROCclr__ -D__HIP_ARCH_GFX90A__=1 --rocm-path=${ROCM_PATH} --offload-arch=gfx950 -x hip -fopenmp`` |
     |          |           | | ``LFLAGS = --rocm-path=${ROCM_PATH} -fopenmp``                                                                                  |
     |          |           | | ``-L${ROCM_PATH}/lib -lamdhip64``                                                                                               |
     |          +-----------+-----------------------------------------------------------------------------------------------------------------------------------+
     |          | ``hipcc`` | | Can be used to directly compile HIP source files, add ``-fopenmp`` flag to enable OpenMP threading                              |
-    |          |           | | To explicitly target AMD MI355X, use ``--offload-arch=gfx90a``                                                                  |
+    |          |           | | To explicitly target AMD MI355X, use ``--offload-arch=gfx950``                                                                  |
     +----------+-----------+-----------------------------------------------------------------------------------------------------------------------------------+
     | GNU      | ``CC``    | | The GNU compilers cannot be used to compile HIP code, so all HIP kernels must be separated from CPU code.                       |
     |          |           | | During compilation, all non-HIP files must be compiled with ``CC`` while HIP kernels must be compiled with ``hipcc``.           |
@@ -1081,39 +1082,6 @@ Users can compile GPU-aware MPI programs like follows:
     .. note::
 
         hipcc requires the ROCm Toolclain, See :ref:`exposing-the-rocm-toolchain-to-your-programming-environment`
-
-    SYCL
-    ----
-
-    This section shows how to compile SYCL codes using the oneAPI DPC++ compiler.
-
-    .. note::
-
-        Setup and load the oneAPI and ROCm modules:
-
-        .. code::
-
-          module use /sw/frontier/ums/ums015/modulefiles
-          module load oneapi/tbb oneapi/oclfpga oneapi/compiler-rt oneapi/compiler
-          module load rocm/5.4.3
-
-    +-------------------+--------------------------------------------------------------------------------------------------------------------------+
-    | Compiler          | Compile/Link Flags, Header Files, and Libraries                                                                          |
-    +===================+==========================================================================================================================+
-    | ``icpx``          | ``CFLAGS = -fsycl -fsycl-targets=amdgcn-amd-amdhsa -Xsycl-target-backend --offload-arch=gfx90a``, or                     |
-    |                   | ``CFLAGS = -fsycl -fsycl-targets=amd_gpu_gfx90a``                                                                        |
-    +-------------------+--------------------------------------------------------------------------------------------------------------------------+
-
-    Additional documentation on the DPC++ support for AMD can be found on
-    `Codeplay's developer website
-    <https://developer.codeplay.com/products/oneapi/amd/2024.1.0/guides/>`__, in
-    particular the pages covering `common optimizations
-    <https://developer.codeplay.com/products/oneapi/amd/2024.1.0/guides/performance/common-optimizations>`__
-    or `troubleshooting
-    <https://developer.codeplay.com/products/oneapi/amd/2024.1.0/guides/troubleshooting>`__
-    can be helpful.
-
-    ----
 
 
 .. _lux-running:
@@ -3510,7 +3478,7 @@ The following can run ``hello_jobstep``:
         export CXX='hipcc'
         export CXXFLAGS="$(pat_opts include hipcc) \
           $(pat_opts pre_compile hipcc) -g -O3 -std=c++17 -Wall \
-          --offload-arch=gfx90a -I${CRAY_MPICH_DIR}/include \
+          --offload-arch=gfx950 -I${CRAY_MPICH_DIR}/include \
           $(pat_opts post_compile hipcc)"
         export LD='hipcc'
         export LDFLAGS="$(pat_opts pre_link hipcc) ${CXXFLAGS} \
@@ -3990,16 +3958,16 @@ The following can run ``hello_jobstep``:
     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     Although XNACK is a capability of the MI355X GPU, it does require that kernels be able to recover from page faults. Both the ROCm and CCE HIP compilers will default to generating code that runs correctly with both XNACK enabled and disabled. Some applications may benefit from using the following compilation options to target specific XNACK modes.
 
-    | ``hipcc --offload-arch=gfx90a`` or ``CC --offload-arch=gfx90a -x hip``
+    | ``hipcc --offload-arch=gfx950`` or ``CC --offload-arch=gfx950 -x hip``
     |   Kernels are compiled to a single "xnack any" binary, which will run correctly with both XNACK enabled and XNACK disabled.
 
-    | ``hipcc --offload-arch=gfx90a:xnack+`` or ``CC --offload-arch=gfx90a:xnack+ -x hip``
+    | ``hipcc --offload-arch=gfx950:xnack+`` or ``CC --offload-arch=gfx950:xnack+ -x hip``
     |   Kernels are compiled in "xnack plus" mode and will *only* be able to run on GPUs with ``HSA_XNACK=1`` to enable XNACK. Performance may be better than "xnack any", but attempts to run with XNACK disabled will fail.
 
-    | ``hipcc --offload-arch=gfx90a:xnack-`` or ``CC --offload-arch=gfx90a:xnack- -x hip``
+    | ``hipcc --offload-arch=gfx950:xnack-`` or ``CC --offload-arch=gfx950:xnack- -x hip``
     |   Kernels are compiled in "xnack minus" mode and will *only* be able to run on GPUs with ``HSA_XNACK=0`` and XNACK disabled. Performance may be better than "xnack any", but attempts to run with XNACK enabled will fail.
 
-    | ``hipcc --offload-arch=gfx90a:xnack- --offload-arch=gfx90a:xnack+ -x hip`` or ``CC --offload-arch=gfx90a:xnack- --offload-arch=gfx90a:xnack+ -x hip``
+    | ``hipcc --offload-arch=gfx950:xnack- --offload-arch=gfx950:xnack+ -x hip`` or ``CC --offload-arch=gfx950:xnack- --offload-arch=gfx950:xnack+ -x hip``
     |   Two versions of each kernel will be generated, one that runs with XNACK disabled and one that runs if XNACK is enabled. This is different from "xnack any" in that two versions of each kernel are compiled and HIP picks the appropriate one at runtime, rather than there being a single version compatible with both. A "fat binary" compiled in this way will have the same performance of "xnack+" with ``HSA_XNACK=1`` and as "xnack-" with ``HSA_XNACK=0``, but the final executable will be larger since it contains two copies of every kernel.
 
     If the HIP runtime cannot find a kernel image that matches the XNACK mode of the device, it will fail with ``hipErrorNoBinaryForGpu``.
@@ -4019,7 +3987,7 @@ The following can run ``hello_jobstep``:
         The AMD tool `roc-obj-ls` will let you see what code objects are in a binary.
 
         .. code::
-            $ hipcc --offload-arch=gfx90a:xnack+ square.hipref.cpp -o xnack_plus.exe
+            $ hipcc --offload-arch=gfx950:xnack+ square.hipref.cpp -o xnack_plus.exe
             $ roc-obj-ls -v xnack_plus.exe
             Bundle# Entry ID:                                                              URI:
             1       host-x86_64-unknown-linux                                           file://xnack_plus.exe#offset=8192&size=0
@@ -4028,7 +3996,7 @@ The following can run ``hello_jobstep``:
         If no XNACK flag is specificed at compilation the default is "xnack any", and objects in `roc-obj-ls` with not have an XNACK mode specified.
 
         .. code::
-            $ hipcc --offload-arch=gfx90a square.hipref.cpp -o xnack_any.exe
+            $ hipcc --offload-arch=gfx950 square.hipref.cpp -o xnack_any.exe
             $ roc-obj-ls -v xnack_any.exe
             Bundle# Entry ID:                                                              URI:
             1       host-x86_64-unknown-linux                                           file://xnack_any.exe#offset=8192&size=0
