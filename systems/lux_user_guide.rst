@@ -669,25 +669,104 @@ The table below lists details about each of the module-provided compilers.
 
 .. todo: rework table
 
-+--------+-------------------------+-----------------+----------+-------------------+----------------------------+
-| Vendor | Programming Environment | Compiler Module | Language | Compiler Wrapper  | Compiler                   |
-+========+=========================+=================+==========+===================+============================+
-| AMD    | N/A                     | ``amd-vllm``    | C        | ``NA``            | ``amdclang``               |
-|        |                         |                 +----------+-------------------+----------------------------+
-|        |                         |                 | C++      | ``NA``            | ``amdclang++``             |
-|        |                         |                 +----------+-------------------+----------------------------+
-|        |                         |                 | Fortran  | ``NA``            | ``amdflang``               |
-+--------+-------------------------+-----------------+----------+-------------------+----------------------------+
-| GCC    | ``PrgEnv-gnu``          | ``gcc``         | C        | ``NA``            | ``gcc``                    |
-|        |                         |                 +----------+-------------------+----------------------------+
-|        |                         |                 | C++      | ``NA``            | ``g++``                    |
-|        |                         |                 +----------+-------------------+----------------------------+
-|        |                         |                 | Fortran  | ``NA``            | ``gfortran``               |
-+--------+-------------------------+-----------------+----------+-------------------+----------------------------+
+.. list-table:: Compiler Configurations
+   :header-rows: 1
+
+   * - Vendor
+     - Compiler Module
+     - Language
+     - Compiler
+   * - AMD
+     - ``amd-vllm``
+     - C
+     - ``amdclang``
+   * - AMD
+     - ``amd-vllm``
+     - C++
+     - ``amdclang++``
+   * - AMD
+     - ``amd-vllm``
+     - Fortran
+     - ``amdflang``
+   * - GNU
+     - ``gcc``
+     - C
+     - ``gcc``
+   * - GNU
+     - ``gcc``
+     - C++
+     - ``g++``
+   * - GNU
+     - ``gcc``
+     - Fortran
+     - ``gfortran``
+
+
+Programming Environment
+^^^^^^^^^^^^^^^^^^^^^^^
+
+Programming environments consist of a compiler and some basic dependencies, such as MPI and ROCm.
+
+You can find existing programming environments on Lux utilizing the Lmod command ``module avail``.
+You will see an output like the following:
+
+.. code-block:: bash
+
+    ------------------------------------------------------------------------------- [ amd-llvm/7.2.4, mpich/5.0.1 ] --------------------------------------------------------------------------------
+   amdfftw/5.3    amdscalapack/5.3    hdf5/1.14.6    netcdf-c/4.10.0    netcdf-fortran/4.6.2
+
+
+The delimiter row is your "programming environment" as a list of modules and the modules underneath are optional modules that are managed by the programming environment.
+
+Below is an example of how this functions:
+
+.. code-block:: bash
+    :lineno:
+
+    $ module load amd-llvm mpich
+    $ module load amdfftw
+    $ module unload mpich
+
+    Inactive Modules:
+      1) amdfftw
+
+Explanation:
+1. Loading the programming environment by loading the requisite modules
+2. Loading the optional dependency for AMD Fast Fourier Transforms
+3. Unload part of the programming environment.
+
+If the criteria for a programming environment are no longer met, any listed modules will then be inactive.
+Modules will also be reloaded if their dependent module is swapped for a valid alternative provider such as swapping MPI implementations.
+
+.. _lux_exposing-the-rocm-toolchain-to-your-programming-environment:
+
+Exposing The ROCm Toolchain to your Programming Environment
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If you need to add the tools and libraries related to ROCm, the framework for targeting AMD GPUs, to your path, you will need to use a version of ROCm that is compatible with your programming environment.
+ROCm can be loaded with: ``module load rocm/X.Y.Z``, or to load the default ROCm version, ``module load rocm``.
 
 
 MPI
 ---
+
+The MPI implementation available on Frontier is Cray's MPICH, which is "GPU-aware" so GPU buffers can be passed directly to MPI calls.
+
++----------------+----------------+-----------------------------------------------------+-----------------------------------------+
+| Implementation | Module         | Compiler                                            | Header Files & Linking                  |
++================+================+=====================================================+=========================================+
+| MPICH          | ``mpich``      | ``amdclang``, ``amdclang++``, ``amdflang``          | | ``-I${MPICH_DIR}/include``            |
+|                |                |                                                     | | ``-L${MPICH_DIR}/lib -lmpi``          |
+|                |                +-----------------------------------------------------+-----------------------------------------+
+|                |                | ``hipcc``                                           | | ``-I${MPICH_DIR}/include``            |
+|                |                |                                                     | | ``-L${MPICH_DIR}/lib -lmpi``          |
++----------------+----------------+-----------------------------------------------------+-----------------------------------------+
+
+.. todo: add to table openmpi and UCX support: https://rocm.blogs.amd.com/software-tools-optimization/gpu-aware-mpi/README.html
+
+.. note::
+
+    hipcc requires the ROCm Toolclain, See :ref:`lux_exposing-the-rocm-toolchain-to-your-programming-environment`
 
 Users can compile GPU-aware MPI programs like follows:
 
@@ -696,65 +775,11 @@ Users can compile GPU-aware MPI programs like follows:
     module load rocm
     module load mpich
 
-    hipcc -std=c++11 -fopenmp --offload-arch=gfx950  -I${ROCM_PATH}/include -I${MPICH_DIR}/include -c hello_jobstep.cpp
-    hipcc -fopenmp --L${ROCM_PATH}/lib -lamdhip64 -L${MPICH_DIR}/lib -lmpi hello_jobstep.o -o hello_jobstep
-
-.. todo: continue here
-
-    Cray Programming Environment and Compiler Wrappers
-    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-    Cray provides ``PrgEnv-<compiler>`` modules (e.g., ``PrgEnv-cray``) that load compatible components of a specific compiler toolchain. The components include the specified compiler as well as MPI, LibSci, and other libraries. Loading the ``PrgEnv-<compiler>`` modules also defines a set of compiler wrappers for that compiler toolchain that automatically add include paths and link in libraries for Cray software. Compiler wrappers are provided for C (``cc``), C++ (``CC``), and Fortran (``ftn``).
-
-    For example, to load the AMD programming environment, do: 
-
-    .. code:: bash
-
-        module load PrgEnv-amd
-
-    This module will setup your programming environment with paths to software and libraries that are compatible with AMD host compilers.
-
-    When loading non-default versions of Cray-provided components, you must set ``export LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH`` at runtime.
-    Additionally, please see :ref:`understanding-the-compatibility-of-compilers-rocm-and-cray-mpich` for information about loading a set of compatible Cray modules.
-
-    .. note::
-       Use the ``-craype-verbose`` flag to display the full include and link information used by the Cray compiler wrappers. This must be called on a file to see the full output (e.g., ``CC -craype-verbose test.cpp``).
+    hipcc -std=c++11 -fopenmp --offload-arch=gfx950 -I${ROCM_PATH}/include -I${MPICH_DIR}/include -c hello_jobstep.cpp
+    hipcc -fopenmp -L${ROCM_PATH}/lib -lamdhip64 -L${MPICH_DIR}/lib -lmpi hello_jobstep.o -o hello_jobstep
 
 
-    .. _exposing-the-rocm-toolchain-to-your-programming-environment:
-
-    Exposing The ROCm Toolchain to your Programming Environment
-    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-    If you need to add the tools and libraries related to ROCm, the framework for targeting AMD GPUs, to your path, you will need to use a version of ROCm that is compatible with your programming environment.
-    ROCm can be loaded with: ``module load rocm/X.Y.Z``, or to load the default ROCm version, ``module load rocm``.
-
-
-    .. note::
-        Both the CCE and ROCm compilers are Clang-based, so please be sure to use consistent (major) Clang versions when using them together. You can check which version of Clang is being used with CCE and ROCm by giving the ``--version`` flag to ``CC`` and ``amdclang``, respectively.
-        Please see :ref:`understanding-the-compatibility-of-compilers-rocm-and-cray-mpich` for information about loading a compatible set of modules.
-
-    MPI
-    ---
-
-    The MPI implementation available on Frontier is Cray's MPICH, which is "GPU-aware" so GPU buffers can be passed directly to MPI calls.
-
-    +----------------+----------------+-----------------------------------------------------+-------------------------------------------------------------------------------+
-    | Implementation | Module         | Compiler                                            | Header Files & Linking                                                        |
-    +================+================+=====================================================+===============================================================================+
-    | Cray MPICH     | ``cray-mpich`` | ``cc``, ``CC``, ``ftn`` (Cray compiler wrappers)    | MPI header files and linking is built into the Cray compiler wrappers         |
-    |                |                +-----------------------------------------------------+-------------------------------------------------------------------------------+
-    |                |                | ``hipcc``                                           | | ``-L${MPICH_DIR}/lib -lmpi``                                                |
-    |                |                |                                                     | | ``${CRAY_XPMEM_POST_LINK_OPTS} -lxpmem``                                    |
-    |                |                |                                                     | | ``${PE_MPICH_GTL_DIR_amd_gfx90a} ${PE_MPICH_GTL_LIBS_amd_gfx90a}``          |
-    |                |                |                                                     | | ``-I${MPICH_DIR}/include``                                                  |
-    +----------------+----------------+-----------------------------------------------------+-------------------------------------------------------------------------------+
-
-    .. note::
-
-        hipcc requires the ROCm Toolclain, See :ref:`exposing-the-rocm-toolchain-to-your-programming-environment`
-
-
+.. todo:
 
     GPU-Aware MPI
     ^^^^^^^^^^^^^
@@ -1048,7 +1073,7 @@ Users can compile GPU-aware MPI programs like follows:
 
     .. note::
 
-        hipcc requires the ROCm Toolclain, See :ref:`exposing-the-rocm-toolchain-to-your-programming-environment`
+        hipcc requires the ROCm Toolclain, See :ref:`lux_exposing-the-rocm-toolchain-to-your-programming-environment`
 
     .. note::
        Information about compiling code for different XNACK modes (which control page migration between GPU and CPU memory) can be found in the :ref:`compiling-hip-kernels-for-xnack-modes` section.
@@ -1081,7 +1106,7 @@ Users can compile GPU-aware MPI programs like follows:
 
     .. note::
 
-        hipcc requires the ROCm Toolclain, See :ref:`exposing-the-rocm-toolchain-to-your-programming-environment`
+        hipcc requires the ROCm Toolclain, See :ref:`lux_exposing-the-rocm-toolchain-to-your-programming-environment`
 
 
 .. _lux-running:
@@ -1223,8 +1248,8 @@ Consider the following batch script:
    #SBATCH -t 1:00:00
    #SBATCH -p batch
    #SBATCH -N 1024
-   #SBATCH --cpus 56
    #SBATCH --gpus 4
+   #SBATCH --cpus-per-gpu 14 # 4 * 14 = 56
 
    cd $MEMBERWORK/abc123/Run.456
    cp $PROJWORK/abc123/RunData/Input.456 ./Input.456
@@ -1250,9 +1275,9 @@ In the script, Slurm directives are preceded by ``#SBATCH``, making them appear 
 +------+-------------------------------------------------------------------------------------------------+
 |    7 | Number of compute nodes requested                                                               |
 +------+-------------------------------------------------------------------------------------------------+
-|    8 | Number of CPUs requested                                                                        |
+|    8 | Number of GPUs requested                                                                        |
 +------+-------------------------------------------------------------------------------------------------+
-|    7 | Number of GPUs requested                                                                        |
+|    7 | Number of CPUs requested per GPU                                                                |
 +------+-------------------------------------------------------------------------------------------------+
 |   10 | Blank line                                                                                      |
 +------+-------------------------------------------------------------------------------------------------+
@@ -1273,6 +1298,8 @@ The following can run ``hello_jobstep``:
     #SBATCH --account stf007
     #SBATCH --nodes 1
     #SBATCH --gpus 8
+    #SBATCH --cpus-per-gpu 16
+    #SBATCH --mem 0 # request exclusive access to node memory
     #SBATCH --time 05:00
     #SBATCH --job-name hello_jobstep
     #SBATCH --output %j-%x.out
@@ -4164,7 +4191,7 @@ The following can run ``hello_jobstep``:
 
     Setting this environment variable to ``1`` will enable GPU-aware MPI support in Cray MPICH, and is required to pass GPU buffers directly to MPI calls.
     The library `libmpi_gtl_hsa.so` must also be linked in, otherwise Cray MPICH will print an error message and exit immediately.
-    See :ref:`exposing-the-rocm-toolchain-to-your-programming-environment`  for more details.
+    See :ref:`lux_exposing-the-rocm-toolchain-to-your-programming-environment`  for more details.
 
     Using GPU-aware MPI is highly recommended on Frontier because the HPE Slingshot NICs are attached directly to the AMD MI355X accelerators.
     There is a small but measurable latency impact for enabling GPU-aware MPI with CPU buffers.
