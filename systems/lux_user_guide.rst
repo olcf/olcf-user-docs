@@ -768,67 +768,41 @@ The MPI implementation available on Frontier is Cray's MPICH, which is "GPU-awar
 
     hipcc requires the ROCm Toolclain, See :ref:`lux_exposing-the-rocm-toolchain-to-your-programming-environment`
 
-Users can compile GPU-aware MPI programs like follows:
+
+GPU-Aware MPI
+^^^^^^^^^^^^^
+
+To use GPU-aware MPI, users must load both a ROCm module and an MPI-providing module:
+
+Using ``hipcc``
 
 .. code:: bash
 
     module load rocm
     module load mpich
 
-    hipcc -std=c++11 -fopenmp --offload-arch=gfx950 -I${ROCM_PATH}/include -I${MPICH_DIR}/include -c hello_jobstep.cpp
-    hipcc -fopenmp -L${ROCM_PATH}/lib -lamdhip64 -L${MPICH_DIR}/lib -lmpi hello_jobstep.o -o hello_jobstep
+    hipcc -std=c++11 --offload-arch=gfx950 -I${ROCM_PATH}/include -I${MPICH_DIR}/include -c gpu-aware.cpp
+    hipcc -L${ROCM_PATH}/lib -lamdhip64 -L${MPICH_DIR}/lib -lmpi gpu-aware.o -o gpu-aware
 
+Using ``amdclang``
+
+.. code:: bash
+
+    module load rocm
+    module load mpich
+
+    amdclang++ -D__HIP_ROCclr__ -D__HIP_ARCH_GFX950__=1 -std=c++11 --rocm-path=${ROCM_PATH} --offload-arch=gfx950 -x hip -I${ROCM_PATH}/include -I${MPICH_DIR}/include -c gpu-aware.cpp
+    amdclang++ --rocm-path=${ROCM_PATH} -L${ROCM_PATH}/lib -lamdhip64 -L${MPICH_DIR}/lib -lmpi gpu-aware.o -o gpu-aware
+
+
+.. note::
+
+    The primary required steps for GPU-aware MPI apply to both the ``amdclang`` and ``hipcc`` compilers, and those are:
+
+    * Specify the ROCm and MPI include path at compile time ``-I${ROCM_PATH}/include -I${MPICH_DIR}/include``
+    * Specify the ROCm and MPI library path and libraries at link time ``-L${ROCM_PATH}/lib -lamdhip64 -L${MPICH_DIR}/lib``
 
 .. todo:
-
-    GPU-Aware MPI
-    ^^^^^^^^^^^^^
-
-    To use GPU-aware Cray MPICH with Frontier's PrgEnv modules, users must set the following modules and environment variables:
-
-    .. code:: bash
-
-        module load craype-accel-amd-gfx90a
-        module load rocm
-
-        export MPICH_GPU_SUPPORT_ENABLED=1
-
-
-    .. note::
-
-        There are extra steps needed to enable GPU-aware MPI on Frontier, which depend on the compiler that is used (see 1. and 2. below).
-
-    1. Compiling with the Cray compiler wrappers, ``cc`` or ``CC``
-    """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-    When using GPU-aware Cray MPICH with the Cray compiler wrappers, most of the needed libraries are automatically linked through the environment variables.
-
-    Though, the following header files and libraries must be included explicitly:
-
-    .. code:: bash
-
-        -I${ROCM_PATH}/include
-        -L${ROCM_PATH}/lib -lamdhip64
-
-    where the include path implies that ``#include <hip/hip_runtime.h>`` is included in the source file.
-
-
-
-    2. Compiling without the Cray compiler wrappers, e.g., ``hipcc``
-    """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-    To use ``hipcc`` with GPU-aware Cray MPICH, the following is needed to setup the needed header files and libraries.
-
-    .. code:: bash
-
-
-        -I${MPICH_DIR}/include
-        -L${MPICH_DIR}/lib -lmpi \
-          ${CRAY_XPMEM_POST_LINK_OPTS} -lxpmem \
-          ${PE_MPICH_GTL_DIR_amd_gfx90a} ${PE_MPICH_GTL_LIBS_amd_gfx90a}
-
-        HIPFLAGS = --offload-arch=gfx950
-
 
     .. _understanding-the-compatibility-of-compilers-rocm-and-cray-mpich:
 
@@ -962,29 +936,24 @@ Users can compile GPU-aware MPI programs like follows:
         # Since these modules are not default, make sure to prepend CRAY_LD_LIBRARY_PATH to LD_LIBRARY_PATH
         export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
 
+.. todo::
 
     OpenMP
     ------
 
     This section shows how to compile with OpenMP using the different compilers covered above.
 
-    +--------+----------+-----------+----------------------------------------------+-------------------------------------+
-    | Vendor | Module   | Language  | Compiler                                     | OpenMP flag (CPU thread)            |
-    +========+==========+===========+==============================================+=====================================+
-    | Cray   | ``cce``  | C, C\+\+  | | ``cc`` (wraps ``craycc``)                  | ``-fopenmp``                        |
-    |        |          |           | | ``CC`` (wraps ``crayCC``)                  |                                     |
-    |        |          +-----------+----------------------------------------------+-------------------------------------+
-    |        |          | Fortran   | ``ftn`` (wraps ``crayftn``)                  | | ``-homp``                         |
-    |        |          |           |                                              | | ``-fopenmp`` (alias)              |
-    +--------+----------+-----------+----------------------------------------------+-------------------------------------+
-    | AMD    | ``amd``  | | C       | | ``cc`` (wraps ``amdclang``)                | ``-fopenmp``                        |
-    |        |          | | C++     | | ``CC`` (wraps ``amdclang++``)              |                                     |
-    |        |          | | Fortran | | ``ftn`` (wraps ``amdflang``)               |                                     |
-    +--------+----------+-----------+----------------------------------------------+-------------------------------------+
-    | GCC    | ``gcc``  | | C       | | ``cc`` (wraps ``$GCC_PATH/bin/gcc``)       | ``-fopenmp``                        |
-    |        |          | | C++     | | ``CC`` (wraps ``$GCC_PATH/bin/g++``)       |                                     |
-    |        |          | | Fortran | | ``ftn`` (wraps ``$GCC_PATH/bin/gfortran``) |                                     |
-    +--------+----------+-----------+----------------------------------------------+-------------------------------------+
+    +--------+--------------+-----------+----------------------------------------------+-------------------------------------+
+    | Vendor | Module       | Language  | Compiler                                     | OpenMP flag (CPU thread)            |
+    +========+==============+===========+==============================================+=====================================+
+    | AMD    | ``amd-llvm`` | | C       | | ``amdclang``                               | ``-fopenmp``                        |
+    |        |              | | C++     | | ``amdclang++``                             |                                     |
+    |        |              | | Fortran | | ``amdflang``                               |                                     |
+    +--------+--------------+-----------+----------------------------------------------+-------------------------------------+
+    | GNU    | ``gcc``      | | C       | | ``gcc``                                    | ``-fopenmp``                        |
+    |        |              | | C++     | | ``g++``                                    |                                     |
+    |        |              | | Fortran | | ``gfortran``                               |                                     |
+    +--------+--------------+-----------+----------------------------------------------+-------------------------------------+
 
     OpenMP GPU Offload
     ------------------
@@ -1289,6 +1258,20 @@ In the script, Slurm directives are preceded by ``#SBATCH``, making them appear 
 +------+-------------------------------------------------------------------------------------------------+
 |   14 | Copy the output file to an appropriate location.                                                |
 +------+-------------------------------------------------------------------------------------------------+
+
+Example Compile and Run
+^^^^^^^^^^^^^^^^^^^^^^^
+
+The following will compile the ``hello_jobstep`` application `found on ORNL's GitLab <https://code.ornl.gov/olcf/hello_jobstep/-/tree/master?ref_type=heads>`__.
+
+.. code:: bash
+
+    module load rocm
+    module load mpich
+
+    hipcc -std=c++11 -fopenmp --offload-arch=gfx950 -I${ROCM_PATH}/include -I${MPICH_DIR}/include -c hello_jobstep.cpp
+    hipcc -fopenmp -L${ROCM_PATH}/lib -lamdhip64 -L${MPICH_DIR}/lib -lmpi hello_jobstep.o -o hello_jobstep
+
 
 The following can run ``hello_jobstep``:
 
