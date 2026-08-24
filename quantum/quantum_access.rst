@@ -266,7 +266,4 @@ Regardless of retention period, once Data Only mode ends, all login and data acc
 Publication Citations
 =====================
 
-Publications using resources provided by the OLCF are requested to include the 
-following acknowledgment statement: *“This research used resources of the Oak
-Ridge Leadership Computing Facility, which is a DOE Office of Science User
-Facility supported under Contract DE-AC05-00OR22725.”*
+Publications resulting from work using OLCF’s QCUP resources should include the acknowledgement listed on the `OLCF website <https://www.olcf.ornl.gov/about-olcf/media-assets/>`__.
