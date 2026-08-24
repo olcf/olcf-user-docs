@@ -4162,6 +4162,13 @@ Understanding the network counters can be challenging. If you are encountering n
 System Updates 
 ============== 
 
+2026-08-24
+----------
+
+On Tuesday, August 25, 2026, Frontier's system software was updated to a new OS kernel.
+
+Additionally, a new GPU counter sampling daemon was enabled by default for all jobs >500 nodes. Users may disable the daemon with ``sbatch --gpu-counters=0``/``#SBATCH --gpu-counters=0``, or request the daemon be enabled with ``sbatch --gpu-counters=1``. Users may request their data by emailing help@olcf.ornl.gov with job IDs to retrieve data for.
+
 2026-07-01
 ----------
 At 10:00am EST on Wednesday, July 1, 2026, Frontier's programming environment was modified.
