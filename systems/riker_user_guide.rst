@@ -503,7 +503,7 @@ their use can be found in the related subsections.
 |            | | (see Single Command section below)                                                                                                                                         |
 +------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+ 
 
-Node-sharing on Riker
+General information for Node-sharing on Riker
 ---------------------
 
 Riker is a node-shared Slurm cluster: multiple users may run on the same physical node at the same time, as long as their resource requests do not overlap. 
@@ -527,14 +527,16 @@ Riker enforces memory as a per-core share. CPU cores and memory are coupled on a
 
 If a job requires all the resources on a node, users can use the ``--exclusive`` flag to disable node-sharing functionality and give the job sole access to the nodes in that allocation.
 
-Batch (CPU) nodes
-^^^^^^^^^^^^^^^^^
+Sharing Batch (CPU) nodes
+-----------------
 
 Each Batch node has 128 Cores that can be allocated on a 1-Core basis and come with an equal share of memory (~17GB per core). 
 
 Users can allocate using ``-c`` for cores or ``--mem`` for memory. Your request will round accordingly. 
 
-Example script: 
+Example: Let us assume there are two users already running on a batch riker node. Yellow User has 64 cores allocated, and Blue User has 33 cores allocated.
+The following job script would result in the Purple User slotting into that same node filling in more of the unused cores proportional to their memory request. 
+The remaining cores and memory are left unallocated for a fourth user to potentially allocate.
 
 .. code-block:: bash
    :linenos:
@@ -547,15 +549,29 @@ Example script:
    #SBATCH -t 00:05:00
    #SBATCH -p batch
    #SBATCH -N 1
-   #SBATCH -c 16
+   #SBATCH --mem=200G 
  
    ## RUNTIME RESOURCE DELEGATION ##
-   srun -n8 --cpus-per-task=2 ./a.out 
+   srun -n6 --cpus-per-task=2 ./a.out 
 
+.. tab-set:: 
 
+    .. tab-item:: Loaded Node
 
-GPU nodes
-^^^^^^^^^
+        .. image:: /images/riker_batch_share.png
+            :align: center
+            :width: 100%
+            :alt: Riker node share gpu
+
+    .. tab-item:: Empty Node
+
+        .. image:: /images/Riker_CPU_node.png
+            :align: center
+            :width: 100%
+            :alt: Riker node architecture diagram
+
+Sharing GPU nodes
+---------
 
 Each GPU node has 64 Cores that can be allocated on a 1-Core basis and come with an equal share of memory (~24GB per core); however, 
 32 Cores (16 per GPU) are reserved for the GPUs and can only allocated if you also allocate the bound GPU. 
@@ -563,7 +579,9 @@ Each GPU node has 64 Cores that can be allocated on a 1-Core basis and come with
 The reserved cores are automatic allocated when a GPU is requested ``--gpus``.  All other cores on the GPU nodes operate as "Flex / Shared" cores that can be allocated
 by GPU-enabled workloads & CPU-Only workloads allowing users to fill unused CPUs on GPU nodes or GPU jobs to increase beyond the default 16 Cores. 
 
-Example script:
+Example: Let us assume there are three users already running on two riker-gpu nodes. Pink User has 3 GPUs allocated across riker-gpu1 and riker-gpu2, 
+Green User allocated the remaining 32 cores on riker-gpu1 for a CPU-Only workload, and Purple User allocated 28 cores on riker-gpu2 for a CPU-Only workload. 
+The following job script would result in the Red user slotting into the second GPU on riker-gpu2, flexing to 20 cores instead of the default 16 cores to consume the rest of the resources on riker-gpu2.
 
 .. code-block:: bash
    :linenos:
@@ -576,81 +594,35 @@ Example script:
    #SBATCH -t 00:05:00
    #SBATCH -p gpu
    #SBATCH -N 1
-   #SBATCH --gpus=2
-   #SBATCH --cpus-per-gpu=24
+   #SBATCH --gpus=1
+   #SBATCH --cpus-per-gpu=20
  
    ## RUNTIME RESOURCE DELEGATION ##
-   srun -n2 --cpus-per-task=24 --gpus-per-task=1 ./a.out 
+   srun -n1 --cpus-per-task=20 --gpus-per-task=1 ./a.out 
+
+.. tab-set:: 
+
+    .. tab-item:: Loaded Node(s)
+
+        .. image:: /images/riker_gpu_share.png
+            :align: center
+            :width: 100%
+            :alt: Riker node share gpu
+
+    .. tab-item:: Empty Node
+
+        .. image:: /images/Riker_GPU_node.png
+            :align: center
+            :width: 100%
+            :alt: Riker node architecture diagram
+
+
+
+
 
     
 .. note::
     Riker should support the majority of Slurm job structures. If you find that your job structure does not work as expected, please reach out to help@olcf.ornl.gov.
-
-Node-sharing Visualizations
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-CPU Example
-"""""""""""
-
-Yellow requests 64 Cores on a Riker38
-
-.. code-block:: bash
-
-    salloc  -A <account> -p batch -N1 -t 10 -c 64 –w riker38
-
-Blue requests 33 Cores on Riker38
-
-.. code-block:: bash
-
-    salloc -A <account> -p batch -N1 -t 10 -c 33 –w riker38
-
-Purple requests 200GB of memory on Riker38
-
-.. code-block:: bash
-
-    salloc -A <account> -p batch -N1 -t 10 --mem=200GB –w riker38
-
-The remaining cores and left unallocated.
-
-.. image:: /images/riker_batch_share.png
-   :align: center
-   :width: 100%
-   :alt: Riker node share gpu
-
-
-GPU Example
-"""""""""""
-
-Pink running a job across 3 GPUs
-
-.. code-block:: bash
-
-    salloc -A <account> -N2 -t10 -p gpu --gpus=3 
-
-Red requests that remaining GPU and 20 cores on riker-gpu2
-
-.. code-block:: bash
-
-    salloc -A <account> -N1 -t10 -p gpu --gpus=1 --cpus-per-gpu=20 -w riker-gpu2 
-
-Green requests the remaining cores on riker-gpu1 for a CPU-Only Workload
-
-.. code-block:: bash
-
-    salloc -A <account> -N1 -t60 -p gpu -c 32 -w riker-gpu1 
-
-Purple requests the remaining cores on riker-gpu2 for CPU-Only Workload
-
-.. code-block:: bash
-
-    salloc -A <account> -N1 -t60 -p gpu -c 28 -w riker-gpu2
-
-.. image:: /images/riker_gpu_share.png
-   :align: center
-   :width: 100%
-   :alt: Riker node share gpu
-
-
 
 
 Queues on Riker
@@ -692,7 +664,7 @@ gpu``
 
 .. note::
     The queue structure was designed based on user feedback and
-    analysis of batch jobs over the recent years. However, we understand that
+    analysis of batch jobs over the recent years; however, we understand that
     the structure may not meet the needs of all users. **If this structure
     limits your use of the system, please let us know.** We want Riker to be a
     useful OLCF resource and will work with you providing exceptions or even

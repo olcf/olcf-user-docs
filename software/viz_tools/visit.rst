@@ -25,7 +25,7 @@ OLCF resources. VisIt for your local computer can be obtained here:
 Recommended VisIt versions on our systems:
 
 * Andes: VisIt 3.3.3, 3.4.1, 3.4.2, 3.5.0
-* Riker: VisIt 3.5.0
+* Riker: VisIt 3.4.2, 3.5.0
 * Frontier: VisIt 3.3.3, 3.4.1
 
 .. warning::
@@ -208,11 +208,97 @@ Restart VisIt, and go to Options→Host Profiles. Select “New Host”
 
       .. tab-item:: Node-exclusive CPU jobs
 
-        test
+        **For Riker CPU-Exclusive jobs:**
+
+        - **Host nickname**: ``Riker`` (this is arbitrary)
+        - **Remote hostname**: ``riker.olcf.ornl.gov`` (required)
+        - **Host name aliases**: ``riker-login#g`` (required)
+        - **Maximum Nodes**: Unchecked
+        - **Maximum processors**: Unchecked (arbitrary)
+        - **Path to VisIt Installation**: ``/sw/riker/visit`` (required)
+        - **Username**: Your OLCF Username (required)
+        - **Tunnel data connections through SSH**: Checked (required)
+
+        Under the “Launch Profiles” tab create a launch profile. Most of these values
+        are arbitrary
+
+        - **Profile Name**: ``batch`` (arbitrary)
+        - **Timeout**: 480 (arbitrary)
+        - **Number of threads per task**: 0 (arbitrary, but not tested
+          with OMP/pthread support)
+        - **Additional arguments**: blank (arbitrary)
+
+        Under the “Parallel” Tab:
+
+        - **Launch parallel engine**: Checked (required)
+        - Launch Tab:
+
+            - **Parallel launch method**:
+              ``sbatch/srun`` (required)
+            - **Partition/Pool/Queue**: ``batch`` (required)
+            - **Number of processors**: 1 
+            - **Number of nodes**: 1 (arbitrary)
+            - **Bank/Account**: Your OLCF project to use (required)
+            - **Time Limit**: 1:00:00 (arbitrary, ``HH:MM:SS``)
+            - **Machine file**: Unchecked (required – Lets VisIt get the nodelist from the scheduler)
+            - **Constraints**: Unchecked
+        - Advanced tab – All boxes unchecked
+
+            - **Launcher arguments**:
+              ``--exclusive`` (Riker is a node-shared machine, we will need to set the ``--exclusive`` flag to reserve the entire node )
+        - GPU Acceleration
+
+            - **Use cluster’s graphics cards**: Unchecked (even if using the ``gpu`` partition)
+
+        Click “Apply” and make sure to save the settings (Options/Save Settings).
+        Exit and re-launch VisIt.
 
       .. tab-item:: Node-exclusive GPU jobs
 
-        test
+        **For Riker GPU-Exclusive jobs:**
+
+        - **Host nickname**: ``Riker`` (this is arbitrary)
+        - **Remote hostname**: ``riker.olcf.ornl.gov`` (required)
+        - **Host name aliases**: ``riker-login#g`` (required)
+        - **Maximum Nodes**: Unchecked
+        - **Maximum processors**: Unchecked (arbitrary)
+        - **Path to VisIt Installation**: ``/sw/riker/visit`` (required)
+        - **Username**: Your OLCF Username (required)
+        - **Tunnel data connections through SSH**: Checked (required)
+
+        Under the “Launch Profiles” tab create a launch profile. Most of these values
+        are arbitrary
+
+        - **Profile Name**: ``gpu`` (arbitrary)
+        - **Timeout**: 480 (arbitrary)
+        - **Number of threads per task**: 0 (arbitrary, but not tested
+          with OMP/pthread support)
+        - **Additional arguments**: blank (arbitrary)
+
+        Under the “Parallel” Tab:
+
+        - **Launch parallel engine**: Checked (required)
+        - Launch Tab:
+
+            - **Parallel launch method**:
+              ``sbatch/srun`` (required)
+            - **Partition/Pool/Queue**: ``gpu`` (required)
+            - **Number of processors**: 1 
+            - **Number of nodes**: 1 (arbitrary)
+            - **Bank/Account**: Your OLCF project to use (required)
+            - **Time Limit**: 1:00:00 (arbitrary, ``HH:MM:SS``)
+            - **Machine file**: Unchecked (required – Lets VisIt get the nodelist from the scheduler)
+            - **Constraints**: Unchecked
+        - Advanced tab – All boxes unchecked
+
+            - **Launcher arguments**:
+              ``--exclusive`` (Riker is a node-shared machine, we will need to set the ``--exclusive`` flag to reserve the entire node )
+        - GPU Acceleration
+
+            - **Use cluster’s graphics cards**: Unchecked (even if using the ``gpu`` partition)
+
+        Click “Apply” and make sure to save the settings (Options/Save Settings).
+        Exit and re-launch VisIt.
 
 
   .. tab-item:: Frontier
@@ -394,43 +480,47 @@ OLCF systems is provided below.
 
   .. tab-item:: Riker
 
-      .. code-block:: bash
-        :linenos:
+    .. tab-set::
 
-        #!/bin/bash
-        #SBATCH -A XXXYYY
-        #SBATCH -J visit_test
-        #SBATCH -N 1
-        #SBATCH -p gpu
-        #SBATCH -t 0:05:00
-        #SBATCH -c 4
+      .. tab-item:: 3.4.2
 
-        cd $SLURM_SUBMIT_DIR
-        date
+        .. code-block:: bash
+          :linenos:
 
-        module load visit
+          #!/bin/bash
+          #SBATCH -A XXXYYY
+          #SBATCH -J visit_test
+          #SBATCH -N 1
+          #SBATCH -p gpu
+          #SBATCH -t 0:05:00
+          #SBATCH -c 4
 
-        visit -nowin -cli -v 3.5.0 -l srun -np 28 -nn 1 -s visit_example.py
+          cd $SLURM_SUBMIT_DIR
+          date
 
-  .. tab-item:: Riker
+          module load visit
 
-      .. code-block:: bash
-        :linenos:
+          visit -nowin -cli -v 3.4.2 -l srun -np 28 -nn 1 -s visit_example.py
 
-        #!/bin/bash
-        #SBATCH -A XXXYYY
-        #SBATCH -J visit_test
-        #SBATCH -N 1
-        #SBATCH -p gpu
-        #SBATCH -t 0:05:00
-        #SBATCH -c 4
+      .. tab-item:: 3.5.0
 
-        cd $SLURM_SUBMIT_DIR
-        date
+        .. code-block:: bash
+          :linenos:
 
-        module load visit
+          #!/bin/bash
+          #SBATCH -A XXXYYY
+          #SBATCH -J visit_test
+          #SBATCH -N 1
+          #SBATCH -p gpu
+          #SBATCH -t 0:05:00
+          #SBATCH -c 4
 
-        visit -nowin -cli -v 3.4.2 -l srun -np 28 -nn 1 -s visit_example.py
+          cd $SLURM_SUBMIT_DIR
+          date
+
+          module load visit
+
+          visit -nowin -cli -v 3.5.0 -l srun -np 28 -nn 1 -s visit_example.py
 
   .. tab-item:: Frontier
 
