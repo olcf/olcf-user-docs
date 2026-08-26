@@ -671,8 +671,8 @@ To use GPU-aware Cray MPICH with Frontier's PrgEnv modules, users must set the f
     module load rocm
     
     export MPICH_GPU_SUPPORT_ENABLED=1
-    export GTL_ENABLE_HSA_IPC_SIGNAL_CACHE=1 # Cray MPICH 9.1.0 onwards;
-    export GTL_DISABLE_HSA_IPC_SIGNAL_CACHE=0 # Cray MPICH 9.0.1 and 8.1.33
+    export GTL_ENABLE_HSA_IPC_SIGNAL_CACHE=1 # Cray MPICH 9.1.0 onwards; optional, but recommended
+    export GTL_DISABLE_HSA_IPC_SIGNAL_CACHE=0 # Cray MPICH 9.0.1 and 8.1.33; optional, but recommended
     export HSA_ENABLE_IPC_MODE_LEGACY=1 
 
 .. note::
