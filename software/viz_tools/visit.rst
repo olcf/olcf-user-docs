@@ -25,6 +25,7 @@ OLCF resources. VisIt for your local computer can be obtained here:
 Recommended VisIt versions on our systems:
 
 * Andes: VisIt 3.3.3, 3.4.1, 3.4.2, 3.5.0
+* Riker: VisIt 3.4.2, 3.5.0
 * Frontier: VisIt 3.3.3, 3.4.1
 
 .. warning::
@@ -40,9 +41,7 @@ directory:
 * macOS: ``/path/to/VisIt.app/Contents/Resources/data``
 * Windows: ``C:\path\to\LLNL\VisIt x.y.z\data``
 
-Additionally, check out our beginner friendly
-`OLCF VisIt Tutorial <https://github.com/olcf/dva-training-series/tree/main/visit>`__
-which uses Andes to visualize example datasets.
+Additionally, check out our beginner friendly `OLCF VisIt Tutorial <https://github.com/olcf/dva-training-series/tree/main/visit>`__ which uses Andes to visualize example datasets.
 
 .. _visit-host-profiles:
 
@@ -108,6 +107,199 @@ Restart VisIt, and go to Options→Host Profiles. Select “New Host”
           the number of processors if memory is not an issue. See the
           :ref:`visit-modify-host` section below for how to add a ``gpu`` partition
           launch profile on Andes.
+
+  .. tab-item:: Riker
+
+    .. tab-set:: 
+
+      .. tab-item:: CPU Jobs
+
+        **For Riker CPU jobs:**
+
+        - **Host nickname**: ``Riker`` (this is arbitrary)
+        - **Remote hostname**: ``riker.olcf.ornl.gov`` (required)
+        - **Host name aliases**: ``riker-login#g`` (required)
+        - **Maximum Nodes**: Unchecked
+        - **Maximum processors**: Unchecked (arbitrary)
+        - **Path to VisIt Installation**: ``/sw/riker/visit`` (required)
+        - **Username**: Your OLCF Username (required)
+        - **Tunnel data connections through SSH**: Checked (required)
+
+        Under the “Launch Profiles” tab create a launch profile. Most of these values
+        are arbitrary
+
+        - **Profile Name**: ``batch`` (arbitrary)
+        - **Timeout**: 480 (arbitrary)
+        - **Number of threads per task**: 0 (arbitrary, but not tested
+          with OMP/pthread support)
+        - **Additional arguments**: blank (arbitrary)
+
+        Under the “Parallel” Tab:
+
+        - **Launch parallel engine**: Checked (required)
+        - Launch Tab:
+
+            - **Parallel launch method**:
+              ``sbatch/srun`` (required)
+            - **Partition/Pool/Queue**: ``batch`` (required)
+            - **Number of processors**: 1 (max for ``batch`` queue is 128)
+            - **Number of nodes**: 1 (arbitrary)
+            - **Bank/Account**: Your OLCF project to use (required)
+            - **Time Limit**: 1:00:00 (arbitrary, ``HH:MM:SS``)
+            - **Machine file**: Unchecked (required – Lets VisIt get the nodelist from the scheduler)
+            - **Constraints**: Unchecked
+        - Advanced tab:
+
+            - **Launcher arguments**:
+              ``-c 1`` (Riker is a node-shared machine, so CPUs per task flag is enforced when not using ``--exclusive``)
+        - GPU Acceleration
+
+            - **Use cluster’s graphics cards**: Unchecked (even if using the ``gpu`` partition)
+
+        Click “Apply” and make sure to save the settings (Options/Save Settings).
+        Exit and re-launch VisIt.
+      
+      .. tab-item:: GPU Jobs
+
+        **For Riker GPU jobs:**
+
+        - **Host nickname**: ``Riker`` (this is arbitrary)
+        - **Remote hostname**: ``riker.olcf.ornl.gov`` (required)
+        - **Host name aliases**: ``riker-login#g`` (required)
+        - **Maximum Nodes**: Unchecked
+        - **Maximum processors**: Unchecked (arbitrary)
+        - **Path to VisIt Installation**: ``/sw/riker/visit`` (required)
+        - **Username**: Your OLCF Username (required)
+        - **Tunnel data connections through SSH**: Checked (required)
+
+        Under the “Launch Profiles” tab create a launch profile. Most of these values
+        are arbitrary
+
+        - **Profile Name**: ``gpu`` (arbitrary)
+        - **Timeout**: 480 (arbitrary)
+        - **Number of threads per task**: 0 (arbitrary, but not tested
+          with OMP/pthread support)
+        - **Additional arguments**: blank (arbitrary)
+
+        Under the “Parallel” Tab:
+
+        - **Launch parallel engine**: Checked (required)
+        - Launch Tab:
+
+            - **Parallel launch method**:
+              ``sbatch/srun`` (required)
+            - **Partition/Pool/Queue**: ``gpu`` (required)
+            - **Number of processors**: 1 
+            - **Number of nodes**: 1 (arbitrary)
+            - **Bank/Account**: Your OLCF project to use (required)
+            - **Time Limit**: 1:00:00 (arbitrary, ``HH:MM:SS``)
+            - **Machine file**: Unchecked (required – Lets VisIt get the nodelist from the scheduler)
+            - **Constraints**: Unchecked
+        - Advanced tab:
+
+            - **Launcher arguments**:
+              ``--gpus=1`` or ``--gpus=2`` (Riker is a node-shared machine, so GPU flag is required when not using ``--exclusive``)
+        - GPU Acceleration
+
+            - **Use cluster’s graphics cards**: Unchecked (even if using the ``gpu`` partition)
+
+        Click “Apply” and make sure to save the settings (Options/Save Settings).
+        Exit and re-launch VisIt.
+
+      .. tab-item:: Node-exclusive CPU jobs
+
+        **For Riker CPU-Exclusive jobs:**
+
+        - **Host nickname**: ``Riker`` (this is arbitrary)
+        - **Remote hostname**: ``riker.olcf.ornl.gov`` (required)
+        - **Host name aliases**: ``riker-login#g`` (required)
+        - **Maximum Nodes**: Unchecked
+        - **Maximum processors**: Unchecked (arbitrary)
+        - **Path to VisIt Installation**: ``/sw/riker/visit`` (required)
+        - **Username**: Your OLCF Username (required)
+        - **Tunnel data connections through SSH**: Checked (required)
+
+        Under the “Launch Profiles” tab create a launch profile. Most of these values
+        are arbitrary
+
+        - **Profile Name**: ``batch`` (arbitrary)
+        - **Timeout**: 480 (arbitrary)
+        - **Number of threads per task**: 0 (arbitrary, but not tested
+          with OMP/pthread support)
+        - **Additional arguments**: blank (arbitrary)
+
+        Under the “Parallel” Tab:
+
+        - **Launch parallel engine**: Checked (required)
+        - Launch Tab:
+
+            - **Parallel launch method**:
+              ``sbatch/srun`` (required)
+            - **Partition/Pool/Queue**: ``batch`` (required)
+            - **Number of processors**: 1 
+            - **Number of nodes**: 1 (arbitrary)
+            - **Bank/Account**: Your OLCF project to use (required)
+            - **Time Limit**: 1:00:00 (arbitrary, ``HH:MM:SS``)
+            - **Machine file**: Unchecked (required – Lets VisIt get the nodelist from the scheduler)
+            - **Constraints**: Unchecked
+        - Advanced tab:
+
+            - **Launcher arguments**:
+              ``--exclusive`` (Riker is a node-shared machine, we will need to set the ``--exclusive`` flag to reserve the entire node )
+        - GPU Acceleration
+
+            - **Use cluster’s graphics cards**: Unchecked (even if using the ``gpu`` partition)
+
+        Click “Apply” and make sure to save the settings (Options/Save Settings).
+        Exit and re-launch VisIt.
+
+      .. tab-item:: Node-exclusive GPU jobs
+
+        **For Riker GPU-Exclusive jobs:**
+
+        - **Host nickname**: ``Riker`` (this is arbitrary)
+        - **Remote hostname**: ``riker.olcf.ornl.gov`` (required)
+        - **Host name aliases**: ``riker-login#g`` (required)
+        - **Maximum Nodes**: Unchecked
+        - **Maximum processors**: Unchecked (arbitrary)
+        - **Path to VisIt Installation**: ``/sw/riker/visit`` (required)
+        - **Username**: Your OLCF Username (required)
+        - **Tunnel data connections through SSH**: Checked (required)
+
+        Under the “Launch Profiles” tab create a launch profile. Most of these values
+        are arbitrary
+
+        - **Profile Name**: ``gpu`` (arbitrary)
+        - **Timeout**: 480 (arbitrary)
+        - **Number of threads per task**: 0 (arbitrary, but not tested
+          with OMP/pthread support)
+        - **Additional arguments**: blank (arbitrary)
+
+        Under the “Parallel” Tab:
+
+        - **Launch parallel engine**: Checked (required)
+        - Launch Tab:
+
+            - **Parallel launch method**:
+              ``sbatch/srun`` (required)
+            - **Partition/Pool/Queue**: ``gpu`` (required)
+            - **Number of processors**: 1 
+            - **Number of nodes**: 1 (arbitrary)
+            - **Bank/Account**: Your OLCF project to use (required)
+            - **Time Limit**: 1:00:00 (arbitrary, ``HH:MM:SS``)
+            - **Machine file**: Unchecked (required – Lets VisIt get the nodelist from the scheduler)
+            - **Constraints**: Unchecked
+        - Advanced tab:
+
+            - **Launcher arguments**:
+              ``--exclusive`` (Riker is a node-shared machine, we will need to set the ``--exclusive`` flag to reserve the entire node )
+        - GPU Acceleration
+
+            - **Use cluster’s graphics cards**: Unchecked (even if using the ``gpu`` partition)
+
+        Click “Apply” and make sure to save the settings (Options/Save Settings).
+        Exit and re-launch VisIt.
+
 
   .. tab-item:: Frontier
 
@@ -263,7 +455,7 @@ performance using VisIt's CLI in a batch job. An example for doing this on
 OLCF systems is provided below.
 
 
-**For Andes/Frontier (Slurm Script):**
+**For Andes/Riker/Frontier (Slurm Script):**
 
 .. tab-set::
 
@@ -285,6 +477,27 @@ OLCF systems is provided below.
         module load visit
 
         visit -nowin -cli -v 3.5.0 -l srun -np 28 -nn 1 -s visit_example.py
+
+  .. tab-item:: Riker
+
+      .. code-block:: bash
+        :linenos:
+
+        #!/bin/bash
+        #SBATCH -A XXXYYY
+        #SBATCH -J visit_test
+        #SBATCH -N 1
+        #SBATCH -p gpu
+        #SBATCH -t 0:05:00
+        #SBATCH -c 28
+
+        cd $SLURM_SUBMIT_DIR
+        date
+
+        module load visit
+
+        # For `--exclusive` allocated jobs, the `-la -c1` argument is not necessary
+        visit -nowin -cli -v 3.5.0 -l srun -la -c1 -np 28 -nn 1 -s visit_ex.py
 
   .. tab-item:: Frontier
 
@@ -313,7 +526,7 @@ OLCF systems is provided below.
         visit -nowin -cli -v 3.3.3 -l srun -np 28 -nn 1 -s visit_example.py
 
 Following one of the methods above will submit a batch job for five minutes to
-either Andes or Frontier.  Once the batch job makes its way through
+either Andes, Riker, or Frontier.  Once the batch job makes its way through
 the queue, the script will launch VisIt version X.Y.Z (specified with the
 **-v** flag, required on Andes) and execute a python script called
 ``visit_example.py`` (specified with the **-s** flag, required if using a
