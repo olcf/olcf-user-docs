@@ -148,10 +148,10 @@ Restart VisIt, and go to Options→Host Profiles. Select “New Host”
             - **Time Limit**: 1:00:00 (arbitrary, ``HH:MM:SS``)
             - **Machine file**: Unchecked (required – Lets VisIt get the nodelist from the scheduler)
             - **Constraints**: Unchecked
-        - Advanced tab – All boxes unchecked
+        - Advanced tab:
 
             - **Launcher arguments**:
-              ``--cpus-per-task=1`` (Riker is a node-shared machine, we will need to set the resource request with sbatch/srun. )
+              ``-c 1`` (Riker is a node-shared machine, so CPUs per task flag is enforced when not using ``--exclusive``)
         - GPU Acceleration
 
             - **Use cluster’s graphics cards**: Unchecked (even if using the ``gpu`` partition)
@@ -195,10 +195,10 @@ Restart VisIt, and go to Options→Host Profiles. Select “New Host”
             - **Time Limit**: 1:00:00 (arbitrary, ``HH:MM:SS``)
             - **Machine file**: Unchecked (required – Lets VisIt get the nodelist from the scheduler)
             - **Constraints**: Unchecked
-        - Advanced tab – All boxes unchecked
+        - Advanced tab:
 
             - **Launcher arguments**:
-              ``--gpus=1`` (Riker is a node-shared machine, we will need to set the resource request with sbatch/srun. )
+              ``--gpus=1`` or ``--gpus=2`` (Riker is a node-shared machine, so GPU flag is required when not using ``--exclusive``)
         - GPU Acceleration
 
             - **Use cluster’s graphics cards**: Unchecked (even if using the ``gpu`` partition)
@@ -242,7 +242,7 @@ Restart VisIt, and go to Options→Host Profiles. Select “New Host”
             - **Time Limit**: 1:00:00 (arbitrary, ``HH:MM:SS``)
             - **Machine file**: Unchecked (required – Lets VisIt get the nodelist from the scheduler)
             - **Constraints**: Unchecked
-        - Advanced tab – All boxes unchecked
+        - Advanced tab:
 
             - **Launcher arguments**:
               ``--exclusive`` (Riker is a node-shared machine, we will need to set the ``--exclusive`` flag to reserve the entire node )
@@ -289,7 +289,7 @@ Restart VisIt, and go to Options→Host Profiles. Select “New Host”
             - **Time Limit**: 1:00:00 (arbitrary, ``HH:MM:SS``)
             - **Machine file**: Unchecked (required – Lets VisIt get the nodelist from the scheduler)
             - **Constraints**: Unchecked
-        - Advanced tab – All boxes unchecked
+        - Advanced tab:
 
             - **Launcher arguments**:
               ``--exclusive`` (Riker is a node-shared machine, we will need to set the ``--exclusive`` flag to reserve the entire node )
@@ -480,47 +480,24 @@ OLCF systems is provided below.
 
   .. tab-item:: Riker
 
-    .. tab-set::
+      .. code-block:: bash
+        :linenos:
 
-      .. tab-item:: 3.4.2
+        #!/bin/bash
+        #SBATCH -A XXXYYY
+        #SBATCH -J visit_test
+        #SBATCH -N 1
+        #SBATCH -p gpu
+        #SBATCH -t 0:05:00
+        #SBATCH -c 28
 
-        .. code-block:: bash
-          :linenos:
+        cd $SLURM_SUBMIT_DIR
+        date
 
-          #!/bin/bash
-          #SBATCH -A XXXYYY
-          #SBATCH -J visit_test
-          #SBATCH -N 1
-          #SBATCH -p gpu
-          #SBATCH -t 0:05:00
-          #SBATCH -c 4
+        module load visit
 
-          cd $SLURM_SUBMIT_DIR
-          date
-
-          module load visit
-
-          visit -nowin -cli -v 3.4.2 -l srun -np 28 -nn 1 -s visit_example.py
-
-      .. tab-item:: 3.5.0
-
-        .. code-block:: bash
-          :linenos:
-
-          #!/bin/bash
-          #SBATCH -A XXXYYY
-          #SBATCH -J visit_test
-          #SBATCH -N 1
-          #SBATCH -p gpu
-          #SBATCH -t 0:05:00
-          #SBATCH -c 4
-
-          cd $SLURM_SUBMIT_DIR
-          date
-
-          module load visit
-
-          visit -nowin -cli -v 3.5.0 -l srun -np 28 -nn 1 -s visit_example.py
+        # For `--exclusive` allocated jobs, the `-la -c1` argument is not necessary
+        visit -nowin -cli -v 3.5.0 -l srun -la -c1 -np 28 -nn 1 -s visit_ex.py
 
   .. tab-item:: Frontier
 
