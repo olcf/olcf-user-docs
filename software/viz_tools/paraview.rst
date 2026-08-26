@@ -50,7 +50,7 @@ Recommended ParaView versions on our systems:
 * **Andes**:
     * OLCF Installation: ParaView 5.9.1, 5.10.0, 5.11.0, 5.12.1, 5.13.1, 5.13.3, 6.0.0
 * **Riker**:
-    * OLCF Installation: ParaView 5.13.3
+    * OLCF Installation: ParaView 6.1.1
 * **Frontier**:
     * UMS032 Installation: ParaView 5.11.2, 5.12.1, 5.13.1
     * OLCF Installation: ParaView 5.13.1, 5.13.2, 5.13.3
@@ -109,7 +109,7 @@ connected to. For example, to see these modules on specific OLCF systems:
 
                $ module -t avail paraview
                
-               paraview/5.13.3-mpi
+               paraview/6.1.1-mpi
 
    .. tab-item:: Frontier
       :sync: frontier
@@ -171,10 +171,6 @@ methods may be used, the one described should work in most cases.
 **Step 1: Save the following PVSC files to your local computer**
 
 * :download:`andes.pvsc </_static/host_profiles/paraview/andes.pvsc>`
-
-ADD PVSC FILE
-* :download:`riker.pvsc </static/host_profiles/paraview/riker.pvsc>`
-
 * :download:`frontier_ums.pvsc </_static/host_profiles/paraview/frontier_ums.pvsc>`
 * :download:`frontier_olcf.pvsc </_static/host_profiles/paraview/frontier_olcf.pvsc>`
 
