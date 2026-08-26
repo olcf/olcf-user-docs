@@ -4162,7 +4162,7 @@ Understanding the network counters can be challenging. If you are encountering n
 System Updates 
 ============== 
 
-2026-08-24
+2026-08-25
 ----------
 
 On Tuesday, August 25, 2026, Frontier's system software was updated to a new OS kernel.
