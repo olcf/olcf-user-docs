@@ -671,8 +671,8 @@ To use GPU-aware Cray MPICH with Frontier's PrgEnv modules, users must set the f
     module load rocm
     
     export MPICH_GPU_SUPPORT_ENABLED=1
-    export GTL_ENABLE_HSA_IPC_SIGNAL_CACHE=1 # Cray MPICH 9.1.0 onwards
-    export GTL_DISABLE_HSA_IPC_SIGNAL_CACHE=0 # Cray MPICH 9.0.1 and before
+    export GTL_ENABLE_HSA_IPC_SIGNAL_CACHE=1 # Cray MPICH 9.1.0 onwards;
+    export GTL_DISABLE_HSA_IPC_SIGNAL_CACHE=0 # Cray MPICH 9.0.1 and 8.1.33
     export HSA_ENABLE_IPC_MODE_LEGACY=1 
 
 .. note::
@@ -4026,7 +4026,7 @@ GPU inter-process communication (IPC) considerations
 
 Cray MPICH uses IPC by default for intra-node inter-process MPI data movement operations that involve GPU buffers, i.e., enabling GPU-aware MPI (``MPICH_GPU_SUPPORT_ENABLED=1``) also sets ``MPICH_GPU_IPC_ENABLED=1``. Disabling IPC is known to noticeably impact intra-node MPI performance.
 
-Prior to Cray MPICH 8.1.33, a memory leak was observed in edge cases involving repeated creation and freeing of GPU-buffers used in MPI communication. This issue was prevelant when GPU buffers continuously increased in size or occupied new memory regions (e.g., due to defragmentation). The root cause was traced to IPC cache handles not being properly released. AMD addressed this by introducing an API that allows remote processes to free IPC cache handles. For Cray MPICH 9.0.1 and prior, the updated IPC mechanism is enabled by setting ``GTL_DISABLE_HSA_IPC_SIGNAL_CACHE=0`` and ``HSA_ENABLE_IPC_MODE_LEGACY=1``. Starting with Cray MPICH 9.1.0, the former variable was renamed and we set ``GTL_ENABLE_HSA_IPC_SIGNAL_CACHE=1`` for improved clarity.
+Prior to Cray MPICH 8.1.33, a memory leak was observed in edge cases involving repeated creation and freeing of GPU-buffers used in MPI communication. This issue was prevelant when GPU buffers continuously increased in size or occupied new memory regions (e.g., due to defragmentation). The root cause was traced to IPC cache handles not being properly released. AMD addressed this by introducing an API that allows remote processes to free IPC cache handles. For Cray MPICH 9.0.1 and 8.1.33, the updated IPC mechanism is enabled by setting ``GTL_DISABLE_HSA_IPC_SIGNAL_CACHE=0`` and ``HSA_ENABLE_IPC_MODE_LEGACY=1``. Starting with Cray MPICH 9.1.0, the former variable was renamed and we set ``GTL_ENABLE_HSA_IPC_SIGNAL_CACHE=1`` for improved clarity.
 
 A separate issue remains where enabling IPC can still lead to memory leaks for message sizes less than or equal to 1 MB. A workaround is to set ``HSA_ENABLE_IPC_MODE_LEGACY=0`` and ``GTL_HSA_VSMSG_CUTOFF_SIZE=0``. When message sizes fall at or below ``GTL_HSA_VSMSG_CUTOFF_SIZE``, the GPU Transport Layer (GTL) uses a blocking memory copy driven by the CPU instead of an HSA memcpy. For context, disabling legacy IPC mode (``HSA_ENABLE_IPC_MODE_LEGACY=0``) switches to AMD's newer IPC implementation based on the Linux dma_buf mechanism. 
 
@@ -4086,7 +4086,7 @@ Set to ``1`` by default if ``MPICH_GPU_SUPPORT_ENABLED=1``. This enables GPU IPC
 ``GTL_ENABLE_HSA_IPC_SIGNAL_CACHE`` (previously ``GTL_DISABLE_HSA_IPC_SIGNAL_CACHE``)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-This option is set to ``0`` by default, and is advised to be set to ``GTL_ENABLE_HSA_IPC_SIGNAL_CACHE=1`` when ``MPICH_GPU_IPC_ENABLED=1``. For Cray MPICH 9.0.1 and prior, set ``GTL_DISABLE_HSA_IPC_SIGNAL_CACHE=0`` which is set to ``1`` by default.
+This option is set to ``0`` by default, and is advised to be set to ``GTL_ENABLE_HSA_IPC_SIGNAL_CACHE=1`` when ``MPICH_GPU_IPC_ENABLED=1``. For Cray MPICH 9.0.1 and 8.1.33, set ``GTL_DISABLE_HSA_IPC_SIGNAL_CACHE=0`` which is set to ``1`` by default.
 
 Registering and unregistering GPU buffers for inter-process communication takes a relatively long time to do. The MPI library caches remote buffer attachments in order to reuse them, instead of detaching after every transfer. One limitation has been that when a process stops using a GPU buffer, there was no easy way to let the processes that are caching attachments know about this, and so they continued to cache the buffer. This consumes some of the limited GPU memory. A new feature since ROCM 6.4 enables the MPI library to alert the other processes through a signalling mechanism. If this environment variable is set, then this feature will be used to help reduce the amount of memory that the cache is consuming. This may help prevent out of memory situations.
 
