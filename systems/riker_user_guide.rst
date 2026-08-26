@@ -6,7 +6,7 @@ Riker User Guide
 
 .. warning:: 
     Difference Summary: 
-    Andes has 704 CPU nodes (32 cores, 256 GB/node) plus 9 older K80 GPU nodes; Riker has 128 CPU nodes (128 cores, 2.2 TB/node) plus 8 newer L40S GPU nodes (2 GPUs, 48 GB each, 1.5 TB RAM).
+    Andes has 704 CPU nodes (32 cores, 256 GB RAM) plus 9 older K80 GPU nodes (28 cores, 2 GPU, 1TB RAM); Riker has 128 CPU nodes (128 cores, 2.2 TB RAM) plus 8 newer L40S GPU nodes (64 cores, 2 GPUs, 1.5 TB RAM).
     Andes allocates whole nodes only, while Riker is node-shared and can allocate CPU cores, memory, and GPUs independently—requiring more explicit resource requests.
     Riker uses newer compiler/MPI environments (notably MPICH and CUDA 13-era GPU support).     
 
