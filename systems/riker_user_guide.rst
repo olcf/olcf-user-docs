@@ -4,13 +4,18 @@
 Riker User Guide
 *************************
 
-.. warning::
+.. note::
+    OLCF is pleased to announce Riker, our new data analysis and visualization cluster, which will replace the existing Andes system.
+
+    Riker is a 136-node system with 128 AMD EPYC CPU-only nodes and 8 hybrid AMD EPYC CPU + NVIDIA L40S GPU nodes. The new system will provide OLCF users with upgraded capabilities for data analysis and visualization workflows.
+
+    Riker is currently undergoing final testing, and we anticipate opening the system to users in early September. Once user access begins, Riker and Andes will operate in parallel for approximately six weeks to provide users time to transition their workflows. At the end of this transition period, Andes will be decommissioned. A more detailed transition timeline will be announced in the coming weeks.
 
     Notable Differences to Andes:
 
     * Andes has 704 CPU nodes (32 cores, 256 GB RAM) with 9 NVIDIA K80 GPU nodes (28 cores, 2 GPUs per node, 1TB RAM).
     * Riker has 128 CPU nodes (128 cores, 2.2 TB RAM) with 8 NVIDIA L40S GPU nodes (64 cores, 2 GPUs per node, 1.5 TB RAM).
-    * **Andes allocates whole nodes only, while Riker is node-shared** and can allocate CPU cores, memory, and GPUs independently. Consequently, more explicit resource requests are required on Riker. Exclusive nodes can still be requested on Riker.
+    * **Andes allocates whole nodes only, while Riker allows partial node allocations**.  On Riker you can allocate a subset of a node's CPU cores, memory, and GPUs. Consequently, more explicit resource requests are required on Riker.
     * Riker uses newer compiler/MPI environments (notably MPICH and CUDA 13-era GPU support).     
 
 

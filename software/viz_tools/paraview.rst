@@ -303,15 +303,15 @@ batch scripts, along with a working Python example, are provided below.
         #SBATCH -J para_test
         #SBATCH -p batch
         #SBATCH -t 0:05:00
-        #SBATCH -N #
-        #SBATCH -c #
+        #SBATCH -N 1
+        #SBATCH -c 28
 
         cd $SLURM_SUBMIT_DIR
         date
 
-        # PLACE PARAVIEW MODULESPATH
+        module load paraview/6.1.1-mpi
 
-        srun -n 28 pvbatch para_example.py
+        srun -n 28 -c 1 pvbatch para_example.py
 
 
   .. tab-item:: Frontier
