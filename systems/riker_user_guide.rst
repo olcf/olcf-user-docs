@@ -515,7 +515,7 @@ their use can be found in the related subsections.
 +------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+ 
 
 General information for Node-sharing on Riker
----------------------
+---------------------------------------------
 
 Riker is a node-shared Slurm cluster: multiple users may run on the same physical node at the same time, as long as their resource requests do not overlap. 
 Node sharing on Riker is facilitated through Slurm allocations of CPU cores, memory, and (on GPU nodes) GPUs, with additional site policies that reserve CPU cores for GPU work on GPU nodes.
@@ -539,7 +539,7 @@ Riker enforces memory as a per-core share. CPU cores and memory are coupled on a
 If a job requires all the resources on a node, users can use the ``--exclusive`` flag to disable node-sharing functionality and give the job sole access to the nodes in that allocation.
 
 Sharing Batch (CPU) nodes
------------------
+-------------------------
 
 Each Batch node has 128 Cores that can be allocated on a 1-Core basis and come with an equal share of memory (~17GB per core). 
 
@@ -582,7 +582,7 @@ The remaining cores and memory are left unallocated for a fourth user to potenti
             :alt: Riker node architecture diagram
 
 Sharing GPU nodes
----------
+-----------------
 
 Each GPU node has 64 Cores that can be allocated on a 1-Core basis and come with an equal share of memory (~24GB per core); however, 
 32 Cores (16 per GPU) are reserved for the GPUs and can only allocated if you also allocate the bound GPU. 
@@ -937,10 +937,6 @@ The ``srun`` options used in this section are (see ``man srun`` for more informa
 | ``-c, --cpus-per-task=<ncpus>``  | | Request that ``ncpus`` be allocated per process (default is 1).                                     |
 |                                  | | (``ncpus`` refers to cores)                                                                         |
 +----------------------------------+-------------------------------------------------------------------------------------------------------+
-.. |  ``--cpu-bind=threads``          | | Bind tasks to CPUs.                                                                                 |
-.. |                                  | | ``threads`` - Automatically generate masks binding tasks to threads.                                |
-.. |                                  | | (Although this option is not explicitly used in these examples, it is the default CPU binding.)     |
-.. +----------------------------------+-------------------------------------------------------------------------------------------------------+
 
 
 2 MPI ranks - each with 2 OpenMP threads
@@ -1143,26 +1139,24 @@ The CPU mapping part of this example is very similar to the example used above i
 
 The following ``srun`` options will be used in the examples below. See ``man srun`` for a complete list of options and more information. 
 
-+------------------------------------------------+--------------------------------------------------------------------------------------------------------------+
-| ``--gpus-per-task``                            | Specify the number of GPUs required for the job on each task to be spawned in the job's resource allocation. |
-+------------------------------------------------+--------------------------------------------------------------------------------------------------------------+
-| ``--gpu-bind=map_gpu:<list>``                  | | Bind tasks to specific GPUs by setting GPU masks on tasks (or ranks) as specified where                    |
-|                                                | | ``<list>`` is ``<gpu_id_for_task_0>,<gpu_id_for_task_1>,...``.                                             |
-|                                                | | If the number of tasks (or ranks) exceeds the number of elements in this list,                             |
-|                                                | | elements in the list will be reused as needed starting from the beginning of the list.                     |
-|                                                | | To simplify support for large task counts, the lists may follow a map with an asterisk                     |
-|                                                | | and repetition count. (For example ``map_gpu:0*4,1*4``)                                                    |
-+------------------------------------------------+--------------------------------------------------------------------------------------------------------------+
-| ``--gpu-bind=closest``                         | Bind all GPUs to all tasks                                                                                   |
-+------------------------------------------------+--------------------------------------------------------------------------------------------------------------+
-| ``--ntasks-per-gpu=<ntasks>``                  | Request that there are ntasks tasks invoked for every GPU.                                                   |
-+------------------------------------------------+--------------------------------------------------------------------------------------------------------------+
-| ``--distribution=<value>[:<value>][:<value>]`` | | Specifies the distribution of MPI ranks across compute nodes, sockets (NUMA domains on Riker), and cores,  |
-|                                                | respectively.                                                                                                |
-|                                                | | The default values are ``block:cyclic:cyclic``                                                             |
-+------------------------------------------------+--------------------------------------------------------------------------------------------------------------+
-
-.. |                                                |                                                                                                              |
++------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------+
+| ``--gpus-per-task``                            | Specify the number of GPUs required for the job on each task to be spawned in the job's resource allocation.              |
++------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------+
+| ``--gpu-bind=map_gpu:<list>``                  | | Bind tasks to specific GPUs by setting GPU masks on tasks (or ranks) as specified where                                 |
+|                                                | | ``<list>`` is ``<gpu_id_for_task_0>,<gpu_id_for_task_1>,...``.                                                          |
+|                                                | | If the number of tasks (or ranks) exceeds the number of elements in this list,                                          |
+|                                                | | elements in the list will be reused as needed starting from the beginning of the list.                                  |
+|                                                | | To simplify support for large task counts, the lists may follow a map with an asterisk                                  |
+|                                                | | and repetition count. (For example ``map_gpu:0*4,1*4``)                                                                 |
++------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------+
+| ``--gpu-bind=closest``                         | Bind all GPUs to all tasks                                                                                                |
++------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------+
+| ``--ntasks-per-gpu=<ntasks>``                  | Request that there are ntasks tasks invoked for every GPU.                                                                |
++------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------+
+| ``--distribution=<value>[:<value>][:<value>]`` | | Specifies the distribution of MPI ranks across compute nodes, sockets (NUMA domains on Riker), and cores, respectively. |
+|                                                | |                                                                                                                         |
+|                                                | | The default values are ``block:cyclic:cyclic``                                                                          |
++------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------+
 
 .. note::
     In general, GPU mapping can be accomplished in different ways. For example, an
