@@ -9,7 +9,7 @@ most recent changes are listed first.
 ----
 
 Frontier: profiling daemon enabled (August 25, 2026)
-------------------------------------------
+----------------------------------------------------
 
 On August 25, 2026, a ROCm Profiler (``rocprofiler``) based daemon that automatically samples GPU hardware counters from a subset of compute nodes will be enabled by default for all jobs > 500 nodes.
 This can be explicitly enabled/disabled via the ``--gpu-counters`` flag to ``sbatch``.
