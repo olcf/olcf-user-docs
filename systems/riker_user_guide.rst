@@ -985,149 +985,251 @@ Modules to load:
     module load cuda
     module load mpich
 
+.. dropdown:: hello_jobstep.cpp
 
-.. code-block:: c
-   :linenos:
-   
-    /**********************************************************
-    "Hello World"-type program to test different srun layouts.
+    .. code-block:: c++
 
-    Written by Tom Papatheodore
-    **********************************************************/
+        #ifndef _GNU_SOURCE
+        #define _GNU_SOURCE
+        #endif
 
-    #include <stdlib.h>
-    #include <stdio.h>
-    #include <iostream>
-    #include <iomanip>
-    #include <iomanip>
-    #include <string.h>
-    #include <mpi.h>
-    #include <sched.h>
-    #include <cuda.h>
-    #include <cuda_runtime_api.h>
-    #include <omp.h>
+        #include <cstdlib>
+        #include <cstdio>
+        #include <cstring>
+        #include <string>
+        #include <vector>
+        #include <sstream>
+        #include <iomanip>
 
-    // Macro for checking errors in HIP API calls
-    #define cudaErrorCheck(call)                                                                 \
-    do{                                                                                         \
-        cudaError_t cudaErr = call;                                                               \
-        if(cudaSuccess != cudaErr){                                                               \
-            printf("CUDA Error - %s:%d: '%s'\n", __FILE__, __LINE__, cudaGetErrorString(cudaErr)); \
-            exit(0);                                                                            \
-        }                                                                                       \
-    }while(0)
+        #include <mpi.h>
+        #include <omp.h>
+        #include <sched.h>
 
-    int main(int argc, char *argv[]){
+        #include <cuda_runtime_api.h>
 
+        #define cudaErrorCheck(call)                                                    \
+        do {                                                                            \
+            cudaError_t cudaErr = (call);                                               \
+            if (cudaErr != cudaSuccess) {                                               \
+                fprintf(stderr, "CUDA Error - %s:%d: '%s'\n",                           \
+                        __FILE__, __LINE__, cudaGetErrorString(cudaErr));               \
+                fflush(stderr);                                                         \
+                MPI_Abort(MPI_COMM_WORLD, EXIT_FAILURE);                                \
+                std::abort();                                                           \
+            }                                                                           \
+        } while (0)
+
+        static void report_layout(
+            int rank,
+            const char *node_name,
+            const std::string &visible_gpu_ids,
+            const std::string &runtime_gpu_ids,
+            const std::string &bus_ids,
+            bool have_gpu_info,
+            bool report_all_threads)
+        {
+            const int max_threads = omp_get_max_threads();
+            std::vector<std::string> thread_lines(max_threads);
+            int actual_threads = 0;
+
+        #pragma omp parallel default(none)                                              \
+            shared(rank, node_name, visible_gpu_ids, runtime_gpu_ids, bus_ids,          \
+                   have_gpu_info, report_all_threads, thread_lines, actual_threads)
+            {
+                const int thread_id = omp_get_thread_num();
+                const int hwthread = sched_getcpu();
+
+                if (report_all_threads || thread_id == 0) {
+                    std::ostringstream line;
+
+                    line << std::setfill('0')
+                         << "MPI " << std::setw(3) << rank
+                         << " - OMP " << std::setw(3) << thread_id
+                         << " - HWT " << std::setw(3) << hwthread
+                         << std::setfill(' ')
+                         << " - Node " << node_name;
+
+                    if (have_gpu_info) {
+                        line << " - RT_GPU_ID " << runtime_gpu_ids
+                             << " - GPU_ID " << visible_gpu_ids
+                             << " - Bus_ID " << bus_ids;
+                    }
+
+                    line << '\n';
+                    thread_lines[thread_id] = line.str();
+                }
+
+        #pragma omp single
+                {
+                    actual_threads = omp_get_num_threads();
+                }
+            }
+
+            std::string output;
+
+            if (report_all_threads) {
+                for (int thread_id = 0; thread_id < actual_threads; ++thread_id) {
+                    output += thread_lines[thread_id];
+                }
+            } else {
+                output = thread_lines[0];
+            }
+
+            fwrite(output.data(), 1, output.size(), stdout);
+            fflush(stdout);
+        }
+
+        int main(int argc, char *argv[])
+        {
             MPI_Init(&argc, &argv);
 
-            int size;
-            MPI_Comm_size(MPI_COMM_WORLD, &size);
+            int size = 0;
+            int rank = 0;
 
-            int rank;
+            MPI_Comm_size(MPI_COMM_WORLD, &size);
             MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-            char name[MPI_MAX_PROCESSOR_NAME];
-            int resultlength;
-            MPI_Get_processor_name(name, &resultlength);
+            char node_name[MPI_MAX_PROCESSOR_NAME + 1] = {};
+            int result_length = 0;
 
-        // If CUDA_VISIBLE_DEVICES is set, capture visible GPUs
-        const char* gpu_id_list;
-        const char* cuda_visible_devices = getenv("CUDA_VISIBLE_DEVICES");
-        if(cuda_visible_devices == NULL){
-            gpu_id_list = "N/A";
-        }
-        else{
-            gpu_id_list = cuda_visible_devices;
-        }
+            MPI_Get_processor_name(node_name, &result_length);
 
-            // Find how many GPUs HIP runtime says are available
+            if (result_length >= MPI_MAX_PROCESSOR_NAME) {
+                node_name[MPI_MAX_PROCESSOR_NAME] = '\0';
+            } else {
+                node_name[result_length] = '\0';
+            }
+
+            // Short node name: truncate at first '.'
+            char *dot = std::strchr(node_name, '.');
+            if (dot != nullptr) {
+                *dot = '\0';
+            }
+
+            const char *cuda_visible_devices = std::getenv("CUDA_VISIBLE_DEVICES");
+            const std::string visible_gpu_ids =
+                (cuda_visible_devices == nullptr) ? "N/A" : cuda_visible_devices;
+
             int num_devices = 0;
-        cudaErrorCheck( cudaGetDeviceCount(&num_devices) );
+            cudaError_t count_status = cudaGetDeviceCount(&num_devices);
 
-            int hwthread;
-            int thread_id = 0;
+            if (count_status == cudaErrorNoDevice) {
+                num_devices = 0;
+            } else {
+                cudaErrorCheck(count_status);
+            }
 
-            if(num_devices == 0){
-                    #pragma omp parallel default(shared) private(hwthread, thread_id)
-                    {
-                            thread_id = omp_get_thread_num();
-                            hwthread = sched_getcpu();
+            const bool report_all_threads = true;
 
-                printf("MPI %03d - OMP %03d - HWT %03d - Node %s\n",
-                        rank, thread_id, hwthread, name);
+            if (num_devices == 0) {
+                report_layout(
+                    rank,
+                    node_name,
+                    visible_gpu_ids,
+                    "",
+                    "",
+                    false,
+                    report_all_threads);
+            } else {
+                std::string runtime_gpu_ids;
+                std::string bus_ids;
 
+                for (int device = 0; device < num_devices; ++device) {
+                    char bus_id[64] = {};
+
+                    cudaErrorCheck(
+                        cudaDeviceGetPCIBusId(
+                            bus_id,
+                            static_cast<int>(sizeof(bus_id)),
+                            device));
+
+                    if (device > 0) {
+                        runtime_gpu_ids += ",";
+                        bus_ids += ",";
+                    }
+
+                    runtime_gpu_ids += std::to_string(device);
+
+                    // Extract bus field from domain:bus:device.function
+                    // Example: "0000:81:00.0" -> "81"
+                    std::string full_bus_id(bus_id);
+                    std::size_t first_colon = full_bus_id.find(':');
+                    std::size_t second_colon = full_bus_id.find(':', first_colon + 1);
+
+                    if (first_colon != std::string::npos &&
+                        second_colon != std::string::npos) {
+                        bus_ids += full_bus_id.substr(
+                            first_colon + 1,
+                            second_colon - first_colon - 1);
+                    } else {
+                        bus_ids += full_bus_id;
+                    }
                 }
+
+                report_layout(
+                    rank,
+                    node_name,
+                    visible_gpu_ids,
+                    runtime_gpu_ids,
+                    bus_ids,
+                    true,
+                    report_all_threads);
+            }
+
+            MPI_Finalize();
+            return EXIT_SUCCESS;
         }
-        else{
-
-                char busid[64];
-
-        std::string busid_list = "";
-        std::string rt_gpu_id_list = "";
-
-                // Loop over the GPUs available to each MPI rank
-                for(int i=0; i<num_devices; i++){
-
-                        cudaErrorCheck( cudaSetDevice(i) );
-
-                        // Get the PCIBusId for each GPU and use it to query for UUID
-                        cudaErrorCheck( cudaDeviceGetPCIBusId(busid, 64, i) );
-
-                        // Concatenate per-MPIrank GPU info into strings for print
-            if(i > 0) rt_gpu_id_list.append(",");
-            rt_gpu_id_list.append(std::to_string(i));
-
-            std::string temp_busid(busid);
-
-            if(i > 0) busid_list.append(",");
-            busid_list.append(temp_busid.substr(5,2));
-
-                }
-
-                #pragma omp parallel default(shared) private(hwthread, thread_id)
-                {
-            #pragma omp critical
-            {
-                        thread_id = omp_get_thread_num();
-                        hwthread = sched_getcpu();
-
-            printf("MPI %03d - OMP %03d - HWT %03d - Node %s - RT_GPU_ID %s - GPU_ID %s - Bus_ID %s\n",
-                    rank, thread_id, hwthread, name, rt_gpu_id_list.c_str(), gpu_id_list, busid_list.c_str());
-           }
-                }
-        }
-
-        MPI_Finalize();
-
-        return 0;
-    }
-
-Makefile
-
-.. code-block:: c
-   :linenos:
-
-    COMP   = nvcc
-
-    CFLAGS = -Xcompiler -fopenmp
-    LFLAGS = -Xcompiler -fopenmp
-
-    INCLUDES  = -I${MPICH_DIR}/include
-    LIBRARIES = -L${MPICH_DIR}/lib -lmpi
-
-    hello_jobstep: hello_jobstep.o
-            ${COMP} ${LFLAGS} ${LIBRARIES} hello_jobstep.o -o hello_jobstep
-
-    hello_jobstep.o: hello_jobstep.cpp
-            ${COMP} ${CFLAGS} ${INCLUDES} -c hello_jobstep.cpp
-
-    .PHONY: clean
-
-    clean:
-            rm -f hello_jobstep *.o
 
 
+
+
+.. tab-set:: 
+
+    .. tab-item:: nvcc
+
+        .. code-block:: c
+            :linenos:
+
+            COMP   = nvcc
+
+            CFLAGS = -arch=sm_89 -Xcompiler -fopenmp
+
+            INCLUDES  = -I${MPICH_DIR}/include
+            LIBRARIES = -L${MPICH_DIR}/lib -lmpi
+
+            hello_jobstep: hello_jobstep.o
+                    ${COMP} ${CFLAGS} ${LIBRARIES} hello_jobstep.o -o hello_jobstep
+
+            hello_jobstep.o: hello_jobstep.cpp
+                    ${COMP} ${CFLAGS} ${INCLUDES} -c hello_jobstep.cpp
+
+            .PHONY: clean
+
+            clean:
+                    rm -f hello_jobstep *.o
+
+    .. tab-item:: mpicxx
+
+        .. code-block:: c
+            :linenos:
+
+            COMP   = mpicxx
+
+            CFLAGS = -fopenmp
+
+            INCLUDES  = -I${CUDA_PATH}/include
+            LIBRARIES = -L${CUDA_PATH}/lib64 -lcudart
+
+            hello_jobstep: hello_jobstep.o
+                    ${COMP} ${CFLAGS} ${LIBRARIES} hello_jobstep.o -o hello_jobstep
+
+            hello_jobstep.o: hello_jobstep.cpp
+                    ${COMP} ${CFLAGS} ${INCLUDES} -c hello_jobstep.cpp
+
+            .PHONY: clean
+
+            clean:
+                    rm -f hello_jobstep *.o
 
 
 
