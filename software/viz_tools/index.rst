@@ -10,3 +10,4 @@ Visualization Tools
 
    visit
    paraview
+   vmd
