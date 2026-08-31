@@ -37,12 +37,14 @@ The MI355X GPUs are connected with Infinity Fabric GPU-GPU in the arrangement sh
 
     Each MI355X will show as a separate GPUs according to Slurm, ``ROCR_VISIBLE_DEVICES``, and the ROCr runtime, so from this point forward in the quick-start guide, we will simply refer to the MI355X as GPUs.
 
-.. image:: /images/lux/Lux_Node_Diagram.jpg
+.. image:: /images/lux/Lux_Node_Diagram.png
    :align: center
    :width: 100%
    :alt: Lux node architecture diagram
 
-.. _numa-note:
+
+
+
 
 .. note::
     There are [8x] NUMA domains per node. The 8 GPUs are each associated with one NUMA domain as follows:
@@ -78,13 +80,6 @@ The MI355X GPUs are connected with Infinity Fabric GPU-GPU in the arrangement sh
     NUMA 7:
 
     * hardware threads 112-127 | GPU 6
-
-.. todo: are we doing low noise mode and core specialization?
-
-    By default, Frontier reserves the first core in each L3 cache region. Frontier uses low-noise mode,
-    which constrains all system processes to core 0. Low-noise mode cannot be disabled by users.
-    In addition, Frontier uses SLURM core specialization (``-S 8`` flag at job allocation time, e.g., ``sbatch``)
-    to reserve one core from each L3 cache region, leaving 56 allocatable cores. Set ``-S 0`` at job allocation to override this setting.
 
 
 Node Types
@@ -171,12 +166,6 @@ Data and Storage
 
 Orion
 -----
-
-.. todo: remove warning
-
-.. warning::
-
-    FOR UA: Orion may not be available on compute nodes in early testing days
 
 * Lux mounts Orion, a parallel filesystem based on Lustre and HPE ClusterStor, with a 679 PB usable namespace (/lustre/orion/). In addition to Lux, Orion is available on the OLCF's data transfer nodes.
 * Orion uses a feature called Progressive File Layout (PFL) that changes the striping of files as they grow. Because of this, we ask users not to manually adjust the file striping. If you feel the default striping behavior of Orion is not meeting your needs, please contact help@olcf.ornl.gov.
@@ -636,7 +625,7 @@ Please see the following :ref:`lux-compilers` section for more detailed informat
 MPI
 ---
 
-The MPI implementation available on Lux is MPICH, which is "GPU-aware" so GPU buffers can be passed directly to MPI calls.
+The MPI implementations available on Lux are OpenMPI and MPICH, which are "GPU-aware" so GPU buffers can be passed directly to MPI calls.
 
 Lux is primarily a RCCL-centric machine utilizing AMD Pollara 400GbE NICs on each compute node.
 MPI is not yet officially verified.
@@ -750,11 +739,17 @@ ROCm can be loaded with: ``module load rocm/X.Y.Z``, or to load the default ROCm
 MPI
 ---
 
-The MPI implementation available on Frontier is Cray's MPICH, which is "GPU-aware" so GPU buffers can be passed directly to MPI calls.
+The MPI implementations available on Lux are OpenMPI (default) and MPICH, which are "GPU-aware" so GPU buffers can be passed directly to MPI calls.
 
 +----------------+----------------+-----------------------------------------------------+-----------------------------------------+
 | Implementation | Module         | Compiler                                            | Header Files & Linking                  |
 +================+================+=====================================================+=========================================+
+| OpenMPI        | ``openmpi``    | ``amdclang``, ``amdclang++``, ``amdflang``          | | ``-I${MPI_DIR}/include``              |
+|                |                |                                                     | | ``-L${MPI_DIR}/lib -lmpi``            |
+|                |                +-----------------------------------------------------+-----------------------------------------+
+|                |                | ``hipcc``                                           | | ``-I${MPI_DIR}/include``              |
+|                |                |                                                     | | ``-L${MPI_DIR}/lib -lmpi``            |
++----------------+----------------+-----------------------------------------------------+-----------------------------------------+
 | MPICH          | ``mpich``      | ``amdclang``, ``amdclang++``, ``amdflang``          | | ``-I${MPICH_DIR}/include``            |
 |                |                |                                                     | | ``-L${MPICH_DIR}/lib -lmpi``          |
 |                |                +-----------------------------------------------------+-----------------------------------------+
@@ -774,33 +769,117 @@ GPU-Aware MPI
 
 To use GPU-aware MPI, users must load both a ROCm module and an MPI-providing module:
 
+.. dropdown:: gpu-aware.cpp
+
+    .. code:: cpp
+
+        #include <stdio.h>
+        #include <hip/hip_runtime.h>
+        #include <mpi.h>
+
+        int main(int argc, char **argv) {
+          int i,rank,size,bufsize;
+          int *h_buf;
+          int *d_buf;
+          MPI_Status status;
+
+          bufsize=100;
+
+          MPI_Init(&argc,&argv);
+          MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+          MPI_Comm_size(MPI_COMM_WORLD, &size);
+
+          //allocate buffers
+          h_buf=(int*) malloc(sizeof(int)*bufsize);
+          hipMalloc(&d_buf, bufsize*sizeof(int));
+
+          //initialize buffers
+          if(rank==0) {
+            for(i=0;i<bufsize;i++)
+              h_buf[i]=i*i;
+          }
+
+          if(rank==1) {
+            for(i=0;i<bufsize;i++)
+              h_buf[i]=-1;
+          }
+
+          hipMemcpy(d_buf, h_buf, bufsize*sizeof(int), hipMemcpyHostToDevice);
+
+          //communication
+          if(rank==0)
+            MPI_Send(d_buf, bufsize, MPI_INT, 1, 123, MPI_COMM_WORLD);
+
+          if(rank==1)
+            MPI_Recv(d_buf, bufsize, MPI_INT, 0, 123, MPI_COMM_WORLD, &status);
+
+          //validate results
+          if(rank==1) {
+            hipMemcpy(h_buf, d_buf, bufsize*sizeof(int), hipMemcpyDeviceToHost);
+            for(i=0;i<bufsize;i++) {
+              if(h_buf[i] != i*i)
+                printf("Error: buffer[%d]=%d but expected %d\n", i, h_buf[i], i);
+              }
+            fflush(stdout);
+          }
+
+          //free buffers
+          free(h_buf);
+          hipFree(d_buf);
+
+          MPI_Finalize();
+        }
+
+
 Using ``hipcc``
 
 .. code:: bash
 
     module load rocm
-    module load mpich
+    module load openmpi
 
-    hipcc -std=c++11 --offload-arch=gfx950 -I${ROCM_PATH}/include -I${MPICH_DIR}/include -c gpu-aware.cpp
-    hipcc -L${ROCM_PATH}/lib -lamdhip64 -L${MPICH_DIR}/lib -lmpi gpu-aware.o -o gpu-aware
+    hipcc -std=c++11 --offload-arch=gfx950 -I${ROCM_PATH}/include -I${MPI_DIR}/include -c gpu-aware.cpp
+    hipcc -L${ROCM_PATH}/lib -lamdhip64 -L${MPI_DIR}/lib -lmpi gpu-aware.o -o gpu-aware
+
+.. dropdown:: MPICH Example
+
+    .. code:: bash
+
+        module load rocm
+        module load openmpi
+
+        hipcc -std=c++11 --offload-arch=gfx950 -I${ROCM_PATH}/include -I${MPICH_DIR}/include -c gpu-aware.cpp
+        hipcc -L${ROCM_PATH}/lib -lamdhip64 -L${MPICH_DIR}/lib -lmpi gpu-aware.o -o gpu-aware
 
 Using ``amdclang``
 
 .. code:: bash
 
     module load rocm
-    module load mpich
+    module load openmpi
 
-    amdclang++ -D__HIP_ROCclr__ -D__HIP_ARCH_GFX950__=1 -std=c++11 --rocm-path=${ROCM_PATH} --offload-arch=gfx950 -x hip -I${ROCM_PATH}/include -I${MPICH_DIR}/include -c gpu-aware.cpp
-    amdclang++ --rocm-path=${ROCM_PATH} -L${ROCM_PATH}/lib -lamdhip64 -L${MPICH_DIR}/lib -lmpi gpu-aware.o -o gpu-aware
+    amdclang++ -D__HIP_ROCclr__ -D__HIP_ARCH_GFX950__=1 -std=c++11 --rocm-path=${ROCM_PATH} --offload-arch=gfx950 -x hip -I${ROCM_PATH}/include -I${MPI_DIR}/include -c gpu-aware.cpp
+    amdclang++ --rocm-path=${ROCM_PATH} -L${ROCM_PATH}/lib -lamdhip64 -L${MPI_DIR}/lib -lmpi gpu-aware.o -o gpu-aware
+
+.. dropdown:: MPICH Example
+
+    .. code:: bash
+
+        module load rocm
+        module load openmpi
+
+        amdclang++ -D__HIP_ROCclr__ -D__HIP_ARCH_GFX950__=1 -std=c++11 --rocm-path=${ROCM_PATH} --offload-arch=gfx950 -x hip -I${ROCM_PATH}/include -I${MPICH_DIR}/include -c gpu-aware.cpp
+        amdclang++ --rocm-path=${ROCM_PATH} -L${ROCM_PATH}/lib -lamdhip64 -L${MPICH_DIR}/lib -lmpi gpu-aware.o -o gpu-aware
 
 
 .. note::
 
     The primary required steps for GPU-aware MPI apply to both the ``amdclang`` and ``hipcc`` compilers, and those are:
 
-    * Specify the ROCm and MPI include path at compile time ``-I${ROCM_PATH}/include -I${MPICH_DIR}/include``
-    * Specify the ROCm and MPI library path and libraries at link time ``-L${ROCM_PATH}/lib -lamdhip64 -L${MPICH_DIR}/lib``
+    * Specify the ROCm and MPI include path at compile time ``-I${ROCM_PATH}/include -I${MPI_DIR}/include``
+    * Specify the ROCm and MPI library path and libraries at link time ``-L${ROCM_PATH}/lib -lamdhip64 -L${MPI_DIR}/lib``
+
+    ``MPICH_DIR`` can be substituted for ``MPI_DIR`` in order to use MPICH with PMI2.
 
 .. todo:
 
@@ -1267,10 +1346,10 @@ The following will compile the ``hello_jobstep`` application `found on ORNL's Gi
 .. code:: bash
 
     module load rocm
-    module load mpich
+    module load openmpi
 
-    hipcc -std=c++11 -fopenmp --offload-arch=gfx950 -I${ROCM_PATH}/include -I${MPICH_DIR}/include -c hello_jobstep.cpp
-    hipcc -fopenmp -L${ROCM_PATH}/lib -lamdhip64 -L${MPICH_DIR}/lib -lmpi hello_jobstep.o -o hello_jobstep
+    hipcc -std=c++11 -fopenmp --offload-arch=gfx950 -I${ROCM_PATH}/include -I${MPI_DIR}/include -c hello_jobstep.cpp
+    hipcc -fopenmp -L${ROCM_PATH}/lib -lamdhip64 -L${MPI_DIR}/lib -lmpi hello_jobstep.o -o hello_jobstep
 
 
 The following can run ``hello_jobstep``:
@@ -1289,7 +1368,7 @@ The following can run ``hello_jobstep``:
     #SBATCH --error %j-%x.err
 
     module load rocm
-    module load mpich
+    module load openmpi
 
     OMP_NUM_THREADS=1 srun -N1 -n4 -c32 -G8 --gpu-bind=closest ./hello_jobstep
 
