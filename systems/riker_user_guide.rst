@@ -1419,6 +1419,11 @@ in the Software Section. Click :doc:`HERE </software/viz_tools/visit>` to go to 
 Remote Visualization using VNC
 ------------------------------
 
+.. warning::
+    For macOS clients, it is necessary to install `XQuartz (X11) <https://www.xquartz.org/>`__ to allow x11 forwarding.
+    For Windows clients, it is necessary to install either PuTTY or an X client like Xming.
+
+
 .. dropdown:: test-vnc.sh
 
     .. code::
