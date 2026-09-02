@@ -123,10 +123,55 @@ This example will look at building a container image for testing collective comm
    ::
 
       Bootstrap: oras
-      From: docker.io/subilabrahamornl/ope1nsusempich342rocm624:latest
+      From: docker.io/subilabrahamornl/opensusempich342rocm624:latest
 
       
+Using Podman to build images and converting them to Apptainer
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+.. note::
+   If you wish to use Podman, you need subuid/subgid mappings turned on for your user account. Open a help ticket by
+   emailing help@olcf.ornl.gov to request this first. Your Podman images will not build otherwise.
+
+* Frontier has support for building images with Podman (which functions the same as Docker). Podman supports building containers with Dockerfiles. In order to build with Podman, you must first create a file called ``storage.conf`` in ``$HOME/.config/containers`` with the appropriate settings. Run the below snippet on your command line to create the file.
+
+    ::
+
+       mkdir -p $HOME/.config/containers
+       cat > $HOME/.config/containers/storage.conf <<EOF
+       [storage]
+       driver = "overlay"
+       graphroot = "/tmp/${USER}-containers"
+       rootless_storage_path = "/tmp/${USER}-containers"
+       
+       [storage.options]
+       pull_options = {use_hard_links = "true", enable_partial_images = "true"}
+       
+       
+       [storage.options.vfs]
+       ignore_chown_errors = "true"
+       EOF
+
+
+* Once this file is created, try creating a Podman image with the Dockerfile below. 
+
+   .. code::
+
+      FROM opensuse/leap:15.6
+      RUN zypper install -y vim
+
+
+* Build the Podman image with ``podman build -t localhost/example:latest .``
+* Convert the image into a tar file with ``podamn save -o example.tar localhost/example:latest``
+* Then convert this tar file into an Apptainer SIF file with ``apptainer build example.sif docker-archive://example.tar``
+
+
+.. warning::
+
+   You need to convert your Podman image to the Apptainer SIF format in order to run it. We don't
+   support running your container with Podman directly.
+
+      
 OLCF Base Images & Apptainer Modules
 -------------------------------------
 To assist the container workflow on Frontier, OLCF provides some base container images and apptainer modules to
