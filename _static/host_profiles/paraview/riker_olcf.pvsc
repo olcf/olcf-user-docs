@@ -1,0 +1,67 @@
+<Servers>
+  <Server name="ORNL riker (OLCF Official)" resource="csrc://riker.olcf.ornl.gov" timeout="-1">
+    <CommandStartup>
+      <Options>
+        <Option name="HEADLESS_API" label="Accelerated Compute" save="true">
+          <Enumeration default="none">
+            <Entry value="none" label="None"/>
+            <Entry value="cuda" label="CUDA"/>
+          </Enumeration>
+        </Option>
+        <Option name="USER" label="Server username" save="true">
+          <String default="YOURUSERNAME"/>
+        </Option>
+        <Option name="PV_SERVER_PORT" label="Server port ">
+          <Range type="int" min="1025" max="65535" step="1" default="random"/>
+        </Option>
+        <Option name="NUM_NODES" label="Number of compute nodes" save="true">
+          <Range type="int" min="1" max="512" step="1" default="1"/>
+        </Option>
+        <Option name="NUM_MPI_TASKS" label="Total number of MPI tasks" save="true">
+          <Range type="int" min="1" max="16384" step="1" default="1"/>
+        </Option>
+        <Option name="EXCLUSIVE" label="Exclusive node allocation?" save="true">
+          <Enumeration default="true">
+            <Entry value="false" label="False"/>
+            <Entry value="true" label="True"/>
+          </Enumeration>
+        </Option>
+        <Option name="NUM_CORES_PER_MPI_TASK" label="Number of cores per MPI task (exclusive only)" save="true">
+          <Range type="int" min="1" max="128" step="1" default="1"/>
+        </Option>
+        <Option name="NUM_GPUS" label="Total number of GPUs (non-exclusive only)" save="true">
+          <Range type="int" min="0" max="16" step="1" default="0"/>
+        </Option>
+        <Option name="NUM_CORES_PER_GPU" label="Number of cores per GPU (non-exclusive only)" save="true">
+          <Range type="int" min="1" max="48" step="1" default="0"/>
+        </Option>
+        <Option name="PROJECT" label="Project to charge" save="true">
+          <String default="abcXXX"/>
+        </Option>
+        <Option name="MINUTES" label="Number of minutes to reserve" save="true">
+          <Range type="int" min="1" max="2880" step="1" default="30"/>
+        </Option>
+      </Options>
+      <SSHCommand exec="/sw/riker/paraview/pvsc/ORNL/login_node.sh" timeout="0" delay="5">
+        <SSHConfig user="$USER$">
+          <Terminal/>
+          <PortForwarding/>
+        </SSHConfig>
+        <Arguments>
+          <Argument value="$NUM_NODES$"/>
+          <Argument value="$MINUTES$"/>
+          <Argument value="$PV_SERVER_PORT$"/>
+          <Argument value="$PV_VERSION_FULL$"/>
+          <Argument value="$HEADLESS_API$"/>
+          <Argument value="/sw/riker/paraview/pvsc/ORNL/riker.cfg"/>
+          <Argument value="PROJECT=$PROJECT$"/>
+          <Argument value="NUM_MPI_TASKS=$NUM_MPI_TASKS$"/>
+          <Argument value="EXCLUSIVE=$EXCLUSIVE$"/>
+          <Argument value="NUM_CORES_PER_MPI_TASK=$NUM_CORES_PER_MPI_TASK$"/>
+          <Argument value="NUM_GPUS=$NUM_GPUS$"/>
+          <Argument value="NUM_CORES_PER_GPU=$NUM_CORES_PER_GPU$"/>
+        </Arguments>
+      </SSHCommand>
+    </CommandStartup>
+  </Server>
+</Servers>
