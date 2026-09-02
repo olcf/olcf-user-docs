@@ -1446,7 +1446,7 @@ Remote Visualization using VNC
         echo "In a new terminal, open a tunneling connection with $(what) and port 5901"
         echo
         echo "example:"
-        echo "   localsystem: ssh -L 5901:$(what):5901 username@riker.olcf.ornl.gov "
+        echo "   localsystem: ssh -L 5901:$(what):5901 ${USER}@riker.olcf.ornl.gov "
         echo
         echo "**************************************************************************"
         echo
@@ -1499,8 +1499,6 @@ From an Riker connection launch a batch job and execute the below ``test-vnc.sh`
          localsystem: ssh -L 5901:riker-gpu1:5901 username@riker.olcf.ornl.gov
 
     **************************************************************************
-
-    MATLAB is selecting SOFTWARE OPENGL rendering.
 
 
 Step 3 (terminal 2)
