@@ -1181,7 +1181,7 @@ Modules to load:
         }
 
 
-
+Example ``Makefile`` for ``hello_jobstep.cpp``:
 
 .. tab-set:: 
 
@@ -1235,30 +1235,26 @@ Modules to load:
 
 Again, Slurm's :ref:`riker-interactive` method was used to request an allocation of 2 compute node for these examples:
 
-``salloc -A <project_id> -p gpu -t 00:30:00 -N 2 --gpus=4``
+``salloc -A <project_id> -p gpu -t 00:30:00 -N 2 --exclusive``
 
 The CPU mapping part of this example is very similar to the example used above in the CPU Mapping  sub-section, so the focus here will be on the GPU mapping part. 
 
 The following ``srun`` options will be used in the examples below. See ``man srun`` for a complete list of options and more information. 
 
-+------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------+
-| ``--gpus-per-task``                            | Specify the number of GPUs required for the job on each task to be spawned in the job's resource allocation.              |
-+------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------+
-| ``--gpu-bind=map_gpu:<list>``                  | | Bind tasks to specific GPUs by setting GPU masks on tasks (or ranks) as specified where                                 |
-|                                                | | ``<list>`` is ``<gpu_id_for_task_0>,<gpu_id_for_task_1>,...``.                                                          |
-|                                                | | If the number of tasks (or ranks) exceeds the number of elements in this list,                                          |
-|                                                | | elements in the list will be reused as needed starting from the beginning of the list.                                  |
-|                                                | | To simplify support for large task counts, the lists may follow a map with an asterisk                                  |
-|                                                | | and repetition count. (For example ``map_gpu:0*4,1*4``)                                                                 |
-+------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------+
-| ``--gpu-bind=closest``                         | Bind all GPUs to all tasks                                                                                                |
-+------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------+
-| ``--ntasks-per-gpu=<ntasks>``                  | Request that there are ntasks tasks invoked for every GPU.                                                                |
-+------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------+
-| ``--distribution=<value>[:<value>][:<value>]`` | | Specifies the distribution of MPI ranks across compute nodes, sockets (NUMA domains on Riker), and cores, respectively. |
-|                                                | |                                                                                                                         |
-|                                                | | The default values are ``block:cyclic:cyclic``                                                                          |
-+------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------+
++------------------------------------------------+-----------------------------------------------------------------------------------------------------------------+
+| ``--gpus-per-task``                            | Specify the number of GPUs required for the job on each task to be spawned in the job's resource allocation.    |
++------------------------------------------------+-----------------------------------------------------------------------------------------------------------------+
+| ``--gpu-bind=map_gpu:<list>``                  | | Bind tasks to specific GPUs by setting GPU masks on tasks (or ranks) as specified where                       |
+|                                                | | ``<list>`` is ``<gpu_id_for_task_0>,<gpu_id_for_task_1>,...``.                                                |
+|                                                | | If the number of tasks (or ranks) exceeds the number of elements in this list,                                |
+|                                                | | elements in the list will be reused as needed starting from the beginning of the list.                        |
+|                                                | | To simplify support for large task counts, the lists may follow a map with an asterisk                        |
+|                                                | | and repetition count. (For example ``map_gpu:0*4,1*4``)                                                       |
++------------------------------------------------+-----------------------------------------------------------------------------------------------------------------+
+| ``--ntasks-per-gpu=<ntasks>``                  | Request that there are ntasks tasks invoked for every GPU.                                                      |
++------------------------------------------------+-----------------------------------------------------------------------------------------------------------------+
+| ``--gres=gpu:<value>``                         | Requests ``value`` number of GPUs as generic resources (GRES) from each allocated node                          |
++------------------------------------------------+-----------------------------------------------------------------------------------------------------------------+
 
 .. note::
     In general, GPU mapping can be accomplished in different ways. For example, an
@@ -1266,265 +1262,141 @@ The following ``srun`` options will be used in the examples below. See ``man sru
     say, ``cudaSetDevice``. In this case, since all GPUs on a node are available to 
     all MPI ranks on that node by default, there might not be a need to map to GPUs 
     using Slurm (just do it in the code). However, in another application, there 
-    might be a reason to make only a subset of GPUs available to the MPI ranks on a
-    node. It is this latter case that the following examples refer to.
+    might be a reason to make only a subset of GPUs available to the MPI ranks on a node.
 
-Mapping 1 task per GPU
-""""""""""""""""""""""
+1 MPI rank per GPU
+""""""""""""""""""
 
-In the following examples, each MPI rank (and its OpenMP threads) will be mapped to a single GPU.
+In the following examples, each MPI rank will be mapped to a single GPU.
 
-**Example: 4 MPI ranks - each with 2 OpenMP threads and 1 GPU (single-node)**
+**Example: 2 MPI ranks - each with 1 GPU (single-node)**
 
-This example launches 4 MPI ranks (``-n4``), each with 2 physical CPU cores
-(``-c2``) to launch 2 OpenMP threads (``OMP_NUM_THREADS=2``) on. In addition,
-each MPI rank (and its 2 OpenMP threads) should have access to only 1 GPU. To 
-accomplish the GPU mapping, one new ``srun`` options will be used:
+This example launches 2 MPI ranks (``-n2``), each with 32 physical CPU cores (``-c32``).
+In addition, each MPI rank should have access to only 1 GPU.
+Here, the ``-c32`` highlights that the GPU nodes have 32 cores in each of its two NUMA domains (see the :ref:`riker-nodes` section).
+
+To accomplish the GPU mapping, the following ``srun`` option will be used:
 
 * ``--gpus-per-task`` specifies the number of GPUs required for the job on each task
 
 .. note::
-    To further clarify, ``--gpus-per-task`` does not actually bind GPUs to MPI ranks.
-    It allocates GPUs to the job step. The default GPU map is what actually 
-    maps a specific GPU to each rank.
-    (see the :ref:`riker-nodes` section).
-
+    To further clarify, ``--gpus-per-task`` does not actually bind GPUs to MPI ranks -- it allocates GPUs to the job step.
+    The default GPU layout is what actually maps a specific GPU to each rank. (see the :ref:`riker-nodes` section).
 
 .. code-block:: bash
 
-    $ export OMP_NUM_THREADS=2
-    $ srun -N1 -n2 -c2 --gpus-per-task=1 ./hello_jobstep | sort
+    $ export OMP_NUM_THREADS=1
+    $ srun -N1 -n2 -c32 --gpus-per-task=1 ./hello_jobstep | sort
 
-    MPI 000 - OMP 000 - HWT 000 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 000 - OMP 001 - HWT 001 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 001 - OMP 000 - HWT 033 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
-    MPI 001 - OMP 001 - HWT 032 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
+    MPI 000 - OMP 000 - HWT 029 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
+    MPI 001 - OMP 000 - HWT 063 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
 
 
-The output contains different IDs associated with the GPUs so it is important to
-first describe these IDs before moving on. ``GPU_ID`` is the node-level (or global)
-GPU ID, which is labeled as one might expect from looking at a node diagram:
-0, 1. ``RT_GPU_ID`` is the CUDA runtime GPU ID, which can be thought of as
-each MPI rank's local GPU ID numbering (with zero-based indexing). So in the output
-above, each MPI rank has access to 1 unique GPU - where MPI 000 has access to GPU 0,
-MPI 001 has access to GPU 1, etc., but all MPI ranks show a CUDA runtime GPU ID of 0.
-The reason is that each MPI rank only "sees" one GPU and so the CUDA runtime labels
-it as "0", even though it might be global GPU ID 0, 1. The GPU's bus ID
-is included to definitively show that different GPUs are being used. 
-
-Here is a summary of the different GPU IDs reported by the example program:
+The output contains different IDs associated with the GPUs so it is important to first describe these IDs before moving on.
 
 * ``GPU_ID`` is the node-level (or global) GPU ID read from ``CUDA_VISIBLE_DEVICES``. If this environment variable is not set (either by the user or by Slurm), the value of ``GPU_ID`` will be set to ``N/A``.
-* ``RT_GPU_ID`` is the CUDA runtime GPU ID (as reported from, say ``cudaGetDevice``).
-* ``Bus_ID`` is the physical bus ID associated with the GPUs. Comparing the bus IDs is meant to definitively show that different GPUs are being used.
+* ``RT_GPU_ID`` is the CUDA runtime GPU ID (as reported from, say ``cudaGetDevice``), which can be thought of as each MPI rank's local GPU ID numbering (with zero-based indexing).
+* ``Bus_ID`` is the physical hardware identifier for a given GPU.
 
-So the job step (i.e., ``srun`` command) used above gave the desired output. Each
-MPI rank spawned 2 OpenMP threads and had access to a unique GPU. The 
-``--gpus-per-task=1`` allocated 1 GPU for each MPI rank and the default binding bound
-each GPU to the respective task.
+So in the output above, each MPI rank has access to 1 unique GPU - but all MPI ranks show a CUDA runtime GPU ID of "0".
+The reason is that each MPI rank only "sees" one GPU visible and so the CUDA runtime labels it as "0".
+The GPU's bus ID is included to definitively show that different GPUs are being used. 
 
-**Example: 4 MPI ranks - each with 2 OpenMP threads and 1 GPU (multi-node)**
+So the job step (i.e., ``srun`` command) used above gave the desired output.
+Each rank has access to a unique GPU.
+The ``--gpus-per-task=1`` allocated 1 GPU for each MPI rank, and the default binding bound each GPU to the respective task. 
 
-This example will extend Example 1 to run on 2 nodes. As the output shows, it is a
-very straightforward exercise of changing the number of nodes to 2 (``-N2``) and 
-the number of MPI ranks to 8 (``-n4``).
+**Example: 4 MPI ranks - each with 1 GPU (multi-node)**
+
+This example will extend Example 1 to run on 2 nodes.
+As the output shows, it is a very straightforward exercise of changing the number of nodes to 2 (``-N2``) and the number of MPI ranks to 4 (``-n4``).
 
 .. code-block:: bash
 
-    $ export OMP_NUM_THREADS=2
-    $ srun -N2 -n4 -c2 --gpus-per-task=1 ./hello_jobstep | sort
+    $ export OMP_NUM_THREADS=1
+    $ srun -N2 -n4 -c32 --gpus-per-task=1 ./hello_jobstep | sort
 
-    MPI 000 - OMP 000 - HWT 000 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 000 - OMP 001 - HWT 001 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 001 - OMP 000 - HWT 033 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
-    MPI 001 - OMP 001 - HWT 032 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
-    MPI 002 - OMP 000 - HWT 001 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 002 - OMP 001 - HWT 000 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 003 - OMP 000 - HWT 032 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
-    MPI 003 - OMP 001 - HWT 033 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
+    MPI 000 - OMP 000 - HWT 024 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
+    MPI 001 - OMP 000 - HWT 063 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
+    MPI 002 - OMP 000 - HWT 002 - Node riker-gpu3 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
+    MPI 003 - OMP 000 - HWT 046 - Node riker-gpu3 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
 
 
+Multiple GPUs per MPI rank
+""""""""""""""""""""""""""
 
+In the following example, each MPI rank will see multiple GPUs.
 
+**Example: 2 MPI ranks - where each rank sees both GPUs**
 
-Mapping multiple MPI ranks to a single GPU
-""""""""""""""""""""""""""""""""""""""""""
+To accomplish the GPU mapping, the following ``srun`` option will be used:
 
-In the following examples, 2 MPI ranks will be mapped to 1 GPU. For the sake of brevity,
-``OMP_NUM_THREADS`` will be set to ``1``, so ``-c1`` will be used unless otherwise specified.
+* ``--gres=gpu:x`` requests ``x`` number of GPUs as generic resources (GRES) from each allocated node, reserving those GPUs for the job or job step.
+  It controls GPU resource allocation at the node level, independent of how tasks are later bound to or allowed to see those GPUs.
 
+.. code-block:: bash
 
-**Example: 8 MPI ranks - where 2 ranks share a GPU (round-robin, single-node)**
+    $ export OMP_NUM_THREADS=1
+    $ srun -N1 -n2 --gres=gpu:2 ./hello_jobstep | sort
 
-This example launches 8 MPI ranks (``-n8``), each with 1 physical CPU core (``-c1``)
-to launch 1 OpenMP thread (``OMP_NUM_THREADS=1``) on. The MPI ranks will be assigned
-to GPUs in a round-robin fashion so that each of the 4 GPUs on the node are shared
-by 2 MPI ranks. To accomplish this GPU mapping, a new ``srun`` option will be used:
+    MPI 000 - OMP 000 - HWT 000 - Node riker-gpu2 - RT_GPU_ID 0,1 - GPU_ID 0,1 - Bus_ID 81,C1
+    MPI 001 - OMP 000 - HWT 042 - Node riker-gpu2 - RT_GPU_ID 0,1 - GPU_ID 0,1 - Bus_ID 81,C1
+
+Through ``--gres=gpu:2``, each MPI rank now has the ability to see both GPUs on a given node.
+
+Multiple MPI ranks to a single GPU
+""""""""""""""""""""""""""""""""""
+
+In the following examples, 2 MPI ranks will be mapped to 1 GPU.
+
+**Example: 4 MPI ranks - where 2 ranks share a GPU (single-node)**
+
+This example launches 4 MPI ranks (``-n4``), each with 8 physical CPU cores (``-c8``) and 1 OpenMP thread (``OMP_NUM_THREADS=1``).
+The MPI ranks will be assigned to GPUs so that each of the 2 GPUs on the node are shared by 2 MPI ranks.
+Here, the ``-c8`` highlights that the GPU nodes have 8 cores in each of its L3 regions (see the :ref:`riker-nodes` section).
+
+To accomplish this GPU mapping, the following ``srun`` options will be used:
 
 * ``--ntasks-per-gpu`` specifies the number of MPI ranks that will share access to a GPU.
-* ``--gpu-bind=map_gpu`` Bind tasks to specific GPUs by setting GPU masks on tasks (or ranks) as specified where <list> is <gpu_id_for_task_0>,<gpu_id_for_task_1>,...
+* ``--gpu-bind=map_gpu:<list>`` Bind tasks to specific GPUs by setting GPU masks on tasks (or ranks) as specified where ``<list>`` is ``<gpu_id_for_task_0>,<gpu_id_for_task_1>,...``
 
-.. code:: bash
-
-    $ export OMP_NUM_THREADS=1
-    $ srun -N1 -n8 -c1  --ntasks-per-gpu=4 --gpu-bind=map_gpu:0,1 ./hello_jobstep | sort
-
-    MPI 000 - OMP 000 - HWT 000 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 001 - OMP 000 - HWT 032 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
-    MPI 002 - OMP 000 - HWT 001 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 003 - OMP 000 - HWT 033 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
-    MPI 004 - OMP 000 - HWT 002 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 005 - OMP 000 - HWT 034 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
-    MPI 006 - OMP 000 - HWT 003 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 007 - OMP 000 - HWT 035 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
-
-
-
-**Example: 16 MPI ranks - where 4 ranks share a GPU (round-robin, multi-node)**
-
-.. code:: bash
+.. code-block:: bash
 
     $ export OMP_NUM_THREADS=1
-    $ srun -N2 -n16 -c1 --ntasks-per-gpu=4 ./hello_jobstep | sort
+    $ srun -N1 -n4 -c8  --ntasks-per-gpu=2 --gpu-bind=map_gpu:0,1 ./hello_jobstep | sort
 
-    MPI 000 - OMP 000 - HWT 000 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 001 - OMP 000 - HWT 032 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
-    MPI 002 - OMP 000 - HWT 001 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 003 - OMP 000 - HWT 033 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
-    MPI 004 - OMP 000 - HWT 002 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 005 - OMP 000 - HWT 034 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
-    MPI 006 - OMP 000 - HWT 003 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 007 - OMP 000 - HWT 035 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
-    MPI 008 - OMP 000 - HWT 000 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 009 - OMP 000 - HWT 032 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
-    MPI 010 - OMP 000 - HWT 001 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 011 - OMP 000 - HWT 033 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
-    MPI 012 - OMP 000 - HWT 002 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 013 - OMP 000 - HWT 034 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
-    MPI 014 - OMP 000 - HWT 003 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 015 - OMP 000 - HWT 035 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
+    MPI 000 - OMP 000 - HWT 007 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
+    MPI 001 - OMP 000 - HWT 033 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
+    MPI 002 - OMP 000 - HWT 008 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
+    MPI 003 - OMP 000 - HWT 040 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
 
+Although we were using 4 tasks, only 2 GPUs were needed in the ``--gpu-bind`` list.
+This is because Slurm divides the total number of tasks by ``--ntasks-per-gpu`` to establish a pattern -- so, in this case, only 2 list entries were necessary.
 
-**Example: 8 MPI ranks - where 4 ranks share a GPU (packed, single-node)**
+**Example: 8 MPI ranks - where 2 ranks share a GPU (multi-node)**
 
-This example launches 8 MPI ranks (``-n8``), each with 8 physical CPU cores (``-c8``)
-to launch 1 OpenMP thread (``OMP_NUM_THREADS=1``) on. The MPI ranks will be assigned
-to GPUs in a packed fashion so that each of the 4 GPUs on the node are shared by 2 
-MPI ranks. Packed block distribution appears to be the default for GPU binding; however,
-the distribution flag does impact the CPU/Thread binding. 
+This example will extend the previous example to run on 2 nodes.
+As the output shows, it is a very straightforward exercise of changing the number of nodes to 2 (``-N2``) and the number of MPI ranks to 8 (``-n8``).
 
-
-.. code:: bash
+.. code-block:: bash
 
     $ export OMP_NUM_THREADS=1
-    $ srun -N1 -n8 -c4 --ntasks-per-gpu=4 --distribution=block:block ./hello_jobstep | sort
+    $ srun -N2 -n8 -c8  --ntasks-per-gpu=2 --gpu-bind=map_gpu:0,1 ./hello_jobstep | sort
 
-    MPI 000 - OMP 000 - HWT 000 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 001 - OMP 000 - HWT 004 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 002 - OMP 000 - HWT 008 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 003 - OMP 000 - HWT 012 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 004 - OMP 000 - HWT 032 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
-    MPI 005 - OMP 000 - HWT 036 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
-    MPI 006 - OMP 000 - HWT 041 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
-    MPI 007 - OMP 000 - HWT 047 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
+    MPI 000 - OMP 000 - HWT 004 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
+    MPI 001 - OMP 000 - HWT 032 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
+    MPI 002 - OMP 000 - HWT 008 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
+    MPI 003 - OMP 000 - HWT 047 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
+    MPI 004 - OMP 000 - HWT 000 - Node riker-gpu3 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
+    MPI 005 - OMP 000 - HWT 032 - Node riker-gpu3 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
+    MPI 006 - OMP 000 - HWT 009 - Node riker-gpu3 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
+    MPI 007 - OMP 000 - HWT 047 - Node riker-gpu3 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
 
-
-**Example: 16 MPI ranks - where 2 ranks share a GPU (packed, multi-node)**
-
-This example is an extension of the previous example to use 2 compute nodes. With the appropriate 
-changes put in place in Example 7, it is a straightforward exercise to change to using
-2 nodes (``-N2``) and 16 MPI ranks (``-n16``).
-
-.. code:: bash
-
-    $ export OMP_NUM_THREADS=1
-    $ srun -N2 -n16 -c2 --ntasks-per-gpu=4 --distribution=*:block ./hello_jobstep | sort
-
-    MPI 000 - OMP 000 - HWT 000 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 001 - OMP 000 - HWT 002 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 002 - OMP 000 - HWT 004 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 003 - OMP 000 - HWT 006 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 004 - OMP 000 - HWT 008 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
-    MPI 005 - OMP 000 - HWT 010 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
-    MPI 006 - OMP 000 - HWT 012 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
-    MPI 007 - OMP 000 - HWT 014 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
-    MPI 008 - OMP 000 - HWT 000 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 009 - OMP 000 - HWT 002 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 010 - OMP 000 - HWT 004 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 011 - OMP 000 - HWT 006 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
-    MPI 012 - OMP 000 - HWT 008 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
-    MPI 013 - OMP 000 - HWT 010 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
-    MPI 014 - OMP 000 - HWT 012 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
-    MPI 015 - OMP 000 - HWT 015 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
-
-
-
+Although we were using 8 tasks, only 2 GPUs were needed in the ``--gpu-bind`` list because Slurm operates the pattern on a per-node basis.
 
 .. note::
 
     There are many different ways users might choose to perform these mappings, so users are encouraged to clone the ``hello_jobstep`` program and test whether or not processes and threads are running where intended.
-
-.. NVMe Usage
-.. ----------
-
-.. Each Defiant compute node has [3x] 3.5 TB NVMe devices (SSDs). To use the NVMe, users must 
-.. request access during job allocation using the ``-C nvme`` option to 
-.. ``sbatch``, ``salloc``, or ``srun``. Once the devices have been granted to a job, 
-.. users can access them at ``/mnt/bb/<userid>``. Users are responsible for moving data 
-.. to/from the NVMe before/after their jobs. Here is a simple example script:
-
-.. .. code:: bash
-
-..     #!/bin/bash
-..     #SBATCH -A <projid>
-..     #SBATCH -J nvme_test
-..     #SBATCH -o %x-%j.out
-..     #SBATCH -t 00:05:00
-..     #SBATCH -p batch-gpu
-..     #SBATCH -N #
-..     #SBATCH -C nvme
-    
-..     date
-    
-..     # Change directory to user scratch space (/lustre/polis)
-..     cd /lustre/polis/<projid>/scratch/<userid>
-    
-..     echo " "
-..     echo "*****ORIGINAL FILE*****"
-..     cat test.txt
-..     echo "***********************"
-    
-..     # Move file from Lustre to SSD
-..     mv test.txt /mnt/bb/<userid>
-    
-..     # Edit file from compute node
-..     srun -n1 hostname >> /mnt/bb/<userid>/test.txt
-    
-..     # Move file from SSD back to GPFS
-..     mv /mnt/bb/<userid>/test.txt .
-    
-..     echo " "
-..     echo "*****UPDATED FILE******"
-..     cat test.txt
-..     echo "***********************"
-
-.. And here is the output from the script:
-
-.. .. code:: bash
-
-..     $ cat nvme_test-<jobid>.out
-..     Mon May 17 12:28:18 EDT 2021
-    
-..     *****ORIGINAL FILE*****
-..     This is my file. There are many like it but this one is mine.
-..     ***********************
-    
-..     *****UPDATED FILE******
-..     This is my file. There are many like it but this one is mine.
-..     defiant19
-..     ***********************
-
-.. ----
 
 
 .. _riker-viz-tools:
@@ -1535,21 +1407,56 @@ Visualization tools
 ParaView
 --------
 
-Information regarding ParaView, and how to run it on both Riker and Frontier, has moved
-to the Software Section. Click :doc:`HERE </software/viz_tools/paraview>` to go to the page.
+Information regarding ParaView, and how to run it on both Riker and Frontier, lives
+in the Software Section. Click :doc:`HERE </software/viz_tools/paraview>` to go to the page.
 
 VisIt
 -----
 
-Information regarding VisIt, and how to run it on both Riker and Frontier, has moved
-to the Software Section. Click :doc:`HERE </software/viz_tools/visit>` to go to the page.
+Information regarding VisIt, and how to run it on both Riker and Frontier, lives
+in the Software Section. Click :doc:`HERE </software/viz_tools/visit>` to go to the page.
 
-Remote Visualization using VNC (non-GPU)
-----------------------------------------
+Remote Visualization using VNC
+------------------------------
 
-.. note :: 
-    In addition to the instructions below, Benjamin Hernandez, previously of the `OLCF Advanced Technologies Section <https://www.olcf.ornl.gov/about-olcf/staff-sections/advanced-technologies/>`__,
-    presented a related talk, `GPU Rendering in Rhea and Titan <https://www.olcf.ornl.gov/wp-content/uploads/2016/01/GPURenderingRheaTitan-1.pdf>`__, during the 2016 OLCF User Meeting.
+.. warning::
+    For macOS clients, it is necessary to install `XQuartz (X11) <https://www.xquartz.org/>`__ to allow x11 forwarding.
+    For Windows clients, it is necessary to install either PuTTY or an X client like Xming.
+
+
+.. dropdown:: test-vnc.sh
+
+    .. code::
+
+        #!/bin/sh
+
+        what()
+        {
+           hostname
+        }
+        echo "Starting vncserver"
+
+        vncserver :1 -geometry 1920x1080 -depth 24
+
+        echo
+        echo
+        echo "**************************************************************************"
+        echo "Instructions"
+        echo
+        echo "In a new terminal, open a tunneling connection with $(what) and port 5901"
+        echo
+        echo "example:"
+        echo "   localsystem: ssh -L 5901:$(what):5901 ${USER}@riker.olcf.ornl.gov "
+        echo
+        echo "**************************************************************************"
+        echo
+        echo
+
+        export DISPLAY=:1
+
+        module load visit
+        visit
+        vncserver -kill :1
 
 Step 1 (local system)
 ^^^^^^^^^^^^^^^^^^^^^
@@ -1559,188 +1466,46 @@ Install a vncviewer (turbovnc, tigervnc, etc.) on your local machine.  When runn
 Step 2 (terminal 1)
 ^^^^^^^^^^^^^^^^^^^
 
-From an Riker connection launch a batch job and execute the below matlab-vnc.sh script to start the vncserver and run matlab within:
+From an Riker connection launch a batch job and execute the below ``test-vnc.sh`` script to start the vncserver and run an executable (e.g., VisIt):
 
 #. localsytem: ``ssh -X username@riker.olcf.ornl.gov``
-#. riker: ``salloc -A <project_id> -p gpu -t 1:00:00 -N 1 -c 4 --mem=72GB --x11=batch``
-#. riker: ``./matlab-vnc.sh``
+#. riker: ``salloc -A <project_id> -p gpu -t 1:00:00 -N 1 --exclusive --x11=batch``
+#. riker: ``./test-vnc.sh`` (e.g., on ``riker-gpu1``)
 
 .. code::
 
-    $ ./matlab-vnc.sh
+    $ ./test-vnc.sh
 
     You will require a password to access your desktops.
 
     Password:
     Verify:
 
-    New 'riker35:1 (username)' desktop is riker35:1
+    New 'riker-gpu1:1 (username)' desktop is riker-gpu1:1
 
     Creating default startup script /ccs/home/username/.vnc/xstartup
     Creating default config /ccs/home/username/.vnc/config
     Starting applications specified in /ccs/home/username/.vnc/xstartup
-    Log file is /ccs/home/username/.vnc/riker35:1.log
+    Log file is /ccs/home/username/.vnc/riker-gpu1:1.log
 
 
 
     **************************************************************************
     Instructions
 
-    In a new terminal, open a tunneling connection with riker35 and port 5901
+    In a new terminal, open a tunneling connection with riker-gpu1 and port 5901
 
     example:
-         localsystem: ssh -L 5901:riker35:5901 username@riker.olcf.ornl.gov
+         localsystem: ssh -L 5901:riker-gpu1:5901 username@riker.olcf.ornl.gov
 
     **************************************************************************
-
-    MATLAB is selecting SOFTWARE OPENGL rendering.
 
 
 Step 3 (terminal 2)
 ^^^^^^^^^^^^^^^^^^^
 
 In a second terminal on your local system open a tunneling connection following
-the instructions given by the vnc start-up script:
-
--  localsystem: ``ssh -L 5901:riker35:5901 username@riker.olcf.ornl.gov``
-
-Step 4 (local system)
-^^^^^^^^^^^^^^^^^^^^^
-
-Launch the vncviewer. When you launch the vncviewer that you downloaded you will
-need to specify ``localhost:5901``. You will also set a password for the initial
-connection or enter the created password for subsequent connections.
-
-matlab-vnc.sh (non-GPU rendering)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. code::
-
-    #!/bin/sh
-
-    what()
-    {
-       hostname
-    } 
-    echo "Starting vncserver"
-
-    vncserver :1 -geometry 1920x1080 -depth 24
-
-    echo
-    echo
-    echo "**************************************************************************"
-    echo "Instructions"
-    echo
-    echo "In a new terminal, open a tunneling connection with $(what) and port 5901"
-    echo
-    echo "example:"
-    echo "   localsystom: ssh -L 5901:riker35:5901 username@riker.olcf.ornl.gov "
-    echo
-    echo "**************************************************************************"
-    echo
-    echo
-
-    export DISPLAY=:1
-
-    module load matlab
-    matlab
-    vncserver -kill :1
-
-Remote Visualization using VNC (GPU nodes)
-------------------------------------------
-
-Step 1 (local system)
-^^^^^^^^^^^^^^^^^^^^^
-
-Install a vncviewer (turbovnc, tigervnc, etc.) on your local machine.  When
-running vncviewer for the first time, it will ask to set a password for this and
-future vnc sessions.
-
-Step 2 (terminal 1)
-^^^^^^^^^^^^^^^^^^^
-
-From an Riker connection launch a batch job and execute the below vmd-vgl.sh
-script to start the vncserver and run vmd within:
-
-#. localsytem: ``ssh -X username@riker.olcf.ornl.gov``
-#. riker: ``salloc -A <project_id> -p gpu -t 1:00:00 -N 1 -c 4 --mem=72GB --x11=batch``
-#. riker: ``./vmd-vgl.sh``
-
-.. code::
-
-    $ ./vmd-vgl.sh
-
-    Starting X
-
-
-    X.Org X Server 1.20.3
-    X Protocol Version 11, Revision 0
-    Build Operating System:  4.14.0-49.el7a.noaead.x86_64
-    Current Operating System: Linux riker-gpu5.olcf.ornl.gov 4.18.0-147.8.1.el8_1.x86_64 #1 SMP Wed Feb 26 03:08:15 UTC 2020 x86_64
-    Kernel command line: selinux=0 audit=0 panic=10 biosdevname=0 console=ttyS1,115200n8 nouveau.modeset=0 rd.driver.blacklist=nouveau ip=dhcp BOOTIF=54:9f:35:25:a3:50 root=anchor init=/sbin/init dropbear_auth_key=/root-key.pub squashfs_mount_only=1 overlayfs_size=4096m overlayfs_write=/ image=riker:prod_20201109-73f962-12c93c6 initrd=initrd-4.18.0-147.8.1.el8_1.x86_64-anchor-0.1.4-4632674.el7-riker-mlnx
-    Build Date: 13 September 2019  02:55:13PM
-    Build ID: xorg-x11-server 1.20.3-11.el8
-    Current version of pixman: 0.36.0
-        Before reporting problems, check http://wiki.x.org
-        to make sure that you have the latest version.
-    Markers: (--) probed, (**) from config file, (==) default setting,
-        (++) from command line, (!!) notice, (II) informational,
-        (WW) warning, (EE) error, (NI) not implemented, (??) unknown.
-    (==) Log file: "/var/log/Xorg.0.log", Time: Thu Nov 26 22:14:04 2020
-    (==) Using config file: "/etc/X11/xorg.conf"
-    (==) Using config directory: "/etc/X11/xorg.conf.d"
-    (==) Using system config directory "/usr/share/X11/xorg.conf.d"
-    Starting vncserver
-
-    Desktop 'TigerVNC: riker-gpu5.olcf.ornl.gov:1 (username)' started on display riker-gpu5.olcf.ornl.gov:1
-
-    Starting applications specified in /ccs/home/username/.vnc/xstartup.turbovnc
-    Log file is /ccs/home/username/.vnc/riker-gpu5.olcf.ornl.gov:1.log
-
-    **************************************************************************
-    Instructions
-
-    In a new terminal, open a tunneling connection with riker-gpu5.olcf.ornl.gov and port 5901
-
-    example:
-         localsystem: ssh -L 5901:riker-gpu5:5901 username@riker.olcf.ornl.gov
-
-    **************************************************************************
-
-
-    Info) VMD for LINUXAMD64, version 1.9.3 (November 30, 2016)
-    Info) http://www.ks.uiuc.edu/Research/vmd/
-    Info) Email questions and bug reports to vmd@ks.uiuc.edu
-    Info) Please include this reference in published work using VMD:
-    Info)    Humphrey, W., Dalke, A. and Schulten, K., `VMD - Visual
-    Info)    Molecular Dynamics', J. Molec. Graphics 1996, 14.1, 33-38.
-    Info) -------------------------------------------------------------
-    Info) Multithreading available, 56 CPUs detected.
-    Info)   CPU features: SSE2 AVX AVX2 FMA
-    Info) Free system memory: 986GB (97%)
-    Info) Creating CUDA device pool and initializing hardware...
-    Info) Detected 4 available CUDA accelerators:
-    Info) [0] Tesla K80          13 SM_3.7 @ 0.82 GHz, 11GB RAM, KTO, AE2, ZCP
-    Info) [1] Tesla K80          13 SM_3.7 @ 0.82 GHz, 11GB RAM, AE2, ZCP
-    Info) [2] Tesla K80          13 SM_3.7 @ 0.82 GHz, 11GB RAM, AE2, ZCP
-    Info) [3] Tesla K80          13 SM_3.7 @ 0.82 GHz, 11GB RAM, AE2, ZCP
-    Warning) Detected X11 'Composite' extension: if incorrect display occurs
-    Warning) try disabling this X server option.  Most OpenGL drivers
-    Warning) disable stereoscopic display when 'Composite' is enabled.
-    Info) OpenGL renderer: Tesla K80/PCIe/SSE2
-    Info)   Features: STENCIL MSAA(4) MDE CVA MTX NPOT PP PS GLSL(OVFGS)
-    Info)   Full GLSL rendering mode is available.
-    Info)   Textures: 2-D (16384x16384), 3-D (2048x2048x2048), Multitexture (4)
-    Info) Detected 4 available TachyonL/OptiX ray tracing accelerators
-    Info)   Compiling 1 OptiX shaders on 4 target GPUs...
-    Info) Dynamically loaded 2 plugins in directory:
-    vmd >
-
-Step 3 (terminal 2)
-^^^^^^^^^^^^^^^^^^^
-
-In a second terminal on your local system open a tunneling connection following
-the instructions given by the vnc start-up script:
+the instructions given by the vnc start-up script (e.g., for ``riker-gpu1``):
 
 -  localsystem: ``ssh -L 5901:riker-gpu1:5901 username@riker.olcf.ornl.gov``
 
@@ -1751,42 +1516,6 @@ Launch the vncviewer. When you launch the vncviewer that you downloaded you will
 need to specify ``localhost:5901``. You will also set a password for the initial
 connection or enter the created password for subsequent connections.
 
-vmd-vgl.sh (GPU rendering)
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. code::
-
-    #!/bin/sh
-
-    what()
-    {
-        hostname
-    }
-    echo
-    echo "Starting X"
-    xinit &
-    sleep 5
-    echo "Starting vncserver"
-
-    vncserver :1 -geometry 1920x1080 -depth 24
-
-    echo
-    echo
-    echo "**************************************************************************"
-    echo "Instructions"
-    echo
-    echo "In a new terminal, open a tunneling connection with $(what) and port 5901"
-    echo
-    echo "example:"
-    echo "   localsystem: ssh -L 5901:riker-gpu1:5901 username@riker.olcf.ornl.gov "
-    echo
-    echo "**************************************************************************"
-    echo
-    echo
-    export DISPLAY=:1
-    module load vmd
-    vglrun vmd
-    vncserver -kill :1
 
 .. Remote Visualization using Nice DCV (GPU nodes only)
 .. ----------------------------------------------------
