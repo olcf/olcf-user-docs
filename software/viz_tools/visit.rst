@@ -112,9 +112,9 @@ Restart VisIt, and go to Options→Host Profiles. Select “New Host”
 
     .. tab-set:: 
 
-      .. tab-item:: CPU Jobs
+      .. tab-item:: Shared CPU Jobs
 
-        **For Riker CPU jobs:**
+        **For Riker Shared CPU jobs:**
 
         - **Host nickname**: ``Riker`` (this is arbitrary)
         - **Remote hostname**: ``riker.olcf.ornl.gov`` (required)
@@ -159,9 +159,9 @@ Restart VisIt, and go to Options→Host Profiles. Select “New Host”
         Click “Apply” and make sure to save the settings (Options/Save Settings).
         Exit and re-launch VisIt.
       
-      .. tab-item:: GPU Jobs
+      .. tab-item:: Shared GPU Jobs
 
-        **For Riker GPU jobs:**
+        **For Riker Shared GPU jobs:**
 
         - **Host nickname**: ``Riker`` (this is arbitrary)
         - **Remote hostname**: ``riker.olcf.ornl.gov`` (required)
@@ -189,7 +189,7 @@ Restart VisIt, and go to Options→Host Profiles. Select “New Host”
             - **Parallel launch method**:
               ``sbatch/srun`` (required)
             - **Partition/Pool/Queue**: ``gpu`` (required)
-            - **Number of processors**: 1 
+            - **Number of processors**: 1 (limited to 16 tasks per GPU)
             - **Number of nodes**: 1 (arbitrary)
             - **Bank/Account**: Your OLCF project to use (required)
             - **Time Limit**: 1:00:00 (arbitrary, ``HH:MM:SS``)
@@ -198,7 +198,7 @@ Restart VisIt, and go to Options→Host Profiles. Select “New Host”
         - Advanced tab:
 
             - **Launcher arguments**:
-              ``--gpus=1`` or ``--gpus=2`` (Riker is a node-shared machine, so GPU flag is required when not using ``--exclusive``)
+              ``--gpus=1`` (total amount of GPUs in the job, limited to 16 tasks per GPU)
         - GPU Acceleration
 
             - **Use cluster’s graphics cards**: Unchecked (even if using the ``gpu`` partition)
@@ -236,7 +236,7 @@ Restart VisIt, and go to Options→Host Profiles. Select “New Host”
             - **Parallel launch method**:
               ``sbatch/srun`` (required)
             - **Partition/Pool/Queue**: ``batch`` (required)
-            - **Number of processors**: 1 
+            - **Number of processors**: 1 (max for ``batch`` queue is 128)
             - **Number of nodes**: 1 (arbitrary)
             - **Bank/Account**: Your OLCF project to use (required)
             - **Time Limit**: 1:00:00 (arbitrary, ``HH:MM:SS``)
@@ -283,7 +283,7 @@ Restart VisIt, and go to Options→Host Profiles. Select “New Host”
             - **Parallel launch method**:
               ``sbatch/srun`` (required)
             - **Partition/Pool/Queue**: ``gpu`` (required)
-            - **Number of processors**: 1 
+            - **Number of processors**: 1 (max for ``gpu`` queue is 64)
             - **Number of nodes**: 1 (arbitrary)
             - **Bank/Account**: Your OLCF project to use (required)
             - **Time Limit**: 1:00:00 (arbitrary, ``HH:MM:SS``)
