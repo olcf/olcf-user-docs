@@ -52,7 +52,7 @@ The MI355X GPUs are connected with Infinity Fabric GPU-GPU in the arrangement sh
     NUMA 0:
 
     * hardware threads 000-015 | GPU 3
-    
+
     NUMA 1:
 
     * hardware threads 016-031 | GPU 0
@@ -193,7 +193,7 @@ For more detailed information about center-wide file systems and data archiving 
 
     Please contact the OLCF User Assistance Center if you have any questions about using the wrapper or if you encounter any issues.
 
-NFS Filesystem 
+NFS Filesystem
 --------------
 
 +---------------------+---------------------------------------------+----------------+-------------+--------+---------+---------+------------+------------------+
@@ -208,13 +208,13 @@ NFS Filesystem
 .. note::
 
     Though the NFS filesystem's User Home and Project Home areas are read/write from Lux's compute nodes,
-    we strongly recommend that users launch and run jobs from the Lustre Orion parallel filesystem 
-    instead due to its larger storage capacity and superior performance. Please see below for Lustre 
+    we strongly recommend that users launch and run jobs from the Lustre Orion parallel filesystem
+    instead due to its larger storage capacity and superior performance. Please see below for Lustre
     Orion filesystem storage areas and paths.
 
 
 
-Lustre Filesystem 
+Lustre Filesystem
 -----------------
 
 +---------------------+----------------------------------------------+------------------------+-------------+--------+---------+---------+------------+------------------+
@@ -233,7 +233,7 @@ Lustre Filesystem
    Portions of data and/or software used in your project may require extra protections due to requirements for proprietary, sensitive, or controlled information. It is imperative that filenames, application names, job names, environment variables, batch job scripts, or any other unencrypted text must never contain sensitive or controlled information.
 
    If you have HIPAA or ITAR data, you will need to use our SPI resources. More information about SPI can be found `here <https://docs.olcf.ornl.gov/spi/index.html#scalable-protected-infrastructure-spi>`__.
-   
+
    If you have security related questions, contact us via email at: security-admins@ccs.ornl.gov. Other questions can be sent to help@olcf.ornl.gov.
 
 
@@ -329,9 +329,9 @@ Users are not required to use the NVMes. Data can also be written directly to th
         frontier0123
         ***********************
 
-  
 
-Using Globus to Move Data to and from Orion 
+
+Using Globus to Move Data to and from Orion
 ===========================================
 
 The following example is intended to help users move data to and from the Orion filesystem.
@@ -500,7 +500,7 @@ as a whole executes the instruction over 4 cycles, 16 threads per cycle. Since o
 wavefronts occupy the other three SIMD units at the same time, the total throughput still
 remains 1 instruction per cycle. Each CU maintains an instructions buffer for 8
 wavefronts and also maintains 256 registers where each register is 64 4-byte wide
-entries. 
+entries.
 
 
 .. _lux-amd-hip:
@@ -710,7 +710,7 @@ The delimiter row is your "programming environment" as a list of modules and the
 Below is an example of how this functions:
 
 .. code-block:: bash
-    :lineno:
+    :linenos:
 
     $ module load amd-llvm mpich
     $ module load amdfftw
@@ -720,6 +720,7 @@ Below is an example of how this functions:
       1) amdfftw
 
 Explanation:
+
 1. Loading the programming environment by loading the requisite modules
 2. Loading the optional dependency for AMD Fast Fourier Transforms
 3. Unload part of the programming environment.
@@ -885,113 +886,23 @@ Using ``amdclang``
 
     .. _understanding-the-compatibility-of-compilers-rocm-and-cray-mpich:
 
-    Understanding the Compatibility of Compilers, ROCm, and Cray MPICH
-    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Understanding the Compatibility of Compilers, ROCm, MPI, and RCCL
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-    There are three primary sources of compatibility required to successfully build and run on Frontier:
+Lux's AMD Compilers, ROCm, MPI, and RCCL compatibilities are represented in Lmod.
+In general, if you can ``module load`` a version, it should be compatible.
 
-     1. Compatible Compiler & ROCm toolchain versions
-     2. Compatible ROCm & Cray MPICH versions
-     3. Compatibility with other CrayPE-provided software
+GNU compilers cannot compile HIP code, but CPU code should be ABI compatible.
+AMD compilers can link in compiled GNU CPU applications and libraries, even when generating GPU code.
 
-    .. note::
+Compatibility between MPI implementations and ROCm is required in order to use GPU-aware MPI.
+MPI installations on Lux are built to target specific versions of ROCm, and compatibility across multiple versions are not guaranteed.
+OLCF will maintain compatible default modules when possible.
 
-        If using non-default versions of any ``cray-*`` module, you must *prepend* ``${CRAY_LD_LIBRARY_PATH}`` (or the path to ``lib64`` for your specific ``cray-*`` component) to your ``LD_LIBRARY_PATH`` at run time or your executable's rpath at build time.
-
-    Compatible Compiler & ROCm toolchain versions
-    """""""""""""""""""""""""""""""""""""""""""""
-
-    All compilers in the same HPE/Cray Programming Environment (CrayPE) release are generally ABI-compatible (, code generated by CCE can be linked against code compiled by GCC).
-    However, the AMD and CCE compilers are both LLVM/Clang-based, and it is recommended to use the same major LLVM version when cross-compiling.
-    CCE's module version indicates the base LLVM version, but for AMD, you must run ``amdclang --version``.
-    For example, ROCm/5.3.0 is based on LLVM 15.0.0.
-    It is strongly discouraged to use ROCm/5.3.0 with CCE/16.0.1, which is based on LLVM 16.
-    The following table shows the recommended ROCm version for each CCE version, along with the CPE version:
-
-    +-------------+-------+---------------------------+
-    |    CCE      |  CPE  | Recommended ROCm Version  |
-    +=============+=======+===========================+
-    |   15.0.0    | 22.12 | 5.3.0                     |
-    +-------------+-------+---------------------------+
-    |   15.0.1    | 23.03 | 5.3.0                     |
-    +-------------+-------+---------------------------+
-    |   16.0.0    | 23.05 | 5.5.1                     |
-    +-------------+-------+---------------------------+
-    |   16.0.1    | 23.09 | 5.5.1                     |
-    +-------------+-------+---------------------------+
-    |   17.0.0    | 23.12 | 5.7.0 or 5.7.1            |
-    +-------------+-------+---------------------------+
-    |   17.0.1    | 24.03 | 6.0.0                     |
-    +-------------+-------+---------------------------+
-    |   18.0.0    | 24.07 | 6.1.3                     |
-    +-------------+-------+---------------------------+
-    |   18.0.1    | 24.11 | 6.2.4                     |
-    +-------------+-------+---------------------------+
-    |   19.0.0    | 25.03 | 6.2.4                     |
-    +-------------+-------+---------------------------+
-    |   20.0.0    | 25.09 | 6.4.2                     |
-    +-------------+-------+---------------------------+
-    |   21.0.0    | 26.03 | 7.0.2                     |
-    +-------------+-------+---------------------------+
-
-    .. note::
-
-        Recall that the CPE module is a meta-module that simple loads the correct version for each Cray-provided module (e.g., CCE, Cray MPICH, Cray Libsci).
-        This is the best way to load the versions of modules from a specific CrayPE release.
+RCCL is installed as part of the ROCm package/module, and the compatible version should always be included with the ROCm installation.
 
 
-    Compatible ROCm & Cray MPICH versions
-    """""""""""""""""""""""""""""""""""""
-
-    Compatibility between Cray MPICH and ROCm is required in order to use GPU-aware MPI.
-    Releases of ``cray-mpich`` are each compiled using a specific version of ROCm, and compatibility across multiple versions is not guaranteed.
-    OLCF will maintain compatible default modules when possible.
-    If using non-default modules, you can determine compatibility by reviewing the *Product and OS Dependencies* section in the ``cray-mpich`` release notes.
-    This can be displayed by running ``module show cray-mpich/<version>``. If the notes indicate compatibility with *AMD ROCM X.Y or later*, only use ``rocm/X.Y.Z`` modules.
-
-    .. note::
-
-        If you are loading compatible ROCm and Cray MPICH versions but still getting errors,
-        try setting ``MPICH_VERSION_DISPLAY=1`` to verify the correct Cray MPICH version is being used at run-time.
-        If it is not, verify you are prepending ``LD_LIBRARY_PATH`` with either ``$CRAY_LD_LIBRARY_PATH``, or ``${MPICH_DIR}/lib`` and ``${CRAY_MPICH_ROOTDIR}/gtl/lib``.
-        This ``LD_LIBRARY_PATH`` modification is required to run with non-default modules.
-
-    The following compatibility table below was determined by testing of the linker and basic GPU-aware MPI functions with all current combinations of ``cray-mpich`` and ROCm modules on Frontier.
-    Alongside ``cray-mpich``, we load the corresponding ``cpe`` module, which loads other important modules for MPI such as ``cray-pmi`` and ``craype``.
-    It is strongly encouraged to load a ``cpe`` module when using non-default modules.
-    This ensures that all CrayPE-provided modules are compatible.
-    An asterisk indicates the latest officially supported version of ROCm for each ``cray-mpich`` version.
-
-    +------------+-------+--------------------------------------------------+
-    | cray-mpich |  cpe  |                              ROCm                |
-    +============+=======+==================================================+
-    |   8.1.23   | 22.12 | 5.4.3, 5.4.0, 5.3.0*                             |
-    +------------+-------+--------------------------------------------------+
-    |   8.1.25   | 23.03 | 5.4.3, 5.4.0*, 5.3.0                             |
-    +------------+-------+--------------------------------------------------+
-    |   8.1.26   | 23.05 | 5.7.1, 5.7.0, 5.6.0, 5.5.1*, 5.4.3, 5.4.0, 5.3.0 |
-    +------------+-------+--------------------------------------------------+
-    |   8.1.27   | 23.09 | 5.7.1, 5.7.0, 5.6.0, 5.5.1*, 5.4.3, 5.4.0, 5.3.0 |
-    +------------+-------+--------------------------------------------------+
-    |   8.1.28   | 23.12 | 5.7.1, 5.7.0*, 5.6.0, 5.5.1, 5.4.3, 5.4.0, 5.3.0 |
-    +------------+-------+--------------------------------------------------+
-    |   8.1.29   | 24.03 | 6.2.4, 6.2.0, 6.1.3, 6.0.0*                      |
-    +------------+-------+--------------------------------------------------+
-    |   8.1.30   | 24.07 | 6.2.4, 6.2.0, 6.1.3*, 6.0.0                      |
-    +------------+-------+--------------------------------------------------+
-    |   8.1.31   | 24.11 | 6.3.1, 6.2.4, 6.2.0*, 6.1.3, 6.0.0               |
-    +------------+-------+--------------------------------------------------+
-    |   8.1.32   | 25.03 | 6.3.1, 6.2.4, 6.2.0*, 6.1.3, 6.0.0               |
-    +------------+-------+--------------------------------------------------+
-    |   9.0.1    | 25.09 | 6.4*, 6.3, 6.2, 6.1, 6.0                         |
-    +------------+-------+--------------------------------------------------+
-    |   9.1.0    | 26.03 | 7.2, 7.1, 7.0*                                   |
-    +------------+-------+--------------------------------------------------+
-
-    .. note::
-
-        OLCF recommends using the officially supported ROCm version (with asterisk) for each ``cray-mpich`` version.
-        Newer versions were tested using a sample of MPI applications and there may be undiscovered incompatibility.
+.. todo::
 
     Compatibility with other CrayPE-provided Software
     """""""""""""""""""""""""""""""""""""""""""""""""
@@ -1164,7 +1075,7 @@ Running Jobs
 
 Computational work on Lux is performed by *jobs*. Jobs typically consist of several components:
 
--  A batch submission script 
+-  A batch submission script
 -  A binary executable
 -  A set of input files for the executable
 -  A set of output files created by the executable
