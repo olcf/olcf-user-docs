@@ -1358,7 +1358,7 @@ Here, the ``-c8`` highlights that the GPU nodes have 8 cores in each of its L3 r
 To accomplish this GPU mapping, the following ``srun`` options will be used:
 
 * ``--ntasks-per-gpu`` specifies the number of MPI ranks that will share access to a GPU.
-* ``--gpu-bind=map_gpu=<list>`` Bind tasks to specific GPUs by setting GPU masks on tasks (or ranks) as specified where ``<list>`` is ``<gpu_id_for_task_0>,<gpu_id_for_task_1>,...``
+* ``--gpu-bind=map_gpu:<list>`` Bind tasks to specific GPUs by setting GPU masks on tasks (or ranks) as specified where ``<list>`` is ``<gpu_id_for_task_0>,<gpu_id_for_task_1>,...``
 
 .. code-block:: bash
 
