@@ -1653,7 +1653,7 @@ between multiple tasks running on the same node.
 Building an MPI Image and Running an MPI application
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-This and the following examples will make sure of the `olcf_container_examples repository <https://github.com/olcf/olcf_container_examples>`_ . Clone that repository and navigate to the ``riker/mpi_example`` directory. The example container includes MPICH and the OSU micro benchmarks to show MPI functionality.
+This and the following examples will make use of the `olcf_container_examples repository <https://github.com/olcf/olcf_container_examples>`_ . Clone that repository and navigate to the ``riker/mpi_example`` directory. The example container includes MPICH and the OSU micro benchmarks to show MPI functionality.
 
 
 - Build the container with ``apptainer build mpicontainer.sif mpicontainer.def``.
