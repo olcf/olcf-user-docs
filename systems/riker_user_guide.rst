@@ -1653,7 +1653,13 @@ between multiple tasks running on the same node.
 Building an MPI Image and Running an MPI application
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-This and the following examples will make use of the `olcf_container_examples repository <https://github.com/olcf/olcf_container_examples>`_ . Clone that repository and navigate to the ``riker/mpi_example`` directory. The example container includes MPICH and the OSU micro benchmarks to show MPI functionality.
+This and the following examples will make use of the `olcf_container_examples repository <https://github.com/olcf/olcf_container_examples>`_ :
+
+.. code-block::
+
+    git clone https://github.com/olcf/olcf_container_examples
+
+Clone that repository and navigate to the ``riker/docs_examples/mpi_example`` directory. The example container includes MPICH and the OSU micro benchmarks to show MPI functionality.
 
 
 - Build the container with ``apptainer build mpicontainer.sif mpicontainer.def``.
@@ -1703,7 +1709,7 @@ Nvidia GPUs. For this example, we will grab the Rocky Linux 9 CUDA 13.3.1 contai
 
 
 - Clone the `olcf_container_examples repository <https://github.com/olcf/olcf_container_examples>`_
-  the navigate to the ``gpu_example`` directory.
+  the navigate to the ``riker/docs_examples/gpu_example`` directory.
 
   - This has a simple vector addition example that runs on a single GPU.
 
@@ -1731,7 +1737,7 @@ Nvidia GPUs. For this example, we will grab the Rocky Linux 9 CUDA 13.3.1 contai
 Building and Running a GPU+MPI Program in a Container
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-- Clone the `olcf_container_examples <https://github.com/olcf/olcf_container_examples>`__ repository and navigate to the ``riker/gpu_mpi_example`` directory. 
+- Clone the `olcf_container_examples <https://github.com/olcf/olcf_container_examples>`__ repository and navigate to the ``riker/docs_examples/gpu_and_mpi_example`` directory. 
 
     - This directory has an Apptainer definition file that will use an Nvidia CUDA container as a base and install MPICH. It also has a submit script that will build and run the ``hello_jobstep`` program from earlier in this documentation page, that will list out the MPI processes and the cores and GPUs that each process has access to. 
 
