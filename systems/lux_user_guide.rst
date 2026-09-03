@@ -847,7 +847,7 @@ Using ``hipcc``
     .. code:: bash
 
         module load rocm
-        module load openmpi
+        module load mpich
 
         hipcc -std=c++11 --offload-arch=gfx950 -I${ROCM_PATH}/include -I${MPICH_DIR}/include -c gpu-aware.cpp
         hipcc -L${ROCM_PATH}/lib -lamdhip64 -L${MPICH_DIR}/lib -lmpi gpu-aware.o -o gpu-aware
@@ -867,7 +867,7 @@ Using ``amdclang``
     .. code:: bash
 
         module load rocm
-        module load openmpi
+        module load mpich
 
         amdclang++ -D__HIP_ROCclr__ -D__HIP_ARCH_GFX950__=1 -std=c++11 --rocm-path=${ROCM_PATH} --offload-arch=gfx950 -x hip -I${ROCM_PATH}/include -I${MPICH_DIR}/include -c gpu-aware.cpp
         amdclang++ --rocm-path=${ROCM_PATH} -L${ROCM_PATH}/lib -lamdhip64 -L${MPICH_DIR}/lib -lmpi gpu-aware.o -o gpu-aware
