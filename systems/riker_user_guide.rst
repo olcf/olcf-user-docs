@@ -1601,8 +1601,8 @@ Building a Simple Image
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 - Create a directory called ``simplecontainer`` on home or Orion and ``cd`` into it.
-- Create a file named ``simple.def`` with the following contents.
-  ::
+- Create an Apptainer definition file named ``simple.def`` with the following contents.
+  .. code-block::
 
      Bootstrap: docker
      From: rockylinux:9
@@ -1622,7 +1622,7 @@ Running a Simple Container in a Batch Job
 As a simple example, we will run ``hostname`` with the Apptainer container.
 
 - Create a file submit.sl with the contents below.
-  ::
+  .. code-block::
 
      #!/bin/bash
      #SBATCH -A stf007
@@ -1650,92 +1650,22 @@ an instance of the runtime for each task i.e. the same running container is NOT 
 between multiple tasks running on the same node.
 
 
-Building an MPI Image
-^^^^^^^^^^^^^^^^^^^^^
+Building an MPI Image and Running an MPI application
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-For running a program that uses MPI, you will need to build your container image with MPICH that
-matches the MPICH version on Riker. See below for an example
+This and the following examples will make use of the `olcf_container_examples repository <https://github.com/olcf/olcf_container_examples>`_ :
 
-- Create a directory named ``mpicontainer`` and cd into it
-- Create a file named ``mpicontainer.def`` with the following contents
-  ::
+.. code-block::
 
-      Bootstrap: docker
-      From: docker.io/rockylinux/rockylinux:9.6-ubi
-      
-      %environment
-          # Point to MPICH binaries, libraries man pages
-          export MPICH_DIR=/opt/mpich
-          export PATH="$MPICH_DIR/bin:$PATH"
-          export LD_LIBRARY_PATH="$MPICH_DIR/lib:$LD_LIBRARY_PATH"
-          export MANPATH=$MPICH_DIR/share/man:$MANPATH
-      
-      
-      %post
-      
-      echo "Installing required packages..."
-      export DEBIAN_FRONTEND=noninteractive
-      dnf install -y wget sudo git  gzip gcc-c++ libatomic hwloc-devel
-      
-      
-      # Information about the version of MPICH to use
-      export MPICH_VERSION=5.0.1
-      export MPICH_URL="http://www.mpich.org/static/downloads/$MPICH_VERSION/mpich-$MPICH_VERSION.tar.gz"
-      export MPICH_DIR=/opt/mpich
-      
-      echo "Installing MPICH..."
-      mkdir -p /mpich
-      mkdir -p /opt
-      # Download
-      cd /mpich && wget -O mpich-$MPICH_VERSION.tar.gz $MPICH_URL && tar --no-same-owner -xzf mpich-$MPICH_VERSION.tar.gz
-      # Compile and install
-      cd /mpich/mpich-$MPICH_VERSION && ./configure --disable-fortran --with-device=ch4:ucx --prefix=$MPICH_DIR && make -j32 install
-      rm -rf /mpich
-      
-      
-      # Set env variables so we can compile our application
-      export PATH=$MPICH_DIR/bin:$PATH
-      export LD_LIBRARY_PATH=$MPICH_DIR/lib:$LD_LIBRARY_PATH
-      
-      echo "Compiling the MPI application..."
-      cd /
-      curl -o osubenchmarks-7.5.2.tar.gz https://mvapich.cse.ohio-state.edu/download/mvapich/osu-micro-benchmarks-7.5.2.tar.gz && tar -xzf osubenchmarks-7.5.2.tar.gz --no-same-owner
-      cd osu-micro-benchmarks-7.5.2 && ./configure CC=mpicc CXX=mpicxx && make  && rm ../osubenchmarks-7.5.2.tar.gz 
+    git clone https://github.com/olcf/olcf_container_examples
+
+Clone that repository and navigate to the ``riker/docs_examples/mpi_example`` directory. The example container includes MPICH and the OSU micro benchmarks to show MPI functionality.
+
 
 - Build the container with ``apptainer build mpicontainer.sif mpicontainer.def``.
+         
 
-Running an MPI application with an MPI image in a batch job
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-The container you built in the previous section includes micro benchmarks for MPI. We will run one
-of them in a batch job to demonstrate MPI functionality with containers.
-
-- Copy the following into a file called ``submit.sl``.
-  ::
-      
-        #!/bin/bash
-        #SBATCH -t00:20:00
-        #SBATCH -p batch
-        #SBATCH -A stf007uanofn
-        #SBATCH -N4
-        #SBATCH --ntasks-per-node 16
-        #SBATCH -c 1
-        #SBATCH -J gaea_mpi_test
-        #SBATCH -o logs/%x_%j.out
-        #SBATCH -e logs/%x_%j.out
-        
-        # below is necessary to avoid ucx permission denied warning messages
-        # see https://ciq.com/blog/workaround-for-communication-issue-with-mpi-apps-apptainer-without-setuid
-        export UCX_POSIX_USE_PROC_LINK=n
-        
-        # These exports are required so that the necessary MPI and Slurm pieces from the host are visible in
-        # the container and can be used by the application running in the container
-        export APPTAINER_BIND=/sw,/usr/share/libdrm,/var/spool/slurm,${PWD},${HOME}
-        export APPTAINERENV_LD_LIBRARY_PATH=$OLCF_MPICH_ROOT/lib:\$LD_LIBRARY_PATH
-        
-        srun  -N4 -n16 --tasks-per-node 4 apptainer exec ./mpicontainer.sif  /osu-micro-benchmarks-7.5.2/c/mpi/collective/blocking/osu_allgather
-
-- Submit the job with ``sbatch submit.sl``. You should get an output like the below
+- Submit the job with ``sbatch submit.sbatch``. You should get an output like the below
   ::
 
         # OSU MPI Allgather Latency Test v7.5.2
@@ -1764,38 +1694,71 @@ of them in a batch job to demonstrate MPI functionality with containers.
         1048576              1111.72
 
 
+- Note that the ``submit.sbatch`` script includes setting up some additional environment variables.
+  These are necessary for an MPI application in a container to work correctly on Riker.
+- Also note that the MPICH version being installed in the container matches the MPICH version on
+  Riker. It is good practice to match the MPICH version with what is available on Riker for your own
+  container.
 
-.. {{Subil will need to update this part.}}
-.. Running an MPI program with an MPI image
-.. ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Building and Running a simple single GPU program in a Container
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. For running a program that uses MPI, you will need to build your container image with MPICH. You can find an example in the `olcf_containers_examples repository <https://github.com/olcf/olcf_containers_examples/tree/main/defiant/mpiexample>`__ . 
-
-.. Subil will need to update this part.
-.. - Clone the repository ``https://github.com/olcf/olcf_containers_examples``.
-.. - Navigate to ``olcf_containers_examples/defiant/mpiexample``.
-.. - Run ``build.sh`` to build the containers. ``rocky9mpich412nvidia2411.def`` builds an image based
-..   on Nvidia's CUDA 12.6 container release, and installs MPICH 4.1.2 in it. 
-.. - Submit the submit script with ``sbatch submit.sl``. 
-.. - You should get output that looks like
-..   ::
-
-..      <several INFO messages. Can be ignored>
-..      ...
-..      Hello from rank 1
-..      Hello from rank 0
-..      Hello from rank 2
-..      Hello from rank 3
+`Nvidia's NGC registry <https://catalog.ngc.nvidia.com/>`_ distributes containers with CUDA and different applications built to run on
+Nvidia GPUs. For this example, we will grab the Rocky Linux 9 CUDA 13.3.1 container image with
+``apptainer pull`` or ``apptainer build``.
 
 
+- Clone the `olcf_container_examples repository <https://github.com/olcf/olcf_container_examples>`_
+  the navigate to the ``riker/docs_examples/gpu_example`` directory.
+
+  - This has a simple vector addition example that runs on a single GPU.
+
+- Pull the CUDA 13.3 container image.
+
+  .. code-block::
+
+     apptainer build rockylinuxcuda133.sif docker://nvcr.io/nvidia/cuda:13.3.1-devel-rockylinux9
 
 
-.. ..
-..   tabling gpu aware MPI till after we get it working on defiant
-..   Running a GPU aware MPI program with OLCF MPI base image
-..   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+- Submit the job with ``sbatch submit.sbatch``.
 
-----------
+    - This submit script will build the vector addition example and run it on a single node.
+    - The ``--nv`` flag is required for ``apptainer exec`` in your submit scripts to be able to access the GPUs on the node.
+
+- If successful, you will see an output like this
+  ::
+
+      COMPLETE!
+      real    0m0.812s
+      user    0m0.002s
+      sys     0m0.005s
+
+
+Building and Running a GPU+MPI Program in a Container
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Clone the `olcf_container_examples <https://github.com/olcf/olcf_container_examples>`__ repository and navigate to the ``riker/docs_examples/gpu_and_mpi_example`` directory. 
+
+    - This directory has an Apptainer definition file that will use an Nvidia CUDA container as a base and install MPICH. It also has a submit script that will build and run the ``hello_jobstep`` program from earlier in this documentation page, that will list out the MPI processes and the cores and GPUs that each process has access to. 
+
+
+- Build the Apptainer image with ``apptainer build rockylinuxcuda133.sif rockylinuxcuda133.def``.
+- Submit the job with ``sbatch submit.sbatch``. The job will build ``hello_jobstep`` within the
+  container's environment and then run it across two GPUs on two nodes.
+
+- If successful, you should see an output that looks like this
+  ::
+    
+      mpicxx -fopenmp -I/usr/local/cuda/include -c hello_jobstep.cpp
+      mpicxx -fopenmp -L/usr/local/cuda/lib64 -lcudart hello_jobstep.o -o hello_jobstep
+      MPI 000 - OMP 000 - HWT 015 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
+      MPI 001 - OMP 000 - HWT 015 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
+      
+      real    0m1.301s
+      user    0m0.002s
+      sys     0m0.007s
+
+
 
 Getting Help
 ============
