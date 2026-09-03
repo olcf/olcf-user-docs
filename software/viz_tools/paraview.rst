@@ -50,7 +50,7 @@ Recommended ParaView versions on our systems:
 * **Andes**:
     * OLCF Installation: ParaView 5.9.1, 5.10.0, 5.11.0, 5.12.1, 5.13.1, 5.13.3, 6.0.0
 * **Riker**:
-    * OLCF Installation: ParaView 5.13.3
+    * OLCF Installation: ParaView 6.1.1
 * **Frontier**:
     * UMS032 Installation: ParaView 5.11.2, 5.12.1, 5.13.1
     * OLCF Installation: ParaView 5.13.1, 5.13.2, 5.13.3
@@ -108,8 +108,9 @@ connected to. For example, to see these modules on specific OLCF systems:
             .. code-block:: bash
 
                $ module -t avail paraview
-               
-               paraview/5.13.3-mpi
+
+               paraview/6.1.1-mpi
+               paraview/6.1.1-gpu-mpi
 
    .. tab-item:: Frontier
       :sync: frontier
@@ -170,11 +171,8 @@ methods may be used, the one described should work in most cases.
 
 **Step 1: Save the following PVSC files to your local computer**
 
+* :download:`riker_olcf.pvsc </_static/host_profiles/paraview/riker_olcf.pvsc>`
 * :download:`andes.pvsc </_static/host_profiles/paraview/andes.pvsc>`
-
-ADD PVSC FILE
-* :download:`riker.pvsc </static/host_profiles/paraview/riker.pvsc>`
-
 * :download:`frontier_ums.pvsc </_static/host_profiles/paraview/frontier_ums.pvsc>`
 * :download:`frontier_olcf.pvsc </_static/host_profiles/paraview/frontier_olcf.pvsc>`
 
@@ -302,20 +300,21 @@ batch scripts, along with a working Python example, are provided below.
       .. code-block:: bash
         :linenos:
 
-        #/bin/bash
+        #!/bin/bash
         #SBATCH -A XXXYYY
         #SBATCH -J para_test
+        #SBATCH -N 1
         #SBATCH -p batch
         #SBATCH -t 0:05:00
-        #SBATCH -N #
-        #SBATCH -c #
+        #SBATCH -c 28
 
         cd $SLURM_SUBMIT_DIR
         date
 
-        # PLACE PARAVIEW MODULESPATH
+        export UCX_NET_DEVICES=mlx5_0:1
+        module load paraview/6.1.1-mpi
 
-        srun -n 28 pvbatch para_example.py
+        srun -n 28 -c 1 pvbatch para_example.py
 
 
   .. tab-item:: Frontier
@@ -361,43 +360,88 @@ upgrades) for testing purposes.
 
 The following script renders a 3D sphere colored by the ID (rank) of each MPI task:
 
-.. code-block:: python
-   :linenos:
+.. tab-set::
 
-   # para_example.py:
-   from paraview.simple import *
+  .. tab-item:: ParaView 5
 
-   # Add a polygonal sphere to the 3D scene
-   s = Sphere()
-   s.ThetaResolution = 128                        # Number of theta divisions (longitude lines)
-   s.PhiResolution = 128                          # Number of phi divisions (latitude lines)
+      .. code-block:: python
+         :linenos:
 
-   # Convert Proc IDs to scalar values
-   p = ProcessIdScalars()                         # Apply the ProcessIdScalars filter to the sphere
+         # para_example.py:
+         from paraview.simple import *
 
-   display = Show(p)                              # Show data
-   curr_view = GetActiveView()                    # Retrieve current view
+         # Add a polygonal sphere to the 3D scene
+         s = Sphere()
+         s.ThetaResolution = 128                        # Number of theta divisions (longitude lines)
+         s.PhiResolution = 128                          # Number of phi divisions (latitude lines)
 
-   # Generate a colormap for Proc Id's
-   cmap = GetColorTransferFunction("ProcessId")   # Generate a function based on Proc ID
-   cmap.ApplyPreset('Viridis (matplotlib)')       # Apply the Viridis preset colors
-   #print(GetLookupTableNames())                  # Print a list of preset color schemes
+         # Convert Proc IDs to scalar values
+         p = ProcessIdScalars()                         # Apply the ProcessIdScalars filter to the sphere
 
-   # Set Colorbar Properties
-   display.SetScalarBarVisibility(curr_view,True) # Show bar
-   scalarBar = GetScalarBar(cmap, curr_view)      # Get bar's properties
-   scalarBar.WindowLocation = 'Any Location'       # Allows free movement
-   scalarBar.Orientation = 'Horizontal'           # Switch from Vertical to Horizontal
-   scalarBar.Position = [0.15,0.80]               # Bar Position in [x,y]
-   scalarBar.LabelFormat = '%.0f'                 # Format of tick labels
-   scalarBar.RangeLabelFormat = '%.0f'            # Format of min/max tick labels
-   scalarBar.ScalarBarLength = 0.7                # Set length of bar
+         display = Show(p)                              # Show data
+         curr_view = GetActiveView()                    # Retrieve current view
 
-   # Render scene and save resulting image
-   Render()
-   SaveScreenshot('pvbatch-test.png',ImageResolution=[1080, 1080])
+         # Generate a colormap for Proc Id's
+         cmap = GetColorTransferFunction("ProcessId")   # Generate a function based on Proc ID
+         cmap.ApplyPreset('Viridis (matplotlib)')       # Apply the Viridis preset colors
+         #print(GetLookupTableNames())                  # Print a list of preset color schemes
 
-.. warning:: For older versions of ParaView (e.g., ``5.9.1``), line 23 should be ``'AnyLocation'`` (no space).
+         # Set Colorbar Properties
+         display.SetScalarBarVisibility(curr_view,True) # Show bar
+         scalarBar = GetScalarBar(cmap, curr_view)      # Get bar's properties
+         scalarBar.WindowLocation = 'Any Location'       # Allows free movement
+         scalarBar.Orientation = 'Horizontal'           # Switch from Vertical to Horizontal
+         scalarBar.Position = [0.15,0.80]               # Bar Position in [x,y]
+         scalarBar.LabelFormat = '%.0f'                 # Format of tick labels
+         scalarBar.RangeLabelFormat = '%.0f'            # Format of min/max tick labels
+         scalarBar.ScalarBarLength = 0.7                # Set length of bar
+
+         # Render scene and save resulting image
+         Render()
+         SaveScreenshot('pvbatch-test.png',ImageResolution=[1080, 1080])
+
+      .. warning:: For older versions of ParaView (e.g., ``5.9.1``), line 23 should be ``'AnyLocation'`` (no space).
+
+  .. tab-item:: ParaView 6
+
+      .. code-block:: python
+         :linenos:
+
+         # para_example.py:
+         from paraview.simple import *
+
+         # Add a polygonal sphere to the 3D scene
+         s = Sphere()
+
+         # Number of theta divisions (longitude lines)
+         # Number of phi divisions (latitude lines)
+         s.Set(ThetaResolution=128,PhiResolution=128)
+
+         # Convert Proc IDs to scalar values
+         p = ProcessIds()                                     # Apply the ProcessIdScalars filter to the sphere
+
+         display = Show(p)                                    # Show data
+         curr_view = GetActiveView()                          # Retrieve current view
+
+         # Generate a colormap for Proc Id's
+         ColorBy(display, ('POINTS', 'PointProcessIds'))
+         cmap = GetColorTransferFunction("PointProcessIds")   # Generate a function based on Proc ID
+         cmap.ApplyPreset('Viridis')                          # Apply the Viridis preset colors
+         #print(GetLookupTableNames())                        # Print a list of preset color schemes
+
+         # Set Colorbar Properties
+         display.SetScalarBarVisibility(curr_view,True)       # Show bar
+         scalarBar = GetScalarBar(cmap, curr_view)            # Get bar's properties
+         scalarBar.WindowLocation = 'Any Location'            # Allows free movement
+         scalarBar.Orientation = 'Horizontal'                 # Switch from Vertical to Horizontal
+         scalarBar.Position = [0.15,0.80]                     # Bar Position in [x,y]
+         scalarBar.LabelFormat = '%.0f'                       # Format of tick labels
+         scalarBar.RangeLabelFormat = '%.0f'                  # Format of min/max tick labels
+         scalarBar.ScalarBarLength = 0.7                      # Set length of bar
+
+         # Render scene and save resulting image
+         Render()
+         SaveScreenshot('pvbatch-test.png',ImageResolution=[1080, 1080])
 
 .. image:: /images/paraview_example_1.png
    :align: center
