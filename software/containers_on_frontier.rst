@@ -169,7 +169,7 @@ Using Podman to build images and converting them to Apptainer
 .. warning::
 
    * You need to convert your Podman image to the Apptainer SIF format in order to run it. We don't
-   support running your container with Podman directly.
+     support running your container with Podman directly.
    * The Podman containers you build only exist on the login node you are on. So if you log out,
      make sure you log back in to the same login node to access your containers.
    * Since the containers are stored in /tmp, there is no guarantee they will be preserved. They can
