@@ -900,12 +900,11 @@ This section shows how to compile with OpenMP Offload using the different compil
 | AMD    | ``amd``  | | C       | | ``cc`` (wraps ``amdclang``)                | ``-fopenmp``                                 |
 |        |          | | C\+\+   | | ``CC`` (wraps ``amdclang++``)              |                                              |
 |        |          | | Fortran | | ``ftn`` (wraps ``amdflang``)               |                                              |
-|        |          |           | | ``hipcc`` (requires flags below)           |                                              |
 +--------+----------+-----------+----------------------------------------------+----------------------------------------------+
 
 .. note::
 
-    If invoking ``amdclang``, ``amdclang++``, or ``amdflang`` directly for ``openmp offload``, or using ``hipcc`` you will need to add: 
+    If invoking ``amdclang``, ``amdclang++``, or ``amdflang`` directly for ``openmp offload`` you will need to add:
     
     ``-fopenmp -fopenmp-targets=amdgcn-amd-amdhsa -Xopenmp-target=amdgcn-amd-amdhsa -march=gfx90a``.
 
