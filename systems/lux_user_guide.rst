@@ -902,111 +902,61 @@ OLCF will maintain compatible default modules when possible.
 RCCL is installed as part of the ROCm package/module, and the compatible version should always be included with the ROCm installation.
 
 
+.. list-table:: MPI and ROCm Compatibility
+   :widths: 30 70
+   :header-rows: 1
+
+   * - MPI Module
+     - Compatible ROCm Versions
+   * - ``openmpi/5.0.10``
+     - ``rocm/7.2.4``, ``rocm/7.14.0``
+   * - ``mpich/5.0.1``
+     - ``rocm/7.2.4``
+
+OpenMP
+------
+
+This section shows how to compile with OpenMP using the different compilers covered above.
+
++--------+--------------+-----------+----------------------------------------------+-------------------------------------+
+| Vendor | Module       | Language  | Compiler                                     | OpenMP flag (CPU thread)            |
++========+==============+===========+==============================================+=====================================+
+| AMD    | ``amd-llvm`` | | C       | | ``amdclang``                               | ``-fopenmp``                        |
+|        |              | | C++     | | ``amdclang++``                             |                                     |
+|        |              | | Fortran | | ``amdflang``                               |                                     |
++--------+--------------+-----------+----------------------------------------------+-------------------------------------+
+| GNU    | ``gcc``      | | C       | | ``gcc``                                    | ``-fopenmp``                        |
+|        |              | | C++     | | ``g++``                                    |                                     |
+|        |              | | Fortran | | ``gfortran``                               |                                     |
++--------+--------------+-----------+----------------------------------------------+-------------------------------------+
+
+OpenMP GPU Offload
+------------------
+
+This section shows how to compile with OpenMP Offload using the different compilers covered above.
+
+.. list-table::
+    :widths: 40 40 40 80 120
+    :header-rows: 1
+
+    * - Vendor
+      - Module
+      - Language
+      - Compiler
+      - OpenMP flag (GPU)
+    * - AMD
+      - ``amd-llvm``
+      - | C
+        | C++
+        | Fortran
+      - | ``amdclang``
+        | ``amdclang++``
+        | ``amdflang``
+      - ``-fopenmp -fopenmp-targets=amdgcn-amd-amdhsa -Xopenmp-target=amdgcn-amd-amdhsa -march=gfx950``
+
+
+
 .. todo::
-
-    Compatibility with other CrayPE-provided Software
-    """""""""""""""""""""""""""""""""""""""""""""""""
-
-    The HPE/Cray Programming Environment (CrayPE) provides many libraries for use on Frontier, including the well-known libraries like Cray MPICH, Cray Libsci, and Cray FFTW.
-    CrayPE also has many modules that operate in the background and can easily be overlooked.
-    For example, the ``craype`` module provides the ``cc``, ``CC``, and ``ftn`` Cray compiler drivers.
-    These drivers are written to link to specific libraries (e.g., the ``ftn`` wrapper in September 2023 PE links to ``libtcmalloc_minimal.so``),
-    which may not be needed by compiler versions other than the one they were released with.
-
-    For the full compatibility of your loaded CrayPE environment, we strongly recommended loading the ``cpe`` module of your desired CrayPE release (version is the last two digits of the year and the two-digit month, e.g., March 2026 is version 26.03).
-    For example, to load the March 2026 PE (CCE 21.0.0, Cray MPICH 9.1.0, ROCm 7.0.2 compatibility),
-    you would run the following commands:
-
-    .. code:: bash
-
-        module load PrgEnv-cray
-        module load cpe/26.03
-        module load rocm/7.0.2
-
-        # Since these modules are not default, make sure to prepend CRAY_LD_LIBRARY_PATH to LD_LIBRARY_PATH
-        export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
-
-.. todo::
-
-    OpenMP
-    ------
-
-    This section shows how to compile with OpenMP using the different compilers covered above.
-
-    +--------+--------------+-----------+----------------------------------------------+-------------------------------------+
-    | Vendor | Module       | Language  | Compiler                                     | OpenMP flag (CPU thread)            |
-    +========+==============+===========+==============================================+=====================================+
-    | AMD    | ``amd-llvm`` | | C       | | ``amdclang``                               | ``-fopenmp``                        |
-    |        |              | | C++     | | ``amdclang++``                             |                                     |
-    |        |              | | Fortran | | ``amdflang``                               |                                     |
-    +--------+--------------+-----------+----------------------------------------------+-------------------------------------+
-    | GNU    | ``gcc``      | | C       | | ``gcc``                                    | ``-fopenmp``                        |
-    |        |              | | C++     | | ``g++``                                    |                                     |
-    |        |              | | Fortran | | ``gfortran``                               |                                     |
-    +--------+--------------+-----------+----------------------------------------------+-------------------------------------+
-
-    OpenMP GPU Offload
-    ------------------
-
-    This section shows how to compile with OpenMP Offload using the different compilers covered above.
-
-    .. note::
-
-        Make sure the ``craype-accel-amd-gfx90a`` module is loaded when using OpenMP offload.
-
-    +--------+----------+-----------+----------------------------------------------+----------------------------------------------+
-    | Vendor | Module   | Language  | Compiler                                     | OpenMP flag (GPU)                            |
-    +========+==========+===========+==============================================+==============================================+
-    | Cray   | ``cce``  | C         | | ``cc`` (wraps ``craycc``)                  | ``-fopenmp``                                 |
-    |        |          | C\+\+     | | ``CC`` (wraps ``crayCC``)                  |                                              |
-    |        |          +-----------+----------------------------------------------+----------------------------------------------+
-    |        |          | Fortran   | ``ftn`` (wraps ``crayftn``)                  | | ``-homp``                                  |
-    |        |          |           |                                              | | ``-fopenmp`` (alias)                       |
-    +--------+----------+-----------+----------------------------------------------+----------------------------------------------+
-    | AMD    | ``amd``  | | C       | | ``cc`` (wraps ``amdclang``)                | ``-fopenmp``                                 |
-    |        |          | | C\+\+   | | ``CC`` (wraps ``amdclang++``)              |                                              |
-    |        |          | | Fortran | | ``ftn`` (wraps ``amdflang``)               |                                              |
-    |        |          |           | | ``hipcc`` (requires flags below)           |                                              |
-    +--------+----------+-----------+----------------------------------------------+----------------------------------------------+
-
-    .. note::
-
-        If invoking ``amdclang``, ``amdclang++``, or ``amdflang`` directly for ``openmp offload``, or using ``hipcc`` you will need to add:
-
-        ``-fopenmp -fopenmp-targets=amdgcn-amd-amdhsa -Xopenmp-target=amdgcn-amd-amdhsa -march=gfx90a``.
-
-
-    OpenACC
-    -------
-
-    This section shows how to compile code with OpenACC. Currently only the Cray compiler supports OpenACC for Fortran. The AMD and
-    GNU programming environments do not support OpenACC at all.
-    C and C++ support for OpenACC is provided by `clacc <https://impact.ornl.gov/en/publications/clacc-openacc-for-cc-in-clang>`_ which maintains a fork of the LLVM
-    compiler with added support for OpenACC. It can be obtained by loading the UMS modules
-    ``ums``, ``ums025``, and ``clacc``.
-
-
-    .. note::
-
-        Make sure the ``craype-accel-amd-gfx90a`` module is loaded when using the Cray compiler to
-        compile Fortran OpenACC code.
-
-    +--------+-------------------+-----------+----------------------------------+-------------------+-------------------------------------+
-    | Vendor | Module            | Language  | Compiler                         | Flags             | Support                             |
-    +========+===================+===========+==================================+===================+=====================================+
-    | Cray   | ``cce``           | C, C\+\+  | No support                       |                   |                                     |
-    |        |                   |           |                                  |                   |                                     |
-    |        |                   +-----------+----------------------------------+-------------------+-------------------------------------+
-    |        |                   | Fortran   | ``ftn`` (wraps ``crayftn``)      | | ``-h acc``      | Full support for OpenACC 2.0        |
-    |        |                   |           |                                  |                   | Partial support for OpenACC 2.x/3.x |
-    +--------+-------------------+-----------+----------------------------------+-------------------+-------------------------------------+
-    | UMS    | ``PrgEnv-cray``   | C, C\+\+  | ``clang``                        | | ``-fopenacc``   | Experimental. Contact               |
-    | module | ``ums``           |           |                                  |                   |    Joel Denny dennyje@ornl.gov      |
-    |        | ``um025``         +-----------+----------------------------------+-------------------+-------------------------------------+
-    |        | ``clacc``         | Fortran   | No support                       |                   |                                     |
-    |        |                   |           |                                  |                   |                                     |
-    +--------+-------------------+-----------+----------------------------------+-------------------+-------------------------------------+
-
 
     HIP
     ---
