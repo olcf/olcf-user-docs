@@ -918,17 +918,33 @@ OpenMP
 
 This section shows how to compile with OpenMP using the different compilers covered above.
 
-+--------+--------------+-----------+----------------------------------------------+-------------------------------------+
-| Vendor | Module       | Language  | Compiler                                     | OpenMP flag (CPU thread)            |
-+========+==============+===========+==============================================+=====================================+
-| AMD    | ``amd-llvm`` | | C       | | ``amdclang``                               | ``-fopenmp``                        |
-|        |              | | C++     | | ``amdclang++``                             |                                     |
-|        |              | | Fortran | | ``amdflang``                               |                                     |
-+--------+--------------+-----------+----------------------------------------------+-------------------------------------+
-| GNU    | ``gcc``      | | C       | | ``gcc``                                    | ``-fopenmp``                        |
-|        |              | | C++     | | ``g++``                                    |                                     |
-|        |              | | Fortran | | ``gfortran``                               |                                     |
-+--------+--------------+-----------+----------------------------------------------+-------------------------------------+
+.. list-table::
+    :widths: 40 40 40 80 80
+    :header-rows: 1
+
+    * - Vendor
+      - Module
+      - Language
+      - Compiler
+      - OpenMP flag (CPU thread)
+    * - AMD
+      - ``amd-llvm``
+      - | C
+        | C++
+        | Fortran
+      - | ``amdclang``
+        | ``amdclang++``
+        | ``amdflang``
+      - ``-fopenmp``
+    * - GNU
+      - ``gcc``
+      - | C
+        | C++
+        | Fortran
+      - | ``gcc``
+        | ``g++``
+        | ``gfortran``
+      - ``-fopenmp``
 
 OpenMP GPU Offload
 ------------------
@@ -955,67 +971,65 @@ This section shows how to compile with OpenMP Offload using the different compil
       - ``-fopenmp -fopenmp-targets=amdgcn-amd-amdhsa -Xopenmp-target=amdgcn-amd-amdhsa -march=gfx950``
 
 
+HIP
+---
 
-.. todo::
+This section shows how to compile HIP codes using the AMD compilers and ``hipcc`` compiler driver.
 
-    HIP
-    ---
+.. list-table::
+    :widths: 20 160
+    :header-rows: 1
 
-    This section shows how to compile HIP codes using the Cray compiler wrappers and ``hipcc`` compiler driver.
+    * - Compiler
+      - Compile/Link Flags, Header Files, and Libraries
+    * - ``amdclang++``
+      - | ``CFLAGS = -std=c++11 -D__HIP_ROCclr__ -D__HIP_ARCH_GFX950__=1 --rocm-path=${ROCM_PATH} --offload-arch=gfx950 -x hip``
+        | ``-I${ROCM_PATH}/include``
+        | ``LFLAGS = --rocm-path=${ROCM_PATH}``
+        | ``-L${ROCM_PATH}/lib -lamdhip64``
+    * - ``hipcc``
+      - | Can be used directly to compile HIP source files.
+        | To see what is being invoked within this compiler driver, issue the command ``hipcc --verbose``
+        | To explicitly target AMD MI355X, use ``--offload-arch=gfx950``
 
-    .. note::
+.. note::
 
-        Make sure the ``craype-accel-amd-gfx90a`` module is loaded when compiling HIP with the Cray compiler wrappers.
+    hipcc requires the ROCm Toolclain, See :ref:`lux_exposing-the-rocm-toolchain-to-your-programming-environment`
 
-    +-------------------+--------------------------------------------------------------------------------------------------------------------------+
-    | Compiler          | Compile/Link Flags, Header Files, and Libraries                                                                          |
-    +===================+==========================================================================================================================+
-    | | ``CC``          | | ``CFLAGS = -std=c++11 -D__HIP_ROCclr__ -D__HIP_ARCH_GFX90A__=1 --rocm-path=${ROCM_PATH} --offload-arch=gfx950 -x hip`` |
-    | | Only with       | | ``LFLAGS = --rocm-path=${ROCM_PATH}``                                                                                  |
-    | | ``PrgEnv-cray`` | | ``-L${ROCM_PATH}/lib -lamdhip64``                                                                                      |
-    | | ``PrgEnv-amd``  |                                                                                                                          |
-    +-------------------+--------------------------------------------------------------------------------------------------------------------------+
-    | ``hipcc``         | | Can be used directly to compile HIP source files.                                                                      |
-    |                   | | To see what is being invoked within this compiler driver, issue the command, ``hipcc --verbose``                       |
-    |                   | | To explicitly target AMD MI355X, use ``--offload-arch=gfx950``                                                         |
-    +-------------------+--------------------------------------------------------------------------------------------------------------------------+
-
-    .. note::
-
-        hipcc requires the ROCm Toolclain, See :ref:`lux_exposing-the-rocm-toolchain-to-your-programming-environment`
+.. todo:: research this
 
     .. note::
        Information about compiling code for different XNACK modes (which control page migration between GPU and CPU memory) can be found in the :ref:`compiling-hip-kernels-for-xnack-modes` section.
 
 
-    HIP + OpenMP CPU Threading
-    --------------------------
+HIP + OpenMP CPU Threading
+--------------------------
 
-    This section shows how to compile HIP + OpenMP CPU threading hybrid codes.
+This section shows how to compile HIP + OpenMP CPU threading hybrid codes.
 
-    .. note::
++----------+----------------+-----------------------------------------------------------------------------------------------------------------------------------+
+| Vendor   | Compiler       | Compile/Link Flags, Header Files, and Libraries                                                                                   |
++==========+================+===================================================================================================================================+
+| AMD/Cray | ``amdclang++`` | | ``CFLAGS = -std=c++11 -D__HIP_ROCclr__ -D__HIP_ARCH_GFX950__=1 --rocm-path=${ROCM_PATH} --offload-arch=gfx950 -x hip -fopenmp`` |
+|          |                | | ``-I${ROCM_PATH}/include``                                                                                                      |
+|          |                | | ``LFLAGS = --rocm-path=${ROCM_PATH} -fopenmp``                                                                                  |
+|          |                | | ``-L${ROCM_PATH}/lib -lamdhip64``                                                                                               |
+|          +----------------+-----------------------------------------------------------------------------------------------------------------------------------+
+|          | ``hipcc``      | | Can be used to directly compile HIP source files, add ``-fopenmp`` flag to enable OpenMP threading                              |
+|          |                | | To explicitly target AMD MI355X, use ``--offload-arch=gfx950``                                                                  |
++----------+----------------+-----------------------------------------------------------------------------------------------------------------------------------+
 
-        Make sure the ``craype-accel-amd-gfx90a`` module is loaded when compiling HIP with the Cray compiler wrappers.
+.. todo:: check/verify
 
-    +----------+-----------+-----------------------------------------------------------------------------------------------------------------------------------+
-    | Vendor   | Compiler  | Compile/Link Flags, Header Files, and Libraries                                                                                   |
-    +==========+===========+===================================================================================================================================+
-    | AMD/Cray | ``CC``    | | ``CFLAGS = -std=c++11 -D__HIP_ROCclr__ -D__HIP_ARCH_GFX90A__=1 --rocm-path=${ROCM_PATH} --offload-arch=gfx950 -x hip -fopenmp`` |
-    |          |           | | ``LFLAGS = --rocm-path=${ROCM_PATH} -fopenmp``                                                                                  |
-    |          |           | | ``-L${ROCM_PATH}/lib -lamdhip64``                                                                                               |
-    |          +-----------+-----------------------------------------------------------------------------------------------------------------------------------+
-    |          | ``hipcc`` | | Can be used to directly compile HIP source files, add ``-fopenmp`` flag to enable OpenMP threading                              |
-    |          |           | | To explicitly target AMD MI355X, use ``--offload-arch=gfx950``                                                                  |
-    +----------+-----------+-----------------------------------------------------------------------------------------------------------------------------------+
-    | GNU      | ``CC``    | | The GNU compilers cannot be used to compile HIP code, so all HIP kernels must be separated from CPU code.                       |
-    |          |           | | During compilation, all non-HIP files must be compiled with ``CC`` while HIP kernels must be compiled with ``hipcc``.           |
-    |          |           | | Then linking must be performed with the ``CC`` wrapper.                                                                         |
-    |          |           | | NOTE: When using ``cmake``, HIP code must currently be compiled using ``amdclang++`` instead of ``hipcc``.                      |
-    +----------+-----------+-----------------------------------------------------------------------------------------------------------------------------------+
+    | GNU      | ``g++``        | | The GNU compilers cannot be used to compile HIP code, so all HIP kernels must be separated from CPU code.                       |
+    |          |                | | During compilation, all non-HIP files must be compiled with ``g++`` while HIP kernels must be compiled with ``hipcc``.          |
+    |          |                | | Then linking must be performed with the ``hipcc`` wrapper.                                                                      |
+    |          |                | | NOTE: When using ``cmake``, HIP code must currently be compiled using ``amdclang++`` instead of ``hipcc``.                      |
+    +----------+----------------+-----------------------------------------------------------------------------------------------------------------------------------+
 
-    .. note::
+.. note::
 
-        hipcc requires the ROCm Toolclain, See :ref:`lux_exposing-the-rocm-toolchain-to-your-programming-environment`
+    hipcc requires the ROCm Toolclain, See :ref:`lux_exposing-the-rocm-toolchain-to-your-programming-environment`
 
 
 .. _lux-running:
