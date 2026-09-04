@@ -9,14 +9,16 @@ Riker User Guide
 
     Riker is a 136-node system with 128 AMD EPYC CPU-only nodes and 8 hybrid AMD EPYC CPU + NVIDIA L40S GPU nodes. The new system will provide OLCF users with upgraded capabilities for data analysis and visualization workflows.
 
-    Riker is currently undergoing final testing, and we anticipate opening the system to users in early September. Once user access begins, Riker and Andes will operate in parallel for approximately six weeks to provide users time to transition their workflows. At the end of this transition period, Andes will be decommissioned. A more detailed transition timeline will be announced in the coming weeks.
+    All current Andes users will gain access to Riker on September 10th. Once user access begins, Riker and Andes will operate in parallel for approximately six weeks to provide users time to transition their workflows. 
+    At the end of this transition period, Andes will be decommissioned. 
 
     Notable Differences to Andes:
 
     * Andes has 704 CPU nodes (32 cores, 256 GB RAM) with 9 NVIDIA K80 GPU nodes (28 cores, 2 GPUs per node, 1TB RAM).
     * Riker has 128 CPU nodes (128 cores, 2.2 TB RAM) with 8 NVIDIA L40S GPU nodes (64 cores, 2 GPUs per node, 1.5 TB RAM).
-    * **Andes allocates whole nodes only, while Riker allows partial node allocations**.  On Riker you can allocate a subset of a node's CPU cores, memory, and GPUs. Consequently, more explicit resource requests are required on Riker.
+    * **Andes allocates whole nodes only, while Riker allows partial node allocations**.  On Riker you can allocate a subset of a node's CPU cores, memory, and GPUs. Consequently, more explicit resource requests are required on Riker. More information in the :ref:`riker-node-sharing` section.
     * Riker uses newer compiler/MPI environments (notably MPICH and CUDA 13-era GPU support).     
+    * Node-hour charging based on weighted percentage of a node used. More information about the weights in :ref:`riker-job_accounting`.
 
 
 .. _riker-system-overview:
@@ -513,6 +515,8 @@ their use can be found in the related subsections.
 |            | | If necessary, srun will first create a resource allocation in which to run the parallel job(s).                                                                            |
 |            | | (see Single Command section below)                                                                                                                                         |
 +------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+ 
+
+.. _riker-node-sharing:
 
 General information for Node-sharing on Riker
 ---------------------------------------------
@@ -1399,6 +1403,42 @@ Although we were using 8 tasks, only 2 GPUs were needed in the ``--gpu-bind`` li
     There are many different ways users might choose to perform these mappings, so users are encouraged to clone the ``hello_jobstep`` program and test whether or not processes and threads are running where intended.
 
 
+.. _riker-job_accounting:
+
+Job Accounting on Riker
+-----------------------
+
+Jobs on Riker are scheduled in partial-node increments. The OLCF charges based on what a job makes *unavailable* to other users, so users are encouraged to only use what their job requires. Allocations on Riker are separate from those on Frontier and other OLCF resources.
+
+
+The *node-hour* charge for each  job will be calculated as follows:
+
+.. code::
+
+    node-hours = ({weight for resource} * {Resource used}) * ( batch job endtime - batch job starttime )
+
+Where we take a weighted percentage of the node resources used and multiply it by the number of hours the resources were unavailable to other users. 
+*batch job starttime* is the time the job moves into a running state, and *batch job endtime* is the time the job exits a running state. 
+
+Resources are weighted differently depending on the parition/queue; however, the weights configured to be `X` percentage of a node rather than charging `A` for a core on the batch partiion jobs and `B` for a core on the GPU partition.
+
+The weight calculation on the batch partition are as follows:
+
+.. code::
+
+    node-hours = ({0.00390625} * {Number of Cores} + {0.000226581} * {Amount of Memory}) * ( batch job endtime - batch job starttime )
+
+
+The weight calculation for the GPU partition are as follows:
+
+.. code::
+
+    node-hours = ({0.0015625} * {Number of Cores} + {6.66482E-05} * {Amount of Memory} + {0.4} * {Number of GPUs}) * ( batch job endtime - batch job starttime )
+
+
+
+
+
 .. _riker-viz-tools:
 
 Visualization tools
@@ -1805,10 +1845,16 @@ by emailing help@olcf.ornl.gov.
 
 ----
 
+.. _riker-known-issues:
+
 
 Known Issues
 ============
 
-- None
+Interactive jobs hanging when allocation expires
+------------------------------------------------
+
+Riker interactive jobs can sometimes encounter terminal hang when the allocation expires. Users will need to close out of their terminal and log back into Riker when this happens. 
+Tmux users can ``:kill-window``, reopen the window, and log back in to regain access to their terminal as killing the terminal window will not kill the tmux window.
 
 .. JIRA_CONTENT_HERE
