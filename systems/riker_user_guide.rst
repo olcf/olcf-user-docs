@@ -1411,16 +1411,16 @@ Job Accounting on Riker
 Jobs on Riker are scheduled in partial-node increments. The OLCF charges based on what a job makes *unavailable* to other users, so users are encouraged to only use what their job requires. Allocations on Riker are separate from those on Frontier and other OLCF resources.
 
 
-The *node-hour* charge for each  job will be calculated as follows:
+The *node-hour* charge for each job will be calculated as follows:
 
 .. code::
 
     node-hours = ({weight for resource} * {Resource used}) * ( batch job endtime - batch job starttime )
 
 Where we take a weighted percentage of the node resources used and multiply it by the number of hours the resources were unavailable to other users. 
-*batch job starttime* is the time the job moves into a running state, and *batch job endtime* is the time the job exits a running state. 
+``batch job starttime`` is the time the job moves into a running state, and ``batch job endtime`` is the time the job exits a running state. 
 
-Resources are weighted differently depending on the parition/queue; however, the weights configured to be `X` percentage of a node rather than charging `A` for a core on the batch partiion jobs and `B` for a core on the GPU partition.
+**Resources are weighted differently depending on the parition/queue**; however, the weights are overall configured to be ``X percentage of a node`` (as opposed to charging ``A`` for a core on the batch partiion and ``B`` for a core on the GPU partition).
 
 The weight calculation on the batch partition are as follows:
 
