@@ -68,8 +68,7 @@ Restart VisIt, and go to Options→Host Profiles. Select “New Host”
       - **Username**: Your OLCF Username (required)
       - **Tunnel data connections through SSH**: Checked (required)
 
-      Under the “Launch Profiles” tab create a launch profile. Most of these values
-      are arbitrary
+      Under the “Launch Profiles” tab create a launch profile.
 
       - **Profile Name**: ``batch`` (arbitrary)
       - **Timeout**: 480 (arbitrary)
@@ -110,23 +109,22 @@ Restart VisIt, and go to Options→Host Profiles. Select “New Host”
 
   .. tab-item:: Riker
 
+    **For Riker:**
+
+    - **Host nickname**: ``Riker`` (this is arbitrary)
+    - **Remote hostname**: ``riker.olcf.ornl.gov`` (required)
+    - **Host name aliases**: ``riker-login#g`` (required)
+    - **Maximum Nodes**: Unchecked
+    - **Maximum processors**: Unchecked (arbitrary)
+    - **Path to VisIt Installation**: ``/sw/riker/visit`` (required)
+    - **Username**: Your OLCF Username (required)
+    - **Tunnel data connections through SSH**: Checked (required)
+
+    Under the “Launch Profiles” tab create launch profiles for Riker:
+
     .. tab-set:: 
 
       .. tab-item:: Shared CPU Jobs
-
-        **For Riker Shared CPU jobs:**
-
-        - **Host nickname**: ``Riker`` (this is arbitrary)
-        - **Remote hostname**: ``riker.olcf.ornl.gov`` (required)
-        - **Host name aliases**: ``riker-login#g`` (required)
-        - **Maximum Nodes**: Unchecked
-        - **Maximum processors**: Unchecked (arbitrary)
-        - **Path to VisIt Installation**: ``/sw/riker/visit`` (required)
-        - **Username**: Your OLCF Username (required)
-        - **Tunnel data connections through SSH**: Checked (required)
-
-        Under the “Launch Profiles” tab create a launch profile. Most of these values
-        are arbitrary
 
         - **Profile Name**: ``batch`` (arbitrary)
         - **Timeout**: 480 (arbitrary)
@@ -161,20 +159,6 @@ Restart VisIt, and go to Options→Host Profiles. Select “New Host”
       
       .. tab-item:: Shared GPU Jobs
 
-        **For Riker Shared GPU jobs:**
-
-        - **Host nickname**: ``Riker`` (this is arbitrary)
-        - **Remote hostname**: ``riker.olcf.ornl.gov`` (required)
-        - **Host name aliases**: ``riker-login#g`` (required)
-        - **Maximum Nodes**: Unchecked
-        - **Maximum processors**: Unchecked (arbitrary)
-        - **Path to VisIt Installation**: ``/sw/riker/visit`` (required)
-        - **Username**: Your OLCF Username (required)
-        - **Tunnel data connections through SSH**: Checked (required)
-
-        Under the “Launch Profiles” tab create a launch profile. Most of these values
-        are arbitrary
-
         - **Profile Name**: ``gpu`` (arbitrary)
         - **Timeout**: 480 (arbitrary)
         - **Number of threads per task**: 0 (arbitrary, but not tested
@@ -208,20 +192,6 @@ Restart VisIt, and go to Options→Host Profiles. Select “New Host”
 
       .. tab-item:: Node-exclusive CPU jobs
 
-        **For Riker CPU-Exclusive jobs:**
-
-        - **Host nickname**: ``Riker`` (this is arbitrary)
-        - **Remote hostname**: ``riker.olcf.ornl.gov`` (required)
-        - **Host name aliases**: ``riker-login#g`` (required)
-        - **Maximum Nodes**: Unchecked
-        - **Maximum processors**: Unchecked (arbitrary)
-        - **Path to VisIt Installation**: ``/sw/riker/visit`` (required)
-        - **Username**: Your OLCF Username (required)
-        - **Tunnel data connections through SSH**: Checked (required)
-
-        Under the “Launch Profiles” tab create a launch profile. Most of these values
-        are arbitrary
-
         - **Profile Name**: ``batch`` (arbitrary)
         - **Timeout**: 480 (arbitrary)
         - **Number of threads per task**: 0 (arbitrary, but not tested
@@ -254,20 +224,6 @@ Restart VisIt, and go to Options→Host Profiles. Select “New Host”
         Exit and re-launch VisIt.
 
       .. tab-item:: Node-exclusive GPU jobs
-
-        **For Riker GPU-Exclusive jobs:**
-
-        - **Host nickname**: ``Riker`` (this is arbitrary)
-        - **Remote hostname**: ``riker.olcf.ornl.gov`` (required)
-        - **Host name aliases**: ``riker-login#g`` (required)
-        - **Maximum Nodes**: Unchecked
-        - **Maximum processors**: Unchecked (arbitrary)
-        - **Path to VisIt Installation**: ``/sw/riker/visit`` (required)
-        - **Username**: Your OLCF Username (required)
-        - **Tunnel data connections through SSH**: Checked (required)
-
-        Under the “Launch Profiles” tab create a launch profile. Most of these values
-        are arbitrary
 
         - **Profile Name**: ``gpu`` (arbitrary)
         - **Timeout**: 480 (arbitrary)
@@ -316,8 +272,7 @@ Restart VisIt, and go to Options→Host Profiles. Select “New Host”
       - **Username**: Your OLCF Username (required)
       - **Tunnel data connections through SSH**: Checked (required)
 
-      Under the “Launch Profiles” tab create a launch profile. Most of these values
-      are arbitrary
+      Under the “Launch Profiles” tab create a launch profile.
 
       - **Profile Name**: ``batch`` (arbitrary)
       - **Timeout**: 480 (arbitrary)
@@ -389,23 +344,6 @@ the following:
    field in the "Parallel" tab.
 -  Once you have made your changes, press the "Apply" button, and then
    save the settings (Options/Save Settings).
-
-For example, this is how you would modify the Andes profile to use the ``gpu`` partition:
-
-Under Andes' "Launch Profiles":
-
-1. Click on "New Profile"
-2. Name the profile something like "gpu" (arbitrary)
-3. Click on "Parallel"
-4. Check "Launch Parallel Engine"
-5. Set "Launch Method" to ``sbatch/srun`` (required)
-6. Set "Partition/Pool/Queue" to ``gpu`` (required)
-7. Set default number of processors to 28 (max without hyperthreading) (arbitrary)
-8. Set default number of nodes to 1 (arbitrary)
-9. Set default "Bank/Account" to your OLCF project with Andes allocation
-10. Set a default "Time Limit" in format of (``HH:MM:SS``)
-11. Click "Apply"
-12. At the top menu click on "Options"→"Save Settings"
 
 .. _visit-remote-gui:
 
@@ -633,44 +571,20 @@ tasks, including VisIt.
 Troubleshooting
 ===============
 
-Scalable Render Request Failed when using VisIt (fixed Feb. 2022)
------------------------------------------------------------------
-
-Some users have encountered their compute engine exiting abnormally on Andes
-after VisIt reaches 100% when drawing a plot, resulting in a "Scalable Render
-Request Failed (VisItException)" error message. This message has also been
-reported when users try to save plots, if VisIt was successfully able to draw.
-The error seems to more commonly occur for users that are trying to visualize
-large datasets.
-
-VisIt developers have been notified, and at this time the current workaround is
-to disable Scalable Rendering from being used. To do this, go to
-Options→Rendering→Advanced and set the "Use Scalable Rendering" option to
-"Never".
-
-However, this workaround has been reported to affect VisIt's ability to save
-images, as scalable rendering is utilized to save plots as image files (which
-can result in another compute engine crash). To avoid this, screen capture must
-be enabled. Go to File→"Set save options" and check the box labeled "Screen
-capture".
-
-
-As of February 2022, this issue on Andes has been fixed (must use VisIt 3.2.2 or higher).
-
 SSH error after accepting passcode (duplicate host profile bug)
 ---------------------------------------------------------------
 
-If you see an error similar to "The metadata server on host andes.olcf.ornl.gov
+If you see an error similar to "The metadata server on host riker.olcf.ornl.gov
 could not be launched or it could not connect back to your local computer" with
 the specific error listed as "The reason for the exception was not described",
 double check your host profiles. This bug may occur when you have two or more
 host profiles that represent the same system (e.g., if you have two host
-profiles that connect to andes.olcf.ornl.gov, but may have different settings /
-usernames for both). This bug can affect both Frontier and Andes.
+profiles that connect to riker.olcf.ornl.gov, but may have different settings /
+usernames for both). This bug can affect both Frontier and Riker.
 
 One solution is to change the host nickname of the duplicate host profile to
 start with "Copy of".  For example, if my original host profile was named "ORNL
-Andes", a proper duplicate should be named "Copy of ORNL Andes" (this is the
+Riker", a proper duplicate should be named "Copy of ORNL Riker" (this is the
 same nickname that would be generated when clicking the "Copy Host" button in
 VisIt). After renaming, make sure to save your settings via "Options/Save
 Settings" then close and restart VisIt.
@@ -720,9 +634,9 @@ under "Username".
 VisIt will not connect when you try to draw an image.
 -----------------------------------------------------
 
-If VisIt will not connect to Andes or Frontier when you try to draw an image, you
+If VisIt will not connect to Riker or Frontier when you try to draw an image, you
 should login to the system and check if a job is in the queue. To do this on
-Andes or Frontier , enter ``squeue`` from the command line. Your VisIt job should appear in the queue.
+Riker or Frontier , enter ``squeue`` from the command line. Your VisIt job should appear in the queue.
 If you see it in a state marked "PD" or "PEND" you should wait a bit longer to see
 if it will start. If you do not see your job listed in the queue, check to make
 sure your project ID is entered in your VisIt host profile. See the
@@ -749,10 +663,10 @@ SSH connection. Here are a few different approaches to fix this issue:
   "host name aliases", and "tunnel data connections through SSH" sections.
 * If you are using a VPN (including GlobalProtect VPN), try turning it off.
 * If you use multi-factor authentication (MFA4) with a smartcard or yubikey
-  when connecting to our systems, this does not work with VisIt. VisIt only
-  accepts RSA PIN+tokencodes, so you will have to change your SSH config
-  settings (typically within a ``.ssh/config`` file) and temporarily turn
-  off MFA4.
+  when connecting to our systems, this does not work with VisIt :math:`\leq 3.3.3`.
+  VisIt 3.3.3 and below only accepts RSA PIN+tokencodes, so you will have to change
+  your SSH config settings (typically within a ``.ssh/config`` file) and temporarily
+  turn off MFA4.
 
 .. _visit-resources:
 

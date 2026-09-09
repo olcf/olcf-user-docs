@@ -2,9 +2,6 @@
 ParaView
 ********
 
-.. warning::
-    July 7, 2026: The UMS installations on Frontier are currently upgrading dependencies and are not usable at this time.
-
 Overview
 ========
 
@@ -172,6 +169,7 @@ methods may be used, the one described should work in most cases.
 **Step 1: Save the following PVSC files to your local computer**
 
 * :download:`riker_olcf.pvsc </_static/host_profiles/paraview/riker_olcf.pvsc>`
+    * Note the ``exclusive`` and ``non-exclusive`` fields. Options are limited based on launching your job with node sharing enabled on Riker. For limitations and guidelines on GPU and core limits, please see the :ref:`riker-user-guide`.
 * :download:`andes.pvsc </_static/host_profiles/paraview/andes.pvsc>`
 * :download:`frontier_ums.pvsc </_static/host_profiles/paraview/frontier_ums.pvsc>`
 * :download:`frontier_olcf.pvsc </_static/host_profiles/paraview/frontier_olcf.pvsc>`
@@ -456,6 +454,24 @@ Recall that login nodes should *not* be used for memory- or compute-intensive ta
 
 Troubleshooting
 ===============
+
+Riker: Unable to use more than 1 core per MPI task
+--------------------------------------------------
+
+If you are running ParaView in a non-exclusive (shared) job in remote
+client/server mode, 1 core per MPI task is enforced. This is by design. If you
+need more than 1 core per MPI task, then you'll need to switch ``Exclusive Node
+Allocation`` to ``True`` when connecting to Riker. 
+
+Riker: Hang when volume rendering on batch partition (Sep. 9, 2026)
+-------------------------------------------------------------------
+
+When using more than 1 MPI task in remote client/server mode, it is a known
+issue that ParaView hangs on Riker's ``batch`` partition (``Accelerated
+Compute`` set to ``None``) -- **specifically when volume rendering**.
+Non-volume rendered visualizations still work with more than 1 MPI task on the
+``batch`` partition. For volume rendering, switch to using the ``gpu``
+partition instead where this is not an issue (``Accelerated Compute`` set to ``CUDA``).
 
 Process failed to start connection issue (or DISPLAY not set)
 -------------------------------------------------------------
