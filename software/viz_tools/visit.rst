@@ -636,7 +636,7 @@ VisIt will not connect when you try to draw an image.
 
 If VisIt will not connect to Riker or Frontier when you try to draw an image, you
 should login to the system and check if a job is in the queue. To do this on
-Riker or Frontier , enter ``squeue`` from the command line. Your VisIt job should appear in the queue.
+Riker or Frontier , enter ``squeue --me`` from the command line. Your VisIt job should appear in the queue.
 If you see it in a state marked "PD" or "PEND" you should wait a bit longer to see
 if it will start. If you do not see your job listed in the queue, check to make
 sure your project ID is entered in your VisIt host profile. See the
