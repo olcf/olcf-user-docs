@@ -140,8 +140,8 @@ Restart VisIt, and go to Options→Host Profiles. Select “New Host”
             - **Parallel launch method**:
               ``sbatch/srun`` (required)
             - **Partition/Pool/Queue**: ``batch`` (required)
-            - **Number of processors**: 1 (max for ``batch`` queue is 128)
-            - **Number of nodes**: 1 (arbitrary)
+            - **Number of processors**: 1 (required, max for ``batch`` queue is 128)
+            - **Number of nodes**: 1 (required, arbitrary)
             - **Bank/Account**: Your OLCF project to use (required)
             - **Time Limit**: 1:00:00 (arbitrary, ``HH:MM:SS``)
             - **Machine file**: Unchecked (required – Lets VisIt get the nodelist from the scheduler)
@@ -173,8 +173,8 @@ Restart VisIt, and go to Options→Host Profiles. Select “New Host”
             - **Parallel launch method**:
               ``sbatch/srun`` (required)
             - **Partition/Pool/Queue**: ``gpu`` (required)
-            - **Number of processors**: 1 (limited to 16 tasks per GPU)
-            - **Number of nodes**: 1 (arbitrary)
+            - **Number of processors**: 1 (required, limited to 16 tasks per GPU)
+            - **Number of nodes**: 1 (required, arbitrary)
             - **Bank/Account**: Your OLCF project to use (required)
             - **Time Limit**: 1:00:00 (arbitrary, ``HH:MM:SS``)
             - **Machine file**: Unchecked (required – Lets VisIt get the nodelist from the scheduler)
@@ -206,8 +206,8 @@ Restart VisIt, and go to Options→Host Profiles. Select “New Host”
             - **Parallel launch method**:
               ``sbatch/srun`` (required)
             - **Partition/Pool/Queue**: ``batch`` (required)
-            - **Number of processors**: 1 (max for ``batch`` queue is 128)
-            - **Number of nodes**: 1 (arbitrary)
+            - **Number of processors**: 1 (required, max for ``batch`` queue is 128)
+            - **Number of nodes**: 1 (required, arbitrary)
             - **Bank/Account**: Your OLCF project to use (required)
             - **Time Limit**: 1:00:00 (arbitrary, ``HH:MM:SS``)
             - **Machine file**: Unchecked (required – Lets VisIt get the nodelist from the scheduler)
@@ -239,8 +239,8 @@ Restart VisIt, and go to Options→Host Profiles. Select “New Host”
             - **Parallel launch method**:
               ``sbatch/srun`` (required)
             - **Partition/Pool/Queue**: ``gpu`` (required)
-            - **Number of processors**: 1 (max for ``gpu`` queue is 64)
-            - **Number of nodes**: 1 (arbitrary)
+            - **Number of processors**: 1 (required, max for ``gpu`` queue is 64)
+            - **Number of nodes**: 1 (required, arbitrary)
             - **Bank/Account**: Your OLCF project to use (required)
             - **Time Limit**: 1:00:00 (arbitrary, ``HH:MM:SS``)
             - **Machine file**: Unchecked (required – Lets VisIt get the nodelist from the scheduler)

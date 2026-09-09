@@ -57,7 +57,7 @@ The below example is how to use VNC on Riker.
 Step 1 (local system)
 ---------------------
 
-Install a vncviewer (turbovnc, tigervnc, etc.) on your local machine.
+Install a vncviewer (`turbovnc <https://github.com/TurboVNC/turbovnc/releases>`__, `tigervnc <https://github.com/TigerVNC/tigervnc/releases>`__, etc.) on your local machine.
 When running vncviewer for the first time, it will ask to set a password for this and future vnc sessions.
 
 Step 2 (terminal 1)
