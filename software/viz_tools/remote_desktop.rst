@@ -55,13 +55,13 @@ The below example is how to use VNC on Riker.
         vncserver -kill :1
 
 Step 1 (local system)
-^^^^^^^^^^^^^^^^^^^^^
+---------------------
 
 Install a vncviewer (turbovnc, tigervnc, etc.) on your local machine.
 When running vncviewer for the first time, it will ask to set a password for this and future vnc sessions.
 
 Step 2 (terminal 1)
-^^^^^^^^^^^^^^^^^^^
+-------------------
 
 From an Riker connection launch a batch job and execute the below ``test-vnc.sh`` script to start the vncserver and run an executable (e.g., VisIt):
 
@@ -99,14 +99,14 @@ From an Riker connection launch a batch job and execute the below ``test-vnc.sh`
 
 
 Step 3 (terminal 2)
-^^^^^^^^^^^^^^^^^^^
+-------------------
 
 In a second terminal on your local system open a tunneling connection following the instructions given by the vnc start-up script (e.g., for ``riker-gpu1``):
 
 -  localsystem: ``ssh -L 5901:riker-gpu1:5901 username@riker.olcf.ornl.gov``
 
 Step 4 (local system)
-^^^^^^^^^^^^^^^^^^^^^
+---------------------
 
 Launch the vncviewer. When you launch the vncviewer that you downloaded you will need to specify ``localhost:5901``.
 You will also set a password for the initial connection or enter the created password for subsequent connections.
