@@ -3463,7 +3463,7 @@ Read more about configuring runtime options at `<https://rocm.docs.amd.com/proje
 .. code:: bash
 
     rocprof-sys-sample -- ./myapp
-    mpirun -np 2 rocprof-sys-run -- ./mpi-example
+    srun -n 2 rocprof-sys-run -- ./mpi-example
     srun -N 2 -n 16 --ntasks-per-node=8 --gpus-per-node=8 --gpu-bind=closest rocprof-sys-run -- ./mpi-example
 
 **Using predefined presets.**
@@ -3479,7 +3479,7 @@ Optimized for MPI, OpenMP, and compute-intensive applications:
 
 .. code:: bash
 
-    mpirun -n 4 rocprof-sys-sample --preset=trace-hpc -- ./mpi_app
+    srun -n 4 rocprof-sys-sample --preset=trace-hpc -- ./mpi_app
 
 **Understanding the output.**
 Several output files can be generated, as detailed at `<https://rocm.docs.amd.com/projects/rocprofiler-systems/en/latest/how-to/understanding-rocprof-sys-output.html>`_.
