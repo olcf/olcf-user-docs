@@ -35,7 +35,7 @@ The MI355X GPUs are connected with Infinity Fabric GPU-GPU in the arrangement sh
 
     **TERMINOLOGY:**
 
-    Each MI355X will show as a separate GPUs according to Slurm, ``ROCR_VISIBLE_DEVICES``, and the ROCr runtime, so from this point forward in the quick-start guide, we will simply refer to the MI355X as GPUs.
+    Each MI355X will show as a separate GPU according to Slurm, ``ROCR_VISIBLE_DEVICES``, and the ROCr runtime, so from this point forward in the quick-start guide, we will simply refer to the MI355X as a GPU.
 
 .. image:: /images/lux/Lux_Node_Diagram.png
    :align: center
@@ -635,6 +635,8 @@ RCCL
 
 The ROCm Collective Communication Library (RCCL) is installed with ROCm and can be accessed by loading a ``rocm`` module.
 
+Lux is primarily a RCCL-centric machine utilizing AMD Pollara 400GbE NICs on each compute node.
+
 .. todo: do we need a plugin or module? RCCL over Slingshot is not necessary.
 
 .. todo: fill in more RCCL information
@@ -1010,7 +1012,7 @@ This section shows how to compile HIP + OpenMP CPU threading hybrid codes.
 +----------+----------------+-----------------------------------------------------------------------------------------------------------------------------------+
 | Vendor   | Compiler       | Compile/Link Flags, Header Files, and Libraries                                                                                   |
 +==========+================+===================================================================================================================================+
-| AMD/Cray | ``amdclang++`` | | ``CFLAGS = -std=c++11 -D__HIP_ROCclr__ -D__HIP_ARCH_GFX950__=1 --rocm-path=${ROCM_PATH} --offload-arch=gfx950 -x hip -fopenmp`` |
+| AMD      | ``amdclang++`` | | ``CFLAGS = -std=c++11 -D__HIP_ROCclr__ -D__HIP_ARCH_GFX950__=1 --rocm-path=${ROCM_PATH} --offload-arch=gfx950 -x hip -fopenmp`` |
 |          |                | | ``-I${ROCM_PATH}/include``                                                                                                      |
 |          |                | | ``LFLAGS = --rocm-path=${ROCM_PATH} -fopenmp``                                                                                  |
 |          |                | | ``-L${ROCM_PATH}/lib -lamdhip64``                                                                                               |
@@ -1074,46 +1076,6 @@ When you start a batch job, your batch script (or interactive shell for batch-in
     .. note::
       Unlike Summit and Titan, there are no launch/batch nodes on Frontier. This means your batch script runs on a node allocated to you rather than a shared node. You still must use the job launcher (``srun``) to run parallel jobs across all of your nodes, but serial tasks need not be launched with ``srun``.
 
-.. todo: review
-    .. _frontier-simple:
-
-    Simplified Node Layout
-    ----------------------
-
-    To easily visualize job examples (see :ref:`frontier-mapping` further below), the
-    compute node diagram has been simplified to the picture shown below.
-
-    .. image:: /images/Frontier_Node_Diagram_Simple.png
-       :align: center
-       :width: 100%
-       :alt: Simplified Frontier node architecture diagram
-
-    In the diagram, each **physical** core on a Frontier compute node is composed
-    of two **logical** cores that are represented by a pair of blue and grey boxes.
-    For a given physical core, the blue box represents the logical core of the
-    first hardware thread, where the grey box represents the logical core of the
-    second hardware thread.
-
-    .. _frontier-lownoise:
-
-    Low-noise Mode Layout
-    ^^^^^^^^^^^^^^^^^^^^^
-
-    Frontier uses low-noise mode and core specialization (``-S`` flag at job
-    allocation, e.g., ``sbatch``).  Low-noise mode constrains all system processes
-    to core 0.  Core specialization (by default, ``-S 8``) reserves the first core
-    in each L3 region.  This prevents the user running on the core that system
-    processes are constrained to.  This also means that there are only 56
-    allocatable cores by default instead of 64. Therefore, this modifies the
-    simplified node layout to:
-
-    .. image:: /images/Frontier_Node_Diagram_Simple_lownoise.png
-       :align: center
-       :width: 100%
-       :alt: Simplified Frontier node architecture diagram (low-noise mode)
-
-    To override this default layout (not recommended), set ``-S 0`` at job allocation.
-
 .. _lux-slurm:
 
 Slurm
@@ -1129,32 +1091,73 @@ Additional documentation is available at `<https://slurm.schedmd.com/documentati
 Some common Slurm commands are summarized in the table below.
 More complete examples are given in the Monitoring and Modifying Batch Jobs section of this guide.
 
-+--------------+------------------------------------------------+------------------------------------+
-| Command      | Action/Task                                    | LSF Equivalent                     |
-+==============+================================================+====================================+
-| ``squeue``   | Show the current queue                         | ``bjobs``                          |
-+--------------+------------------------------------------------+------------------------------------+
-| ``sbatch``   | Submit a batch script                          | ``bsub``                           |
-+--------------+------------------------------------------------+------------------------------------+
-| ``salloc``   | Submit an interactive job                      | ``bsub -Is $SHELL``                |
-+--------------+------------------------------------------------+------------------------------------+
-| ``srun``     | Launch a parallel job                          | ``jsrun``                          |
-+--------------+------------------------------------------------+------------------------------------+
-| ``sinfo``    | Show node/partition info                       | ``bqueues`` or ``bhosts``          |
-+--------------+------------------------------------------------+------------------------------------+
-| ``sacct``    | View accounting information for jobs/job steps | ``bacct``                          |
-+--------------+------------------------------------------------+------------------------------------+
-| ``scancel``  | Cancel a job or job step                       | ``bkill``                          |
-+--------------+------------------------------------------------+------------------------------------+
-| ``scontrol`` | View or modify job configuration.              | ``bstop``, ``bresume``, ``bmod``   |
-+--------------+------------------------------------------------+------------------------------------+
+.. list-table:: Slurm Commands
+   :header-rows: 1
 
+   * - Command
+     - Action/Task
+   * - ``squeue``
+     - Show the current queue
+   * - ``sbatch``
+     - Submit a batch script to allocate a Slurm job allocation. The script contains options preceded with ``#SBATCH``.
+   * - ``salloc``
+     - Submit an interactive job, where one or more job steps (i.e., ``srun`` commands) can then be launched on the allocated resources (i.e., nodes).
+   * - ``srun``
+     - | Launch a parallel jobon resources allocated with ``sbatch`` or ``salloc``.
+       | If necessary, ``srun`` will first create a resource
+   * - ``sinfo``
+     - Show node/partition info
+   * - ``sacct``
+     - View accounting information for jobs/job steps
+   * - ``scancel``
+     - Cancel a job or job step
+   * - ``scontrol``
+     - View or modify job configuration.
+
+
+General information for Node-sharing on Lux
+-------------------------------------------
+
+Lux is a node-shared Slurm cluster: multiple users may run on the same physical node at the same time, as long as their resource requests do not overlap.
+Node sharing on Lux is facilitated through Slurm allocations of CPU cores, memory, and GPUs,
+
+.. todo: # add if true - with additional site policies that reserve CPU cores for GPU work on GPU nodes.
+
+When constructing a job on Lux, please be aware of the two-phase resource allocation steps within Slurm.
+
+.. list-table:: Job Lifecycle Phases
+   :header-rows: 1
+
+   * - Phase
+     - Location
+     - Description
+   * - Allocation
+     - Login
+     -
+       Request resources with ``sbatch``, ``salloc``, or ``srun`` (from login node).
+
+       This is where you should request what you need:
+
+       * ``--cpus-per-task``, ``--mem`` (CPU Jobs)
+       * ``--cpus-per-gpu``, ``--mem-per-gpu`` (GPU Jobs)
+   * - Delegation
+     - Compute
+     -
+       Launch work with ``srun`` inside the allocation.
+
+       This is where you “hand out” the resources you already requested to the actual processes (potentially with multiple ``srun`` steps and different layouts).
+
+.. todo: finalize and fact check
+
+    Lux enforces memory as a per-core share. CPU cores and memory are coupled on all nodes. Users can request cores or memory, but the system ties them together as equal shares and will round accordingly.
+
+If a job requires all the resources on a node, users can use the --exclusive flag to disable node-sharing functionality and give the job sole access to the nodes in that allocation.
 
 Batch Scripts
 -------------
 
 The most common way to interact with the batch system is via batch scripts.
-A batch script is simply a shell script with added directives to request various resoruces from or provide certain information to the scheduling system.
+A batch script is simply a shell script with added directives to request various resources from or provide certain information to the scheduling system.
 Aside from these directives, the batch script is simply the series of commands needed to set up and run your job.
 
 To submit a batch script, use the command ``sbatch myjob.sl``
@@ -1170,7 +1173,7 @@ Consider the following batch script:
    #SBATCH -o %x-%j.out
    #SBATCH -t 1:00:00
    #SBATCH -p batch
-   #SBATCH -N 1024
+   #SBATCH -N 128
    #SBATCH --gpus 4
    #SBATCH --cpus-per-gpu 14 # 4 * 14 = 56
 
@@ -1213,6 +1216,22 @@ In the script, Slurm directives are preceded by ``#SBATCH``, making them appear 
 |   14 | Copy the output file to an appropriate location.                                                |
 +------+-------------------------------------------------------------------------------------------------+
 
+Sharing Compute nodes
+^^^^^^^^^^^^^^^^^^^^^
+
+.. todo: remove
+
+Each ``batch`` partition (compute) node has 128 cores that can be allocated on a 1-core basis, 3TB of memory that can be allocated in a MB basis, and 8 GPUs that can be allocated on a 1-GPU basis.
+
+.. todo: fact check once implemented
+
+    Each ``batch`` partition (compute) node has 128 cores that can be allocated on a 1-core basis and come with an equal share of memory (~23GB per core).
+    However, 104 cores (13 per GPU) are reserved for the GPUs and can only be allocated if you also allocate the bound GPU.
+
+    The reserved cores are automatically allocated when a GPU is requested with ``--gpus``.
+    All other cores on the GPU nodes operate as “Flex / Shared” cores that can be allocated by GPU-enabled workloads & CPU-Only workloads allowing users to fill unused CPUs on GPU nodes or GPU jobs to increase beyond the default 13 Cores.
+
+
 Example Compile and Run
 ^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -1249,165 +1268,237 @@ The following can run ``hello_jobstep``:
 
 
 
+.. _lux-interactive:
+
+Interactive Jobs
+----------------
+
+Most users will find batch jobs an easy way to use the system, as they allow you to "hand off" a job to the scheduler, allowing them to focus on other tasks while their job waits in the queue and eventually runs.
+Occasionally, it is necessary to run interactively, especially when developing, testing, modifying or debugging a code.
+
+Since all compute resources are managed and scheduled by Slurm, it is not possible to simply log into the system and immediately begin running parallel codes interactively.
+Rather, you must request the appropriate resources from Slurm and, if necessary, wait for them to become available. This is done through an "interactive batch" job.
+Interactive batch jobs are submitted with the ``salloc`` command. Resources are requested via the same options that are passed via ``#SBATCH`` in a regular batch script (but without the ``#SBATCH`` prefix).
+For example, to request an interactive batch job with the same resources that the batch script above requests, you would use ``salloc -A ABC123 -J RunSim123 -t 1:00:00 -p batch -N 1024``.
+Note there is no option for an output file...you are running interactively, so standard output and standard error will be displayed to the terminal.
+
+.. warning::
+   Indicating your shell in your ``salloc`` command is NOT recommended (e.g., ``salloc ... /bin/bash``). Doing so causes your compute job to start on a login node by default rather than automatically moving you to a compute node.
+
+.. _lux_common-slurm-options:
+
+Common Slurm Options
+--------------------
+
+The table below summarizes options for submitted jobs.
+Unless otherwise noted, they can be used for either batch scripts or interactive batch jobs.
+For scripts, they can be added on the ``sbatch`` command line or as a ``#SBATCH`` directive in the batch script.
+(If they're specified in both places, the command line takes precedence.)
+This is only a subset of all available options.
+Check the `Slurm Man Pages <https://slurm.schedmd.com/man_index.html>`__ for a more complete list.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 15 25 50
+
+   * - Option
+     - Example Usage
+     - Description
+   * - ``-A``, ``--account``
+     - ``#SBATCH -A ABC123``
+     - Specifies the project to which the job should be charged.
+   * - ``-N``, ``--nodes``
+     - ``#SBATCH -N 128``
+     - Request 128 nodes for the job.
+   * - ``-n``, ``--ntasks``
+     - ``#SBATCH -n 4``
+     - Specify the default number of tasks in each ``srun``.
+   * - ``-c``, ``--cpus-per-task``
+     - ``#SBATCH -c 8``
+     - Specify the number of CPUs per task. This will default to calculating the number of CPUs needed from the ``--ntasks`` specified in the batch script.
+   * - ``-G``, ``--gpus``
+     - ``#SBATCH --gpus 8``
+     - Requests 8 GPUs (total) for the job.
+   * - ``--gpus-per-task``
+     - ``#SBATCH --gpus-per-task=1``
+     - Requests 1 GPU per task.
+   * - ``-t``, ``--time``
+     - ``#SBATCH -t 4:00:00``
+     - Request a walltime of 4 hours.
+
+       A walltime request is the maximum amount of time a job will run and can be specified as minutes, hours:minutes, hours:minutes:seconds, days-hours, days-hours:minutes, or days-hours:minutes:seconds
+   * - ``-d``, ``--dependency``
+     - ``#SBATCH -d afterok:12345``
+     - Specify job dependency (in this example, this job cannot start until job 12345 exits with an exit code of 0. See the Job Dependency section for more information)
+   * - ``-J``, ``--job-name``
+     - ``#SBATCH -J MyJob123``
+     - Specify the job name. (this will show up in queue listings)
+   * - ``-o``, ``--output``
+     - ``#SBATCH -o jobout.%j``
+     - File where job STDOUT will be directed (%j will be replaced with the job ID).
+
+       If no ``-e`` option is specified, job STDERR will be placed in this file, too.
+   * - ``-e``, ``--error``
+     - ``#SBATCH -e joberr.%j``
+     - File where job STDERR will be directed (%j will be replaced with the job ID).
+
+       If no ``-o`` option is specified, job STDOUT will be placed in this file, too.
+   * - ``--mail-type``
+     - ``#SBATCH --mail-type=END``
+     - Send email for certain job actions. Can be a comma-separated list. Actions include BEGIN, END, FAIL, REQUEUE, INVALID_DEPEND, STAGE_OUT, ALL, and more.
+   * - ``--mail-user``
+     - ``#SBATCH --mail-user=user@somewhere.com``
+     - Email address to be used for notifications.
+   * - ``--reservation``
+     - ``#SBATCH --reservation=MyReservation.1``
+     - Instructs Slurm to run a job on nodes that are part of the specified reservation.
+   * - ``--signal``
+     - ``#SBATCH --signal=USR1@300``
+     - Send the given signal to a job the specified time (in seconds) seconds before the job reaches its walltime. The signal can be by name or by number (i.e. both 10 and USR1 would send SIGUSR1).
+
+       Signaling a job can be used, for example, to force a job to write a checkpoint just before Slurm kills the job (note that this option only sends the signal; the user must still make sure their job script traps the signal and handles it in the desired manner).
+
+       When used with ``sbatch``, the signal can be prefixed by "B:" (e.g. ``--signal=B:USR1@300``) to tell Slurm to signal only the batch shell; otherwise all processes will be signaled.
+   * - ``-p``, ``--partition``
+     - ``#SBATCH -p batch``
+     - Request a specific compute partition for the job. (default is ``batch``)
+   * - ``-q``, ``--qos``
+     - ``#SBATCH -q debug``
+     - Request a "Quality of Service" (QOS) for the job. (default is ``normal``)
+
+.. warning::
+
+    Setting ``--threads-per-core`` > 1 on Lux will not have an effect and will result in submissions being rejected.
+    The default is ``--threads-per-core=1`` because Lux does not have simultaneous multithreading (SMT) enabled, and values greater than 1 are invalid.
+
+Slurm Environment Variables
+---------------------------
+
+Slurm reads a number of environment variables, many of which can provide the same information as the job options noted above.
+We recommend using the job options rather than environment variables to specify job options, as it allows you to have everything self-contained within the job submission script (rather than having to remember what options you set for a given job).
+
+Slurm also provides a number of environment variables within your running job.
+The following table summarizes those that may be particularly useful within your job (e.g., for naming output log files):
+
++--------------------------+-----------------------------------------------------------------------------------------+
+| Variable                 | Description                                                                             |
++==========================+=========================================================================================+
+| ``$SLURM_SUBMIT_DIR``    | The directory from which the batch job was submitted. By default, a new job starts      |
+|                          | in your home directory. You can get back to the directory of job submission with        |
+|                          | ``cd $SLURM_SUBMIT_DIR``. Note that this is not necessarily the same directory in which |
+|                          | the batch script resides.                                                               |
++--------------------------+-----------------------------------------------------------------------------------------+
+| ``$SLURM_JOBID``         | The job’s full identifier. A common use for ``$SLURM_JOBID`` is to append the job’s ID  |
+|                          | to the standard output and error files.                                                 |
++--------------------------+-----------------------------------------------------------------------------------------+
+| ``$SLURM_JOB_NUM_NODES`` | The number of nodes requested.                                                          |
++--------------------------+-----------------------------------------------------------------------------------------+
+| ``$SLURM_JOB_NAME``      | The job name supplied by the user.                                                      |
++--------------------------+-----------------------------------------------------------------------------------------+
+| ``$SLURM_NODELIST``      | The list of nodes assigned to the job.                                                  |
++--------------------------+-----------------------------------------------------------------------------------------+
+
+
+Job States
+----------
+
+A job will transition through several states during its lifetime.
+Common ones include:
+
++-------+------------+-------------------------------------------------------------------------------+
+| State | State      | Description                                                                   |
+| Code  |            |                                                                               |
++=======+============+===============================================================================+
+| CA    | Canceled   | The job was canceled (could've been by the user or an administrator)          |
++-------+------------+-------------------------------------------------------------------------------+
+| CD    | Completed  | The job completed successfully (exit code 0)                                  |
++-------+------------+-------------------------------------------------------------------------------+
+| CG    | Completing | The job is in the process of completing (some processes may still be running) |
++-------+------------+-------------------------------------------------------------------------------+
+| PD    | Pending    | The job is waiting for resources to be allocated                              |
++-------+------------+-------------------------------------------------------------------------------+
+| R     | Running    | The job is currently running                                                  |
++-------+------------+-------------------------------------------------------------------------------+
+
+
+Job Reason Codes
+----------------
+
+In addition to state codes, jobs that are pending will have a "reason code" to explain why the job is pending.
+Completed jobs will have a reason describing how the job ended.
+Some codes you might see include:
+
++-------------------+---------------------------------------------------------------------------------------------------------------+
+| Reason            | Meaning                                                                                                       |
++===================+===============================================================================================================+
+| Dependency        | Job has dependencies that have not been met                                                                   |
++-------------------+---------------------------------------------------------------------------------------------------------------+
+| JobHeldUser       | Job is held at user's request                                                                                 |
++-------------------+---------------------------------------------------------------------------------------------------------------+
+| JobHeldAdmin      | Job is held at system administrator's request                                                                 |
++-------------------+---------------------------------------------------------------------------------------------------------------+
+| Priority          | Other jobs with higher priority exist for the partition/reservation                                           |
++-------------------+---------------------------------------------------------------------------------------------------------------+
+| Reservation       | The job is waiting for its reservation to become available                                                    |
++-------------------+---------------------------------------------------------------------------------------------------------------+
+| AssocMaxJobsLimit | The job is being held because the user/project has hit the limit on running jobs                              |
++-------------------+---------------------------------------------------------------------------------------------------------------+
+| ReqNodeNotAvail   | The requested a particular node, but it's currently unavailable (it's in use, reserved, down, draining, etc.) |
++-------------------+---------------------------------------------------------------------------------------------------------------+
+| JobLaunchFailure  | Job failed to launch (could due to system problems, invalid program name, etc.)                               |
++-------------------+---------------------------------------------------------------------------------------------------------------+
+| NonZeroExitCode   | The job exited with some code other than 0                                                                    |
++-------------------+---------------------------------------------------------------------------------------------------------------+
+
+Many other states and job reason codes exist.
+For a more complete description, see the ``squeue`` man page (either on the system or online).
+
+.. _lux-scheduling:
+
+Queues on Lux
+^^^^^^^^^^^^^
+
+The compute nodes on Lux are in a single partition, the "batch partition" of compute nodes as described in :ref:`lux-nodes`.
+The scheduling policies for the ``batch`` partition are as follows:
+
+.. todo: verify when final
+
+.. list-table::
+    :header-rows: 1
+
+    * - Bin
+      - Node Count
+      - Duration
+      - Policy
+    * - A
+      - 1-502 Nodes
+      - Duration 0-24 hr
+      - Max 4 jobs running and 4 jobs eligible **per project**
+
+Node-Hour Calculation
+^^^^^^^^^^^^^^^^^^^^^
+
+Jobs on Lux are scheduled in partial-node increments.
+The OLCF charges based on what a job makes unavailable to other users, so users are encouraged to only use what their job requires.
+Allocations on Lux are separate from those on Frontier and other OLCF resources.
+
+The node-hour charge for each job will be calculated as follows:
+
+.. code::
+
+    node-hours = ({weight for resource} * {Resource used}) * ( batch job endtime - batch job starttime )
+
+.. todo: finalize
+
+For example, if Lux weighs the GPUs as 80% of the node, and CPUs as 20% of the node, the calculation would be as follows:
+
+.. code::
+
+    node-hours = ( 0.0015625 * {Number of Cores} + .1 * {Number of GPUs} ) * ( batch job endtime - batch job starttime )
+
 .. todo: stopped here
 
-    .. _lux-interactive:
-
-    Interactive Jobs
-    ----------------
-
-    Most users will find batch jobs an easy way to use the system, as they allow you to "hand off" a job to the scheduler, allowing them to focus on other tasks while their job waits in the queue and eventually runs. Occasionally, it is necessary to run interactively, especially when developing, testing, modifying or debugging a code.
-
-    Since all compute resources are managed and scheduled by Slurm, it is not possible to simply log into the system and immediately begin running parallel codes interactively. Rather, you must request the appropriate resources from Slurm and, if necessary, wait for them to become available. This is done through an "interactive batch" job. Interactive batch jobs are submitted with the ``salloc`` command. Resources are requested via the same options that are passed via ``#SBATCH`` in a regular batch script (but without the ``#SBATCH`` prefix). For example, to request an interactive batch job with the same resources that the batch script above requests, you would use ``salloc -A ABC123 -J RunSim123 -t 1:00:00 -p batch -N 1024``. Note there is no option for an output file...you are running interactively, so standard output and standard error will be displayed to the terminal.
-
-    .. warning::
-       Indicating your shell in your ``salloc`` command is NOT recommended (e.g., ``salloc ... /bin/bash``). Doing so causes your compute job to start on a login node by default rather than automatically moving you to a compute node.
-
-    .. _common-slurm-options:
-
-    Common Slurm Options
-    --------------------
-
-    The table below summarizes options for submitted jobs. Unless otherwise noted, they can be used for either batch scripts or interactive batch jobs. For scripts, they can be added on the ``sbatch`` command line or as a ``#BSUB`` directive in the batch script. (If they're specified in both places, the command line takes precedence.) This is only a subset of all available options. Check the `Slurm Man Pages <https://slurm.schedmd.com/man_index.html>`__ for a more complete list.
-
-    .. table::
-        :widths: 15 28 57
-
-        +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-        | Option                 | Example Usage                              | Description                                                                          |
-        +========================+============================================+======================================================================================+
-        | ``-A``                 | ``#SBATCH -A ABC123``                      | Specifies the project to which the job should be charged                             |
-        +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-        | ``-N``                 | ``#SBATCH -N 1024``                        | Request 1024 nodes for the job                                                       |
-        +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-        | ``-t``                 | ``#SBATCH -t 4:00:00``                     | Request a walltime of 4 hours.                                                       |
-        |                        |                                            | A walltime request is the maximum amount of time a job will run and can be specified |
-        |                        |                                            | as minutes, hours:minutes, hours:minutes:seconds, days-hours, days-hours:minutes, or |
-        |                        |                                            | days-hours:minutes:seconds                                                           |
-        +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-        | ``--threads-per-core`` | ``#SBATCH --threads-per-core=2``           | | Number of active hardware threads per core. Can be 1 or 2 (1 is default)           |
-        |                        |                                            | | **Must** be used if using ``--threads-per-core=2`` in your ``srun`` command.       |
-        +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-        | ``-d``                 | ``#SBATCH -d afterok:12345``               | Specify job dependency (in this example, this job cannot start until job 12345 exits |
-        |                        |                                            | with an exit code of 0. See the Job Dependency section for more information          |
-        +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-        | ``-C``                 | ``#SBATCH -C nvme``                        | Request the burst buffer/NVMe on each node be made available for your job. See       |
-        |                        |                                            | the Burst Buffers section for more information on using them.                        |
-        +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-        | ``-J``                 | ``#SBATCH -J MyJob123``                    | Specify the job name (this will show up in queue listings)                           |
-        +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-        | ``-o``                 | ``#SBATCH -o jobout.%j``                   | File where job STDOUT will be directed (%j will be replaced with the job ID).        |
-        |                        |                                            | If no `-e` option is specified, job STDERR will be placed in this file, too.         |
-        +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-        | ``-e``                 | ``#SBATCH -e joberr.%j``                   | File where job STDERR will be directed (%j will be replaced with the job ID).        |
-        |                        |                                            | If no `-o` option is specified, job STDOUT will be placed in this file, too.         |
-        +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-        | ``--mail-type``        | ``#SBATCH --mail-type=END``                | Send email for certain job actions. Can be a comma-separated list. Actions include   |
-        |                        |                                            | BEGIN, END, FAIL, REQUEUE, INVALID_DEPEND, STAGE_OUT, ALL, and more.                 |
-        +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-        | ``--mail-user``        | ``#SBATCH --mail-user=user@somewhere.com`` | Email address to be used for notifications.                                          |
-        +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-        | ``--reservation``      | ``#SBATCH --reservation=MyReservation.1``  | Instructs Slurm to run a job on nodes that are part of the specified reservation.    |
-        +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-        | ``-S``                 | ``#SBATCH -S 8``                           | Instructs Slurm to reserve a specific number of cores per node (default is 8).       |
-        |                        |                                            | Reserved cores cannot be used by the application.                                    |
-        +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-        | ``--signal``           | ``#SBATCH --signal=USR1@300``              || Send the given signal to a job the specified time (in seconds) seconds before the   |
-        |                        |                                            | job reaches its walltime. The signal can be by name or by number (i.e. both 10 and   |
-        |                        |                                            | USR1 would send SIGUSR1).                                                            |
-        |                        |                                            ||                                                                                     |
-        |                        |                                            || Signaling a job can be used, for example, to force a job to write a checkpoint just |
-        |                        |                                            | before Slurm kills the job (note that this option only sends the signal; the user    |
-        |                        |                                            | must still make sure their job script traps the signal and handles it in the desired |
-        |                        |                                            | manner).                                                                             |
-        |                        |                                            ||                                                                                     |
-        |                        |                                            || When used with ``sbatch``, the signal can be prefixed by "B:"                       |
-        |                        |                                            | (e.g. ``--signal=B:USR1@300``) to tell Slurm to signal only the batch shell;         |
-        |                        |                                            | otherwise all processes will be signaled.                                            |
-        +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-        | ``-p``                 | ``#SBATCH -p batch``                       | Request a specific compute partition for the job. (default is ``batch``)             |
-        +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-        | ``-q``                 | ``#SBATCH -q debug``                       | Request a "Quality of Service" (QOS) for the job. (default is ``normal``)            |
-        +------------------------+--------------------------------------------+--------------------------------------------------------------------------------------+
-
-
-    Slurm Environment Variables
-    ---------------------------
-
-    Slurm reads a number of environment variables, many of which can provide the same information as the job options noted above. We recommend using the job options rather than environment variables to specify job options, as it allows you to have everything self-contained within the job submission script (rather than having to remember what options you set for a given job).
-
-    Slurm also provides a number of environment variables within your running job. The following table summarizes those that may be particularly useful within your job (e.g., for naming output log files):
-
-    +--------------------------+-----------------------------------------------------------------------------------------+
-    | Variable                 | Description                                                                             |
-    +==========================+=========================================================================================+
-    | ``$SLURM_SUBMIT_DIR``    | The directory from which the batch job was submitted. By default, a new job starts      |
-    |                          | in your home directory. You can get back to the directory of job submission with        |
-    |                          | ``cd $SLURM_SUBMIT_DIR``. Note that this is not necessarily the same directory in which |
-    |                          | the batch script resides.                                                               |
-    +--------------------------+-----------------------------------------------------------------------------------------+
-    | ``$SLURM_JOBID``         | The job’s full identifier. A common use for ``$SLURM_JOBID`` is to append the job’s ID  |
-    |                          | to the standard output and error files.                                                 |
-    +--------------------------+-----------------------------------------------------------------------------------------+
-    | ``$SLURM_JOB_NUM_NODES`` | The number of nodes requested.                                                          |
-    +--------------------------+-----------------------------------------------------------------------------------------+
-    | ``$SLURM_JOB_NAME``      | The job name supplied by the user.                                                      |
-    +--------------------------+-----------------------------------------------------------------------------------------+
-    | ``$SLURM_NODELIST``      | The list of nodes assigned to the job.                                                  |
-    +--------------------------+-----------------------------------------------------------------------------------------+
-
-
-    Job States
-    ----------
-
-    A job will transition through several states during its lifetime. Common ones include:
-
-    +-------+------------+-------------------------------------------------------------------------------+
-    | State | State      | Description                                                                   |
-    | Code  |            |                                                                               |
-    +=======+============+===============================================================================+
-    | CA    | Canceled   | The job was canceled (could've been by the user or an administrator)          |
-    +-------+------------+-------------------------------------------------------------------------------+
-    | CD    | Completed  | The job completed successfully (exit code 0)                                  |
-    +-------+------------+-------------------------------------------------------------------------------+
-    | CG    | Completing | The job is in the process of completing (some processes may still be running) |
-    +-------+------------+-------------------------------------------------------------------------------+
-    | PD    | Pending    | The job is waiting for resources to be allocated                              |
-    +-------+------------+-------------------------------------------------------------------------------+
-    | R     | Running    | The job is currently running                                                  |
-    +-------+------------+-------------------------------------------------------------------------------+
-
-
-    Job Reason Codes
-    ----------------
-
-    In addition to state codes, jobs that are pending will have a "reason code" to explain why the job is pending. Completed jobs will have a reason describing how the job ended. Some codes you might see include:
-
-    +-------------------+---------------------------------------------------------------------------------------------------------------+
-    | Reason            | Meaning                                                                                                       |
-    +===================+===============================================================================================================+
-    | Dependency        | Job has dependencies that have not been met                                                                   |
-    +-------------------+---------------------------------------------------------------------------------------------------------------+
-    | JobHeldUser       | Job is held at user's request                                                                                 |
-    +-------------------+---------------------------------------------------------------------------------------------------------------+
-    | JobHeldAdmin      | Job is held at system administrator's request                                                                 |
-    +-------------------+---------------------------------------------------------------------------------------------------------------+
-    | Priority          | Other jobs with higher priority exist for the partition/reservation                                           |
-    +-------------------+---------------------------------------------------------------------------------------------------------------+
-    | Reservation       | The job is waiting for its reservation to become available                                                    |
-    +-------------------+---------------------------------------------------------------------------------------------------------------+
-    | AssocMaxJobsLimit | The job is being held because the user/project has hit the limit on running jobs                              |
-    +-------------------+---------------------------------------------------------------------------------------------------------------+
-    | ReqNodeNotAvail   | The requested a particular node, but it's currently unavailable (it's in use, reserved, down, draining, etc.) |
-    +-------------------+---------------------------------------------------------------------------------------------------------------+
-    | JobLaunchFailure  | Job failed to launch (could due to system problems, invalid program name, etc.)                               |
-    +-------------------+---------------------------------------------------------------------------------------------------------------+
-    | NonZeroExitCode   | The job exited with some code other than 0                                                                    |
-    +-------------------+---------------------------------------------------------------------------------------------------------------+
-
-    Many other states and job reason codes exist. For a more complete description, see the ``squeue`` man page (either on the system or online).
-
-    .. _frontier-scheduling:
+    .. lux-scheduling:
 
     Scheduling Policy
     -----------------
@@ -1622,7 +1713,7 @@ The following can run ``hello_jobstep``:
     ``scancel``: Cancel or Signal a Job
     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-    In addition to the ``--signal`` option for the ``sbatch``/``salloc`` commands described :ref:`above <common-slurm-options>`, the ``scancel`` command can be used to manually signal a job. Typically, this is used to remove a job from the queue. In this use case, you do not need to specify a signal and can simply provide the jobid (i.e. ``scancel 12345``). If you want to send some other signal to the job, use ``scancel`` the with the ``-s`` option. The ``-s`` option allows signals to be specified either by number or by name. Thus, if you want to send ``SIGUSR1`` to a job, you would use ``scancel -s 10 12345`` or ``scancel -s USR1 12345``.
+    In addition to the ``--signal`` option for the ``sbatch``/``salloc`` commands described :ref:`above <lux_common-slurm-options>`, the ``scancel`` command can be used to manually signal a job. Typically, this is used to remove a job from the queue. In this use case, you do not need to specify a signal and can simply provide the jobid (i.e. ``scancel 12345``). If you want to send some other signal to the job, use ``scancel`` the with the ``-s`` option. The ``-s`` option allows signals to be specified either by number or by name. Thus, if you want to send ``SIGUSR1`` to a job, you would use ``scancel -s 10 12345`` or ``scancel -s USR1 12345``.
 
 
     ``squeue``: View the Queue
