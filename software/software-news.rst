@@ -8,6 +8,12 @@ most recent changes are listed first.
 
 ----
 
+Frontier: Default Core Update (Seeptember 15, 2026)
+----------------------------------------------------
+
+On September 15, 2026, the default ``Core`` module will be upgraded from ``Core/25.03`` to ``Core/26.05``.
+For more information on ``Core/26.05`` including package version changes please see :ref:`core-26.05-release`
+
 Frontier: profiling daemon enabled (August 25, 2026)
 ----------------------------------------------------
 
@@ -66,6 +72,8 @@ There are other software components within these CPEs, but they are only availab
 .. note::
 
     "CPE" is a meta-module that loads compatible versions of the HPE/Cray Programming Environment. See the `Frontier User Guide <https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#compatible-compiler-rocm-toolchain-versions>`_ for more information about CPE, and contact help@olcf.ornl.gov with any questions.
+
+.. _core-26.05-release:
 
 Frontier: Core Module (May 11, 2026)
 ------------------------------------------------

@@ -9,14 +9,16 @@ Riker User Guide
 
     Riker is a 136-node system with 128 AMD EPYC CPU-only nodes and 8 hybrid AMD EPYC CPU + NVIDIA L40S GPU nodes. The new system will provide OLCF users with upgraded capabilities for data analysis and visualization workflows.
 
-    Riker is currently undergoing final testing, and we anticipate opening the system to users in early September. Once user access begins, Riker and Andes will operate in parallel for approximately six weeks to provide users time to transition their workflows. At the end of this transition period, Andes will be decommissioned. A more detailed transition timeline will be announced in the coming weeks.
+    All current Andes users will gain access to Riker on September 10th. Once user access begins, Riker and Andes will operate in parallel for approximately six weeks to provide users time to transition their workflows.
+    At the end of this transition period, Andes will be decommissioned.
 
     Notable Differences to Andes:
 
     * Andes has 704 CPU nodes (32 cores, 256 GB RAM) with 9 NVIDIA K80 GPU nodes (28 cores, 2 GPUs per node, 1TB RAM).
     * Riker has 128 CPU nodes (128 cores, 2.2 TB RAM) with 8 NVIDIA L40S GPU nodes (64 cores, 2 GPUs per node, 1.5 TB RAM).
-    * **Andes allocates whole nodes only, while Riker allows partial node allocations**.  On Riker you can allocate a subset of a node's CPU cores, memory, and GPUs. Consequently, more explicit resource requests are required on Riker.
+    * **Andes allocates whole nodes only, while Riker allows partial node allocations**.  On Riker you can allocate a subset of a node's CPU cores, memory, and GPUs. Consequently, more explicit resource requests are required on Riker. More information in the :ref:`riker-node-sharing` section.
     * Riker uses newer compiler/MPI environments (notably MPICH and CUDA 13-era GPU support).
+    * Node-hour charging based on weighted percentage of a node used. More information about the weights in :ref:`riker-job_accounting`.
 
 
 .. _riker-system-overview:
@@ -509,10 +511,12 @@ their use can be found in the related subsections.
 | ``salloc`` | | Used to allocate an interactive Slurm job allocation, where one or more job steps (i.e., ``srun`` commands) can then be launched on the allocated resources (i.e., nodes). |
 |            | | (see Interactive Jobs section below)                                                                                                                                       |
 +------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``srun``   | | Used to run a parallel job (job step) on the resources allocated with sbatch or ``salloc``.                                                                                |
+| ``srun``   | | Used to run a parallel job (job step) on the resources allocated with ``sbatch`` or ``salloc``.                                                                            |
 |            | | If necessary, srun will first create a resource allocation in which to run the parallel job(s).                                                                            |
 |            | | (see Single Command section below)                                                                                                                                         |
 +------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+ 
+
+.. _riker-node-sharing:
 
 General information for Node-sharing on Riker
 ---------------------------------------------
@@ -546,7 +550,7 @@ Each Batch node has 128 Cores that can be allocated on a 1-Core basis and come w
 Users can allocate using ``-c`` for cores or ``--mem`` for memory. Your request will round accordingly. 
 
 Example: Let us assume there are two users already running on a batch riker node. Yellow User has 64 cores allocated, and Blue User has 33 cores allocated.
-The following job script would result in the Purple User slotting into that same node filling in more of the unused cores proportional to their memory request.
+The following job script would result in the Purple User slotting into that same node filling in more of the unused cores proportional to their memory request. 
 The remaining cores and memory are left unallocated for a fourth user to potentially allocate.
 
 .. code-block:: bash
@@ -560,12 +564,12 @@ The remaining cores and memory are left unallocated for a fourth user to potenti
    #SBATCH -t 00:05:00
    #SBATCH -p batch
    #SBATCH -N 1
-   #SBATCH --mem=200G
-
+   #SBATCH --mem=200G 
+ 
    ## RUNTIME RESOURCE DELEGATION ##
-   srun -n6 --cpus-per-task=2 ./a.out
+   srun -n6 --cpus-per-task=2 ./a.out 
 
-.. tab-set::
+.. tab-set:: 
 
     .. tab-item:: Loaded Node
 
@@ -590,8 +594,8 @@ Each GPU node has 64 Cores that can be allocated on a 1-Core basis and come with
 The reserved cores are automatic allocated when a GPU is requested ``--gpus``.  All other cores on the GPU nodes operate as "Flex / Shared" cores that can be allocated
 by GPU-enabled workloads & CPU-Only workloads allowing users to fill unused CPUs on GPU nodes or GPU jobs to increase beyond the default 16 Cores. 
 
-Example: Let us assume there are three users already running on two riker-gpu nodes. Pink User has 3 GPUs allocated across riker-gpu1 and riker-gpu2,
-Green User allocated the remaining 32 cores on riker-gpu1 for a CPU-Only workload, and Purple User allocated 28 cores on riker-gpu2 for a CPU-Only workload.
+Example: Let us assume there are three users already running on two riker-gpu nodes. Pink User has 3 GPUs allocated across riker-gpu1 and riker-gpu2, 
+Green User allocated the remaining 32 cores on riker-gpu1 for a CPU-Only workload, and Purple User allocated 28 cores on riker-gpu2 for a CPU-Only workload. 
 The following job script would result in the Red user slotting into the second GPU on riker-gpu2, flexing to 20 cores instead of the default 16 cores to consume the rest of the resources on riker-gpu2.
 
 .. code-block:: bash
@@ -607,11 +611,11 @@ The following job script would result in the Red user slotting into the second G
    #SBATCH -N 1
    #SBATCH --gpus=1
    #SBATCH --cpus-per-gpu=20
-
+ 
    ## RUNTIME RESOURCE DELEGATION ##
-   srun -n1 --cpus-per-task=20 --gpus-per-task=1 ./a.out
+   srun -n1 --cpus-per-task=20 --gpus-per-task=1 ./a.out 
 
-.. tab-set::
+.. tab-set:: 
 
     .. tab-item:: Loaded Node(s)
 
@@ -631,7 +635,7 @@ The following job script would result in the Red user slotting into the second G
 
 
 
-
+    
 .. note::
     Riker should support the majority of Slurm job structures. If you find that your job structure does not work as expected, please reach out to help@olcf.ornl.gov.
 
@@ -1183,7 +1187,7 @@ Modules to load:
 
 Example ``Makefile`` for ``hello_jobstep.cpp``:
 
-.. tab-set::
+.. tab-set:: 
 
     .. tab-item:: nvcc
 
@@ -1300,11 +1304,11 @@ The output contains different IDs associated with the GPUs so it is important to
 
 So in the output above, each MPI rank has access to 1 unique GPU - but all MPI ranks show a CUDA runtime GPU ID of "0".
 The reason is that each MPI rank only "sees" one GPU visible and so the CUDA runtime labels it as "0".
-The GPU's bus ID is included to definitively show that different GPUs are being used.
+The GPU's bus ID is included to definitively show that different GPUs are being used. 
 
 So the job step (i.e., ``srun`` command) used above gave the desired output.
 Each rank has access to a unique GPU.
-The ``--gpus-per-task=1`` allocated 1 GPU for each MPI rank, and the default binding bound each GPU to the respective task.
+The ``--gpus-per-task=1`` allocated 1 GPU for each MPI rank, and the default binding bound each GPU to the respective task. 
 
 **Example: 4 MPI ranks - each with 1 GPU (multi-node)**
 
@@ -1399,172 +1403,48 @@ Although we were using 8 tasks, only 2 GPUs were needed in the ``--gpu-bind`` li
     There are many different ways users might choose to perform these mappings, so users are encouraged to clone the ``hello_jobstep`` program and test whether or not processes and threads are running where intended.
 
 
+.. _riker-job_accounting:
+
+Job Accounting on Riker
+-----------------------
+
+Jobs on Riker are scheduled in partial-node increments. The OLCF charges based on what a job makes *unavailable* to other users, so users are encouraged to only use what their job requires. Allocations on Riker are separate from those on Frontier and other OLCF resources.
+
+
+The *node-hour* charge for each job will be calculated as follows:
+
+.. code::
+
+    node-hours = ({weight for resource} * {Resource used}) * ( batch job endtime - batch job starttime )
+
+Where we take a weighted percentage of the node resources used and multiply it by the number of hours the resources were unavailable to other users.
+``batch job starttime`` is the time the job moves into a running state, and ``batch job endtime`` is the time the job exits a running state.
+
+**Resources are weighted differently depending on the parition/queue**; however, the weights are overall configured to be ``X percentage of a node`` (as opposed to charging ``A`` for a core on the batch partiion and ``B`` for a core on the GPU partition).
+
+The weight calculation on the batch partition are as follows:
+
+.. code::
+
+    node-hours = ({0.00390625} * {Number of Cores} + {0.000226581} * {Amount of Memory}) * ( batch job endtime - batch job starttime )
+
+
+The weight calculation for the GPU partition are as follows:
+
+.. code::
+
+    node-hours = ({0.0015625} * {Number of Cores} + {6.66482E-05} * {Amount of Memory} + {0.4} * {Number of GPUs}) * ( batch job endtime - batch job starttime )
+
+
+
+
+
 .. _riker-viz-tools:
 
 Visualization tools
 ====================
 
-ParaView
---------
-
-Information regarding ParaView, and how to run it on both Riker and Frontier, lives
-in the Software Section. Click :doc:`HERE </software/viz_tools/paraview>` to go to the page.
-
-VisIt
------
-
-Information regarding VisIt, and how to run it on both Riker and Frontier, lives
-in the Software Section. Click :doc:`HERE </software/viz_tools/visit>` to go to the page.
-
-Remote Visualization using VNC
-------------------------------
-
-.. warning::
-    For macOS clients, it is necessary to install `XQuartz (X11) <https://www.xquartz.org/>`__ to allow x11 forwarding.
-    For Windows clients, it is necessary to install either PuTTY or an X client like Xming.
-
-
-.. dropdown:: test-vnc.sh
-
-    .. code::
-
-        #!/bin/sh
-
-        what()
-        {
-           hostname
-        }
-        echo "Starting vncserver"
-
-        vncserver :1 -geometry 1920x1080 -depth 24
-
-        echo
-        echo
-        echo "**************************************************************************"
-        echo "Instructions"
-        echo
-        echo "In a new terminal, open a tunneling connection with $(what) and port 5901"
-        echo
-        echo "example:"
-        echo "   localsystem: ssh -L 5901:$(what):5901 ${USER}@riker.olcf.ornl.gov "
-        echo
-        echo "**************************************************************************"
-        echo
-        echo
-
-        export DISPLAY=:1
-
-        module load visit
-        visit
-        vncserver -kill :1
-
-Step 1 (local system)
-^^^^^^^^^^^^^^^^^^^^^
-
-Install a vncviewer (turbovnc, tigervnc, etc.) on your local machine.  When running vncviewer for the first time, it will ask to set a password for this and future vnc sessions.
-
-Step 2 (terminal 1)
-^^^^^^^^^^^^^^^^^^^
-
-From an Riker connection launch a batch job and execute the below ``test-vnc.sh`` script to start the vncserver and run an executable (e.g., VisIt):
-
-#. localsytem: ``ssh -X username@riker.olcf.ornl.gov``
-#. riker: ``salloc -A <project_id> -p gpu -t 1:00:00 -N 1 --exclusive --x11=batch``
-#. riker: ``./test-vnc.sh`` (e.g., on ``riker-gpu1``)
-
-.. code::
-
-    $ ./test-vnc.sh
-
-    You will require a password to access your desktops.
-
-    Password:
-    Verify:
-
-    New 'riker-gpu1:1 (username)' desktop is riker-gpu1:1
-
-    Creating default startup script /ccs/home/username/.vnc/xstartup
-    Creating default config /ccs/home/username/.vnc/config
-    Starting applications specified in /ccs/home/username/.vnc/xstartup
-    Log file is /ccs/home/username/.vnc/riker-gpu1:1.log
-
-
-
-    **************************************************************************
-    Instructions
-
-    In a new terminal, open a tunneling connection with riker-gpu1 and port 5901
-
-    example:
-         localsystem: ssh -L 5901:riker-gpu1:5901 username@riker.olcf.ornl.gov
-
-    **************************************************************************
-
-
-Step 3 (terminal 2)
-^^^^^^^^^^^^^^^^^^^
-
-In a second terminal on your local system open a tunneling connection following
-the instructions given by the vnc start-up script (e.g., for ``riker-gpu1``):
-
--  localsystem: ``ssh -L 5901:riker-gpu1:5901 username@riker.olcf.ornl.gov``
-
-Step 4 (local system)
-^^^^^^^^^^^^^^^^^^^^^
-
-Launch the vncviewer. When you launch the vncviewer that you downloaded you will
-need to specify ``localhost:5901``. You will also set a password for the initial
-connection or enter the created password for subsequent connections.
-
-
-.. Remote Visualization using Nice DCV (GPU nodes only)
-.. ----------------------------------------------------
-
-.. .. note::
-..    Nice DCV is back online and working on Andes again. If you see issues email help@olcf.ornl.gov
-
-.. Step 1 (terminal 1)
-.. ^^^^^^^^^^^^^^^^^^^
-
-.. Launch an interactive job:
-
-.. .. code::
-
-..      localsytem: ssh username@andes.olcf.ornl.gov
-..      andes: salloc -A <project_id> -p gpu -t 60:00 -N 1 --exclusive -M andes --constraint=DCV
-
-.. Run the following commands:
-
-.. .. code::
-
-..     $ xinit &
-..     $ export DISPLAY=:0
-..     $ dcv create-session --gl-display :0 mySessionName
-..     $ hostname  // will be used to open a tunneling connection with this node
-..     $ andes-gpuN
-
-.. Step 2 (terminal 2)
-.. ^^^^^^^^^^^^^^^^^^^
-
-.. Open a tunneling connection with gpu node ``N``, given by hostname:
-
-.. .. code::
-
-..     localsystem: ssh username@andes.olcf.ornl.gov -L 8443:andes-gpuN:8443
-
-.. Open your web browser using the following link and use your credentials to
-.. access OLCF systems: ``https://localhost:8443`` When finished, kill the dcv
-.. session in first terminal:
-
-.. .. code::
-
-..     $ dcv close-session mySessionName
-..     $ kill %1
-
-
-
-
-
+Information regarding using common visualization tools like ParaView, VisIt, VMD, and VNC lives in the :doc:`Software Section </software/viz_tools/index>`.
 
 Container Usage
 ===============
@@ -1601,8 +1481,8 @@ Building a Simple Image
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 - Create a directory called ``simplecontainer`` on home or Orion and ``cd`` into it.
-- Create a file named ``simple.def`` with the following contents.
-  ::
+- Create an Apptainer definition file named ``simple.def`` with the following contents.
+  .. code-block::
 
      Bootstrap: docker
      From: rockylinux:9
@@ -1622,7 +1502,7 @@ Running a Simple Container in a Batch Job
 As a simple example, we will run ``hostname`` with the Apptainer container.
 
 - Create a file submit.sl with the contents below.
-  ::
+  .. code-block::
 
      #!/bin/bash
      #SBATCH -A stf007
@@ -1650,92 +1530,22 @@ an instance of the runtime for each task i.e. the same running container is NOT 
 between multiple tasks running on the same node.
 
 
-Building an MPI Image
-^^^^^^^^^^^^^^^^^^^^^
+Building an MPI Image and Running an MPI application
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-For running a program that uses MPI, you will need to build your container image with MPICH that
-matches the MPICH version on Riker. See below for an example
+This and the following examples will make use of the `olcf_container_examples repository <https://github.com/olcf/olcf_container_examples>`_ :
 
-- Create a directory named ``mpicontainer`` and cd into it
-- Create a file named ``mpicontainer.def`` with the following contents
-  ::
+.. code-block::
 
-      Bootstrap: docker
-      From: docker.io/rockylinux/rockylinux:9.6-ubi
+    git clone https://github.com/olcf/olcf_container_examples
 
-      %environment
-          # Point to MPICH binaries, libraries man pages
-          export MPICH_DIR=/opt/mpich
-          export PATH="$MPICH_DIR/bin:$PATH"
-          export LD_LIBRARY_PATH="$MPICH_DIR/lib:$LD_LIBRARY_PATH"
-          export MANPATH=$MPICH_DIR/share/man:$MANPATH
+Clone that repository and navigate to the ``riker/docs_examples/mpi_example`` directory. The example container includes MPICH and the OSU micro benchmarks to show MPI functionality.
 
-
-      %post
-
-      echo "Installing required packages..."
-      export DEBIAN_FRONTEND=noninteractive
-      dnf install -y wget sudo git  gzip gcc-c++ libatomic hwloc-devel
-
-
-      # Information about the version of MPICH to use
-      export MPICH_VERSION=5.0.1
-      export MPICH_URL="http://www.mpich.org/static/downloads/$MPICH_VERSION/mpich-$MPICH_VERSION.tar.gz"
-      export MPICH_DIR=/opt/mpich
-
-      echo "Installing MPICH..."
-      mkdir -p /mpich
-      mkdir -p /opt
-      # Download
-      cd /mpich && wget -O mpich-$MPICH_VERSION.tar.gz $MPICH_URL && tar --no-same-owner -xzf mpich-$MPICH_VERSION.tar.gz
-      # Compile and install
-      cd /mpich/mpich-$MPICH_VERSION && ./configure --disable-fortran --with-device=ch4:ucx --prefix=$MPICH_DIR && make -j32 install
-      rm -rf /mpich
-
-
-      # Set env variables so we can compile our application
-      export PATH=$MPICH_DIR/bin:$PATH
-      export LD_LIBRARY_PATH=$MPICH_DIR/lib:$LD_LIBRARY_PATH
-
-      echo "Compiling the MPI application..."
-      cd /
-      curl -o osubenchmarks-7.5.2.tar.gz https://mvapich.cse.ohio-state.edu/download/mvapich/osu-micro-benchmarks-7.5.2.tar.gz && tar -xzf osubenchmarks-7.5.2.tar.gz --no-same-owner
-      cd osu-micro-benchmarks-7.5.2 && ./configure CC=mpicc CXX=mpicxx && make  && rm ../osubenchmarks-7.5.2.tar.gz
 
 - Build the container with ``apptainer build mpicontainer.sif mpicontainer.def``.
 
-Running an MPI application with an MPI image in a batch job
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The container you built in the previous section includes micro benchmarks for MPI. We will run one
-of them in a batch job to demonstrate MPI functionality with containers.
-
-- Copy the following into a file called ``submit.sl``.
-  ::
-
-        #!/bin/bash
-        #SBATCH -t00:20:00
-        #SBATCH -p batch
-        #SBATCH -A stf007uanofn
-        #SBATCH -N4
-        #SBATCH --ntasks-per-node 16
-        #SBATCH -c 1
-        #SBATCH -J gaea_mpi_test
-        #SBATCH -o logs/%x_%j.out
-        #SBATCH -e logs/%x_%j.out
-
-        # below is necessary to avoid ucx permission denied warning messages
-        # see https://ciq.com/blog/workaround-for-communication-issue-with-mpi-apps-apptainer-without-setuid
-        export UCX_POSIX_USE_PROC_LINK=n
-
-        # These exports are required so that the necessary MPI and Slurm pieces from the host are visible in
-        # the container and can be used by the application running in the container
-        export APPTAINER_BIND=/sw,/usr/share/libdrm,/var/spool/slurm,${PWD},${HOME}
-        export APPTAINERENV_LD_LIBRARY_PATH=$OLCF_MPICH_ROOT/lib:\$LD_LIBRARY_PATH
-
-        srun  -N4 -n16 --tasks-per-node 4 apptainer exec ./mpicontainer.sif  /osu-micro-benchmarks-7.5.2/c/mpi/collective/blocking/osu_allgather
-
-- Submit the job with ``sbatch submit.sl``. You should get an output like the below
+- Submit the job with ``sbatch submit.sbatch``. You should get an output like the below
   ::
 
         # OSU MPI Allgather Latency Test v7.5.2
@@ -1764,38 +1574,71 @@ of them in a batch job to demonstrate MPI functionality with containers.
         1048576              1111.72
 
 
+- Note that the ``submit.sbatch`` script includes setting up some additional environment variables.
+  These are necessary for an MPI application in a container to work correctly on Riker.
+- Also note that the MPICH version being installed in the container matches the MPICH version on
+  Riker. It is good practice to match the MPICH version with what is available on Riker for your own
+  container.
 
-.. {{Subil will need to update this part.}}
-.. Running an MPI program with an MPI image
-.. ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Building and Running a simple single GPU program in a Container
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. For running a program that uses MPI, you will need to build your container image with MPICH. You can find an example in the `olcf_containers_examples repository <https://github.com/olcf/olcf_containers_examples/tree/main/defiant/mpiexample>`__ . 
-
-.. Subil will need to update this part.
-.. - Clone the repository ``https://github.com/olcf/olcf_containers_examples``.
-.. - Navigate to ``olcf_containers_examples/defiant/mpiexample``.
-.. - Run ``build.sh`` to build the containers. ``rocky9mpich412nvidia2411.def`` builds an image based
-..   on Nvidia's CUDA 12.6 container release, and installs MPICH 4.1.2 in it. 
-.. - Submit the submit script with ``sbatch submit.sl``. 
-.. - You should get output that looks like
-..   ::
-
-..      <several INFO messages. Can be ignored>
-..      ...
-..      Hello from rank 1
-..      Hello from rank 0
-..      Hello from rank 2
-..      Hello from rank 3
+`Nvidia's NGC registry <https://catalog.ngc.nvidia.com/>`_ distributes containers with CUDA and different applications built to run on
+Nvidia GPUs. For this example, we will grab the Rocky Linux 9 CUDA 13.3.1 container image with
+``apptainer pull`` or ``apptainer build``.
 
 
+- Clone the `olcf_container_examples repository <https://github.com/olcf/olcf_container_examples>`_
+  the navigate to the ``riker/docs_examples/gpu_example`` directory.
+
+  - This has a simple vector addition example that runs on a single GPU.
+
+- Pull the CUDA 13.3 container image.
+
+  .. code-block::
+
+     apptainer build rockylinuxcuda133.sif docker://nvcr.io/nvidia/cuda:13.3.1-devel-rockylinux9
 
 
-.. ..
-..   tabling gpu aware MPI till after we get it working on defiant
-..   Running a GPU aware MPI program with OLCF MPI base image
-..   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+- Submit the job with ``sbatch submit.sbatch``.
 
-----------
+    - This submit script will build the vector addition example and run it on a single node.
+    - The ``--nv`` flag is required for ``apptainer exec`` in your submit scripts to be able to access the GPUs on the node.
+
+- If successful, you will see an output like this
+  ::
+
+      COMPLETE!
+      real    0m0.812s
+      user    0m0.002s
+      sys     0m0.005s
+
+
+Building and Running a GPU+MPI Program in a Container
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Clone the `olcf_container_examples <https://github.com/olcf/olcf_container_examples>`__ repository and navigate to the ``riker/docs_examples/gpu_and_mpi_example`` directory.
+
+    - This directory has an Apptainer definition file that will use an Nvidia CUDA container as a base and install MPICH. It also has a submit script that will build and run the ``hello_jobstep`` program from earlier in this documentation page, that will list out the MPI processes and the cores and GPUs that each process has access to.
+
+
+- Build the Apptainer image with ``apptainer build rockylinuxcuda133.sif rockylinuxcuda133.def``.
+- Submit the job with ``sbatch submit.sbatch``. The job will build ``hello_jobstep`` within the
+  container's environment and then run it across two GPUs on two nodes.
+
+- If successful, you should see an output that looks like this
+  ::
+
+      mpicxx -fopenmp -I/usr/local/cuda/include -c hello_jobstep.cpp
+      mpicxx -fopenmp -L/usr/local/cuda/lib64 -lcudart hello_jobstep.o -o hello_jobstep
+      MPI 000 - OMP 000 - HWT 015 - Node riker-gpu1 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
+      MPI 001 - OMP 000 - HWT 015 - Node riker-gpu2 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 81
+
+      real    0m1.301s
+      user    0m0.002s
+      sys     0m0.007s
+
+
 
 Getting Help
 ============
@@ -1805,10 +1648,16 @@ by emailing help@olcf.ornl.gov.
 
 ----
 
+.. _riker-known-issues:
+
 
 Known Issues
 ============
 
-- None
+Interactive jobs hanging when allocation expires
+------------------------------------------------
+
+Riker interactive jobs can sometimes encounter terminal hang when the allocation expires. Users will need to close out of their terminal and log back into Riker when this happens.
+Tmux users can ``:kill-window``, reopen the window, and log back in to regain access to their terminal as killing the terminal window will not kill the tmux window.
 
 .. JIRA_CONTENT_HERE

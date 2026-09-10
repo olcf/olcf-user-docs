@@ -900,12 +900,11 @@ This section shows how to compile with OpenMP Offload using the different compil
 | AMD    | ``amd``  | | C       | | ``cc`` (wraps ``amdclang``)                | ``-fopenmp``                                 |
 |        |          | | C\+\+   | | ``CC`` (wraps ``amdclang++``)              |                                              |
 |        |          | | Fortran | | ``ftn`` (wraps ``amdflang``)               |                                              |
-|        |          |           | | ``hipcc`` (requires flags below)           |                                              |
 +--------+----------+-----------+----------------------------------------------+----------------------------------------------+
 
 .. note::
 
-    If invoking ``amdclang``, ``amdclang++``, or ``amdflang`` directly for ``openmp offload``, or using ``hipcc`` you will need to add: 
+    If invoking ``amdclang``, ``amdclang++``, or ``amdflang`` directly for ``openmp offload`` you will need to add:
     
     ``-fopenmp -fopenmp-targets=amdgcn-amd-amdhsa -Xopenmp-target=amdgcn-amd-amdhsa -march=gfx90a``.
 
@@ -1213,7 +1212,12 @@ Since all compute resources are managed and scheduled by Slurm, it is not possib
 Common Slurm Options
 --------------------
 
-The table below summarizes options for submitted jobs. Unless otherwise noted, they can be used for either batch scripts or interactive batch jobs. For scripts, they can be added on the ``sbatch`` command line or as a ``#BSUB`` directive in the batch script. (If they're specified in both places, the command line takes precedence.) This is only a subset of all available options. Check the `Slurm Man Pages <https://slurm.schedmd.com/man_index.html>`__ for a more complete list.
+The table below summarizes options for submitted jobs. 
+Unless otherwise noted, they can be used for either batch scripts or interactive batch jobs. 
+For scripts, they can be added on the ``sbatch`` command line or as a ``#SBATCH`` directive in the batch script. 
+(If they're specified in both places, the command line takes precedence.) 
+This is only a subset of all available options. 
+Check the `Slurm Man Pages <https://slurm.schedmd.com/man_index.html>`__ for a more complete list.
 
 .. table::
     :widths: 15 28 57
@@ -1442,7 +1446,18 @@ The ``extended`` partition (queue) is designated for smaller long-running jobs o
 The ``debug`` quality of service (QOS) class can be used to access Frontier's compute resources for short non-production debug tasks. The QOS provides a higher priority compare to jobs of the same job size bin in production partitions. Production work and job chaining using the ``debug`` QOS is prohibited. Each user is limited to one job in any state at any one point. Attempts to submit multiple jobs to this QOS will be rejected upon job submission. Submitted jobs in this QOS cannot have a walltime greater than 2 hours. Jobs that request a longer walltime will be rejected.
 
 
-To submit a job to the ``debug`` QOS, add the `-q debug` option to your ``sbatch`` or ``salloc`` command or ``#SBATCH -q debug`` to your job script.
+To submit a job to the ``debug`` QOS, add the ``-q debug`` option to your ``sbatch`` or ``salloc`` command or ``#SBATCH -q debug`` to your job script.
+
+``develop`` Quality of Service Class
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The ``develop`` quality of service (QOS) class can be used to access Frontier's compute resources for short tasks at small node counts. As opposed to the ``debug`` QOS, the ``develop`` QOS has access to an isolated set of nodes through the ``service`` partition. Therefore, jobs targeting this QOS do not compete with jobs in the ``batch`` partition. The following policies are enforced for the ``develop`` QOS:
+
+* 2-Hour maximum wall time for each queued job.
+* 4-Node maximum job size for each queued job.
+* Each user will be allowed 1 running job and 1 *eligible-to-run* job at a given time. Any additional queued jobs will be held in an ineligible state until the previous job runs.
+
+To submit a job to the ``develop`` QOS, jobs must be submitted with **both** the ``-p service -q develop`` options to your ``sbatch`` or ``salloc`` command or ``#SBATCH -p service`` and ``#SBATCH -q develop`` headers to your job script. Jobs submitted with only one of those flags will not run or will be rejected.
 
 
 Allocation Overuse Policy
@@ -3340,33 +3355,6 @@ Valgrind4hpc is available on Frontier under all compiler families:
 Additional information about Valgrind4hpc usage can be found on the `HPE Cray Programming Environment User Guide Page <https://support.hpe.com/hpesc/public/docDisplay?docId=a00115110en_us&page=Debug_Applications_With_valgrind4hpc_To_Find_Common_Errors.html>`__.
 
 
-Omnitrace/ROCm Systems Profiler
--------------------------------
-
-OLCF provides installations of AMD's `Omnitrace <https://github.com/AMDResearch/omnitrace>`_ and the new re-branded `ROCm Systems Profiler <https://rocm.docs.amd.com/projects/rocprofiler-systems/en/latest/index.html>`_ profiling tools on Frontier.
-AMD provides documentation on the usage of the ROCm Systems Profiler at `<https://rocm.docs.amd.com/projects/rocprofiler-systems/en/latest/index.html>`_.
-This section details the installation and common pitfalls of the ``omnitrace`` and ``rocprofiler-systems`` modules on Frontier.
-
-A ROCm module must be loaded before being able to view or load either the ``omnitrace`` or ``rocprofiler-systems`` modules.
-As a rule of thumb, always load the profiler's module last (but specifically after you load a ROCm module).
-If you load a new version of ROCm, you will need to re-load the profiler module.
-
-To use ``omnitrace`` or ``rocprofiler-systems``, you may use the following commands
-
-.. code::
- 
-    module load rocm
-    module load omnitrace # or module load rocprofiler-systems
-
-``rocprofiler-systems`` does not support all available ROCm modules. Please consult the table below for the compatibility matrix.
-
-+---------------------+--------------------------+
-| rocprofiler-compute |  Supported ROCm Versions |
-+=====================+==========================+
-| 1.0.1               | 6.3.*, 6.4.*             |
-+---------------------+--------------------------+
-
-
 Profiling Applications
 ======================
 
@@ -3487,6 +3475,57 @@ More detailed information on HPCToolkit can be found in the `HPCToolkit User's M
 
 Getting Started with the ROCm Profiler
 --------------------------------------
+
+ROCm Systems Profiler
+^^^^^^^^^^^^^^^^^^^^^
+
+OLCF provides installations of AMD's `ROCm Systems Profiler <https://rocm.docs.amd.com/projects/rocprofiler-systems/en/latest/index.html>`_ profiling tool on Frontier.
+AMD provides documentation on the usage of the ROCm Systems Profiler at `<https://rocm.docs.amd.com/projects/rocprofiler-systems/en/latest/index.html>`_.
+
+We recommend using a newer ROCm and its accompanying ``rocprofiler-systems`` binaries, which ship alongside the ROCm installation under its ``bin`` folder, to benefit from the latest features and bug fixes.
+If you would like to build ``rocprofiler-systems`` from source, follow the instructions at `<https://rocm.docs.amd.com/projects/rocprofiler-systems/en/latest/install/build.html>`_.
+
+A ROCm module must be loaded before being able to use the ``rocprofiler-systems`` binaries.
+
+.. code::
+
+    module load rocm
+
+**Looking up configuration options.**
+Use ``rocprof-sys-avail`` to look up configuration settings, hardware counters, and data collection components. For example, ``rocprof-sys-avail --list-domains`` lists the API trace domains supported for profiling.
+
+.. code:: bash
+
+    rocprof-sys-avail --list-domains
+
+Read more about configuring runtime options at `<https://rocm.docs.amd.com/projects/rocprofiler-systems/en/latest/how-to/configuring-runtime-options.html>`_.
+
+**Example usage.**
+
+.. code:: bash
+
+    rocprof-sys-sample -- ./myapp
+    srun -n 2 rocprof-sys-run -- ./mpi-example
+    srun -N 2 -n 16 --ntasks-per-node=8 --gpus-per-node=8 --gpu-bind=closest rocprof-sys-run -- ./mpi-example
+
+**Using predefined presets.**
+ROCm Systems Profiler provides predefined presets that simplify configuring the profiler for common workload scenarios. Read more at `<https://rocm.docs.amd.com/projects/rocprofiler-systems/en/latest/how-to/using-preset-profiles.html>`_.
+
+Balanced profiling with moderate overhead and comprehensive data:
+
+.. code:: bash
+
+    rocprof-sys-run --preset=balanced -- ./myapp
+
+Optimized for MPI, OpenMP, and compute-intensive applications:
+
+.. code:: bash
+
+    srun -n 4 rocprof-sys-sample --preset=trace-hpc -- ./mpi_app
+
+**Understanding the output.**
+Several output files can be generated, as detailed at `<https://rocm.docs.amd.com/projects/rocprofiler-systems/en/latest/how-to/understanding-rocprof-sys-output.html>`_.
+The traces are generated as Perfetto traces and/or a rocPD database, which can be viewed in the `Perfetto UI <https://ui.perfetto.dev/>`_ and the `ROCm Optiq <https://github.com/ROCm/roc-optiq>`_ visualizer respectively.
 
 Rocprof v1 (For ROCm<=6.5)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^

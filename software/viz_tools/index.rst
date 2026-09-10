@@ -11,3 +11,4 @@ Visualization Tools
    visit
    paraview
    vmd
+   remote_desktop
