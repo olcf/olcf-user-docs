@@ -8,7 +8,7 @@ most recent changes are listed first.
 
 ----
 
-Frontier: Default Core Update (Seeptember 15, 2026)
+Frontier: Default Core Update (September 15, 2026)
 ----------------------------------------------------
 
 On September 15, 2026, the default ``Core`` module was upgraded from ``Core/25.03`` to ``Core/26.05``.
