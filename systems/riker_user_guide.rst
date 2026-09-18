@@ -14,7 +14,6 @@ Riker User Guide
     All current Andes users will gain access to Riker on September 10th. Once user access begins, Riker and Andes will operate in parallel for approximately six weeks to provide users time to transition their workflows. 
     At the end of this transition period, Andes will be decommissioned. 
 
-
     Notable Differences to Andes:
 
     * Andes has 704 CPU nodes (32 cores, 256 GB RAM) with 9 NVIDIA K80 GPU nodes (28 cores, 2 GPUs per node, 1TB RAM).
