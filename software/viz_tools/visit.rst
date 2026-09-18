@@ -53,6 +53,15 @@ remote host preference. Unfortunately, ORNL does not maintain that list
 often, so the ORNL entry may be outdated. Click the “None” option instead.
 Restart VisIt, and go to Options→Host Profiles. Select “New Host”
 
+Alternatively, you can download the equivalent host profile below and manually
+place it in either the ``~/.visit/hosts/`` directory (Mac/Linux) or
+``C:\Users\username\Documents\VisIt\hosts`` folder (Windows).
+The filename must be of the format ``host_*.xml``.
+
+* :download:`host_riker.xml </_static/host_profiles/visit/host_riker.xml>`
+* :download:`host_frontier_3_3_3.xml </_static/host_profiles/visit/host_frontier_3_3_3.xml>`
+* :download:`host_frontier_3_4_1.xml </_static/host_profiles/visit/host_frontier_3_4_1.xml>`
+
 .. tab-set::
 
   .. tab-item:: Andes
@@ -126,7 +135,7 @@ Restart VisIt, and go to Options→Host Profiles. Select “New Host”
 
       .. tab-item:: Shared CPU Jobs
 
-        - **Profile Name**: ``batch`` (arbitrary)
+        - **Profile Name**: ``batch-shared`` (arbitrary)
         - **Timeout**: 480 (arbitrary)
         - **Number of threads per task**: 0 (arbitrary, but not tested
           with OMP/pthread support)
@@ -149,17 +158,14 @@ Restart VisIt, and go to Options→Host Profiles. Select “New Host”
         - Advanced tab:
 
             - **Launcher arguments**:
-              ``-c 1`` (Riker is a node-shared machine, so CPUs per task flag is enforced when not using ``--exclusive``)
-        - GPU Acceleration
-
-            - **Use cluster’s graphics cards**: Unchecked (even if using the ``gpu`` partition)
+              ``-c 1`` (CPUs per task flag is enforced when not using ``--exclusive``)
 
         Click “Apply” and make sure to save the settings (Options/Save Settings).
         Exit and re-launch VisIt.
       
       .. tab-item:: Shared GPU Jobs
 
-        - **Profile Name**: ``gpu`` (arbitrary)
+        - **Profile Name**: ``gpu-shared`` (arbitrary)
         - **Timeout**: 480 (arbitrary)
         - **Number of threads per task**: 0 (arbitrary, but not tested
           with OMP/pthread support)
@@ -173,7 +179,7 @@ Restart VisIt, and go to Options→Host Profiles. Select “New Host”
             - **Parallel launch method**:
               ``sbatch/srun`` (required)
             - **Partition/Pool/Queue**: ``gpu`` (required)
-            - **Number of processors**: 1 (required, limited to 16 tasks per GPU)
+            - **Number of processors**: 1 (required, limited by ``--cpus-per-gpu`` flag in advanced tab)
             - **Number of nodes**: 1 (required, arbitrary)
             - **Bank/Account**: Your OLCF project to use (required)
             - **Time Limit**: 1:00:00 (arbitrary, ``HH:MM:SS``)
@@ -182,7 +188,7 @@ Restart VisIt, and go to Options→Host Profiles. Select “New Host”
         - Advanced tab:
 
             - **Launcher arguments**:
-              ``--gpus=1`` (total amount of GPUs in the job, limited to 16 tasks per GPU)
+              ``--gpus=1 --cpus-per-gpu=16`` (total amount of GPUs in the job, CPUs per GPU range is 16-32)
         - GPU Acceleration
 
             - **Use cluster’s graphics cards**: Unchecked (even if using the ``gpu`` partition)
@@ -192,7 +198,7 @@ Restart VisIt, and go to Options→Host Profiles. Select “New Host”
 
       .. tab-item:: Node-exclusive CPU jobs
 
-        - **Profile Name**: ``batch`` (arbitrary)
+        - **Profile Name**: ``batch-exclusive`` (arbitrary)
         - **Timeout**: 480 (arbitrary)
         - **Number of threads per task**: 0 (arbitrary, but not tested
           with OMP/pthread support)
@@ -215,17 +221,14 @@ Restart VisIt, and go to Options→Host Profiles. Select “New Host”
         - Advanced tab:
 
             - **Launcher arguments**:
-              ``--exclusive`` (Riker is a node-shared machine, we will need to set the ``--exclusive`` flag to reserve the entire node )
-        - GPU Acceleration
-
-            - **Use cluster’s graphics cards**: Unchecked (even if using the ``gpu`` partition)
+              ``--exclusive`` (We will need to set the ``--exclusive`` flag to reserve the entire node)
 
         Click “Apply” and make sure to save the settings (Options/Save Settings).
         Exit and re-launch VisIt.
 
       .. tab-item:: Node-exclusive GPU jobs
 
-        - **Profile Name**: ``gpu`` (arbitrary)
+        - **Profile Name**: ``gpu-exclusive`` (arbitrary)
         - **Timeout**: 480 (arbitrary)
         - **Number of threads per task**: 0 (arbitrary, but not tested
           with OMP/pthread support)
@@ -248,7 +251,7 @@ Restart VisIt, and go to Options→Host Profiles. Select “New Host”
         - Advanced tab:
 
             - **Launcher arguments**:
-              ``--exclusive`` (Riker is a node-shared machine, we will need to set the ``--exclusive`` flag to reserve the entire node )
+              ``--exclusive`` (We will need to set the ``--exclusive`` flag to reserve the entire node)
         - GPU Acceleration
 
             - **Use cluster’s graphics cards**: Unchecked (even if using the ``gpu`` partition)
@@ -433,6 +436,7 @@ OLCF systems is provided below.
         date
 
         module load visit
+        export UCX_NET_DEVICES=mlx5_0:1
 
         # For `--exclusive` allocated jobs, the `-la -c1` argument is not necessary
         visit -nowin -cli -v 3.5.0 -l srun -la -c1 -np 28 -nn 1 -s visit_ex.py
