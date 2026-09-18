@@ -8,9 +8,12 @@ Riker User Guide
     OLCF is pleased to announce Riker, our new data analysis and visualization cluster, which will replace the existing Andes system.
 
     Riker is a 136-node system with 128 AMD EPYC CPU-only nodes and 8 hybrid AMD EPYC CPU + NVIDIA L40S GPU nodes. The new system will provide OLCF users with upgraded capabilities for data analysis and visualization workflows.
+    Riker mounts the same user and project filesystems as Andes (``/ccs/home``, ``/ccs/proj``, and ``/lustre/orion``) so you will not need to migrate any data stored in those filesystems.
+    However, it is required to recompile programs and rebuild Python environments prior to running on Riker.
 
     All current Andes users will gain access to Riker on September 10th. Once user access begins, Riker and Andes will operate in parallel for approximately six weeks to provide users time to transition their workflows. 
     At the end of this transition period, Andes will be decommissioned. 
+
 
     Notable Differences to Andes:
 
