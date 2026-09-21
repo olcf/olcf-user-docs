@@ -29,8 +29,8 @@ System Overview
 ===============
 
 Riker is the new pre-processing/post-processing and visualization cluster for the OLCF aimed to further large-scale scientific discovery alongside Frontier.
-Replacing our Andes cluster, Riker consists of 128 CPU-only nodes and 8 GPU nodes. Riker also features project-based node-sharing to allow projects to sub-divide
-their nodes amongst their users. 
+Replacing our Andes cluster, Riker consists of 128 CPU-only nodes and 8 Hybrid CPU+GPU nodes. These nodes are configured to allow multiple users to securely share the same node
+through core-level resource requests. 
 
 .. _riker-nodes:
 
