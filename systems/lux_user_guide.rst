@@ -258,11 +258,8 @@ Please note that the Kronos is not mounted directly onto Lux nodes. There are tw
 NVMe
 ----
 
-Each compute node on Lux has [8x] 3.2TB \ **N**\ on-\ **V**\ olatile **Me**\mory (NVMe) storage devices (SSDs), colloquially known as a "Burst Buffer"
-
-.. todo: get speeds
-
-.. with a peak sequential performance of 5500 MB/s (read) and 2000 MB/s (write).
+Each compute node on Lux has [8x] Kioxia CM7 3.2TB \ **N**\ on-\ **V**\ olatile **Me**\mory (NVMe) storage devices (SSDs), colloquially known as a "Burst Buffer".
+Each SSD has a peak sequential performance of 10,000 MB/s (read) and 4,900 MB/s (write).
 
 The purpose of the Burst Buffer system is to bring improved I/O performance to appropriate workloads.
 Users are not required to use the NVMes. Data can also be written directly to the parallel filesystem.
@@ -272,63 +269,73 @@ Users are not required to use the NVMes. Data can also be written directly to th
 
    The NVMes on Lux are local to each node.
 
-.. todo: actual usage instructions and per-allocation BB size. Riker has different config
+NVMe Usage
+----------
 
-    NVMe Usage
-    ----------
+NVMe devices are automatically allocated when a user requests a GPU, with 12% of the total node NVMe capacity per GPU requested.
+``(.12 *  3.2TB/NVMe * 8 NVMe/node = 2.8TiB/GPU requested)``
+The remaining 4% of NVMe capacity is reserved for Kubernetes uses.
 
-    To use the NVMe, users must request access during job allocation using the ``-C nvme`` option to ``sbatch``, ``salloc``, or ``srun``. Once the devices have been granted to a job, users can access them at ``/mnt/bb/<userid>``. **Users are responsible for moving data to/from the NVMe before/after their jobs**. Here is a simple example script:
+Once the NVMe pool slice is allocated to a job, users can access the slice at ``/mnt/bb/$SLURM_JOBID``
+**Users are responsible for moving data to/from the NVMe before/after their jobs**
 
-    .. code:: bash
+Example
 
-        #!/bin/bash
-        #SBATCH -A <projid>
-        #SBATCH -J nvme_test
-        #SBATCH -o %x-%j.out
-        #SBATCH -t 00:05:00
-        #SBATCH -p batch
-        #SBATCH -N 1
-        #SBATCH -C nvme
+.. code-block:: bash
 
-        date
+    #!/bin/bash
+    # hello_nvme.sbatch
+    #SBATCH --account stf007
+    #SBATCH --job-name nvme_test
+    #SBATCH --output %x-%j.out
+    #SBATCH --time 00:05:00
+    #SBATCH --partition batch
+    #SBATCH --nodes 1
+    #SBATCH --gpus 2
+    #SBATCH --cpus-per-gpu 1
+    #SBATCH --mem 750GB
 
-        # Change directory to user scratch space (GPFS)
-        cd /gpfs/alpine/<projid>/scratch/<userid>
+    date
 
-        echo " "
-        echo "*****ORIGINAL FILE*****"
-        cat test.txt
-        echo "***********************"
+    echo " "
+    echo "*****ORIGINAL FILE*****"
+    cat test.txt
+    echo "***********************"
 
-        # Move file from GPFS to SSD
-        mv test.txt /mnt/bb/<userid>
+    # Move file from working directory to SSD
+    mv test.txt /mnt/bb/$SLURM_JOBID
 
-        # Edit file from compute node
-        srun -n1 hostname >> /mnt/bb/<userid>/test.txt
+    # Edit file from compute node
+    srun -n1 hostname >> /mnt/bb/$SLURM_JOBID/test.txt
 
-        # Move file from SSD back to GPFS
-        mv /mnt/bb/<userid>/test.txt .
+    # Find size of allocation and add to file
+    srun -n1 df -h /mnt/bb/$SLURM_JOBID >> /mnt/bb/$SLURM_JOBID/test.txt
 
-        echo " "
-        echo "*****UPDATED FILE******"
-        cat test.txt
-        echo "***********************"
+    # Move file from SSD back to working directory
+    mv /mnt/bb/$SLURM_JOBID/test.txt .
 
-    And here is the output from the script:
+    echo " "
+    echo "*****UPDATED FILE******"
+    cat test.txt
+    echo "***********************"
 
-    .. code:: bash
 
-        $ cat nvme_test-<jobid>.out
+Below is the output:
 
-        *****ORIGINAL FILE*****
-        This is my file. There are many like it but this one is mine.
-        ***********************
+.. code-block:: bash
 
-        *****UPDATED FILE******
-        This is my file. There are many like it but this one is mine.
-        frontier0123
-        ***********************
+    $ cat nvme_test-<JOB ID>.out
 
+    *****ORIGINAL FILE*****
+    Hello, world from Lux!
+    ***********************
+
+    *****UPDATED FILE******
+    Hello, world from Lux!
+    lux012
+    Filesystem                     Size  Used Avail Use% Mounted on
+    /dev/mapper/nvme-bb--<JOB ID>  5.6T   40G  5.6T   1% /mnt/bb/<JOB ID>
+    ***********************
 
 
 Using Globus to Move Data to and from Orion
