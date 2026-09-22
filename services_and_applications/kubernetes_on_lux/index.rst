@@ -53,8 +53,26 @@ Some Kubernetes Basics
 Kubernetes is an open-source workload manager primarily used for automating deployment, scaling, and management of containerized applications.
 It provides a rich API and workload primitives that allows users to manage the application deployments of long running services such as web servers and databases.
 
+This documentation will focus on using the ``kubectl`` command line tool for creating and
+manipulating resources on Kubernetes. The Rancher dashboard can also be used to do the same things,
+but here we will use it mainly for viewing the status of resources and some limited interactions.
+
 Workloads are defined as YAML file(s)
 The most basic form of workload is a ``pod``.
+
+Setting the default namespace
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+You can set the default namespace for the operations you want to run with ``kubectl``
+with 
+
+.. code-block:: bash
+
+   kubectl config set-context --current --namespace=<your namespace>
+
+Without this, you will need to pass a ``--namespace <your namespace>`` flag to any commands you run.
+
+
 
 .. _lux-pods:
 
@@ -77,6 +95,16 @@ See an example below:
         ports:
         - containerPort: 80
       restartPolicy: Never
+
+
+Save the above in a file named ``pod.yaml``. Create this pod with ``kubectl apply -f pod.yaml``. You
+can view the status of the pod by running ``kubectl get pods``.
+
+You can open a shell into the container in the running pod with  (TODO: verify)
+
+.. code-block:: 
+
+   kubectl exec -it hello-pod -- /bin/sh
 
 Deployment
 ^^^^^^^^^^
