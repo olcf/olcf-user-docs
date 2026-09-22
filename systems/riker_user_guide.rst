@@ -1422,20 +1422,20 @@ The *node-hour* charge for each job will be calculated as follows:
 Where we take a weighted percentage of the node resources used and multiply it by the number of hours the resources were unavailable to other users. 
 ``batch job starttime`` is the time the job moves into a running state, and ``batch job endtime`` is the time the job exits a running state. 
 
-**Resources are weighted differently depending on the parition/queue**; however, the weights are overall configured to be ``X percentage of a node`` (as opposed to charging ``A`` for a core on the batch partiion and ``B`` for a core on the GPU partition).
+**Resources are weighted differently depending on the partition/queue**; however, the weights are overall configured to be ``X percentage of a node`` (as opposed to charging ``A`` for a core on the batch partition and ``B`` for a core on the GPU partition).
 
 The weight calculation on the batch partition are as follows:
 
 .. code::
 
-    node-hours = ({0.00390625} * {Number of Cores} + {0.000226581} * {Amount of Memory}) * ( batch job endtime - batch job starttime )
+    node-hours = ({0.0078125} * {Number of Cores}) * ( batch job endtime - batch job starttime )
 
 
 The weight calculation for the GPU partition are as follows:
 
 .. code::
 
-    node-hours = ({0.0015625} * {Number of Cores} + {6.66482E-05} * {Amount of Memory} + {0.4} * {Number of GPUs}) * ( batch job endtime - batch job starttime )
+    node-hours = ({0.003125} * {Number of Cores} + {0.4} * {Number of GPUs}) * ( batch job endtime - batch job starttime )
 
 
 
