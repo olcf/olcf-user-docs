@@ -34,6 +34,12 @@ Setting up the kubectl commandline tool
 
 You should now be able to use ``kubectl`` to perform operations on Kubernetes on Lux. 
 
+.. note::
+
+   The KubeConfig credentials expires every 24 hours and ``kubectl`` commands will start to error
+   out. You will need to do the above steps again
+   after a 24 hour period. 
+
 
 
 Create a new namespace
@@ -72,7 +78,9 @@ with
 
 Without this, you will need to pass a ``--namespace <your namespace>`` flag to any commands you run.
 
+.. note::
 
+   You may need to do the above every time you set up new KubeConfig credentials in ``~/.kube/config``
 
 .. _lux-pods:
 
@@ -87,7 +95,10 @@ See an example below:
     apiVersion: v1
     kind: Pod
     metadata:
+    metadata:
       name: hello-pod
+      labels:
+        app: hello-pod
     spec:
       containers:
       - image: rancher/hello-world
@@ -158,17 +169,60 @@ The below example will create a Service listening on port 9376 pointing to our P
       name: hello-service
     spec:
       selector:
-        app.kubernetes.io/name: hello-pod
+        app: hello-pod
       ports:
         - protocol: TCP
-          port: 80
-          targetPort: 9376
+          port: 8080
+          targetPort: 80
 
-You can then connect to the Pod from another pod by using ``curl hello-service.<namespace>:9376``
+You can then connect to the Pod from another pod by using 
 
 .. code-block:: bash
 
-    curl hello-service.<namespace>:9376
+    curl hello-service:8080
+
+You can also create a service that refers to a Deployment
+
+.. code-block:: yaml
+
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: hello-service
+    spec:
+      selector:
+        deployment: recreate-example
+      ports:
+        - protocol: TCP
+          port: 8080
+          targetPort: 80
+
+
+
+Port Forwarding (To View Your Application's Output)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If you wish to view the output of your application you deployed on your browser, you can do so by
+port forwarding to the port set up by the Service with the ``kubectl port-forward`` command.
+
+.. code-block:: sh
+
+   # Format: kubectl port-forward <object type>/<object name> <local port>:<remote port>
+   kubectl port-forward service/hello-service 8080:8080 
+
+   # you can also port forward directly to the pod or deployment. The remote port will be 80 since that is 
+   # where the web app is being served for rancher/hello-world
+   kubectl port-forward pod/hello-pod 8080:80
+
+
+You can now open your browser and navigate to ``localhost:8080`` to see the webpage being served by
+Pod behind the Service.
+
+Example Application
+^^^^^^^^^^^^^^^^^^^
+
+The ``lux/guestbook`` example in the `olcf_kubernetes_examples repository <https://github.com/olcf/olcf_kubernetes_examples/>`_ 
+demonstrates the above concepts together in a simple web application with a frontend and Redis.
 
 GPU Usage on Kubernetes
 -----------------------
@@ -193,9 +247,18 @@ for each container request as fields under the ``.resources`` field. For example
 
 See the `torch_simple example <https://github.com/olcf/olcf_kubernetes_examples/tree/main/lux/torch_simple>`__ on how to run a pod with Pytorch running an MNIST example.
 
-Accessing the Orion Filesystem
-------------------------------
 
-TODO: TBD
+Storage
+-------
+
+Using PersistentVolumeClaims
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+TBD
+
+Accessing the Orion Filesystem
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+TBD
 
 
