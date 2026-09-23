@@ -7,8 +7,11 @@ Kubernetes on Lux is administered through Rancher. You can access the `dashboard
 .. warning::
 
    The Lux Kubernetes nodes don't have internet access. So either include your data as part of your
-   container or set the following environment variables in your container
+   container.
 
+.. todo: replace or set the following environment variables in your container
+
+.. todo:
    .. code-block::
     
       export all_proxy=socks://proxy.ccs.ornl.gov:3128/
