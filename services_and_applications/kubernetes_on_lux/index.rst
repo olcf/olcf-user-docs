@@ -96,19 +96,19 @@ See an example below:
 .. code-block:: yaml
 
     apiVersion: v1
-    kind: Pod
-    metadata:
-    metadata:
-      name: hello-pod
-      labels:
-        app: hello-pod
-    spec:
-      containers:
-      - image: rancher/hello-world
-        name: hello-pod
-        ports:
-        - containerPort: 80
-      restartPolicy: Never
+   kind: Pod
+   metadata:
+     namespace: <namespace>
+     name: hello-pod
+     labels:
+       app: hello-pod
+   spec:
+     containers:
+       - image: rancher/hello-world
+         name: hello-pod
+         ports:
+           - containerPort: 80
+     restartPolicy: Never
 
 
 Save the above in a file named ``pod.yaml``. Create this pod with ``kubectl apply -f pod.yaml``. You
@@ -133,6 +133,7 @@ See an example below:
     apiVersion: apps/v1
     kind: Deployment
     metadata:
+      namespace: <namespace>
       name: recreate-example
     spec:
       replicas: 2
@@ -169,6 +170,7 @@ The below example will create a Service listening on port 9376 pointing to our P
     apiVersion: v1
     kind: Service
     metadata:
+      namespace: <namespace>
       name: hello-service
     spec:
       selector:
@@ -191,6 +193,7 @@ You can also create a service that refers to a Deployment
     apiVersion: v1
     kind: Service
     metadata:
+      namespace: <namespace>
       name: hello-service
     spec:
       selector:
