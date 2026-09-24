@@ -8,6 +8,8 @@ Debugging
 Linaro Forge DDT
 ****************
 
+.. _linaro_setup:
+
 Client Setup and Usage
 ======================
 
@@ -253,7 +255,7 @@ More information on its use on OLCF systems can be found below.
 
             gdb ./path_to_executable
 
-        Additional information about GDB usage can befound on the `GDB Documentation Page <https://www.sourceware.org/gdb/documentation/>`__.
+        Additional information about GDB usage can be found on the `GDB Documentation Page <https://www.sourceware.org/gdb/documentation/>`__.
 
     .. tab-item:: Frontier
 
@@ -269,7 +271,7 @@ More information on its use on OLCF systems can be found below.
 
             gdb ./path_to_executable
 
-        Additional information about GDB usage can befound on the `GDB Documentation Page <https://www.sourceware.org/gdb/documentation/>`__.
+        Additional information about GDB usage can be found on the `GDB Documentation Page <https://www.sourceware.org/gdb/documentation/>`__.
 
 
 ********

@@ -60,12 +60,12 @@ described in :doc:`Jupyter Visibility </software/python/jupyter_envs>`.
 
 Accessing Files on Orion
 ^^^^^^^^^^^^^^^^^^^^^^^^
-When using Jupyter on Frontier users can only navigate directories realitve to `/ccs/home/user/` using `File -> Open from Path`. If you would like to access files in other
+When using Jupyter on Frontier users can only navigate directories relative to `/ccs/home/user/` using `File -> Open from Path`. If you would like to access files in other
 storage areas (e.g., `/lustre/orion/`), you will need to create a symbolic link to those directories first. To do this from the Jupyter session, follow
 these steps:
 
 1. From the **Launcher** tab, open a **Terminal** window.
-2. In the terminal window, create a symbolic link to your desired dircetory. We will use the member work directory in this example:
+2. In the terminal window, create a symbolic link to your desired directory. We will use the member work directory in this example:
 
 .. code::
 
@@ -108,7 +108,7 @@ If you would like to run your Jupyter Notebook from a local instance of VSCode, 
 5. Run the command for "Create New Jupyter Notebook".
 6. Using the Kernel Selector in the top right or running the "Notebook: Select Notebook Kernel" command, navigate to "Select Kernel" -> "Existing JupyterHub Server" -> "Enter the URL..."
 7. Enter https://jupyter.frontier.olcf.ornl.gov, you'll be prompted for a username and a token.
-8. Select kernel. `Python 3 (ipykernel)` should be readily avaialble. Please see :ref:`example_notebook` for how to create a custom kernel.
+8. Select kernel. `Python 3 (ipykernel)` should be readily available. Please see :ref:`example_notebook` for how to create a custom kernel.
 9. Run from VSCode!
 
 .. _example_notebook:
@@ -191,7 +191,7 @@ Additionally, you can verify that Jupyter notebook is seeing all GPUs on a Front
          print("ROCm is not available.")
 
 .. note::
-   If you notice old or non-functioning kerenls, they could be residual from Jupyter on Marble or insufficient 
+   If you notice old or non-functioning kernels, they could be residual from Jupyter on Marble or insufficient 
    clean up after removing a conda environment (e.g., `conda env remove --name pytorch_env`). To remove these from
    Jupyter on Frontier, you may need to manually delete it's associated directory 
    in `/ccs/home/{userid}/.local/share/jupyter/kernels`.

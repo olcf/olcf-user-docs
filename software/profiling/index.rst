@@ -11,3 +11,4 @@ Profiling Tools
    Scorep
    TAU
    Vampir
+   Linaro
