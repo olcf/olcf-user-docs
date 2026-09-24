@@ -96,19 +96,19 @@ See an example below:
 .. code-block:: yaml
 
     apiVersion: v1
-   kind: Pod
-   metadata:
-     namespace: <namespace>
-     name: hello-pod
-     labels:
-       app: hello-pod
-   spec:
-     containers:
-       - image: rancher/hello-world
-         name: hello-pod
-         ports:
-           - containerPort: 80
-     restartPolicy: Never
+    kind: Pod
+    metadata:
+      namespace: <namespace>
+      name: hello-pod
+      labels:
+        app: hello-pod
+    spec:
+      containers:
+        - image: rancher/hello-world
+          name: hello-pod
+          ports:
+            - containerPort: 80
+      restartPolicy: Never
 
 
 Save the above in a file named ``pod.yaml``. Create this pod with ``kubectl apply -f pod.yaml``. You
@@ -151,6 +151,9 @@ See an example below:
           containers:
           - image: rancher/hello-world
             name: deployment-example
+
+
+Run ``kubectl apply -f deployment.yaml`` to create the Deployment.
 
 An explanation:
 
@@ -203,7 +206,7 @@ You can also create a service that refers to a Deployment
           port: 8080
           targetPort: 80
 
-
+Run ``kubectl apply -f service.yaml`` to create the service.
 
 Port Forwarding (To View Your Application's Output)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -253,14 +256,76 @@ for each container request as fields under the ``.resources`` field. For example
 
 See the `torch_simple example <https://github.com/olcf/olcf_kubernetes_examples/tree/main/lux/torch_simple>`__ on how to run a pod with Pytorch running an MNIST example.
 
+Requesting and Using Multiple GPUs
+^^^^^^^^^^^^^^^^
+
+TBD
 
 Storage
 -------
 
-Using PersistentVolumeClaims
+Pods are ephemeral and any data written within a Pod is lost when the Pod is restarted or deleted.
+Kubernetes provides options for ways to store data persistently. 
+
+Using PersistentVolumeClaims (PVCs)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-TBD
+A PersistentVolumeClaim (PVC) lets you request an amount of storage that you can then mount into your Pods.
+The below example creates a PVC that requests 5GB of storage.
+
+.. code-block:: yaml
+
+   apiVersion: v1
+   kind: PersistentVolumeClaim
+   metadata:
+     name: storage-1
+   spec:
+     accessModes:
+       - ReadWriteOnce
+     resources:
+       requests:
+         storage: 5Gi
+
+Run ``kubectl apply -f pvc.yaml`` to create this PVC.
+
+With this created, we can mount this PVC to a Pod. Below example creates a Pod with this PVC
+
+.. code-block:: yaml
+
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      namespace: <namespace>
+      name: hello-pod
+      labels:
+        app: hello-pod
+    spec:
+      containers:
+        - image: rancher/hello-world
+          name: hello-pod
+          ports:
+            - containerPort: 80
+          volumeMount:
+            mountPath: /data
+            name: pvol
+      restartPolicy: Never
+      volumes:
+        name: pvol
+        PersistentVolumeClaim:
+          claimName: storage-1
+
+
+
+There are two available storage classes: ``netapp-file`` and ``netapp-block`` for PVCs.
+``netapp-file`` is the default and is probably what you need for most of your use cases.
+``netapp-block`` is useful when you need a persistent backing store for a database. 
+
+
+
+
+
+
+
 
 Accessing the Orion Filesystem
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -268,3 +333,10 @@ Accessing the Orion Filesystem
 TBD
 
 
+Accessing your Application
+--------------------------
+
+Gateways and HTTPRoutes for Accessing your App via the Browser
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+TBD
