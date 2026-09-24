@@ -5,10 +5,11 @@ Andes User Guide
 ****************
 
 .. note:: 
-    Andes' node count will be reduced to prep for the arrival of the new data analysis and visualization cluster, Riker. Andes will continue to operate in parallel with Riker for approximately six weeks to provide users time to transition their workflows. 
-    At the end of this transition period, Andes will be decommissioned. All current Andes users will gain access to Riker on September 10th.
-
+    The OLCF's new data analysis and visualization cluster, Riker, is available to OLCF Moderate users! Users are encouraged to being the migration process as early as possible. 
+    Andes will continue to operate in parallel with Riker until the end of October to provide users time to transition their workflows. 
     Additional information about the new system, including key differences between Andes and Riker, is available in the :ref:`riker-user-guide`. 
+    
+    **Andes will be decommissioned at the end of October.**
     
     Please feel free to direct any questions to help@olcf.ornl.gov.
 
