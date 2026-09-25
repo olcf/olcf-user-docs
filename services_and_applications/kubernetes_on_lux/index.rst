@@ -267,8 +267,8 @@ Storage
 Pods are ephemeral and any data written within a Pod is lost when the Pod is restarted or deleted.
 Kubernetes provides options for ways to store data persistently. 
 
-Using PersistentVolumeClaims (PVCs)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Using PersistentVolumeClaims (PVCs) for Persistent Storage
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 A PersistentVolumeClaim (PVC) lets you request an amount of storage that you can then mount into your Pods.
 The below example creates a PVC that requests 5GB of storage.
@@ -321,11 +321,87 @@ There are two available storage classes: ``netapp-file`` and ``netapp-block`` fo
 ``netapp-block`` is useful when you need a persistent backing store for a database. 
 
 
+Temporary Storage
+^^^^^^^^^^^^^^^^^
+
+PVCs are the right option if you want to make sure your data sticks around between Pod restarts
+If you would like to have some additional storage that doesn't need to be persisted between Pod
+restarts (like a scratch space or a file cache), there are a couple of options.
+
+One is ``emptyDir`` which lets you set up a cache on the node's local storage with a size limit so
+you cannot write to it beyond what is allocated. For example, with our hell
 
 
+.. code-block:: yaml
 
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      namespace: <namespace>
+      name: hello-pod
+      labels:
+        app: hello-pod
+    spec:
+      containers:
+        - image: rancher/hello-world
+          name: hello-pod
+          ports:
+            - containerPort: 80
+          volumeMounts:
+          - mountPath: /cache
+            name: cache-emptydir
+      restartPolicy: Never
+      volumes:
+      - name: cache-emptydir
+        emptyDir:
+          sizeLimit: 500Mi
+          
 
+Another option is ``ephemeral``, which allocates storage in the same way as PVCs and on the same hardware, and is thus
+not limited by what is available on the node's local storage. Unlike PVCs, this gets deleted when
+the Pod is deleted. It uses as the same parameters as PersistentVolumeClaims.
 
+.. code-block:: yaml
+
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: hello-pod
+      labels:
+        app: hello-pod
+    spec:
+      containers:
+        - image: rancher/hello-world
+          name: hello-pod
+          ports:
+            - containerPort: 80
+          volumeMounts:
+          - mountPath: /cache
+            name: cache-ephemeral
+      restartPolicy: Never
+      volumes:
+      - name: cache-ephemeral
+        ephemeral:
+          volumeClaimTemplate:
+            metadata:
+              labels:
+                name: my-cache-ephemeral
+            spec:
+              storageClassName: netapp-file
+              accessModes:
+                - ReadWriteOnce
+              resources:
+                requests:
+                  storage: 5Gi
+    
+
+You will see that this creates a pod as well as automatically create a PVC named ``<pod name>-<volume name>``. See it
+with ``kubectl get pvc``.
+
+.. note::
+
+   Unlike PVCs, you will not specify a ``metadata.name`` in the ``volumeClaimTemplate`` for
+   ephemeral storage. The name is automatically determined.
 
 Accessing the Orion Filesystem
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
