@@ -514,7 +514,7 @@ their use can be found in the related subsections.
 |            | | (see Interactive Jobs section below)                                                                                                                                       |
 +------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``srun``   | | Used to run a parallel job (job step) on the resources allocated with ``sbatch`` or ``salloc``.                                                                            |
-|            | | If necessary, srun will first create a resource allocation in which to run the parallel job(s).                                                                            |
+|            | | If necessary, ``srun`` will first create a resource allocation in which to run the parallel job(s).                                                                        |
 |            | | (see Single Command section below)                                                                                                                                         |
 +------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+ 
 
@@ -531,13 +531,13 @@ When constructing a job on Riker, please be aware of the two-phase resource allo
 +------------+------------+---------------------------------------------------------------------------------------------+
 | Phase      | Location   | Description                                                                                 |
 +============+============+=======================================================+=====================================+
-| Allocation | Login      | Request resources with sbatch, salloc, or srun (from login node).                           | 
-|            |            | This is where you should request what you need: -c, --mem (CPU Jobs)                        |
-|            |            | or --cpus-per-gpu, --mem-per-gpu (GPU Jobs)                                                 |
+| Allocation | Login      | Request resources with ``sbatch``, ``salloc``, or ``srun`` (from login node).               | 
+|            |            | This is where you should request what you need: ``-c``, ``--mem`` (CPU Jobs)                |
+|            |            | or ``--cpus-per-gpu``, ``--mem-per-gpu`` (GPU Jobs)                                         |
 +------------+------------+---------------------------------------------------------------------------------------------+
-| Delegation | Compute    | Launch work with srun inside the allocation.                                                |
+| Delegation | Compute    | Launch work with ``srun`` inside the allocation.                                            |
 |            |            | This is where you “hand out” the resources you already requested to the actual processes    |
-|            |            | (potentially with multiple srun steps and different layouts).                               |
+|            |            | (potentially with multiple ``srun`` steps and different layouts).                           |
 +------------+------------+---------------------------------------------------------------------------------------------+
 
 Riker enforces memory as a per-core share. CPU cores and memory are coupled on all nodes. Users can request cores or memory, but the system ties them together as equal shares and will round accordingly.
@@ -547,7 +547,7 @@ If a job requires all the resources on a node, users can use the ``--exclusive``
 Sharing Batch (CPU) nodes
 -------------------------
 
-Each Batch node has 128 Cores that can be allocated on a 1-Core basis and come with an equal share of memory (~17GB per core). 
+Each Batch node has 128 Cores that can be allocated on a single-core basis and come with an equal share of memory (~17GB per core). 
 
 Users can allocate using ``-c`` for cores or ``--mem`` for memory. Your request will round accordingly. 
 
@@ -590,7 +590,7 @@ The remaining cores and memory are left unallocated for a fourth user to potenti
 Sharing GPU nodes
 -----------------
 
-Each GPU node has 64 Cores that can be allocated on a 1-Core basis and come with an equal share of memory (~24GB per core); however, 
+Each GPU node has 64 Cores that can be allocated on a single-core basis and come with an equal share of memory (~24GB per core); however, 
 32 Cores (16 per GPU) are reserved for the GPUs and can only allocated if you also allocate the bound GPU. 
 
 The reserved cores are automatic allocated when a GPU is requested ``--gpus``.  All other cores on the GPU nodes operate as "Flex / Shared" cores that can be allocated
@@ -753,6 +753,10 @@ In the example script, the lines are:
 | 7    | Number of compute nodes requested                                             |
 +------+-------------------------------------------------------------------------------+ 
 | 8    | Number of cores requested on each node                                        |
+|      |                                                                               |
+|      | Because we didn't specify ``-n`` or ``--ntasks`` via ``sbatch``,              |
+|      | this represents the total cores reserved on each node.                        |
+|      | Otherwise, ``-c`` is number of cores per task.                                |
 +------+-------------------------------------------------------------------------------+ 
 | 9    | Blank line                                                                    |
 +------+-------------------------------------------------------------------------------+
@@ -810,9 +814,13 @@ In the example script, the lines are:
 +------+-------------------------------------------------------------------------------+ 
 | 7    | Number of compute nodes requested                                             |
 +------+-------------------------------------------------------------------------------+ 
-| 8    | Number of GPUs requested on each node                                         |
+| 8    | Total number of GPUs requested in the job                                     |
 +------+-------------------------------------------------------------------------------+ 
 | 9    | Number of CPUs requested on each node (Minimum of 16 per GPU)                 |
+|      |                                                                               |
+|      | Because we didn't specify ``-n`` or ``--ntasks`` via ``sbatch``,              |
+|      | this represents the total cores reserved on each node.                        |
+|      | Otherwise, ``-c`` is number of cores per task.                                |
 +------+-------------------------------------------------------------------------------+ 
 | 10   | Blank line                                                                    |
 +------+-------------------------------------------------------------------------------+
@@ -865,27 +873,30 @@ Common Slurm Submission Options
 
 The table below summarizes commonly-used Slurm job submission options:
 
-+--------------------------+--------------------------------+
-| ``A <project_id>``       | Project ID to charge           |
-+--------------------------+--------------------------------+
-| ``-J <job_name>``        | Name of job                    |
-+--------------------------+--------------------------------+
-| ``-p <partition>``       | Partition / batch queue        |
-+--------------------------+--------------------------------+
-| ``-t <time>``            | Wall clock time <``HH:MM:SS``> |
-+--------------------------+--------------------------------+
-| ``-N <number_of_nodes>`` | Number of compute nodes        |
-+--------------------------+--------------------------------+
-| ``-c <number_of_cores>`` | Number of cores per task       |
-+--------------------------+--------------------------------+
-| ``-mem <memory>``        | Amount of memory per node      |
-+--------------------------+--------------------------------+
-| ``-o <file_name>``       | Standard output file name      |
-+--------------------------+--------------------------------+
-| ``-e <file_name>``       | Standard error file name       |
-+--------------------------+--------------------------------+
-| ``--exclusive``          | Reserve the entire node.       |
-+--------------------------+--------------------------------+
++--------------------------+----------------------------------------------------+
+| ``A <project_id>``       | Project ID to charge                               |
++--------------------------+----------------------------------------------------+
+| ``-J <job_name>``        | Name of job                                        |
++--------------------------+----------------------------------------------------+
+| ``-p <partition>``       | Partition / batch queue                            |
++--------------------------+----------------------------------------------------+
+| ``-t <time>``            | Wall clock time <``HH:MM:SS``>                     |
++--------------------------+----------------------------------------------------+
+| ``-N <number_of_nodes>`` | Number of compute nodes                            |
++--------------------------+----------------------------------------------------+
+| ``-c <number_of_cores>`` | Number of cores per task.                          |
+|                          |                                                    |
+|                          | When ``-n`` or ``--ntasks`` is not specified,      |
+|                          | this can be thought of as total cores per node.    |
++--------------------------+----------------------------------------------------+
+| ``-mem <memory>``        | Amount of memory per node                          |
++--------------------------+----------------------------------------------------+
+| ``-o <file_name>``       | Standard output file name                          |
++--------------------------+----------------------------------------------------+
+| ``-e <file_name>``       | Standard error file name                           |
++--------------------------+----------------------------------------------------+
+| ``--exclusive``          | Reserve the entire node.                           |
++--------------------------+----------------------------------------------------+
 
 For more information about these and/or other options, please see the
 ``sbatch`` man page.
@@ -897,8 +908,8 @@ The table below summarizes commonly-used Slurm commands:
 
 +--------------+---------------------------------------------------------------------------------------------------------------------------------+
 | ``sinfo``    | | Used to view partition and node information.                                                                                  |
-|              | | E.g., to view user-defined details about the caar queue:                                                                      |
-|              | | ``sinfo -p caar -o "%15N %10D %10P %10a %10c %10z"``                                                                          | 
+|              | | E.g., to view user-defined details about the batch queue:                                                                     |
+|              | | ``sinfo -p batch -o "%15N %10D %10P %10a %10c %10z"``                                                                         | 
 +--------------+---------------------------------------------------------------------------------------------------------------------------------+
 | ``squeue``   | | Used to view job and job step information for jobs in the scheduling queue.                                                   |
 |              | | E.g., to see all jobs from a specific user:                                                                                   |
@@ -940,8 +951,9 @@ allocation of 1 compute node for these examples:
 The ``srun`` options used in this section are (see ``man srun`` for more information):
 
 +----------------------------------+-------------------------------------------------------------------------------------------------------+
-| ``-c, --cpus-per-task=<ncpus>``  | | Request that ``ncpus`` be allocated per process (default is 1).                                     |
-|                                  | | (``ncpus`` refers to cores)                                                                         |
+| ``-c, --cpus-per-task=<ncpus>``  | Request that ``ncpus`` be allocated per process (default is 1).                                       |
+|                                  |                                                                                                       |
+|                                  | When ``-n`` or ``--ntasks`` is not specified, this can be thought of as total cores per node.         |
 +----------------------------------+-------------------------------------------------------------------------------------------------------+
 
 
@@ -1270,8 +1282,8 @@ The following ``srun`` options will be used in the examples below. See ``man sru
     using Slurm (just do it in the code). However, in another application, there 
     might be a reason to make only a subset of GPUs available to the MPI ranks on a node.
 
-1 MPI rank per GPU
-""""""""""""""""""
+A. 1 MPI rank per GPU
+"""""""""""""""""""""
 
 In the following examples, each MPI rank will be mapped to a single GPU.
 
@@ -1328,8 +1340,8 @@ As the output shows, it is a very straightforward exercise of changing the numbe
     MPI 003 - OMP 000 - HWT 046 - Node riker-gpu3 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID C1
 
 
-Multiple GPUs per MPI rank
-""""""""""""""""""""""""""
+B. Multiple GPUs per MPI rank
+"""""""""""""""""""""""""""""
 
 In the following example, each MPI rank will see multiple GPUs.
 
@@ -1350,8 +1362,8 @@ To accomplish the GPU mapping, the following ``srun`` option will be used:
 
 Through ``--gres=gpu:2``, each MPI rank now has the ability to see both GPUs on a given node.
 
-Multiple MPI ranks to a single GPU
-""""""""""""""""""""""""""""""""""
+C. Multiple MPI ranks to a single GPU
+"""""""""""""""""""""""""""""""""""""
 
 In the following examples, 2 MPI ranks will be mapped to 1 GPU.
 
