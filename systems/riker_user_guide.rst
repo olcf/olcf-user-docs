@@ -886,8 +886,9 @@ The table below summarizes commonly-used Slurm job submission options:
 +--------------------------+----------------------------------------------------+
 | ``-c <number_of_cores>`` | Number of cores per task.                          |
 |                          |                                                    |
-|                          | When ``-n`` or ``--ntasks`` is not specified,      |
-|                          | this can be thought of as total cores per node.    |
+|                          | When ``-n`` or ``--ntasks`` is not specified on    |
+|                          | job submission, this can be thought of as total    |
+|                          | cores per node.                                    |
 +--------------------------+----------------------------------------------------+
 | ``-mem <memory>``        | Amount of memory per node                          |
 +--------------------------+----------------------------------------------------+
@@ -951,9 +952,7 @@ allocation of 1 compute node for these examples:
 The ``srun`` options used in this section are (see ``man srun`` for more information):
 
 +----------------------------------+-------------------------------------------------------------------------------------------------------+
-| ``-c, --cpus-per-task=<ncpus>``  | Request that ``ncpus`` be allocated per process (default is 1).                                       |
-|                                  |                                                                                                       |
-|                                  | When ``-n`` or ``--ntasks`` is not specified, this can be thought of as total cores per node.         |
+| ``-c, --cpus-per-task=<ncpus>``  | Request that ``ncpus`` (cores) be allocated per process (default is 1).                               |
 +----------------------------------+-------------------------------------------------------------------------------------------------------+
 
 
