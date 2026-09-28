@@ -161,7 +161,7 @@ Using Podman to build images and converting them to Apptainer
       RUN zypper install -y vim
 
 
-* Build the Podman image with ``podman build -t localhost/example:latest .``
+* Build the Podman image with ``podman build --network host -t localhost/example:latest .``
 * Convert the image into a tar file with ``podamn save -o example.tar localhost/example:latest``
 * Then convert this tar file into an Apptainer SIF file with ``apptainer build example.sif docker-archive://example.tar``
 
@@ -176,6 +176,8 @@ Using Podman to build images and converting them to Apptainer
      be deleted at any time. Make
      sure to save them to a remote registry or convert them to the Apptainer SIF format to save them
      somewhere else on the filesystem.
+   * The ``--network host`` flag is required with ``podman build`` to build containers on the
+     Frontier login node. It will run into errors otherwise.
 
 
       
