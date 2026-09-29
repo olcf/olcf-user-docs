@@ -12,3 +12,4 @@ Profiling Tools
    TAU
    Vampir
    Linaro
+   Darshan
