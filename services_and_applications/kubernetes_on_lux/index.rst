@@ -208,6 +208,37 @@ You can also create a service that refers to a Deployment
 
 Run ``kubectl apply -f service.yaml`` to create the service.
 
+Jobs
+^^^^
+
+Jobs allow you to create and run a one off task or set of tasks that will run to completion and exit. if it exits It still
+starts and runs a Pod underneath, with some additional facilities to control the number of
+concurrent pods and number of successful completions expected. A Pod will be restarted on failure to try 
+again (up to a limit you can specify). Successful completions don't count against the limit. 
+
+As a simple example, lets create a Job that runs an `echo "hello world"` 7 times.
+
+.. code-block:: yaml
+
+   apiVersion: batch/v1
+   kind: Job 
+   metadata:
+     name: hello-job
+     labels:
+       app: hello-job
+   spec:
+     completions: 7 # The job completes when it records 7 successful completions
+     parallelism: 3 # this allows up to 3 pods to run in parallel at a time
+     template: # this is the template for the Pod that will be run by the Job
+       spec:
+         containers:
+           - image: rancher/hello-world
+             name: hello-job
+             command: ["/bin/bash"]
+             args: ["-c", "echo hello world; sleep 10"]
+         restartPolicy: Never
+
+
 Port Forwarding (To View Your Application's Output)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -235,6 +266,11 @@ demonstrates the above concepts together in a simple web application with a fron
 
 GPU Usage on Kubernetes
 -----------------------
+
+.. warning::
+
+   GPUs are time limited use and cannot be used for persistent services. They can only be used in
+   Jobs.
 
 Under ``spec.containers`` in your deployment or pod configuration, you can include the GPU resource requests
 for each container request as fields under the ``.resources`` field. For example:
