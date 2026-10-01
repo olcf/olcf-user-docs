@@ -7,11 +7,8 @@ Kubernetes on Lux is administered through Rancher. You can access the `dashboard
 .. warning::
 
    The Lux Kubernetes nodes don't have internet access. So either include your data as part of your
-   container.
+   container or replace or set the following environment variables in your container
 
-.. todo: replace or set the following environment variables in your container
-
-.. todo:
    .. code-block::
     
       export all_proxy=socks://proxy.ccs.ornl.gov:3128/
@@ -277,25 +274,39 @@ for each container request as fields under the ``.resources`` field. For example
 
 .. code-block::
 
-  spec:
-    containers:
-    - image: "docker.io/subilabrahamornl/sampletorch:latest"
-      name: gpu-pod
-      command: ["python3"]
-      args: ["/root/sampletorch.py"]
-      resources:
-        limits:
-          amd.com/gpu: 1
-        requests:
-          amd.com/gpu: 1
+   spec:
+     containers:
+     - image: "docker.io/subilabrahamornl/sampletorch:latest"
+       name: gpu-pod
+       command: ["python3"]
+       args: ["/root/sampletorch.py"]
+       resources:
+         limits:
+           amd.com/gpu: 1
+         requests:
+           amd.com/gpu: 1
 
 
 See the `torch_simple example <https://github.com/olcf/olcf_kubernetes_examples/tree/main/lux/torch_simple>`__ on how to run a pod with Pytorch running an MNIST example.
 
 Requesting and Using Multiple GPUs
-^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-TBD
+You can request up to 8 GPUs in your request in the ``limits`` and ``requests`` fields. A Lux node has 8
+GPUs so that is the maximum you can request in a single Pod.
+
+.. code-block::
+
+   resources:
+     limits:
+       amd.com/gpu: 8
+     requests:
+       amd.com/gpu: 8
+
+
+
+
+
 
 Storage
 -------
@@ -360,7 +371,7 @@ There are two available storage classes: ``netapp-file`` and ``netapp-block`` fo
 Temporary Storage
 ^^^^^^^^^^^^^^^^^
 
-PVCs are the right option if you want to make sure your data sticks around between Pod restarts
+PVCs are the right option if you want to make sure your data sticks around between Pod restarts.
 If you would like to have some additional storage that doesn't need to be persisted between Pod
 restarts (like a scratch space or a file cache), there are a couple of options.
 
@@ -436,19 +447,97 @@ with ``kubectl get pvc``.
 
 .. note::
 
-   Unlike PVCs, you will not specify a ``metadata.name`` in the ``volumeClaimTemplate`` for
+   Unlike PVCs, you will not specify a ``.metadata.name`` in the ``volumeClaimTemplate`` for
    ephemeral storage. The name is automatically determined.
 
-Accessing the Orion Filesystem
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-TBD
+.. todo:
+
+   Accessing the Orion Filesystem
+   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   
+   The Orion filesystem can be mounted into your Pod by adding the annotation ``ccs.ornl.gov/fs: orion`` to your Pod. For example, in our ``hello-pod`` yaml file
+   we can modify the ``metadata`` section like so:
+   
+   .. code-block:: yaml
+   
+      apiVersion: v1
+      kind: Pod
+      metadata:
+        namespace: <namespace>
+        name: hello-pod
+        labels:
+          app: hello-pod
+        annotations:
+          ccs.ornl.gov/fs: orion
+      spec:
+        containers:
+        - image: rancher/hello-world
+          name: hello-pod
+          ports:
+          - containerPort: 80
+        restartPolicy: Never
 
 
 Accessing your Application
 --------------------------
 
-Gateways and HTTPRoutes for Accessing your App via the Browser
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+HTTPRoutes for Accessing your App via the Browser
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-TBD
+HTTPRoutes allow you to set up a way to access your Service via a URL. This is useful if you want to
+create a web application to interact with on the browser that you would like other people to access.
+
+.. note::
+
+   Right now, this type of access is automatically gated behind an OLCF login i.e. anyone trying to
+   access a url set up by an HTTPRoute will be redirected to an OLCF login page first. This is not
+   publicly visible on the internet without authentication. Reach out to help@olcf.ornl.gov if you want to setup a publicly
+   accessible service that runs on OLCF hardware.
+
+
+To setup an HTTPRoute for the ``hello-service`` Service we set up for the ``hello-pod`` Pod: 
+
+.. code-block::
+
+   apiVersion: gateway.networking.k8s.io/v1
+   kind: HTTPRoute
+   metadata:
+     name: hellogateway
+     namespace: <namespace>
+   spec:
+     hostnames:
+       - <name of your app>.apps.lux.olcf.ornl.gov
+     parentRefs:
+       - group: gateway.networking.k8s.io
+         kind: Gateway
+         name: cluster-ingress-gateway
+         namespace: istio-gateway
+     rules:
+       - backendRefs:
+           - kind: Service
+             name: hello-service
+             port: 8080
+         matches:
+           - path:
+               type: PathPrefix
+               value: /
+
+Then run ``kubectl apply -f gateway.yaml``.
+
+
+As of right now, trying to reach this via a browser directly will not work as it is only accessible
+from within the Lux network. You will need to access it through setting up an ssh proxy and using a
+browser extension like `Foxyproxy <https://addons.mozilla.org/en-US/firefox/addon/foxyproxy-standard/>`__ . 
+
+In your terminal, set up port forwarding with the following ssh command.
+
+.. code-block::
+
+   ssh -N -J subil@hub.ccs.ornl.gov subil@login1.lux.olcf.ornl.gov -D 127.0.0.1:10000
+
+
+In your browser, install Foxyproxy, and add a proxy named 'Lux' with Type ``SOCKS5``, Hostname
+``127.0.0.1`` and Port ``10000``. 
+
+Now select 'Lux' as the active proxy in Foxyproxy and point your browser to ``<name of your app>.apps.lux.olcf.ornl.gov``.
