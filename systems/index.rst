@@ -11,6 +11,7 @@ Systems
    citadel_user_guide
    riker_user_guide
    andes_user_guide
+   lux_user_guide
    home_user_guide
    dtn_user_guide
    odo_user_guide
