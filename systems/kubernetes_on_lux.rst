@@ -1,3 +1,5 @@
+.. _kubernetes-on-lux:
+
 =================
 Kubernetes On Lux
 =================
