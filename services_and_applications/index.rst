@@ -13,4 +13,3 @@ Services and Applications
    constellation/index.rst
    s3m/index.rst
    olcf_inference/index.rst
-   kubernetes_on_lux/index.rst
