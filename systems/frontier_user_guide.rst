@@ -211,15 +211,46 @@ Kronos Archival Storage
 
 Please note that the Kronos is not mounted directly onto Frontier nodes. There are two main methods for accessing and moving data to/from Kronos, either with standard cli utilities (scp, rsync, etc.) and via Globus using the "OLCF Kronos" collection. For more information on using Kronos, see the :ref:`kronos` section.
 
-+---------------------+---------------------------------------------+----------------+-------------+----------+---------+---------+------------+------------------+
-| Area                | Path                                        | Type           | Permissions |  Quota   | Backups | Purged  | Retention  | On Compute Nodes |
-+=====================+=============================================+================+=============+==========+=========+=========+============+==================+
-| Member Archive      | ``/nl/kronos/olcf/[projid]/users/$USER``    | Nearline       | 700         | 200 TB*  | No      | No      | 90 days    | No               |
-+---------------------+---------------------------------------------+----------------+-------------+----------+---------+---------+------------+------------------+
-| Project Archive     | ``/nl/kronos/olcf/[projid]/proj-shared``    | Nearline       | 770         | 200 TB*  | No      | No      | 90 days    | No               |
-+---------------------+---------------------------------------------+----------------+-------------+----------+---------+---------+------------+------------------+
-| World Archive       | ``/nl/kronos/olcf/[projid]/world-shared``   | Nearline       | 775         | 200 TB*  | No      | No      | 90 days    | No               |
-+---------------------+---------------------------------------------+----------------+-------------+----------+---------+---------+------------+------------------+
+.. list-table::
+   :widths: 12 30 10 10 10 8 8 10 15
+   :header-rows: 1
+
+   * - Area
+     - Path
+     - Type
+     - Permissions
+     - Quota
+     - Backups
+     - Purged
+     - Retention
+     - On Compute Nodes
+   * - Member Archive
+     - ``/nl/kronos/olcf/[projid]/users/$USER``
+     - Nearline
+     - 700
+     - 200 TB*
+     - No
+     - No
+     - 90 days (after account end)
+     - No
+   * - Project Archive
+     - ``/nl/kronos/olcf/[projid]/proj-shared``
+     - Nearline
+     - 770
+     - 200 TB*
+     - No
+     - No
+     - 90 days (after project end)
+     - No
+   * - World Archive
+     - ``/nl/kronos/olcf/[projid]/world-shared``
+     - Nearline
+     - 775
+     - 200 TB*
+     - No
+     - No
+     - 90 days (after project end)
+     - No
 
 .. note::
     The three archival storage areas above share a single 200TB per project quota.
