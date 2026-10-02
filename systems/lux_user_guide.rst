@@ -4,7 +4,7 @@
 Lux User Guide
 **************
 
-.. _system_overview:
+.. _lux_system_overview:
 
 System Overview
 ===============
@@ -990,7 +990,7 @@ This section shows how to compile HIP codes using the AMD compilers and ``hipcc`
 
     hipcc requires the ROCm Toolclain, See :ref:`lux_exposing-the-rocm-toolchain-to-your-programming-environment`
 
-.. todo:: XNACK note if XNACK helps
+.. todo: XNACK note if XNACK helps
 
 HIP + OpenMP CPU Threading
 --------------------------
