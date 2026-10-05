@@ -2608,6 +2608,131 @@ Kubernetes on Lux is administered through Rancher. You can access the `dashboard
    We will be referencing the `olcf_kubernetes_examples repository <https://github.com/olcf/olcf_kubernetes_examples>`__ throughout this page. Make
    sure you have that repository cloned on your laptop and workstation so you can reference it.
 
+
+
+.. _kubernetes-harbor:
+
+Using the Harbor Container Registry
+===================================
+
+
+In Harbor, a repository is created the first time you push an image to it, but it must live inside a Project. Therefore, setting up your environment starts with creating a Project. Admins may have already created your project or attached your project to an existing allocation.
+
+1. Create a Project (Repository Container)
+------------------------------------------
+
+Projects in Harbor act as containers for your repositories and grouping your images.
+
+1. Log into Harbor `web interface <https://harbor.ccs.ornl.gov/harbor/projects>`__ and log in with your OLCF credentials.
+
+
+2. Create a Robot Account
+-------------------------
+
+Robot accounts are used to authenticate automated systems (like CI/CD pipelines) so they can push and pull artifacts without tying the workflow to a specific human user's credentials.
+
+You will need to create a Project Robot Account for each project.
+
+1. Navigate to Robot Accounts:
+
+   Go to ``Projects``, select the project of the namespace of your allocation, and click the ``Robot Accounts`` tab.
+
+2. Add a New Robot Account:
+
+   Click the ``+ New Robot Account`` button.
+
+3. Configure Account Details:
+
+   Enter a name and an optional description. Set the expiration time for the token.
+
+.. todo:
+
+   note that there is no 'push artifact', 'pull artifact', or 'helm chart'. May need more accurate
+   terminology here.
+
+4. Grant Permissions:
+
+   Click the ``Permission(s)`` dropdown. Select the operations this robot needs to perform (for example, ``Push artifact``, ``Pull artifact``, ``Read Helm Chart``). You will need at least ``Push``, ``Pull``, and ``Read`` for most repos.
+
+5. Save the Secret:
+
+   Click ``Add``. Crucial step: Harbor will generate a secret token. You must download the secret JSON file or copy it immediately to a secure vault—you cannot view this secret again later in the UI.
+
+**Note on Robot Usernames**
+
+When you create the account, Harbor automatically generates a username based on a prefix, the project name, and your chosen robot name (for example, ``robot$myproject+myrobot``). Always use this full generated string as the username.
+
+3. Authenticate and Use the Repository
+--------------------------------------
+
+With your project created and your robot credentials secured, your automated pipelines can now interact with Harbor.
+
+To log in via the CLI, use the full generated robot username and the generated secret as the password. For example with Docker (same command works with Podman too, just 
+replace ``docker`` with ``podman``):
+
+.. code-block:: bash
+
+   # Example
+   docker login -u='robot$test_project+pull-token' -p="<generated secret here>" http://harbor.ccs.ornl.gov/
+
+Once authenticated, your pipeline can push images. Remember, pushing an image to a new path inside the project automatically creates the repository:
+
+.. code-block:: bash
+
+   # Example
+   # Tag your image
+   docker tag my-app:latest http://harbor.ccs.ornl.gov/REPOSITORY/image:tag
+
+   # Push the image
+   docker push http://harbor.ccs.ornl.gov/REPOSITORY/image:tag
+
+
+Pull Secret Creation
+====================
+
+Here is how to configure it for both standard Kubernetes manifests and the Rancher UI.
+
+1. Create the Secret
+--------------------
+
+Via the Rancher UI: **PREFERRED**
+
+1. Navigate to your Cluster and select your target Namespace.
+2. In the left menu, go to ``Storage > Secrets``.
+3. Click ``Create`` and select ``Registry``.
+4. Name the secret (for example, ``harbor-pull-secret``).
+5. Select ``Custom`` for the registry type and enter ``https://harbor.ccs.ornl.gov``.
+6. Enter the Robot Username and Secret token as the credentials, then click ``Create``.
+
+7. Use the Secret in your Manifest
+----------------------------------
+
+Once the secret exists in the target namespace, you must explicitly tell your Pods or Deployments to use it by adding the ``imagePullSecrets`` array to your manifest specification.
+
+.. code-block:: yaml
+
+   apiVersion: apps/v1
+   kind: Deployment
+   metadata:
+     name: my-app-deployment
+     namespace: your-namespace
+   spec:
+     replicas: 1
+     selector:
+       matchLabels:
+         app: my-app
+     template:
+       metadata:
+         labels:
+           app: my-app
+       spec:
+         containers:
+           - name: my-app
+             image: https://harbor.ccs.ornl.gov/REPOSITORY/image:latest
+         imagePullSecrets:
+           - name: harbor-pull-secret
+
+
 Setting up the kubectl commandline tool
 =======================================
 
@@ -2798,6 +2923,11 @@ Jobs allow you to create and run a one off task or set of tasks that will run to
 starts and runs a Pod underneath, with some additional facilities to control the number of
 concurrent pods and number of successful completions expected. A Pod will be restarted on failure to try
 again (up to a limit you can specify). Successful completions don't count against the limit.
+
+.. note::
+
+    Jobs are important because this is the only way Lux GPUs can be used on Kubernetes. Support for GPUs
+    on other Workloads like Pods and Deployments is still in the works.
 
 As a simple example, lets create a Job that runs an `echo "hello world"` 7 times.
 
