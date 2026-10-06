@@ -14,7 +14,7 @@ information regarding ParaView can be found at the links provided in the
 :ref:`paraview-resources` section.
 
 ParaView was developed to analyze extremely large datasets using distributed
-memory computing resources. The OLCF provides ParaView server installs on Andes
+memory computing resources. The OLCF provides ParaView server installs on Riker
 and Frontier to facilitate large scale distributed visualizations.
 The ParaView server may be used in a headless batch processing
 mode or be used to drive a ParaView GUI client running on your local machine.
@@ -38,7 +38,7 @@ server runs in an Andes, Riker, or Frontier batch job, allowing interactive anal
 You will obtain the best performance by running the ParaView client on your
 local computer and running the server on OLCF resources with the same version
 of ParaView. It is highly recommended to check the available ParaView versions
-using ``module avail paraview`` on the system you plan to connect ParaView to.
+using ``module avail`` or ``module spider`` on the system you plan to connect ParaView to.
 Precompiled ParaView binaries for Windows, macOS, and Linux can be downloaded
 from `Kitware <https://www.paraview.org/download/>`__.
 
@@ -49,108 +49,57 @@ Recommended ParaView versions on our systems:
 * **Riker**:
     * OLCF Installation: ParaView 6.1.1
 * **Frontier**:
-    * UMS032 Installation: ParaView 5.11.2, 5.12.1, 5.13.1
-    * OLCF Installation: ParaView 5.13.1, 5.13.2, 5.13.3
+    * UMS032 Installation: ParaView 5.11.2, 5.12.1, 5.13.1, 5.13.3
+    * OLCF Installation: ParaView 5.13.1, 5.13.2, 5.13.3, 6.0.1
 
 .. warning::
     Using a different version than what is listed above is not guaranteed to work properly.
 
-We offer two rendering modes of the ParaView API on our systems: OSMesa and
-EGL.  OSMesa is intended for use on regular compute nodes, whereas EGL is
-intended for use on GPU enabled nodes. When running interactively, you **do not**
-need to download or install anything special to use the EGL or OSMesa versions,
-as you'll be able to choose between those options when connecting to the system
-(see :ref:`paraview-gui` below). If instead you're running in batch mode on the
-command line (see :ref:`paraview-command-line` below), you can choose between
-the rendering options by loading its corresponding module on the system you're
-connected to. For example, to see these modules on specific OLCF systems:
+For example, to see these modules on specific OLCF systems:
 
 .. tab-set::
-
-   .. tab-item:: Andes
-      :sync: andes
-
-      .. code-block:: bash
-
-         $ module -t avail paraview
-
-         /sw/andes/modulefiles/core:
-         paraview/5.9.1-egl
-         paraview/5.9.1-osmesa
-         paraview/5.10.0-egl
-         paraview/5.10.0-osmesa
-         paraview/5.11.0-egl
-         paraview/5.11.0-osmesa
-         paraview/5.12.1-egl
-         paraview/5.12.1-osmesa
-         paraview/5.13.1-egl
-         paraview/5.13.1-osmesa
-         paraview/5.13.3-egl
-         paraview/5.13.3-osmesa
-         paraview/6.0.0-egl-osmesa
-         paraview/6.0.0
-
-      .. note::
-          The EGL mode seems to work better with larger datasets and is generally
-          recommended over OSMesa on our systems. However, we encourage users to try both
-          options and see which version works best for their data.
 
    .. tab-item:: Riker
       :sync: riker
 
-      .. tab-set::
+      .. code-block:: bash
 
-         .. tab-item:: OLCF Installation
-
-            .. code-block:: bash
-
-               $ module -t avail paraview
+         $ module -t avail paraview
                
-               paraview/6.1.1-mpi
-               paraview/6.1.1-gpu-mpi
+         paraview/6.1.1-mpi
+         paraview/6.1.1-gpu-mpi
 
    .. tab-item:: Frontier
       :sync: frontier
 
-      .. tab-set::
+      .. code-block:: bash
 
-         .. tab-item:: UMS Installation
+         $ module spider paraview
 
-            .. code-block:: bash
+         (OLCF SPIDER): Modules in RED are not supported by ORNL!
+         To learn more about unsupported modules see: https://docs.olcf.ornl.gov/software/UMS/index.html
 
-               $ module load ums
-               $ module load ums032
-               $ module load dav-sdk
-               $ module -t avail paraview
-
-               /sw/frontier/ums/ums032/modules:
-               paraview/5.11.2-rocm
-               paraview/5.11.2
-               paraview/5.12.1-rocm
-               paraview/5.12.1
-               paraview/5.13.1-rocm
-               paraview/5.13.1
-
-         .. tab-item:: OLCF Installation
-
-            .. code-block:: bash
+         Versions:
+           paraview/5.11.1
+           paraview/5.11.1-rocm
+           paraview/5.11.2
+           paraview/5.11.2-rocm
+           paraview/5.12.0-gpu-mpi
+           paraview/5.12.0-mpi
+           paraview/5.12.1
+           paraview/5.12.1-genesis-rocm
+           paraview/5.12.1-rocm
+           paraview/5.13.1
+           paraview/5.13.1-gpu-mpi
+           paraview/5.13.1-mpi
+           paraview/5.13.1-rocm
+           paraview/5.13.2-gpu-mpi
+           paraview/5.13.2-mpi
+           paraview/5.13.3-genesis-rocm
+           paraview/5.13.3-gpu-mpi
+           paraview/5.13.3-mpi
+           paraview/6.0.1-mpi
              
-               $ module load PrgEnv-gnu/8.6.0
-               $ module load gcc-native/13.2
-               $ module load rocm # needed to see the GPU-enabled modules
-               $ module -t avail paraview
-                
-               /sw/frontier/spack-envs/modules/gcc/13.2/cray-mpich-8.1.31/rocm-6.2.4/gcc-13.2:
-               paraview/5.12.0-gpu-mpi
-               paraview/5.13.1-gpu-mpi
-               paraview/5.13.2-gpu-mpi
-               /sw/frontier/spack-envs/modules/gcc/13.2/cray-mpich-8.1.31/gcc-13.2:
-               paraview/5.12.0-mpi
-               paraview/5.13.1-mpi
-               paraview/5.13.2-mpi
-
-            .. note::
-                ParaView 5.13.3 depends on ``cpe/25.09`` and ``gcc-native/14.2`` so does not show in the above list.
 
 After installing, you must give ParaView the relevant server information to be
 able to connect to OLCF systems (comparable to VisIt's system of host
@@ -218,8 +167,6 @@ Next, click on Connect and change the values in the Connection Options box.
 
 A dialog box follows, in which you must enter in your username and project
 allocation, the number of nodes to reserve and a duration to reserve them for.
-This is also where you can choose between the OSMesa and EGL (ROCm for Frontier)
-rendering options via the "Server headless API" box.
 
 .. image:: /images/paraview_step2b_Andes.png
    :align: center
@@ -463,15 +410,36 @@ client/server mode, 1 core per MPI task is enforced. This is by design. If you
 need more than 1 core per MPI task, then you'll need to switch ``Exclusive Node
 Allocation`` to ``True`` when connecting to Riker. 
 
-Riker: Hang when volume rendering on batch partition (Sep. 9, 2026)
--------------------------------------------------------------------
+Riker: Hangs on GPU partition with specific filters
+---------------------------------------------------
 
-When using more than 1 MPI task in remote client/server mode, it is a known
-issue that ParaView hangs on Riker's ``batch`` partition (``Accelerated
-Compute`` set to ``None``) -- **specifically when volume rendering**.
-Non-volume rendered visualizations still work with more than 1 MPI task on the
-``batch`` partition. For volume rendering, switch to using the ``gpu``
-partition instead where this is not an issue (``Accelerated Compute`` set to ``CUDA``).
+Viskores (formerly VTK-m) accelerated GPU filters are enabled on Riker by default.
+Users may experience hangs when using filters such as ``Threshold``, ``Slice``, and others.
+This is typically due to too many MPI tasks causing out of memory errors on a GPU.
+Try reducing the number of MPI tasks you are using, or increase the number of nodes in your job.
+ParaView will eventually fallback to the CPU implementation of those filters,
+but (depending on the number of MPI tasks), it can take a while for that to happen.
+
+In the future, if you'd like to turn off this feature, you can do so in the
+ParaView settings under ``General`` and by deselecting ``Use Accelerated Filters``.
+
+Riker: Loading the NVIDIA IndeX plugin crashes ParaView
+-------------------------------------------------------
+
+When loaded as a ``Remote Plugin``, the ``pvNVIDIAIndeX`` plugin can cause
+ParaView to crash.  To avoid this, load the plugin as a ``Local Plugin``
+instead.  Regardless of if your client has an NVIDIA GPU locally or not, this
+will load the plugin on the remote server properly.
+
+Additionally, if using more than 1 MPI task in your job, you will see a
+warning: ``IceT compositing must be disabled when using the NVIDIA IndeX plugin
+with MPI...``.  This is expected.  To disable ``IceT`` in your job, navigate to
+``Render View`` within the ParaView settings, toggle ``Advanced Properties``
+(gear icon), and select ``Disable IceT``.
+
+You **do not** need to fully restart your job for the change to take effect.
+Instead, you can just select ``Reset Session`` icon located next to the
+``Connect`` and ``Disconnect`` icons in the main ParaView GUI.
 
 Process failed to start connection issue (or DISPLAY not set)
 -------------------------------------------------------------
@@ -488,32 +456,6 @@ securely enter your OLCF credentials.
 After installing, if you see a "Can't open display" or a "DISPLAY is not set"
 error, try restarting your computer. Sometimes XQuartz doesn't function
 properly if the computer was never restarted after installing.
-
-ParaView crashes when using the EGL API module via command line
----------------------------------------------------------------
-
-If ParaView crashes when using the EGL version of the ParaView module via the
-command line and raises errors about OpenGL drivers or features, this is most
-likely due to not being connected to any GPUs.
-
-Double check that you are either running on the GPU partition on Andes or Riker (i.e.,
-``-p gpu``).
-
-If problems persist and you do not need EGL, try using the OSMesa version of
-the module instead (e.g., paraview/5.9.1-osmesa instead of paraview/5.9.1-egl).
-
-Default Andes module not working with PvBatch or PvPython (Aug. 31, 2021)
--------------------------------------------------------------------------
-
-A ``command not found`` error occurs when trying to execute either PvBatch or
-PvPython after loading the default ParaView module on Andes. To fix this, you
-must load the equivalent ParaView module ending in "pyapi" instead (i.e.,
-``module load paraview/5.9.1-py3-pyapi`` instead of ``module load
-paraview/5.9.1-py3``). 
-
-Alternatively, the ParaView installations in ``/sw/andes/paraview`` (i.e., the
-paraview/5.9.1-egl and paraview/5.9.1-osmesa modules) can also be loaded to
-avoid this issue.
 
 .. _paraview-resources:
 
