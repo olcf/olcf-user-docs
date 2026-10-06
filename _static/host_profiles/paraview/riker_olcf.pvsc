@@ -2,10 +2,10 @@
   <Server name="ORNL riker (OLCF Official)" resource="csrc://riker.olcf.ornl.gov" timeout="-1">
     <CommandStartup>
       <Options>
-        <Option name="HEADLESS_API" label="Accelerated Compute" save="true">
+        <Option name="HEADLESS_API" label="Partition" save="true">
           <Enumeration default="none">
-            <Entry value="none" label="None"/>
-            <Entry value="cuda" label="CUDA"/>
+            <Entry value="none" label="batch"/>
+            <Entry value="cuda" label="gpu"/>
           </Enumeration>
         </Option>
         <Option name="USER" label="Server username" save="true">
@@ -33,7 +33,7 @@
           <Range type="int" min="0" max="16" step="1" default="0"/>
         </Option>
         <Option name="NUM_CORES_PER_GPU" label="Number of cores per GPU (non-exclusive only)" save="true">
-          <Range type="int" min="1" max="48" step="1" default="0"/>
+          <Range type="int" min="16" max="48" step="1" default="16"/>
         </Option>
         <Option name="PROJECT" label="Project to charge" save="true">
           <String default="abcXXX"/>
