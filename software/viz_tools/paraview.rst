@@ -256,7 +256,6 @@ batch scripts, along with a working Python example, are provided below.
         cd $SLURM_SUBMIT_DIR
         date
 
-        export UCX_NET_DEVICES=mlx5_0:1
         module load paraview/6.1.1-mpi
 
         srun -n 28 -c 1 pvbatch para_example.py
