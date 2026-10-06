@@ -575,6 +575,20 @@ tasks, including VisIt.
 Troubleshooting
 ===============
 
+Riker: Unable to use the ANARI VisRTX backend
+---------------------------------------------
+
+Due to known VisIt bugs for both `ANARI surface rendering
+<https://github.com/visit-dav/visit/issues/21136>`__ and `ANARI volume
+rendering <https://github.com/visit-dav/visit/issues/21153>`__, the ``visrtx``
+backend option cannot be used in remote server/client mode. This is fixed in
+the VisIt 3.6.0 release.
+
+If using VisIt 3.5.0, you will need to launch VisIt directly on the compute
+node in an interactive job and use traditional X-forwarding or :doc:`VNC
+<remote_desktop>` instead. The ``visrtx`` backend is not enabled for VisIt
+3.4.2 on Riker.
+
 SSH error after accepting passcode (duplicate host profile bug)
 ---------------------------------------------------------------
 
