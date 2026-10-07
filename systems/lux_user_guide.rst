@@ -6,23 +6,20 @@
 Lux User Guide
 ##############
 
-******************
-Lux HPC User Guide
-******************
-
 .. _lux_system_overview:
 
+***************
 System Overview
-===============
+***************
 
 Lux is an AMD-based supercomputer built on HPE ProLiant XD685 nodes and located at the Oak Ridge Leadership Computing Facility (OLCF).
 It enables users to dramatically accelerate AI-driven research.
-Lux consists of 500+ nodes and 4,000+ GPUs, divided into Slurm (HPC) and Kubernetes partitions.
+Lux consists of 504 nodes and 4,032 GPUs, divided into Slurm (HPC) and Kubernetes partitions.
 
 .. _lux-nodes:
 
 Lux Compute Nodes
------------------
+=================
 
 Each Lux compute node contains [2x] 64-core AMD EPYC 9575F CPUs with access to 3 TB of DDR5 memory.
 Each node also contains [8x] AMD Instinct MI355X GPUs, each with 288 GB of high-bandwidth memory (HBM3E) and 8 Accelerated Compute Dies (XCDs), for a total of 64 XCDs per node.
@@ -83,6 +80,12 @@ The MI355X GPUs are connected with Infinity Fabric GPU-GPU in the arrangement sh
 
     * hardware threads 112-127 | GPU 6
 
+******************
+Lux HPC User Guide
+******************
+
+HPC Node Overview
+=================
 
 Node Types
 ----------
@@ -242,15 +245,46 @@ Kronos Archival Storage
 
 Please note that the Kronos is not mounted directly onto Lux nodes. There are two main methods for accessing and moving data to/from Kronos, either with standard cli utilities (scp, rsync, etc.) and via Globus using the "OLCF Kronos" collection. For more information on using Kronos, see the :ref:`kronos` section.
 
-+---------------------+---------------------------------------------+----------------+-------------+----------+---------+---------+------------+------------------+
-| Area                | Path                                        | Type           | Permissions |  Quota   | Backups | Purged  | Retention  | On Compute Nodes |
-+=====================+=============================================+================+=============+==========+=========+=========+============+==================+
-| Member Archive      | ``/nl/kronos/olcf/[projid]/users/$USER``    | Nearline       | 700         | 200 TB*  | No      | No      | 90 days    | No               |
-+---------------------+---------------------------------------------+----------------+-------------+----------+---------+---------+------------+------------------+
-| Project Archive     | ``/nl/kronos/olcf/[projid]/proj-shared``    | Nearline       | 770         | 200 TB*  | No      | No      | 90 days    | No               |
-+---------------------+---------------------------------------------+----------------+-------------+----------+---------+---------+------------+------------------+
-| World Archive       | ``/nl/kronos/olcf/[projid]/world-shared``   | Nearline       | 775         | 200 TB*  | No      | No      | 90 days    | No               |
-+---------------------+---------------------------------------------+----------------+-------------+----------+---------+---------+------------+------------------+
+.. list-table::
+   :widths: 12 30 10 10 10 8 8 10 15
+   :header-rows: 1
+
+   * - Area
+     - Path
+     - Type
+     - Permissions
+     - Quota
+     - Backups
+     - Purged
+     - Retention
+     - On Compute Nodes
+   * - Member Archive
+     - ``/nl/kronos/olcf/[projid]/users/$USER``
+     - Nearline
+     - 700
+     - 200 TB*
+     - No
+     - No
+     - 90 days (after account end)
+     - No
+   * - Project Archive
+     - ``/nl/kronos/olcf/[projid]/proj-shared``
+     - Nearline
+     - 770
+     - 200 TB*
+     - No
+     - No
+     - 90 days (after project end)
+     - No
+   * - World Archive
+     - ``/nl/kronos/olcf/[projid]/world-shared``
+     - Nearline
+     - 775
+     - 200 TB*
+     - No
+     - No
+     - 90 days (after project end)
+     - No
 
 .. note::
     The three archival storage areas above share a single 200TB per project quota.
@@ -405,7 +439,6 @@ A command processor in each GPU receives API commands and transforms them into c
 
 .. todo: fact check the following
 
-NEEDS REVIEW:
 Compute tasks are managed by the 4 asynchronous compute engines, which dispatch wavefronts to compute units.
 All wavefronts from a single workgroup are assigned to the same CU.
 In CUDA terminology, workgroups are "blocks", wavefronts are "warps", and work-items are "threads".
@@ -1189,7 +1222,7 @@ Batch Partition Policy (default)
       - Duration
       - Policy
     * - A
-      - 1-502 Nodes
+      - 1-484 Nodes
       - Duration 0-48 hr
       - Max 4 jobs running and 4 jobs eligible **per project**
 
@@ -2664,7 +2697,7 @@ See an example below:
 Save the above in a file named ``pod.yaml``. Create this pod with ``kubectl apply -f pod.yaml``. You
 can view the status of the pod by running ``kubectl get pods``.
 
-You can open a shell into the container in the running pod with  (TODO: verify)
+You can open a shell into the container in the running pod with:
 
 .. code-block::
 
