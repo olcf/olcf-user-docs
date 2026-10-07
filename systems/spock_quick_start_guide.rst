@@ -1,4 +1,6 @@
 :no-search:
+:tocdepth: 3
+
 .. _spock-quick-start-guide:
 
 ***********************

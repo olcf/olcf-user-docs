@@ -1,3 +1,4 @@
+:tocdepth: 3
 
 -------------------------------
 Quick Access from Outside Slate

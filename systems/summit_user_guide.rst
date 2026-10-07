@@ -1,4 +1,6 @@
 :no-search:
+:tocdepth: 3
+
 .. _summit-user-guide:
 
 ******************
