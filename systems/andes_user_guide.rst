@@ -4,14 +4,11 @@
 Andes User Guide
 ****************
 
-.. note:: 
-    The OLCF's new data analysis and visualization cluster, Riker, is available to OLCF Moderate users! Users are encouraged to being the migration process as early as possible. 
-    Andes will continue to operate in parallel with Riker until the end of October to provide users time to transition their workflows. 
-    Additional information about the new system, including key differences between Andes and Riker, is available in the :ref:`riker-user-guide`. 
+.. warning:: 
+    **Andes will be decommissioned on November 02, 2026.**
     
-    **Andes will be decommissioned at the end of October.**
-    
-    Please feel free to direct any questions to help@olcf.ornl.gov.
+    Andes users are encouraged to start migrating to Riker now. If you are having issues with migrating, please reach out to help@olcf.ornl.gov as soon as possible. Additional information about the new system, including key differences between Andes and Riker, is available in the :ref:`riker-user-guide`. 
+
 
 
 
@@ -30,17 +27,17 @@ Compute Nodes
 
 Andes contains 704 compute nodes and 9 GPU nodes. Andes has two partitions:
 
-+-------------+-------------+---------+-------------------+------------------------------------+
-| Partition   | Node Count  | Memory  | GPU               | CPU                                |
-+=============+=============+=========+===================+====================================+
-| batch       | 704         | 256 GB  | N/A               | [2x] AMD EPYC 7302 16Core Processor|
-| (default)   |             |         |                   | 3.0 GHz, 16 cores                  |   
-|             |             |         |                   | (total 32 cores *per node*)        |
-+-------------+-------------+---------+-------------------+------------------------------------+
-| gpu         | 9           | 1 TB    | [2x]              | [2x] Intel\ |R| Xeon\ |R| E5-2695  |
-|             |             |         | NVIDIA\ |R|       | @2.3 GHz - 14 cores, 28 HT         |
-|             |             |         | K80               | (total 28 cores, 56 HT *per node*) |
-+-------------+-------------+---------+-------------------+------------------------------------+
++-------------+-------------+---------+-------------------+-------------------------------------+
+| Partition   | Node Count  | Memory  | GPU               | CPU                                 |
++=============+=============+=========+===================+=====================================+
+| batch       | 704         | 256 GB  | N/A               | [2x] AMD EPYC 7302 16 Core Processor|
+| (default)   |             |         |                   | 3.0 GHz, 16 cores                   |   
+|             |             |         |                   | (total 32 cores *per node*)         |
++-------------+-------------+---------+-------------------+-------------------------------------+
+| gpu         | 9           | 1 TB    | [2x]              | [2x] Intel\ |R| Xeon\ |R| E5-2695   |
+|             |             |         | NVIDIA\ |R|       | @2.3 GHz - 14 cores, 28 HT          |
+|             |             |         | K80               | (total 28 cores, 56 HT *per node*)  |
++-------------+-------------+---------+-------------------+-------------------------------------+
 
 **Batch Partition**
 
