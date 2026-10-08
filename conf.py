@@ -98,7 +98,7 @@ html_theme_options = {
     'canonical_url': 'https://docs.olcf.ornl.gov',
     'collapse_navigation': False,
     'sticky_navigation': True,
-    'navigation_depth': 4,
+    'navigation_depth': 6,
     'style_external_links': True,
     'style_nav_header_background': '#efefef',
     'logo_only': True,
