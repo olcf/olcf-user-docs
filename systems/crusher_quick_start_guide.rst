@@ -1,4 +1,6 @@
 :no-search:
+:tocdepth: 3
+
 .. _crusher-quick-start-guide:
 
 *************************

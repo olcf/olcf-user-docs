@@ -1,4 +1,4 @@
-:tocdepth: 3
+:tocdepth: 4
 
 .. _lux-user-guide:
 

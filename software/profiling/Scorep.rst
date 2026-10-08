@@ -1,3 +1,5 @@
+:tocdepth: 3
+
 .. _Scorep_v1:
 
 .. image:: /images/Scorep_logo.png

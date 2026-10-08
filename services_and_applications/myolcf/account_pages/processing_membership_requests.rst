@@ -1,3 +1,4 @@
+:tocdepth: 3
 
 .. _processing_project_membership_requests:
 

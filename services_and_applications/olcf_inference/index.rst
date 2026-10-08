@@ -1,3 +1,5 @@
+:tocdepth: 3
+
 ======================================
 OLCF Inference Service Documentation
 ======================================

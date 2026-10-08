@@ -1,3 +1,4 @@
+:tocdepth: 3
 
 .. image:: /images/linaro_map.png
    :width: 200px
