@@ -2761,6 +2761,8 @@ The below example will create a Service listening on port 9376 pointing to our P
     metadata:
       namespace: <namespace>
       name: hello-service
+      labels:
+        app: hello-pod
     spec:
       selector:
         app: hello-pod
@@ -2784,6 +2786,8 @@ You can also create a service that refers to a Deployment
     metadata:
       namespace: <namespace>
       name: hello-service
+      labels:
+        deployment: recreate-example
     spec:
       selector:
         deployment: recreate-example
@@ -3100,6 +3104,8 @@ To setup an HTTPRoute for the ``hello-service`` Service we set up for the ``hell
    metadata:
      name: hellogateway
      namespace: <namespace>
+     labels:
+       app: hello-pod
    spec:
      hostnames:
        - <name of your app>.apps.lux.olcf.ornl.gov
@@ -3137,15 +3143,28 @@ In your browser, install Foxyproxy, and add a proxy named 'Lux' with Type ``SOCK
 
 Now select 'Lux' as the active proxy in Foxyproxy and point your browser to ``<name of your app>.apps.lux.olcf.ornl.gov``.
 
+.. note::
+
+   If you open the page on the browser and you see a page that says "No healthy upstream", then
+   check to make sure that you have ``.metadata.labels`` entry set up for your Service that the
+   HTTPRoute is pointing to. HTTPRoute needs a label to be present for its service.
+
 .. _kubernetes-harbor:
 
 Using the Harbor Container Registry
 ===================================
 
-Harbor is the container provided by OLCF for storing and managing container images. It is accessible
+Harbor is the container image registry provided by OLCF for storing and managing container images. It is accessible
 at `harbor.ccs.ornl.gov <https://harbor.ccs.ornl.gov>`__ .
 
 In Harbor, a repository is created the first time you push an image to it, but it must live inside a Project. Therefore, setting up your environment starts with creating a Project. Admins may have already created your project or attached your project to an existing allocation.
+
+.. todo:
+
+   change the wording to be more accurate to how the projects will actually be created -
+   automatically to match the project id, PI has to manually create it, its a free for all.
+   Whichever it is. 
+   
 
 1. Create a Project (Repository Container)
 ------------------------------------------
