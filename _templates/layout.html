@@ -4,9 +4,3 @@
 {% block footer %} {{ super() }}
 
 {% endblock %}
-
-{% block menu %}
-<!-- Set max depth higher to accommodate new guides. Default = 4 -->
-    {% set nav = toctree(maxdepth=6, collapse=theme_collapse_navigation|tobool, includehidden=theme_includehidden|tobool, titles_only=False) %}
-    {{ nav }}
-{% endblock %}
