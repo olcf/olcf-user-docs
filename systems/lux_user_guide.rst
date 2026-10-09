@@ -1224,7 +1224,7 @@ Batch Partition Policy (default)
     * - A
       - 1-484 Nodes
       - Duration 0-48 hr
-      - Max 4 jobs running and 4 jobs eligible **per user**
+      - Max 4 jobs eligible to run (queued, accumulating priority) **per user**
 
 
 Job Limit
