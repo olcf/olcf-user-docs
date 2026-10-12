@@ -50,35 +50,35 @@ The MI355X GPUs are connected with Infinity Fabric GPU-GPU in the arrangement sh
 
     NUMA 0:
 
-    * hardware threads 000-015 | GPU 3
+    * hardware threads 000-015 | GPU 3 - Bus 0000:7c:00.0
 
     NUMA 1:
 
-    * hardware threads 016-031 | GPU 0
+    * hardware threads 016-031 | GPU 0 - Bus 0000:09:00.0
 
     NUMA 2:
 
-    * hardware threads 032-047 | GPU 1
+    * hardware threads 032-047 | GPU 1 - Bus 0000:19:00.0
 
     NUMA 3:
 
-    * hardware threads 048-063 | GPU 2
+    * hardware threads 048-063 | GPU 2 - Bus 0000:69:00.0
 
     NUMA 4:
 
-    * hardware threads 064-079 | GPU 7
+    * hardware threads 064-079 | GPU 7 - Bus 0000:fb:00.0
 
     NUMA 5:
 
-    * hardware threads 080-095 | GPU 4
+    * hardware threads 080-095 | GPU 4 - Bus 0000:86:00.0
 
     NUMA 6:
 
-    * hardware threads 096-111 | GPU 5
+    * hardware threads 096-111 | GPU 5 - Bus 0000:99:00.0
 
     NUMA 7:
 
-    * hardware threads 112-127 | GPU 6
+    * hardware threads 112-127 | GPU 6 - Bus 0000:e6:00.0
 
 ******************
 Lux HPC User Guide
@@ -800,11 +800,33 @@ The MPI implementations available on Lux are OpenMPI (default) and MPICH, which 
 
     hipcc requires the ROCm Toolclain, See :ref:`lux_exposing-the-rocm-toolchain-to-your-programming-environment`
 
+.. warning::
+
+    You may not be able to load an MPI implementation without first loading a correctly versioned compiler.
+
+    For example:
+
+    .. code-block:: bash
+
+        module load rocm/7.14.0
+
+        Inactive Modules:
+          1) openmpi
+
+        ...
+        module load mpich
+        Lmod has detected the following error:  The following module(s) are unknown: "mpich"
+        ...
+        module load amd-llvm/7.14.0
+        ...
+        module load mpich
+
+        Lmod is automatically replacing "openmpi/5.0.10" with "mpich/5.0.1".
 
 GPU-Aware MPI
 ^^^^^^^^^^^^^
 
-To use GPU-aware MPI, users must load both a ROCm module and an MPI-providing module:
+To use GPU-aware MPI, users must load a ROCm module, its corresponding AMD Compiler module, and an MPI-providing module:
 
 .. dropdown:: gpu-aware.cpp
 
@@ -872,7 +894,8 @@ Using ``hipcc``
 
 .. code:: bash
 
-    module load rocm
+    module load rocm/7.2.4
+    module load amd-llvm/7.2.4
     module load openmpi
 
     hipcc -std=c++11 --offload-arch=gfx950 -I${ROCM_PATH}/include -I${MPI_DIR}/include -c gpu-aware.cpp
@@ -882,7 +905,8 @@ Using ``hipcc``
 
     .. code:: bash
 
-        module load rocm
+        module load rocm/7.2.4
+        module load amd-llvm/7.2.4
         module load mpich
 
         hipcc -std=c++11 --offload-arch=gfx950 -I${ROCM_PATH}/include -I${MPICH_DIR}/include -c gpu-aware.cpp
@@ -892,7 +916,8 @@ Using ``amdclang``
 
 .. code:: bash
 
-    module load rocm
+    module load rocm/7.2.4
+    module load amd-llvm/7.2.4
     module load openmpi
 
     amdclang++ -D__HIP_ROCclr__ -D__HIP_ARCH_GFX950__=1 -std=c++11 --rocm-path=${ROCM_PATH} --offload-arch=gfx950 -x hip -I${ROCM_PATH}/include -I${MPI_DIR}/include -c gpu-aware.cpp
@@ -902,7 +927,8 @@ Using ``amdclang``
 
     .. code:: bash
 
-        module load rocm
+        module load rocm/7.2.4
+        module load amd-llvm/7.2.4
         module load mpich
 
         amdclang++ -D__HIP_ROCclr__ -D__HIP_ARCH_GFX950__=1 -std=c++11 --rocm-path=${ROCM_PATH} --offload-arch=gfx950 -x hip -I${ROCM_PATH}/include -I${MPICH_DIR}/include -c gpu-aware.cpp
@@ -917,6 +943,29 @@ Using ``amdclang``
     * Specify the ROCm and MPI library path and libraries at link time ``-L${ROCM_PATH}/lib -lamdhip64 -L${MPI_DIR}/lib``
 
     ``MPICH_DIR`` can be substituted for ``MPI_DIR`` in order to use MPICH with PMI2.
+
+.. warning::
+
+    You may not be able to load an MPI implementation without first loading a correctly versioned compiler.
+
+    For example:
+
+    .. code-block:: bash
+
+        module load rocm/7.14.0
+
+        Inactive Modules:
+          1) openmpi
+
+        ...
+        module load mpich
+        Lmod has detected the following error:  The following module(s) are unknown: "mpich"
+        ...
+        module load amd-llvm/7.14.0
+        ...
+        module load mpich
+
+        Lmod is automatically replacing "openmpi/5.0.10" with "mpich/5.0.1".
 
 
 Understanding the Compatibility of Compilers, ROCm, MPI, and RCCL
@@ -1928,7 +1977,7 @@ Breaking down the ``srun`` command, we have:
 * ``--cpu-bind=threads``: binds tasks to threads
 * ``--threads-per-core=1``: use a maximum of 1 hardware thread per physical core (i.e., only use 1 logical core per physical core)
 * ``-m block:cyclic``: distribute the tasks in a block layout across nodes (default), and in a **cyclic** (round-robin) layout across L3 sockets
-* ``./hello_mpi_omp``: launches the "hello_mpi_omp" executable
+* ``./hello_jobstep``: launches the "hello_jobstep" executable
 * ``| sort``: sorts the output
 * ``| cut ...``: gets only output we care about for CPU tasks
 
