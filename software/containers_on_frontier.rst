@@ -133,7 +133,9 @@ Using Podman to build images and converting them to Apptainer
 
 .. note::
    If you wish to use Podman, you need subuid/subgid mappings turned on for your user account. Open a help ticket by
-   emailing help@olcf.ornl.gov to request this first. Your Podman images will not build otherwise.
+   emailing help@olcf.ornl.gov to request this first. Your Podman images will not build otherwise. After confirming
+   subuid/subgid mappings are implemented, you can log out or run ``podman system migrate`` for the changes to take
+   place.
 
 * Frontier has support for building images with Podman (which functions the same as Docker). Podman supports building containers with Dockerfiles. In order to build with Podman, you must first create a file called ``storage.conf`` in ``$HOME/.config/containers`` with the appropriate settings. Run the below snippet on your command line to create the file.
 
@@ -164,7 +166,7 @@ Using Podman to build images and converting them to Apptainer
 
 
 * Build the Podman image with ``podman build --network host -t localhost/example:latest .``
-* Convert the image into a tar file with ``podamn save -o example.tar localhost/example:latest``
+* Convert the image into a tar file with ``podman save -o example.tar localhost/example:latest``
 * Then convert this tar file into an Apptainer SIF file with ``apptainer build example.sif docker-archive://example.tar``
 
 
