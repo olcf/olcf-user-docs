@@ -50,35 +50,35 @@ The MI355X GPUs are connected with Infinity Fabric GPU-GPU in the arrangement sh
 
     NUMA 0:
 
-    * hardware threads 000-015 | GPU 3
+    * hardware threads 000-015 | GPU 3 - Bus 7c:00.0
 
     NUMA 1:
 
-    * hardware threads 016-031 | GPU 0
+    * hardware threads 016-031 | GPU 0 - Bus 09:00.0
 
     NUMA 2:
 
-    * hardware threads 032-047 | GPU 1
+    * hardware threads 032-047 | GPU 1 - Bus 19:00.0
 
     NUMA 3:
 
-    * hardware threads 048-063 | GPU 2
+    * hardware threads 048-063 | GPU 2 - Bus 69:00.0
 
     NUMA 4:
 
-    * hardware threads 064-079 | GPU 7
+    * hardware threads 064-079 | GPU 7 - Bus fb:00.0
 
     NUMA 5:
 
-    * hardware threads 080-095 | GPU 4
+    * hardware threads 080-095 | GPU 4 - Bus 86:00.0
 
     NUMA 6:
 
-    * hardware threads 096-111 | GPU 5
+    * hardware threads 096-111 | GPU 5 - Bus 99:00.0
 
     NUMA 7:
 
-    * hardware threads 112-127 | GPU 6
+    * hardware threads 112-127 | GPU 6 - Bus e6:00.0
 
 ******************
 Lux HPC User Guide
