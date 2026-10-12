@@ -800,11 +800,33 @@ The MPI implementations available on Lux are OpenMPI (default) and MPICH, which 
 
     hipcc requires the ROCm Toolclain, See :ref:`lux_exposing-the-rocm-toolchain-to-your-programming-environment`
 
+.. warning::
+
+    You may not be able to load an MPI implementation without first loading a correctly versioned compiler.
+
+    For example:
+
+    .. code-block:: bash
+
+        module load rocm/7.14.0
+
+        Inactive Modules:
+          1) openmpi
+
+        ...
+        module load mpich
+        Lmod has detected the following error:  The following module(s) are unknown: "mpich"
+        ...
+        module load amd-llvm/7.14.0
+        ...
+        module load mpich
+
+        Lmod is automatically replacing "openmpi/5.0.10" with "mpich/5.0.1".
 
 GPU-Aware MPI
 ^^^^^^^^^^^^^
 
-To use GPU-aware MPI, users must load both a ROCm module and an MPI-providing module:
+To use GPU-aware MPI, users must load a ROCm module, its corresponding AMD Compiler module, and an MPI-providing module:
 
 .. dropdown:: gpu-aware.cpp
 
@@ -872,7 +894,8 @@ Using ``hipcc``
 
 .. code:: bash
 
-    module load rocm
+    module load rocm/7.2.4
+    module load amd-llvm/7.2.4
     module load openmpi
 
     hipcc -std=c++11 --offload-arch=gfx950 -I${ROCM_PATH}/include -I${MPI_DIR}/include -c gpu-aware.cpp
@@ -882,7 +905,8 @@ Using ``hipcc``
 
     .. code:: bash
 
-        module load rocm
+        module load rocm/7.2.4
+        module load amd-llvm/7.2.4
         module load mpich
 
         hipcc -std=c++11 --offload-arch=gfx950 -I${ROCM_PATH}/include -I${MPICH_DIR}/include -c gpu-aware.cpp
@@ -892,7 +916,8 @@ Using ``amdclang``
 
 .. code:: bash
 
-    module load rocm
+    module load rocm/7.2.4
+    module load amd-llvm/7.2.4
     module load openmpi
 
     amdclang++ -D__HIP_ROCclr__ -D__HIP_ARCH_GFX950__=1 -std=c++11 --rocm-path=${ROCM_PATH} --offload-arch=gfx950 -x hip -I${ROCM_PATH}/include -I${MPI_DIR}/include -c gpu-aware.cpp
@@ -902,7 +927,8 @@ Using ``amdclang``
 
     .. code:: bash
 
-        module load rocm
+        module load rocm/7.2.4
+        module load amd-llvm/7.2.4
         module load mpich
 
         amdclang++ -D__HIP_ROCclr__ -D__HIP_ARCH_GFX950__=1 -std=c++11 --rocm-path=${ROCM_PATH} --offload-arch=gfx950 -x hip -I${ROCM_PATH}/include -I${MPICH_DIR}/include -c gpu-aware.cpp
@@ -917,6 +943,29 @@ Using ``amdclang``
     * Specify the ROCm and MPI library path and libraries at link time ``-L${ROCM_PATH}/lib -lamdhip64 -L${MPI_DIR}/lib``
 
     ``MPICH_DIR`` can be substituted for ``MPI_DIR`` in order to use MPICH with PMI2.
+
+.. warning::
+
+    You may not be able to load an MPI implementation without first loading a correctly versioned compiler.
+
+    For example:
+
+    .. code-block:: bash
+
+        module load rocm/7.14.0
+
+        Inactive Modules:
+          1) openmpi
+
+        ...
+        module load mpich
+        Lmod has detected the following error:  The following module(s) are unknown: "mpich"
+        ...
+        module load amd-llvm/7.14.0
+        ...
+        module load mpich
+
+        Lmod is automatically replacing "openmpi/5.0.10" with "mpich/5.0.1".
 
 
 Understanding the Compatibility of Compilers, ROCm, MPI, and RCCL
