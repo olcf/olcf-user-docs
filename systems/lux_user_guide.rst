@@ -2560,8 +2560,8 @@ but a new ``srun`` flag will be used to change the default round-robin (``cyclic
 
 
 
-The overall effect of using ``--distribution=*:block`` and increasing the number of physical CPU cores available to each MPI rank is to place the first two MPI ranks in the first L3 cache region with GPU 4,
-the next two MPI ranks in the second L3 cache region with GPU 5, and so on.
+The overall effect of using ``--distribution=*:block`` and increasing the number of physical CPU cores available to each MPI rank is to place the first two MPI ranks in the first NUMA domain with GPU 3 (bus ``7c``),
+the next two MPI ranks in the NUMA domain with GPU 0 (bus ``09``), and so on.
 
 **32 MPI ranks - where 2 ranks share a GPU (packed, multi-node)**
 
