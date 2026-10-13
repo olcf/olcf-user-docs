@@ -2276,7 +2276,7 @@ So although the mapping doesn't occur as expected, the rank is still mapped to t
 **16 MPI ranks - each with 8 CPU cores and 1 GPU (multi-node)**
 
 This example simply extends the first example to run on 2 nodes,
-which simply requires changing the number of nodes to 2 (``-N2``) and the number of MPI ranks to 16 (``-n16``).
+which simply requires changing the number of nodes to 2 (``-N2``), the number of MPI ranks to 16 (``-n16``), and our number of GPUs to match (``--gpus 16``).
 
 .. code-block:: bash
 
