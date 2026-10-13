@@ -2566,7 +2566,7 @@ the next two MPI ranks in the NUMA domain with GPU 0 (bus ``09``), and so on.
 **32 MPI ranks - where 2 ranks share a GPU (packed, multi-node)**
 
 This example is an extension of the previous example to use 2 compute nodes.
-With the appropriate changes put in place in previous example, it is a straightforward exercise to change to using 2 nodes (``-N2``) and 32 MPI ranks (``-n32``).
+With the appropriate changes put in place in previous example, it is a straightforward exercise to change to using 2 nodes (``-N2``), 32 MPI ranks (``-n32``), and 16 GPUs (``--gpus 16``).
 
 .. code:: bash
 
@@ -2715,7 +2715,7 @@ If you are able to fit each ensemble member onto a single MPI rank and single AM
 
 .. code:: bash
 
-    srun -N $SLURM_NNODES -n $((SLURM_NNODES*8)) -c 16 --gpus-per-task=1 --gpu-bind=closest ./wrapper.sh
+    srun -N $SLURM_NNODES -n $((SLURM_NNODES*8)) --gpus $((SLURM_NNODES*8)) -c 16 --gpus-per-task=1 --gpu-bind=closest ./wrapper.sh
 
 Where ``wrapper.sh`` is a shell script that launches your application.
 This shell script is simply for convenience, in case you wish to vary the parameters to your application based on MPI rank.
@@ -2723,13 +2723,13 @@ This shell script is simply for convenience, in case you wish to vary the parame
 Using multiple simultaneous srun's
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-If you are not able to fit each ensemble member onto a single MPI rank and GCD, a common approach is to launch multiple ``srun`` processes in the background simultaneously.
+If you are not able to fit each ensemble member onto a single MPI rank and GPU, a common approach is to launch multiple ``srun`` processes in the background simultaneously.
 For example:
 
 .. code:: bash
 
     for node in $(scontrol show hostnames); do
-        srun -N 1 -n 8 -c 7 --gpus 8 --gpus-per-task=1 --gpu-bind=closest <executable> &
+        srun -N 1 -n 8 -c 16 --gpus 8 --gpus-per-task=1 --gpu-bind=closest <executable> &
     done
     # Wait for srun's to all finish
     wait
