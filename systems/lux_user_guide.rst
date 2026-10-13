@@ -2507,7 +2507,7 @@ This example is an extension of the previous example to run on 2 nodes.
 
 **16 MPI ranks - where 2 ranks share a GPU (packed, single-node)"**
 
-This example launches 16 MPI ranks (``-n16``), each with 8 physical CPU cores (``-c4``) to launch 1 OpenMP thread (``OMP_NUM_THREADS=1``) on.
+This example launches 16 MPI ranks (``-n16``), each with 8 physical CPU cores (``-c8``) to launch 1 OpenMP thread (``OMP_NUM_THREADS=1``) on.
 The MPI ranks will be assigned to GPUs in a packed fashion so that each of the 8 GPUs on the node are shared by 2 MPI ranks.
 Similar to previous examples, ``-ntasks-per-gpu=2`` will be used,
 but a new ``srun`` flag will be used to change the default round-robin (``cyclic``) distribution of MPI ranks across NUMA domains:
