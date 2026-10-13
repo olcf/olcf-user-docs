@@ -2143,10 +2143,12 @@ In the examples below, knowledge of these details will be assumed.
    so users are encouraged to clone the ``hello_jobstep`` program and test whether
    processes and threads are mapped to the CPU cores and GPUs as intended..
 
+
 .. warning::
 
    Due to the unique architecture of Lux compute nodes and the way that Slurm currently allocates GPUs and CPU cores to job steps,
    it is suggested that all GPUs on an allocated node are allocated to the job step to ensure that optimal bindings are possible.
+
 
 Mapping 1 GPU per task
 """"""""""""""""""""""
