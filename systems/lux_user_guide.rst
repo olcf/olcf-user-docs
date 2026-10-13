@@ -1856,6 +1856,9 @@ The job name and output options have been removed since stdout/stderr are typica
        (For example ``map_gpu:0*4,1*4``)
    * - ``--ntasks-per-gpu=<ntasks>``
      - Request that there are ntasks tasks invoked for every GPU.
+   * - ``--gres-flags=allow-task-sharing``
+     - | Enable tasks sharing GPU resources. This reduces overhead in GPU-GPU, process-process communications.
+       | This setting may lead to drastically improved performance.
 
 .. _lux-mapping:
 
@@ -2745,6 +2748,35 @@ This feature may substantially improve the ability to run many simultaneous ``sr
 
 Tips for Launching at Scale
 ---------------------------
+
+Slurm GRES Task Sharing
+"""""""""""""""""""""""
+
+Lux node sharing, by default, isolates resources for each task.
+This means that GPU-GPU and process<=>process communication performance has additional overhead, and may have a performance impact.
+If you find that inter-process communication for your jobs are slower than expected, you may want to run your tasks with the following flag:
+``--gres-flags=allow-task-sharing``
+
+Example:
+
+.. code-block:: bash
+
+    #!/bin/bash
+    #SBATCH --account <account>
+    #SBATCH --partition batch
+    #SBATCH --time 25:00
+    #SBATCH --nodes 1
+    #SBATCH --gpus 8
+
+    module load rocm/7.2.4
+    module load amd-llvm/7.2.4
+    module load openmpi
+
+    srun --nodes 2 --ntasks 16 --gres-flags=allow-task-sharing --gpus-per-task=1 --gpu-bind=closest ./hello_jobstep
+
+.. note::
+
+    ``--gres-flags=allow-task-sharing`` only works at the ``srun``/task level, not allocation level (``salloc``, ``sbatch``).
 
 .. todo: sbcast
 
