@@ -3145,22 +3145,77 @@ GPU Usage on Kubernetes
    GPUs are time limited use and cannot be used for persistent services. They can only be used in
    Jobs.
 
+In order to use GPU resources on the Lux Kubernetes system, you must submit a ``Job`` workload type with the following information:
+
+.. code-block:: yaml
+
+  metadata:
+    namespace: <proj>-gpu
+    annotations:
+      lux.olcf.ornl.gov/walltime:   # your requested time
+  spec:
+    template:
+      spec:
+        containers:
+          resources:
+            limits:
+              amd.com/gpu:    # max GPUs
+            requests:
+              amd.com/gpu:    # desired GPUs
+
+
+.. list-table::
+    :widths: 30 70
+    :header-rows: 1
+
+    * - Specification
+      - Explanation
+    * - ``namespace: <proj>-gpu``
+      -
+        | Your allocated ``<proj>-gpu`` namespace must be used for GPU jobs on Kubernetes.
+        | **Other namespaces will reject GPU jobs.**
+        | Additionally, it is safe to run all workloads on the ``<proj>-gpu``.
+          Non-GPU jobs will be pushed to CPU-only nodes and not burn allocation.
+        | GPU accounting is only measured against tasks run in this namespace requesting GPU resources.
+    * - ``lux.olcf.ornl.gov/walltime:``
+      -
+        | This is your requested walltime in hours, minutes, and/or seconds.
+        | E.g. ``2h``, ``60m``, ``30s``, ``1h30m``
+        | This is compared against your remaining allocation to ensure your allocation is not exceeded.
+    * - ``limits: amd.com/gpu:``
+      - This is the maximum amount of GPU resources you will need; this is functionally equivalent to ``requests: amd.com/gpu:``.
+    * - ``requests: amd.com/gpu:``
+      - This is the minimum amount of GPU resources you will need; this is functionally equivalent to ``limits: amd.com/gpu:``.
+
 Under ``spec.containers`` in your deployment or pod configuration, you can include the GPU resource requests
 for each container request as fields under the ``.resources`` field. For example:
 
-.. code-block::
+.. code-block:: yaml
 
-   spec:
-     containers:
-     - image: "docker.io/subilabrahamornl/sampletorch:latest"
-       name: gpu-pod
-       command: ["python3"]
-       args: ["/root/sampletorch.py"]
-       resources:
-         limits:
-           amd.com/gpu: 1
-         requests:
-           amd.com/gpu: 1
+    apiVersion: batch/v1
+    kind: Job
+    metadata:
+      namespace: <proj>-gpu
+      annotations:
+        lux.olcf.ornl.gov/walltime: 60m
+      name: torch-pod
+    spec:
+      backoffLimit: 0
+      template:
+        spec:
+          containers:
+            - image: "docker.io/subilabrahamornl/sampletorch:latest"
+              name: gpu-pod
+              command: ["python3"]
+              args: ["/root/sampletorch.py"]
+              resources:
+                limits:
+                  amd.com/gpu: 1
+                requests:
+                  amd.com/gpu: 1
+          restartPolicy: Never
+
+
 
 
 See the `torch_simple example <https://github.com/olcf/olcf_kubernetes_examples/tree/main/lux/torch_simple>`__ on how to run a pod with Pytorch running an MNIST example.
@@ -3180,8 +3235,17 @@ GPUs so that is the maximum you can request in a single Pod.
        amd.com/gpu: 8
 
 
+Cancelling Jobs
+---------------
 
+In the case of GPU jobs, it is important to have the ability to cancel in various situations to preserve your allocation.
 
+It is simple to cancel or remove Jobs, simply ``delete`` the Job from the same file. Example:
+
+.. code-block:: bash
+
+    $ kubectl delete -f gpu-job.yaml
+    job.batch "gpu-job" deleted from <proj>-gpu namespace
 
 
 Storage
