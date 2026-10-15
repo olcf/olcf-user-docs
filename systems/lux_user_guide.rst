@@ -707,15 +707,15 @@ The table below lists details about each of the module-provided compilers.
      - Language
      - Compiler
    * - AMD
-     - ``amd-vllm``
+     - ``amd-llvm``
      - C
      - ``amdclang``
    * - AMD
-     - ``amd-vllm``
+     - ``amd-llvm``
      - C++
      - ``amdclang++``
    * - AMD
-     - ``amd-vllm``
+     - ``amd-llvm``
      - Fortran
      - ``amdflang``
    * - GNU
@@ -3153,23 +3153,90 @@ GPU Usage on Kubernetes
    GPUs are time limited use and cannot be used for persistent services. They can only be used in
    Jobs.
 
+Running with GPUs
+-----------------
+
+In order to use GPU resources on the Lux Kubernetes system, you must submit a ``Job`` workload type with the following information:
+
+.. code-block:: yaml
+
+  metadata:
+    namespace: <proj>-gpu
+    annotations:
+      lux.olcf.ornl.gov/walltime:   # your requested time
+  spec:
+    template:
+      spec:
+        containers:
+          resources:
+            limits:
+              amd.com/gpu:    # desired GPUs
+            requests:
+              amd.com/gpu:    # desired GPUs
+
+
+.. list-table::
+    :widths: 30 70
+    :header-rows: 1
+
+    * - Specification
+      - Explanation
+    * - ``namespace: <proj>-gpu``
+      -
+        | Your allocated ``<proj>-gpu`` namespace must be used for GPU jobs on Kubernetes.
+        | **Other namespaces will reject GPU jobs.**
+        | Additionally, it is safe to run all workloads on the ``<proj>-gpu``.
+          Non-GPU jobs will be pushed to CPU-only nodes and not burn allocation.
+        | GPU accounting is only measured against tasks run in this namespace requesting GPU resources.
+    * - ``lux.olcf.ornl.gov/walltime:``
+      -
+        | This is your requested walltime in hours, minutes, and/or seconds.
+        | E.g. ``2h``, ``60m``, ``30s``, ``1h30m``
+        | This is compared against your remaining allocation to ensure your allocation is not exceeded.
+    * - ``limits: amd.com/gpu:``
+      - This is the maximum amount of GPU resources you will need; this must be equal to ``requests: amd.com/gpu:``, if present.
+    * - ``requests: amd.com/gpu:``
+      -
+        This is the minimum amount of GPU resources you will need; this must be omitted, or equal to ``limits: amd.com/gpu:``.
+        GPU ``requests`` are optional, and if omitted will be set to GPU ``limits``.
+
+.. warning::
+
+    If you specify ``requests: amd.com/gpu:``, it **must** be equal to ``limits: amd.com/gpu:``.
+    Otherwise, your job will be rejected.
+
 Under ``spec.containers`` in your deployment or pod configuration, you can include the GPU resource requests
-for each container request as fields under the ``.resources`` field. For example:
+for your container as fields under the ``.resources`` field. For example:
 
-.. code-block::
+.. code-block:: yaml
 
-   spec:
-     containers:
-     - image: "docker.io/subilabrahamornl/sampletorch:latest"
-       name: gpu-pod
-       command: ["python3"]
-       args: ["/root/sampletorch.py"]
-       resources:
-         limits:
-           amd.com/gpu: 1
-         requests:
-           amd.com/gpu: 1
+    apiVersion: batch/v1
+    kind: Job
+    metadata:
+      namespace: <proj>-gpu
+      annotations:
+        lux.olcf.ornl.gov/walltime: 60m
+      name: torch-pod
+    spec:
+      backoffLimit: 0
+      template:
+        spec:
+          containers:
+            - image: "docker.io/subilabrahamornl/sampletorch:latest"
+              name: gpu-pod
+              command: ["python3"]
+              args: ["/root/sampletorch.py"]
+              resources:
+                limits:
+                  amd.com/gpu: 1
+                requests:
+                  amd.com/gpu: 1
+          restartPolicy: Never
 
+
+.. note::
+
+    Currently, only one container in your ``Job`` may request GPUs.
 
 See the `torch_simple example <https://github.com/olcf/olcf_kubernetes_examples/tree/main/lux/torch_simple>`__ on how to run a pod with Pytorch running an MNIST example.
 
@@ -3188,8 +3255,148 @@ GPUs so that is the maximum you can request in a single Pod.
        amd.com/gpu: 8
 
 
+Cancelling Jobs
+---------------
+
+In the case of GPU jobs, it is important to have the ability to cancel in various situations to preserve your allocation.
+
+It is simple to cancel or remove Jobs, simply ``delete`` the Job from the same file. Example:
+
+.. code-block:: bash
+
+    $ kubectl delete -f gpu-job.yaml
+    job.batch "gpu-job" deleted from <proj>-gpu namespace
 
 
+Checking a Project Allocation
+-----------------------------
+
+.. warning::
+
+    For all fields, in the case of values ending in ``m``, this is an amount in milli-GPU hours.
+
+
+In order to check your project's allocation, you can use the ``kubectl`` command line tool.
+
+To find your existing allocation(s) for a project, you can use the following command:
+
+.. todo: this is causing hangs?
+
+    ``kubectl get alloc -n <proj>-gpu``
+
+    or
+
+``kubectl get projectallocations -n <proj>-gpu``
+
+Below is an example:
+
+.. code-block:: bash
+
+    $ kubectl get alloc -n <proj>-gpu
+    NAME             ALLOCATED   CONSUMED   RESERVED   AVAILABLE   WINDOW END             ACTIVE   EXHAUSTED
+    proj-2026-q4   1000        0          0          1k          2027-01-01T00:00:00Z   True     False
+
+Below you can see an explanation of the fields:
+
+.. list-table::
+    :widths: 30 70
+    :header-rows: 1
+
+    * - Field
+      - Definition
+    * - NAME
+      - The name of the allocation
+    * - ALLOCATED
+      - This is the number of allocated GPU-hours as a decimal.
+    * - CONSUMED
+      -
+        | This is the number of GPU hours consumed.
+        | In the case of values ending in ``m``, this is milli-GPU hours
+    * - RESERVED
+      -
+        | This is the number of GPU hours for jobs that have passed budget check (admitted or running) and haven't been charged yet.
+        | Each hold is the Job’s full maximum (GPUs × walltime); the unused part is returned when the Job ends.
+        | In the case of values ending in ``m``, this is milli-GPU hours.
+    * - AVAILABLE
+      -
+        | This is the number of GPU hours currently available to be reserved at admission.
+        | This is equal to ``ALLOCATION - CONSUMED - RESERVED``.
+        | In the case of values ending in ``m``, this is milli-GPU hours.
+    * - WINDOW END
+      - This shows the end time of your allocation.
+    * - ACTIVE
+      - This value is "True" or "False" and tells you whether the allocation is currently active.
+    * - EXHAUSTED
+      - This value is "True" or "False" and tells you whether your allocation has been used entirely.
+
+
+Detailed Project Allocation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+A detailed view of your project allocation can be viewed with the following command:
+
+``kubectl describe alloc <NAME> -n proj-gpu``
+or
+``kubectl describe projectallocation <NAME> -n proj-gpu``
+
+
+Checking Workload Allocation Usage
+----------------------------------
+
+.. warning::
+
+    For all fields, in the case of values ending in ``m``, this is an amount in milli-GPU hours.
+
+
+The ``kubectl`` command line tool can be used to check a workload/``Job``'s allocation burn.
+
+See a list of workload usages, you can run
+
+``kubectl get budgetcharges -n <proj>-gpu``
+
+Below is an example:
+
+.. code-block:: bash
+
+    $ kubectl get budgetcharges -n stf007-gpu
+    NAME                                                                            ALLOCATION       SUBJECT   GPUS   OUTCOME                        GPU HOURS   FINISHED
+    budgetcharge-4b41302cadafa29b6f23e8799a5ee6c2e0291d690647820aa7c3d93233cf3e7e   <proj>-2026-q4   gpu-job   1      Succeeded                      35m         2026-10-15T20:39:56Z
+    budgetcharge-682c0b27b866976f9774d892434877cc03a3f23277fe34eb69c848cf9cdc5afe   <proj>-2026-q4   gpu-job   1      MaximumExecutionTimeExceeded   167m        2026-10-15T20:55:33Z
+
+Below is an explanation of the fields:
+
+.. list-table::
+    :widths: 30 70
+    :header-rows: 1
+
+    * - Field
+      - Definition
+    * - NAME
+      - Unique name of the ``budgetcharge``. This is much like a Job ID.
+    * - ALLOCATION
+      - Name of the allocation in which the ``budgetcharge`` ran.
+    * - SUBJECT
+      -
+        Name of the workload allocation.
+        This is the same as the ``metadata: name:`` field.
+    * - GPUS
+      - The number of GPUs requested.
+    * - OUTCOME
+      - Final workload status.
+    * - GPU HOURS
+      -
+        | Number of GPU hours burned by the workload.
+        | In the case of values ending in ``m``, this is milli-GPU hours.
+    * - FINISHED
+      - Timestamp of workload termination.
+
+
+Detailed Workload Allocation Usage
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+A detailed view of your workload's allocation burn can be viewed with the following command:
+
+``kubectl describe budgetcharge <NAME> -n <proj>-gpu``
 
 
 Storage
