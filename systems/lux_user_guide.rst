@@ -3153,6 +3153,9 @@ GPU Usage on Kubernetes
    GPUs are time limited use and cannot be used for persistent services. They can only be used in
    Jobs.
 
+Running with GPUs
+-----------------
+
 In order to use GPU resources on the Lux Kubernetes system, you must submit a ``Job`` workload type with the following information:
 
 .. code-block:: yaml
@@ -3263,6 +3266,137 @@ It is simple to cancel or remove Jobs, simply ``delete`` the Job from the same f
 
     $ kubectl delete -f gpu-job.yaml
     job.batch "gpu-job" deleted from <proj>-gpu namespace
+
+
+Checking a Project Allocation
+-----------------------------
+
+.. warning::
+
+    For all fields, in the case of values ending in ``m``, this is an amount in milli-GPU hours.
+
+
+In order to check your project's allocation, you can use the ``kubectl`` command line tool.
+
+To find your existing allocation(s) for a project, you can use the following command:
+
+.. todo: this is causing hangs?
+
+    ``kubectl get alloc -n <proj>-gpu``
+
+    or
+
+``kubectl get projectallocations -n <proj>-gpu``
+
+Below is an example:
+
+.. code-block:: bash
+
+    $ kubectl get alloc -n <proj>-gpu
+    NAME             ALLOCATED   CONSUMED   RESERVED   AVAILABLE   WINDOW END             ACTIVE   EXHAUSTED
+    proj-2026-q4   1000        0          0          1k          2027-01-01T00:00:00Z   True     False
+
+Below you can see an explanation of the fields:
+
+.. list-table::
+    :widths: 30 70
+    :header-rows: 1
+
+    * - Field
+      - Definition
+    * - NAME
+      - The name of the allocation
+    * - ALLOCATED
+      - This is the number of allocated GPU-hours as a decimal.
+    * - CONSUMED
+      -
+        | This is the number of GPU hours consumed.
+        | In the case of values ending in ``m``, this is milli-GPU hours
+    * - RESERVED
+      -
+        | This is the number of GPU hours for jobs that have passed budget check (admitted or running) and haven't been charged yet.
+        | Each hold is the Job’s full maximum (GPUs × walltime); the unused part is returned when the Job ends.
+        | In the case of values ending in ``m``, this is milli-GPU hours.
+    * - AVAILABLE
+      -
+        | This is the number of GPU hours currently available to be reserved at admission.
+        | This is equal to ``ALLOCATION - CONSUMED - RESERVED``.
+        | In the case of values ending in ``m``, this is milli-GPU hours.
+    * - WINDOW END
+      - This shows the end time of your allocation.
+    * - ACTIVE
+      - This value is "True" or "False" and tells you whether the allocation is currently active.
+    * - EXHAUSTED
+      - This value is "True" or "False" and tells you whether your allocation has been used entirely.
+
+
+Detailed Project Allocation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+A detailed view of your project allocation can be viewed with the following command:
+
+``kubectl describe alloc <NAME> -n proj-gpu``
+or
+``kubectl describe projectallocation <NAME> -n proj-gpu``
+
+
+Checking Workload Allocation Usage
+----------------------------------
+
+.. warning::
+
+    For all fields, in the case of values ending in ``m``, this is an amount in milli-GPU hours.
+
+
+The ``kubectl`` command line tool can be used to check a workload/``Job``'s allocation burn.
+
+See a list of workload usages, you can run
+
+``kubectl get budgetcharges -n <proj>-gpu``
+
+Below is an example:
+
+.. code-block:: bash
+
+    $ kubectl get budgetcharges -n stf007-gpu
+    NAME                                                                            ALLOCATION       SUBJECT   GPUS   OUTCOME                        GPU HOURS   FINISHED
+    budgetcharge-4b41302cadafa29b6f23e8799a5ee6c2e0291d690647820aa7c3d93233cf3e7e   <proj>-2026-q4   gpu-job   1      Succeeded                      35m         2026-10-15T20:39:56Z
+    budgetcharge-682c0b27b866976f9774d892434877cc03a3f23277fe34eb69c848cf9cdc5afe   <proj>-2026-q4   gpu-job   1      MaximumExecutionTimeExceeded   167m        2026-10-15T20:55:33Z
+
+Below is an explanation of the fields:
+
+.. list-table::
+    :widths: 30 70
+    :header-rows: 1
+
+    * - Field
+      - Definition
+    * - NAME
+      - Unique name of the ``budgetcharge``. This is much like a Job ID.
+    * - ALLOCATION
+      - Name of the allocation in which the ``budgetcharge`` ran.
+    * - SUBJECT
+      -
+        Name of the workload allocation.
+        This is the same as the ``metadata: name:`` field.
+    * - GPUS
+      - The number of GPUs requested.
+    * - OUTCOME
+      - Final workload status.
+    * - GPU HOURS
+      -
+        | Number of GPU hours burned by the workload.
+        | In the case of values ending in ``m``, this is milli-GPU hours.
+    * - FINISHED
+      - Timestamp of workload termination.
+
+
+Detailed Workload Allocation Usage
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+A detailed view of your workload's allocation burn can be viewed with the following command:
+
+``kubectl describe budgetcharge <NAME> -n <proj>-gpu``
 
 
 Storage
