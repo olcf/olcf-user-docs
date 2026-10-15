@@ -141,24 +141,27 @@ The 8 GPUs on a Lux node are connected with Infinity Fabric with a bandwidth of 
 Connecting
 ==========
 
-To connect to Lux, ``ssh`` to ``login1.lux.olcf.ornl.gov`` from either ``home.ccs.ornl.gov`` or ``hub.ccs.ornl.gov``. For example:
+To connect to Lux, ``ssh`` to ``lux.olcf.ornl.gov`` from either ``home.ccs.ornl.gov``. For example:
 
 .. code-block:: bash
 
+    # Direct login
+    $ ssh <username>@lux.olcf.ornl.gov
+    # Jumping through "home"
     $ ssh <username>@home.ccs.ornl.gov
-    $ ssh login1.lux.olcf.ornl.gov
+    $ ssh lux.olcf.ornl.gov
 
 For more information on connecting to OLCF resources, see :ref:`connecting-to-olcf`.
 
-.. todo: the below should be true once we have a LB
-.. By default, connecting to Lux will automatically place the user on a random login node. If you need to access a specific login node, you will ``ssh`` to that node after your initial connection to Lux.
 
-    .. code-block:: bash
+By default, connecting to Lux will automatically place the user on a random login node. If you need to access a specific login node, you can ``ssh`` to that Lux node directly.
 
-        [<username>@login1.lux ~]$ ssh <username>@login2.lux.olcf.ornl.gov
+.. code-block:: bash
 
-.. todo: need to know how many Lux login nodes are available
-.. Users can connect to any of the 17 Lux login nodes by replacing ``login01`` with their login node of choice.
+    $ ssh <username>@login2.lux.olcf.ornl.gov
+
+
+Users can connect to any of the 3 Lux login nodes by replacing ``login2`` with their login node of choice (``login1``, ``login2``, ``login3``.
 
 ----
 
@@ -2752,7 +2755,12 @@ Slurm GRES Task Sharing
 
 Lux node sharing, by default, isolates resources for each task.
 This means that GPU-GPU and process<=>process communication performance has additional overhead, and may have a performance impact.
-If you find that inter-process communication for your jobs are slower than expected, you may want to run your tasks with the following flag:
+If you find that inter-process communication for your jobs are slower than expected, or you are experiencing jobs failing with a segmentation fault and an error such as:
+
+``rocm_ipc_cache.c:144  Fatal: dest:182: failed to open ipc mem handle.``
+
+then you should run your tasks with the following flag at the ``srun``/task level:
+
 ``--gres-flags=allow-task-sharing``
 
 Example:
