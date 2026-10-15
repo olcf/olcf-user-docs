@@ -2752,7 +2752,12 @@ Slurm GRES Task Sharing
 
 Lux node sharing, by default, isolates resources for each task.
 This means that GPU-GPU and process<=>process communication performance has additional overhead, and may have a performance impact.
-If you find that inter-process communication for your jobs are slower than expected, you may want to run your tasks with the following flag:
+If you find that inter-process communication for your jobs are slower than expected, or you are experiencing jobs failing with a segmentation fault and an error such as:
+
+``rocm_ipc_cache.c:144  Fatal: dest:182: failed to open ipc mem handle.``
+
+then you should run your tasks with the following flag at the ``srun``/task level:
+
 ``--gres-flags=allow-task-sharing``
 
 Example:
