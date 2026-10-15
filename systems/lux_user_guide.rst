@@ -707,15 +707,15 @@ The table below lists details about each of the module-provided compilers.
      - Language
      - Compiler
    * - AMD
-     - ``amd-vllm``
+     - ``amd-llvm``
      - C
      - ``amdclang``
    * - AMD
-     - ``amd-vllm``
+     - ``amd-llvm``
      - C++
      - ``amdclang++``
    * - AMD
-     - ``amd-vllm``
+     - ``amd-llvm``
      - Fortran
      - ``amdflang``
    * - GNU
