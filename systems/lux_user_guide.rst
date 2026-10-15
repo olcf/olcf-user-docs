@@ -3167,7 +3167,7 @@ In order to use GPU resources on the Lux Kubernetes system, you must submit a ``
         containers:
           resources:
             limits:
-              amd.com/gpu:    # max GPUs
+              amd.com/gpu:    # desired GPUs
             requests:
               amd.com/gpu:    # desired GPUs
 
@@ -3191,12 +3191,19 @@ In order to use GPU resources on the Lux Kubernetes system, you must submit a ``
         | E.g. ``2h``, ``60m``, ``30s``, ``1h30m``
         | This is compared against your remaining allocation to ensure your allocation is not exceeded.
     * - ``limits: amd.com/gpu:``
-      - This is the maximum amount of GPU resources you will need; this is functionally equivalent to ``requests: amd.com/gpu:``.
+      - This is the maximum amount of GPU resources you will need; this must be equal to ``requests: amd.com/gpu:``, if present.
     * - ``requests: amd.com/gpu:``
-      - This is the minimum amount of GPU resources you will need; this is functionally equivalent to ``limits: amd.com/gpu:``.
+      -
+        This is the minimum amount of GPU resources you will need; this must be omitted, or equal to ``limits: amd.com/gpu:``.
+        GPU ``requests`` are optional, and if omitted will be set to GPU ``limits``.
+
+.. warning::
+
+    If you specify ``requests: amd.com/gpu:``, it **must** be equal to ``limits: amd.com/gpu:``.
+    Otherwise, your job will be rejected.
 
 Under ``spec.containers`` in your deployment or pod configuration, you can include the GPU resource requests
-for each container request as fields under the ``.resources`` field. For example:
+for your container as fields under the ``.resources`` field. For example:
 
 .. code-block:: yaml
 
@@ -3224,7 +3231,9 @@ for each container request as fields under the ``.resources`` field. For example
           restartPolicy: Never
 
 
+.. note::
 
+    Currently, only one container in your ``Job`` may request GPUs.
 
 See the `torch_simple example <https://github.com/olcf/olcf_kubernetes_examples/tree/main/lux/torch_simple>`__ on how to run a pod with Pytorch running an MNIST example.
 
