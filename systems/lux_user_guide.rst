@@ -3163,16 +3163,16 @@ In order to use GPU resources on the Lux Kubernetes system, you must submit a ``
   metadata:
     namespace: <proj>-gpu
     annotations:
-      lux.olcf.ornl.gov/walltime:   # your requested time
+      lux.olcf.ornl.gov/walltime:   # your requested time, max of 48h
   spec:
     template:
       spec:
         containers:
           resources:
             limits:
-              amd.com/gpu:    # desired GPUs
+              amd.com/gpu:          # desired GPUs
             requests:
-              amd.com/gpu:    # desired GPUs
+              amd.com/gpu:          # desired GPUs
 
 
 .. list-table::
@@ -3193,6 +3193,7 @@ In order to use GPU resources on the Lux Kubernetes system, you must submit a ``
         | This is your requested walltime in hours, minutes, and/or seconds.
         | E.g. ``2h``, ``60m``, ``30s``, ``1h30m``
         | This is compared against your remaining allocation to ensure your allocation is not exceeded.
+        | **The maximum walltime is:** ``48h``
     * - ``limits: amd.com/gpu:``
       - This is the maximum amount of GPU resources you will need; this must be equal to ``requests: amd.com/gpu:``, if present.
     * - ``requests: amd.com/gpu:``
