@@ -2906,8 +2906,11 @@ Kubernetes on Lux is administered through Rancher. You can access the `dashboard
    We will be referencing the `olcf_kubernetes_examples repository <https://github.com/olcf/olcf_kubernetes_examples>`__ throughout this page. Make
    sure you have that repository cloned on your laptop and workstation so you can reference it.
 
+Using kubectl
+=============
+
 Setting up the kubectl commandline tool
-=======================================
+---------------------------------------
 
 * Follow the steps from `kubectl docs <https://kubernetes.io/docs/tasks/tools/#kubectl>`__ that is most appropriate to install kubectl on your laptop or workstation.
 * Then navigate to the Lux Rancher dashboard.
@@ -2924,6 +2927,53 @@ You should now be able to use ``kubectl`` to perform operations on Kubernetes on
    out. You will need to do the above steps again
    after a 24 hour period.
 
+``kubectl`` overview
+--------------------
+
+Below you will find a subset of the key ``kubectl`` commands and a description of their function.
+
+This section is not exhaustive, and if you find yourself looking for more information you can refer to the `kubectl reference docs <https://kubernetes.io/docs/reference/kubectl/generated/>`_ for a more exhaustive list.
+
+.. list-table::
+    :widths: 20 30 20
+    :header-rows: 1
+
+    * - Command
+      - Explanation
+      - Docs link
+    * - ``kubectl apply``
+      - "Applies" the resource, which can be a creation or update function.
+      - `apply docs <https://kubernetes.io/docs/reference/kubectl/generated/kubectl_apply/>`_
+    * - ``kubectl get``
+      -
+        | Fetches basic information on one or more resources.
+        | Output can be modified with ``--output`` to many formats, including ``json`` and ``yaml``.
+      - `get docs <https://kubernetes.io/docs/reference/kubectl/generated/kubectl_get/>`_
+    * - ``kubectl describe``
+      - More detailed information than ``kubectl get``; query should be more specific in the form of ``<resource_type> <resource>``.
+      - `describe docs <https://kubernetes.io/docs/reference/kubectl/generated/kubectl_describe/>`_
+    * - ``kubectl exec``
+      -
+        | Executes commands within a given resource.
+        | Can be used with e.g. ``<job/name> -it -- sh`` to get an interactive shell.
+      - `exec docs <https://kubernetes.io/docs/reference/kubectl/generated/kubectl_exec/>`_
+    * - ``kubectl delete``
+      - Deletes a resource. This can be used to cancel running tasks.
+      - `delete docs <https://kubernetes.io/docs/reference/kubectl/generated/kubectl_delete/>`_
+
+
+Below you can find a list of flags that can be useful for day-to-day operations
+
+.. list-table::
+    :widths: 30 70
+    :header-rows: 1
+
+    * - Flag
+      - Explanation
+    * - ``-n``, ``--namespace``
+      - Namespace specification. Useful when multiple namespaces can be searched.
+    * - ``--kubeconfig``
+      - Specify path to custom kubeconfig. Useful if you use ``kubectl`` for multiple clusters.
 
 
 Create a new namespace
