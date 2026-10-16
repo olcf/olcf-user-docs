@@ -3168,11 +3168,12 @@ In order to use GPU resources on the Lux Kubernetes system, you must submit a ``
     template:
       spec:
         containers:
-          resources:
-            limits:
-              amd.com/gpu:    # desired GPUs
-            requests:
-              amd.com/gpu:    # desired GPUs
+          - name: gpu-pod
+            resources:
+              limits:
+                amd.com/gpu:    # desired GPUs
+              requests:
+                amd.com/gpu:    # desired GPUs
 
 
 .. list-table::
@@ -3205,8 +3206,8 @@ In order to use GPU resources on the Lux Kubernetes system, you must submit a ``
     If you specify ``requests: amd.com/gpu:``, it **must** be equal to ``limits: amd.com/gpu:``.
     Otherwise, your job will be rejected.
 
-Under ``spec.containers`` in your deployment or pod configuration, you can include the GPU resource requests
-for your container as fields under the ``.resources`` field. For example:
+For a ``Job``, GPU resource requests belong under
+``spec.template.spec.containers[].resources``. For example:
 
 .. code-block:: yaml
 
@@ -3239,6 +3240,27 @@ for your container as fields under the ``.resources`` field. For example:
     Currently, only one container in your ``Job`` may request GPUs.
 
 See the `torch_simple example <https://github.com/olcf/olcf_kubernetes_examples/tree/main/lux/torch_simple>`__ on how to run a pod with Pytorch running an MNIST example.
+
+Submitting and Monitoring a GPU Job
+-----------------------------------
+
+Replace ``<proj>`` with your project ID and save the complete Job example above as
+``gpu-job.yaml``. Submit it and inspect its status and output:
+
+.. code-block:: bash
+
+    kubectl apply -f gpu-job.yaml
+    kubectl get jobs,pods -n <proj>-gpu
+    kubectl logs -n <proj>-gpu job/torch-pod
+    kubectl describe job torch-pod -n <proj>-gpu
+
+Logs are available after the container starts. If the Pod remains Pending or fails
+to start, use its name from ``kubectl get pods`` to inspect scheduling and container
+events:
+
+.. code-block:: bash
+
+    kubectl describe pod <pod-name> -n <proj>-gpu
 
 Requesting and Using Multiple GPUs
 ----------------------------------
@@ -3416,6 +3438,7 @@ The below example creates a PVC that requests 5GB of storage.
    apiVersion: v1
    kind: PersistentVolumeClaim
    metadata:
+     namespace: <namespace>
      name: storage-1
    spec:
      accessModes:
@@ -3443,13 +3466,13 @@ With this created, we can mount this PVC to a Pod. Below example creates a Pod w
           name: hello-pod
           ports:
             - containerPort: 80
-          volumeMount:
-            mountPath: /data
+          volumeMounts:
+          - mountPath: /data
             name: pvol
       restartPolicy: Never
       volumes:
-        name: pvol
-        PersistentVolumeClaim:
+      - name: pvol
+        persistentVolumeClaim:
           claimName: storage-1
 
 
