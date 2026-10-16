@@ -2979,12 +2979,12 @@ Below you can find a list of flags that can be useful for day-to-day operations
 Create a new namespace
 ======================
 
-OLCF User Assistance will help you create a namespace for your project.
+OLCF User Assistance will help you create or use a namespace for your project.
 Please contact User Assistance at help@olcf.ornl.gov
 
-It is helpful to also CC the your project's PI, who will need to provide permission for creation of an automation user and the namespace.
+.. todo: The below should be default with a Kube-Lux allocation
 
-.. todo: we should probably do this by default with a Lux Kube allocation
+    It is helpful to also CC the your project's PI, who will need to provide permission for creation of an automation user and the namespace.
 
 
 Some Kubernetes Basics
@@ -3194,6 +3194,17 @@ Example Application
 
 The ``lux/guestbook`` example in the `olcf_kubernetes_examples repository <https://github.com/olcf/olcf_kubernetes_examples/>`_
 demonstrates the above concepts together in a simple web application with a frontend and Redis.
+
+
+CPU-Only Workloads on Kubernetes
+================================
+
+If you would like to run CPU-only workloads, you are free to use the existing ``<proj>-gpu`` namespace described in :ref:`lux-kube-gpus`.
+
+If you want to run CPU-only jobs in your designated ``<proj>`` (non ``-gpu``) namespace, please contact User Assistance at help@olcf.ornl.gov
+
+
+.. _lux-kube-gpus:
 
 GPU Usage on Kubernetes
 =======================
