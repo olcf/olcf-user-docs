@@ -1270,7 +1270,7 @@ Batch Partition Policy (default)
     :header-rows: 1
 
     * - Bin
-      - Node Count
+      - Node Count [#node-count]_
       - Duration
       - Policy
     * - A
@@ -3198,7 +3198,7 @@ demonstrates the above concepts together in a simple web application with a fron
 GPU Usage on Kubernetes
 =======================
 
-.. warning::
+.. note::
 
    GPUs are time limited use and cannot be used for persistent services. They can only be used in
    Jobs.
@@ -3243,7 +3243,7 @@ In order to use GPU resources on the Lux Kubernetes system, you must submit a ``
         | This is your requested walltime in hours, minutes, and/or seconds.
         | E.g. ``2h``, ``60m``, ``30s``, ``1h30m``
         | This is compared against your remaining allocation to ensure your allocation is not exceeded.
-        | **The maximum walltime is:** ``48h``
+        | Refer to :ref:`lux-kube-run-policy` for maximum run time.
     * - ``limits: amd.com/gpu:``
       - This is the maximum amount of GPU resources you will need; this must be equal to ``requests: amd.com/gpu:``, if present.
     * - ``requests: amd.com/gpu:``
@@ -3345,7 +3345,7 @@ Below is an example:
 
     $ kubectl get alloc -n <proj>-gpu
     NAME             ALLOCATED   CONSUMED   RESERVED   AVAILABLE   WINDOW END             ACTIVE   EXHAUSTED
-    proj-2026-q4   1000        0          0          1k          2027-01-01T00:00:00Z   True     False
+    <proj>-2026-q4   1000        0          0          1k          2027-01-01T00:00:00Z   True     False
 
 Below you can see an explanation of the fields:
 
@@ -3448,6 +3448,23 @@ Detailed Workload Allocation Usage
 A detailed view of your workload's allocation burn can be viewed with the following command:
 
 ``kubectl describe budgetcharge <NAME> -n <proj>-gpu``
+
+.. _lux-kube-run-policy:
+
+Run Policy
+----------
+
+.. list-table::
+    :header-rows: 1
+
+    * - Namespace
+      - Node Count [#node-count]_
+      - Duration
+      - Policy
+    * - ``<proj>-gpu``
+      - 1-484 Nodes
+      - Duration 0-48h
+      - FIFO - Global, backfill enabled
 
 
 Storage
@@ -3683,3 +3700,6 @@ In your browser, install Foxyproxy, and add a proxy named 'Lux' with Type ``SOCK
 ``127.0.0.1`` and Port ``10000``.
 
 Now select 'Lux' as the active proxy in Foxyproxy and point your browser to ``<name of your app>.apps.lux.olcf.ornl.gov``.
+
+
+.. [#node-count] Node counts for HPC and Kubernetes on Lux depend on current machine split. Displayed value is the theoretical maximum.
