@@ -1279,6 +1279,10 @@ Batch Partition Policy (default)
       - Max 4 jobs eligible to run (queued, accumulating priority) **per user**
 
 
+.. warning::
+
+    |node_count_note|
+
 Job Limit
 ^^^^^^^^^
 
@@ -3477,6 +3481,9 @@ Run Policy
       - Duration 0-48h
       - FIFO - Global, backfill enabled
 
+.. warning::
+
+    |node_count_note|
 
 Storage
 =======
@@ -3714,3 +3721,4 @@ Now select 'Lux' as the active proxy in Foxyproxy and point your browser to ``<n
 
 
 .. [#node-count] Node counts for HPC and Kubernetes on Lux depend on current machine split. Displayed value is the theoretical maximum.
+.. |node_count_note| replace:: Node counts for HPC and Kubernetes on Lux depend on current machine split. Displayed value is the theoretical maximum.
