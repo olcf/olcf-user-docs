@@ -1270,7 +1270,7 @@ Batch Partition Policy (default)
     :header-rows: 1
 
     * - Bin
-      - Node Count
+      - Node Count [#node-count]_
       - Duration
       - Policy
     * - A
@@ -2906,8 +2906,11 @@ Kubernetes on Lux is administered through Rancher. You can access the `dashboard
    We will be referencing the `olcf_kubernetes_examples repository <https://github.com/olcf/olcf_kubernetes_examples>`__ throughout this page. Make
    sure you have that repository cloned on your laptop and workstation so you can reference it.
 
+Using kubectl
+=============
+
 Setting up the kubectl commandline tool
-=======================================
+---------------------------------------
 
 * Follow the steps from `kubectl docs <https://kubernetes.io/docs/tasks/tools/#kubectl>`__ that is most appropriate to install kubectl on your laptop or workstation.
 * Then navigate to the Lux Rancher dashboard.
@@ -2924,17 +2927,64 @@ You should now be able to use ``kubectl`` to perform operations on Kubernetes on
    out. You will need to do the above steps again
    after a 24 hour period.
 
+``kubectl`` overview
+--------------------
+
+Below you will find a subset of the key ``kubectl`` commands and a description of their function.
+
+This section is not exhaustive, and if you find yourself looking for more information you can refer to the `kubectl reference docs <https://kubernetes.io/docs/reference/kubectl/generated/>`_ for a more exhaustive list.
+
+.. list-table::
+    :widths: 20 30 20
+    :header-rows: 1
+
+    * - Command
+      - Explanation
+      - Docs link
+    * - ``kubectl apply``
+      - "Applies" the resource, which can be a creation or update function.
+      - `apply docs <https://kubernetes.io/docs/reference/kubectl/generated/kubectl_apply/>`_
+    * - ``kubectl get``
+      -
+        | Fetches basic information on one or more resources.
+        | Output can be modified with ``--output`` to many formats, including ``json`` and ``yaml``.
+      - `get docs <https://kubernetes.io/docs/reference/kubectl/generated/kubectl_get/>`_
+    * - ``kubectl describe``
+      - More detailed information than ``kubectl get``; query should be more specific in the form of ``<resource_type> <resource>``.
+      - `describe docs <https://kubernetes.io/docs/reference/kubectl/generated/kubectl_describe/>`_
+    * - ``kubectl exec``
+      -
+        | Executes commands within a given resource.
+        | Can be used with e.g. ``<job/name> -it -- sh`` to get an interactive shell.
+      - `exec docs <https://kubernetes.io/docs/reference/kubectl/generated/kubectl_exec/>`_
+    * - ``kubectl delete``
+      - Deletes a resource. This can be used to cancel running tasks.
+      - `delete docs <https://kubernetes.io/docs/reference/kubectl/generated/kubectl_delete/>`_
+
+
+Below you can find a list of flags that can be useful for day-to-day operations
+
+.. list-table::
+    :widths: 30 70
+    :header-rows: 1
+
+    * - Flag
+      - Explanation
+    * - ``-n``, ``--namespace``
+      - Namespace specification. Useful when multiple namespaces can be searched.
+    * - ``--kubeconfig``
+      - Specify path to custom kubeconfig. Useful if you use ``kubectl`` for multiple clusters.
 
 
 Create a new namespace
 ======================
 
-OLCF User Assistance will help you create a namespace for your project.
+OLCF User Assistance will help you create or use a namespace for your project.
 Please contact User Assistance at help@olcf.ornl.gov
 
-It is helpful to also CC the your project's PI, who will need to provide permission for creation of an automation user and the namespace.
+.. todo: The below should be default with a Kube-Lux allocation
 
-.. todo: we should probably do this by default with a Lux Kube allocation
+    It is helpful to also CC the your project's PI, who will need to provide permission for creation of an automation user and the namespace.
 
 
 Some Kubernetes Basics
@@ -3145,10 +3195,21 @@ Example Application
 The ``lux/guestbook`` example in the `olcf_kubernetes_examples repository <https://github.com/olcf/olcf_kubernetes_examples/>`_
 demonstrates the above concepts together in a simple web application with a frontend and Redis.
 
+
+CPU-Only Workloads on Kubernetes
+================================
+
+If you would like to run CPU-only workloads, you are free to use the existing ``<proj>-gpu`` namespace described in :ref:`lux-kube-gpus`.
+
+If you want to run CPU-only jobs in your designated ``<proj>`` (non ``-gpu``) namespace, please contact User Assistance at help@olcf.ornl.gov
+
+
+.. _lux-kube-gpus:
+
 GPU Usage on Kubernetes
 =======================
 
-.. warning::
+.. note::
 
    GPUs are time limited use and cannot be used for persistent services. They can only be used in
    Jobs.
@@ -3163,16 +3224,16 @@ In order to use GPU resources on the Lux Kubernetes system, you must submit a ``
   metadata:
     namespace: <proj>-gpu
     annotations:
-      lux.olcf.ornl.gov/walltime:   # your requested time
+      lux.olcf.ornl.gov/walltime:   # your requested time, max of 48h
   spec:
     template:
       spec:
         containers:
           resources:
             limits:
-              amd.com/gpu:    # desired GPUs
+              amd.com/gpu:          # desired GPUs
             requests:
-              amd.com/gpu:    # desired GPUs
+              amd.com/gpu:          # desired GPUs
 
 
 .. list-table::
@@ -3193,6 +3254,7 @@ In order to use GPU resources on the Lux Kubernetes system, you must submit a ``
         | This is your requested walltime in hours, minutes, and/or seconds.
         | E.g. ``2h``, ``60m``, ``30s``, ``1h30m``
         | This is compared against your remaining allocation to ensure your allocation is not exceeded.
+        | Refer to :ref:`lux-kube-run-policy` for maximum run time.
     * - ``limits: amd.com/gpu:``
       - This is the maximum amount of GPU resources you will need; this must be equal to ``requests: amd.com/gpu:``, if present.
     * - ``requests: amd.com/gpu:``
@@ -3294,7 +3356,7 @@ Below is an example:
 
     $ kubectl get alloc -n <proj>-gpu
     NAME             ALLOCATED   CONSUMED   RESERVED   AVAILABLE   WINDOW END             ACTIVE   EXHAUSTED
-    proj-2026-q4   1000        0          0          1k          2027-01-01T00:00:00Z   True     False
+    <proj>-2026-q4   1000        0          0          1k          2027-01-01T00:00:00Z   True     False
 
 Below you can see an explanation of the fields:
 
@@ -3397,6 +3459,23 @@ Detailed Workload Allocation Usage
 A detailed view of your workload's allocation burn can be viewed with the following command:
 
 ``kubectl describe budgetcharge <NAME> -n <proj>-gpu``
+
+.. _lux-kube-run-policy:
+
+Run Policy
+----------
+
+.. list-table::
+    :header-rows: 1
+
+    * - Namespace
+      - Node Count [#node-count]_
+      - Duration
+      - Policy
+    * - ``<proj>-gpu``
+      - 1-484 Nodes
+      - Duration 0-48h
+      - FIFO - Global, backfill enabled
 
 
 Storage
@@ -3632,3 +3711,6 @@ In your browser, install Foxyproxy, and add a proxy named 'Lux' with Type ``SOCK
 ``127.0.0.1`` and Port ``10000``.
 
 Now select 'Lux' as the active proxy in Foxyproxy and point your browser to ``<name of your app>.apps.lux.olcf.ornl.gov``.
+
+
+.. [#node-count] Node counts for HPC and Kubernetes on Lux depend on current machine split. Displayed value is the theoretical maximum.
