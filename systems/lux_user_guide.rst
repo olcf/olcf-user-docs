@@ -2910,14 +2910,75 @@ Kubernetes on Lux is administered through Rancher. You can access the `dashboard
    We will be referencing the `olcf_kubernetes_examples repository <https://github.com/olcf/olcf_kubernetes_examples>`__ throughout this page. Make
    sure you have that repository cloned on your laptop and workstation so you can reference it.
 
+
+.. _navigating-to-rancher-dashboard:
+
+Navigating to the Rancher Dashboard
+===================================
+
+Kubernetes on Lux uses Rancher for administration and management. Users can view and manage their
+workloads through Rancher.
+
+Currently Rancher access is not available through the public internet. You need to route your
+browser traffic through home.ccs.ornl.gov using a SOCKS5 proxy. 
+
+Setting up SOCKS5 proxy on your terminal
+----------------------------------------
+
+* Open your terminal (or Powershell if you're on Windows) and type ``ssh -N your_username@home.ccs.ornl.gov -D 127.0.0.1:10000`` and enter your
+PASSCODE when prompted.
+* This doesn't actually open a command prompt you can type in so it looks like it is hung. But it is maintaining an open connection so leave this terminal alone.
+
+Setting up your browser
+----------------------
+
+* Install ``Foxyproxy <https://chromewebstore.google.com/detail/foxyproxy/gcknhkkoolaabfmlnjonogaaifnjlfnp?pli=1>``
+  extension for your browser.
+* Open the browser extension pop up, click on Options
+* In the big settings window that opens, click on ``Proxies`` tab
+* Click ``Add`` to add a new proxy
+* Add ``lux`` as Title, select ``SOCKS5`` from the Type dropdown, enter ``localhost`` or
+  ``127.0.0.1`` for Hostname, and ``10000`` for Port. 
+* Click on the '+' symbol next to 'Proxy by Patterns' and enter a new pattern
+  ``*://console.apps.slate-mod.ccs.ornl.gov/``. This is to ensure that the proxy is used
+  automatically when accessing Rancher.
+  * If there already exists a pattern like ``*://*.com`` you can delete that as you only want
+    Rancher access to use the proxy, and not every website you navigate to on the browser.
+* Click Save
+
+Accessing the dashboard
+-----------------------
+
+After all the above is set up 
+
+* Open a new tab
+* From the Foxyproxy browser extension pop up, select ``Proxy by Pattern``
+* Navigate to ``console.apps.slate-mod.ccs.ornl.gov/dashboard/home`` on the browser
+
+
+.. note::
+
+   If you shutdown your computer or close your terminal, you will need to set it up again
+   to reactivate the proxy so you can navigate to Rancher on your browser again.
+
+
+
+
+
 Using kubectl
 =============
 
 Setting up the kubectl commandline tool
 ---------------------------------------
 
+.. warning::
+
+   Due to network restrictions, you should install and use kubectl from ``home.ccs.ornl.gov``. SSH to
+   that system first before continuing the below steps.
+
+
 * Follow the steps from `kubectl docs <https://kubernetes.io/docs/tasks/tools/#kubectl>`__ that is most appropriate to install kubectl on your laptop or workstation.
-* Then navigate to the Lux Rancher dashboard.
+* Then navigate to the `Lux Rancher dashboard <https://console.apps.slate-mod.ccs.ornl.gov/dashboard/home>`__ (remember to open the dashboard as described in :ref:`navigating-to-rancher-dashboard`).
 * On the Rancher dashboard, click on the button in the top navbar that says 'Copy KubeConfig to Clipboard'. This copies the
   configuration into your clipboard.
 * On your laptop or workstation, create a file named `~/.kube/config` and paste the contents into
@@ -3711,7 +3772,7 @@ In your terminal, set up port forwarding with the following ssh command.
 
 .. code-block::
 
-   ssh -N -J subil@hub.ccs.ornl.gov subil@login1.lux.olcf.ornl.gov -D 127.0.0.1:10000
+   ssh -N -J your_username@home.ccs.ornl.gov your_username@login1.lux.olcf.ornl.gov -D 127.0.0.1:10000
 
 
 In your browser, install Foxyproxy, and add a proxy named 'Lux' with Type ``SOCKS5``, Hostname
