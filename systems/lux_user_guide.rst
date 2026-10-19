@@ -2952,6 +2952,11 @@ Setting up your browser
 * Click ``Add`` to add a new proxy
 * Add ``lux`` as Title, select ``SOCKS5`` from the Type dropdown, enter ``localhost`` or
   ``127.0.0.1`` for Hostname, and ``10000`` for Port. 
+* Click on the '+' symbol next to 'Proxy by Patterns' and enter a new pattern
+  ``*://console.apps.slate-mod.ccs.ornl.gov/``. This is to ensure that the proxy is used
+  automatically when accessing Rancher.
+  * If there already exists a pattern like ``*://*.com`` you can delete that as you only want
+    Rancher access to use the proxy, and not every website you navigate to on the browser.
 * Click Save
 
 Accessing the dashboard
@@ -2960,8 +2965,14 @@ Accessing the dashboard
 After all the above is set up 
 
 * Open a new tab
-* From the Foxyproxy browser extension pop up, select ``lux``
+* From the Foxyproxy browser extension pop up, select ``Proxy by Pattern``
 * Navigate to ``console.apps.slate-mod.ccs.ornl.gov/dashboard/home`` on the browser
+
+
+.. note::
+
+   If you shutdown your computer or close your terminal or PuTTY, you will need to set it up again
+   to reactivate the proxy so you can navigate to Rancher on your browser again.
 
 
 
