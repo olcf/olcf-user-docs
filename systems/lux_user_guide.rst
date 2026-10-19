@@ -2911,6 +2911,8 @@ Kubernetes on Lux is administered through Rancher. You can access the `dashboard
    sure you have that repository cloned on your laptop and workstation so you can reference it.
 
 
+.. _navigating-to-rancher-dashboard:
+
 Navigating to the Rancher Dashboard
 ===================================
 
@@ -2969,8 +2971,14 @@ Using kubectl
 Setting up the kubectl commandline tool
 ---------------------------------------
 
+.. warning::
+
+   Due to network restrictions, you should install and use kubectl from ``home.ccs.ornl.gov``. SSH to
+   that system first before continuing the below steps.
+
+
 * Follow the steps from `kubectl docs <https://kubernetes.io/docs/tasks/tools/#kubectl>`__ that is most appropriate to install kubectl on your laptop or workstation.
-* Then navigate to the `Lux Rancher dashboard <https://console.apps.slate-mod.ccs.ornl.gov/dashboard/home>`__ .
+* Then navigate to the `Lux Rancher dashboard <https://console.apps.slate-mod.ccs.ornl.gov/dashboard/home>`__ (remember to open the dashboard as described in :ref:`navigating-to-rancher-dashboard`).
 * On the Rancher dashboard, click on the button in the top navbar that says 'Copy KubeConfig to Clipboard'. This copies the
   configuration into your clipboard.
 * On your laptop or workstation, create a file named `~/.kube/config` and paste the contents into
