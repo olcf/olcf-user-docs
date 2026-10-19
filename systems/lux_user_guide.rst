@@ -2920,27 +2920,12 @@ workloads through Rancher.
 Currently Rancher access is not available through the public internet. You need to route your
 browser traffic through home.ccs.ornl.gov using a SOCKS5 proxy. 
 
-Setting up SOCKS5 proxy 
-----------------
+Setting up SOCKS5 proxy on your terminal
+----------------------------------------
 
-On Linux and Mac
-^^^^^^^^^^^^^^^^
-
-* Open your terminal and type ``ssh -N subil@home.ccs.ornl.gov -D 127.0.0.1:10000`` and enter your
+* Open your terminal (or Powershell if you're on Windows) and type ``ssh -N subil@home.ccs.ornl.gov -D 127.0.0.1:10000`` and enter your
 PASSCODE when prompted.
 * This doesn't actually open a command prompt you can type in so it looks like it is hung. But it is maintaining an open connection so leave this terminal alone.
-
-On Windows
-^^^^^^^^^^
-
-With `PuTTY <https://putty.org/>`__ :
-
-* In ``Host Name`` enter ``<your username>@home.ccs.ornl.gov`` 
-* On the left pane, go to Connections -> SSH -> Tunnels
-* On ``Options controlling SSH Port Forwarding`` enter ``10000`` in the Source Port and select
-  ``Dynamic``
-* Click ``Add``
-* Click ``Open``, you will be prompted for your PASSCODE and you will log in to home.
 
 Setting up your browser
 ----------------------
