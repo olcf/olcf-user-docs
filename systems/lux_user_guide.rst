@@ -2956,7 +2956,7 @@ After all the above is set up
 
 .. note::
 
-   If you shutdown your computer or close your terminal or PuTTY, you will need to set it up again
+   If you shutdown your computer or close your terminal, you will need to set it up again
    to reactivate the proxy so you can navigate to Rancher on your browser again.
 
 
