@@ -2925,7 +2925,7 @@ browser traffic through home.ccs.ornl.gov using a SOCKS5 proxy.
 Setting up SOCKS5 proxy on your terminal
 ----------------------------------------
 
-* Open your terminal (or Powershell if you're on Windows) and type ``ssh -N subil@home.ccs.ornl.gov -D 127.0.0.1:10000`` and enter your
+* Open your terminal (or Powershell if you're on Windows) and type ``ssh -N your_username@home.ccs.ornl.gov -D 127.0.0.1:10000`` and enter your
 PASSCODE when prompted.
 * This doesn't actually open a command prompt you can type in so it looks like it is hung. But it is maintaining an open connection so leave this terminal alone.
 
@@ -3772,7 +3772,7 @@ In your terminal, set up port forwarding with the following ssh command.
 
 .. code-block::
 
-   ssh -N -J subil@hub.ccs.ornl.gov subil@login1.lux.olcf.ornl.gov -D 127.0.0.1:10000
+   ssh -N -J your_username@home.ccs.ornl.gov your_username@login1.lux.olcf.ornl.gov -D 127.0.0.1:10000
 
 
 In your browser, install Foxyproxy, and add a proxy named 'Lux' with Type ``SOCKS5``, Hostname
