@@ -22,15 +22,18 @@ In this guide, you will:
 OLCF Systems this guide applies to: 
 
 * :doc:`Frontier </systems/frontier_user_guide>`
-* :doc:`Andes </systems/andes_user_guide>`
+* :doc:`Riker </systems/riker_user_guide>`
 
-**Guide last tested with:**
+.. list-table:: Latest Guide Tests
+   :widths: 33 33 33
+   :header-rows: 1
 
-+------------+----------+------------+
-| ``python`` | ``h5py`` | ``mpi4py`` |
-+============+==========+============+
-|  3.11.11   |  3.13.0  |   4.0.3    |
-+------------+----------+------------+
+   * - ``python``
+     - ``h5py``
+     - ``mpi4py``
+   * - 3.13.16
+     - 3.16.0
+     - 4.1.2
 
 .. note::
    Working installations are **not** limited to what is shown above.
@@ -54,7 +57,6 @@ For example, you can extract specific variables through slicing, manipulate the 
 Both HDF5 and h5py can be compiled with MPI support, which allows you to optimize your HDF5 I/O in parallel.
 MPI support in Python is accomplished through the `mpi4py <https://mpi4py.readthedocs.io/en/stable/>`__ package, which provides complete Python bindings for MPI.
 Building h5py against mpi4py allows you to write to an HDF5 file using multiple parallel processes, which can be helpful for users handling large datasets in Python.
-h5Py is available after loading the default Python module on either Frontier or Andes, but it has not been built with parallel support.
 
 Setting Up the Environment
 ==========================
@@ -70,14 +72,14 @@ First, load the gnu compiler module (most Python packages assume GCC), hdf5 modu
 
 .. tab-set::
 
-   .. tab-item:: Andes
-      :sync: andes
+   .. tab-item:: Riker
+      :sync: riker
 
       .. code-block:: bash
 
-         module load gcc/9.3.0
-         module load hdf5/1.10.7
-         module load miniforge3/24.11.3-2
+         module load gcc/14.2
+         module load hdf5/1.14.6-mpi
+         module load miniforge3/25.3.1-0
 
    .. tab-item:: Frontier
       :sync: frontier
@@ -95,19 +97,19 @@ Loading a python module puts you in a "base" environment, but you need to create
 
 .. tab-set::
 
-   .. tab-item:: Andes
-      :sync: andes
+   .. tab-item:: Riker
+      :sync: riker
 
       .. code-block:: bash
 
-         conda create -n h5pympi-andes python=3.11 numpy -c conda-forge
+         conda create -p /path/to/h5pympi-riker python=3.13 numpy -c conda-forge
 
    .. tab-item:: Frontier
       :sync: frontier
 
       .. code-block:: bash
 
-         conda create -n h5pympi-frontier python=3.11 numpy -c conda-forge
+         conda create -p /path/to/h5pympi-frontier python=3.13 numpy -c conda-forge
 
 NumPy is installed ahead of time because h5py depends on it.
 
@@ -115,19 +117,19 @@ After following the prompts for creating your new environment, you can now activ
 
 .. tab-set::
 
-   .. tab-item:: Andes
-      :sync: andes
+   .. tab-item:: Riker
+      :sync: riker
 
       .. code-block:: bash
 
-         conda activate h5pympi-andes
+         conda activate /path/to/h5pympi-riker
 
    .. tab-item:: Frontier
       :sync: frontier
 
       .. code-block:: bash
 
-         conda activate h5pympi-frontier
+         conda activate /path/to/h5pympi-frontier
 
 
 Installing mpi4py
@@ -137,8 +139,8 @@ Now that you have a fresh environment, you will next install mpi4py into your ne
 
 .. tab-set::
 
-   .. tab-item:: Andes
-      :sync: andes
+   .. tab-item:: Riker
+      :sync: riker
 
       .. code-block:: bash
 
@@ -165,21 +167,25 @@ Next, install h5py:
 
 .. tab-set::
 
-   .. tab-item:: Andes
-      :sync: andes
+   .. tab-item:: Riker
+      :sync: riker
 
       .. code-block:: bash
 
-         HDF5_MPI="ON" CC=mpicc HDF5_DIR=${OLCF_HDF5_ROOT} pip install --no-cache-dir --no-binary=h5py h5py
+         pip install Cython setuptools
+         HDF5_MPI="ON" CC=mpicc HDF5_DIR=${OLCF_HDF5_ROOT} pip install --no-cache-dir --no-binary=h5py h5py --no-build-isolation
 
    .. tab-item:: Frontier
       :sync: frontier
 
       .. code-block:: bash
 
-         HDF5_MPI="ON" CC=cc HDF5_DIR=${HDF5_ROOT} pip install --no-cache-dir --no-binary=h5py h5py
+         pip install Cython setuptools
+         HDF5_MPI="ON" CC=cc HDF5_DIR=${HDF5_ROOT} pip install --no-cache-dir --no-binary=h5py h5py --no-build-isolation
 
 The ``HDF5_MPI`` flag is the key to telling pip to build h5py with parallel support, while the ``CC`` flag makes sure that you are using the correct C wrapper for MPI.
+The ``--no-build-isolation`` flag is necessary to avoid ``h5py`` installing its own ``mpi4py`` during the build process.
+Due to the ``--no-build-isolation`` flag, installing ``Cython`` and ``setuptools`` ahead of time is necessary.
 When the installation finishes, you will see a "Successfully installed h5py" message.
 
 Testing parallel h5py
@@ -211,8 +217,8 @@ To do so, submit a job to the batch queue:
 
 .. tab-set::
 
-   .. tab-item:: Andes
-      :sync: andes
+   .. tab-item:: Riker
+      :sync: riker
 
       .. code-block:: bash
 
@@ -230,8 +236,8 @@ Example "submit_hello" batch script:
 
 .. tab-set::
 
-   .. tab-item:: Andes
-      :sync: andes
+   .. tab-item:: Riker
+      :sync: riker
 
       .. code-block:: bash
 
@@ -239,17 +245,18 @@ Example "submit_hello" batch script:
          #SBATCH -A <PROJECT_ID>
          #SBATCH -J mpi4py
          #SBATCH -N 1
-         #SBATCH -p gpu
+         #SBATCH -p batch
          #SBATCH -t 0:05:00
+         #SBATCH --exclusive
 
          cd $SLURM_SUBMIT_DIR
          date
 
-         module load gcc/9.3.0
-         module load hdf5/1.10.7
-         module load miniforge3/24.11.3-2
+         module load gcc/14.2
+         module load hdf5/1.14.6-mpi
+         module load miniforge3/25.3.1-0
 
-         conda activate h5pympi-andes
+         conda activate /path/to/h5pympi-riker
 
          srun -n42 python3 hello_mpi.py
 
@@ -272,7 +279,7 @@ Example "submit_hello" batch script:
          module load cray-hdf5-parallel/1.12.2.11
          module load miniforge3/23.11.0-0
 
-         conda activate h5pympi-frontier
+         conda activate /path/to/h5pympi-frontier
 
          srun -n42 python3 hello_mpi.py
 
@@ -321,8 +328,8 @@ Time to execute "hdf5_parallel.py" by submitting "submit_h5py" to the batch queu
 
 .. tab-set::
 
-   .. tab-item:: Andes
-      :sync: andes
+   .. tab-item:: Riker
+      :sync: riker
 
       .. code-block:: bash
 
@@ -339,8 +346,8 @@ Example "submit_h5py" batch script:
 
 .. tab-set::
 
-   .. tab-item:: Andes
-      :sync: andes
+   .. tab-item:: Riker
+      :sync: riker
 
       .. code-block:: bash
 
@@ -348,17 +355,18 @@ Example "submit_h5py" batch script:
          #SBATCH -A <PROJECT_ID>
          #SBATCH -J h5py
          #SBATCH -N 1
-         #SBATCH -p gpu
+         #SBATCH -p batch
          #SBATCH -t 0:05:00
+         #SBATCH --exclusive
 
          cd $SLURM_SUBMIT_DIR
          date
 
-         module load gcc/9.3.0
-         module load hdf5/1.10.7
-         module load miniforge3/24.11.3-2
+         module load gcc/14.2
+         module load hdf5/1.14.6-mpi
+         module load miniforge3/25.3.1-0
 
-         conda activate h5pympi-andes
+         conda activate h5pympi-riker
 
          srun -n42 python3 hdf5_parallel.py
 
@@ -408,6 +416,10 @@ To see explicitly that the MPI tasks did their job, you can use the ``h5dump`` c
    }
 
 If you see the above output, then the build was a success!
+
+.. warning::
+    If you are running an MPI-enabled ``h5py`` script on the NFS filesystem (e.g., your ``home`` directory), you may encounter a ``Can't synchronously write data`` error.
+    To avoid this, you need to either set ``HDF5_DO_MPI_FILE_SYNC=FALSE``, or run on the parallel filesystem instead (e.g., Lustre, Orion).
 
 Additional Resources
 ====================

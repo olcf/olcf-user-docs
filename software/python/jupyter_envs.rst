@@ -9,8 +9,8 @@ This guide will walk you through how to create a custom environment that can the
 
 OLCF Systems this guide applies to: 
 
-* :doc:`Andes </systems/andes_user_guide>`
 * :doc:`Frontier </systems/frontier_user_guide>`
+* :doc:`Riker </systems/riker_user_guide>`
 
 Making your Environment Visible to Jupyter
 ==========================================
@@ -21,14 +21,6 @@ First, let's load the relevant Python module along with the gnu compiler module 
 
 .. tab-set::
 
-   .. tab-item:: Andes
-      :sync: andes
-
-      .. code-block:: bash
-
-         module load gcc/9.3.0
-         module load miniforge3/24.11.3-2
-
    .. tab-item:: Frontier
       :sync: frontier
 
@@ -37,43 +29,51 @@ First, let's load the relevant Python module along with the gnu compiler module 
          module load PrgEnv-gnu/8.6.0
          module load miniforge3/23.11.0-0
 
-Next, create your environment and activate it:
-
-.. tab-set::
-
-   .. tab-item:: Andes
-      :sync: andes
+   .. tab-item:: Riker
+      :sync: riker
 
       .. code-block:: bash
 
-         conda create -p /path/to/your/jupyter_env_andes python=3.10
-         conda activate /path/to/your/jupyter_env_andes
+         module load gcc/14.2
+         module load miniforge3/25.3.1-0
+
+Next, create your environment and activate it:
+
+.. tab-set::
 
    .. tab-item:: Frontier
       :sync: frontier
 
       .. code-block:: bash
 
-         conda create -p /path/to/your/jupyter_env_frontier python=3.10
+         conda create -p /path/to/your/jupyter_env_frontier python=3.13
          conda activate /path/to/your/jupyter_env_frontier
+
+   .. tab-item:: Riker
+      :sync: riker
+
+      .. code-block:: bash
+
+         conda create -p /path/to/your/jupyter_env_riker python=3.13
+         conda activate /path/to/your/jupyter_env_riker
 
 .. note::
 
-   Installing Python version 3.10 was just used as an example and is not required.
+   Installing Python version 3.13 was just used as an example and is not required.
 
 Next, install ``ipykernel`` which we will use to install a "Kernel" of your environment so that it can be used on Jupyter:
 
 .. tab-set::
 
-   .. tab-item:: Andes
-      :sync: andes
+   .. tab-item:: Frontier
+      :sync: frontier
 
       .. code-block:: bash
 
          pip install ipykernel
 
-   .. tab-item:: Frontier
-      :sync: frontier
+   .. tab-item:: Riker
+      :sync: riker
 
       .. code-block:: bash
 
@@ -83,19 +83,19 @@ Finally, let's use ``ipykernel`` to expose your environment to Jupyter:
 
 .. tab-set:: 
 
-   .. tab-item:: Andes
-      :sync: andes
-
-      .. code-block:: bash
-
-         ipython kernel install --user --name=jupyter_env_andes
-
    .. tab-item:: Frontier
       :sync: frontier
 
       .. code-block:: bash 
 
          ipython kernel install --user --name=jupyter_env_frontier
+
+   .. tab-item:: Riker
+      :sync: riker
+
+      .. code-block:: bash
+
+         ipython kernel install --user --name=jupyter_env_riker
 
 .. note::
 

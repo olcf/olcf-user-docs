@@ -11,8 +11,8 @@ This guide introduces a user to the basic workflow of using conda environments, 
 
 OLCF Systems this guide applies to: 
 
-* :doc:`Andes </systems/andes_user_guide>`
 * :doc:`Frontier </systems/frontier_user_guide>`
+* :doc:`Riker </systems/riker_user_guide>`
 
 Inspecting and Setting Up an Environment
 ========================================
@@ -21,14 +21,6 @@ First, load the python module and the gnu compiler module (most Python packages 
 
 .. tab-set::
 
-   .. tab-item:: Andes
-      :sync: andes
-
-      .. code-block:: bash
-
-         $ module load gcc/9.3.0
-         $ module load miniforge3/24.11.3-2
-
    .. tab-item:: Frontier
       :sync: frontier
 
@@ -36,6 +28,14 @@ First, load the python module and the gnu compiler module (most Python packages 
 
          $ module load PrgEnv-gnu/8.6.0
          $ module load miniforge3/23.11.0-0
+
+   .. tab-item:: Riker
+      :sync: riker
+
+      .. code-block:: bash
+
+         $ module load gcc/14.2
+         $ module load miniforge3/25.3.1-0
 
 
 This puts you in the "base" conda environment, which is the default Python environment after loading the module.
@@ -147,12 +147,12 @@ Installing with pip
 -------------------
 
 One way to install packages into your conda environment is to build packages from source using `pip <https://pip.pypa.io/en/stable/>`__.
-This approach is useful if a specific package or package version is not available in the conda repository, or if the pre-compiled binaries don't work on the HPC resources (which is common).
+This approach is useful if a specific package or package version is not available in the conda repository, or if the default pre-compiled ``pip`` binaries don't work on the HPC resources.
 However, building from source means you need to take care of some of the dependencies yourself, especially for optimization.
 Pip is available to use after installing Python into your conda environment, which you have already done.
 
 .. warning::
-   Because issues can arise when using conda and pip together (see link in :ref:`conda-refs`), it is recommended to do this only if absolutely necessary.
+   Because issues can arise when using conda and pip together (see link in :ref:`conda-refs`), it is recommended to stick with using ``pip`` if you've used it in a conda env once already (instead of swapping back and forth).
 
 To build a package from source, use ``pip install --no-binary=<package_name> <package_name>``:
 
@@ -162,6 +162,7 @@ To build a package from source, use ``pip install --no-binary=<package_name> <pa
 
 The ``CC=gcc`` and ``CXX=g++`` flags will ensure that you are using the proper compiler and wrapper.
 Building from source results in a longer installation time for packages, so you may need to wait a few minutes for the install to finish.
+Alternatively, you can ``git clone`` a specific Python package's repository (if available) to similarly build a package from source manually.
 
 You have successfully built NumPy from source in your conda environment;
 however, you did not link in any additional linear algebra packages, so this version of NumPy is not optimized.
@@ -225,6 +226,8 @@ Additional Tips
 
        $ conda create -p /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/envs/frontier/baseclone-frontier --clone base
        $ conda activate /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/envs/frontier/baseclone-frontier
+
+    Although cloning is possible, typically it is better to create a fresh (empty) environment.
 
 * **Adding known environment locations**:
 
@@ -357,7 +360,7 @@ Quick-Reference Commands
 Additional Resources
 ====================
 
-* `Conda User Guide <https://conda.io/projects/conda/en/latest/user-guide/index.html>`__
-* `Anaconda Package List <https://docs.anaconda.com/anaconda/packages/pkg-docs/>`__
+* `Conda User Guide <https://docs.conda.io/projects/conda/en/latest/user-guide/index.html>`__
+* `Conda-forge Package List <https://conda-forge.org/packages/>`__
 * `Pip User Guide <https://pip.pypa.io/en/stable/user_guide/>`__
 * `Using Pip In A Conda Environment <https://www.anaconda.com/blog/using-pip-in-a-conda-environment>`__
