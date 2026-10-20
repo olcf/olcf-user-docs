@@ -20,10 +20,6 @@ on Lux, as well as any useful examples.
    help@olcf.ornl.gov. And `contributions to the documentation are always welcome
    <https://docs.olcf.ornl.gov/contributing/index.html>`_!
 
-.. warning::
-
-   Currently all container examples discussed below works only on single node. Multinode examples
-   are forthcoming.
 
 
 Examples for Building and Running Containers
