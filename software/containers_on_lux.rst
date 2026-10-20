@@ -46,6 +46,7 @@ This example will walk through building up a container image with MPICH 5.0.1 an
 
 
 * If you would like to inspect and make changes to the definition file to modify what the container has, feel free to do so. Inspect the definition file to understand how we build MPICH and ROCm inside the container.
+
   * We are installing MPICH 5.0.1 in the container to match the mpich/5.0.1 module available on Lux.
 
 * To build the container image (the SIF file), run
@@ -59,10 +60,12 @@ This example will walk through building up a container image with MPICH 5.0.1 an
 * Submit the ``submit.sbatch`` job script to launch the container with srun and run the
   ``ping_pong_gpu_aware.exe`` that was built in the container to perform the ping-pong communication
   across two nodes. This batch script has a few sruns:
+
   * One will run an MPI program that sends messages back and forth between two MPI processes on the same node.
   * The remaining will run the same MPI program across two MPI processes across two nodes.
-  * Remember to replace the ``#SBATCH -Astf007`` with your project ID.
-  * If you inspect the ``submit.sbatch`` file, you will see some modules being loaded as well as some environment variables being set. Read the comment above each for the explanations. These environment variables are required in order to run containerized MPI applications with Apptainer, with communication performance close to native and to provide GPU aware MPI.
+
+* Remember to replace the ``#SBATCH -Astf007`` with your project ID.
+* If you inspect the ``submit.sbatch`` file, you will see some modules being loaded as well as some environment variables being set. Read the comment above each for the explanations. These environment variables are required in order to run containerized MPI applications with Apptainer, with communication performance close to native and to provide GPU aware MPI.
 
 
 Pushing your Apptainer image to an OCI Registry supporting ORAS (e.g. DockerHub)
@@ -75,7 +78,7 @@ Apptainer image (a SIF file) is not an OCI image so it cannot be pushed to Docke
 another OCI registry as an OCI image. It can be pushed to an OCI registry that supports
 `ORAS <https://oras.land/docs/>`_ as an OCI artifact instead. In this section, we
 highlight and provide an example of pushing the container image we built to DockerHub as
-an OCI artifact. We will use our opensusempich342rocm571.sif image from the section above
+an OCI artifact. We will use our ubuntumpich501rocm7141_minimal.sif image from the section above
 in this example.
 
 * First, create an account and then a repository on DockerHub to hold your image.
@@ -89,7 +92,7 @@ in this example.
 
   ::
 
-    apptainer push <path to your sif file>/ubuntumpich501rocm724.sif  oras://registry-1.docker.io/<your docker username>/<your repo name:tag>
+    apptainer push <path to your sif file>/ubuntumpich501rocm7141_minimal.sif  oras://registry-1.docker.io/<your docker username>/<your repo name:tag>
 
 * Using ``oras://`` tells Apptainer to push the image to given registry as an OCI
   artifact. Not all OCI registries support ORAS. See `ORAS Adopters page <https://oras.land/adopters/>`_ for list.
