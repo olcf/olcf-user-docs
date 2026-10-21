@@ -1,3 +1,5 @@
+:tocdepth: 3
+
 .. _s3m_compute_api:
 
 .. Custom styling to remove multiple line breaks in nested tab groups sections.

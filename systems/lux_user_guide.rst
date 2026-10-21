@@ -1,4 +1,4 @@
-:tocdepth: 3
+:tocdepth: 4
 
 .. _lux-user-guide:
 
@@ -50,35 +50,35 @@ The MI355X GPUs are connected with Infinity Fabric GPU-GPU in the arrangement sh
 
     NUMA 0:
 
-    * hardware threads 000-015 | GPU 3
+    * hardware threads 000-015 | GPU 3 - Bus 0000:7c:00.0
 
     NUMA 1:
 
-    * hardware threads 016-031 | GPU 0
+    * hardware threads 016-031 | GPU 0 - Bus 0000:09:00.0
 
     NUMA 2:
 
-    * hardware threads 032-047 | GPU 1
+    * hardware threads 032-047 | GPU 1 - Bus 0000:19:00.0
 
     NUMA 3:
 
-    * hardware threads 048-063 | GPU 2
+    * hardware threads 048-063 | GPU 2 - Bus 0000:69:00.0
 
     NUMA 4:
 
-    * hardware threads 064-079 | GPU 7
+    * hardware threads 064-079 | GPU 7 - Bus 0000:fb:00.0
 
     NUMA 5:
 
-    * hardware threads 080-095 | GPU 4
+    * hardware threads 080-095 | GPU 4 - Bus 0000:86:00.0
 
     NUMA 6:
 
-    * hardware threads 096-111 | GPU 5
+    * hardware threads 096-111 | GPU 5 - Bus 0000:99:00.0
 
     NUMA 7:
 
-    * hardware threads 112-127 | GPU 6
+    * hardware threads 112-127 | GPU 6 - Bus 0000:e6:00.0
 
 ******************
 Lux HPC User Guide
@@ -141,24 +141,27 @@ The 8 GPUs on a Lux node are connected with Infinity Fabric with a bandwidth of 
 Connecting
 ==========
 
-To connect to Lux, ``ssh`` to ``login1.lux.olcf.ornl.gov`` from either ``home.ccs.ornl.gov`` or ``hub.ccs.ornl.gov``. For example:
+To connect to Lux, ``ssh`` to ``lux.olcf.ornl.gov`` from either ``home.ccs.ornl.gov``. For example:
 
 .. code-block:: bash
 
+    # Direct login
+    $ ssh <username>@lux.olcf.ornl.gov
+    # Jumping through "home"
     $ ssh <username>@home.ccs.ornl.gov
-    $ ssh login1.lux.olcf.ornl.gov
+    $ ssh lux.olcf.ornl.gov
 
 For more information on connecting to OLCF resources, see :ref:`connecting-to-olcf`.
 
-.. todo: the below should be true once we have a LB
-.. By default, connecting to Lux will automatically place the user on a random login node. If you need to access a specific login node, you will ``ssh`` to that node after your initial connection to Lux.
 
-    .. code-block:: bash
+By default, connecting to Lux will automatically place the user on a random login node. If you need to access a specific login node, you can ``ssh`` to that Lux node directly.
 
-        [<username>@login1.lux ~]$ ssh <username>@login2.lux.olcf.ornl.gov
+.. code-block:: bash
 
-.. todo: need to know how many Lux login nodes are available
-.. Users can connect to any of the 17 Lux login nodes by replacing ``login01`` with their login node of choice.
+    $ ssh <username>@login2.lux.olcf.ornl.gov
+
+
+Users can connect to any of the 3 Lux login nodes by replacing ``login2`` with their login node of choice (``login1``, ``login2``, ``login3``.
 
 ----
 
@@ -704,15 +707,15 @@ The table below lists details about each of the module-provided compilers.
      - Language
      - Compiler
    * - AMD
-     - ``amd-vllm``
+     - ``amd-llvm``
      - C
      - ``amdclang``
    * - AMD
-     - ``amd-vllm``
+     - ``amd-llvm``
      - C++
      - ``amdclang++``
    * - AMD
-     - ``amd-vllm``
+     - ``amd-llvm``
      - Fortran
      - ``amdflang``
    * - GNU
@@ -800,11 +803,33 @@ The MPI implementations available on Lux are OpenMPI (default) and MPICH, which 
 
     hipcc requires the ROCm Toolclain, See :ref:`lux_exposing-the-rocm-toolchain-to-your-programming-environment`
 
+.. warning::
+
+    You may not be able to load an MPI implementation without first loading a correctly versioned compiler.
+
+    For example:
+
+    .. code-block:: bash
+
+        module load rocm/7.14.0
+
+        Inactive Modules:
+          1) openmpi
+
+        ...
+        module load mpich
+        Lmod has detected the following error:  The following module(s) are unknown: "mpich"
+        ...
+        module load amd-llvm/7.14.0
+        ...
+        module load mpich
+
+        Lmod is automatically replacing "openmpi/5.0.10" with "mpich/5.0.1".
 
 GPU-Aware MPI
 ^^^^^^^^^^^^^
 
-To use GPU-aware MPI, users must load both a ROCm module and an MPI-providing module:
+To use GPU-aware MPI, users must load a ROCm module, its corresponding AMD Compiler module, and an MPI-providing module:
 
 .. dropdown:: gpu-aware.cpp
 
@@ -872,7 +897,8 @@ Using ``hipcc``
 
 .. code:: bash
 
-    module load rocm
+    module load rocm/7.2.4
+    module load amd-llvm/7.2.4
     module load openmpi
 
     hipcc -std=c++11 --offload-arch=gfx950 -I${ROCM_PATH}/include -I${MPI_DIR}/include -c gpu-aware.cpp
@@ -882,7 +908,8 @@ Using ``hipcc``
 
     .. code:: bash
 
-        module load rocm
+        module load rocm/7.2.4
+        module load amd-llvm/7.2.4
         module load mpich
 
         hipcc -std=c++11 --offload-arch=gfx950 -I${ROCM_PATH}/include -I${MPICH_DIR}/include -c gpu-aware.cpp
@@ -892,7 +919,8 @@ Using ``amdclang``
 
 .. code:: bash
 
-    module load rocm
+    module load rocm/7.2.4
+    module load amd-llvm/7.2.4
     module load openmpi
 
     amdclang++ -D__HIP_ROCclr__ -D__HIP_ARCH_GFX950__=1 -std=c++11 --rocm-path=${ROCM_PATH} --offload-arch=gfx950 -x hip -I${ROCM_PATH}/include -I${MPI_DIR}/include -c gpu-aware.cpp
@@ -902,7 +930,8 @@ Using ``amdclang``
 
     .. code:: bash
 
-        module load rocm
+        module load rocm/7.2.4
+        module load amd-llvm/7.2.4
         module load mpich
 
         amdclang++ -D__HIP_ROCclr__ -D__HIP_ARCH_GFX950__=1 -std=c++11 --rocm-path=${ROCM_PATH} --offload-arch=gfx950 -x hip -I${ROCM_PATH}/include -I${MPICH_DIR}/include -c gpu-aware.cpp
@@ -917,6 +946,29 @@ Using ``amdclang``
     * Specify the ROCm and MPI library path and libraries at link time ``-L${ROCM_PATH}/lib -lamdhip64 -L${MPI_DIR}/lib``
 
     ``MPICH_DIR`` can be substituted for ``MPI_DIR`` in order to use MPICH with PMI2.
+
+.. warning::
+
+    You may not be able to load an MPI implementation without first loading a correctly versioned compiler.
+
+    For example:
+
+    .. code-block:: bash
+
+        module load rocm/7.14.0
+
+        Inactive Modules:
+          1) openmpi
+
+        ...
+        module load mpich
+        Lmod has detected the following error:  The following module(s) are unknown: "mpich"
+        ...
+        module load amd-llvm/7.14.0
+        ...
+        module load mpich
+
+        Lmod is automatically replacing "openmpi/5.0.10" with "mpich/5.0.1".
 
 
 Understanding the Compatibility of Compilers, ROCm, MPI, and RCCL
@@ -1218,14 +1270,18 @@ Batch Partition Policy (default)
     :header-rows: 1
 
     * - Bin
-      - Node Count
+      - Node Count [#node-count]_
       - Duration
       - Policy
     * - A
       - 1-484 Nodes
       - Duration 0-48 hr
-      - Max 4 jobs running and 4 jobs eligible **per user**
+      - Max 4 jobs eligible to run (queued, accumulating priority) **per user**
 
+
+.. warning::
+
+    |node_count_note|
 
 Job Limit
 ^^^^^^^^^
@@ -1334,7 +1390,8 @@ The following will compile the ``hello_jobstep`` application `found on ORNL's Gi
 
 .. code:: bash
 
-    module load rocm
+    module load rocm/7.2.4
+    module load amd-llvm/7.2.4
     module load openmpi
 
     hipcc -std=c++11 -fopenmp --offload-arch=gfx950 -I${ROCM_PATH}/include -I${MPI_DIR}/include -c hello_jobstep.cpp
@@ -1806,6 +1863,9 @@ The job name and output options have been removed since stdout/stderr are typica
        (For example ``map_gpu:0*4,1*4``)
    * - ``--ntasks-per-gpu=<ntasks>``
      - Request that there are ntasks tasks invoked for every GPU.
+   * - ``--gres-flags=allow-task-sharing``
+     - | Enable tasks sharing GPU resources. This reduces overhead in GPU-GPU, process-process communications.
+       | This setting may lead to drastically improved performance.
 
 .. _lux-mapping:
 
@@ -1819,10 +1879,7 @@ Users are highly encouraged to use the CPU- and GPU-mapping programs used in
 the following sections to check their understanding of the job steps (i.e.,
 ``srun`` commands) they intend to use in their actual jobs.
 
-.. todo: when gpu mapping is fixed
-    For the :ref:`lux-cpu-map`, :ref:`lux-multi-map`, and :ref:`lux-gpu-map` sections:
-
-For the :ref:`lux-cpu-map` and :ref:`lux-multi-map` sections:
+For the :ref:`lux-cpu-map`, :ref:`lux-multi-map`, and :ref:`lux-gpu-map` sections:
 
 An MPI+OpenMP+HIP "Hello, World" program (`hello_jobstep
 <https://code.ornl.gov/olcf/hello_jobstep>`__) will be used to clarify the GPU
@@ -1836,30 +1893,30 @@ Additionally, it may be helpful to cross reference the
 
 Before jumping into the examples, it is helpful to understand the output from the ``hello_jobstep`` program:
 
-+---------------+-----------------------------------------------------------------------------------------------+
-| ID            | Description                                                                                   |
-+===============+===============================================================================================+
-| ``MPI``       | MPI rank ID                                                                                   |
-+---------------+-----------------------------------------------------------------------------------------------+
-| ``OMP``       | OpenMP thread ID                                                                              |
-+---------------+-----------------------------------------------------------------------------------------------+
-| ``HWT``       | CPU hardware thread the MPI rank or OpenMP thread ran on                                      |
-+---------------+-----------------------------------------------------------------------------------------------+
-| ``Node``      | Compute node the MPI rank or OpenMP thread ran on                                             |
-+---------------+-----------------------------------------------------------------------------------------------+
-| ``GPU_ID``    || GPU ID the MPI rank or OpenMP thread had access to                                           |
-|               || (This is the node-level, or global, GPU ID as shown in the Lux node diagram)                 |
-|               || NOTE: This is read from ``ROCR_VISIBLE_DEVICES``. If this variable is not set, the value of  |
-|               |  ``GPU_ID`` will be set to ``N/A`` by the program                                             |
-+---------------+-----------------------------------------------------------------------------------------------+
-| ``RT_GPU_ID`` || The runtime GPU ID                                                                           |
-|               || (This is the GPU ID as seen from the HIP runtime - e.g., as reported by ``hipGetDevice``)    |
-|               || NOTE: The HIP runtime relabels the GPUs each rank can access starting at `0`                 |
-+---------------+-----------------------------------------------------------------------------------------------+
-| ``Bus_ID``    || The physical Bus ID associated with a GPU                                                    |
-|               || (The Bus ID can be used to e.g., confirm unique GPUs are being used)                         |
-+---------------+-----------------------------------------------------------------------------------------------+
+.. list-table::
+   :widths: 20 80
+   :header-rows: 1
 
+   * - ID
+     - Description
+   * - ``MPI``
+     - MPI rank ID
+   * - ``OMP``
+     - OpenMP thread ID
+   * - ``HWT``
+     - CPU hardware thread the MPI rank or OpenMP thread ran on
+   * - ``Node``
+     - Compute node the MPI rank or OpenMP thread ran on
+   * - ``GPU_ID``
+     - | GPU ID the MPI rank or OpenMP thread had access to (This is the node-level, or global, GPU ID as shown in the Lux node diagram)
+       | NOTE: This is read from ``ROCR_VISIBLE_DEVICES``. If this variable is not set, the value of ``GPU_ID`` will be set to ``N/A`` by the program
+       | NOTE: On Lux, this currently reads the same as ``RT_GPU_ID``
+   * - ``RT_GPU_ID``
+     - | The runtime GPU ID (This is the GPU ID as seen from the HIP runtime - e.g., as reported by ``hipGetDevice``)
+       | NOTE: The HIP runtime relabels the GPUs each rank can access starting at `0`
+   * - ``Bus_ID``
+     - | The physical Bus ID associated with a GPU
+       | (The Bus ID can be used to e.g., confirm unique GPUs are being used)
 
 .. _lux-cpu-map:
 
@@ -1928,7 +1985,7 @@ Breaking down the ``srun`` command, we have:
 * ``--cpu-bind=threads``: binds tasks to threads
 * ``--threads-per-core=1``: use a maximum of 1 hardware thread per physical core (i.e., only use 1 logical core per physical core)
 * ``-m block:cyclic``: distribute the tasks in a block layout across nodes (default), and in a **cyclic** (round-robin) layout across L3 sockets
-* ``./hello_mpi_omp``: launches the "hello_mpi_omp" executable
+* ``./hello_jobstep``: launches the "hello_jobstep" executable
 * ``| sort``: sorts the output
 * ``| cut ...``: gets only output we care about for CPU tasks
 
@@ -2061,357 +2118,568 @@ thread 001 of MPI rank 000 ran on logical core 000 (i.e., physical CPU core
 CPU core 17), and OpenMP thread 001 of MPI rank 001 ran on logical core 016
 (i.e., physical CPU core 16) - as intended.
 
-.. todo: fix when available
-    .. _lux-gpu-map:
-
-    GPU Mapping
-    ^^^^^^^^^^^
-
-    In this sub-section, an MPI+OpenMP+HIP "Hello, World" program (`hello_jobstep
-    <https://code.ornl.gov/olcf/hello_jobstep>`__) will be used to show how to make
-    only specific GPUs available to processes - which we will refer to as "GPU
-    mapping". This time, Slurm's :ref:`lux-interactive` method was used to request
-    an allocation of 2 compute nodes for these examples: ``salloc -A <project_id>
-    -t 30 -p <parition> -N 2 --gpus 16``. The CPU mapping part of this example is very
-    similar to the example used above in the Multithreading sub-section, so the
-    focus here will be on the GPU mapping part.
-
-    In general, GPU mapping can be accomplished in different ways. For example, an
-    application might map GPUs to MPI ranks programmatically within the code using,
-    say, ``hipSetDevice``. In this case, there might not be a need to map GPUs using
-    Slurm (since it can be done in the code itself). However, many applications
-    expect only 1 GPU to be available to each rank. It is this latter case that the
-    following examples refer to.
-    Additionally, this section is **only relevant when requesting more than one GPU**.
-    If your job allocation requests a single GPU, Slurm will automatically allocate the nearest NUMA region.
-
-    Also, recall that the CPU cores in a given NUMA region are connected to a
-    specific GPU (see the `Lux Node Diagram
-    <https://docs.olcf.ornl.gov/_images/Lux_Node_Diagram.jpg>`_ and subsequent
-    :ref:`Note on NUMA domains <numa-note>` for more information). In the examples
-    below, knowledge of these details will be assumed.
-
-
-    .. note::
-
-       There are many different ways users might choose to perform these mappings,
-       so users are encouraged to clone the ``hello_jobstep`` program and test whether
-       processes and threads are mapped to the CPU cores and GPUs as intended..
-
-    .. todo:
-
-        .. warning::
-
-           Due to the unique architecture of Frontier compute nodes and the way that
-           Slurm currently allocates GPUs and CPU cores to job steps, it is suggested that
-           all 8 GPUs on a node are allocated to the job step to ensure that optimal
-           bindings are possible.
-
-    Mapping 1 GPU per task
-    """"""""""""""""""""""
-
-    In the following examples, 1 GPU will be mapped to each MPI rank (and any OpenMP threads it might spawn).
-    The relevant ``srun`` options for GPU mapping used in these examples are:
-
-    +------------------------+-----------------------------------------------------------------------------------------------+
-    | Slurm Option           | Description                                                                                   |
-    +========================+===============================================================================================+
-    | ``--gpus-per-task``    | Specify the number of GPUs required for the job on each task.                                 |
-    |                        | This option requires an explicit task count, e.g. -n                                          |
-    +------------------------+-----------------------------------------------------------------------------------------------+
-    | ``--gpu-bind=closest`` | Bind  each  task  to  the GPU(s) which are closest.                                           |
-    |                        | Here, closest refers to the GPU connected to the NUMA where the MPI rank is mapped to.        |
-    +------------------------+-----------------------------------------------------------------------------------------------+
-
-    **Example 1: 8 MPI ranks - each with 8 CPU cores and 1 GPU (single-node)**
-
-    The most common use case for running on Frontier is to run with 8 MPI ranks per node, where each rank has access to 7 physical CPU cores and 1 GPU (recall it is 7 CPU cores here instead of 8 due to core specialization: see :ref:`low-noise mode diagram <frontier-lownoise>`). The MPI rank can use the 7 CPU cores to e.g., spawn OpenMP threads on (if OpenMP CPU threading is available in the application). Here is an example of such a job step on a single node:
-
-    .. code-block:: bash
-
-        $ OMP_NUM_THREADS=8 srun -N1 -n8 -c8 --gpus 8 --gpus-per-task=1 --gpu-bind=closest ./hello_jobstep | sort
-        MPI 000 - OMP 000 - HWT 007 - Node lux033 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 7c
-        MPI 000 - OMP 001 - HWT 000 - Node lux033 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 7c
-        MPI 000 - OMP 002 - HWT 001 - Node lux033 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 7c
-        MPI 000 - OMP 003 - HWT 003 - Node lux033 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 7c
-        MPI 000 - OMP 004 - HWT 004 - Node lux033 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 7c
-        MPI 000 - OMP 005 - HWT 005 - Node lux033 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 7c
-        MPI 000 - OMP 006 - HWT 006 - Node lux033 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 7c
-        MPI 000 - OMP 007 - HWT 002 - Node lux033 - RT_GPU_ID 0 - GPU_ID 3 - Bus_ID 7c
-        MPI 001 - OMP 000 - HWT 023 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 001 - OMP 001 - HWT 016 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 001 - OMP 002 - HWT 017 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 001 - OMP 003 - HWT 019 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 001 - OMP 004 - HWT 020 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 001 - OMP 005 - HWT 021 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 001 - OMP 006 - HWT 022 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 001 - OMP 007 - HWT 018 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 002 - OMP 000 - HWT 039 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 002 - OMP 001 - HWT 034 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 002 - OMP 002 - HWT 035 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 002 - OMP 003 - HWT 038 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 002 - OMP 004 - HWT 036 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 002 - OMP 005 - HWT 037 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 002 - OMP 006 - HWT 033 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 002 - OMP 007 - HWT 032 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 003 - OMP 000 - HWT 055 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 003 - OMP 001 - HWT 048 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 003 - OMP 002 - HWT 049 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 003 - OMP 003 - HWT 050 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 003 - OMP 004 - HWT 051 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 003 - OMP 005 - HWT 052 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 003 - OMP 006 - HWT 053 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 003 - OMP 007 - HWT 054 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 004 - OMP 000 - HWT 071 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 004 - OMP 001 - HWT 065 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 004 - OMP 002 - HWT 066 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 004 - OMP 003 - HWT 067 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 004 - OMP 004 - HWT 068 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 004 - OMP 005 - HWT 069 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 004 - OMP 006 - HWT 070 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 004 - OMP 007 - HWT 064 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 005 - OMP 000 - HWT 087 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 005 - OMP 001 - HWT 080 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 005 - OMP 002 - HWT 081 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 005 - OMP 003 - HWT 083 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 005 - OMP 004 - HWT 084 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 005 - OMP 005 - HWT 082 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 005 - OMP 006 - HWT 085 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 005 - OMP 007 - HWT 086 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 006 - OMP 000 - HWT 103 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 006 - OMP 001 - HWT 097 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 006 - OMP 002 - HWT 099 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 006 - OMP 003 - HWT 100 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 006 - OMP 004 - HWT 101 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 006 - OMP 005 - HWT 096 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 006 - OMP 006 - HWT 102 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 006 - OMP 007 - HWT 098 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 007 - OMP 000 - HWT 119 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 007 - OMP 001 - HWT 113 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 007 - OMP 002 - HWT 116 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 007 - OMP 003 - HWT 117 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 007 - OMP 004 - HWT 118 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 007 - OMP 005 - HWT 115 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 007 - OMP 006 - HWT 114 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
-        MPI 007 - OMP 007 - HWT 112 - Node lux033 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+.. _lux-gpu-map:
+
+GPU Mapping
+^^^^^^^^^^^
+
+In this sub-section, an MPI+OpenMP+HIP "Hello, World" program (`hello_jobstep <https://code.ornl.gov/olcf/hello_jobstep>`__)
+will be used to show how to make only specific GPUs available to processes - which we will refer to as "GPU mapping".
+This time, Slurm's :ref:`lux-interactive` method was used to request an allocation of 2 compute nodes for these examples:
+``salloc -A <project_id> -t 30 -p <parition> -N 2 --gpus 16``.
+The CPU mapping part of this example is very similar to the example used above in the Multithreading sub-section, so the
+focus here will be on the GPU mapping part.
+
+In general, GPU mapping can be accomplished in different ways.
+For example, an application might map GPUs to MPI ranks programmatically within the code using, say, ``hipSetDevice``.
+In this case, there might not be a need to map GPUs using Slurm (since it can be done in the code itself).
+However, many applications expect only 1 GPU to be available to each rank.
+It is this latter case that the following examples refer to.
+Additionally, this section is **only relevant when requesting more than one GPU**.
+If your job allocation requests a single GPU, Slurm will automatically allocate the nearest NUMA region.
+
+Also, recall that the CPU cores in a given NUMA region are connected to a
+specific GPU (see the `Lux Node Diagram <https://docs.olcf.ornl.gov/_images/Lux_Node_Diagram.jpg>`_
+and subsequent :ref:`Note on NUMA domains <numa-note>` for more information).
+In the examples below, knowledge of these details will be assumed.
+
+
+.. note::
+
+   There are many different ways users might choose to perform these mappings,
+   so users are encouraged to clone the ``hello_jobstep`` program and test whether
+   processes and threads are mapped to the CPU cores and GPUs as intended..
+
+
+.. warning::
+
+   Due to the unique architecture of Lux compute nodes and the way that Slurm currently allocates GPUs and CPU cores to job steps,
+   it is suggested that all GPUs on an allocated node are allocated to the job step to ensure that optimal bindings are possible.
+
+
+Mapping 1 GPU per task
+""""""""""""""""""""""
+
+In the following examples, 1 GPU will be mapped to each MPI rank (and any OpenMP threads it might spawn).
+The relevant ``srun`` options for GPU mapping used in these examples are:
+
++------------------------+-----------------------------------------------------------------------------------------------+
+| Slurm Option           | Description                                                                                   |
++========================+===============================================================================================+
+| ``--gpus-per-task``    | Specify the number of GPUs required for the job on each task.                                 |
+|                        | This option requires an explicit task count, e.g. -n                                          |
++------------------------+-----------------------------------------------------------------------------------------------+
+| ``--gpu-bind=closest`` | Bind  each  task  to  the GPU(s) which are closest.                                           |
+|                        | Here, closest refers to the GPU connected to the NUMA where the MPI rank is mapped to.        |
++------------------------+-----------------------------------------------------------------------------------------------+
+
+**8 MPI ranks - each with 8 CPU cores and 1 GPU (single-node)**
+
+The most common use case for running on Lux is to run with 8 MPI ranks per node, where each rank has access to 16 physical CPU cores and 1 GPU.
+The MPI rank can use the 16 CPU cores to e.g., spawn OpenMP threads on (if OpenMP CPU threading is available in the application).
+Here is an example of such a job step on a single node (limited to 8 cores per task):
+
+.. code-block:: bash
+
+    $ OMP_NUM_THREADS=8 srun -N1 -n8 -c8 --gpus 8 --gpus-per-task=1 --gpu-bind=closest ./hello_jobstep | sort
+    MPI 000 - OMP 000 - HWT 007 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 7c
+    MPI 000 - OMP 001 - HWT 000 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 7c
+    MPI 000 - OMP 002 - HWT 001 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 7c
+    MPI 000 - OMP 003 - HWT 002 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 7c
+    MPI 000 - OMP 004 - HWT 003 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 7c
+    MPI 000 - OMP 005 - HWT 005 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 7c
+    MPI 000 - OMP 006 - HWT 006 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 7c
+    MPI 000 - OMP 007 - HWT 004 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 7c
+    MPI 001 - OMP 000 - HWT 023 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+    MPI 001 - OMP 001 - HWT 016 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+    MPI 001 - OMP 002 - HWT 017 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+    MPI 001 - OMP 003 - HWT 018 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+    MPI 001 - OMP 004 - HWT 020 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+    MPI 001 - OMP 005 - HWT 021 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+    MPI 001 - OMP 006 - HWT 022 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+    MPI 001 - OMP 007 - HWT 019 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+    MPI 002 - OMP 000 - HWT 039 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 19
+    MPI 002 - OMP 001 - HWT 032 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 19
+    MPI 002 - OMP 002 - HWT 033 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 19
+    MPI 002 - OMP 003 - HWT 034 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 19
+    MPI 002 - OMP 004 - HWT 035 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 19
+    MPI 002 - OMP 005 - HWT 036 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 19
+    MPI 002 - OMP 006 - HWT 037 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 19
+    MPI 002 - OMP 007 - HWT 038 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 19
+    MPI 003 - OMP 000 - HWT 055 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 69
+    MPI 003 - OMP 001 - HWT 048 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 69
+    MPI 003 - OMP 002 - HWT 049 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 69
+    MPI 003 - OMP 003 - HWT 050 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 69
+    MPI 003 - OMP 004 - HWT 051 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 69
+    MPI 003 - OMP 005 - HWT 052 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 69
+    MPI 003 - OMP 006 - HWT 053 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 69
+    MPI 003 - OMP 007 - HWT 054 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 69
+    MPI 004 - OMP 000 - HWT 071 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID fb
+    MPI 004 - OMP 001 - HWT 064 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID fb
+    MPI 004 - OMP 002 - HWT 065 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID fb
+    MPI 004 - OMP 003 - HWT 066 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID fb
+    MPI 004 - OMP 004 - HWT 068 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID fb
+    MPI 004 - OMP 005 - HWT 069 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID fb
+    MPI 004 - OMP 006 - HWT 070 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID fb
+    MPI 004 - OMP 007 - HWT 067 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID fb
+    MPI 005 - OMP 000 - HWT 087 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 86
+    MPI 005 - OMP 001 - HWT 080 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 86
+    MPI 005 - OMP 002 - HWT 081 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 86
+    MPI 005 - OMP 003 - HWT 082 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 86
+    MPI 005 - OMP 004 - HWT 083 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 86
+    MPI 005 - OMP 005 - HWT 084 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 86
+    MPI 005 - OMP 006 - HWT 085 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 86
+    MPI 005 - OMP 007 - HWT 086 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 86
+    MPI 006 - OMP 000 - HWT 103 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 99
+    MPI 006 - OMP 001 - HWT 096 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 99
+    MPI 006 - OMP 002 - HWT 097 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 99
+    MPI 006 - OMP 003 - HWT 098 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 99
+    MPI 006 - OMP 004 - HWT 099 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 99
+    MPI 006 - OMP 005 - HWT 100 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 99
+    MPI 006 - OMP 006 - HWT 101 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 99
+    MPI 006 - OMP 007 - HWT 102 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 99
+    MPI 007 - OMP 000 - HWT 119 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID e6
+    MPI 007 - OMP 001 - HWT 112 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID e6
+    MPI 007 - OMP 002 - HWT 113 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID e6
+    MPI 007 - OMP 003 - HWT 114 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID e6
+    MPI 007 - OMP 004 - HWT 115 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID e6
+    MPI 007 - OMP 005 - HWT 116 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID e6
+    MPI 007 - OMP 006 - HWT 117 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID e6
+    MPI 007 - OMP 007 - HWT 118 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID e6
+
+
+
+As has been pointed out previously in the Lux documentation, notice that GPUs are NOT mapped to MPI ranks in sequential order
+(e.g., MPI rank 0 is mapped to physical CPU cores 0-15 and GPU 3 - bus ``7c``, MPI rank 1 is mapped to physical CPU cores 16-31 and GPU 0 - bus ``09``),
+but this IS expected behavior.
+It is simply a consequence of the Lux node architectures as shown in the `Lux Node Diagram <https://docs.olcf.ornl.gov/_images/Lux_Node_Diagram.jpg>`_
+and subsequent :ref:`Note on NUMA domains <numa-note>`.
+
+**1 MPI rank with 8 CPU cores and 1 GPU (single-node)**
+
+When new users first attempt to run their application on Lux, they often
+want to test with 1 MPI rank that has access to 8 CPU cores and 1 GPU.
+Although the job step used here is very similar to the first example, the behavior is different:
+
+.. code-block:: bash
+
+    $ OMP_NUM_THREADS=8 srun -N1 -n1 -c8 --gpus 1 --gpus-per-task=1 --gpu-bind=closest ./hello_jobstep | sort
+    MPI 000 - OMP 000 - HWT 023 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+    MPI 000 - OMP 001 - HWT 016 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+    MPI 000 - OMP 002 - HWT 017 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+    MPI 000 - OMP 003 - HWT 018 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+    MPI 000 - OMP 004 - HWT 020 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+    MPI 000 - OMP 005 - HWT 022 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+    MPI 000 - OMP 006 - HWT 019 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+    MPI 000 - OMP 007 - HWT 021 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+
+
+
+Notice that our MPI rank did not get mapped to CPU cores 0-15 and GPU 3 (bus ``7c``), but instead to GPU 0 (bus ``09``) and CPU cores 16-31.
+The apparent reason for this can be found in the ``--gpu-bind`` section in the ``srun`` man page: ``GPU binding is ignored if there is only one task.``.
+Here, Slurm appears to give the first GPU it sees and maps it to the CPU cores that are closest.
+So although the mapping doesn't occur as expected, the rank is still mapped to the correct GPU given the CPU cores it ran on.
+
+**16 MPI ranks - each with 8 CPU cores and 1 GPU (multi-node)**
+
+This example simply extends the first example to run on 2 nodes,
+which simply requires changing the number of nodes to 2 (``-N2``), the number of MPI ranks to 16 (``-n16``), and our number of GPUs to match (``--gpus 16``).
+
+.. code-block:: bash
+
+    $ OMP_NUM_THREADS=8 srun -N2 -n16 -c8 --gpus 16 --gpus-per-task=1 --gpu-bind=closest ./hello_jobstep | sort
+    MPI 000 - OMP 000 - HWT 007 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 7c
+    MPI 000 - OMP 001 - HWT 000 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 7c
+    MPI 000 - OMP 002 - HWT 001 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 7c
+    MPI 000 - OMP 003 - HWT 002 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 7c
+    MPI 000 - OMP 004 - HWT 003 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 7c
+    MPI 000 - OMP 005 - HWT 004 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 7c
+    MPI 000 - OMP 006 - HWT 005 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 7c
+    MPI 000 - OMP 007 - HWT 006 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 7c
+    MPI 001 - OMP 000 - HWT 023 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+    MPI 001 - OMP 001 - HWT 016 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+    MPI 001 - OMP 002 - HWT 017 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+    MPI 001 - OMP 003 - HWT 019 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+    MPI 001 - OMP 004 - HWT 020 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+    MPI 001 - OMP 005 - HWT 021 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+    MPI 001 - OMP 006 - HWT 022 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+    MPI 001 - OMP 007 - HWT 018 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+    MPI 002 - OMP 000 - HWT 039 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 19
+    MPI 002 - OMP 001 - HWT 032 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 19
+    MPI 002 - OMP 002 - HWT 033 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 19
+    MPI 002 - OMP 003 - HWT 035 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 19
+    MPI 002 - OMP 004 - HWT 036 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 19
+    MPI 002 - OMP 005 - HWT 037 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 19
+    MPI 002 - OMP 006 - HWT 038 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 19
+    MPI 002 - OMP 007 - HWT 034 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 19
+    MPI 003 - OMP 000 - HWT 055 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 69
+    MPI 003 - OMP 001 - HWT 048 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 69
+    MPI 003 - OMP 002 - HWT 049 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 69
+    MPI 003 - OMP 003 - HWT 050 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 69
+    MPI 003 - OMP 004 - HWT 051 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 69
+    MPI 003 - OMP 005 - HWT 052 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 69
+    MPI 003 - OMP 006 - HWT 053 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 69
+    MPI 003 - OMP 007 - HWT 054 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 69
+    MPI 004 - OMP 000 - HWT 071 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID fb
+    MPI 004 - OMP 001 - HWT 064 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID fb
+    MPI 004 - OMP 002 - HWT 065 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID fb
+    MPI 004 - OMP 003 - HWT 066 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID fb
+    MPI 004 - OMP 004 - HWT 067 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID fb
+    MPI 004 - OMP 005 - HWT 068 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID fb
+    MPI 004 - OMP 006 - HWT 070 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID fb
+    MPI 004 - OMP 007 - HWT 069 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID fb
+    MPI 005 - OMP 000 - HWT 087 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 86
+    MPI 005 - OMP 001 - HWT 080 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 86
+    MPI 005 - OMP 002 - HWT 081 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 86
+    MPI 005 - OMP 003 - HWT 082 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 86
+    MPI 005 - OMP 004 - HWT 083 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 86
+    MPI 005 - OMP 005 - HWT 084 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 86
+    MPI 005 - OMP 006 - HWT 085 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 86
+    MPI 005 - OMP 007 - HWT 086 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 86
+    MPI 006 - OMP 000 - HWT 103 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 99
+    MPI 006 - OMP 001 - HWT 096 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 99
+    MPI 006 - OMP 002 - HWT 097 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 99
+    MPI 006 - OMP 003 - HWT 098 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 99
+    MPI 006 - OMP 004 - HWT 099 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 99
+    MPI 006 - OMP 005 - HWT 100 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 99
+    MPI 006 - OMP 006 - HWT 101 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 99
+    MPI 006 - OMP 007 - HWT 102 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 99
+    MPI 007 - OMP 000 - HWT 119 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID e6
+    MPI 007 - OMP 001 - HWT 112 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID e6
+    MPI 007 - OMP 002 - HWT 113 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID e6
+    MPI 007 - OMP 003 - HWT 114 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID e6
+    MPI 007 - OMP 004 - HWT 115 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID e6
+    MPI 007 - OMP 005 - HWT 116 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID e6
+    MPI 007 - OMP 006 - HWT 117 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID e6
+    MPI 007 - OMP 007 - HWT 118 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID e6
+    MPI 008 - OMP 000 - HWT 007 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 7c
+    MPI 008 - OMP 001 - HWT 001 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 7c
+    MPI 008 - OMP 002 - HWT 002 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 7c
+    MPI 008 - OMP 003 - HWT 003 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 7c
+    MPI 008 - OMP 004 - HWT 004 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 7c
+    MPI 008 - OMP 005 - HWT 005 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 7c
+    MPI 008 - OMP 006 - HWT 006 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 7c
+    MPI 008 - OMP 007 - HWT 000 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 7c
+    MPI 009 - OMP 000 - HWT 023 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+    MPI 009 - OMP 001 - HWT 016 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+    MPI 009 - OMP 002 - HWT 017 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+    MPI 009 - OMP 003 - HWT 018 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+    MPI 009 - OMP 004 - HWT 019 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+    MPI 009 - OMP 005 - HWT 020 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+    MPI 009 - OMP 006 - HWT 021 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+    MPI 009 - OMP 007 - HWT 022 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+    MPI 010 - OMP 000 - HWT 039 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 19
+    MPI 010 - OMP 001 - HWT 032 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 19
+    MPI 010 - OMP 002 - HWT 033 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 19
+    MPI 010 - OMP 003 - HWT 034 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 19
+    MPI 010 - OMP 004 - HWT 035 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 19
+    MPI 010 - OMP 005 - HWT 036 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 19
+    MPI 010 - OMP 006 - HWT 037 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 19
+    MPI 010 - OMP 007 - HWT 038 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 19
+    MPI 011 - OMP 000 - HWT 055 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 69
+    MPI 011 - OMP 001 - HWT 050 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 69
+    MPI 011 - OMP 002 - HWT 051 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 69
+    MPI 011 - OMP 003 - HWT 052 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 69
+    MPI 011 - OMP 004 - HWT 053 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 69
+    MPI 011 - OMP 005 - HWT 054 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 69
+    MPI 011 - OMP 006 - HWT 048 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 69
+    MPI 011 - OMP 007 - HWT 049 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 69
+    MPI 012 - OMP 000 - HWT 071 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID fb
+    MPI 012 - OMP 001 - HWT 064 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID fb
+    MPI 012 - OMP 002 - HWT 065 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID fb
+    MPI 012 - OMP 003 - HWT 066 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID fb
+    MPI 012 - OMP 004 - HWT 067 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID fb
+    MPI 012 - OMP 005 - HWT 068 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID fb
+    MPI 012 - OMP 006 - HWT 069 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID fb
+    MPI 012 - OMP 007 - HWT 070 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID fb
+    MPI 013 - OMP 000 - HWT 087 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 86
+    MPI 013 - OMP 001 - HWT 080 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 86
+    MPI 013 - OMP 002 - HWT 081 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 86
+    MPI 013 - OMP 003 - HWT 082 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 86
+    MPI 013 - OMP 004 - HWT 083 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 86
+    MPI 013 - OMP 005 - HWT 084 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 86
+    MPI 013 - OMP 006 - HWT 085 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 86
+    MPI 013 - OMP 007 - HWT 086 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 86
+    MPI 014 - OMP 000 - HWT 103 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 99
+    MPI 014 - OMP 001 - HWT 096 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 99
+    MPI 014 - OMP 002 - HWT 097 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 99
+    MPI 014 - OMP 003 - HWT 098 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 99
+    MPI 014 - OMP 004 - HWT 099 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 99
+    MPI 014 - OMP 005 - HWT 100 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 99
+    MPI 014 - OMP 006 - HWT 101 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 99
+    MPI 014 - OMP 007 - HWT 102 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 99
+    MPI 015 - OMP 000 - HWT 119 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID e6
+    MPI 015 - OMP 001 - HWT 112 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID e6
+    MPI 015 - OMP 002 - HWT 113 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID e6
+    MPI 015 - OMP 003 - HWT 114 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID e6
+    MPI 015 - OMP 004 - HWT 115 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID e6
+    MPI 015 - OMP 005 - HWT 116 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID e6
+    MPI 015 - OMP 006 - HWT 117 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID e6
+    MPI 015 - OMP 007 - HWT 118 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID e6
+
+
+
+Mapping multiple MPI ranks to a single GPU
+""""""""""""""""""""""""""""""""""""""""""
+
+In the following examples, 2 MPI ranks will be mapped to 1 GPU.
+For brevity, ``OMP_NUM_THREADS`` will be set to ``1``, so ``-c1`` will be used unless otherwise specified.
+A new ``srun`` option will also be introduced to accomplish the new mapping:
+
++----------------------+-----------------------------------------------------------------------------------------------+
+| Slurm Option         | Description                                                                                   |
++======================+===============================================================================================+
+| ``--ntasks-per-gpu`` | Specifies the number of MPI ranks that will share access to a GPU.                            |
++----------------------+-----------------------------------------------------------------------------------------------+
+
+.. note::
+
+   On AMD's MI355X, multi-process service (MPS) is not needed since multiple
+   MPI ranks per GPU is supported natively.
+
+**16 MPI ranks - where 2 ranks share a GPU (round-robin, single-node)**
+
+This example launches 16 MPI ranks (``-n16``), each with 1 physical CPU core (``-c1``) to launch 1 OpenMP thread (``OMP_NUM_THREADS=1``) on.
+The MPI ranks will be assigned to GPUs in a round-robin fashion so that each of the 8 GPUs on the node are shared by 2 MPI ranks.
+
+.. code:: bash
+
+    $ OMP_NUM_THREADS=1 srun -N1 -n16 -c1 --gpus 8 --ntasks-per-gpu=2 --gpu-bind=closest ./hello_jobstep | sort
+    MPI 000 - OMP 000 - HWT 000 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 7c
+    MPI 001 - OMP 000 - HWT 016 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+    MPI 002 - OMP 000 - HWT 032 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 19
+    MPI 003 - OMP 000 - HWT 048 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 69
+    MPI 004 - OMP 000 - HWT 064 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID fb
+    MPI 005 - OMP 000 - HWT 080 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 86
+    MPI 006 - OMP 000 - HWT 096 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 99
+    MPI 007 - OMP 000 - HWT 112 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID e6
+    MPI 008 - OMP 000 - HWT 001 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 7c
+    MPI 009 - OMP 000 - HWT 017 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+    MPI 010 - OMP 000 - HWT 033 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 19
+    MPI 011 - OMP 000 - HWT 049 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 69
+    MPI 012 - OMP 000 - HWT 065 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID fb
+    MPI 013 - OMP 000 - HWT 081 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 86
+    MPI 014 - OMP 000 - HWT 097 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 99
+    MPI 015 - OMP 000 - HWT 113 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID e6
+
+
+
+
+The output shows the round-robin (``cyclic``) distribution of MPI ranks to GPUs.
+In fact, it is a round-robin distribution of MPI ranks *to NUMA domains* (the default distribution).
+The GPU mapping is a consequence of where the MPI ranks are distributed;
+``--gpu-bind=closest`` simply maps the GPU in an NUMA domain to the MPI ranks in the same NUMA domain.
+
+**32 MPI ranks - where 2 ranks share a GPU (round-robin, multi-node)**
+
+This example is an extension of the previous example to run on 2 nodes.
+
+.. code:: bash
+
+    $ OMP_NUM_THREADS=1 srun -N2 -n32 -c1 --gpus 16 --ntasks-per-gpu=2 --gpu-bind=closest ./hello_jobstep | sort
+    MPI 000 - OMP 000 - HWT 000 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 7c
+    MPI 001 - OMP 000 - HWT 016 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+    MPI 002 - OMP 000 - HWT 032 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 19
+    MPI 003 - OMP 000 - HWT 048 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 69
+    MPI 004 - OMP 000 - HWT 064 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID fb
+    MPI 005 - OMP 000 - HWT 080 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 86
+    MPI 006 - OMP 000 - HWT 096 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 99
+    MPI 007 - OMP 000 - HWT 112 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID e6
+    MPI 008 - OMP 000 - HWT 001 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 7c
+    MPI 009 - OMP 000 - HWT 017 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+    MPI 010 - OMP 000 - HWT 033 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 19
+    MPI 011 - OMP 000 - HWT 049 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 69
+    MPI 012 - OMP 000 - HWT 065 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID fb
+    MPI 013 - OMP 000 - HWT 081 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 86
+    MPI 014 - OMP 000 - HWT 097 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 99
+    MPI 015 - OMP 000 - HWT 113 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID e6
+    MPI 016 - OMP 000 - HWT 000 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 7c
+    MPI 017 - OMP 000 - HWT 016 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+    MPI 018 - OMP 000 - HWT 032 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 19
+    MPI 019 - OMP 000 - HWT 048 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 69
+    MPI 020 - OMP 000 - HWT 064 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID fb
+    MPI 021 - OMP 000 - HWT 080 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 86
+    MPI 022 - OMP 000 - HWT 096 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 99
+    MPI 023 - OMP 000 - HWT 112 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID e6
+    MPI 024 - OMP 000 - HWT 001 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 7c
+    MPI 025 - OMP 000 - HWT 017 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+    MPI 026 - OMP 000 - HWT 033 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 19
+    MPI 027 - OMP 000 - HWT 049 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 69
+    MPI 028 - OMP 000 - HWT 065 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID fb
+    MPI 029 - OMP 000 - HWT 081 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 86
+    MPI 030 - OMP 000 - HWT 097 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 99
+    MPI 031 - OMP 000 - HWT 113 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID e6
+
+
+
+**16 MPI ranks - where 2 ranks share a GPU (packed, single-node)"**
+
+This example launches 16 MPI ranks (``-n16``), each with 8 physical CPU cores (``-c8``) to launch 1 OpenMP thread (``OMP_NUM_THREADS=1``) on.
+The MPI ranks will be assigned to GPUs in a packed fashion so that each of the 8 GPUs on the node are shared by 2 MPI ranks.
+Similar to previous examples, ``-ntasks-per-gpu=2`` will be used,
+but a new ``srun`` flag will be used to change the default round-robin (``cyclic``) distribution of MPI ranks across NUMA domains:
+
+.. list-table::
+   :widths: 30 70
+   :header-rows: 1
+
+   * - Slurm Option
+     - Description
+   * - ``--distribution=<value>[:<value>][:<value>]``
+     - | Specifies the distribution of MPI ranks across compute nodes, sockets (NUMA domains on Lux), and cores, respectively.
+       | The default values are ``block:cyclic:cyclic``, which is where the ``cyclic`` assignment comes from in the previous examples.
+
+.. note::
+
+   In the job step for this example, ``--distribution=*:block`` is used,
+   where ``*`` represents the default value of ``block`` for the distribution of MPI
+   ranks across compute nodes and the distribution of MPI ranks across NUMA domains
+   has been changed to ``block`` from its default value of ``cyclic``.
+
+.. note::
+
+   Because the distribution across NUMA domains has been changed to a "packed" (``block``) configuration,
+   caution must be taken to ensure MPI ranks end up in the NUMA domains where the GPUs they intend to be mapped to are located.
+   To accomplish this, the number of physical CPU cores assigned to an MPI rank was increased - in this case to 8.
+   Doing so ensures that only 2 MPI ranks can fit into a single NUMA domain.
+   If the value of ``-c`` was left at ``1``, all 16 MPI ranks would be "packed" into the first NUMA domain,
+   where the "closest" GPU would be GPU 3 (bus ``7c``) - the only GPU in that NUMA domain.
+
+.. code:: bash
+
+    $ OMP_NUM_THREADS=1 srun -N1 -n16 -c8 --gpus 8 --ntasks-per-gpu=2 --gpu-bind=closest --distribution=*:block ./hello_jobstep | sort
+    MPI 000 - OMP 000 - HWT 007 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 7c
+    MPI 001 - OMP 000 - HWT 015 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 7c
+    MPI 002 - OMP 000 - HWT 023 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+    MPI 003 - OMP 000 - HWT 031 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+    MPI 004 - OMP 000 - HWT 039 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 19
+    MPI 005 - OMP 000 - HWT 047 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 19
+    MPI 006 - OMP 000 - HWT 055 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 69
+    MPI 007 - OMP 000 - HWT 063 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 69
+    MPI 008 - OMP 000 - HWT 071 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID fb
+    MPI 009 - OMP 000 - HWT 079 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID fb
+    MPI 010 - OMP 000 - HWT 087 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 86
+    MPI 011 - OMP 000 - HWT 095 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 86
+    MPI 012 - OMP 000 - HWT 103 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 99
+    MPI 013 - OMP 000 - HWT 111 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 99
+    MPI 014 - OMP 000 - HWT 119 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID e6
+    MPI 015 - OMP 000 - HWT 127 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID e6
+
+
+
+The overall effect of using ``--distribution=*:block`` and increasing the number of physical CPU cores available to each MPI rank is to place the first two MPI ranks in the first NUMA domain with GPU 3 (bus ``7c``),
+the next two MPI ranks in the NUMA domain with GPU 0 (bus ``09``), and so on.
+
+**32 MPI ranks - where 2 ranks share a GPU (packed, multi-node)**
+
+This example is an extension of the previous example to use 2 compute nodes.
+With the appropriate changes put in place in previous example, it is a straightforward exercise to change to using 2 nodes (``-N2``), 32 MPI ranks (``-n32``), and 16 GPUs (``--gpus 16``).
+
+.. code:: bash
+
+    $ OMP_NUM_THREADS=1 srun -N2 -n32 -c8 --gpus 16 --ntasks-per-gpu=2 --gpu-bind=closest --distribution=*:block ./hello_jobstep | sort
+    MPI 000 - OMP 000 - HWT 007 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 7c
+    MPI 001 - OMP 000 - HWT 015 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 7c
+    MPI 002 - OMP 000 - HWT 023 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+    MPI 003 - OMP 000 - HWT 031 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+    MPI 004 - OMP 000 - HWT 039 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 19
+    MPI 005 - OMP 000 - HWT 047 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 19
+    MPI 006 - OMP 000 - HWT 055 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 69
+    MPI 007 - OMP 000 - HWT 063 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 69
+    MPI 008 - OMP 000 - HWT 071 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID fb
+    MPI 009 - OMP 000 - HWT 079 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID fb
+    MPI 010 - OMP 000 - HWT 087 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 86
+    MPI 011 - OMP 000 - HWT 095 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 86
+    MPI 012 - OMP 000 - HWT 103 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 99
+    MPI 013 - OMP 000 - HWT 111 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 99
+    MPI 014 - OMP 000 - HWT 119 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID e6
+    MPI 015 - OMP 000 - HWT 127 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID e6
+    MPI 016 - OMP 000 - HWT 007 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 7c
+    MPI 017 - OMP 000 - HWT 015 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 7c
+    MPI 018 - OMP 000 - HWT 023 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+    MPI 019 - OMP 000 - HWT 031 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+    MPI 020 - OMP 000 - HWT 039 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 19
+    MPI 021 - OMP 000 - HWT 047 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 19
+    MPI 022 - OMP 000 - HWT 055 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 69
+    MPI 023 - OMP 000 - HWT 063 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 69
+    MPI 024 - OMP 000 - HWT 071 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID fb
+    MPI 025 - OMP 000 - HWT 079 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID fb
+    MPI 026 - OMP 000 - HWT 087 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 86
+    MPI 027 - OMP 000 - HWT 095 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 86
+    MPI 028 - OMP 000 - HWT 103 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 99
+    MPI 029 - OMP 000 - HWT 111 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 99
+    MPI 030 - OMP 000 - HWT 119 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID e6
+    MPI 031 - OMP 000 - HWT 127 - Node lux002 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID e6
+
+
+Multiple Independent Job Steps
+""""""""""""""""""""""""""""""
+
+**8 independent and simultaneous job steps running on a single node**
+
+This example shows how to run multiple independent, simultaneous job steps on a single compute node.
+Specifically, it shows how to run 8 independent ``hello_jobstep`` programs running on their own CPU core and GPU.
+
+Submission script:
+
+.. code:: bash
+
+    #!/bin/bash
+    #SBATCH --account <project>
+    #SBATCH --partition batch
+    #SBATCH --time 5:00
+    #SBATCH --nodes 1
+    #SBATCH --gpus 8
+
+
+    for idx in {1..8};
+
+        do
+            date
+
+            OMP_NUM_THREADS=1 srun -u --gpus 1 --gpus-per-task=1 --gpu-bind=closest -N1 -n1 -c1 ./hello_jobstep_sleep &
+
+            sleep 3
+        done
+
+    wait
+
+
+
+Output:
+
+.. code:: bash
+
+    Mon Oct 12 03:27:23 PM EDT 2026
+    MPI 000 - OMP 000 - HWT 016 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 09
+    Mon Oct 12 03:27:26 PM EDT 2026
+    MPI 000 - OMP 000 - HWT 032 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 19
+    Mon Oct 12 03:27:29 PM EDT 2026
+    MPI 000 - OMP 000 - HWT 048 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 69
+    Mon Oct 12 03:27:33 PM EDT 2026
+    MPI 000 - OMP 000 - HWT 000 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 7c
+    Mon Oct 12 03:27:36 PM EDT 2026
+    MPI 000 - OMP 000 - HWT 080 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 86
+    Mon Oct 12 03:27:39 PM EDT 2026
+    MPI 000 - OMP 000 - HWT 096 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID 99
+    Mon Oct 12 03:27:42 PM EDT 2026
+    MPI 000 - OMP 000 - HWT 112 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID e6
+    Mon Oct 12 03:27:45 PM EDT 2026
+    MPI 000 - OMP 000 - HWT 064 - Node lux001 - RT_GPU_ID 0 - GPU_ID 0 - Bus_ID fb
+
+
+The output shows that each independent process ran on its own CPU core and GPU on the same single node.
+To show that the ranks ran simultaneously, ``date`` was called before each job step and a 20 second sleep was added to the end of the ``hello_jobstep`` program.
+So the output also shows that the first job step was submitted at ``:23`` and the subsequent job steps were all submitted between ``:26`` and ``:45``.
+But because each ``hello_jobstep`` sleeps for 20 seconds, the subsequent job steps must have all been running while the first job step was still sleeping (and holding up its resources).
+And the same argument can be made for the other job steps.
+
+.. note::
+
+    The ``wait`` command is needed so the job script (and allocation) do not immediately end after launching the job steps in the background.
+
+    The ``sleep 3`` is needed to give Slurm sufficient time to launch each job step.
 
-
-    As has been pointed out previously in the Lux documentation, notice that
-    GPUs are NOT mapped to MPI ranks in sequential order (e.g., MPI rank 0 is
-    mapped to physical CPU cores 0-15 and GPU 4, MPI rank 1 is mapped to physical
-    CPU cores 16-31 and GPU 5), but this IS expected behavior. It is simply a
-    consequence of the Lux node architectures as shown in the `Lux Node
-    Diagram <https://docs.olcf.ornl.gov/_images/Lux_Node_Diagram.jpg>`_ and
-    subsequent :ref:`Note on NUMA domains <numa-note>`.
-
-    **Example 2: 1 MPI rank with 7 CPU cores and 1 GPU (single-node)**
-
-    When new users first attempt to run their application on Frontier, they often
-    want to test with 1 MPI rank that has access to 7 CPU cores and 1 GPU. Although
-    the job step used here is very similar to Example 1, the behavior is different:
-
-    .. code-block:: bash
-
-        $ OMP_NUM_THREADS=7 srun -N1 -n1 -c7 --gpus-per-task=1 --gpu-bind=closest ./hello_jobstep | sort
-
-
-    Notice that our MPI rank did not get mapped to CPU cores 1-7 and GPU 4, but
-    instead to GPU 0 and CPU cores 49-55. The apparent reason for this can be found
-    in the ``--gpu-bind`` section in the ``srun`` man page: ``GPU binding is
-    ignored if there is only one task.``. Here, Slurm appears to give the first GPU
-    it sees and maps it to the CPU cores that are closest. So although the mapping
-    doesn't occur as expected, the rank is still mapped to the correct GPU given
-    the CPU cores it ran on.
-
-    **Example 3: 16 MPI ranks - each with 7 CPU cores and 1 GPU (multi-node)**
-
-    This example simply extends Example 1 to run on 2 nodes, which simply requires
-    changing the number of nodes to 2 (``-N2``) and the number of MPI ranks to 16
-    (``-n16``).
-
-    .. code-block:: bash
-
-        $ OMP_NUM_THREADS=7 srun -N2 -n16 -c7 --gpus-per-task=1 --gpu-bind=closest ./hello_jobstep | sort
-
-
-    Mapping multiple MPI ranks to a single GPU
-    """"""""""""""""""""""""""""""""""""""""""
-
-    In the following examples, 2 MPI ranks will be mapped to 1 GPU. For brevity,
-    ``OMP_NUM_THREADS`` will be set to ``1``, so ``-c1`` will be used unless
-    otherwise specified. A new ``srun`` option will also be introduced to
-    accomplish the new mapping:
-
-    +----------------------+-----------------------------------------------------------------------------------------------+
-    | Slurm Option         | Description                                                                                   |
-    +======================+===============================================================================================+
-    | ``--ntasks-per-gpu`` | Specifies the number of MPI ranks that will share access to a GPU.                            |
-    +----------------------+-----------------------------------------------------------------------------------------------+
-
-    .. note::
-
-       On AMD's MI355X, multi-process service (MPS) is not needed since multiple
-       MPI ranks per GPU is supported natively.
-
-    **Example 4: 16 MPI ranks - where 2 ranks share a GPU (round-robin, single-node)**
-
-    This example launches 16 MPI ranks (``-n16``), each with 1 physical CPU core
-    (``-c1``) to launch 1 OpenMP thread (``OMP_NUM_THREADS=1``) on. The MPI ranks
-    will be assigned to GPUs in a round-robin fashion so that each of the 8 GPUs on
-    the node are shared by 2 MPI ranks.
-
-    .. code:: bash
-
-        $ OMP_NUM_THREADS=1 srun -N1 -n16 -c1 --ntasks-per-gpu=2 --gpu-bind=closest ./hello_jobstep | sort
-
-
-
-    The output shows the round-robin (``cyclic``) distribution of MPI ranks to
-    GPUs. In fact, it is a round-robin distribution of MPI ranks *to L3 cache
-    regions* (the default distribution). The GPU mapping is a consequence of where
-    the MPI ranks are distributed; ``--gpu-bind=closest`` simply maps the GPU in an
-    L3 cache region to the MPI ranks in the same L3 region.
-
-    **Example 5: 32 MPI ranks - where 2 ranks share a GPU (round-robin, multi-node)**
-
-    This example is an extension of Example 4 to run on 2 nodes.
-
-    .. code:: bash
-
-        $ OMP_NUM_THREADS=1 srun -N2 -n32 -c1 --ntasks-per-gpu=2 --gpu-bind=closest ./hello_jobstep | sort
-
-
-
-    **Example 6: 16 MPI ranks - where 2 ranks share a GPU (packed, single-node)**
-
-    This example launches 16 MPI ranks (``-n16``), each with 4 physical CPU cores
-    (``-c4``) to launch 1 OpenMP thread (``OMP_NUM_THREADS=1``) on. The MPI ranks
-    will be assigned to GPUs in a packed fashion so that each of the 8 GPUs on the
-    node are shared by 2 MPI ranks. Similar to Example 4, ``-ntasks-per-gpu=2``
-    will be used, but a new ``srun`` flag will be used to change the default
-    round-robin (``cyclic``) distribution of MPI ranks across NUMA domains:
-
-    .. table::
-        :widths: 30 70
-
-        +------------------------------------------------+-----------------------------------------------------------------------------------------------+
-        | Slurm Option                                   | Description                                                                                   |
-        +================================================+===============================================================================================+
-        | ``--distribution=<value>[:<value>][:<value>]`` | Specifies the distribution of MPI ranks across compute nodes, sockets                         |
-        |                                                | (L3 cache regions on Frontier), and cores, respectively. The default values are               |
-        |                                                | ``block:cyclic:cyclic``, which is where the ``cyclic`` assignment comes from in the previous  |
-        |                                                | examples.                                                                                     |
-        +------------------------------------------------+-----------------------------------------------------------------------------------------------+
-
-    .. note::
-
-       In the job step for this example, ``--distribution=*:block`` is used, where
-       ``*`` represents the default value of ``block`` for the distribution of MPI
-       ranks across compute nodes and the distribution of MPI ranks across L3 cache
-       regions has been changed to ``block`` from its default value of ``cyclic``.
-
-    .. note::
-
-       Because the distribution across L3 cache regions has been changed to a
-       "packed" (``block``) configuration, caution must be taken to ensure MPI ranks
-       end up in the L3 cache regions where the GPUs they intend to be mapped to are
-       located. To accomplish this, the number of physical CPU cores assigned to an
-       MPI rank was increased - in this case to 4. Doing so ensures that only 2 MPI
-       ranks can fit into a single L3 cache region. If the value of ``-c`` was left at
-       ``1``, all 8 MPI ranks would be "packed" into the first L3 region, where the
-       "closest" GPU would be GPU 4 - the only GPU in that L3 region.
-
-    .. code:: bash
-
-        $ OMP_NUM_THREADS=1 srun -N1 -n16 -c4 --ntasks-per-gpu=2 --gpu-bind=closest --distribution=*:block ./hello_jobstep | sort
-
-
-    The overall effect of using ``--distribution=*:block`` and increasing the
-    number of physical CPU cores available to each MPI rank is to place the first
-    two MPI ranks in the first L3 cache region with GPU 4, the next two MPI ranks
-    in the second L3 cache region with GPU 5, and so on.
-
-    **Example 7: 32 MPI ranks - where 2 ranks share a GPU (packed, multi-node)**
-
-    This example is an extension of Example 6 to use 2 compute nodes. With the
-    appropriate changes put in place in Example 6, it is a straightforward exercise
-    to change to using 2 nodes (``-N2``) and 32 MPI ranks (``-n32``).
-
-    .. code:: bash
-
-        $ OMP_NUM_THREADS=1 srun -N2 -n32 -c4 --ntasks-per-gpu=2 --gpu-bind=closest --distribution=*:block ./hello_jobstep | sort
-
-
-    **Example 8: 56 MPI ranks - where 7 ranks share a GPU (packed, single-node)**
-
-    An alternative solution to Example 6 and 7's ``-S 8`` issue is to use ``-c 1``
-    instead.  There is no problem when running with 1 core per MPI rank (i.e., 7
-    ranks per GPU) because the task can’t span multiple L3s.
-
-    .. code:: bash
-
-        $ OMP_NUM_THREADS=1 srun -N1 -n56 -c1 --ntasks-per-gpu=7 --gpu-bind=closest --distribution=*:block ./hello_jobstep | sort
-
-
-    Multiple Independent Job Steps
-    """"""""""""""""""""""""""""""
-
-    **Example 9: 8 independent and simultaneous job steps running on a single node**
-
-    This example shows how to run multiple independent, simultaneous job steps on a single compute node. Specifically, it shows how to run 8 independent ``hello_jobstep`` programs running on their own CPU core and GPU.
-
-    Submission script:
-
-    .. code:: bash
-
-        #!/bin/bash
-
-        #SBATCH -A stf016_frontier
-        #SBATCH -N 1
-        #SBATCH -t 5
-
-        for idx in {1..8};
-
-            do
-                date
-
-                OMP_NUM_THREADS=1 srun -u --gpus-per-task=1 --gpu-bind=closest -N1 -n1 -c1 ./hello_jobstep &
-
-                sleep 1
-            done
-
-        wait
-
-    Output:
-
-    .. code:: bash
-
-        test
-
-    The output shows that each independent process ran on its own CPU core and GPU
-    on the same single node. To show that the ranks ran simultaneously, ``date``
-    was called before each job step and a 20 second sleep was added to the end of
-    the ``hello_jobstep`` program. So the output also shows that the first job step
-    was submitted at ``:45`` and the subsequent job steps were all submitted
-    between ``:46`` and ``:52``. But because each ``hello_jobstep`` sleeps for 20
-    seconds, the subsequent job steps must have all been running while the first
-    job step was still sleeping (and holding up its resources). And the same
-    argument can be made for the other job steps.
-
-    .. note::
-
-        The ``wait`` command is needed so the job script (and allocation) do not immediately end after launching the job steps in the background.
-
-        The ``sleep 1`` is needed to give Slurm sufficient time to launch each job step.
-
-
-    Multiple GPUs per MPI rank
-    """"""""""""""""""""""""""
-
-    As mentioned previously, all GPUs are accessible by all MPI ranks by default,
-    so it is possible to *programatically* map any combination of GPUs to MPI
-    ranks. It should be noted however that Cray MPICH does not support GPU-aware
-    MPI for multiple GPUs per rank, so this binding is not suggested.
 
 .. todo: node map NIC map
 
@@ -2454,7 +2722,7 @@ If you are able to fit each ensemble member onto a single MPI rank and single AM
 
 .. code:: bash
 
-    srun -N $SLURM_NNODES -n $((SLURM_NNODES*8)) -c 16 --gpus-per-task=1 --gpu-bind=closest ./wrapper.sh
+    srun -N $SLURM_NNODES -n $((SLURM_NNODES*8)) --gpus $((SLURM_NNODES*8)) -c 16 --gpus-per-task=1 --gpu-bind=closest ./wrapper.sh
 
 Where ``wrapper.sh`` is a shell script that launches your application.
 This shell script is simply for convenience, in case you wish to vary the parameters to your application based on MPI rank.
@@ -2462,13 +2730,13 @@ This shell script is simply for convenience, in case you wish to vary the parame
 Using multiple simultaneous srun's
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-If you are not able to fit each ensemble member onto a single MPI rank and GCD, a common approach is to launch multiple ``srun`` processes in the background simultaneously.
+If you are not able to fit each ensemble member onto a single MPI rank and GPU, a common approach is to launch multiple ``srun`` processes in the background simultaneously.
 For example:
 
 .. code:: bash
 
     for node in $(scontrol show hostnames); do
-        srun -N 1 -n 8 -c 7 --gpus 8 --gpus-per-task=1 --gpu-bind=closest <executable> &
+        srun -N 1 -n 8 -c 16 --gpus 8 --gpus-per-task=1 --gpu-bind=closest <executable> &
     done
     # Wait for srun's to all finish
     wait
@@ -2485,6 +2753,40 @@ This feature may substantially improve the ability to run many simultaneous ``sr
 
 Tips for Launching at Scale
 ---------------------------
+
+Slurm GRES Task Sharing
+^^^^^^^^^^^^^^^^^^^^^^^
+
+Lux node sharing, by default, isolates resources for each task.
+This means that GPU-GPU and process<=>process communication performance has additional overhead, and may have a performance impact.
+If you find that inter-process communication for your jobs are slower than expected, or you are experiencing jobs failing with a segmentation fault and an error such as:
+
+``rocm_ipc_cache.c:144  Fatal: dest:182: failed to open ipc mem handle.``
+
+then you should run your tasks with the following flag at the ``srun``/task level:
+
+``--gres-flags=allow-task-sharing``
+
+Example:
+
+.. code-block:: bash
+
+    #!/bin/bash
+    #SBATCH --account <account>
+    #SBATCH --partition batch
+    #SBATCH --time 25:00
+    #SBATCH --nodes 1
+    #SBATCH --gpus 8
+
+    module load rocm/7.2.4
+    module load amd-llvm/7.2.4
+    module load openmpi
+
+    srun --nodes 2 --ntasks 16 --gres-flags=allow-task-sharing --gpus-per-task=1 --gpu-bind=closest ./hello_jobstep
+
+.. note::
+
+    ``--gres-flags=allow-task-sharing`` only works at the ``srun``/task level, not allocation level (``salloc``, ``sbatch``).
 
 .. todo: sbcast
 
@@ -2609,13 +2911,74 @@ Kubernetes on Lux is administered through Rancher. You can access the `dashboard
    sure you have that repository cloned on your laptop and workstation so you can reference it.
 
 
+.. _navigating-to-rancher-dashboard:
 
+Navigating to the Rancher Dashboard
+===================================
+
+Kubernetes on Lux uses Rancher for administration and management. Users can view and manage their
+workloads through Rancher.
+
+Currently Rancher access is not available through the public internet. You need to route your
+browser traffic through home.ccs.ornl.gov using a SOCKS5 proxy. 
+
+Setting up SOCKS5 proxy on your terminal
+----------------------------------------
+
+* Open your terminal (or Powershell if you're on Windows) and type ``ssh -N your_username@home.ccs.ornl.gov -D 127.0.0.1:10000`` and enter your
+PASSCODE when prompted.
+* This doesn't actually open a command prompt you can type in so it looks like it is hung. But it is maintaining an open connection so leave this terminal alone.
+
+Setting up your browser
+----------------------
+
+* Install ``Foxyproxy <https://chromewebstore.google.com/detail/foxyproxy/gcknhkkoolaabfmlnjonogaaifnjlfnp?pli=1>``
+  extension for your browser.
+* Open the browser extension pop up, click on Options
+* In the big settings window that opens, click on ``Proxies`` tab
+* Click ``Add`` to add a new proxy
+* Add ``lux`` as Title, select ``SOCKS5`` from the Type dropdown, enter ``localhost`` or
+  ``127.0.0.1`` for Hostname, and ``10000`` for Port. 
+* Click on the '+' symbol next to 'Proxy by Patterns' and enter a new pattern
+  ``*://console.apps.slate-mod.ccs.ornl.gov/``. This is to ensure that the proxy is used
+  automatically when accessing Rancher.
+  * If there already exists a pattern like ``*://*.com`` you can delete that as you only want
+    Rancher access to use the proxy, and not every website you navigate to on the browser.
+* Click Save
+
+Accessing the dashboard
+-----------------------
+
+After all the above is set up 
+
+* Open a new tab
+* From the Foxyproxy browser extension pop up, select ``Proxy by Pattern``
+* Navigate to ``console.apps.slate-mod.ccs.ornl.gov/dashboard/home`` on the browser
+
+
+.. note::
+
+   If you shutdown your computer or close your terminal, you will need to set it up again
+   to reactivate the proxy so you can navigate to Rancher on your browser again.
+
+
+
+
+
+Using kubectl
+=============
 
 Setting up the kubectl commandline tool
-=======================================
+---------------------------------------
+
+.. warning::
+
+   Due to network restrictions, you should install and use kubectl from ``home.ccs.ornl.gov``. SSH to
+   that system first before continuing the below steps.
+
 
 * Follow the steps from `kubectl docs <https://kubernetes.io/docs/tasks/tools/#kubectl>`__ that is most appropriate to install kubectl on your laptop or workstation.
-* Then navigate to the Lux Rancher dashboard.
+* Then navigate to the `Lux Rancher dashboard <https://console.apps.slate-mod.ccs.ornl.gov/dashboard/home>`__ (remember to open the dashboard as described in :ref:`navigating-to-rancher-dashboard`).
 * On the Rancher dashboard, click on the button in the top navbar that says 'Copy KubeConfig to Clipboard'. This copies the
   configuration into your clipboard.
 * On your laptop or workstation, create a file named `~/.kube/config` and paste the contents into
@@ -2629,17 +2992,64 @@ You should now be able to use ``kubectl`` to perform operations on Kubernetes on
    out. You will need to do the above steps again
    after a 24 hour period.
 
+``kubectl`` overview
+--------------------
+
+Below you will find a subset of the key ``kubectl`` commands and a description of their function.
+
+This section is not exhaustive, and if you find yourself looking for more information you can refer to the `kubectl reference docs <https://kubernetes.io/docs/reference/kubectl/generated/>`_ for a more exhaustive list.
+
+.. list-table::
+    :widths: 20 30 20
+    :header-rows: 1
+
+    * - Command
+      - Explanation
+      - Docs link
+    * - ``kubectl apply``
+      - "Applies" the resource, which can be a creation or update function.
+      - `apply docs <https://kubernetes.io/docs/reference/kubectl/generated/kubectl_apply/>`_
+    * - ``kubectl get``
+      -
+        | Fetches basic information on one or more resources.
+        | Output can be modified with ``--output`` to many formats, including ``json`` and ``yaml``.
+      - `get docs <https://kubernetes.io/docs/reference/kubectl/generated/kubectl_get/>`_
+    * - ``kubectl describe``
+      - More detailed information than ``kubectl get``; query should be more specific in the form of ``<resource_type> <resource>``.
+      - `describe docs <https://kubernetes.io/docs/reference/kubectl/generated/kubectl_describe/>`_
+    * - ``kubectl exec``
+      -
+        | Executes commands within a given resource.
+        | Can be used with e.g. ``<job/name> -it -- sh`` to get an interactive shell.
+      - `exec docs <https://kubernetes.io/docs/reference/kubectl/generated/kubectl_exec/>`_
+    * - ``kubectl delete``
+      - Deletes a resource. This can be used to cancel running tasks.
+      - `delete docs <https://kubernetes.io/docs/reference/kubectl/generated/kubectl_delete/>`_
+
+
+Below you can find a list of flags that can be useful for day-to-day operations
+
+.. list-table::
+    :widths: 30 70
+    :header-rows: 1
+
+    * - Flag
+      - Explanation
+    * - ``-n``, ``--namespace``
+      - Namespace specification. Useful when multiple namespaces can be searched.
+    * - ``--kubeconfig``
+      - Specify path to custom kubeconfig. Useful if you use ``kubectl`` for multiple clusters.
 
 
 Create a new namespace
 ======================
 
-OLCF User Assistance will help you create a namespace for your project.
+OLCF User Assistance will help you create or use a namespace for your project.
 Please contact User Assistance at help@olcf.ornl.gov
 
-It is helpful to also CC the your project's PI, who will need to provide permission for creation of an automation user and the namespace.
+.. todo: The below should be default with a Kube-Lux allocation
 
-.. todo: we should probably do this by default with a Lux Kube allocation
+    It is helpful to also CC the your project's PI, who will need to provide permission for creation of an automation user and the namespace.
 
 
 Some Kubernetes Basics
@@ -2859,33 +3269,112 @@ Example Application
 The ``lux/guestbook`` example in the `olcf_kubernetes_examples repository <https://github.com/olcf/olcf_kubernetes_examples/>`_
 demonstrates the above concepts together in a simple web application with a frontend and Redis.
 
+
+CPU-Only Workloads on Kubernetes
+================================
+
+If you would like to run CPU-only workloads, you are free to use the existing ``<proj>-gpu`` namespace described in :ref:`lux-kube-gpus`.
+
+If you want to run CPU-only jobs in your designated ``<proj>`` (non ``-gpu``) namespace, please contact User Assistance at help@olcf.ornl.gov
+
+
+.. _lux-kube-gpus:
+
 GPU Usage on Kubernetes
 =======================
 
-.. warning::
+.. note::
 
    GPUs are time limited use and cannot be used for persistent services. They can only be used in
    Jobs.
 
+Running with GPUs
+-----------------
+
+In order to use GPU resources on the Lux Kubernetes system, you must submit a ``Job`` workload type with the following information:
+
+.. code-block:: yaml
+
+  metadata:
+    namespace: <proj>-gpu
+    annotations:
+      lux.olcf.ornl.gov/walltime:   # your requested time, max of 48h
+  spec:
+    template:
+      spec:
+        containers:
+          resources:
+            limits:
+              amd.com/gpu:          # desired GPUs
+            requests:
+              amd.com/gpu:          # desired GPUs
+
+
+.. list-table::
+    :widths: 30 70
+    :header-rows: 1
+
+    * - Specification
+      - Explanation
+    * - ``namespace: <proj>-gpu``
+      -
+        | Your allocated ``<proj>-gpu`` namespace must be used for GPU jobs on Kubernetes.
+        | **Other namespaces will reject GPU jobs.**
+        | Additionally, it is safe to run all workloads on the ``<proj>-gpu``.
+          Non-GPU jobs will be pushed to CPU-only nodes and not burn allocation.
+        | GPU accounting is only measured against tasks run in this namespace requesting GPU resources.
+    * - ``lux.olcf.ornl.gov/walltime:``
+      -
+        | This is your requested walltime in hours, minutes, and/or seconds.
+        | E.g. ``2h``, ``60m``, ``30s``, ``1h30m``
+        | This is compared against your remaining allocation to ensure your allocation is not exceeded.
+        | Refer to :ref:`lux-kube-run-policy` for maximum run time.
+    * - ``limits: amd.com/gpu:``
+      - This is the maximum amount of GPU resources you will need; this must be equal to ``requests: amd.com/gpu:``, if present.
+    * - ``requests: amd.com/gpu:``
+      -
+        This is the minimum amount of GPU resources you will need; this must be omitted, or equal to ``limits: amd.com/gpu:``.
+        GPU ``requests`` are optional, and if omitted will be set to GPU ``limits``.
+
+.. warning::
+
+    If you specify ``requests: amd.com/gpu:``, it **must** be equal to ``limits: amd.com/gpu:``.
+    Otherwise, your job will be rejected.
+
 Under ``spec.containers`` in your deployment or pod configuration, you can include the GPU resource requests
-for each container request as fields under the ``.resources`` field. For example:
+for your container as fields under the ``.resources`` field. For example:
 
-.. code-block::
+.. code-block:: yaml
 
-   spec:
-     containers:
-     - image: "docker.io/subilabrahamornl/sampletorch:latest"
-       name: gpu-pod
-       command: ["python3"]
-       args: ["/root/sampletorch.py"]
-       resources:
-         limits:
-           amd.com/gpu: 1
-         requests:
-           amd.com/gpu: 1
+    apiVersion: batch/v1
+    kind: Job
+    metadata:
+      namespace: <proj>-gpu
+      annotations:
+        lux.olcf.ornl.gov/walltime: 60m
+      name: torch-pod
+    spec:
+      backoffLimit: 0
+      template:
+        spec:
+          containers:
+            - image: "docker.io/subilabrahamornl/sampletorch:latest"
+              name: gpu-pod
+              command: ["python3"]
+              args: ["/root/sampletorch.py"]
+              resources:
+                limits:
+                  amd.com/gpu: 1
+                requests:
+                  amd.com/gpu: 1
+          restartPolicy: Never
 
 
-See the `torch_simple example <https://github.com/olcf/olcf_kubernetes_examples/tree/main/lux/torch_simple>`__ on how to run a Job with Pytorch running an MNIST example.
+.. note::
+
+    Currently, only one container in your ``Job`` may request GPUs.
+
+See the `torch_simple example <https://github.com/olcf/olcf_kubernetes_examples/tree/main/lux/torch_simple>`__ on how to run a pod with Pytorch running an MNIST example.
 
 Requesting and Using Multiple GPUs
 ----------------------------------
@@ -2902,9 +3391,169 @@ GPUs so that is the maximum you can request in a single Pod.
        amd.com/gpu: 8
 
 
+Cancelling Jobs
+---------------
+
+In the case of GPU jobs, it is important to have the ability to cancel in various situations to preserve your allocation.
+
+It is simple to cancel or remove Jobs, simply ``delete`` the Job from the same file. Example:
+
+.. code-block:: bash
+
+    $ kubectl delete -f gpu-job.yaml
+    job.batch "gpu-job" deleted from <proj>-gpu namespace
 
 
+Checking a Project Allocation
+-----------------------------
 
+.. warning::
+
+    For all fields, in the case of values ending in ``m``, this is an amount in milli-GPU hours.
+
+
+In order to check your project's allocation, you can use the ``kubectl`` command line tool.
+
+To find your existing allocation(s) for a project, you can use the following command:
+
+.. todo: this is causing hangs?
+
+    ``kubectl get alloc -n <proj>-gpu``
+
+    or
+
+``kubectl get projectallocations -n <proj>-gpu``
+
+Below is an example:
+
+.. code-block:: bash
+
+    $ kubectl get alloc -n <proj>-gpu
+    NAME             ALLOCATED   CONSUMED   RESERVED   AVAILABLE   WINDOW END             ACTIVE   EXHAUSTED
+    <proj>-2026-q4   1000        0          0          1k          2027-01-01T00:00:00Z   True     False
+
+Below you can see an explanation of the fields:
+
+.. list-table::
+    :widths: 30 70
+    :header-rows: 1
+
+    * - Field
+      - Definition
+    * - NAME
+      - The name of the allocation
+    * - ALLOCATED
+      - This is the number of allocated GPU-hours as a decimal.
+    * - CONSUMED
+      -
+        | This is the number of GPU hours consumed.
+        | In the case of values ending in ``m``, this is milli-GPU hours
+    * - RESERVED
+      -
+        | This is the number of GPU hours for jobs that have passed budget check (admitted or running) and haven't been charged yet.
+        | Each hold is the Job’s full maximum (GPUs × walltime); the unused part is returned when the Job ends.
+        | In the case of values ending in ``m``, this is milli-GPU hours.
+    * - AVAILABLE
+      -
+        | This is the number of GPU hours currently available to be reserved at admission.
+        | This is equal to ``ALLOCATION - CONSUMED - RESERVED``.
+        | In the case of values ending in ``m``, this is milli-GPU hours.
+    * - WINDOW END
+      - This shows the end time of your allocation.
+    * - ACTIVE
+      - This value is "True" or "False" and tells you whether the allocation is currently active.
+    * - EXHAUSTED
+      - This value is "True" or "False" and tells you whether your allocation has been used entirely.
+
+
+Detailed Project Allocation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+A detailed view of your project allocation can be viewed with the following command:
+
+``kubectl describe alloc <NAME> -n proj-gpu``
+or
+``kubectl describe projectallocation <NAME> -n proj-gpu``
+
+
+Checking Workload Allocation Usage
+----------------------------------
+
+.. warning::
+
+    For all fields, in the case of values ending in ``m``, this is an amount in milli-GPU hours.
+
+
+The ``kubectl`` command line tool can be used to check a workload/``Job``'s allocation burn.
+
+See a list of workload usages, you can run
+
+``kubectl get budgetcharges -n <proj>-gpu``
+
+Below is an example:
+
+.. code-block:: bash
+
+    $ kubectl get budgetcharges -n stf007-gpu
+    NAME                                                                            ALLOCATION       SUBJECT   GPUS   OUTCOME                        GPU HOURS   FINISHED
+    budgetcharge-4b41302cadafa29b6f23e8799a5ee6c2e0291d690647820aa7c3d93233cf3e7e   <proj>-2026-q4   gpu-job   1      Succeeded                      35m         2026-10-15T20:39:56Z
+    budgetcharge-682c0b27b866976f9774d892434877cc03a3f23277fe34eb69c848cf9cdc5afe   <proj>-2026-q4   gpu-job   1      MaximumExecutionTimeExceeded   167m        2026-10-15T20:55:33Z
+
+Below is an explanation of the fields:
+
+.. list-table::
+    :widths: 30 70
+    :header-rows: 1
+
+    * - Field
+      - Definition
+    * - NAME
+      - Unique name of the ``budgetcharge``. This is much like a Job ID.
+    * - ALLOCATION
+      - Name of the allocation in which the ``budgetcharge`` ran.
+    * - SUBJECT
+      -
+        Name of the workload allocation.
+        This is the same as the ``metadata: name:`` field.
+    * - GPUS
+      - The number of GPUs requested.
+    * - OUTCOME
+      - Final workload status.
+    * - GPU HOURS
+      -
+        | Number of GPU hours burned by the workload.
+        | In the case of values ending in ``m``, this is milli-GPU hours.
+    * - FINISHED
+      - Timestamp of workload termination.
+
+
+Detailed Workload Allocation Usage
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+A detailed view of your workload's allocation burn can be viewed with the following command:
+
+``kubectl describe budgetcharge <NAME> -n <proj>-gpu``
+
+.. _lux-kube-run-policy:
+
+Run Policy
+----------
+
+.. list-table::
+    :header-rows: 1
+
+    * - Namespace
+      - Node Count [#node-count]_
+      - Duration
+      - Policy
+    * - ``<proj>-gpu``
+      - 1-484 Nodes
+      - Duration 0-48h
+      - FIFO - Global, backfill enabled
+
+.. warning::
+
+    |node_count_note|
 
 
 Storage
@@ -3135,13 +3784,14 @@ In your terminal, set up port forwarding with the following ssh command.
 
 .. code-block::
 
-   ssh -N -J subil@hub.ccs.ornl.gov subil@login1.lux.olcf.ornl.gov -D 127.0.0.1:10000
+   ssh -N -J your_username@home.ccs.ornl.gov your_username@login1.lux.olcf.ornl.gov -D 127.0.0.1:10000
 
 
 In your browser, install Foxyproxy, and add a proxy named 'Lux' with Type ``SOCKS5``, Hostname
 ``127.0.0.1`` and Port ``10000``.
 
 Now select 'Lux' as the active proxy in Foxyproxy and point your browser to ``<name of your app>.apps.lux.olcf.ornl.gov``.
+
 
 .. note::
 
@@ -3303,7 +3953,9 @@ Once the secret exists in the target namespace, you must explicitly tell your Po
            - name: docker-pull-secret
 
 
-Example Application
--------------------
 
+
+
+.. [#node-count] Node counts for HPC and Kubernetes on Lux depend on current machine split. Displayed value is the theoretical maximum.
+.. |node_count_note| replace:: Node counts for HPC and Kubernetes on Lux depend on current machine split. Displayed value is the theoretical maximum.
 

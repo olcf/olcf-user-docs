@@ -1,3 +1,5 @@
+:tocdepth: 3
+
 .. _vampir:
 
 .. image:: /images/vampir_logo.png

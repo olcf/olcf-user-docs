@@ -1,3 +1,5 @@
+:tocdepth: 3
+
 .. _slate_guided_tutorial_cli:
 
 ********************

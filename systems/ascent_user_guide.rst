@@ -1,4 +1,6 @@
 :no-search:
+:tocdepth: 3
+
 .. _ascent-user-guide:
 
 *****************

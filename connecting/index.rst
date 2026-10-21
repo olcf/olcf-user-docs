@@ -1,3 +1,5 @@
+:tocdepth: 3
+
 ##########
 Connecting
 ##########
@@ -216,6 +218,21 @@ OLCF System Hostnames
 |                      |                          | - ED25519 MD5: ``29:81:b5:5f:ff:18:5a:d8:41:3f:4b:d5:15:39:ea:62`` |
 |                      |                          | - ED25519 SHA256: ``ALuNAoAykEUIJzwsExhCaTqwrqhnd4fssvVB4xK87bs``  |
 +----------------------+--------------------------+--------------------------------------------------------------------+
+| Riker                |``riker.olcf.ornl.gov``   | - RSA MD5: ``ad:13:5a:b7:d4:7d:28:27:b3:85:1e:38:d1:90:53:00``     |
+|                      |                          | - RSA SHA256: ``887RP7vK543WwFaDJitxekBmFgun7LiarnL815fBARI``      |
+|                      |                          | - ECDSA MD5: ``48:88:07:54:ef:dd:38:c0:93:e9:b0:3d:eb:aa:46:d3``   |
+|                      |                          | - ECDSA SHA256: ``5ufrtGxGsDMpRpcVDOqCH2ifLQBYxQWZWBgfpQEKDoY``    |
+|                      |                          | - ED25519 MD5: ``01:e3:f9:26:7c:2d:c2:16:49:6f:9a:74:c6:d4:9b:ec`` |
+|                      |                          | - ED25519 SHA256: ``5iKBU/v30ieH19KJYMXBUk9z4gD0Ok0vc4d1sbTdCsw``  |
++----------------------+--------------------------+--------------------------------------------------------------------+
+| Lux                  |``lux.olcf.ornl.gov``     | - RSA MD5: ``fb:b8:2e:94:4a:81:f0:a4:45:a3:f9:e9:cb:67:9b:9d``     |
+|                      |                          | - RSA SHA256: ``RLesnODLja1/JACCO/af16pP2BWCWzKen/SqlzZKNo4``      |
+|                      |                          | - ECDSA MD5: ``86:5d:69:58:16:f1:83:57:b8:9f:2c:9f:4f:98:e6:19``   |
+|                      |                          | - ECDSA SHA256: ``z0taj2RdQonysiJd1XZgWZ3wXzJvR40XWhxy6QpYSzo``    |
+|                      |                          | - ED25519 MD5: ``fd:bf:83:d6:24:a7:ac:cd:53:cd:29:59:7b:14:f2:c0`` |
+|                      |                          | - ED25519 SHA256: ``3RRrdcRY4vKE152gyeNtA5SPR/cA14g1RVirSGdTdOs``  |
++----------------------+--------------------------+--------------------------------------------------------------------+
+
 
 Occassionally, you may receive an error message upon logging in to a system such
 as the following:

@@ -1,3 +1,5 @@
+:tocdepth: 3
+
 .. I used html for the section headings to avoid individual entries in the associated menu (TP)
 
 .. figure:: /images/gpu_hackathons.jpg
