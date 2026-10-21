@@ -18,6 +18,7 @@ OLCF Systems this guide applies to:
 
 * :doc:`Frontier </systems/frontier_user_guide>`
 * :doc:`Riker </systems/riker_user_guide>`
+* :doc:`Lux </systems/lux_user_guide>`
 
 .. list-table:: Latest Guide Tests
    :widths: 20 20 20 20 20
@@ -35,10 +36,15 @@ OLCF Systems this guide applies to:
      - 13.3.0
      - N/A
    * - Frontier
-     - 3.13.16
+     - 3.12.15
      - 13.5.1
      - N/A
      - 7.0.2, 7.2.0
+   * - Lux
+     - 3.12.15
+     - 13.5.1
+     - N/A
+     - 7.2.4
 
 .. note::
    Working installations are **not** limited to what is shown above.
@@ -90,6 +96,14 @@ First, load the correct modules:
          module load cuda/13.3.0
          module load miniforge3/25.3.1-0
 
+   .. tab-item:: Lux
+      :sync: lux
+
+      .. code-block:: bash
+
+         module load rocm/7.2.4
+         module load miniforge3/26.3.2-3
+
 Loading a python module puts you in a "base" environment, but you need to create a new environment using the ``conda create`` command:
 
 .. tab-set::
@@ -99,7 +113,7 @@ Loading a python module puts you in a "base" environment, but you need to create
 
       .. code-block:: bash
 
-         conda create -p /path/to/cupy-frontier python=3.13 numpy scipy -c conda-forge
+         conda create -p /path/to/cupy-frontier python=3.12 numpy scipy -c conda-forge
 
    .. tab-item:: Riker
       :sync: riker
@@ -107,6 +121,13 @@ Loading a python module puts you in a "base" environment, but you need to create
       .. code-block:: bash
 
          conda create -p /path/to/cupy-riker python=3.13 numpy scipy -c conda-forge
+
+   .. tab-item:: Lux
+      :sync: lux
+
+      .. code-block:: bash
+
+         conda create -p /path/to/cupy-lux python=3.12 numpy scipy -c conda-forge
 
 After following the prompts for creating your new environment, you can now activate it:
 
@@ -125,6 +146,13 @@ After following the prompts for creating your new environment, you can now activ
       .. code-block:: bash
 
          conda activate /path/to/cupy-riker
+
+   .. tab-item:: Lux
+      :sync: lux
+   
+      .. code-block:: bash
+
+         conda activate /path/to/cupy-lux
 
 Finally, install CuPy into your environment:
 
@@ -169,6 +197,17 @@ Finally, install CuPy into your environment:
 
                # specify socks version
                export all_proxy=socks5://proxy.ccs.ornl.gov:3128/
+
+   .. tab-item:: Lux
+      :sync: lux
+
+      .. code-block:: bash
+
+         export ROCM_HOME=${ROCM_PATH}
+         pip install amd-cupy --extra-index-url https://pypi.amd.com/rocm-7.2.0/simple
+
+      .. warning::
+         Setting ``ROCM_HOME`` is also necessary on Lux during runtime.
 
 Eventually you should see output similar to this (versions will vary):
 

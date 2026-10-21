@@ -5,7 +5,7 @@ Python on OLCF Systems
 ***********************
 
 .. note::
-    OLCF systems have conda modules in the form of: ``miniforge3``.
+    OLCF systems provide conda in the form of the ``miniforge3`` module.
     `Miniforge <https://github.com/conda-forge/miniforge>`__ behaves similarly to
     older Anaconda modules, but target the ``conda-forge`` channel by default.
 
@@ -54,11 +54,11 @@ Below is a list of guides created for using Python on OLCF systems.
    ../analytics/pytorch_frontier
    ../analytics/jax
 
-* :doc:`Conda Basics Guide </software/python/conda_basics>`: Goes over the basic workflow and commands of Conda **(Frontier/Riker)**
-* :doc:`Installing mpi4py and h5py Guide </software/python/parallel_h5py>`: Teaches you how to install parallel-enabled h5py and mpi4py **(Frontier/Riker)**
-* :doc:`Installing CuPy Guide </software/python/cupy>`: Teaches you how to install CuPy **(Frontier/Riker)**
+* :doc:`Conda Basics Guide </software/python/conda_basics>`: Goes over the basic workflow and commands of Conda **(Frontier/Riker/Lux)**
+* :doc:`Installing mpi4py and h5py Guide </software/python/parallel_h5py>`: Teaches you how to install parallel-enabled h5py and mpi4py **(Frontier/Riker/Lux)**
+* :doc:`Installing CuPy Guide </software/python/cupy>`: Teaches you how to install CuPy **(Frontier/Riker/Lux)**
 * :doc:`Sbcast Conda Environments Guide </software/python/sbcast_conda>`: Teaches you how to ``sbcast`` your conda environments to speedup initialization **(Frontier)**
-* :doc:`Jupyter Visibility Guide </software/python/jupyter_envs>`: Teaches you how to make your conda environments visible to Jupyter **(Frontier/Riker)**
+* :doc:`Jupyter Visibility Guide </software/python/jupyter_envs>`: Teaches you how to make your conda environments visible to Jupyter **(Frontier/Riker/Lux)**
 * :doc:`PyTorch on Frontier </software/analytics/pytorch_frontier>`: Shows how to access PyTorch on Frontier **(Frontier)**
 * :doc:`JAX </software/analytics/jax>`: Teaches you how to install JAX **(Frontier)**
 
@@ -92,6 +92,13 @@ To start using Python, all you need to do is load the module:
       .. code-block:: bash
 
          module load miniforge3/25.3.1-0
+
+   .. tab-item:: Lux
+      :sync: lux
+
+      .. code-block:: bash
+
+         module load miniforge3/26.3.2-3
 
 The ``miniforge3`` module functions with ``bash``, ``zsh``, ``tcsh``, and ``csh``.
 Users encountering problems with other shell environments should reach out to help@olcf.ornl.gov for assistance.
@@ -183,6 +190,23 @@ To create and activate an environment:
          #3. Activate "my_env"
          conda activate /path/to/my_env
 
+   .. tab-item:: Lux
+      :sync: lux
+
+      .. code-block:: bash
+
+         #1. Load the module
+         module load miniforge3/26.3.2-3
+
+         #2a. Create "my_env" with Python version X.Y at the desired path
+         conda create -p /path/to/my_env python=X.Y
+
+         #2b. Create "my_env" with Python version X.Y with a specific name (defaults to $HOME directory)
+         conda create --name my_env python=X.Y
+
+         #3. Activate "my_env"
+         conda activate /path/to/my_env
+
 .. note::
    For users interested in sharing their environment, it is highly recommended
    to create new environments in the "Project Home" directory
@@ -212,6 +236,14 @@ Deactivating an environment can be achieved through:
          # Deactivate the current environment
          conda deactivate
 
+   .. tab-item:: Lux
+      :sync: lux
+
+      .. code-block:: bash
+
+         # Deactivate the current environment
+         conda deactivate
+
 
 How to Run
 ==========
@@ -230,17 +262,14 @@ not affect how you invoke python in your scripts, although we encourage
 specifying ``python2`` or ``python3`` as a best practice, or specifying the
 full path to your Python installation.
 
-Frontier / Riker
-----------------
-
 Before jumping into batch scripts, remember to check out the :ref:`python-mods`
 section first, which details the differences between Python modules and 
 environments on our different systems.
 
-Batch Script - Frontier / Riker
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Batch Scripts
+-------------
 
-On Frontier and Riker, you are already on a compute node once you are in a
+On Frontier, Riker, and Lux, you are already on a compute node once you are in a
 batch job.  Therefore, you only need to use ``srun`` if you plan to run
 parallel-enabled Python, and you *do not* need to specify ``srun`` if you are
 running a serial application.
@@ -305,9 +334,33 @@ An example batch script for is provided below:
       .. note::
           Here, ``--exclusive`` is used as an example. For guidelines on submitting shared-node jobs on Riker, please see the :ref:`riker-user-guide`.
 
+   .. tab-item:: Lux
+      :sync: lux
 
-Interactive Job - Frontier / Riker
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      .. code-block:: bash
+
+         #!/bin/bash
+         #SBATCH -A <PROJECT_ID>
+         #SBATCH -J python
+         #SBATCH -N 1
+         #SBATCH -p batch
+         #SBATCH --exclusive
+         #SBATCH -t 0:05:00
+
+         cd $SLURM_SUBMIT_DIR
+         date
+
+         module load miniforge3/26.3.2-3
+         conda activate my_env
+
+         python3 script.py
+
+      .. note::
+          Here, ``--exclusive`` is used as an example. For guidelines on submitting shared-node jobs on Lux, please see the :ref:`lux-user-guide`.
+
+
+Interactive Jobs
+----------------
 
 To use Python in an interactive session on Frontier and Riker:
 
@@ -336,6 +389,18 @@ To use Python in an interactive session on Frontier and Riker:
       .. note::
           Here, ``--exclusive`` is used as an example. For guidelines on submitting shared-node jobs on Riker, please see the :ref:`riker-user-guide`.
 
+   .. tab-item:: Lux
+      :sync: lux
+
+      .. code-block:: bash
+
+         salloc -A <PROJECT_ID> -N 1 -t 0:05:00 -p batch --exclusive
+         module load miniforge3/26.3.2-3
+         conda activate my_env
+         python3 script.py
+
+      .. note::
+          Here, ``--exclusive`` is used as an example. For guidelines on submitting shared-node jobs on Lux, please see the :ref:`lux-user-guide`.
 
 When in an interactive job, if you want to use an interactive Python prompt and
 ``srun`` at the same time, use the ``--pty`` flag (useful when running with multiple tasks):

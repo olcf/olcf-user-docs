@@ -13,11 +13,12 @@ OLCF Systems this guide applies to:
 
 * :doc:`Frontier </systems/frontier_user_guide>`
 * :doc:`Riker </systems/riker_user_guide>`
+* :doc:`Lux </systems/lux_user_guide>`
 
 Inspecting and Setting Up an Environment
 ========================================
 
-First, load the python module and the gnu compiler module (most Python packages assume use of GCC)
+First, load the python module and the gnu compiler module (most Python packages assume use of GCC during installation)
 
 .. tab-set::
 
@@ -36,6 +37,14 @@ First, load the python module and the gnu compiler module (most Python packages 
 
          $ module load gcc/14.2
          $ module load miniforge3/25.3.1-0
+
+   .. tab-item:: Lux
+      :sync: lux
+
+      .. code-block:: bash
+
+         $ module load gcc/14.4.0
+         $ module load miniforge3/26.3.2-3
 
 
 This puts you in the "base" conda environment, which is the default Python environment after loading the module.
@@ -95,7 +104,7 @@ As an example, let's create an environment in the NFS "project home" space:
 
 .. code-block:: bash
 
-   $ conda create -p /ccs/proj/<project_id>/<username>/envs/frontier/py311-frontier python=3.11.0
+   $ conda create -p /ccs/proj/<project_id>/<username>/envs/frontier/py313-frontier python=3.13.0
 
 The ``-p`` flag specifies the desired path and name of your new virtual environment.
 The directory structure is case sensitive, so be sure to insert ``<project_id>`` as lowercase.
@@ -113,7 +122,7 @@ Downloads of the fresh packages will start and eventually you should see somethi
    #
    # To activate this environment, use
    #
-   #     $ conda activate /ccs/proj/<project_id>/<username>/envs/frontier/py311-frontier
+   #     $ conda activate /ccs/proj/<project_id>/<username>/envs/frontier/py313-frontier
    #
    # To deactivate an active environment, use
    #
@@ -123,7 +132,7 @@ Let's activate the new environment:
 
 .. code-block:: bash
 
-   $ conda activate /ccs/proj/<project_id>/<username>/envs/frontier/py311-frontier
+   $ conda activate /ccs/proj/<project_id>/<username>/envs/frontier/py313-frontier
 
 The path to the environment should now be displayed in "( )" at the beginning of your terminal lines, which indicate that you are currently using that specific conda environment.
 And if you check with ``conda env list`` again, you should see that the ``*`` marker has moved to your newly activated environment:
@@ -134,7 +143,7 @@ And if you check with ``conda env list`` again, you should see that the ``*`` ma
 
    # conda environments:
    #
-                         *  /ccs/proj/<project_id>/<username>/envs/frontier/py311-frontier
+                         *  /ccs/proj/<project_id>/<username>/envs/frontier/py313-frontier
    base                     /sw/frontier/...
 
 Installing Packages
@@ -208,9 +217,9 @@ Make sure you're in a Python shell first, then print out the versions of Python 
    >>> py_vers = platform.python_version()
    >>> np_vers = numpy.__version__
    >>> print("Hello from Python", py_vers)
-   Hello from Python 3.11.0
+   Hello from Python 3.13.0
    >>> print("You are using NumPy", np_vers)
-   You are using NumPy 1.26.4
+   You are using NumPy 2.5.4
 
 Additional Tips
 ===============

@@ -11,13 +11,14 @@ OLCF Systems this guide applies to:
 
 * :doc:`Frontier </systems/frontier_user_guide>`
 * :doc:`Riker </systems/riker_user_guide>`
+* :doc:`Lux </systems/lux_user_guide>`
 
 Making your Environment Visible to Jupyter
 ==========================================
 
 Although this guide starts from a new environment, existing environments can follow the same steps (ignoring environment creation) to accomplish the same goal.
 
-First, let's load the relevant Python module along with the gnu compiler module (most Python packages assume GCC):
+First, let's load the relevant Python module along with the gnu compiler module (most Python packages assume GCC during installation):
 
 .. tab-set::
 
@@ -36,6 +37,14 @@ First, let's load the relevant Python module along with the gnu compiler module 
 
          module load gcc/14.2
          module load miniforge3/25.3.1-0
+
+   .. tab-item:: Lux
+      :sync: lux
+
+      .. code-block:: bash
+
+         module load gcc/14.4.0
+         module load miniforge3/26.3.2-3
 
 Next, create your environment and activate it:
 
@@ -56,6 +65,14 @@ Next, create your environment and activate it:
 
          conda create -p /path/to/your/jupyter_env_riker python=3.13
          conda activate /path/to/your/jupyter_env_riker
+
+   .. tab-item:: Lux
+      :sync: lux
+
+      .. code-block:: bash
+
+         conda create -p /path/to/your/jupyter_env_lux python=3.13
+         conda activate /path/to/your/jupyter_env_lux
 
 .. note::
 
@@ -79,6 +96,13 @@ Next, install ``ipykernel`` which we will use to install a "Kernel" of your envi
 
          pip install ipykernel
 
+   .. tab-item:: Lux
+      :sync: lux
+
+      .. code-block:: bash
+
+         pip install ipykernel
+
 Finally, let's use ``ipykernel`` to expose your environment to Jupyter:
 
 .. tab-set:: 
@@ -96,6 +120,13 @@ Finally, let's use ``ipykernel`` to expose your environment to Jupyter:
       .. code-block:: bash
 
          ipython kernel install --user --name=jupyter_env_riker
+
+   .. tab-item:: Lux
+      :sync: lux
+
+      .. code-block:: bash
+
+         ipython kernel install --user --name=jupyter_env_lux
 
 .. note::
 
