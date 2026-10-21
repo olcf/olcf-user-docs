@@ -362,7 +362,7 @@ An example batch script for is provided below:
 Interactive Jobs
 ----------------
 
-To use Python in an interactive session on Frontier and Riker:
+To use Python in an interactive session:
 
 .. tab-set::
 
