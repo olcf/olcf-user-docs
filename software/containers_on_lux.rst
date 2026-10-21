@@ -210,13 +210,13 @@ Using Podman to build images and converting them to Apptainer
 
 
 AMD DockerHub AI/ML Workload Containers on Lux
----------------------------------------------------
+----------------------------------------------
 AMD has optimized several AI/ML frameworks to provide support on AMD hardware. Some of these frameworks are specifically equiped with ROCM backend to ensure support on AMD GPUs while others are merely equiped for standard AMD64 CPU architectures.
 
 To ensure optimal performance on Lux, we recommend users utilize the AMD optimized AI/ML workloads from the AMD DockerHub. We demonstrate here how to access and build those images on Lux as well as tips/tricks in running the images. We focus on PyTorch, Tensorflow and Jax.
 
 Building and Running the AMD DockerHub AI/ML Images on Lux
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 We highlight the process of building and running AMD DockerHub PyTorch, Tensorflow and Jax images on Lux. Since AMD releases several versions of these frameworks, we focus on the latest releases only for this documentation.
 
 .. tab-set::
@@ -245,7 +245,7 @@ We highlight the process of building and running AMD DockerHub PyTorch, Tensorfl
 
 The `olcf_containers_examples <https://github.com/olcf/olcf_containers_examples>`__ repository has
 examples demonstrating how to use these containers on Lux. You can see an example for AMD
-Pytorch container `here <https://github.com/olcf/olcf_containers_examples/tree/main/lux/pytorch/amdrocmregistry>`__
+Pytorch with ROCm 7.14.1 container `here <https://github.com/olcf/olcf_containers_examples/tree/main/lux/pytorch/amdrocmregistry>`__
 
 
 .. important::
