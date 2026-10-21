@@ -3149,98 +3149,117 @@ Now select 'Lux' as the active proxy in Foxyproxy and point your browser to ``<n
    check to make sure that you have ``.metadata.labels`` entry set up for your Service that the
    HTTPRoute is pointing to. HTTPRoute needs a label to be present for its service.
 
-.. _kubernetes-harbor:
-
-Using the Harbor Container Registry
-===================================
-
-Harbor is the container image registry provided by OLCF for storing and managing container images. It is accessible
-at `harbor.ccs.ornl.gov <https://harbor.ccs.ornl.gov>`__ .
-
-In Harbor, a repository is created the first time you push an image to it, but it must live inside a Project. Therefore, setting up your environment starts with creating a Project. Admins may have already created your project or attached your project to an existing allocation.
-
 .. todo:
 
-   change the wording to be more accurate to how the projects will actually be created -
-   automatically to match the project id, PI has to manually create it, its a free for all.
-   Whichever it is. 
-   
+    .. _kubernetes-harbor:
+    
+    Using the Harbor Container Registry
+    ===================================
+    
+    Harbor is the container image registry provided by OLCF for storing and managing container images. It is accessible
+    at `harbor.ccs.ornl.gov <https://harbor.ccs.ornl.gov>`__ .
+    
+    In Harbor, a repository is created the first time you push an image to it, but it must live inside a Project. Therefore, setting up your environment starts with creating a Project. Admins may have already created your project or attached your project to an existing allocation.
+    
+    .. todo:
+    
+       change the wording to be more accurate to how the projects will actually be created -
+       automatically to match the project id, PI has to manually create it, its a free for all.
+       Whichever it is. 
+       
+    
+    1. Create a Project (Repository Container)
+    ------------------------------------------
+    
+    Projects in Harbor act as containers for your repositories and grouping your images.
+    
+    1. Navigate to Harbor `web interface <https://harbor.ccs.ornl.gov/harbor/projects>`__ on your browser and log in with your OLCF credentials.
+    
+    
+    2. Create a Robot Account
+    -------------------------
+    
+    Robot accounts are used to authenticate automated systems (like CI/CD pipelines) so they can push and pull artifacts without tying the workflow to a specific human user's credentials.
+    
+    You will need to create a Project Robot Account for each project.
+    
+    1. Navigate to Robot Accounts:
+    
+       * Go to ``Projects``, select the project of the namespace of your allocation, and click the ``Robot Accounts`` tab.
+    
+    2. Add a New Robot Account:
+    
+       * Click the ``+ New Robot Account`` button.
+    
+    3. Configure Account Details:
+    
+       * Enter a name and an optional description. Set the expiration time for the token. Click Next.
+    
+    .. todo:
+    
+       note that there is no 'push artifact', 'pull artifact', or 'helm chart'. May need more accurate
+       terminology here.
+    
+    4. Grant Permissions:
+    
+       * In the Permissions page, Select the operations this robot needs to perform. For pushing and pulling images, will need to select at least the ``Push``, ``Pull``, and ``Read`` checkboxes on the ``Repository`` row in the Permissions table.
+    
+    5. Save the Secret:
+    
+       * Click ``Finish``. Crucial step: Harbor will generate a secret token. You must download the secret JSON file or copy it immediately to a secure vault—you cannot view this secret again later in the UI.
+    
+    **Note on Robot Usernames**
+    
+    When you create the account, Harbor automatically generates a username based on a prefix, the project name, and your chosen robot name (for example, ``robot$myproject+myrobot``). Always use this full generated string as the username.
+    
+    3. Authenticate and Use the Repository
+    --------------------------------------
+    
+    With your project created and your robot credentials secured, your automated pipelines can now interact with Harbor.
+    
+    On your terminal where you use Docker or Podman, you can log in to the Harbor registry via the CLI. Use the full generated robot username and the generated secret as the password. For example with Docker (same command works with Podman too, just 
+    replace ``docker`` with ``podman``. If you are mainly using Podman, you can set ``alias
+    podman=docker`` on the command line):
+    
+    .. code-block:: bash
+    
+       # Example
+       docker login -u='robot$test_project+pull-token' -p="<generated secret here>" http://harbor.ccs.ornl.gov/
+    
+    Once authenticated, your pipeline can push images. Remember, pushing an image to a new path inside the project automatically creates the repository:
+    
+    .. code-block:: bash
+    
+       # Example
+       # Tag your image
+       docker tag my-app:latest harbor.ccs.ornl.gov/REPOSITORY/image:tag
+    
+       # Push the image
+       docker push harbor.ccs.ornl.gov/REPOSITORY/image:tag
 
-1. Create a Project (Repository Container)
-------------------------------------------
 
-Projects in Harbor act as containers for your repositories and grouping your images.
-
-1. Navigate to Harbor `web interface <https://harbor.ccs.ornl.gov/harbor/projects>`__ on your browser and log in with your OLCF credentials.
-
-
-2. Create a Robot Account
--------------------------
-
-Robot accounts are used to authenticate automated systems (like CI/CD pipelines) so they can push and pull artifacts without tying the workflow to a specific human user's credentials.
-
-You will need to create a Project Robot Account for each project.
-
-1. Navigate to Robot Accounts:
-
-   * Go to ``Projects``, select the project of the namespace of your allocation, and click the ``Robot Accounts`` tab.
-
-2. Add a New Robot Account:
-
-   * Click the ``+ New Robot Account`` button.
-
-3. Configure Account Details:
-
-   * Enter a name and an optional description. Set the expiration time for the token. Click Next.
-
-.. todo:
-
-   note that there is no 'push artifact', 'pull artifact', or 'helm chart'. May need more accurate
-   terminology here.
-
-4. Grant Permissions:
-
-   * In the Permissions page, Select the operations this robot needs to perform. For pushing and pulling images, will need to select at least the ``Push``, ``Pull``, and ``Read`` checkboxes on the ``Repository`` row in the Permissions table.
-
-5. Save the Secret:
-
-   * Click ``Finish``. Crucial step: Harbor will generate a secret token. You must download the secret JSON file or copy it immediately to a secure vault—you cannot view this secret again later in the UI.
-
-**Note on Robot Usernames**
-
-When you create the account, Harbor automatically generates a username based on a prefix, the project name, and your chosen robot name (for example, ``robot$myproject+myrobot``). Always use this full generated string as the username.
-
-3. Authenticate and Use the Repository
---------------------------------------
-
-With your project created and your robot credentials secured, your automated pipelines can now interact with Harbor.
-
-On your terminal where you use Docker or Podman, you can log in to the Harbor registry via the CLI. Use the full generated robot username and the generated secret as the password. For example with Docker (same command works with Podman too, just 
-replace ``docker`` with ``podman``. If you are mainly using Podman, you can set ``alias
-podman=docker`` on the command line):
-
-.. code-block:: bash
-
-   # Example
-   docker login -u='robot$test_project+pull-token' -p="<generated secret here>" http://harbor.ccs.ornl.gov/
-
-Once authenticated, your pipeline can push images. Remember, pushing an image to a new path inside the project automatically creates the repository:
-
-.. code-block:: bash
-
-   # Example
-   # Tag your image
-   docker tag my-app:latest harbor.ccs.ornl.gov/REPOSITORY/image:tag
-
-   # Push the image
-   docker push harbor.ccs.ornl.gov/REPOSITORY/image:tag
-
+.. _pull-secret-kubernetes: 
 
 Pull Secret Creation for Kubernetes
 ===================================
 
-Here is how to configure setting up secrets to authenticate pulling images from Harbor from
+`Dockerhub <https://hub.docker.com>`__ can be used as a storage location for any container images you create that you want to use on Lux Kubernetes.
+Here is how to configure setting up secrets to authenticate pulling images from Dockerhub from
 Kubernetes.
+
+0. Creating a Personal Access Token on Dockerhub
+------------------------------------------------
+
+1. Login to `Dockerhub <https://hub.docker.com>`__.
+2. Click on your user icon on the top right, and navigate to Account Settings->Personal Access
+   Tokens.
+3. Click on the "Generate new token" button.
+4. In the 'Create access token" page that opens, enter the name, select the expiry for the token,
+   and select the appropriate permissions you want from the 'Repository permissions' dropdown. 
+
+   * You will probably want 'Repo read-only' if you want to pull images from your private
+     repositories.
+5. Click 'Generate' and save the token displayed somewhere.
 
 1. Create the Secret
 --------------------
@@ -3250,9 +3269,10 @@ Via the `Rancher Dashboard <https://console.apps.slate-mod.ccs.ornl.gov/dashboar
 1. Navigate to your ``Cluster > Projects/Namespaces`` and select your target Namespace.
 2. In the left menu, go to ``Storage > Secrets``.
 3. Click ``Create`` and select ``Registry``.
-4. Name the secret (for example, ``harbor-pull-secret``).
-5. Select ``Custom`` for the registry type and enter ``https://harbor.ccs.ornl.gov``.
-6. Enter the Robot Username and Secret token as the credentials, then click ``Create``.
+4. Name the secret (for example, ``docker-pull-secret``).
+5. Select ``DockerHub`` for the registry type and enter your username and the token you created
+   earlier as the password.
+6. Click ``Create``.
 
 2. Use the Secret in your Manifest
 ----------------------------------
@@ -3278,9 +3298,9 @@ Once the secret exists in the target namespace, you must explicitly tell your Po
        spec:
          containers:
            - name: my-app
-             image: https://harbor.ccs.ornl.gov/REPOSITORY/image:latest
+             image: <USERNAME>/<image:tag> 
          imagePullSecrets:
-           - name: harbor-pull-secret
+           - name: docker-pull-secret
 
 
 Example Application
