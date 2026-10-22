@@ -318,6 +318,13 @@ sub-command can be used as summarized in the following table.
 | ``module spider <string>``               | Searches for modulefiles containing ``<string>``                                     |
 +------------------------------------------+--------------------------------------------------------------------------------------+
 
+Python
+------
+
+Information about using Python on OLCF systems, including virtual environments
+and package installation guidance, is maintained on the dedicated Python
+documentation page in the :doc:`Software Section </software/python/index>`.
+
 
 Compiling
 =========
