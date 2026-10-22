@@ -438,7 +438,7 @@ Example "submit_h5py" batch script:
          module load hdf5/1.14.6-mpi
          module load miniforge3/25.3.1-0
 
-         conda activate h5pympi-riker
+         conda activate /path/to/h5pympi-riker
 
          srun -n42 python3 hdf5_parallel.py
 
