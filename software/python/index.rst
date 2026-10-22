@@ -5,10 +5,9 @@ Python on OLCF Systems
 ***********************
 
 .. note::
-    Frontier and Andes have new conda modules: ``miniforge3``.
+    OLCF systems provide conda in the form of the ``miniforge3`` module.
     `Miniforge <https://github.com/conda-forge/miniforge>`__ behaves similarly to
     older Anaconda modules, but target the ``conda-forge`` channel by default.
-    Old modules remain available.
 
 Overview
 ========
@@ -25,13 +24,13 @@ by isolating package installations into self-contained directory trees.
 
 Although Python has a native virtual environment feature (``venv``), one
 popular virtual environment manager is `Conda
-<https://conda.io/projects/conda/en/latest/index.html>`__, an open source
+<https://docs.conda.io/projects/conda/en/latest/index.html>`__, an open source
 package and virtual environment manager. Conda allows users to easily install
 different versions of binary software packages and any required libraries
 appropriate for their computing platform.  The versatility of conda allows a
 user to essentially build their own isolated Python environment, without having
 to worry about clashing dependencies and other system installations of Python.
-Conda is available on select OLCF systems (:doc:`Andes </systems/andes_user_guide>` and :doc:`Frontier </systems/frontier_user_guide>`).
+Conda is available on OLCF systems via `Miniforge <https://github.com/conda-forge/miniforge>`__.
 
 For users interested in using Python with Jupyter, see our :doc:`Jupyter at OLCF
 </services_and_applications/jupyter/overview>` page instead.
@@ -55,11 +54,11 @@ Below is a list of guides created for using Python on OLCF systems.
    ../analytics/pytorch_frontier
    ../analytics/jax
 
-* :doc:`Conda Basics Guide </software/python/conda_basics>`: Goes over the basic workflow and commands of Conda **(Andes/Frontier)**
-* :doc:`Installing mpi4py and h5py Guide </software/python/parallel_h5py>`: Teaches you how to install parallel-enabled h5py and mpi4py **(Andes/Frontier)**
-* :doc:`Installing CuPy Guide </software/python/cupy>`: Teaches you how to install CuPy **(Andes/Frontier)**
+* :doc:`Conda Basics Guide </software/python/conda_basics>`: Goes over the basic workflow and commands of Conda **(Frontier/Riker/Lux)**
+* :doc:`Installing mpi4py and h5py Guide </software/python/parallel_h5py>`: Teaches you how to install parallel-enabled h5py and mpi4py **(Frontier/Riker/Lux)**
+* :doc:`Installing CuPy Guide </software/python/cupy>`: Teaches you how to install CuPy **(Frontier/Riker/Lux)**
 * :doc:`Sbcast Conda Environments Guide </software/python/sbcast_conda>`: Teaches you how to ``sbcast`` your conda environments to speedup initialization **(Frontier)**
-* :doc:`Jupyter Visibility Guide </software/python/jupyter_envs>`: Teaches you how to make your conda environments visible to Jupyter **(Frontier/Andes)**
+* :doc:`Jupyter Visibility Guide </software/python/jupyter_envs>`: Teaches you how to make your conda environments visible to Jupyter **(Frontier/Riker/Lux)**
 * :doc:`PyTorch on Frontier </software/analytics/pytorch_frontier>`: Shows how to access PyTorch on Frontier **(Frontier)**
 * :doc:`JAX </software/analytics/jax>`: Teaches you how to install JAX **(Frontier)**
 
@@ -80,19 +79,26 @@ To start using Python, all you need to do is load the module:
 
 .. tab-set::
 
-   .. tab-item:: Andes
-      :sync: andes
-
-      .. code-block:: bash
-
-         module load miniforge3/24.11.3-2
-
    .. tab-item:: Frontier
       :sync: frontier
 
       .. code-block:: bash
 
          module load miniforge3/23.11.0-0
+
+   .. tab-item:: Riker
+      :sync: riker
+
+      .. code-block:: bash
+
+         module load miniforge3/25.3.1-0
+
+   .. tab-item:: Lux
+      :sync: lux
+
+      .. code-block:: bash
+
+         module load miniforge3/26.3.2-3
 
 The ``miniforge3`` module functions with ``bash``, ``zsh``, ``tcsh``, and ``csh``.
 Users encountering problems with other shell environments should reach out to help@olcf.ornl.gov for assistance.
@@ -116,65 +122,11 @@ Base Environment
 
 Loading the Python module on all systems will put you in a "base"
 pre-configured environment. This option is recommended for users who do not
-need custom environments and only require a Python installation. Loading
-the relevant ``miniforge3`` module on Frontier and Andes provides
-some basic analysis packages like NumPy, Scipy, and Matplotlib. However, the
-pre-installed package list is inherently minimal and users are encouraged to
-install additional packages for themselves.
+need custom environments and only require a Python installation. The
+pre-installed package list in the base environment is inherently minimal and
+users are encouraged to install packages for themselves in a different environment.
 
 To see a full list of the packages installed in the base environment, use ``conda list``.
-A small preview is provided below:
-
-.. tab-set::
-
-   .. tab-item:: Andes
-      :sync: andes
-
-      .. code-block:: bash
-
-         module load miniforge3/24.11.3-2
-         conda list
-
-         # packages in environment at /autofs/nccs-svm1_sw/andes/miniforge3/24.11.3-2:
-         #
-         # Name                    Version                   Build  Channel
-         _libgcc_mutex             0.1                 conda_forge    conda-forge
-         _openmp_mutex             4.5                       2_gnu    conda-forge
-         alsa-lib                  1.2.11               hd590300_1    conda-forge
-         archspec                  0.2.2              pyhd8ed1ab_0    conda-forge
-         attr                      2.5.1                h166bdaf_1    conda-forge
-         boltons                   23.1.1             pyhd8ed1ab_0    conda-forge
-         brotli                    1.1.0                hd590300_1    conda-forge
-         brotli-bin                1.1.0                hd590300_1    conda-forge
-         brotli-python             1.1.0           py310hc6cd4ac_1    conda-forge
-         .
-         .
-         .
-
-   .. tab-item:: Frontier
-      :sync: frontier
-
-      .. code-block:: bash
-
-         module load miniforge3/23.11.0-0
-         conda list
-
-         # packages in environment at /autofs/nccs-svm1_sw/frontier/miniforge3/23.11.0-0:
-         #
-         # Name                    Version                   Build  Channel
-         _libgcc_mutex             0.1                 conda_forge    conda-forge
-         _openmp_mutex             4.5                       2_gnu    conda-forge
-         alsa-lib                  1.2.11               hd590300_1    conda-forge
-         ansible                   10.1.0             pyh707e725_0    conda-forge
-         ansible-core              2.17.1             pyh707e725_0    conda-forge
-         archspec                  0.2.2              pyhd8ed1ab_0    conda-forge
-         attr                      2.5.1                h166bdaf_1    conda-forge
-         boltons                   23.1.1             pyhd8ed1ab_0    conda-forge
-         brotli                    1.1.0                hd590300_1    conda-forge
-         .
-         .
-         .
-
 
 .. warning::
    It is not recommended to try to install new packages into the base
@@ -182,7 +134,8 @@ A small preview is provided below:
    and install packages into the clone, or create a brand new (empty) environment
    and install packages into it.  An example for cloning the base environment is
    provided in :ref:`python-best-pract` below, while creating new environments
-   is covered directly below in :ref:`python-custom-envs`.
+   is covered directly below in :ref:`python-custom-envs`. Although cloning is
+   possible, in most scenarios it is recommended to start with a new environment.
 
 .. _python-custom-envs:
 
@@ -203,23 +156,6 @@ To create and activate an environment:
 
 .. tab-set::
 
-   .. tab-item:: Andes
-      :sync: andes
-
-      .. code-block:: bash
-
-         #1. Load the module
-         module load miniforge3/24.11.3-2
-
-         #2a. Create "my_env" with Python version X.Y at the desired path
-         conda create -p /path/to/my_env python=X.Y
-
-         #2b. Create "my_env" with Python version X.Y with a specific name (defaults to $HOME directory)
-         conda create --name my_env python=X.Y
-
-         #3. Activate "my_env"
-         conda activate /path/to/my_env
-
    .. tab-item:: Frontier
       :sync: frontier
 
@@ -237,6 +173,39 @@ To create and activate an environment:
          #3. Activate "my_env"
          conda activate /path/to/my_env
 
+   .. tab-item:: Riker
+      :sync: riker
+
+      .. code-block:: bash
+
+         #1. Load the module
+         module load miniforge3/25.3.1-0
+
+         #2a. Create "my_env" with Python version X.Y at the desired path
+         conda create -p /path/to/my_env python=X.Y
+
+         #2b. Create "my_env" with Python version X.Y with a specific name (defaults to $HOME directory)
+         conda create --name my_env python=X.Y
+
+         #3. Activate "my_env"
+         conda activate /path/to/my_env
+
+   .. tab-item:: Lux
+      :sync: lux
+
+      .. code-block:: bash
+
+         #1. Load the module
+         module load miniforge3/26.3.2-3
+
+         #2a. Create "my_env" with Python version X.Y at the desired path
+         conda create -p /path/to/my_env python=X.Y
+
+         #2b. Create "my_env" with Python version X.Y with a specific name (defaults to $HOME directory)
+         conda create --name my_env python=X.Y
+
+         #3. Activate "my_env"
+         conda activate /path/to/my_env
 
 .. note::
    For users interested in sharing their environment, it is highly recommended
@@ -251,16 +220,24 @@ Deactivating an environment can be achieved through:
 
 .. tab-set::
 
-   .. tab-item:: Andes
-      :sync: andes
+   .. tab-item:: Frontier
+      :sync: frontier
 
       .. code-block:: bash
 
          # Deactivate the current environment
          conda deactivate
 
-   .. tab-item:: Frontier
-      :sync: frontier
+   .. tab-item:: Riker
+      :sync: riker
+
+      .. code-block:: bash
+
+         # Deactivate the current environment
+         conda deactivate
+
+   .. tab-item:: Lux
+      :sync: lux
 
       .. code-block:: bash
 
@@ -285,17 +262,14 @@ not affect how you invoke python in your scripts, although we encourage
 specifying ``python2`` or ``python3`` as a best practice, or specifying the
 full path to your Python installation.
 
-Frontier / Andes
-----------------
-
 Before jumping into batch scripts, remember to check out the :ref:`python-mods`
 section first, which details the differences between Python modules and 
 environments on our different systems.
 
-Batch Script - Frontier / Andes
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Batch Scripts
+-------------
 
-On Frontier and Andes, you are already on a compute node once you are in a
+On Frontier, Riker, and Lux, you are already on a compute node once you are in a
 batch job.  Therefore, you only need to use ``srun`` if you plan to run
 parallel-enabled Python, and you *do not* need to specify ``srun`` if you are
 running a serial application.
@@ -310,12 +284,6 @@ running a serial application.
     returned to the base environment at the start of your job. In order to run with
     your prepared environment, be sure to ``conda activate`` it again in your job.
 
-.. note::
-    As of October 2025, the usage of ``--export=NONE`` and ``unset SLURM_EXPORT_ENV`` 
-    are no longer necessary when submitting or running a batch script when using the 
-    default ``miniforge3`` module on Frontier and Andes. Older (non-default)
-    ``miniforge3`` modules do not have this change and are not recommended.
-    
 
 An example batch script for is provided below:
 
@@ -342,8 +310,8 @@ An example batch script for is provided below:
          python3 script.py
 
 
-   .. tab-item:: Andes
-      :sync: andes
+   .. tab-item:: Riker
+      :sync: riker
 
       .. code-block:: bash
 
@@ -352,21 +320,49 @@ An example batch script for is provided below:
          #SBATCH -J python
          #SBATCH -N 1
          #SBATCH -p batch
+         #SBATCH --exclusive
          #SBATCH -t 0:05:00
 
          cd $SLURM_SUBMIT_DIR
          date
 
-         module load miniforge3/24.11.3-2
+         module load miniforge3/25.3.1-0
          conda activate my_env
 
          python3 script.py
 
+      .. note::
+          Here, ``--exclusive`` is used as an example. For guidelines on submitting shared-node jobs on Riker, please see the :ref:`riker-user-guide`.
 
-Interactive Job - Frontier / Andes
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   .. tab-item:: Lux
+      :sync: lux
 
-To use Python in an interactive session on Frontier and Andes:
+      .. code-block:: bash
+
+         #!/bin/bash
+         #SBATCH -A <PROJECT_ID>
+         #SBATCH -J python
+         #SBATCH -N 1
+         #SBATCH -p batch
+         #SBATCH --exclusive
+         #SBATCH -t 0:05:00
+
+         cd $SLURM_SUBMIT_DIR
+         date
+
+         module load miniforge3/26.3.2-3
+         conda activate my_env
+
+         python3 script.py
+
+      .. note::
+          Here, ``--exclusive`` is used as an example. For guidelines on submitting shared-node jobs on Lux, please see the :ref:`lux-user-guide`.
+
+
+Interactive Jobs
+----------------
+
+To use Python in an interactive session:
 
 .. tab-set::
 
@@ -380,16 +376,31 @@ To use Python in an interactive session on Frontier and Andes:
          conda activate my_env
          python3 script.py
 
-   .. tab-item:: Andes
-      :sync: andes
+   .. tab-item:: Riker
+      :sync: riker
 
       .. code-block:: bash
 
-         salloc -A <PROJECT_ID> -N 1 -t 0:05:00
-         module load miniforge3/24.11.3-2
+         salloc -A <PROJECT_ID> -N 1 -t 0:05:00 -p batch --exclusive
+         module load miniforge3/25.3.1-0
          conda activate my_env
          python3 script.py
 
+      .. note::
+          Here, ``--exclusive`` is used as an example. For guidelines on submitting shared-node jobs on Riker, please see the :ref:`riker-user-guide`.
+
+   .. tab-item:: Lux
+      :sync: lux
+
+      .. code-block:: bash
+
+         salloc -A <PROJECT_ID> -N 1 -t 0:05:00 -p batch --exclusive
+         module load miniforge3/26.3.2-3
+         conda activate my_env
+         python3 script.py
+
+      .. note::
+          Here, ``--exclusive`` is used as an example. For guidelines on submitting shared-node jobs on Lux, please see the :ref:`lux-user-guide`.
 
 When in an interactive job, if you want to use an interactive Python prompt and
 ``srun`` at the same time, use the ``--pty`` flag (useful when running with multiple tasks):
@@ -412,17 +423,6 @@ Best Practices
     between HPC systems.  If you have a code-block in your configuration file
     starting with ``>>> conda initialize >>>``, it is recommended to delete the entire block.
     Ignore any "deprecation" or "deprecated" messages about ``source activate``.
-
-* **Avoid loading conda modules twice**:
-
-    .. note::
-        As of October 2025, default ``miniforge3`` modules on Andes and Frontier avoid this issue.
-
-    Loading a given ``miniforge3`` or ``python`` module twice in a single
-    session is known to cause problems with detecting conda environments after activation.
-    This can lead to environments not being detected even after using ``source activate``
-    or ``conda activate``. Unloading, deactivating, or reloading the module will not solve
-    the issue, so you'll have to re-login or otherwise enter a fresh shell session to fix things.
 
 * **Specify or check your Python path**:
 
@@ -549,7 +549,7 @@ Additional Resources
 
 * `pip User Guide <https://pip.pypa.io/en/stable/user_guide/>`__
 * `venv Documentation <https://docs.python.org/3/tutorial/venv.html>`__
-* `Conda User Guide <https://conda.io/projects/conda/en/latest/user-guide/index.html>`__
-* `Anaconda Package List <https://docs.anaconda.com/anaconda/packages/pkg-docs/>`__
+* `Conda User Guide <https://docs.conda.io/projects/conda/en/latest/index.html>`__
+* `Conda-forge Package List <https://conda-forge.org/packages/>`__
 * `Using Pip In A Conda Environment <https://www.anaconda.com/blog/using-pip-in-a-conda-environment>`__
 
