@@ -167,7 +167,8 @@ Finally, install CuPy into your environment:
          pip install amd-cupy --extra-index-url https://pypi.amd.com/rocm-7.0.2/simple
 
       .. warning::
-         Setting ``ROCM_HOME`` is also necessary on Frontier during runtime.
+         Setting ``ROCM_HOME`` is also necessary on Frontier during runtime. Additionally, a Python version <=3.12 is
+         **required** for amd-cupy to work. Later Python versions do not have cupy wheels.
 
    .. tab-item:: Riker
       :sync: riker
@@ -207,7 +208,8 @@ Finally, install CuPy into your environment:
          pip install amd-cupy --extra-index-url https://pypi.amd.com/rocm-7.2.0/simple
 
       .. warning::
-         Setting ``ROCM_HOME`` is also necessary on Lux during runtime.
+         Setting ``ROCM_HOME`` is also necessary on Lux during runtime. Additionally, a Python version of 3.12 is **required**
+         for cupy to work. No other Python version currently has a rocm/7.2.0 wheel.
 
 Eventually you should see output similar to this (versions will vary):
 
