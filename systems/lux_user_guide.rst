@@ -2933,11 +2933,12 @@ Setting up SOCKS5 proxy on your terminal
 ----------------------------------------
 
 * Open your terminal (or Powershell if you're on Windows) and type ``ssh -N your_username@home.ccs.ornl.gov -D 127.0.0.1:10000`` and enter your
-PASSCODE when prompted.
+    PASSCODE when prompted.
 * This doesn't actually open a command prompt you can type in so it looks like it is hung. But it is maintaining an open connection so leave this terminal alone.
 
+
 Setting up your browser
-----------------------
+-----------------------
 
 * Install ``Foxyproxy <https://chromewebstore.google.com/detail/foxyproxy/gcknhkkoolaabfmlnjonogaaifnjlfnp?pli=1>``
   extension for your browser.
@@ -2949,8 +2950,10 @@ Setting up your browser
 * Click on the '+' symbol next to 'Proxy by Patterns' and enter a new pattern
   ``*://console.apps.slate-mod.ccs.ornl.gov/``. This is to ensure that the proxy is used
   automatically when accessing Rancher.
+
   * If there already exists a pattern like ``*://*.com`` you can delete that as you only want
     Rancher access to use the proxy, and not every website you navigate to on the browser.
+
 * Click Save
 
 Accessing the dashboard
@@ -3178,6 +3181,8 @@ The below example will create a Service listening on port 9376 pointing to our P
     metadata:
       namespace: <namespace>
       name: hello-service
+      labels:
+        app: hello-pod
     spec:
       selector:
         app: hello-pod
@@ -3201,6 +3206,8 @@ You can also create a service that refers to a Deployment
     metadata:
       namespace: <namespace>
       name: hello-service
+      labels:
+        deployment: recreate-example
     spec:
       selector:
         deployment: recreate-example
@@ -3218,6 +3225,11 @@ Jobs allow you to create and run a one off task or set of tasks that will run to
 starts and runs a Pod underneath, with some additional facilities to control the number of
 concurrent pods and number of successful completions expected. A Pod will be restarted on failure to try
 again (up to a limit you can specify). Successful completions don't count against the limit.
+
+.. note::
+
+    Jobs are important because this is the only way Lux GPUs can be used on Kubernetes. Support for GPUs
+    on other Workloads like Pods and Deployments is still in the works.
 
 As a simple example, lets create a Job that runs an `echo "hello world"` 7 times.
 
@@ -3553,6 +3565,7 @@ Run Policy
 
     |node_count_note|
 
+
 Storage
 =======
 
@@ -3750,6 +3763,8 @@ To setup an HTTPRoute for the ``hello-service`` Service we set up for the ``hell
    metadata:
      name: hellogateway
      namespace: <namespace>
+     labels:
+       app: hello-pod
    spec:
      hostnames:
        - <name of your app>.apps.lux.olcf.ornl.gov
@@ -3788,5 +3803,170 @@ In your browser, install Foxyproxy, and add a proxy named 'Lux' with Type ``SOCK
 Now select 'Lux' as the active proxy in Foxyproxy and point your browser to ``<name of your app>.apps.lux.olcf.ornl.gov``.
 
 
+.. note::
+
+   If you open the page on the browser and you see a page that says "No healthy upstream", then
+   check to make sure that you have ``.metadata.labels`` entry set up for your Service that the
+   HTTPRoute is pointing to. HTTPRoute needs a label to be present for its service.
+
+.. todo:
+
+    .. _kubernetes-harbor:
+    
+    Using the Harbor Container Registry
+    ===================================
+    
+    Harbor is the container image registry provided by OLCF for storing and managing container images. It is accessible
+    at `harbor.ccs.ornl.gov <https://harbor.ccs.ornl.gov>`__ .
+    
+    In Harbor, a repository is created the first time you push an image to it, but it must live inside a Project. Therefore, setting up your environment starts with creating a Project. Admins may have already created your project or attached your project to an existing allocation.
+    
+    .. todo:
+    
+       change the wording to be more accurate to how the projects will actually be created -
+       automatically to match the project id, PI has to manually create it, its a free for all.
+       Whichever it is. 
+       
+    
+    1. Create a Project (Repository Container)
+    ------------------------------------------
+    
+    Projects in Harbor act as containers for your repositories and grouping your images.
+    
+    1. Navigate to Harbor `web interface <https://harbor.ccs.ornl.gov/harbor/projects>`__ on your browser and log in with your OLCF credentials.
+    
+    
+    2. Create a Robot Account
+    -------------------------
+    
+    Robot accounts are used to authenticate automated systems (like CI/CD pipelines) so they can push and pull artifacts without tying the workflow to a specific human user's credentials.
+    
+    You will need to create a Project Robot Account for each project.
+    
+    1. Navigate to Robot Accounts:
+    
+       * Go to ``Projects``, select the project of the namespace of your allocation, and click the ``Robot Accounts`` tab.
+    
+    2. Add a New Robot Account:
+    
+       * Click the ``+ New Robot Account`` button.
+    
+    3. Configure Account Details:
+    
+       * Enter a name and an optional description. Set the expiration time for the token. Click Next.
+    
+    .. todo:
+    
+       note that there is no 'push artifact', 'pull artifact', or 'helm chart'. May need more accurate
+       terminology here.
+    
+    4. Grant Permissions:
+    
+       * In the Permissions page, Select the operations this robot needs to perform. For pushing and pulling images, will need to select at least the ``Push``, ``Pull``, and ``Read`` checkboxes on the ``Repository`` row in the Permissions table.
+    
+    5. Save the Secret:
+    
+       * Click ``Finish``. Crucial step: Harbor will generate a secret token. You must download the secret JSON file or copy it immediately to a secure vault—you cannot view this secret again later in the UI.
+    
+    **Note on Robot Usernames**
+    
+    When you create the account, Harbor automatically generates a username based on a prefix, the project name, and your chosen robot name (for example, ``robot$myproject+myrobot``). Always use this full generated string as the username.
+    
+    3. Authenticate and Use the Repository
+    --------------------------------------
+    
+    With your project created and your robot credentials secured, your automated pipelines can now interact with Harbor.
+    
+    On your terminal where you use Docker or Podman, you can log in to the Harbor registry via the CLI. Use the full generated robot username and the generated secret as the password. For example with Docker (same command works with Podman too, just 
+    replace ``docker`` with ``podman``. If you are mainly using Podman, you can set ``alias
+    podman=docker`` on the command line):
+    
+    .. code-block:: bash
+    
+       # Example
+       docker login -u='robot$test_project+pull-token' -p="<generated secret here>" http://harbor.ccs.ornl.gov/
+    
+    Once authenticated, your pipeline can push images. Remember, pushing an image to a new path inside the project automatically creates the repository:
+    
+    .. code-block:: bash
+    
+       # Example
+       # Tag your image
+       docker tag my-app:latest harbor.ccs.ornl.gov/REPOSITORY/image:tag
+    
+       # Push the image
+       docker push harbor.ccs.ornl.gov/REPOSITORY/image:tag
+
+
+.. _pull-secret-kubernetes: 
+
+Pull Secret Creation for Kubernetes
+===================================
+
+`Dockerhub <https://hub.docker.com>`__ can be used as a storage location for any container images you create that you want to use on Lux Kubernetes.
+Here is how to configure setting up secrets to authenticate pulling images from Dockerhub from
+Kubernetes.
+
+0. Creating a Personal Access Token on Dockerhub
+------------------------------------------------
+
+1. Login to `Dockerhub <https://hub.docker.com>`__.
+2. Click on your user icon on the top right, and navigate to Account Settings->Personal Access
+   Tokens.
+3. Click on the "Generate new token" button.
+4. In the 'Create access token" page that opens, enter the name, select the expiry for the token,
+   and select the appropriate permissions you want from the 'Repository permissions' dropdown.
+
+   * You will probably want 'Repo read-only' if you want to pull images from your private
+     repositories.
+5. Click 'Generate' and save the token displayed somewhere.
+
+1. Create the Secret
+--------------------
+
+Via the `Rancher Dashboard <https://console.apps.slate-mod.ccs.ornl.gov/dashboard/c/c-828bj/explorer#cluster-events>`__   (See :ref:`navigating-to-rancher-dashboard`):
+
+1. Navigate to your ``Cluster > Projects/Namespaces`` and select your target Namespace.
+2. In the left menu, go to ``Storage > Secrets``.
+3. Click ``Create`` and select ``Registry``.
+4. Verify that the appropriate namespace is selected in the top-left "Namespace" box.
+5. Name the secret (for example, ``docker-pull-secret``).
+6. Select ``DockerHub`` for the registry type under "Data" and enter your username and the token you created
+   earlier as the password.
+7. Click ``Create``.
+
+2. Use the Secret in your Manifest
+----------------------------------
+
+Once the secret exists in the target namespace, you must explicitly tell your Pods or Deployments or Jobs to use it by adding the ``imagePullSecrets`` array to your manifest specification.
+
+.. code-block:: yaml
+
+   apiVersion: apps/v1
+   kind: Deployment
+   metadata:
+     name: my-app-deployment
+     namespace: your-namespace
+   spec:
+     replicas: 1
+     selector:
+       matchLabels:
+         app: my-app
+     template:
+       metadata:
+         labels:
+           app: my-app
+       spec:
+         containers:
+           - name: my-app
+             image: <USERNAME>/<image:tag> 
+         imagePullSecrets:
+           - name: docker-pull-secret
+
+
+
+
+
 .. [#node-count] Node counts for HPC and Kubernetes on Lux depend on current machine split. Displayed value is the theoretical maximum.
 .. |node_count_note| replace:: Node counts for HPC and Kubernetes on Lux depend on current machine split. Displayed value is the theoretical maximum.
+
