@@ -2933,11 +2933,12 @@ Setting up SOCKS5 proxy on your terminal
 ----------------------------------------
 
 * Open your terminal (or Powershell if you're on Windows) and type ``ssh -N your_username@home.ccs.ornl.gov -D 127.0.0.1:10000`` and enter your
-PASSCODE when prompted.
+    PASSCODE when prompted.
 * This doesn't actually open a command prompt you can type in so it looks like it is hung. But it is maintaining an open connection so leave this terminal alone.
 
+
 Setting up your browser
-----------------------
+-----------------------
 
 * Install ``Foxyproxy <https://chromewebstore.google.com/detail/foxyproxy/gcknhkkoolaabfmlnjonogaaifnjlfnp?pli=1>``
   extension for your browser.
@@ -2949,8 +2950,10 @@ Setting up your browser
 * Click on the '+' symbol next to 'Proxy by Patterns' and enter a new pattern
   ``*://console.apps.slate-mod.ccs.ornl.gov/``. This is to ensure that the proxy is used
   automatically when accessing Rancher.
+
   * If there already exists a pattern like ``*://*.com`` you can delete that as you only want
     Rancher access to use the proxy, and not every website you navigate to on the browser.
+
 * Click Save
 
 Accessing the dashboard
