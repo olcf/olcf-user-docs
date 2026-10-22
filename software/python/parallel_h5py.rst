@@ -355,7 +355,7 @@ Example "submit_hello" batch script:
          # Can use the `--gpus` flag to avoid these
          srun -n42 python3 hello_mpi.py
 
-If mpi4py is working properly, in ``mpi4py.<JOB_ID>.out`` you should see output similar to:
+If mpi4py is working properly, in ``slurm-<JOB_ID>.out`` you should see output similar to:
 
 .. code-block::
 
