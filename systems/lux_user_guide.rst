@@ -3915,7 +3915,7 @@ Kubernetes.
    Tokens.
 3. Click on the "Generate new token" button.
 4. In the 'Create access token" page that opens, enter the name, select the expiry for the token,
-   and select the appropriate permissions you want from the 'Repository permissions' dropdown. 
+   and select the appropriate permissions you want from the 'Repository permissions' dropdown.
 
    * You will probably want 'Repo read-only' if you want to pull images from your private
      repositories.
@@ -3924,15 +3924,16 @@ Kubernetes.
 1. Create the Secret
 --------------------
 
-Via the `Rancher Dashboard <https://console.apps.slate-mod.ccs.ornl.gov/dashboard/c/c-828bj/explorer#cluster-events>`__  : 
+Via the `Rancher Dashboard <https://console.apps.slate-mod.ccs.ornl.gov/dashboard/c/c-828bj/explorer#cluster-events>`__   (See :ref:`navigating-to-rancher-dashboard`):
 
 1. Navigate to your ``Cluster > Projects/Namespaces`` and select your target Namespace.
 2. In the left menu, go to ``Storage > Secrets``.
 3. Click ``Create`` and select ``Registry``.
-4. Name the secret (for example, ``docker-pull-secret``).
-5. Select ``DockerHub`` for the registry type and enter your username and the token you created
+4. Verify that the appropriate namespace is selected in the top-left "Namespace" box.
+5. Name the secret (for example, ``docker-pull-secret``).
+6. Select ``DockerHub`` for the registry type under "Data" and enter your username and the token you created
    earlier as the password.
-6. Click ``Create``.
+7. Click ``Create``.
 
 2. Use the Secret in your Manifest
 ----------------------------------
