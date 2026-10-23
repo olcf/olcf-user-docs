@@ -17,20 +17,34 @@ In this guide, you will:
 OLCF Systems this guide applies to:
 
 * :doc:`Frontier </systems/frontier_user_guide>`
-* :doc:`Andes </systems/andes_user_guide>`
+* :doc:`Riker </systems/riker_user_guide>`
+* :doc:`Lux </systems/lux_user_guide>`
 
 .. list-table:: Latest Guide Tests
-   :widths: 25 25 25 25
+   :widths: 20 20 20 20 20
    :header-rows: 1
+   :stub-columns: 1
 
-   * - ``python``
+   * - 
+     - ``python``
      - ``cupy``
-     - ``CUDA (Andes)``
-     - ``ROCm (Frontier)``
-   * - 3.12.13
+     - ``CUDA``
+     - ``ROCm``
+   * - Riker
+     - 3.13.16
+     - 14.2.0
+     - 13.3.0
+     - N/A
+   * - Frontier
+     - 3.12.15
      - 13.5.1
-     - 11.2.2
+     - N/A
      - 7.0.2, 7.2.0
+   * - Lux
+     - 3.12.15
+     - 13.5.1
+     - N/A
+     - 7.2.4
 
 .. note::
    Working installations are **not** limited to what is shown above.
@@ -73,14 +87,22 @@ First, load the correct modules:
          # Because using a non-default CPE module (set this when building and running)
          export LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH
 
-   .. tab-item:: Andes
-      :sync: andes
+   .. tab-item:: Riker
+      :sync: riker
 
       .. code-block:: bash
 
-         module load gcc/9.3.0 # works with older GCC versions if using cuda/10.2.89
-         module load cuda/11.2.2
-         module load miniforge3/24.11.3-2
+         module load gcc/14.2
+         module load cuda/13.3.0
+         module load miniforge3/25.3.1-0
+
+   .. tab-item:: Lux
+      :sync: lux
+
+      .. code-block:: bash
+
+         module load rocm/7.2.4
+         module load miniforge3/26.3.2-3
 
 Loading a python module puts you in a "base" environment, but you need to create a new environment using the ``conda create`` command:
 
@@ -93,12 +115,19 @@ Loading a python module puts you in a "base" environment, but you need to create
 
          conda create -p /path/to/cupy-frontier python=3.12 numpy scipy -c conda-forge
 
-   .. tab-item:: Andes
-      :sync: andes
+   .. tab-item:: Riker
+      :sync: riker
 
       .. code-block:: bash
 
-         conda create -p /path/to/cupy-andes python=3.12 numpy scipy -c conda-forge
+         conda create -p /path/to/cupy-riker python=3.13 numpy scipy -c conda-forge
+
+   .. tab-item:: Lux
+      :sync: lux
+
+      .. code-block:: bash
+
+         conda create -p /path/to/cupy-lux python=3.12 numpy scipy -c conda-forge
 
 After following the prompts for creating your new environment, you can now activate it:
 
@@ -111,12 +140,19 @@ After following the prompts for creating your new environment, you can now activ
 
          conda activate /path/to/cupy-frontier
 
-   .. tab-item:: Andes
-      :sync: andes
+   .. tab-item:: Riker
+      :sync: riker
 
       .. code-block:: bash
 
-         conda activate /path/to/cupy-andes
+         conda activate /path/to/cupy-riker
+
+   .. tab-item:: Lux
+      :sync: lux
+   
+      .. code-block:: bash
+
+         conda activate /path/to/cupy-lux
 
 Finally, install CuPy into your environment:
 
@@ -131,34 +167,49 @@ Finally, install CuPy into your environment:
          pip install amd-cupy --extra-index-url https://pypi.amd.com/rocm-7.0.2/simple
 
       .. warning::
-         Setting ``ROCM_HOME`` is also necessary on Frontier during runtime.
+         Setting ``ROCM_HOME`` is also necessary on Frontier during runtime. Additionally, a Python version <=3.12 is
+         **required** for amd-cupy to work. Later Python versions do not have cupy wheels.
 
-   .. tab-item:: Andes
-      :sync: andes
+   .. tab-item:: Riker
+      :sync: riker
 
       .. code-block:: bash
 
-         salloc -A PROJECT_ID -N1 -p gpu -t 01:00:00
+         salloc -A PROJECT_ID -N1 -p gpu -t 01:00:00 --exclusive
          export all_proxy=socks://proxy.ccs.ornl.gov:3128/
          export ftp_proxy=ftp://proxy.ccs.ornl.gov:3128/
          export http_proxy=http://proxy.ccs.ornl.gov:3128/
          export https_proxy=http://proxy.ccs.ornl.gov:3128/
          export no_proxy='localhost,127.0.0.0/8,*.ccs.ornl.gov'
-         CC=gcc NVCC=nvcc pip install --no-cache-dir --no-binary=cupy cupy==13.5.1
+         CUPY_NVCC_GENERATE_CODE=current CC=gcc NVCC=nvcc pip install --no-cache-dir --no-binary=cupy cupy==14.2.0
 
       .. note::
-         To be able to build CuPy on Andes, you must be within a compute job
+         To be able to build CuPy on Riker, you must be within a compute job
          on the GPU partition (even if you have the cuda module loaded).
          This allows CuPy to see the GPU properly when linking and building.
+         The ``CUPY_NVCC_GENERATE_CODE=current`` variable will ensure that 
+         CuPy is only built against Riker's GPU architecture.
 
       .. note::
            The ``socks`` proxy specification depends on implementation.
-           Packages that depend on ``httpx`` will need to install the ``httpx[socks]`` package and the following change:
+           If you encounter an error with the proxy, packages that depend on ``httpx`` (e.g., ``openai``) will need to install the ``httpx[socks]`` package and the following change:
 
            .. code-block:: bash
 
                # specify socks version
                export all_proxy=socks5://proxy.ccs.ornl.gov:3128/
+
+   .. tab-item:: Lux
+      :sync: lux
+
+      .. code-block:: bash
+
+         export ROCM_HOME=${ROCM_PATH}
+         pip install amd-cupy --extra-index-url https://pypi.amd.com/rocm-7.2.0/simple
+
+      .. warning::
+         Setting ``ROCM_HOME`` is also necessary on Lux during runtime. Additionally, a Python version of 3.12 is **required**
+         for cupy to work. No other Python version currently has a rocm/7.2.0 wheel.
 
 Eventually you should see output similar to this (versions will vary):
 
