@@ -2795,6 +2795,25 @@ Example:
 
     ``--gres-flags=allow-task-sharing`` only works at the ``srun``/task level, not allocation level (``salloc``, ``sbatch``).
 
+
+Network Card Pinning
+^^^^^^^^^^^^^^^^^^^^
+
+Messages larger than ~1MiB benefit from pinning the Pollara 400GbE AI NICs.
+The nearest NIC to any given task shares the index of the nearest GPU, but with the naming scheme ``ionic_<idx>``.
+E.g. if your task was assigned ``GPU 1 (Bus 19)``, ``rsmi1`` - then your nearest NIC is labelled ``ionic_1``.
+
+The minimal settings can be achieved through setting the following environment variable as such:
+
+.. code-block:: bash
+
+    # ":1" refers to the UCX port
+    UCX_NET_DEVICES=rsmi1:1
+
+    # and if you have e.g. GPU 2 in your allocation as well
+    UCX_NET_DEVICES=rsmi1:1,rsmi2:1
+
+
 .. todo: sbcast
 
 .. todo: create PyTorch training example
