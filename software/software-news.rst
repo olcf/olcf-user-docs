@@ -40,7 +40,7 @@ Recommended User Actions
 
 Prior to November 10, 2026, there are two options to prevent interruption to your work:
 
-1. Pre-emptively upgrade to CPE/26.03 (preferred). To do so, load ``cpe/26.03`` AND set ``LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH`` in your environment (e.g., ``setenv``/``export`` for CSH/Bash). Then, recompile your software and begin running again. After the November 10th outage, you will no longer need the ``LD_LIBRARY_PATH`` modification.
+1. Pre-emptively upgrade to CPE/26.03 + CCE/21.0.4 (preferred). To do so, load ``cpe/26.03 cce/21.0.4`` AND set ``LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH`` in your environment (e.g., ``setenv``/``export`` for CSH/Bash). Then, recompile your software and begin running again. After the November 10th outage, you will no longer need the ``LD_LIBRARY_PATH`` modification or the explicit ``cce/21.0.4`` module load, as CCE/21.0.4 will be default for CPE/26.03.
 2. Load the ``cpe/24.11`` module AND set ``LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH`` in your environment (e.g., via ``setenv`` (CSH) or ``export`` (Bash)). This will override the default programming environment. This is not recommended, since ROCm/6.2.4 is already two major releases behind upstream ROCm and is no longer supported by the AMD GPU Driver. If you have issues that prevent you from updating, please contact help@olcf.ornl.gov.
 
 
