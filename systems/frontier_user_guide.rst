@@ -4283,6 +4283,24 @@ Understanding the network counters can be challenging. If you are encountering n
 System Updates 
 ============== 
 
+2026-11-10
+----------
+
+On Tuesday, November 10, 2026, Frontier's **default programming environment software** and system software will be upgraded.
+The following changes are scheduled to take place:
+
+- The default HPE/Cray Programming Environment (CPE) will be updated to 26.03, which is the **final** CPE release. This release supports ROCm/7.0.2, though some functionality may also work with newer ROCm versions >7.0.2. Please see `OLCF Software News <https://docs.olcf.ornl.gov/software/software-news.html>`_ for further information.
+- CCE/21.0.4 will be added, and will be made the default compiler for HPE/Cray Programming Environment (CPE) 26.03.
+- Slurm  will be upgraded to version 26.05.5.
+
+.. note::
+
+    **Recommended User Action**:
+
+    If you are using the default modules (`cce`, `amd`, or `rocm`), you must either (1) pre-emptively update to CPE/26.03 or (2) prepare to be loading a non-default PE after November 10. OLCF recommends users to migrate to CPE/26.03 with ROCm >= 7.0.2. See `OLCF Software News <https://docs.olcf.ornl.gov/software/software-news.html>`_ for further information on both approaches.
+
+Please contact the OLCF Help Desk (help@olcf.ornl.gov) with any problems or concerns.
+
 2026-09-15
 ----------
 On Tuesday, September 15, 2026, Frontier's system software was updated.
@@ -4293,7 +4311,6 @@ The following changes took place:
 - Add ROCm/7.14.1 and ROCm/10.0.0. These are the first two production releases of AMD's TheRock. C/C++ codes should be able to use these ROCm versions with `cray-mpich/9.1.0` in `CPE/26.03`, but Fortran codes will not be able to leverage these new ROCm versions with the existing Cray Programming Environments.
 
 Please contact the OLCF Help Desk (help@olcf.ornl.gov) with any problems or concerns.
-
 
 2026-08-25
 ----------
