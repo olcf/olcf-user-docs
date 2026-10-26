@@ -57,7 +57,7 @@ This example will walk through building up a container image with MPICH 5.0.1 an
 
 * Apptainer builds the container image in the SIF file format. Unlike Podman, Apptainer gives you a single file for your image that you can later run as your container.
 
-* Submit the ``submit.sbatch`` job script to launch the container with srun and run the
+* Submit the ``submit_mpich.sbatch`` job script to launch the container with srun and run the
   ``ping_pong_gpu_aware.exe`` that was built in the container to perform the ping-pong communication
   across two nodes. This batch script has a few sruns:
 
@@ -65,7 +65,7 @@ This example will walk through building up a container image with MPICH 5.0.1 an
   * The remaining will run the same MPI program across two MPI processes across two nodes.
 
 * Remember to replace the ``#SBATCH -Astf007`` with your project ID.
-* If you inspect the ``submit.sbatch`` file, you will see some modules being loaded as well as some environment variables being set. Read the comment above each for the explanations. These environment variables are required in order to run containerized MPI applications with Apptainer, with communication performance close to native and to provide GPU aware MPI.
+* If you inspect the ``submit_mpich.sbatch`` file, you will see some modules being loaded as well as some environment variables being set. Read the comment above each for the explanations. These environment variables are required in order to run containerized MPI applications with Apptainer, with communication performance close to native and to provide GPU aware MPI.
 
 
 Pushing your Apptainer image to an OCI Registry supporting ORAS (e.g. DockerHub)

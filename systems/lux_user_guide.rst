@@ -2816,6 +2816,9 @@ Containers
 Lux uses `Apptainer <https://apptainer.org/docs/user/latest/>`__ as its primary container builder and runtime.
 You can read more on how to use containers on Lux in the :ref:`containers-on-lux` section in the OLCF User Documentation.
 
+Quick Reference
+---------------
+
 Some basics of Apptainer are laid out below:
 
 1. Pull an image from Docker.io into ``.sif`` format using `apptainer pull <https://apptainer.org/docs/user/main/cli/apptainer_pull.html>`_:
