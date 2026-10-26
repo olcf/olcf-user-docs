@@ -2809,11 +2809,27 @@ Example:
     For details on how to use ``sbcast`` to move your conda environments to the NVMe, please see our :doc:`Sbcast Conda Environments Guide </software/python/sbcast_conda>`.
 
 
-.. todo containers
-    Containers
-    ==========
 
-    Frontier uses `Apptainer <https://apptainer.org/docs/user/latest/>`__ as its container builder and runtime. You can read more on how to use containers on Frontier in the :doc:`Containers on Frontier </software/containers_on_frontier>` section in the OLCF User Documentation.
+Containers
+==========
+
+Lux uses `Apptainer <https://apptainer.org/docs/user/latest/>`__ as its primary container builder and runtime.
+You can read more on how to use containers on Lux in the :ref:`containers-on-lux` section in the OLCF User Documentation.
+
+Quick Reference
+---------------
+
+Some basics of Apptainer are laid out below (see more information in :ref:`containers-on-lux`):
+
+1. Pull an image from Docker.io into ``.sif`` format using `apptainer pull <https://apptainer.org/docs/user/main/cli/apptainer_pull.html>`_:
+
+    ``apptainer pull docker://ubuntu``
+2. Build an image from a `.def <https://apptainer.org/docs/user/main/definition_files.html>`_ file with `apptainer build <https://apptainer.org/docs/user/main/cli/apptainer_build.html>`_:
+
+    ``apptainer build ./local.sif ./local.def``
+3. Run commands in a local Apptainer image with `apptainer exec <https://apptainer.org/docs/user/main/cli/apptainer_exec.html>`_
+
+    ``apptainer exec ./local.sif my_app``
 
 Debugging
 =========
