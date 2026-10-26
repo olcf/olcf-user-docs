@@ -4290,7 +4290,7 @@ On Tuesday, November 10, 2026, Frontier's **default programming environment soft
 The following changes are scheduled to take place:
 
 - The default HPE/Cray Programming Environment (CPE) will be updated to 26.03, which is the **final** CPE release. This release supports ROCm/7.0.2, though some functionality may also work with newer ROCm versions >7.0.2. Please see `OLCF Software News <https://docs.olcf.ornl.gov/software/software-news.html>`_ for further information.
-- CCE/21.0.4 will be added, and will be made the default compiler for HPE/Cray Programming Environment (CPE) 26.03.
+- CCE/21.0.4 is available as of October 26, and will be made the default compiler for HPE/Cray Programming Environment (CPE) 26.03.
 - Slurm  will be upgraded to version 26.05.5.
 
 .. note::
