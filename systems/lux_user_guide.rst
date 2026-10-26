@@ -2819,7 +2819,7 @@ You can read more on how to use containers on Lux in the :ref:`containers-on-lux
 Quick Reference
 ---------------
 
-Some basics of Apptainer are laid out below:
+Some basics of Apptainer are laid out below (see more information in :ref:`containers-on-lux`):
 
 1. Pull an image from Docker.io into ``.sif`` format using `apptainer pull <https://apptainer.org/docs/user/main/cli/apptainer_pull.html>`_:
 
