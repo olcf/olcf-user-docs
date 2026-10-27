@@ -2831,6 +2831,11 @@ Some basics of Apptainer are laid out below (see more information in :ref:`conta
 
     ``apptainer exec ./local.sif my_app``
 
+Image Registries
+----------------
+
+|image_registry_note|
+
 Debugging
 =========
 
@@ -3980,9 +3985,13 @@ Once the secret exists in the target namespace, you must explicitly tell your Po
            - name: docker-pull-secret
 
 
+Image Registries
+================
 
+|image_registry_note|
 
 
 .. [#node-count] Node counts for HPC and Kubernetes on Lux depend on current machine split. Displayed value is the theoretical maximum.
 .. |node_count_note| replace:: Node counts for HPC and Kubernetes on Lux depend on current machine split. Displayed value is the theoretical maximum.
 
+.. |image_registry_note| replace:: Users who need access to, or help in using, image registries for Moderate container image storage/retrieval should reach out to help@olcf.ornl.gov
