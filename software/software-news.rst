@@ -9,6 +9,45 @@ most recent changes are listed first.
 
 ----
 
+Frontier: Default PE Update (November 10, 2026)
+-----------------------------------------------
+
+The Frontier system will be upgraded to a new default version of the HPE/Cray Programming Environment (CPE) software stack.
+
+.. warning:: Unless you follow one of the recommended user actions below, **codes using default modules must be rebuilt** prior to running following the upgrade due to the software changes.
+
+New Default Modules
+~~~~~~~~~~~~~~~~~~~
+
+As a result of the upgrade, the following packages will be default:
+
+.. csv-table::
+    :header: "Package", "Previous Default", "New Default"
+
+    "ROCm", "6.2.4", "7.0.2"
+    "HPE/Cray Programming Environment (CPE)", "24.11", "26.03"
+    "Cray Compiler Environment (CCE)", "18.0.1", "21.0.4"
+    "GNU Compiler Collection (GCC)", "13.2.0", "14.2.0"
+    "AMD Compiler (AMD)", "6.2.4", "7.0.2"
+    "libfabric", "2.3.1", "No Change"
+
+.. note::
+
+    If you encounter any issues, please review the `Frontier Known Issues <https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#known-issues>`_ to see if your issue is known and has a workaround documented. For example, ROCm/7.0.2 has one `known defect <https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#olcfdev-1873-rocm-7-0-2-causing-memory-access-faults-hsa-errors>`_ that may impact LAMMPS and NAMD users.
+
+Recommended User Actions
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Prior to November 10, 2026, there are two options to prevent interruption to your work:
+
+1. Pre-emptively upgrade to CPE/26.03 + CCE/21.0.4 (preferred). To do so, load ``cpe/26.03 cce/21.0.4`` AND set ``LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH`` in your environment (e.g., ``setenv``/``export`` for CSH/Bash). Then, recompile your software and begin running again. Please note that OLCF-provided modules for CCE/21.0.4 are actively being added. If you encounter a missing environment module while trying to recompile (e.g., ``hdf5``, a math library), please submit a ticket to the OLCF Help Desk, and we will notify you when it is available. After the November 10th outage, you will no longer need the ``LD_LIBRARY_PATH`` modification or the explicit ``cce/21.0.4`` module load, as CCE/21.0.4 will be default for CPE/26.03.
+2. Load the ``cpe/24.11`` module AND set ``LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH`` in your environment (e.g., via ``setenv`` (CSH) or ``export`` (Bash)). This will override the default programming environment. This is not recommended, since ROCm/6.2.4 is already two major releases behind upstream ROCm and is no longer supported by the AMD GPU Driver. If you have issues that prevent you from updating, please contact help@olcf.ornl.gov.
+
+
+Please see the `Frontier System Updates post <https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#system-updates>`_ for further information about other changes during this upgrade.
+
+Please contact help@olcf.ornl.gov if you encounter any issues or have questions.
+
 Frontier: Default Core Update (September 15, 2026)
 ----------------------------------------------------
 
