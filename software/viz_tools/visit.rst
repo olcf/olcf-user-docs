@@ -27,7 +27,7 @@ OLCF resources. VisIt for your local computer can be obtained here:
 Recommended VisIt versions on our systems:
 
 * Andes: VisIt 3.3.3, 3.4.1, 3.4.2, 3.5.0
-* Riker: VisIt 3.4.2, 3.5.0
+* Riker: VisIt 3.5.0
 * Frontier: VisIt 3.3.3, 3.4.1
 
 .. warning::
