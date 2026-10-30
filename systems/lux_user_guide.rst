@@ -3674,6 +3674,11 @@ With this created, we can mount this PVC to a Pod. Below example creates a Pod w
 There is currently one available storage class: ``netapp-file`` for PVCs
 ``netapp-file`` is the default storage class backed by NFS and is probably what you need for most of your use cases.
 
+.. warning::
+
+    ``netapp-block`` appears as a storage class but is currently not ready for usage.
+    Permissions will be set incorrectly when using ``netapp-block``.
+
 Temporary Storage
 -----------------
 
