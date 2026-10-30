@@ -2928,12 +2928,12 @@ Kubernetes on Lux is administered through Rancher. You can access the `dashboard
 Internet Access
 ===============
 
-The Lux Kubernetes nodes don't have internet access by default
-You may either include your data as part of your container or replace or set the following environment variables in your container.
+The Lux Kubernetes nodes don't have internet access by default.
+You may either include your data as part of your container, or set the following environment variables in your container.
 
 .. warning::
 
-    Lux worker nodes (CPU-only) do not have internet access through the proxy or otherwise
+    Lux worker nodes (CPU-only) do not have internet access through the proxy or otherwise.
 
 The following are the environment variables needed for internet access:
 
