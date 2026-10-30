@@ -2920,23 +2920,47 @@ Lux Kubernetes User Guide
 
 Kubernetes on Lux is administered through Rancher. You can access the `dashboard here <https://console.apps.slate-mod.ccs.ornl.gov/dashboard/home>`__ .
 
-.. warning::
-
-   The Lux Kubernetes nodes don't have internet access. So either include your data as part of your
-   container or replace or set the following environment variables in your container
-
-   .. code-block::
-
-      export all_proxy=socks://proxy.ccs.ornl.gov:3128/
-      export ftp_proxy=ftp://proxy.ccs.ornl.gov:3128/
-      export http_proxy=http://proxy.ccs.ornl.gov:3128/
-      export https_proxy=http://proxy.ccs.ornl.gov:3128/
-      export no_proxy='localhost,127.0.0.0/8,*.ccs.ornl.gov'
-
 .. note::
 
    We will be referencing the `olcf_kubernetes_examples repository <https://github.com/olcf/olcf_kubernetes_examples>`__ throughout this page. Make
    sure you have that repository cloned on your laptop and workstation so you can reference it.
+
+Internet Access
+===============
+
+The Lux Kubernetes nodes don't have internet access by default
+You may either include your data as part of your container or replace or set the following environment variables in your container.
+
+.. warning::
+
+    Lux worker nodes (CPU-only) do not have internet access through the proxy or otherwise
+
+The following are the environment variables needed for internet access:
+
+.. code-block::
+
+    export all_proxy=socks://proxy.ccs.ornl.gov:3128/
+    export ftp_proxy=ftp://proxy.ccs.ornl.gov:3128/
+    export http_proxy=http://proxy.ccs.ornl.gov:3128/
+    export https_proxy=http://proxy.ccs.ornl.gov:3128/
+    export no_proxy='localhost,127.0.0.0/8,*.ccs.ornl.gov'
+
+The following is a configuration you can copy and paste into your definition file:
+
+.. code-block:: yaml
+
+    containers: # These apply to pod specs
+        env:
+        - name: all_proxy
+          value: "socks://proxy.ccs.ornl.gov:3128/"
+        - name: ftp_proxy
+          value: "ftp://proxy.ccs.ornl.gov:3128/"
+        - name: http_proxy
+          value: "http://proxy.ccs.ornl.gov:3128/"
+        - name: https_proxy
+          value: "http://proxy.ccs.ornl.gov:3128/"
+        - name: no_proxy
+          value: 'localhost,127.0.0.0/8,*.ccs.ornl.gov'
 
 
 .. _navigating-to-rancher-dashboard:
@@ -3642,10 +3666,13 @@ With this created, we can mount this PVC to a Pod. Below example creates a Pod w
 
 
 
-There are two available storage classes: ``netapp-file`` and ``netapp-block`` for PVCs.
-``netapp-file`` is the default and is probably what you need for most of your use cases.
-``netapp-block`` is useful when you need a persistent backing store for a database.
+.. todo:
+    There are two available storage classes: ``netapp-file`` and ``netapp-block`` for PVCs.
+    ``netapp-file`` is the default and is probably what you need for most of your use cases.
+    ``netapp-block`` is useful when you need a persistent backing store for a database.
 
+There is currently one available storage class: ``netapp-file`` for PVCs
+``netapp-file`` is the default storage class backed by NFS and is probably what you need for most of your use cases.
 
 Temporary Storage
 -----------------
