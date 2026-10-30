@@ -44,7 +44,7 @@ Prior to November 10, 2026, there are two options to prevent interruption to you
 2. Load the ``cpe/24.11`` module AND set ``LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH`` in your environment (e.g., via ``setenv`` (CSH) or ``export`` (Bash)). This will override the default programming environment. This is not recommended, since ROCm/6.2.4 is already two major releases behind upstream ROCm and is no longer supported by the AMD GPU Driver. If you have issues that prevent you from updating, please contact help@olcf.ornl.gov.
 
 
-Please see the `Frontier System Updates post <https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#system-updates>`_ for further information about other changes during this upgrade.
+Please see the `Frontier System Updates post <https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#system-updates>`__ for further information about other changes during this upgrade.
 
 Please contact help@olcf.ornl.gov if you encounter any issues or have questions.
 
