@@ -6,13 +6,10 @@
 Andes User Guide
 ****************
 
-.. warning:: 
-    **Andes will be decommissioned on November 02, 2026.**
-    
-    Andes users are encouraged to start migrating to Riker now. If you are having issues with migrating, please reach out to help@olcf.ornl.gov as soon as possible. Additional information about the new system, including key differences between Andes and Riker, is available in the :ref:`riker-user-guide`. 
+.. warning::
 
-
-
+  This system was decommissioned on November 2, 2026 and is no longer online.
+  Information here is presented as an archive and is no longer updated.
 
 System Overview
 ===============

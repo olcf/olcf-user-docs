@@ -94,7 +94,7 @@ File Systems
 ------------
 
 Frontier is connected to Orion, a parallel filesystem based on Lustre and HPE ClusterStor, with a 679 PB usable 
-namespace (``/lustre/orion/``). In addition to Frontier, Orion is available on the OLCF's data transfer nodes and on the Andes cluster. 
+namespace (``/lustre/orion/``). In addition to Frontier, Orion is available on the OLCF's data transfer nodes and on the Riker cluster. 
 Frontier also has access to the center-wide NFS-based filesystem (which provides user and project home areas). 
 Each compute node has two 1.92TB Non-Volatile Memory storage devices. See :ref:`frontier-data-storage` for more information. 
 
@@ -3320,7 +3320,7 @@ For details on how to use ``sbcast`` to move your conda environments to the NVMe
 Software
 ============
 
-Visualization and analysis tasks should be done on the Andes cluster. There are a few tools provided for various visualization tasks, as described in the :ref:`andes-viz-tools` section of the :ref:`andes-user-guide`.
+Visualization and analysis tasks should be done on the Riker cluster. There are a few tools provided for various visualization tasks, as described in the :ref:`riker-user-guide` and :doc:`Visualization Tools page </software/viz_tools/index>`.
 
 For a full list of software availability and latest news at the OLCF, please reference the :doc:`Software </software/software-news>` section in OLCF's User Documentation.
 

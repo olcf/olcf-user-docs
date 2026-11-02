@@ -10,7 +10,6 @@ Systems
    frontier_user_guide
    citadel_user_guide
    riker_user_guide
-   andes_user_guide
 
 .. toctree::
    :maxdepth: 3
@@ -34,3 +33,4 @@ Legacy Systems
    spock_quick_start_guide
    summit_user_guide
    ascent_user_guide
+   andes_user_guide

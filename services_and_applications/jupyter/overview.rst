@@ -194,10 +194,10 @@ Example: Creating a Conda Environment on Jupyter
 
    Conda environments created using the below method are only usable in
    JupyterLab. You can't create an environment within JupyterLab and use these
-   environments on other machines like Frontier or Andes to run jobs. You will
+   environments on other machines like Frontier or Riker to run jobs. You will
    need to recreate the environment separately on those machines. Alternatively,
    See our :doc:`Jupyter Visibility Guide </software/python/jupyter_envs>` for
-   details on how to make your Frontier/Andes environments visible to Jupyter --
+   details on how to make your Frontier/Riker environments visible to Jupyter --
    which we highly recommend doing instead.
 
 In this example, we will create a simple environment that installs NumPy.

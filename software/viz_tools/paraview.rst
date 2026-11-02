@@ -35,7 +35,7 @@ Installing and Setting Up ParaView
 Although in a single machine setup both the ParaView client and server run on
 the same host, this need not be the case. It is possible to run a local
 ParaView client to display and interact with your data while the ParaView
-server runs in an Andes, Riker, or Frontier batch job, allowing interactive analysis of very large data sets.
+server runs in an Riker or Frontier batch job, allowing interactive analysis of very large data sets.
 
 You will obtain the best performance by running the ParaView client on your
 local computer and running the server on OLCF resources with the same version
@@ -46,8 +46,6 @@ from `Kitware <https://www.paraview.org/download/>`__.
 
 Recommended ParaView versions on our systems:
 
-* **Andes**:
-    * OLCF Installation: ParaView 5.9.1, 5.10.0, 5.11.0, 5.12.1, 5.13.1, 5.13.3, 6.0.0
 * **Riker**:
     * OLCF Installation: ParaView 6.1.1
 * **Frontier**:
@@ -121,7 +119,6 @@ methods may be used, the one described should work in most cases.
 
 * :download:`riker_olcf.pvsc </_static/host_profiles/paraview/riker_olcf.pvsc>`
     * **Last updated November 2, 2026.** Note the ``exclusive`` and ``non-exclusive`` fields. Options are limited based on launching your job with node sharing enabled on Riker. For limitations and guidelines on GPU and core limits, please see the :ref:`riker-user-guide`.
-* :download:`andes.pvsc </_static/host_profiles/paraview/andes.pvsc>`
 * :download:`frontier_ums.pvsc </_static/host_profiles/paraview/frontier_ums.pvsc>`
 * :download:`frontier_olcf.pvsc </_static/host_profiles/paraview/frontier_olcf.pvsc>`
 
@@ -147,11 +144,11 @@ Click Load Servers button and find the desired ``pvsc`` file
 .. note::  
     The ``Fetch Servers`` button fetches
     `Official Kitware Server Configurations <https://www.paraview.org/files/pvsc>`__.
-    Andes, Riker, and Frontier configurations can be imported through this method, but are
+    Riker and Frontier configurations can be imported through this method, but are
     not guaranteed to be supported in future updates. Users may use these at their own risk.
 
 After successfully completing the above steps, you should now be able to
-connect to either Andes, Riker, or Frontier.
+connect to either Riker or Frontier.
 
 .. _paraview-gui:
 
@@ -160,7 +157,7 @@ Remote GUI Usage
 
 After setting up and installing ParaView, you can connect to OLCF systems
 remotely to visualize your data interactively through ParaView's GUI. To do so,
-go to File→Connect and select either ORNL Andes, ORNL Riker, or ORNL Frontier
+go to File→Connect and select either ORNL Riker or ORNL Frontier
 (provided they were successfully imported -- as outlined in :ref:`paraview-install-setup`).
 Next, click on Connect and change the values in the Connection Options box.
 
@@ -193,7 +190,7 @@ tool useful. The Trace tool creates a Python script that reflects most actions
 taken in ParaView, which then can be used by either PvPython or PvBatch
 (ParaView's Python interfaces) to accomplish the same actions. See section
 :ref:`paraview-command-line` for an example of how to run a Python script using
-PvBatch on Andes, Riker, and Frontier.
+PvBatch on Riker and Frontier.
 
 To start tracing from the GUI, click on Tools→Start Trace. An options window
 will pop up and prompt for specific Trace settings other than the default. Upon
@@ -219,27 +216,6 @@ commands from Python scripts and will run in parallel using MPI. Example
 batch scripts, along with a working Python example, are provided below.
 
 .. tab-set::
-
-  .. tab-item:: Andes
-     :sync: andes
-
-      .. code-block:: bash
-        :linenos:
-
-        #!/bin/bash
-        #SBATCH -A XXXYYY
-        #SBATCH -J para_test
-        #SBATCH -N 1
-        #SBATCH -p batch
-        #SBATCH -t 0:05:00
-
-        cd $SLURM_SUBMIT_DIR
-        date
-
-        module load paraview/5.12.1-osmesa
-
-        srun -n 28 pvbatch para_example.py
-
 
   .. tab-item:: Riker
      :sync: riker
@@ -289,7 +265,7 @@ batch scripts, along with a working Python example, are provided below.
 
 .. warning::
     If you plan on using the EGL version of the ParaView module (e.g.,
-    paraview/5.12.1-egl), then you must be connected to the GPUs. On Andes or Riker,
+    paraview/5.12.1-egl), then you must be connected to the GPUs. On Riker,
     this is done by using the gpu partition via ``#SBATCH -p gpu``.
 
 Submitting one of the above scripts will submit a job to the batch partition
@@ -297,7 +273,7 @@ for five minutes using 28 MPI tasks across 1 node. As rendering speeds and
 memory issues widely vary for different datasets and MPI tasks, users are
 encouraged to find the optimal amount of MPI tasks to use for their data. Users
 with large datasets may also find a slight increase in performance by using the
-gpu partition on Andes, the gpu partition on Riker, or by utilizing the GPUs on Frontier. Once the batch job
+gpu partition on Riker, or by utilizing the GPUs on Frontier. Once the batch job
 makes its way through the queue, the script will launch the loaded ParaView
 module (specified with ``module load``) and execute a python script called
 ``para_example.py`` using PvBatch. The example python script is detailed below,
@@ -397,7 +373,7 @@ If everything is working properly, the above image should be generated after
 the batch job is complete.
 
 All of the above can also be achieved in an interactive batch job through the
-use of the ``salloc`` command on Andes, Riker, and Frontier.
+use of the ``salloc`` command on Riker and Frontier.
 Recall that login nodes should *not* be used for memory- or compute-intensive tasks, including ParaView.
 
 Troubleshooting

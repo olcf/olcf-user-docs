@@ -117,7 +117,7 @@ File Systems
 ------------
 
 Lux is connected to Orion, a parallel filesystem based on Lustre and HPE ClusterStor, with a 679 PB usable
-namespace (``/lustre/orion/``). In addition to Lux, Orion is available on Frontier, the OLCF's data transfer nodes, and on the Andes cluster.
+namespace (``/lustre/orion/``). In addition to Lux, Orion is available on Frontier, the OLCF's data transfer nodes, and on the Riker cluster.
 Lux also has access to the center-wide NFS-based filesystem (which provides user and project home areas).
 
 Each compute node has eight 3.2TB Non-Volatile Memory storage devices. See :ref:`lux-data-storage` for more information.

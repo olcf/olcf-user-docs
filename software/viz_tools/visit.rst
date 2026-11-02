@@ -26,7 +26,6 @@ OLCF resources. VisIt for your local computer can be obtained here:
 
 Recommended VisIt versions on our systems:
 
-* Andes: VisIt 3.3.3, 3.4.1, 3.4.2, 3.5.0
 * Riker: VisIt 3.4.2, 3.5.0
 * Frontier: VisIt 3.3.3, 3.4.1
 
@@ -43,7 +42,7 @@ directory:
 * macOS: ``/path/to/VisIt.app/Contents/Resources/data``
 * Windows: ``C:\path\to\LLNL\VisIt x.y.z\data``
 
-Additionally, check out our beginner friendly `OLCF VisIt Tutorial <https://github.com/olcf/dva-training-series/tree/main/visit>`__ which uses Andes to visualize example datasets.
+Additionally, check out our beginner friendly `OLCF VisIt Tutorial <https://github.com/olcf/dva-training-series/tree/main/visit>`__ which used Andes to visualize example datasets.
 
 .. _visit-host-profiles:
 
@@ -65,58 +64,6 @@ The filename must be of the format ``host_*.xml``.
 * :download:`host_frontier_3_4_1.xml </_static/host_profiles/visit/host_frontier_3_4_1.xml>`
 
 .. tab-set::
-
-  .. tab-item:: Andes
-
-      **For Andes:**
-
-      - **Host nickname**: ``Andes`` (this is arbitrary)
-      - **Remote hostname**: ``andes.olcf.ornl.gov`` (required)
-      - **Host name aliases**: ``andes-login#g`` (required)
-      - **Maximum Nodes**: Unchecked
-      - **Maximum processors**: Unchecked (arbitrary)
-      - **Path to VisIt Installation**: ``/sw/andes/visit`` (required)
-      - **Username**: Your OLCF Username (required)
-      - **Tunnel data connections through SSH**: Checked (required)
-
-      Under the “Launch Profiles” tab create a launch profile.
-
-      - **Profile Name**: ``batch`` (arbitrary)
-      - **Timeout**: 480 (arbitrary)
-      - **Number of threads per task**: 0 (arbitrary, but not tested
-        with OMP/pthread support)
-      - **Additional arguments**: blank (arbitrary)
-
-      Under the “Parallel” Tab:
-
-      - **Launch parallel engine**: Checked (required)
-      - Launch Tab:
-
-          - **Parallel launch method**:
-            ``sbatch/srun`` (required)
-          - **Partition/Pool/Queue**: ``batch`` (required)
-          - **Number of processors**: 1 (arbitrary, but
-            high number may lead to OOM errors) (max for ``batch`` queue is 32)
-          - **Number of nodes**: 1 (arbitrary)
-          - **Bank/Account**: Your OLCF project to use (required)
-          - **Time Limit**: 1:00:00 (arbitrary, ``HH:MM:SS``)
-          - **Machine file**: Unchecked (required – Lets VisIt get
-            the nodelist from the scheduler)
-          - **Constraints**: Unchecked
-      - Advanced tab – All boxes unchecked
-      - GPU Acceleration
-
-          - **Use cluster’s graphics cards**: Unchecked (even if using the ``gpu`` partition)
-
-      Click “Apply” and make sure to save the settings (Options/Save Settings).
-      Exit and re-launch VisIt.
-
-      .. note::
-          Users with large datasets may see a slight performance boost by
-          using the high-memory ``gpu`` partition or by increasing
-          the number of processors if memory is not an issue. See the
-          :ref:`visit-modify-host` section below for how to add a ``gpu`` partition
-          launch profile on Andes.
 
   .. tab-item:: Riker
 
@@ -360,13 +307,20 @@ Once you have VisIt installed and set up on your local computer:
 -  Open VisIt on your local computer.
 -  Go to: "File→Open file" or click the "Open" button on the GUI.
 -  Click the "Host" dropdown menu on the "File open" window that popped
-   up and choose "ORNL\_Andes".
--  This will prompt you for your OLCF password, and connect you to Andes.
+   up and choose "Riker".
+-  This will prompt you for your OLCF password, and connect you to Riker.
 -  Navigate to the appropriate file.
 -  Once you choose a file, you will be prompted for the number of nodes
-   and processors you would like to use (remember that each node of Andes
-   contains 32 processors, or 28 if using the high-memory GPU partition) 
+   and processors you would like to use (remember that each node of Riker
+   contains 128 processors, or 64 if using the GPU partition) 
    and the Project ID, which VisIt calls a "Bank" as shown below.
+-  For shared-node (non-exclusive) jobs on Riker, make sure to double check
+   your ``-c`` (``batch`` partition jobs) and ``--gpus=... --cpus-per-gpu=...``
+   (``gpu`` partition jobs) launcher arguments in the Host Profile's
+   ``Launch Profile/Advanced`` tab, otherwise it'll submit your job with the defaults
+   outlined in the :ref:`visit-host-profiles` section above. Unlike the values
+   in the previous bullet point, VisIt does not prompt you to change these
+   settings at job submission time.
 
 .. image:: /images/Visit_Andes_1.png
    :align: center
@@ -374,9 +328,8 @@ Once you have VisIt installed and set up on your local computer:
 -  Once specified, the server side of VisIt will be launched, and you
    can interact with your data.
 
-The above procedure can also be followed to connect to Frontier, with
-the main difference being the number of available processors.
-Both Andes and Frontier follow HH:MM:SS syntax for the time limit.
+The above procedure can also be followed to connect to Frontier.
+Both Riker and Frontier follow ``HH:MM:SS`` syntax for the time limit.
 
 Please do not run VisIt's GUI client from an OLCF machine. You will get much 
 better performance if you install a client on your workstation and launch 
@@ -398,28 +351,9 @@ performance using VisIt's CLI in a batch job. An example for doing this on
 OLCF systems is provided below.
 
 
-**For Andes/Riker/Frontier (Slurm Script):**
+**For Riker/Frontier (Slurm Script):**
 
 .. tab-set::
-
-  .. tab-item:: Andes
-
-      .. code-block:: bash
-        :linenos:
-
-        #!/bin/bash
-        #SBATCH -A XXXYYY
-        #SBATCH -J visit_test
-        #SBATCH -N 1
-        #SBATCH -p gpu
-        #SBATCH -t 0:05:00
-
-        cd $SLURM_SUBMIT_DIR
-        date
-
-        module load visit
-
-        visit -nowin -cli -v 3.5.0 -l srun -np 28 -nn 1 -s visit_example.py
 
   .. tab-item:: Riker
 
@@ -470,9 +404,9 @@ OLCF systems is provided below.
         visit -nowin -cli -v 3.3.3 -l srun -np 28 -nn 1 -s visit_example.py
 
 Following one of the methods above will submit a batch job for five minutes to
-either Andes, Riker, or Frontier.  Once the batch job makes its way through
+either Riker or Frontier.  Once the batch job makes its way through
 the queue, the script will launch VisIt version X.Y.Z (specified with the
-**-v** flag, required on Andes) and execute a python script called
+**-v** flag, required on Riker) and execute a python script called
 ``visit_example.py`` (specified with the **-s** flag, required if using a
 Python script). Note that the **-nowin -cli** options are also required, which
 launches the CLI and tells VisIt to not launch the GUI. Although a Python
@@ -503,7 +437,7 @@ from the ``tire.silo`` dataset:
    import sys
 
    # Open the file to visualize
-   OpenDatabase("/sw/andes/visit/data/tire.silo")
+   OpenDatabase("/sw/riker/visit/data/tire.silo")
 
    # Set options for output
    swa = SaveWindowAttributes()
@@ -568,7 +502,7 @@ displayed on lines 13 and 14 -- however saving the window in this manner on
 OLCF systems has resulted in errors in the past.
 
 All of the above can also be achieved in an interactive batch job through the
-use of the ``salloc`` command on Andes or Frontier.
+use of the ``salloc`` command on Riker or Frontier.
 Recall that login nodes should *not* be used for memory- or compute-intensive
 tasks, including VisIt.
 
@@ -603,9 +537,9 @@ profiles that connect to riker.olcf.ornl.gov, but may have different settings /
 usernames for both). This bug can affect both Frontier and Riker.
 
 One solution is to change the host nickname of the duplicate host profile to
-start with "Copy of".  For example, if my original host profile was named "ORNL
-Riker", a proper duplicate should be named "Copy of ORNL Riker" (this is the
-same nickname that would be generated when clicking the "Copy Host" button in
+start with "Copy of".  For example, if my original host profile was named
+"Riker", a proper duplicate should be named "Copy of Riker" (this is the same
+nickname that would be generated when clicking the "Copy Host" button in
 VisIt). After renaming, make sure to save your settings via "Options/Save
 Settings" then close and restart VisIt.
 
