@@ -26,9 +26,6 @@
             <Entry value="true" label="True"/>
           </Enumeration>
         </Option>
-        <Option name="NUM_CORES_PER_MPI_TASK" label="Number of cores per MPI task (exclusive only)" save="true">
-          <Range type="int" min="1" max="128" step="1" default="1"/>
-        </Option>
         <Option name="NUM_GPUS" label="Total number of GPUs (non-exclusive only)" save="true">
           <Range type="int" min="0" max="16" step="1" default="0"/>
         </Option>
@@ -57,7 +54,6 @@
           <Argument value="PROJECT=$PROJECT$"/>
           <Argument value="NUM_MPI_TASKS=$NUM_MPI_TASKS$"/>
           <Argument value="EXCLUSIVE=$EXCLUSIVE$"/>
-          <Argument value="NUM_CORES_PER_MPI_TASK=$NUM_CORES_PER_MPI_TASK$"/>
           <Argument value="NUM_GPUS=$NUM_GPUS$"/>
           <Argument value="NUM_CORES_PER_GPU=$NUM_CORES_PER_GPU$"/>
         </Arguments>
