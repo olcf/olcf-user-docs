@@ -49,17 +49,6 @@ See these links for more information:
 
 .. tab-set::
 
-    .. tab-item:: Andes
-       :sync: andes
-
-        .. code-block:: bash
-
-            module load gcc/9.3.0
-            module load miniforge3/24.11.3-2
-            conda create -n ENV_NAME python=3.11 -c conda-forge
-            conda activate ENV_NAME
-            conda install qiskit=1.2.0 qiskit-ibm-runtime=0.28.0 qiskit-aer=0.14.2 psutil -c conda-forge
-
     .. tab-item:: Frontier
        :sync: frontier
 
@@ -87,17 +76,6 @@ See these links for more information:
 
 .. tab-set::
 
-    .. tab-item:: Andes
-       :sync: andes
-
-        .. code-block:: bash
-
-            module load gcc/9.3.0
-            module load miniforge3/24.11.3-2
-            conda create -n ENV_NAME python=3.11 numpy=1.26.4 scipy -c conda-forge
-            conda activate ENV_NAME
-            pip install qiskit==1.2.0 qiskit-ionq==0.5.4 --no-cache-dir
-
     .. tab-item:: Frontier
        :sync: frontier
 
@@ -120,17 +98,6 @@ See these links for more information:
 * `<https://docs.iqm.tech/iqm-client/user_guide_qiskit.html>`__
 
 .. tab-set::
-
-    .. tab-item:: Andes
-       :sync: andes
-
-        .. code-block:: bash
-
-            module load gcc/9.3.0
-            module load miniforge3/24.11.3-2
-            conda create -n ENV_NAME python=3.11 -c conda-forge
-            conda activate ENV_NAME
-            pip install qiskit-iqm==15.5 --no-cache-dir
 
     .. tab-item:: Frontier
        :sync: frontier
@@ -161,16 +128,6 @@ General information of how to install and use PennyLane can be found here:
 * `<https://docs.pennylane.ai/en/stable/index.html>`__
 
 .. tab-set::
-
-    .. tab-item:: Andes
-       :sync: andes
-
-        .. code-block:: bash
-
-            module load gcc/9.3.0
-            module load miniforge3/24.11.3-2
-            conda create -n ENV_NAME python=3.11 pennylane -c conda-forge
-            conda activate ENV_NAME
 
     .. tab-item:: Frontier
        :sync: frontier
@@ -275,17 +232,6 @@ Starting with Helios, Guppy will be the sole programming paradigm for compiling 
 
 .. tab-set::
 
-    .. tab-item:: Andes
-       :sync: andes
-
-        .. code-block:: bash
-
-            module load gcc/9.3.0
-            module load miniforge3/24.11.3-2
-            conda create -n ENV_NAME python=3.11 numpy=1.26.4 -c conda-forge
-            conda activate ENV_NAME
-            pip install qnexus==0.39.0 guppylang==0.21.6 --no-cache-dir
-
     .. tab-item:: Frontier
        :sync: frontier
 
@@ -333,39 +279,9 @@ To submit a batch script:
     $ sbatch submit.sl
 
 
-Below are example batch scripts for running on Andes and Frontier:
+Below are example batch scripts for running on Frontier:
 
 .. tab-set::
-
-    .. tab-item:: Andes
-       :sync: andes
-
-        .. code-block:: bash
-
-            #!/bin/bash
-            #SBATCH -A ABC123
-            #SBATCH -J job_name
-            #SBATCH -N 1
-            #SBATCH -t 0:05:00
-            #SBATCH -p batch
-
-            cd $SLURM_SUBMIT_DIR
-            date
-
-            # Set proxy settings so compute nodes can reach internet (required when not using a simulator)
-            export all_proxy=socks://proxy.ccs.ornl.gov:3128/
-            export ftp_proxy=ftp://proxy.ccs.ornl.gov:3128/
-            export http_proxy=http://proxy.ccs.ornl.gov:3128/
-            export https_proxy=http://proxy.ccs.ornl.gov:3128/
-            export no_proxy='localhost,127.0.0.0/8,*.ccs.ornl.gov'
-
-            # Load python module and virtual environment
-            module load miniforge3/24.11.3-2
-            conda activate ENV_NAME
-
-            # For software like Qiskit,PennyLane,Pytket
-            #python3 script.py
-
 
     .. tab-item:: Frontier
        :sync: frontier
