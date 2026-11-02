@@ -120,7 +120,7 @@ methods may be used, the one described should work in most cases.
 **Step 1: Save the following PVSC files to your local computer**
 
 * :download:`riker_olcf.pvsc </_static/host_profiles/paraview/riker_olcf.pvsc>`
-    * Note the ``exclusive`` and ``non-exclusive`` fields. Options are limited based on launching your job with node sharing enabled on Riker. For limitations and guidelines on GPU and core limits, please see the :ref:`riker-user-guide`.
+    * **Last updated November 2, 2026.** Note the ``exclusive`` and ``non-exclusive`` fields. Options are limited based on launching your job with node sharing enabled on Riker. For limitations and guidelines on GPU and core limits, please see the :ref:`riker-user-guide`.
 * :download:`andes.pvsc </_static/host_profiles/paraview/andes.pvsc>`
 * :download:`frontier_ums.pvsc </_static/host_profiles/paraview/frontier_ums.pvsc>`
 * :download:`frontier_olcf.pvsc </_static/host_profiles/paraview/frontier_olcf.pvsc>`
@@ -409,7 +409,8 @@ Riker: Unable to use more than 1 core per MPI task
 If you are running ParaView in a non-exclusive (shared) job in remote
 client/server mode, 1 core per MPI task is enforced. This is by design. If you
 need more than 1 core per MPI task, then you'll need to switch ``Exclusive Node
-Allocation`` to ``True`` when connecting to Riker. 
+Allocation`` to ``True`` when connecting to Riker, where multiple cores scale
+with how many tasks you are using.
 
 Riker: Hangs on GPU partition with specific filters
 ---------------------------------------------------
