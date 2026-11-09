@@ -3179,6 +3179,7 @@ By default the user running inside the container in your Pod is your project's a
 running container. so if you open a shell with ``kubectl exec`` and execute the ``id`` command, you
 will see just the uid and gids associated. 
 
+
 You can change the uid running within the container by setting the ``.securityContext.runAsUser`` key in your container spec. 
 See below for a modified version of the Pod example.
 
@@ -4105,6 +4106,14 @@ Image Registries
 ================
 
 |image_registry_note|
+
+Known Issues
+============
+
+- Pytorch 2.12 and below `have a bug where if the user running Pytorch does not have a user name
+  (only a user id), it will error out <https://github.com/pytorch/pytorch/issues/140765>`_ . This is the case on Kubernetes if you are running as your
+  default user (which is the ``<project id>_auser``) which does not have a user name in the running
+  container. This is fixed in Pytorch 2.13 and after.
 
 
 .. [#node-count] Node counts for HPC and Kubernetes on Lux depend on current machine split. Displayed value is the theoretical maximum.
