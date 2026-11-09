@@ -3171,6 +3171,43 @@ You can open a shell into the container in the running pod with:
 
    kubectl exec -it hello-pod -- /bin/sh
 
+Details about the user running in your container in your Pod
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+By default the user running inside the container in your Pod is your project's automation user
+``<project id>_auser`` e.g. ``stf007_auser``. It is also just the uid, there is no name for the user within the
+running container. so if you open a shell with ``kubectl exec`` and execute the ``id`` command, you
+will see just the uid and gids associated. 
+
+
+You can change the uid running within the container by setting the ``.securityContext.runAsUser`` key in your container spec. 
+See below for a modified version of the Pod example.
+
+
+.. code-block:: yaml
+
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      namespace: <namespace>
+      name: hello-pod
+      labels:
+        app: hello-pod
+    spec:
+      containers:
+        - image: rancher/hello-world
+          name: hello-pod
+          securityContext: # set securityContext in your container spec
+            runAsUser: 999 # this can be a value between 800-9000.
+          ports:
+            - containerPort: 80
+      restartPolicy: Never
+
+The uid in ``runAsUser`` can be a value between 800-9000. This is useful if an application (like
+Postgres for example) by default expects to run as a specific uid in the container. You **CANNOT**
+run as root within the container.
+
+
 Deployment
 ----------
 
@@ -3630,6 +3667,7 @@ The below example creates a PVC that requests 5GB of storage.
    metadata:
      name: storage-1
    spec:
+     storageClassName: netapp-file
      accessModes:
        - ReadWriteOnce
      resources:
@@ -3666,18 +3704,65 @@ With this created, we can mount this PVC to a Pod. Below example creates a Pod w
 
 
 
-.. todo:
-    There are two available storage classes: ``netapp-file`` and ``netapp-block`` for PVCs.
-    ``netapp-file`` is the default and is probably what you need for most of your use cases.
-    ``netapp-block`` is useful when you need a persistent backing store for a database.
+There are two available storage classes you can set for PVCs ``storageClassName``: ``netapp-file`` and ``netapp-block``. 
 
-There is currently one available storage class: ``netapp-file`` for PVCs
-``netapp-file`` is the default storage class backed by NFS and is probably what you need for most of your use cases.
+* ``netapp-file`` (default when ``storageClassName`` is unset) - probably what you need for most of your use cases.
+* ``netapp-block`` - useful when you need a persistent backing store for a database.
 
-.. warning::
+If you want to use ``netapp-block`` in your PVC, you need to set a value between 800-9000 as your
+group id for your ``.securityContext.fsGroup`` key in your pod spec in your Pod or Deployment
+manifest. This will give group ownership and write permissions for the directories of any mounted
+volumes to that group id. This will also ensure that the user running in the container also has that
+group added to it. For example, here's the above PVC and Pod modified to use ``netapp-block``. If
+you don't set ``fsGroup``, the volume will only have write permissions for root (and remember that
+in your container you are running as your ``<project id>_auser`` by default or whatever uid you set in
+your pod spec's ``.containers[].securityContext.runAsUser``. You can never run as root). 
 
-    ``netapp-block`` appears as a storage class but is currently not ready for usage.
-    Permissions will be set incorrectly when using ``netapp-block``.
+.. dropdown:: netappblockpod.yaml
+
+  .. code-block:: yaml
+  
+     apiVersion: v1
+     kind: PersistentVolumeClaim
+     metadata:
+       name: storage-1
+       namespace: <namespace>
+     spec:
+       storageClassName: netapp-block # using netapp-block instead of netapp-file
+       accessModes:
+         - ReadWriteOnce
+       resources:
+         requests:
+           storage: 5Gi
+      ---
+      apiVersion: v1
+      kind: Pod
+      metadata:
+        namespace: <namespace>
+        name: hello-pod
+        labels:
+          app: hello-pod
+      spec:
+        securityContext:
+          fsGroup: 999 # This will ensure that any volumes mounted in your container will have group ownership and write permissions for gid 999. Can be any value between 800-9000.
+        containers:
+          - image: rancher/hello-world
+            name: hello-pod
+            securityContext:
+              runAsUser: 1001 # If you want to change the uid of the user running in the container. Can be any value between 800-9000. Not necessary to set if you don't want to. This user will have an additional gid 999 because `fsGroup` was set
+            ports:
+              - containerPort: 80
+            volumeMount:
+              mountPath: /data
+              name: pvol
+        restartPolicy: Never
+        volumes:
+          name: pvol
+          PersistentVolumeClaim:
+            claimName: storage-1
+
+
+
 
 Temporary Storage
 -----------------
@@ -3687,7 +3772,7 @@ If you would like to have some additional storage that doesn't need to be persis
 restarts (like a scratch space or a file cache), there are a couple of options.
 
 One is ``emptyDir`` which lets you set up a cache on the node's local storage with a size limit so
-you cannot write to it beyond what is allocated. For example, with our hell
+you cannot write to it beyond what is allocated. For example: 
 
 
 .. code-block:: yaml
@@ -3768,7 +3853,7 @@ with ``kubectl get pvc``.
    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
    The Orion filesystem can be mounted into your Pod by adding the annotation ``ccs.ornl.gov/fs: orion`` to your Pod. For example, in our ``hello-pod`` yaml file
-   we can modify the ``metadata`` section like so:
+   we can modify the ``metadata`` section like so to add an annotation:
 
    .. code-block:: yaml
 
@@ -4021,6 +4106,14 @@ Image Registries
 ================
 
 |image_registry_note|
+
+Known Issues
+============
+
+- Pytorch 2.12 and below `have a bug where if the user running Pytorch does not have a user name
+  (only a user id), it will error out <https://github.com/pytorch/pytorch/issues/140765>`_ . This is the case on Kubernetes if you are running as your
+  default user (which is the ``<project id>_auser``) which does not have a user name in the running
+  container. This is fixed in Pytorch 2.13 and after.
 
 
 .. [#node-count] Node counts for HPC and Kubernetes on Lux depend on current machine split. Displayed value is the theoretical maximum.
