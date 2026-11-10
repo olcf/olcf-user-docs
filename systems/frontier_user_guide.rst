@@ -4289,7 +4289,7 @@ System Updates
 On Tuesday, November 10, 2026, Frontier's **default programming environment software** and system software was upgraded.
 The following changes took place:
 
-- The default HPE/Cray Programming Environment (CPE) was updated to 26.03, which is the **final** CPE release. This release supports ROCm/7.0.2, though some functionality may also work with newer ROCm versions >7.0.2. Please see `OLCF Software News <https://docs.olcf.ornl.gov/software/software-news.html>`_ for further information.
+- The default HPE/Cray Programming Environment (CPE) was updated to 26.03, which is the **final** CPE release. This release supports ROCm/7.0.2, though some functionality may also work with newer ROCm versions >7.0.2. Please see `OLCF Software News <https://docs.olcf.ornl.gov/software/software-news.html>`__ for further information.
 - CCE/21.0.4 is now the default compiler for HPE/Cray Programming Environment (CPE) 26.03.
 - Slurm was upgraded to version 26.05.5.
 - ``AMD_COMGR_CACHE=/tmp`` is now set in default login environments. This environment variable disables the ``$HOME``-based AMD Code Object manager cache, which can be corrupted if multiple RCCL or MIOpen workloads are running at the same time.
