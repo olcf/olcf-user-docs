@@ -12,14 +12,14 @@ most recent changes are listed first.
 Frontier: Default PE Update (November 10, 2026)
 -----------------------------------------------
 
-The Frontier system will be upgraded to a new default version of the HPE/Cray Programming Environment (CPE) software stack.
+The Frontier system was upgraded to a new default version of the HPE/Cray Programming Environment (CPE) software stack.
 
 .. warning:: Unless you follow one of the recommended user actions below, **codes using default modules must be rebuilt** prior to running following the upgrade due to the software changes.
 
 New Default Modules
 ~~~~~~~~~~~~~~~~~~~
 
-As a result of the upgrade, the following packages will be default:
+As a result of the upgrade, the following packages are now default:
 
 .. csv-table::
     :header: "Package", "Previous Default", "New Default"
