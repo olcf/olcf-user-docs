@@ -4292,7 +4292,7 @@ The following changes took place:
 - The default HPE/Cray Programming Environment (CPE) was updated to 26.03, which is the **final** CPE release. This release supports ROCm/7.0.2, though some functionality may also work with newer ROCm versions >7.0.2. Please see `OLCF Software News <https://docs.olcf.ornl.gov/software/software-news.html>`_ for further information.
 - CCE/21.0.4 is now the default compiler for HPE/Cray Programming Environment (CPE) 26.03.
 - Slurm was upgraded to version 26.05.5.
-- ``AMD_COMGR_CACHE=/tmp`` is now set in default login environments. This environment variable disables the ``$HOME``-based AMD Code Object manager cache, which can be corrupted if multiple RCCL or MIOpen workloads are running at the same time.
+- ``AMD_COMGR_CACHE_DIR=/tmp`` is now set in default login environments. This environment variable disables the ``$HOME``-based AMD Code Object manager cache, which can be corrupted if multiple RCCL or MIOpen workloads are running at the same time.
 - The ``xalt`` module is now loaded by default. When loaded, this module tracks which dynamic libraries (``.so``'s) your application loads, and stores these results on an OLCF-owned database. This data is used to inform software offerings and upgrades. If you have any questions, please contact help@olcf.ornl.gov
 - The ``hsi`` (Hierarchical Storage Interface, commands for HPSS storage) module is no longer loaded by default.
 
