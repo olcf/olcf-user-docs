@@ -141,7 +141,7 @@ The 8 GPUs on a Lux node are connected with Infinity Fabric with a bandwidth of 
 Connecting
 ==========
 
-To connect to Lux, ``ssh`` to ``lux.olcf.ornl.gov`` from either ``home.ccs.ornl.gov``. For example:
+To connect to Lux, ``ssh`` to ``lux.olcf.ornl.gov`` either directly or from ``home.ccs.ornl.gov``. For example:
 
 .. code-block:: bash
 
@@ -2977,16 +2977,14 @@ browser traffic through home.ccs.ornl.gov using a SOCKS5 proxy.
 Setting up SOCKS5 proxy on your terminal
 ----------------------------------------
 
-* Open your terminal (or Powershell if you're on Windows) and type ``ssh -N your_username@home.ccs.ornl.gov -D 127.0.0.1:10000`` and enter your
-    PASSCODE when prompted.
+* Open your terminal (or Powershell if you're on Windows) and type ``ssh -N your_username@home.ccs.ornl.gov -D 127.0.0.1:10000`` and enter your PASSCODE when prompted.
 * This doesn't actually open a command prompt you can type in so it looks like it is hung. But it is maintaining an open connection so leave this terminal alone.
 
 
 Setting up your browser
 -----------------------
 
-* Install ``Foxyproxy <https://chromewebstore.google.com/detail/foxyproxy/gcknhkkoolaabfmlnjonogaaifnjlfnp?pli=1>``
-  extension for your browser.
+* Install `Foxyproxy <https://chromewebstore.google.com/detail/foxyproxy/gcknhkkoolaabfmlnjonogaaifnjlfnp?pli=1>`_ extension for your browser.
 * Open the browser extension pop up, click on Options
 * In the big settings window that opens, click on ``Proxies`` tab
 * Click ``Add`` to add a new proxy
