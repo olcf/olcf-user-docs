@@ -156,8 +156,8 @@ Using Podman to build images and converting them to Apptainer
        cat > $HOME/.config/containers/storage.conf <<EOF
        [storage]
        driver = "overlay"
-       graphroot = "/tmp/${USER}-containers"
-       rootless_storage_path = "/tmp/${USER}-containers"
+       graphroot = "/tmp/containers/$USER"
+       rootless_storage_path = "/tmp/containers/$USER"
        
        [storage.options]
        pull_options = {use_hard_links = "true", enable_partial_images = "true"}

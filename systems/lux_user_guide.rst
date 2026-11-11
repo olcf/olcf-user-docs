@@ -3452,8 +3452,8 @@ for your container as fields under the ``.resources`` field. For example:
           containers:
             - image: "docker.io/subilabrahamornl/sampletorch:latest"
               name: gpu-pod
-              command: ["python3"]
-              args: ["/root/sampletorch.py"]
+              workingDir: /opt
+              command: ["python3", "torch_mnist.py", "--accel"]
               resources:
                 limits:
                   amd.com/gpu: 1
