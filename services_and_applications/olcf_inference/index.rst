@@ -58,36 +58,18 @@ Currently, the service supports the following models:
     * - `gpt-oss-120b <https://huggingface.co/openai/gpt-oss-120b>`__
       - ``gpt-oss-120b``, ``gpt-oss``
       - Text, Reasoning (Always On)
-    * - `llama-4-maverick <https://huggingface.co/meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8>`__
-      - ``llama-4-maverick``, ``llama-4``
-      - Text, Reasoning (Always On)
     * - `gemma-4-31b <https://huggingface.co/google/gemma-4-31b>`__
       - ``gemma-4-31b``, ``gemma-4``
-      - Text, Reasoning (Always On)
-    * - `olmo-3.1-32b-instruct <https://huggingface.co/allenai/olmo-3.1-32b-instruct>`__
-      - ``olmo-3.1-32b-instruct``, ``olmo-3``
-      - Text, Reasoning (Always On)
+      - Text, Reasoning, Vision (Always On)
     * - `nemotron-3-nano-30b-a3b-bf16 <https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-BF16>`__
       - ``nemotron-3-nano-30b-a3b-bf16``, ``nemotron-nano``
-      - Text, Reasoning (Loaded on-demand)
-    * - `apriel-1.6-15b-thinker <https://huggingface.co/ServiceNow-AI/Apriel-1.6-15b-Thinker>`__
-      - ``apriel-1.6-15b-thinker``, ``apriel-15b-thinker``
-      - Text, Reasoning, Vision (Loaded on-demand)
-    * - `llama-3.1-70b-instruct <https://huggingface.co/meta-llama/llama-3.1-70b-instruct>`__
-      - ``llama-3.1-70b-instruct``, ``llama-3.1-70b``
-      - Text, Reasoning (Loaded on-demand)
-    * - `starcoder2-15b-instruct <https://huggingface.co/bigcode/starcoder2-15b>`__
-      - ``starcoder2-15b-instruct``, ``starcoder2``
-      - Code, Text (Loaded on-demand)
+      - Text, Reasoning (Always On)
     * - `nomic-embed-text-v2-moe <https://huggingface.co/nomic-ai/nomic-embed-text-v2-moe>`__
       - ``nomic-embed-text-v2-moe``, ``nomic-embed-v2``
       - Text Embedding (Always On - CPU)
     * - `embeddinggemma-300m <https://huggingface.co/google/embeddinggemma-300m>`__
       - ``embeddinggemma-300m``, ``embedding-gemma``
       - Text Embedding (Always On - CPU)
-    * - `mxbai-rerank-large-v2 <https://huggingface.co/mixedbread-ai/mxbai-rerank-large-v2>`__
-      - ``mxbai-rerank-large-v2``, ``mxbai-rerank``
-      - Reranking (Always On)
 
 Multi-Modal Inputs
 ------------------
@@ -177,8 +159,8 @@ Querying gpt-oss-120b
 
             print(response.choices[0].message.content)
 
-Querying nemotron-nano-fp8
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+Querying nemotron-nano
+^^^^^^^^^^^^^^^^^^^^^^
 
 .. tab-set::
 
@@ -191,7 +173,7 @@ Querying nemotron-nano-fp8
                 -H @.env \
                 -H "Content-Type: application/json" \
                 -d '{
-                      "model": "nemotron-nano-fp8",
+                      "model": "nemotron-nano",
                       "messages": [{"role": "user", "content": "Your prompt here."}],
                       "stream": false
                     }'
@@ -210,7 +192,7 @@ Querying nemotron-nano-fp8
             )
 
             response = client.chat.completions.create(
-                model="nemotron-nano-fp8",
+                model="nemotron-nano",
                 messages=[
                     {"role": "user", "content": "Your prompt here"}
                 ],
@@ -236,7 +218,7 @@ Computer Vision
         .. code-block:: bash
 
             jq -n --arg content "$(base64 < frontier.jpg)" '{
-              "model": "apriel-1.6-15b-thinker",
+              "model": "gemma-4-31b",
               "messages": [
                 {
                     "role": "user",
@@ -281,7 +263,7 @@ Computer Vision
             base64_image = encode_image(image_path)
 
             response = client.chat.completions.create(
-                model="apriel-1.6-15b-thinker",
+                model="gemma-4-31b",
                 messages=[
                     {
                         "role": "user",
@@ -324,7 +306,7 @@ Computer Vision
             base64_image = encode_image(image_path)
 
             response = client.responses.create(
-                model="apriel-1.6-15b-thinker",
+                model="gemma-4-31b",
                 input=[
                     {
                         "role": "user",
@@ -386,7 +368,7 @@ You will need to send the full text file as a ``string`` of long context to the 
                 data = f.read()
 
             response = client.chat.completions.create(
-                model="nemotron-nano-fp8",
+                model="nemotron-nano",
                 messages=[
                     {
                         "role": "user",
@@ -481,7 +463,7 @@ Used for traditional text continuation (base models rather than instruction-tune
                 -H @.env \
                 -H "Content-Type: application/json" \
                 -d '{
-                      "model": "nemotron-nano-fp8",
+                      "model": "nemotron-nano",
                       "prompt": "The future of high-performance computing is",
                       "max_tokens": 50,
                       "temperature": 0.7
@@ -558,7 +540,7 @@ To view a list of available models use the ``/models`` endpoint.
     {
         "data": [
             {
-                "id": "nemotron-nano-fp8",
+                "id": "nemotron-nano",
                 "object": "model",
                 "created": 1677610602,
                 "owned_by": "openai"
