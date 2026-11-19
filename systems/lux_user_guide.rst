@@ -1393,7 +1393,7 @@ In the script, Slurm directives are preceded by ``#SBATCH``, making them appear 
 Example Compile and Run
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-The following will compile the ``hello_jobstep`` application `found on ORNL's GitLab <https://code.ornl.gov/olcf/hello_jobstep/-/tree/master?ref_type=heads>`__.
+The following will compile the ``hello_jobstep`` application `found on ORNL's GitLab <https://code.ornl.gov/olcf/hello_jobstep>`__.
 
 .. code:: bash
 
@@ -1401,8 +1401,9 @@ The following will compile the ``hello_jobstep`` application `found on ORNL's Gi
     module load amd-llvm/7.2.4
     module load openmpi
 
-    hipcc -std=c++11 -fopenmp --offload-arch=gfx950 -I${ROCM_PATH}/include -I${MPI_DIR}/include -c hello_jobstep.cpp
-    hipcc -fopenmp -L${ROCM_PATH}/lib -lamdhip64 -L${MPI_DIR}/lib -lmpi hello_jobstep.o -o hello_jobstep
+    git clone https://code.ornl.gov/olcf/hello_jobstep
+    cd hello_jobstep/lux
+    make
 
 
 The following can run ``hello_jobstep``:
