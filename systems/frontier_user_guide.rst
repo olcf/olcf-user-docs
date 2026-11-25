@@ -94,7 +94,7 @@ File Systems
 ------------
 
 Frontier is connected to Orion, a parallel filesystem based on Lustre and HPE ClusterStor, with a 679 PB usable 
-namespace (``/lustre/orion/``). In addition to Frontier, Orion is available on the OLCF's data transfer nodes and on the Andes cluster. 
+namespace (``/lustre/orion/``). In addition to Frontier, Orion is available on the OLCF's data transfer nodes and on the Riker cluster. 
 Frontier also has access to the center-wide NFS-based filesystem (which provides user and project home areas). 
 Each compute node has two 1.92TB Non-Volatile Memory storage devices. See :ref:`frontier-data-storage` for more information. 
 
@@ -571,6 +571,13 @@ Modules with dependencies are only available when the underlying dependencies, s
 +------------------------------------------+--------------------------------------------------------------------------------------+
 | ``module spider <string>``               | Searches for modulefiles containing ``<string>``                                     |
 +------------------------------------------+--------------------------------------------------------------------------------------+
+
+Python
+------ 
+
+Information about using Python on OLCF systems, including virtual environments
+and package installation guidance, is maintained on the dedicated Python
+documentation page in the :doc:`Software Section </software/python/index>`.
 
 Compilers
 ---------
@@ -3313,7 +3320,7 @@ For details on how to use ``sbcast`` to move your conda environments to the NVMe
 Software
 ============
 
-Visualization and analysis tasks should be done on the Andes cluster. There are a few tools provided for various visualization tasks, as described in the :ref:`andes-viz-tools` section of the :ref:`andes-user-guide`.
+Visualization and analysis tasks should be done on the Riker cluster. There are a few tools provided for various visualization tasks, as described in the :ref:`riker-user-guide` and :doc:`Visualization Tools page </software/viz_tools/index>`.
 
 For a full list of software availability and latest news at the OLCF, please reference the :doc:`Software </software/software-news>` section in OLCF's User Documentation.
 
@@ -4276,6 +4283,27 @@ Understanding the network counters can be challenging. If you are encountering n
 System Updates 
 ============== 
 
+2026-11-10
+----------
+
+On Tuesday, November 10, 2026, Frontier's **default programming environment software** and system software was upgraded.
+The following changes took place:
+
+- The default HPE/Cray Programming Environment (CPE) was updated to 26.03, which is the **final** CPE release. This release supports ROCm/7.0.2, though some functionality may also work with newer ROCm versions >7.0.2. Please see `OLCF Software News <https://docs.olcf.ornl.gov/software/software-news.html>`__ for further information.
+- CCE/21.0.4 is now the default compiler for HPE/Cray Programming Environment (CPE) 26.03.
+- Slurm was upgraded to version 26.05.5.
+- ``AMD_COMGR_CACHE_DIR=/tmp`` is now set in default login environments. This environment variable disables the ``$HOME``-based AMD Code Object manager cache, which can be corrupted if multiple RCCL or MIOpen workloads are running at the same time.
+- The ``xalt`` module is now loaded by default. When loaded, this module tracks which dynamic libraries (``.so``'s) your application loads, and stores these results on an OLCF-owned database. This data is used to inform software offerings and upgrades. If you have any questions, please contact help@olcf.ornl.gov
+- The ``hsi`` (Hierarchical Storage Interface, commands for HPSS storage) module is no longer loaded by default.
+
+.. note::
+
+    **Recommended User Action**:
+
+    If you are using the default modules (`cce`, `amd`, or `rocm`), you must either (1) pre-emptively update to CPE/26.03 or (2) prepare to be loading a non-default PE after November 10. OLCF recommends users to migrate to CPE/26.03 with ROCm >= 7.0.2. See `OLCF Software News <https://docs.olcf.ornl.gov/software/software-news.html>`_ for further information on both approaches.
+
+Please contact the OLCF Help Desk (help@olcf.ornl.gov) with any problems or concerns.
+
 2026-09-15
 ----------
 On Tuesday, September 15, 2026, Frontier's system software was updated.
@@ -4286,7 +4314,6 @@ The following changes took place:
 - Add ROCm/7.14.1 and ROCm/10.0.0. These are the first two production releases of AMD's TheRock. C/C++ codes should be able to use these ROCm versions with `cray-mpich/9.1.0` in `CPE/26.03`, but Fortran codes will not be able to leverage these new ROCm versions with the existing Cray Programming Environments.
 
 Please contact the OLCF Help Desk (help@olcf.ornl.gov) with any problems or concerns.
-
 
 2026-08-25
 ----------

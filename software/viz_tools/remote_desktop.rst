@@ -51,10 +51,14 @@ The below example is how to use VNC on Riker.
         echo
 
         export DISPLAY=:1
-
-        module load visit
-        visit
-        vncserver -kill :1
+        
+        # If you want to open a specific application GUI so that it is ready when you connect to the VNC server,
+        # you can include that in the script.
+        # For example, uncomment  the below lines to launch the Visit GUI and automatically kill
+        # the VNC server when you exist Visit after viewing it in your VNC viewer.
+        #module load visit
+        #visit
+        #vncserver -kill :1
 
 Step 1 (local system)
 ---------------------
@@ -113,6 +117,16 @@ Step 4 (local system)
 Launch the vncviewer. When you launch the vncviewer that you downloaded you will need to specify ``localhost:5901``.
 You will also set a password for the initial connection or enter the created password for subsequent connections.
 
+If you specified an application you wanted to launch in the ``test-vnc.sh``, you will see that
+application when you connect the vncviewer. Otherwise you will be shown a terminal from which you can launch your
+GUI applications.
+
+
+.. note::
+
+   If you forgot the password that you set earlier with VNC, you can set a new one after you start
+   the interactive job with ``salloc -A <project_id> -p gpu -t 1:00:00 -N 1 --exclusive --x11=batch``. Type the command ``vncpasswd`` and you will
+   be prompted to set a new password.
 
 .. Remote Visualization using Nice DCV (GPU nodes only)
 .. ----------------------------------------------------

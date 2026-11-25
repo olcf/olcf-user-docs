@@ -204,13 +204,6 @@ OLCF System Hostnames
 |                      |                          | - ECDSA MD5: ``b3:7d:a1:cb:90:92:31:78:03:84:ab:f6:8c:f2:8b:18``   |
 |                      |                          | - ECDSA SHA256: ``yRbaOHLGto08TYCKy9R182rd0PK6smHBxaLdJtRxuF8``    |
 +----------------------+--------------------------+--------------------------------------------------------------------+
-| Andes                | ``andes.olcf.ornl.gov``  | - RSA MD5: ``17:4a:49:f8:37:e2:1b:7c:b5:23:b3:5c:64:3a:c5:07``     |
-|                      |                          | - RSA SHA256: ``R9/5L+ZQ9+pR/jThxbLmmmxBtxRfVt3MsEGPEhv1uTQ``      |
-|                      |                          | - ECDSA MD5: ``e4:a4:b4:4a:24:bf:53:e0:9a:c4:10:9f:9f:3a:ec:f4``   |
-|                      |                          | - ECDSA SHA256: ``F92QU1abt3tN2cgYwONJla0MoyV0srD3mNoyoFe5Cxo``    |
-|                      |                          | - ED25519 MD5: ``a0:75:f3:14:be:37:7f:7f:23:3c:ec:d6:d7:34:9b:50`` |
-|                      |                          | - ED25519 SHA256: ``Y5mXzGRGs12pM6a6HYTb6iamoRJLBMiCiypY15zzjR4``  |
-+----------------------+--------------------------+--------------------------------------------------------------------+
 | Frontier             |``frontier.olcf.ornl.gov``| - RSA MD5: ``68:0f:21:93:4a:34:fd:6e:5c:35:8a:34:09:8e:d9:27``     |
 |                      |                          | - RSA SHA256: ``vIjuRocIuWExV4+htXgNKNAuFU16JL0opb6T4ajcfHk``      |
 |                      |                          | - ECDSA MD5: ``28:08:bb:38:7a:6d:b1:0d:d1:fd:6d:a9:40:0a:5f:ae``   |
@@ -218,6 +211,21 @@ OLCF System Hostnames
 |                      |                          | - ED25519 MD5: ``29:81:b5:5f:ff:18:5a:d8:41:3f:4b:d5:15:39:ea:62`` |
 |                      |                          | - ED25519 SHA256: ``ALuNAoAykEUIJzwsExhCaTqwrqhnd4fssvVB4xK87bs``  |
 +----------------------+--------------------------+--------------------------------------------------------------------+
+| Riker                |``riker.olcf.ornl.gov``   | - RSA MD5: ``ad:13:5a:b7:d4:7d:28:27:b3:85:1e:38:d1:90:53:00``     |
+|                      |                          | - RSA SHA256: ``887RP7vK543WwFaDJitxekBmFgun7LiarnL815fBARI``      |
+|                      |                          | - ECDSA MD5: ``48:88:07:54:ef:dd:38:c0:93:e9:b0:3d:eb:aa:46:d3``   |
+|                      |                          | - ECDSA SHA256: ``5ufrtGxGsDMpRpcVDOqCH2ifLQBYxQWZWBgfpQEKDoY``    |
+|                      |                          | - ED25519 MD5: ``01:e3:f9:26:7c:2d:c2:16:49:6f:9a:74:c6:d4:9b:ec`` |
+|                      |                          | - ED25519 SHA256: ``5iKBU/v30ieH19KJYMXBUk9z4gD0Ok0vc4d1sbTdCsw``  |
++----------------------+--------------------------+--------------------------------------------------------------------+
+| Lux                  |``lux.olcf.ornl.gov``     | - RSA MD5: ``fb:b8:2e:94:4a:81:f0:a4:45:a3:f9:e9:cb:67:9b:9d``     |
+|                      |                          | - RSA SHA256: ``RLesnODLja1/JACCO/af16pP2BWCWzKen/SqlzZKNo4``      |
+|                      |                          | - ECDSA MD5: ``86:5d:69:58:16:f1:83:57:b8:9f:2c:9f:4f:98:e6:19``   |
+|                      |                          | - ECDSA SHA256: ``z0taj2RdQonysiJd1XZgWZ3wXzJvR40XWhxy6QpYSzo``    |
+|                      |                          | - ED25519 MD5: ``fd:bf:83:d6:24:a7:ac:cd:53:cd:29:59:7b:14:f2:c0`` |
+|                      |                          | - ED25519 SHA256: ``3RRrdcRY4vKE152gyeNtA5SPR/cA14g1RVirSGdTdOs``  |
++----------------------+--------------------------+--------------------------------------------------------------------+
+
 
 Occassionally, you may receive an error message upon logging in to a system such
 as the following:

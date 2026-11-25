@@ -20,5 +20,6 @@ Software
    viz_tools/index
    jupyter_on_frontier
    containers_on_frontier
+   containers_on_lux
    debugging/index
    chem/index

@@ -117,7 +117,7 @@ File Systems
 ------------
 
 Lux is connected to Orion, a parallel filesystem based on Lustre and HPE ClusterStor, with a 679 PB usable
-namespace (``/lustre/orion/``). In addition to Lux, Orion is available on Frontier, the OLCF's data transfer nodes, and on the Andes cluster.
+namespace (``/lustre/orion/``). In addition to Lux, Orion is available on Frontier, the OLCF's data transfer nodes, and on the Riker cluster.
 Lux also has access to the center-wide NFS-based filesystem (which provides user and project home areas).
 
 Each compute node has eight 3.2TB Non-Volatile Memory storage devices. See :ref:`lux-data-storage` for more information.
@@ -141,7 +141,7 @@ The 8 GPUs on a Lux node are connected with Infinity Fabric with a bandwidth of 
 Connecting
 ==========
 
-To connect to Lux, ``ssh`` to ``lux.olcf.ornl.gov`` from either ``home.ccs.ornl.gov``. For example:
+To connect to Lux, ``ssh`` to ``lux.olcf.ornl.gov`` either directly or from ``home.ccs.ornl.gov``. For example:
 
 .. code-block:: bash
 
@@ -651,6 +651,13 @@ Modules with dependencies are only available when the underlying dependencies, s
 | ``module spider <string>``               | Searches for modulefiles containing ``<string>``                                     |
 +------------------------------------------+--------------------------------------------------------------------------------------+
 
+Python
+------ 
+
+Information about using Python on OLCF systems, including virtual environments
+and package installation guidance, is maintained on the dedicated Python
+documentation page in the :doc:`Software Section </software/python/index>`.
+
 Compilers
 ---------
 
@@ -707,15 +714,15 @@ The table below lists details about each of the module-provided compilers.
      - Language
      - Compiler
    * - AMD
-     - ``amd-vllm``
+     - ``amd-llvm``
      - C
      - ``amdclang``
    * - AMD
-     - ``amd-vllm``
+     - ``amd-llvm``
      - C++
      - ``amdclang++``
    * - AMD
-     - ``amd-vllm``
+     - ``amd-llvm``
      - Fortran
      - ``amdflang``
    * - GNU
@@ -1270,7 +1277,7 @@ Batch Partition Policy (default)
     :header-rows: 1
 
     * - Bin
-      - Node Count
+      - Node Count [#node-count]_
       - Duration
       - Policy
     * - A
@@ -1278,6 +1285,10 @@ Batch Partition Policy (default)
       - Duration 0-48 hr
       - Max 4 jobs eligible to run (queued, accumulating priority) **per user**
 
+
+.. warning::
+
+    |node_count_note|
 
 Job Limit
 ^^^^^^^^^
@@ -1382,7 +1393,7 @@ In the script, Slurm directives are preceded by ``#SBATCH``, making them appear 
 Example Compile and Run
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-The following will compile the ``hello_jobstep`` application `found on ORNL's GitLab <https://code.ornl.gov/olcf/hello_jobstep/-/tree/master?ref_type=heads>`__.
+The following will compile the ``hello_jobstep`` application `found on ORNL's GitLab <https://code.ornl.gov/olcf/hello_jobstep>`__.
 
 .. code:: bash
 
@@ -1390,8 +1401,9 @@ The following will compile the ``hello_jobstep`` application `found on ORNL's Gi
     module load amd-llvm/7.2.4
     module load openmpi
 
-    hipcc -std=c++11 -fopenmp --offload-arch=gfx950 -I${ROCM_PATH}/include -I${MPI_DIR}/include -c hello_jobstep.cpp
-    hipcc -fopenmp -L${ROCM_PATH}/lib -lamdhip64 -L${MPI_DIR}/lib -lmpi hello_jobstep.o -o hello_jobstep
+    git clone https://code.ornl.gov/olcf/hello_jobstep
+    cd hello_jobstep/lux
+    make
 
 
 The following can run ``hello_jobstep``:
@@ -2817,11 +2829,32 @@ The minimal settings can be achieved through setting the following environment v
     For details on how to use ``sbcast`` to move your conda environments to the NVMe, please see our :doc:`Sbcast Conda Environments Guide </software/python/sbcast_conda>`.
 
 
-.. todo containers
-    Containers
-    ==========
 
-    Frontier uses `Apptainer <https://apptainer.org/docs/user/latest/>`__ as its container builder and runtime. You can read more on how to use containers on Frontier in the :doc:`Containers on Frontier </software/containers_on_frontier>` section in the OLCF User Documentation.
+Containers
+==========
+
+Lux uses `Apptainer <https://apptainer.org/docs/user/latest/>`__ as its primary container builder and runtime.
+You can read more on how to use containers on Lux in the :ref:`containers-on-lux` section in the OLCF User Documentation.
+
+Quick Reference
+---------------
+
+Some basics of Apptainer are laid out below (see more information in :ref:`containers-on-lux`):
+
+1. Pull an image from Docker.io into ``.sif`` format using `apptainer pull <https://apptainer.org/docs/user/main/cli/apptainer_pull.html>`_:
+
+    ``apptainer pull docker://ubuntu``
+2. Build an image from a `.def <https://apptainer.org/docs/user/main/definition_files.html>`_ file with `apptainer build <https://apptainer.org/docs/user/main/cli/apptainer_build.html>`_:
+
+    ``apptainer build ./local.sif ./local.def``
+3. Run commands in a local Apptainer image with `apptainer exec <https://apptainer.org/docs/user/main/cli/apptainer_exec.html>`_
+
+    ``apptainer exec ./local.sif my_app``
+
+Image Registries
+----------------
+
+|image_registry_note|
 
 Debugging
 =========
@@ -2907,29 +2940,118 @@ Lux Kubernetes User Guide
 
 Kubernetes on Lux is administered through Rancher. You can access the `dashboard here <https://console.apps.slate-mod.ccs.ornl.gov/dashboard/home>`__ .
 
-.. warning::
-
-   The Lux Kubernetes nodes don't have internet access. So either include your data as part of your
-   container or replace or set the following environment variables in your container
-
-   .. code-block::
-
-      export all_proxy=socks://proxy.ccs.ornl.gov:3128/
-      export ftp_proxy=ftp://proxy.ccs.ornl.gov:3128/
-      export http_proxy=http://proxy.ccs.ornl.gov:3128/
-      export https_proxy=http://proxy.ccs.ornl.gov:3128/
-      export no_proxy='localhost,127.0.0.0/8,*.ccs.ornl.gov'
-
 .. note::
 
    We will be referencing the `olcf_kubernetes_examples repository <https://github.com/olcf/olcf_kubernetes_examples>`__ throughout this page. Make
    sure you have that repository cloned on your laptop and workstation so you can reference it.
 
+Internet Access
+===============
+
+The Lux Kubernetes nodes don't have internet access by default.
+You may either include your data as part of your container, or set the following environment variables in your container.
+
+.. warning::
+
+    Lux worker nodes (CPU-only) do not have internet access through the proxy or otherwise.
+
+The following are the environment variables needed for internet access:
+
+.. code-block::
+
+    export all_proxy=socks://proxy.ccs.ornl.gov:3128/
+    export ftp_proxy=ftp://proxy.ccs.ornl.gov:3128/
+    export http_proxy=http://proxy.ccs.ornl.gov:3128/
+    export https_proxy=http://proxy.ccs.ornl.gov:3128/
+    export no_proxy='localhost,127.0.0.0/8,*.ccs.ornl.gov'
+
+The following is a configuration you can copy and paste into your definition file:
+
+.. code-block:: yaml
+
+    containers: # These apply to pod specs
+        env:
+        - name: all_proxy
+          value: "socks://proxy.ccs.ornl.gov:3128/"
+        - name: ftp_proxy
+          value: "ftp://proxy.ccs.ornl.gov:3128/"
+        - name: http_proxy
+          value: "http://proxy.ccs.ornl.gov:3128/"
+        - name: https_proxy
+          value: "http://proxy.ccs.ornl.gov:3128/"
+        - name: no_proxy
+          value: 'localhost,127.0.0.0/8,*.ccs.ornl.gov'
+
+
+.. _navigating-to-rancher-dashboard:
+
+Navigating to the Rancher Dashboard
+===================================
+
+Kubernetes on Lux uses Rancher for administration and management. Users can view and manage their
+workloads through Rancher.
+
+Currently Rancher access is not available through the public internet. You need to route your
+browser traffic through home.ccs.ornl.gov using a SOCKS5 proxy. 
+
+Setting up SOCKS5 proxy on your terminal
+----------------------------------------
+
+* Open your terminal (or Powershell if you're on Windows) and type ``ssh -N your_username@home.ccs.ornl.gov -D 127.0.0.1:10000`` and enter your PASSCODE when prompted.
+* This doesn't actually open a command prompt you can type in so it looks like it is hung. But it is maintaining an open connection so leave this terminal alone.
+
+
+Setting up your browser
+-----------------------
+
+* Install `Foxyproxy <https://chromewebstore.google.com/detail/foxyproxy/gcknhkkoolaabfmlnjonogaaifnjlfnp?pli=1>`_ extension for your browser.
+* Open the browser extension pop up, click on Options
+* In the big settings window that opens, click on ``Proxies`` tab
+* Click ``Add`` to add a new proxy
+* Add ``lux`` as Title, select ``SOCKS5`` from the Type dropdown, enter ``localhost`` or
+  ``127.0.0.1`` for Hostname, and ``10000`` for Port. 
+* Click on the '+' symbol next to 'Proxy by Patterns' and enter a new pattern
+  ``*://console.apps.slate-mod.ccs.ornl.gov/``. This is to ensure that the proxy is used
+  automatically when accessing Rancher.
+
+  * If there already exists a pattern like ``*://*.com`` you can delete that as you only want
+    Rancher access to use the proxy, and not every website you navigate to on the browser.
+
+* Click Save
+
+Accessing the dashboard
+-----------------------
+
+After all the above is set up 
+
+* Open a new tab
+* From the Foxyproxy browser extension pop up, select ``Proxy by Pattern``
+* Navigate to ``console.apps.slate-mod.ccs.ornl.gov/dashboard/home`` on the browser
+
+
+.. note::
+
+   If you shutdown your computer or close your terminal, you will need to set it up again
+   to reactivate the proxy so you can navigate to Rancher on your browser again.
+
+
+
+
+
+Using kubectl
+=============
+
 Setting up the kubectl commandline tool
-=======================================
+---------------------------------------
+
+.. warning::
+
+   Due to network restrictions, you should install and use kubectl from ``home.ccs.ornl.gov``. SSH to
+   that system first before continuing the below steps.
+
 
 * Follow the steps from `kubectl docs <https://kubernetes.io/docs/tasks/tools/#kubectl>`__ that is most appropriate to install kubectl on your laptop or workstation.
-* Then navigate to the Lux Rancher dashboard.
+* Then navigate to the `Lux Rancher dashboard <https://console.apps.slate-mod.ccs.ornl.gov/dashboard/home>`__ (remember to open the dashboard as described in :ref:`navigating-to-rancher-dashboard`).
 * On the Rancher dashboard, click on the button in the top navbar that says 'Copy KubeConfig to Clipboard'. This copies the
   configuration into your clipboard.
 * On your laptop or workstation, create a file named `~/.kube/config` and paste the contents into
@@ -2943,17 +3065,64 @@ You should now be able to use ``kubectl`` to perform operations on Kubernetes on
    out. You will need to do the above steps again
    after a 24 hour period.
 
+``kubectl`` overview
+--------------------
+
+Below you will find a subset of the key ``kubectl`` commands and a description of their function.
+
+This section is not exhaustive, and if you find yourself looking for more information you can refer to the `kubectl reference docs <https://kubernetes.io/docs/reference/kubectl/generated/>`_ for a more exhaustive list.
+
+.. list-table::
+    :widths: 20 30 20
+    :header-rows: 1
+
+    * - Command
+      - Explanation
+      - Docs link
+    * - ``kubectl apply``
+      - "Applies" the resource, which can be a creation or update function.
+      - `apply docs <https://kubernetes.io/docs/reference/kubectl/generated/kubectl_apply/>`_
+    * - ``kubectl get``
+      -
+        | Fetches basic information on one or more resources.
+        | Output can be modified with ``--output`` to many formats, including ``json`` and ``yaml``.
+      - `get docs <https://kubernetes.io/docs/reference/kubectl/generated/kubectl_get/>`_
+    * - ``kubectl describe``
+      - More detailed information than ``kubectl get``; query should be more specific in the form of ``<resource_type> <resource>``.
+      - `describe docs <https://kubernetes.io/docs/reference/kubectl/generated/kubectl_describe/>`_
+    * - ``kubectl exec``
+      -
+        | Executes commands within a given resource.
+        | Can be used with e.g. ``<job/name> -it -- sh`` to get an interactive shell.
+      - `exec docs <https://kubernetes.io/docs/reference/kubectl/generated/kubectl_exec/>`_
+    * - ``kubectl delete``
+      - Deletes a resource. This can be used to cancel running tasks.
+      - `delete docs <https://kubernetes.io/docs/reference/kubectl/generated/kubectl_delete/>`_
+
+
+Below you can find a list of flags that can be useful for day-to-day operations
+
+.. list-table::
+    :widths: 30 70
+    :header-rows: 1
+
+    * - Flag
+      - Explanation
+    * - ``-n``, ``--namespace``
+      - Namespace specification. Useful when multiple namespaces can be searched.
+    * - ``--kubeconfig``
+      - Specify path to custom kubeconfig. Useful if you use ``kubectl`` for multiple clusters.
 
 
 Create a new namespace
 ======================
 
-OLCF User Assistance will help you create a namespace for your project.
+OLCF User Assistance will help you create or use a namespace for your project.
 Please contact User Assistance at help@olcf.ornl.gov
 
-It is helpful to also CC the your project's PI, who will need to provide permission for creation of an automation user and the namespace.
+.. todo: The below should be default with a Kube-Lux allocation
 
-.. todo: we should probably do this by default with a Lux Kube allocation
+    It is helpful to also CC the your project's PI, who will need to provide permission for creation of an automation user and the namespace.
 
 
 Some Kubernetes Basics
@@ -3020,6 +3189,43 @@ You can open a shell into the container in the running pod with:
 
    kubectl exec -it hello-pod -- /bin/sh
 
+Details about the user running in your container in your Pod
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+By default the user running inside the container in your Pod is your project's automation user
+``<project id>_auser`` e.g. ``stf007_auser``. It is also just the uid, there is no name for the user within the
+running container. so if you open a shell with ``kubectl exec`` and execute the ``id`` command, you
+will see just the uid and gids associated. 
+
+
+You can change the uid running within the container by setting the ``.securityContext.runAsUser`` key in your container spec. 
+See below for a modified version of the Pod example.
+
+
+.. code-block:: yaml
+
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      namespace: <namespace>
+      name: hello-pod
+      labels:
+        app: hello-pod
+    spec:
+      containers:
+        - image: rancher/hello-world
+          name: hello-pod
+          securityContext: # set securityContext in your container spec
+            runAsUser: 999 # this can be a value between 800-9000.
+          ports:
+            - containerPort: 80
+      restartPolicy: Never
+
+The uid in ``runAsUser`` can be a value between 800-9000. This is useful if an application (like
+Postgres for example) by default expects to run as a specific uid in the container. You **CANNOT**
+run as root within the container.
+
+
 Deployment
 ----------
 
@@ -3075,6 +3281,8 @@ The below example will create a Service listening on port 9376 pointing to our P
     metadata:
       namespace: <namespace>
       name: hello-service
+      labels:
+        app: hello-pod
     spec:
       selector:
         app: hello-pod
@@ -3098,6 +3306,8 @@ You can also create a service that refers to a Deployment
     metadata:
       namespace: <namespace>
       name: hello-service
+      labels:
+        deployment: recreate-example
     spec:
       selector:
         deployment: recreate-example
@@ -3115,6 +3325,11 @@ Jobs allow you to create and run a one off task or set of tasks that will run to
 starts and runs a Pod underneath, with some additional facilities to control the number of
 concurrent pods and number of successful completions expected. A Pod will be restarted on failure to try
 again (up to a limit you can specify). Successful completions don't count against the limit.
+
+.. note::
+
+    Jobs are important because this is the only way Lux GPUs can be used on Kubernetes. Support for GPUs
+    on other Workloads like Pods and Deployments is still in the works.
 
 As a simple example, lets create a Job that runs an `echo "hello world"` 7 times.
 
@@ -3164,31 +3379,110 @@ Example Application
 The ``lux/guestbook`` example in the `olcf_kubernetes_examples repository <https://github.com/olcf/olcf_kubernetes_examples/>`_
 demonstrates the above concepts together in a simple web application with a frontend and Redis.
 
+
+CPU-Only Workloads on Kubernetes
+================================
+
+If you would like to run CPU-only workloads, you are free to use the existing ``<proj>-gpu`` namespace described in :ref:`lux-kube-gpus`.
+
+If you want to run CPU-only jobs in your designated ``<proj>`` (non ``-gpu``) namespace, please contact User Assistance at help@olcf.ornl.gov
+
+
+.. _lux-kube-gpus:
+
 GPU Usage on Kubernetes
 =======================
 
-.. warning::
+.. note::
 
    GPUs are time limited use and cannot be used for persistent services. They can only be used in
    Jobs.
 
+Running with GPUs
+-----------------
+
+In order to use GPU resources on the Lux Kubernetes system, you must submit a ``Job`` workload type with the following information:
+
+.. code-block:: yaml
+
+  metadata:
+    namespace: <proj>-gpu
+    annotations:
+      lux.olcf.ornl.gov/walltime:   # your requested time, max of 48h
+  spec:
+    template:
+      spec:
+        containers:
+          resources:
+            limits:
+              amd.com/gpu:          # desired GPUs
+            requests:
+              amd.com/gpu:          # desired GPUs
+
+
+.. list-table::
+    :widths: 30 70
+    :header-rows: 1
+
+    * - Specification
+      - Explanation
+    * - ``namespace: <proj>-gpu``
+      -
+        | Your allocated ``<proj>-gpu`` namespace must be used for GPU jobs on Kubernetes.
+        | **Other namespaces will reject GPU jobs.**
+        | Additionally, it is safe to run all workloads on the ``<proj>-gpu``.
+          Non-GPU jobs will be pushed to CPU-only nodes and not burn allocation.
+        | GPU accounting is only measured against tasks run in this namespace requesting GPU resources.
+    * - ``lux.olcf.ornl.gov/walltime:``
+      -
+        | This is your requested walltime in hours, minutes, and/or seconds.
+        | E.g. ``2h``, ``60m``, ``30s``, ``1h30m``
+        | This is compared against your remaining allocation to ensure your allocation is not exceeded.
+        | Refer to :ref:`lux-kube-run-policy` for maximum run time.
+    * - ``limits: amd.com/gpu:``
+      - This is the maximum amount of GPU resources you will need; this must be equal to ``requests: amd.com/gpu:``, if present.
+    * - ``requests: amd.com/gpu:``
+      -
+        This is the minimum amount of GPU resources you will need; this must be omitted, or equal to ``limits: amd.com/gpu:``.
+        GPU ``requests`` are optional, and if omitted will be set to GPU ``limits``.
+
+.. warning::
+
+    If you specify ``requests: amd.com/gpu:``, it **must** be equal to ``limits: amd.com/gpu:``.
+    Otherwise, your job will be rejected.
+
 Under ``spec.containers`` in your deployment or pod configuration, you can include the GPU resource requests
-for each container request as fields under the ``.resources`` field. For example:
+for your container as fields under the ``.resources`` field. For example:
 
-.. code-block::
+.. code-block:: yaml
 
-   spec:
-     containers:
-     - image: "docker.io/subilabrahamornl/sampletorch:latest"
-       name: gpu-pod
-       command: ["python3"]
-       args: ["/root/sampletorch.py"]
-       resources:
-         limits:
-           amd.com/gpu: 1
-         requests:
-           amd.com/gpu: 1
+    apiVersion: batch/v1
+    kind: Job
+    metadata:
+      namespace: <proj>-gpu
+      annotations:
+        lux.olcf.ornl.gov/walltime: 60m
+      name: torch-pod
+    spec:
+      backoffLimit: 0
+      template:
+        spec:
+          containers:
+            - image: "docker.io/subilabrahamornl/sampletorch:latest"
+              name: gpu-pod
+              workingDir: /opt
+              command: ["python3", "torch_mnist.py", "--accel"]
+              resources:
+                limits:
+                  amd.com/gpu: 1
+                requests:
+                  amd.com/gpu: 1
+          restartPolicy: Never
 
+
+.. note::
+
+    Currently, only one container in your ``Job`` may request GPUs.
 
 See the `torch_simple example <https://github.com/olcf/olcf_kubernetes_examples/tree/main/lux/torch_simple>`__ on how to run a pod with Pytorch running an MNIST example.
 
@@ -3207,8 +3501,169 @@ GPUs so that is the maximum you can request in a single Pod.
        amd.com/gpu: 8
 
 
+Cancelling Jobs
+---------------
+
+In the case of GPU jobs, it is important to have the ability to cancel in various situations to preserve your allocation.
+
+It is simple to cancel or remove Jobs, simply ``delete`` the Job from the same file. Example:
+
+.. code-block:: bash
+
+    $ kubectl delete -f gpu-job.yaml
+    job.batch "gpu-job" deleted from <proj>-gpu namespace
 
 
+Checking a Project Allocation
+-----------------------------
+
+.. warning::
+
+    For all fields, in the case of values ending in ``m``, this is an amount in milli-GPU hours.
+
+
+In order to check your project's allocation, you can use the ``kubectl`` command line tool.
+
+To find your existing allocation(s) for a project, you can use the following command:
+
+.. todo: this is causing hangs?
+
+    ``kubectl get alloc -n <proj>-gpu``
+
+    or
+
+``kubectl get projectallocations -n <proj>-gpu``
+
+Below is an example:
+
+.. code-block:: bash
+
+    $ kubectl get alloc -n <proj>-gpu
+    NAME             ALLOCATED   CONSUMED   RESERVED   AVAILABLE   WINDOW END             ACTIVE   EXHAUSTED
+    <proj>-2026-q4   1000        0          0          1k          2027-01-01T00:00:00Z   True     False
+
+Below you can see an explanation of the fields:
+
+.. list-table::
+    :widths: 30 70
+    :header-rows: 1
+
+    * - Field
+      - Definition
+    * - NAME
+      - The name of the allocation
+    * - ALLOCATED
+      - This is the number of allocated GPU-hours as a decimal.
+    * - CONSUMED
+      -
+        | This is the number of GPU hours consumed.
+        | In the case of values ending in ``m``, this is milli-GPU hours
+    * - RESERVED
+      -
+        | This is the number of GPU hours for jobs that have passed budget check (admitted or running) and haven't been charged yet.
+        | Each hold is the Job’s full maximum (GPUs × walltime); the unused part is returned when the Job ends.
+        | In the case of values ending in ``m``, this is milli-GPU hours.
+    * - AVAILABLE
+      -
+        | This is the number of GPU hours currently available to be reserved at admission.
+        | This is equal to ``ALLOCATION - CONSUMED - RESERVED``.
+        | In the case of values ending in ``m``, this is milli-GPU hours.
+    * - WINDOW END
+      - This shows the end time of your allocation.
+    * - ACTIVE
+      - This value is "True" or "False" and tells you whether the allocation is currently active.
+    * - EXHAUSTED
+      - This value is "True" or "False" and tells you whether your allocation has been used entirely.
+
+
+Detailed Project Allocation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+A detailed view of your project allocation can be viewed with the following command:
+
+``kubectl describe alloc <NAME> -n proj-gpu``
+or
+``kubectl describe projectallocation <NAME> -n proj-gpu``
+
+
+Checking Workload Allocation Usage
+----------------------------------
+
+.. warning::
+
+    For all fields, in the case of values ending in ``m``, this is an amount in milli-GPU hours.
+
+
+The ``kubectl`` command line tool can be used to check a workload/``Job``'s allocation burn.
+
+See a list of workload usages, you can run
+
+``kubectl get budgetcharges -n <proj>-gpu``
+
+Below is an example:
+
+.. code-block:: bash
+
+    $ kubectl get budgetcharges -n stf007-gpu
+    NAME                                                                            ALLOCATION       SUBJECT   GPUS   OUTCOME                        GPU HOURS   FINISHED
+    budgetcharge-4b41302cadafa29b6f23e8799a5ee6c2e0291d690647820aa7c3d93233cf3e7e   <proj>-2026-q4   gpu-job   1      Succeeded                      35m         2026-10-15T20:39:56Z
+    budgetcharge-682c0b27b866976f9774d892434877cc03a3f23277fe34eb69c848cf9cdc5afe   <proj>-2026-q4   gpu-job   1      MaximumExecutionTimeExceeded   167m        2026-10-15T20:55:33Z
+
+Below is an explanation of the fields:
+
+.. list-table::
+    :widths: 30 70
+    :header-rows: 1
+
+    * - Field
+      - Definition
+    * - NAME
+      - Unique name of the ``budgetcharge``. This is much like a Job ID.
+    * - ALLOCATION
+      - Name of the allocation in which the ``budgetcharge`` ran.
+    * - SUBJECT
+      -
+        Name of the workload allocation.
+        This is the same as the ``metadata: name:`` field.
+    * - GPUS
+      - The number of GPUs requested.
+    * - OUTCOME
+      - Final workload status.
+    * - GPU HOURS
+      -
+        | Number of GPU hours burned by the workload.
+        | In the case of values ending in ``m``, this is milli-GPU hours.
+    * - FINISHED
+      - Timestamp of workload termination.
+
+
+Detailed Workload Allocation Usage
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+A detailed view of your workload's allocation burn can be viewed with the following command:
+
+``kubectl describe budgetcharge <NAME> -n <proj>-gpu``
+
+.. _lux-kube-run-policy:
+
+Run Policy
+----------
+
+.. list-table::
+    :header-rows: 1
+
+    * - Namespace
+      - Node Count [#node-count]_
+      - Duration
+      - Policy
+    * - ``<proj>-gpu``
+      - 1-484 Nodes
+      - Duration 0-48h
+      - FIFO - Global, backfill enabled
+
+.. warning::
+
+    |node_count_note|
 
 
 Storage
@@ -3230,6 +3685,7 @@ The below example creates a PVC that requests 5GB of storage.
    metadata:
      name: storage-1
    spec:
+     storageClassName: netapp-file
      accessModes:
        - ReadWriteOnce
      resources:
@@ -3266,9 +3722,64 @@ With this created, we can mount this PVC to a Pod. Below example creates a Pod w
 
 
 
-There are two available storage classes: ``netapp-file`` and ``netapp-block`` for PVCs.
-``netapp-file`` is the default and is probably what you need for most of your use cases.
-``netapp-block`` is useful when you need a persistent backing store for a database.
+There are two available storage classes you can set for PVCs ``storageClassName``: ``netapp-file`` and ``netapp-block``. 
+
+* ``netapp-file`` (default when ``storageClassName`` is unset) - probably what you need for most of your use cases.
+* ``netapp-block`` - useful when you need a persistent backing store for a database.
+
+If you want to use ``netapp-block`` in your PVC, you need to set a value between 800-9000 as your
+group id for your ``.securityContext.fsGroup`` key in your pod spec in your Pod or Deployment
+manifest. This will give group ownership and write permissions for the directories of any mounted
+volumes to that group id. This will also ensure that the user running in the container also has that
+group added to it. For example, here's the above PVC and Pod modified to use ``netapp-block``. If
+you don't set ``fsGroup``, the volume will only have write permissions for root (and remember that
+in your container you are running as your ``<project id>_auser`` by default or whatever uid you set in
+your pod spec's ``.containers[].securityContext.runAsUser``. You can never run as root). 
+
+.. dropdown:: netappblockpod.yaml
+
+  .. code-block:: yaml
+  
+     apiVersion: v1
+     kind: PersistentVolumeClaim
+     metadata:
+       name: storage-1
+       namespace: <namespace>
+     spec:
+       storageClassName: netapp-block # using netapp-block instead of netapp-file
+       accessModes:
+         - ReadWriteOnce
+       resources:
+         requests:
+           storage: 5Gi
+      ---
+      apiVersion: v1
+      kind: Pod
+      metadata:
+        namespace: <namespace>
+        name: hello-pod
+        labels:
+          app: hello-pod
+      spec:
+        securityContext:
+          fsGroup: 999 # This will ensure that any volumes mounted in your container will have group ownership and write permissions for gid 999. Can be any value between 800-9000.
+        containers:
+          - image: rancher/hello-world
+            name: hello-pod
+            securityContext:
+              runAsUser: 1001 # If you want to change the uid of the user running in the container. Can be any value between 800-9000. Not necessary to set if you don't want to. This user will have an additional gid 999 because `fsGroup` was set
+            ports:
+              - containerPort: 80
+            volumeMount:
+              mountPath: /data
+              name: pvol
+        restartPolicy: Never
+        volumes:
+          name: pvol
+          PersistentVolumeClaim:
+            claimName: storage-1
+
+
 
 
 Temporary Storage
@@ -3279,7 +3790,7 @@ If you would like to have some additional storage that doesn't need to be persis
 restarts (like a scratch space or a file cache), there are a couple of options.
 
 One is ``emptyDir`` which lets you set up a cache on the node's local storage with a size limit so
-you cannot write to it beyond what is allocated. For example, with our hell
+you cannot write to it beyond what is allocated. For example: 
 
 
 .. code-block:: yaml
@@ -3360,7 +3871,7 @@ with ``kubectl get pvc``.
    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
    The Orion filesystem can be mounted into your Pod by adding the annotation ``ccs.ornl.gov/fs: orion`` to your Pod. For example, in our ``hello-pod`` yaml file
-   we can modify the ``metadata`` section like so:
+   we can modify the ``metadata`` section like so to add an annotation:
 
    .. code-block:: yaml
 
@@ -3408,6 +3919,8 @@ To setup an HTTPRoute for the ``hello-service`` Service we set up for the ``hell
    metadata:
      name: hellogateway
      namespace: <namespace>
+     labels:
+       app: hello-pod
    spec:
      hostnames:
        - <name of your app>.apps.lux.olcf.ornl.gov
@@ -3437,10 +3950,191 @@ In your terminal, set up port forwarding with the following ssh command.
 
 .. code-block::
 
-   ssh -N -J subil@hub.ccs.ornl.gov subil@login1.lux.olcf.ornl.gov -D 127.0.0.1:10000
+   ssh -N -J your_username@home.ccs.ornl.gov your_username@login1.lux.olcf.ornl.gov -D 127.0.0.1:10000
 
 
 In your browser, install Foxyproxy, and add a proxy named 'Lux' with Type ``SOCKS5``, Hostname
 ``127.0.0.1`` and Port ``10000``.
 
 Now select 'Lux' as the active proxy in Foxyproxy and point your browser to ``<name of your app>.apps.lux.olcf.ornl.gov``.
+
+
+.. note::
+
+   If you open the page on the browser and you see a page that says "No healthy upstream", then
+   check to make sure that you have ``.metadata.labels`` entry set up for your Service that the
+   HTTPRoute is pointing to. HTTPRoute needs a label to be present for its service.
+
+.. todo:
+
+    .. _kubernetes-harbor:
+    
+    Using the Harbor Container Registry
+    ===================================
+    
+    Harbor is the container image registry provided by OLCF for storing and managing container images. It is accessible
+    at `harbor.ccs.ornl.gov <https://harbor.ccs.ornl.gov>`__ .
+    
+    In Harbor, a repository is created the first time you push an image to it, but it must live inside a Project. Therefore, setting up your environment starts with creating a Project. Admins may have already created your project or attached your project to an existing allocation.
+    
+    .. todo:
+    
+       change the wording to be more accurate to how the projects will actually be created -
+       automatically to match the project id, PI has to manually create it, its a free for all.
+       Whichever it is. 
+       
+    
+    1. Create a Project (Repository Container)
+    ------------------------------------------
+    
+    Projects in Harbor act as containers for your repositories and grouping your images.
+    
+    1. Navigate to Harbor `web interface <https://harbor.ccs.ornl.gov/harbor/projects>`__ on your browser and log in with your OLCF credentials.
+    
+    
+    2. Create a Robot Account
+    -------------------------
+    
+    Robot accounts are used to authenticate automated systems (like CI/CD pipelines) so they can push and pull artifacts without tying the workflow to a specific human user's credentials.
+    
+    You will need to create a Project Robot Account for each project.
+    
+    1. Navigate to Robot Accounts:
+    
+       * Go to ``Projects``, select the project of the namespace of your allocation, and click the ``Robot Accounts`` tab.
+    
+    2. Add a New Robot Account:
+    
+       * Click the ``+ New Robot Account`` button.
+    
+    3. Configure Account Details:
+    
+       * Enter a name and an optional description. Set the expiration time for the token. Click Next.
+    
+    .. todo:
+    
+       note that there is no 'push artifact', 'pull artifact', or 'helm chart'. May need more accurate
+       terminology here.
+    
+    4. Grant Permissions:
+    
+       * In the Permissions page, Select the operations this robot needs to perform. For pushing and pulling images, will need to select at least the ``Push``, ``Pull``, and ``Read`` checkboxes on the ``Repository`` row in the Permissions table.
+    
+    5. Save the Secret:
+    
+       * Click ``Finish``. Crucial step: Harbor will generate a secret token. You must download the secret JSON file or copy it immediately to a secure vault—you cannot view this secret again later in the UI.
+    
+    **Note on Robot Usernames**
+    
+    When you create the account, Harbor automatically generates a username based on a prefix, the project name, and your chosen robot name (for example, ``robot$myproject+myrobot``). Always use this full generated string as the username.
+    
+    3. Authenticate and Use the Repository
+    --------------------------------------
+    
+    With your project created and your robot credentials secured, your automated pipelines can now interact with Harbor.
+    
+    On your terminal where you use Docker or Podman, you can log in to the Harbor registry via the CLI. Use the full generated robot username and the generated secret as the password. For example with Docker (same command works with Podman too, just 
+    replace ``docker`` with ``podman``. If you are mainly using Podman, you can set ``alias
+    podman=docker`` on the command line):
+    
+    .. code-block:: bash
+    
+       # Example
+       docker login -u='robot$test_project+pull-token' -p="<generated secret here>" http://harbor.ccs.ornl.gov/
+    
+    Once authenticated, your pipeline can push images. Remember, pushing an image to a new path inside the project automatically creates the repository:
+    
+    .. code-block:: bash
+    
+       # Example
+       # Tag your image
+       docker tag my-app:latest harbor.ccs.ornl.gov/REPOSITORY/image:tag
+    
+       # Push the image
+       docker push harbor.ccs.ornl.gov/REPOSITORY/image:tag
+
+
+.. _pull-secret-kubernetes: 
+
+Pull Secret Creation for Kubernetes
+===================================
+
+`Dockerhub <https://hub.docker.com>`__ can be used as a storage location for any container images you create that you want to use on Lux Kubernetes.
+Here is how to configure setting up secrets to authenticate pulling images from Dockerhub from
+Kubernetes.
+
+0. Creating a Personal Access Token on Dockerhub
+------------------------------------------------
+
+1. Login to `Dockerhub <https://hub.docker.com>`__.
+2. Click on your user icon on the top right, and navigate to Account Settings->Personal Access
+   Tokens.
+3. Click on the "Generate new token" button.
+4. In the 'Create access token" page that opens, enter the name, select the expiry for the token,
+   and select the appropriate permissions you want from the 'Repository permissions' dropdown.
+
+   * You will probably want 'Repo read-only' if you want to pull images from your private
+     repositories.
+5. Click 'Generate' and save the token displayed somewhere.
+
+1. Create the Secret
+--------------------
+
+Via the `Rancher Dashboard <https://console.apps.slate-mod.ccs.ornl.gov/dashboard/c/c-828bj/explorer#cluster-events>`__   (See :ref:`navigating-to-rancher-dashboard`):
+
+1. Navigate to your ``Cluster > Projects/Namespaces`` and select your target Namespace.
+2. In the left menu, go to ``Storage > Secrets``.
+3. Click ``Create`` and select ``Registry``.
+4. Verify that the appropriate namespace is selected in the top-left "Namespace" box.
+5. Name the secret (for example, ``docker-pull-secret``).
+6. Select ``DockerHub`` for the registry type under "Data" and enter your username and the token you created
+   earlier as the password.
+7. Click ``Create``.
+
+2. Use the Secret in your Manifest
+----------------------------------
+
+Once the secret exists in the target namespace, you must explicitly tell your Pods or Deployments or Jobs to use it by adding the ``imagePullSecrets`` array to your manifest specification.
+
+.. code-block:: yaml
+
+   apiVersion: apps/v1
+   kind: Deployment
+   metadata:
+     name: my-app-deployment
+     namespace: your-namespace
+   spec:
+     replicas: 1
+     selector:
+       matchLabels:
+         app: my-app
+     template:
+       metadata:
+         labels:
+           app: my-app
+       spec:
+         containers:
+           - name: my-app
+             image: <USERNAME>/<image:tag> 
+         imagePullSecrets:
+           - name: docker-pull-secret
+
+
+Image Registries
+================
+
+|image_registry_note|
+
+Known Issues
+============
+
+- Pytorch 2.12 and below `have a bug where if the user running Pytorch does not have a user name
+  (only a user id), it will error out <https://github.com/pytorch/pytorch/issues/140765>`_ . This is the case on Kubernetes if you are running as your
+  default user (which is the ``<project id>_auser``) which does not have a user name in the running
+  container. This is fixed in Pytorch 2.13 and after.
+
+
+.. [#node-count] Node counts for HPC and Kubernetes on Lux depend on current machine split. Displayed value is the theoretical maximum.
+.. |node_count_note| replace:: Node counts for HPC and Kubernetes on Lux depend on current machine split. Displayed value is the theoretical maximum.
+
+.. |image_registry_note| replace:: Users who need access to, or help in using, image registries for Moderate container image storage/retrieval should reach out to help@olcf.ornl.gov

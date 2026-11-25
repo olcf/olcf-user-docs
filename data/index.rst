@@ -85,7 +85,7 @@ Each user has a User Home area on NFS. Each project has a Project Home area on N
 | **Path -** The path (symlink) to the storage area's directory.
 | **Enclave -** The security enclave where the path is available. There are several security enclaves:
 |      - *Open (O) -* Ascent and other OLCF machines accessible with a username/password
-|      - *Moderate Projects not subject to export control (M1)* - These are projects on machines such as Frontier or Andes that require 2-factor authentication but are not subject to export control restrictions.
+|      - *Moderate Projects not subject to export control (M1)* - These are projects on machines such as Frontier or Riker that require 2-factor authentication but are not subject to export control restrictions.
 |      - *Moderate Projects subject to export control (M2) -* Same as M1, but projects that are subject to export control restrictions.
 |      - *Moderated Enhanced (ME) -* These are projects that might involve HIPAA or ITAR regulations. These projects utilize Frontier compute resources but have extra security precautions and separate file systems.
 | **Type -** The underlying software technology supporting the storage area.
@@ -111,7 +111,7 @@ Each user has a User Home area on NFS. Each project has a Project Home area on N
 .. [#f4] Retention is not applicable as files will follow purge cycle.
 
 
-.. On Frontier, Andes, and the DTNs, additional paths to the various project-centric work areas are available via the following symbolic links and/or environment variables:
+.. On Frontier, Riker, and the DTNs, additional paths to the various project-centric work areas are available via the following symbolic links and/or environment variables:
 
 .. - Member Work Directory:  ``/gpfs/alpine/scratch/[userid]/[projid]`` or ``$MEMBERWORK/[projid]``
 .. - Project Work Directory: ``/gpfs/alpine/proj-shared/[projid]`` or ``$PROJWORK/[projid]``
@@ -655,7 +655,7 @@ Globus is most frequently used to facilitate data transfer between two instituti
 Command-Line/Terminal Tools
 ========================================
 
-Command-line tools such as ``scp`` and ``rsync`` can be used to transfer data from outside OLCF.  In general, when transferring data into or out of OLCF from the command line, it's best to initiate the transfer from outside OLCF. If moving many small files, it can be beneficial to compress them into a single archive file, then transfer just the one archive file. When using command-line tools, you should use the :ref:`Data Transfer Nodes <dtn-user-guide>` rather than systems like Frontier or Andes.
+Command-line tools such as ``scp`` and ``rsync`` can be used to transfer data from outside OLCF.  In general, when transferring data into or out of OLCF from the command line, it's best to initiate the transfer from outside OLCF. If moving many small files, it can be beneficial to compress them into a single archive file, then transfer just the one archive file. When using command-line tools, you should use the :ref:`Data Transfer Nodes <dtn-user-guide>` rather than systems like Frontier or Riker.
 
 * ``scp`` - secure copy (remote file copy program)
 

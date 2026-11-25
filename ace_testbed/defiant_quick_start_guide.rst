@@ -662,13 +662,45 @@ closest GPU available to that rank. Please refer to the
 on the node. More information on the GPU-related ``srun`` flags can be found
 in the :ref:`GPU Mapping <gpu_mapping>` section.
 
+EJFAT: ESnet-JLab FPGA Accelerated Transport
+--------------------------------------------
+All nodes on Defiant are configured to use the 
+`EJFAT (ESnet-JLab FPGA Accelerated Transport) <https://www.es.net/network-r-and-d/ejfat/>`_
+protocol for high-speed data transfer between multiple
+scientific instruments and high-performance computing clusters. This interface
+assigns IPv4 or IPv6 addresses to compute nodes in order to allow data transfer.
+EJFAT can be requested using the ``-C ejfat -L ext_route:[N]`` flag for IPv4
+and ``-C ipv6`` for IPv6 in the submit script. Note that the IPv4 request requires the
+license flag ``-L ext_route:[N]``, where ``[N]`` is the number of nodes requested.
+
+The ``-C ejfat`` flag automatically assigns both IPv4 and IPv6 addresses to the compute nodes,
+while the ``-C ipv6`` flag only assigns IPv6 addresses.
+
+For example, an interactive session with the IPv4 EJFAT interface can be requested with:
+
+.. code-block:: bash
+
+    salloc -A <project_id> -t 00:05:00 -p <partition> -N 1 -C ejfat -L ext_route
+
+and requesting 2 nodes looks like:
+
+.. code-block:: bash
+
+   salloc -A <project_id> -t 00:05:00 -p <partition> -N 2 -C ejfat -L ext_route:2
+
+An example command for a IPv6-only allocation is:
+
+.. code-block:: bash
+
+    salloc -A <project_id> -t 00:05:00 -p <partition> -N 2 -C ipv6
+
 Process and Thread Mapping
 --------------------------
 
 This section describes how to map processes (e.g., MPI ranks) and process 
 threads (e.g., OpenMP threads) to the CPUs and GPUs on Defiant. The 
 :ref:`defiant-nodes` diagram will be helpful when reading this section
-to understand which hardware threads your processes and threads run on. 
+to understand which hardware threads your processes and threads run on.
 
 CPU Mapping
 ^^^^^^^^^^^

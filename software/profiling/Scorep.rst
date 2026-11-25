@@ -31,9 +31,8 @@ See https://www.vi-hps.org/projects/score-p/ for details about Score-P.
 Usage
 =====
 
-Steps in a typical Score-P workflow to run on an OLCF machine (e.g. Frontier or
-Andes). (`More info about OLCF Systems
-<https://docs.olcf.ornl.gov/systems/index.html>`_). 
+Steps in a typical Score-P workflow to run on an OLCF machine (e.g. Frontier).
+(`More info about OLCF Systems <https://docs.olcf.ornl.gov/systems/index.html>`_). 
 
 1. :ref:`Connect to an OLCF system <connecting-to-olcf>`: ``ssh <user_id><machine>.olcf.ornl.gov``
 2. Instrument your code with Score-P
