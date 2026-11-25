@@ -2801,7 +2801,7 @@ Network Card Pinning
 ^^^^^^^^^^^^^^^^^^^^
 
 Messages larger than ~1MiB benefit from pinning the Pollara 400GbE AI NICs.
-The nearest NIC to any given task shares the index of the nearest GPU, but with the naming scheme ``ionic_<idx>``.
+The nearest NIC to any given task shares the index of the nearest GPU, but with the naming scheme ``ionic_<index>``.
 E.g. if your task was assigned ``GPU 1 (Bus 19)``, ``rsmi1`` - then your nearest NIC is labelled ``ionic_1``.
 
 The minimal settings can be achieved through setting the following environment variable as such:
@@ -2809,10 +2809,65 @@ The minimal settings can be achieved through setting the following environment v
 .. code-block:: bash
 
     # ":1" refers to the UCX port
-    UCX_NET_DEVICES=rsmi1:1
+    UCX_NET_DEVICES=ionic_1:1
 
     # and if you have e.g. GPU 2 in your allocation as well
-    UCX_NET_DEVICES=rsmi1:1,rsmi2:1
+    UCX_NET_DEVICES=ionic_1:1,ionic_2:1
+
+
+OLCF NIC Pinning
+""""""""""""""""
+
+OLCF provides a convenient script for automatically pinning a NIC to a task.
+The script is accessible via environment variables as shown in the example below:
+
+.. code-block:: bash
+
+    #!/bin/bash
+
+    # OLCF's NIC pinning script will not overwrite set UCX_NET_DEVICES.
+    unset UCX_NET_DEVICES   # the default set of devices needs to be cleared.
+    export SLURM_UCX_PINNING_ENABLE=1
+
+Environment variables related to the script are as follows
+
+.. list-table::
+    :header-rows: 1
+
+    * - Variable
+      - Input/Output
+      - Values
+      - Description
+    * - ``SLURM_UCX_PINNING_ENABLE``
+      - Input
+      - | ``0`` - False, default
+        | ``1`` - True
+      - Controls whether the NIC pinning script takes any action.
+    * - ``SLURM_UCX_PINNING_VERBOSE``
+      - Input
+      - | ``0`` - False, default
+        | ``1`` - True
+      - Controls verbose output. When set, you will see
+    * - ``SLURM_UCX_PINNING_ALLOW_TCP``
+      - Input
+      - | ``0`` - False, default
+        | ``1`` - True
+      - Controls whether the script additionally sets the ``ai<index>`` interface for TCP communications.
+    * - ``UCX_NET_DEVICES``
+      - Input + Output
+      - Any string, typically of format: ``^unwanted_device,device:1``
+      - | Input: Tells OLCF's pinning script devices are already set, and nothing needs to be done.
+        | Output: The set of devices for a given task based on its resources assigned by Slurm.
+
+.. note::
+
+    PyTorch workloads should automatically use the set ``UCX_NET_DEVICES`` appropriately, with the exception that ``NCCL_SOCKET_IFNAME`` may need to be chosen.
+
+    Other RCCL-based workloads may need to have the following environment variables set on a per-task basis in order to achieve optimal results:
+
+    * ``NCCL_SOCKET_IFNAME`` - bringup environment variable for RCCL, IP initial exchanges.
+
+    * ``NCCL_IB_HCA`` - backend environment variable for RCCL, RDMA interface.
 
 
 .. todo: sbcast
