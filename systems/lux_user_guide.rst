@@ -2818,18 +2818,19 @@ The minimal settings can be achieved through setting the following environment v
 OLCF NIC Pinning
 """"""""""""""""
 
-OLCF provides a convenient script for automatically pinning a NIC to a task.
-The script is accessible via environment variables as shown in the example below:
+OLCF provides a convenient tool for automatically pinning a NIC to a task.
+This tool is included in every Slurm task and **does not require the loading of a module or invoking of a script**.
+The tool is accessible via environment variables as shown in the example below:
 
 .. code-block:: bash
 
     #!/bin/bash
 
-    # OLCF's NIC pinning script will not overwrite set UCX_NET_DEVICES.
+    # OLCF's NIC pinning tool will not overwrite set UCX_NET_DEVICES.
     unset UCX_NET_DEVICES   # the default set of devices needs to be cleared.
     export SLURM_UCX_PINNING_ENABLE=1
 
-Environment variables related to the script are as follows
+Environment variables related to the tool are as follows
 
 .. list-table::
     :header-rows: 1
@@ -2842,7 +2843,7 @@ Environment variables related to the script are as follows
       - Input
       - | ``0`` - False, default
         | ``1`` - True
-      - Controls whether the NIC pinning script takes any action.
+      - Controls whether the NIC pinning tool takes any action.
     * - ``SLURM_UCX_PINNING_VERBOSE``
       - Input
       - | ``0`` - False, default
@@ -2852,11 +2853,11 @@ Environment variables related to the script are as follows
       - Input
       - | ``0`` - False, default
         | ``1`` - True
-      - Controls whether the script additionally sets the ``ai<index>`` interface for TCP communications.
+      - Controls whether the tool additionally sets the ``ai<index>`` interface for TCP communications.
     * - ``UCX_NET_DEVICES``
       - Input + Output
       - Any string, typically of format: ``^unwanted_device,device:1``
-      - | Input: Tells OLCF's pinning script devices are already set, and nothing needs to be done.
+      - | Input: Tells OLCF's pinning tool devices are already set, and nothing needs to be done.
         | Output: The set of devices for a given task based on its resources assigned by Slurm.
 
 .. note::
